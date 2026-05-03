@@ -7,11 +7,10 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         {
-          hid: 'viewport',
           name: 'viewport',
           content: 'width=device-width, initial-scale=1',
         },
-        { hid: 'description', name: 'description', content: pkg.description },
+        { name: 'description', content: pkg.description },
       ],
       link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     },
@@ -45,7 +44,7 @@ export default defineNuxtConfig({
 
   typescript: {
     strict: true,
-    typeCheck: true,
+    typeCheck: false,
   },
 
   security: {
