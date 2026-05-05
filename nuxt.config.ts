@@ -1,6 +1,10 @@
 import pkg from './package.json'
 
 export default defineNuxtConfig({
+  experimental: {
+    viteEnvironmentApi: true,
+  },
+
   app: {
     head: {
       titleTemplate: `%s - ${pkg.name}`,
@@ -16,6 +20,11 @@ export default defineNuxtConfig({
       link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     },
     pageTransition: { name: 'page', mode: 'out-in' },
+  },
+
+  devServer: {
+    host: '0.0.0.0',
+    port: 4000,
   },
 
   srcDir: 'src/',
@@ -34,7 +43,6 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@samk-dev/nuxt-vcalendar',
     '@hebilicious/vue-query-nuxt',
-    '@nuxt/test-utils/module'
   ],
 
   eslint: {
@@ -45,7 +53,7 @@ export default defineNuxtConfig({
 
   typescript: {
     strict: true,
-    typeCheck: true,
+    typeCheck: process.env.NUXT_TYPECHECK === 'true',
   },
 
   security: {

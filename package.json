@@ -71,7 +71,7 @@
     "@tanstack/vue-query": "^5.45.0",
     "dayjs": "^1.11.10",
     "http-status-codes": "^2.3.0",
-    "nuxt": "^3.12.4",
+    "nuxt": "~3.12.4",
     "pinia": "^2.1.7",
     "vue": "^3.4.38",
     "zod": "^3.22.4"

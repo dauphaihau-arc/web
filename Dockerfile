@@ -1,5 +1,5 @@
-ARG BUILD_IMAGE=node:18.19-alpine
-ARG PNPM_VERSION=7.4.1
+ARG BUILD_IMAGE=node:20-alpine
+ARG PNPM_VERSION=9.3.0
 
 FROM $BUILD_IMAGE AS base
 
@@ -27,15 +27,13 @@ WORKDIR /app
 
 COPY . .
 
-COPY --from=base /app/node_modules ./node_modules
-
-RUN npm --global install pnpm@${PNPM_VERSION}
-
 # build the nuxt project to generate the artifacts in .output directory
 RUN pnpm build
 
 
 FROM $BUILD_IMAGE AS production-deps
+
+ARG PNPM_VERSION=9.3.0
 
 WORKDIR /app
 

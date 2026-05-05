@@ -10,6 +10,7 @@ export function useGetExchangeRates(
 ) {
   return useQuery<ResponseGetExchangeRates>({
     ...queryOptions,
+    server: false,
     queryKey: ['get-exchange-rates'],
     queryFn: () => {
       return useCustomFetch.get<ResponseGetExchangeRates>(
@@ -34,6 +35,7 @@ export function useGetDataByIP(
 ) {
   return useQuery<ResponseGetDataByIP>({
     ...queryOptions,
+    server: false,
     queryKey: ['get-ip-data'],
     queryFn: () => {
       return useCustomFetch.get<ResponseGetDataByIP>(
