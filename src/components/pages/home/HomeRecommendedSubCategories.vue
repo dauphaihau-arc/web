@@ -16,9 +16,17 @@ const params = computed(() => {
 
 const {
   data: dataGetCategories,
+  error: errorGetCategories,
   isPending: isPendingGetCategories,
   isFetching: isFetchingGetCategories,
 } = useGetCategories(params.value);
+
+watch(errorGetCategories, (value) => {
+  const status = value?.statusCode || value?.status || value?.response?.status;
+  if (status === 404) {
+    marketStore.clearCategoryRecommendationState();
+  }
+});
 
 const redirectPage = (subCategory: Category) => {
   if (marketStore.categoriesBreadcrumb && marketStore.userActivities?.rootCategoryProductVisited?.name) {

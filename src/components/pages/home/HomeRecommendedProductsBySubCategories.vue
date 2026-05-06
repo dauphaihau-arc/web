@@ -23,6 +23,18 @@ const queries = computed(() => {
 
 const result = useGetProductsByMultiQueries(queries.value);
 
+watch(result, (value) => {
+  const hasNotFound = value.some((entry) => {
+    const error = entry.error;
+    const status = error?.statusCode || error?.status || error?.response?.status;
+    return status === 404;
+  });
+
+  if (hasNotFound) {
+    marketStore.clearCategoryRecommendationState();
+  }
+}, { deep: true });
+
 const subCategories = computed(() => {
   const filtered = result.value.filter(value => value.status === 'success');
   if (filtered.length > 0) {

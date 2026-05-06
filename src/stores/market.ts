@@ -90,10 +90,21 @@ export const useMarketStore = defineStore('market', () => {
     }
   );
 
+  const clearCategoryRecommendationState = () => {
+    userActivities.value = {
+      ...userActivities.value,
+      categoryIdProductVisited: undefined,
+      rootCategoryProductVisited: undefined,
+      subCategoriesLastVisit: undefined,
+    };
+    categoriesBreadcrumb.value = [];
+  };
+
   return {
     userActivities,
     guestPreferences,
     exchangeRate,
     categoriesBreadcrumb,
+    clearCategoryRecommendationState,
   };
 });

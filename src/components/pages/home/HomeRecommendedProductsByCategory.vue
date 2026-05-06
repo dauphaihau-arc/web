@@ -16,8 +16,16 @@ const params = computed(() => {
 
 const {
   data,
+  error,
   isPending: isPendingGetProducts,
 } = useGetProducts(params);
+
+watch(error, (value) => {
+  const status = value?.statusCode || value?.status || value?.response?.status;
+  if (status === 404) {
+    marketStore.clearCategoryRecommendationState();
+  }
+});
 </script>
 
 <template>
