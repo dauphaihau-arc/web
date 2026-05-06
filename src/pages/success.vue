@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ROUTES } from '~/config/enums/routes';
+import { isBackendWakeUpError } from '~/composables/useBackendStatus';
 import { useGetOrderShopsByCheckoutSession } from '~/services/order';
 
 definePageMeta({ layout: 'market' });
@@ -20,8 +21,13 @@ if (!session_id && cartStore.orderShops.length === 0) {
 const {
   data: dataGetOrderShopsByCheckoutSession,
   isLoading: isLoadingGetOrderShopsByCheckoutSession,
+  error: errorGetOrderShopsByCheckoutSession,
 } = useGetOrderShopsByCheckoutSession(session_id, {
-  onResponseError: () => {
+  onResponseError: ({ response }) => {
+    if ([502, 503, 504].includes(response.status)) {
+      return;
+    }
+
     throw showError({
       statusCode: 404,
       statusMessage: 'Page Not Found',
@@ -40,6 +46,11 @@ const orderShops = computed(() => {
   return [];
 });
 
+const isBackendWakingUp = computed(() => (
+  !!errorGetOrderShopsByCheckoutSession.value &&
+  isBackendWakeUpError(errorGetOrderShopsByCheckoutSession.value)
+));
+
 onUnmounted(() => {
   if (cartStore.orderShops) {
     cartStore.orderShops = [];
@@ -53,6 +64,17 @@ onUnmounted(() => {
     class="grid h-[80vh] w-full place-content-center"
   >
     <LoadingSvg :child-class="'!w-12 !h-12'" />
+  </div>
+  <div
+    v-else-if="isBackendWakingUp"
+    class="grid h-[80vh] w-full place-content-center text-center"
+  >
+    <div class="space-y-3">
+      <LoadingSvg :child-class="'!w-12 !h-12'" />
+      <p class="text-sm text-zinc-600">
+        The server is waking up. Please wait a moment.
+      </p>
+    </div>
   </div>
   <div
     v-else-if="orderShops.length > 0"

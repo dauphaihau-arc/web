@@ -57,7 +57,9 @@ export function useGetOrderShopsByCheckoutSession(
         {
           session_id: sessionId,
         },
-        options
+        undefined,
+        options,
+        { retryOnWakeUp: true }
       );
     },
   });

@@ -1,8 +1,25 @@
 <script setup lang="ts">
+const { status, waitForBackend } = useBackendStatus();
+
+const isBackendPending = computed(() => ['checking', 'waking'].includes(status.value));
+const isBackendError = computed(() => status.value === 'error');
+
+const retryBackend = () => {
+  void waitForBackend();
+};
 </script>
 
 <template>
-  <NuxtLayout class="min-h-screen">
+  <BackendWakeUpOverlay
+    v-if="isBackendPending || isBackendError"
+    :is-backend-pending="isBackendPending"
+    :is-backend-error="isBackendError"
+    @retry="retryBackend"
+  />
+  <NuxtLayout
+    v-else
+    class="min-h-screen"
+  >
     <NuxtPage />
   </NuxtLayout>
 

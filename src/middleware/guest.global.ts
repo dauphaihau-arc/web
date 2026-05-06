@@ -6,7 +6,7 @@ export default defineNuxtRouteMiddleware(async (to, _from) => {
   const { refetch, data } = useGetCurrentUser();
 
   if (!data.value?.user && localStorage[LOCAL_STORAGE_KEYS.ACCESS_TOKEN_EXP]) {
-    await refetch();
+    void refetch();
   }
 
   if (data.value?.user && [ROUTES.RESET].includes(to.path as ROUTES)) {
