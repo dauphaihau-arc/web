@@ -1,5 +1,11 @@
 import pkg from './package.json'
 
+const awsHostBucket = process.env.AWS_S3_HOST_BUCKET || ''
+const awsHostBucketDomain = awsHostBucket
+  ? new URL(awsHostBucket).hostname
+  : ''
+const awsHostBucketAlias = awsHostBucket.replace(/\/+$/, '')
+
 export default defineNuxtConfig({
   experimental: {
     viteEnvironmentApi: true,
@@ -116,9 +122,9 @@ export default defineNuxtConfig({
     ipx: {
       maxAge: 2592000,
     },
-    domains: [process.env.AWS_S3_HOST_BUCKET as string],
+    domains: awsHostBucketDomain ? [awsHostBucketDomain] : [],
     alias: {
-      domainAwsS3: process.env.AWS_S3_HOST_BUCKET as string
+      domainAwsS3: awsHostBucketAlias
     }
   },
 
