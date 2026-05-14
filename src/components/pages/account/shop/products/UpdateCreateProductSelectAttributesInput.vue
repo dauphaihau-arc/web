@@ -26,7 +26,14 @@ watch(() => dataGetAttributesByCategory.value, () => {
     // case update, init data
     if (attributesSelected) {
       attributesSelected.forEach((attr) => {
-        state[attr.attribute] = attr.selected;
+        const attribute = dataGetAttributesByCategory.value?.attributes.find(
+          item => item.id === attr.attribute
+        );
+        const selectedOption = attribute?.options?.find(option =>
+          option.id === attr.selected || option.value === attr.selected
+        );
+
+        state[attr.attribute] = selectedOption?.id ?? attr.selected;
       });
     }
     else {
@@ -69,6 +76,8 @@ watch(() => state, () => {
           v-model="state[attr.id]"
           class="w-full lg:w-52"
           :options="attr.options"
+          option-attribute="value"
+          value-attribute="id"
           size="lg"
         />
         <div

@@ -41,7 +41,12 @@ const processTimeOptions = [
 
 const countriesOptions = computed(() => {
   if (dataGetCountries.value) {
-    return dataGetCountries.value.data.map(co => co.name);
+    return dataGetCountries.value.data
+      .filter(country => country.Iso2)
+      .map(country => ({
+        label: country.name,
+        value: country.Iso2!,
+      }));
   }
   return [];
 });
@@ -57,17 +62,31 @@ const keyAnotherLocationList = ref(0);
 const keyValidateLocations = ref(0);
 const formRef = ref();
 
+const ensureOriginShipping = () => {
+  if (!stateSubmit.standard_shipping[0]) {
+    stateSubmit.standard_shipping.unshift({
+      service: PRODUCT_SHIPPING_SERVICES.OTHER,
+      charge: PRODUCT_SHIPPING_CHARGE.FREE_SHIPPING,
+    });
+  }
+
+  return stateSubmit.standard_shipping[0];
+};
+
 onMounted(() => {
   if (props.initData) {
     Object.assign(stateSubmit, props.initData);
+    ensureOriginShipping();
     return;
   }
   if (dataUserAuth.value?.user?.market_preferences?.region) {
-    stateSubmit.country = dataUserAuth.value.user.market_preferences.region;
-    stateSubmit.standard_shipping.push({
-      country: stateSubmit.country,
-      service: PRODUCT_SHIPPING_SERVICES.OTHER,
-    });
+    const region = dataUserAuth.value.user.market_preferences.region;
+    const selectedCountry = dataGetCountries.value?.data.find(country =>
+      country.Iso2 === region || country.name === region
+    );
+
+    stateSubmit.country = selectedCountry?.Iso2 ?? region;
+    ensureOriginShipping().country = stateSubmit.country;
   }
 });
 
@@ -90,7 +109,7 @@ function onSubmit(event: FormSubmitEvent<CreateProductShipping>) {
 }
 
 watch(() => stateSubmit.country, () => {
-  stateSubmit.standard_shipping[0].country = stateSubmit.country;
+  ensureOriginShipping().country = stateSubmit.country;
 });
 
 async function onError(event: FormErrorEvent) {
@@ -137,6 +156,8 @@ async function onError(event: FormErrorEvent) {
           <USelectMenu
             v-model="stateSubmit.country"
             :options="countriesOptions"
+            option-attribute="label"
+            value-attribute="value"
             size="xl"
           />
         </UFormGroup>

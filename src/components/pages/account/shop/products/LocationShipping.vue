@@ -45,11 +45,30 @@ const stateDeliveryTime = reactive({
 // ------------------ Computed ref
 const countriesOptions = computed(() => {
   if (dataGetCountries.value) {
-    const otherOptions = [PRODUCT_SHIPPING_OTHER_COUNTRIES_OPTIONS.EVERYWHERE];
-    const countriesNames = dataGetCountries.value.data.map(co => co.name);
-    return [...otherOptions, ...countriesNames];
+    const countries = dataGetCountries.value.data
+      .filter(country => country.Iso2)
+      .map(country => ({
+        label: country.name,
+        value: country.Iso2!,
+      }));
+
+    return [
+      {
+        label: PRODUCT_SHIPPING_OTHER_COUNTRIES_OPTIONS.EVERYWHERE,
+        value: PRODUCT_SHIPPING_OTHER_COUNTRIES_OPTIONS.EVERYWHERE,
+      },
+      ...countries,
+    ];
   }
   return [];
+});
+
+const countryLabel = computed(() => {
+  const selectedCountry = countriesOptions.value.find(
+    option => option.value === model.value.country
+  );
+
+  return selectedCountry?.label ?? model.value.country;
 });
 
 const deliveryTimeToOptions = computed(() => {
@@ -92,7 +111,7 @@ watch(stateDeliveryTime, () => {
   <div class="rounded-md border-2 border-dashed p-4 px-5">
     <div class="mb-2 flex justify-between">
       <div class="text-lg font-medium">
-        {{ model.country }}
+        {{ countryLabel }}
       </div>
       <UButton
         v-if="!disabledDelete"
@@ -112,6 +131,8 @@ watch(stateDeliveryTime, () => {
       <USelectMenu
         v-model="model.country"
         :options="countriesOptions"
+        option-attribute="label"
+        value-attribute="value"
         size="xl"
       />
     </UFormGroup>

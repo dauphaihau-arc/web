@@ -6,7 +6,10 @@ export type UserAddress = z.infer<typeof userAddressSchema>;
 export type CreateBodyUserAddressBody = z.infer<typeof createUserAddressSchema>;
 
 export type ResponseGetCountries = {
-  data: { name: string }[]
+  data: {
+    name: string
+    Iso2?: string
+  }[]
 };
 
 export type ResponseGetStatesByCountry = {
