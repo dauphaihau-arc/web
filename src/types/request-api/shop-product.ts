@@ -14,7 +14,11 @@ import type {
   , createProductInventorySchema
 } from '~/schemas/request/shop-product.schema';
 import type { RequestGetListParams } from '~/types/common';
-import type { PRODUCT_VARIANT_TYPES } from '~/config/enums/product';
+import type {
+  PRODUCT_SHIPPING_CHARGE,
+  PRODUCT_VARIANT_TYPES,
+  PRODUCT_WHO_MADE
+} from '~/config/enums/product';
 import type { ElementType, PickPartial, RequiredFields } from '~/types/utils';
 
 // region create product
@@ -51,6 +55,111 @@ export type RequestCreateProductBody = CreateProductBody & {
   images: Pick<ProductImage, 'relative_url' | 'rank'>[]
   shipping: CreateProductShipping
 } & (NoneVariant | SingleVariant | CombineVariant);
+
+export type CreateProductDraftImage = {
+  storageKey: string
+  rank: number
+};
+
+export type CreateProductDraftAttribute = {
+  categoryAttributeId: string
+  selectedOptionId?: string
+  selectedText?: string
+};
+
+export type CreateProductDraftVariant = {
+  clientKey: string
+  optionValue1: string
+  optionValue2?: string
+};
+
+export type CreateProductDraftInventory = Pick<ProductInventory, 'price' | 'sku' | 'stock'> & {
+  variantClientKey?: string
+  salePrice?: number
+};
+
+export type CreateProductDraftShipping = {
+  originCountry: string
+  originZip: string
+  processTimeLabel: string
+  destinations: {
+    countryCode: string
+    deliveryTimeLabel: string
+    service: string
+    chargeType: PRODUCT_SHIPPING_CHARGE
+  }[]
+};
+
+export type RequestCreateProductDraftBody = {
+  categoryId: string
+  title: string
+  description: string
+  whoMade: PRODUCT_WHO_MADE
+  isDigital: boolean
+  nonTaxable?: boolean
+  variantType: PRODUCT_VARIANT_TYPES
+  variantGroupName?: string
+  variantSubGroupName?: string
+  images?: CreateProductDraftImage[]
+  attributes?: CreateProductDraftAttribute[]
+  variants?: CreateProductDraftVariant[]
+  inventory: CreateProductDraftInventory[]
+  shipping: CreateProductDraftShipping
+};
+
+export type ResponseShopProductDraft = {
+  id: string
+  shopId: string
+  categoryId?: string
+  title: string
+  description: string
+  whoMade: PRODUCT_WHO_MADE
+  isDigital: boolean
+  variantType?: PRODUCT_VARIANT_TYPES
+  variantGroupName?: string
+  variantSubGroupName?: string
+  images: {
+    id: string
+    storageKey: string
+    rank: number
+    url?: string
+  }[]
+  attributes: {
+    id: string
+    categoryAttributeId: string
+    selectedOptionId?: string
+    selectedText?: string
+  }[]
+  variants: {
+    id: string
+    name: string
+    optionValue1?: string
+    optionValue2?: string
+    rank: number
+  }[]
+  inventory: {
+    id: string
+    productVariantId?: string
+    sku?: string
+    stock: number
+    price: number
+    salePrice?: number
+  }[]
+  shipping?: {
+    id: string
+    originCountry: string
+    originZip: string
+    processTimeLabel: string
+    destinations: {
+      id: string
+      countryCode: string
+      deliveryTimeLabel: string
+      service: string
+      chargeType: PRODUCT_SHIPPING_CHARGE
+      rank: number
+    }[]
+  }
+};
 
 type TNoneVariant = Omit<NoneVariant, 'variant_type'>;
 export type StateNoneVariant = PickPartial<TNoneVariant, 'price' | 'sku'>;

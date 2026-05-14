@@ -4,7 +4,9 @@ import { RESOURCES } from '~/config/enums/resources';
 import type {
   ShopGetProductsQueryParams,
   ResponseShopGetProducts,
-  RequestCreateProductBody, RequestUpdateProductBody
+  RequestCreateProductDraftBody,
+  RequestUpdateProductBody,
+  ResponseShopProductDraft
 } from '~/types/request-api/shop-product';
 import type { Shop } from '~/types/shop';
 import type { ResponseBaseGetList } from '~/types/common';
@@ -13,23 +15,52 @@ import type {
 } from '~/types/coupon';
 import { toastCustom } from '~/config/toast';
 import type { UserAuthenticated } from '~/types/auth';
-import { useGetCurrentUser } from '~/services/user';
 import type { Product } from '~/types/product';
+
+export type MyShop = {
+  id: string
+  ownerUserId: string
+  shopName: string
+  status: string
+};
+
+export function useGetMyShop() {
+  return useQuery({
+    enabled: true,
+    queryKey: ['my-shop'],
+    queryFn: () => {
+      return useCustomFetch.get<MyShop>(
+        `${RESOURCES.SHOPS}/me`
+      );
+    },
+  });
+}
 
 export function useCreateShop() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ['create-shop'],
     mutationFn: (body: Pick<Shop, 'shop_name'>) => {
-      return useCustomFetch.post<{ shop: Shop }>(
+      return useCustomFetch.post<MyShop>(
         RESOURCES.SHOPS,
         body
       );
     },
     onSuccess(data) {
       const dataUserAuth = queryClient.getQueryData<{ user: UserAuthenticated }>(['current-user']);
+
+      queryClient.setQueryData(['my-shop'], data);
+
       if (dataUserAuth) {
-        dataUserAuth.user.shop = data.shop;
+        queryClient.setQueryData(['current-user'], {
+          user: {
+            ...dataUserAuth.user,
+            shop: {
+              id: data.id,
+              shop_name: data.shopName,
+            },
+          },
+        });
       }
     },
   });
@@ -39,13 +70,14 @@ export function useShopGetDetailProduct(
   id: Product['id'],
   options?: NitroFetchOptions<NitroFetchRequest>
 ) {
-  const { data } = useGetCurrentUser();
+  const queryClient = useQueryClient();
   return useQuery({
     queryKey: ['shop-get-detail-product', id],
-    queryFn: () => {
+    queryFn: async () => {
+      const shopId = await resolveMyShopId(queryClient);
       // return useCustomFetch.get<ResponseShopGetDetailProduct>(
       return useCustomFetch.get(
-        `${RESOURCES.SHOPS}/${data.value?.user?.shop?.id}${RESOURCES.PRODUCTS}/${id}`,
+        `${RESOURCES.SHOPS}/${shopId}${RESOURCES.PRODUCTS}/${id}`,
         undefined,
         options
       );
@@ -54,26 +86,63 @@ export function useShopGetDetailProduct(
 }
 
 export function useShopCreateProduct() {
-  const { data } = useGetCurrentUser();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ['shop-create-product'],
-    mutationFn: (body: RequestCreateProductBody) => {
-      return useCustomFetch.post<{ product: Product }>(
-        `${RESOURCES.SHOPS}/${data.value?.user?.shop?.id}${RESOURCES.PRODUCTS}`,
+    mutationFn: async (body: RequestCreateProductDraftBody) => {
+      const shopId = await resolveMyShopId(queryClient);
+      return useCustomFetch.post<ResponseShopProductDraft>(
+        `${RESOURCES.SHOPS}/${shopId}${RESOURCES.PRODUCTS}/drafts`,
         body
       );
     },
   });
 }
 
+export function useShopPublishProduct() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ['shop-publish-product'],
+    mutationFn: async (id: Product['id']) => {
+      const shopId = await resolveMyShopId(queryClient);
+      return useCustomFetch.post<ResponseShopProductDraft>(
+        `${RESOURCES.SHOPS}/${shopId}${RESOURCES.PRODUCTS}/${id}/publish`
+      );
+    },
+  });
+}
+
+export function useShopSetProductImagesByKeys() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ['shop-set-product-images-by-keys'],
+    mutationFn: async (body: {
+      id: Product['id']
+      images: {
+        storageKey: string
+        rank: number
+      }[]
+    }) => {
+      const shopId = await resolveMyShopId(queryClient);
+      return useCustomFetch.put<ResponseShopProductDraft>(
+        `${RESOURCES.SHOPS}/${shopId}${RESOURCES.PRODUCTS}/${body.id}/images-by-keys`,
+        {
+          images: body.images,
+        }
+      );
+    },
+  });
+}
+
 export function useShopUpdateProduct() {
-  const { data } = useGetCurrentUser();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ['shop-update-product'],
-    mutationFn: (body: RequestUpdateProductBody & { id: Product['id'] }) => {
+    mutationFn: async (body: RequestUpdateProductBody & { id: Product['id'] }) => {
+      const shopId = await resolveMyShopId(queryClient);
       const { id, ...resBody } = body;
       return useCustomFetch.patch<{ product: Product }>(
-        `${RESOURCES.SHOPS}/${data.value?.user?.shop?.id}${RESOURCES.PRODUCTS}/${id}`,
+        `${RESOURCES.SHOPS}/${shopId}${RESOURCES.PRODUCTS}/${id}`,
         resBody
       );
     },
@@ -81,13 +150,14 @@ export function useShopUpdateProduct() {
 }
 
 export function useShopDeleteProduct() {
-  const { data } = useGetCurrentUser();
+  const queryClient = useQueryClient();
   const toast = useToast();
   return useMutation({
     mutationKey: ['shop-delete-product'],
-    mutationFn: (id: Product['id']) => {
+    mutationFn: async (id: Product['id']) => {
+      const shopId = await resolveMyShopId(queryClient);
       return useCustomFetch.delete(
-        `${RESOURCES.SHOPS}/${data.value?.user?.shop?.id}${RESOURCES.PRODUCTS}/${id}`
+        `${RESOURCES.SHOPS}/${shopId}${RESOURCES.PRODUCTS}/${id}`
       );
     },
     onSuccess() {
@@ -108,12 +178,13 @@ export function useShopDeleteProduct() {
 export function useShopGetProducts(
   queryParams: Ref<ShopGetProductsQueryParams> | ComputedRef<ShopGetProductsQueryParams>
 ) {
-  const { data } = useGetCurrentUser();
+  const queryClient = useQueryClient();
   return useQuery({
     queryKey: ['shop-get-products', queryParams],
-    queryFn: () => {
+    queryFn: async () => {
+      const shopId = await resolveMyShopId(queryClient);
       return useCustomFetch.get<ResponseBaseGetList<ResponseShopGetProducts>>(
-        `${RESOURCES.SHOPS}/${data.value?.user?.shop?.id}${RESOURCES.PRODUCTS}`,
+        `${RESOURCES.SHOPS}/${shopId}${RESOURCES.PRODUCTS}`,
         queryParams.value
       );
     },
@@ -121,12 +192,13 @@ export function useShopGetProducts(
 }
 
 export function useShopCreateCoupon() {
-  const { data } = useGetCurrentUser();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ['shop-create-coupon'],
-    mutationFn: (body: CreatePromoCodeBody | CreateSaleBody) => {
+    mutationFn: async (body: CreatePromoCodeBody | CreateSaleBody) => {
+      const shopId = await resolveMyShopId(queryClient);
       return useCustomFetch.post<{ product: Product }>(
-        `${RESOURCES.SHOPS}/${data.value?.user?.shop?.id}${RESOURCES.COUPONS}`,
+        `${RESOURCES.SHOPS}/${shopId}${RESOURCES.COUPONS}`,
         body
       );
     },
@@ -134,13 +206,14 @@ export function useShopCreateCoupon() {
 }
 
 export function useShopDeleteCoupon() {
-  const { data } = useGetCurrentUser();
+  const queryClient = useQueryClient();
   const toast = useToast();
   return useMutation({
     mutationKey: ['shop-delete-coupon'],
-    mutationFn: (id: Product['id']) => {
+    mutationFn: async (id: Product['id']) => {
+      const shopId = await resolveMyShopId(queryClient);
       return useCustomFetch.delete(
-        `${RESOURCES.SHOPS}/${data.value?.user?.shop?.id}${RESOURCES.COUPONS}/${id}`
+        `${RESOURCES.SHOPS}/${shopId}${RESOURCES.COUPONS}/${id}`
       );
     },
     onSuccess() {
@@ -159,14 +232,28 @@ export function useShopDeleteCoupon() {
 }
 
 export function useShopGetCoupons(queryParams: ComputedRef<GetCouponsParams>) {
-  const { data } = useGetCurrentUser();
+  const queryClient = useQueryClient();
   return useQuery({
     queryKey: ['shop-get-coupons', queryParams],
-    queryFn: () => {
+    queryFn: async () => {
+      const shopId = await resolveMyShopId(queryClient);
       return useCustomFetch.get<ResponseBaseGetList<Coupon>>(
-        `${RESOURCES.SHOPS}/${data.value?.user?.shop?.id}${RESOURCES.COUPONS}`,
+        `${RESOURCES.SHOPS}/${shopId}${RESOURCES.COUPONS}`,
         queryParams.value
       );
     },
   });
+}
+
+async function resolveMyShopId(queryClient: ReturnType<typeof useQueryClient>) {
+  const cachedShop = queryClient.getQueryData<MyShop>(['my-shop']);
+
+  if (cachedShop?.id) {
+    return cachedShop.id;
+  }
+
+  const shop = await useCustomFetch.get<MyShop>(`${RESOURCES.SHOPS}/me`);
+  queryClient.setQueryData(['my-shop'], shop);
+
+  return shop.id;
 }

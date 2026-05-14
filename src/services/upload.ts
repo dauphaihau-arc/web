@@ -1,14 +1,25 @@
 import type { ResponseGetPresignedUrlData } from '~/types/upload';
 import { RESOURCES } from '~/config/enums/resources';
-import { useGetCurrentUser } from '~/services/user';
+import { useGetMyShop } from '~/services/shop';
+import type { Product } from '~/types/product';
 
-export function useGetPresignedUrl() {
-  const { data: dataUserAuth } = useGetCurrentUser();
+export function useIssueProductImageUploadUrl() {
+  const { data: dataMyShop, refetch } = useGetMyShop();
   return useMutation({
-    mutationKey: ['get-presigned-url'],
-    mutationFn: () => {
-      return useCustomFetch.get<ResponseGetPresignedUrlData>(
-        `${RESOURCES.UPLOAD}?shop_id=${dataUserAuth.value?.user?.shop?.id}`
+    mutationKey: ['issue-product-image-upload-url'],
+    mutationFn: async (input: {
+      productId: Product['id']
+      contentType: string
+      assetType?: 'original'
+    }) => {
+      const shopId = dataMyShop.value?.id ?? (await refetch({ throwOnError: true })).data?.id;
+
+      return useCustomFetch.post<ResponseGetPresignedUrlData>(
+        `${RESOURCES.SHOPS}/${shopId}${RESOURCES.PRODUCTS}/${input.productId}/image-uploads`,
+        {
+          contentType: input.contentType,
+          assetType: input.assetType ?? 'original',
+        }
       );
     },
   });

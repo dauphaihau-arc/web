@@ -12,13 +12,17 @@ import {
 import { ROUTES } from '~/config/enums/routes';
 import { toastCustom } from '~/config/toast';
 import { CreateShippingProductDialog } from '#components';
-import { useShopCreateProduct } from '~/services/shop';
-import { useGetPresignedUrl } from '~/services/upload';
+import {
+  useShopCreateProduct,
+  useShopPublishProduct,
+  useShopSetProductImagesByKeys
+} from '~/services/shop';
+import { useIssueProductImageUploadUrl } from '~/services/upload';
 import type {
   CombineVariant,
   CreateProductBody,
   CreateProductShipping, NoneVariant,
-  RequestCreateProductBody,
+  RequestCreateProductDraftBody,
   SingleVariant,
   StateCombineVariant,
   StateNoneVariant,
@@ -63,8 +67,16 @@ const {
 } = useShopCreateProduct();
 
 const {
-  mutateAsync: getPresignedUrl,
-} = useGetPresignedUrl();
+  mutateAsync: publishProduct,
+} = useShopPublishProduct();
+
+const {
+  mutateAsync: setProductImagesByKeys,
+} = useShopSetProductImagesByKeys();
+
+const {
+  mutateAsync: issueProductImageUploadUrl,
+} = useIssueProductImageUploadUrl();
 
 const showCreateShippingProductDialog = () => {
   modal.open(CreateShippingProductDialog, {
@@ -92,17 +104,29 @@ const validateForm = (values: CreateProductBody): FormError[] => {
   return errors;
 };
 
-async function uploadImage() {
+type CreateProductSubmitBody = {
+  shipping: CreateProductShipping
+} & PickPartial<CreateProductBody, 'attributes' | 'tags'> & (
+  NoneVariant |
+  SingleVariant |
+  CombineVariant
+);
+
+async function uploadImage(productId: string) {
   if (fileImages.value.length === 0) {
     consola.error('images is invalid');
     return;
   }
 
   const promisesUploadImages = [];
-  const relative_urls = [];
+  const storageKeys = [];
 
   for (let i = 0; i < fileImages.value.length; i++) {
-    const { presigned_url, key } = await getPresignedUrl();
+    const { presigned_url, key } = await issueProductImageUploadUrl({
+      productId,
+      contentType: fileImages.value[i].type,
+      assetType: 'original',
+    });
 
     if (!presigned_url || !key) {
       toast.add({
@@ -113,7 +137,7 @@ async function uploadImage() {
       return;
     }
 
-    relative_urls.push(key);
+    storageKeys.push(key);
 
     const promise = useFetch(presigned_url, {
       method: 'PUT',
@@ -128,7 +152,103 @@ async function uploadImage() {
 
   await Promise.all(promisesUploadImages);
 
-  return relative_urls;
+  return storageKeys;
+}
+
+function mapAttributes(
+  attributes: NonNullable<CreateProductBody['attributes']>
+): RequestCreateProductDraftBody['attributes'] {
+  return attributes.map(attribute => ({
+    categoryAttributeId: attribute.attribute_id,
+    selectedOptionId: attribute.selected,
+  }));
+}
+
+function mapInventoryAndVariants(
+  bodyData: CreateProductSubmitBody
+): Pick<RequestCreateProductDraftBody, 'inventory' | 'variants'> {
+  if (bodyData.variant_type === PRODUCT_VARIANT_TYPES.NONE) {
+    return {
+      inventory: [
+        {
+          price: bodyData.price!,
+          salePrice: undefined,
+          sku: bodyData.sku,
+          stock: bodyData.stock,
+        },
+      ],
+    };
+  }
+
+  if (bodyData.variant_type === PRODUCT_VARIANT_TYPES.SINGLE) {
+    const variants = bodyData.variant_options.map((variant, index) => {
+      const clientKey = `variant-${index + 1}`;
+
+      return {
+        clientKey,
+        optionValue1: variant.variant_name,
+        inventory: {
+          variantClientKey: clientKey,
+          price: variant.price,
+          salePrice: undefined,
+          sku: variant.sku,
+          stock: variant.stock,
+        },
+      };
+    });
+
+    return {
+      variants: variants.map(variant => ({
+        clientKey: variant.clientKey,
+        optionValue1: variant.optionValue1,
+      })),
+      inventory: variants.map(variant => variant.inventory),
+    };
+  }
+
+  const variants = bodyData.variant_options.flatMap((variant, parentIndex) => {
+    return variant.variant_options.map((subVariant, childIndex) => {
+      const clientKey = `variant-${parentIndex + 1}-${childIndex + 1}`;
+
+      return {
+        clientKey,
+        optionValue1: variant.variant_name,
+        optionValue2: subVariant.variant_name,
+        inventory: {
+          variantClientKey: clientKey,
+          price: subVariant.price,
+          salePrice: undefined,
+          sku: subVariant.sku,
+          stock: subVariant.stock,
+        },
+      };
+    });
+  });
+
+  return {
+    variants: variants.map(variant => ({
+      clientKey: variant.clientKey,
+      optionValue1: variant.optionValue1,
+      optionValue2: variant.optionValue2,
+    })),
+    inventory: variants.map(variant => variant.inventory),
+  };
+}
+
+function mapShipping(
+  data: CreateProductShipping
+): RequestCreateProductDraftBody['shipping'] {
+  return {
+    originCountry: data.country,
+    originZip: data.zip,
+    processTimeLabel: data.process_time,
+    destinations: data.standard_shipping.map(destination => ({
+      countryCode: destination.country,
+      deliveryTimeLabel: destination.delivery_time,
+      service: destination.service,
+      chargeType: destination.charge,
+    })),
+  };
 }
 
 async function onSubmit(event: FormSubmitEvent<CreateProductBody>) {
@@ -149,10 +269,10 @@ async function onSubmit(event: FormSubmitEvent<CreateProductBody>) {
     delete dataSubmit.attributes;
   }
 
-  let bodyData = {
+  let bodyData: CreateProductSubmitBody = {
     ...dataSubmit,
     shipping: shipping.value,
-  };
+  } as CreateProductSubmitBody;
   switch (bodyData.variant_type) {
     case 'none':
       bodyData = { ...bodyData, ...noneVariant as NoneVariant };
@@ -170,18 +290,49 @@ async function onSubmit(event: FormSubmitEvent<CreateProductBody>) {
   loadingSubmit.value = true;
 
   try {
-    const relative_urls = await uploadImage();
-    if (!relative_urls) return;
-    const images = relative_urls.map((key, index) => ({ relative_url: key, rank: index + 1 }));
+    const productDraft = await createProduct({
+      categoryId: bodyData.category_id,
+      title: bodyData.title,
+      description: bodyData.description,
+      whoMade: bodyData.who_made,
+      isDigital: bodyData.is_digital,
+      nonTaxable: false,
+      variantType: bodyData.variant_type,
+      variantGroupName:
+        bodyData.variant_type === PRODUCT_VARIANT_TYPES.NONE ?
+          undefined :
+          bodyData.variant_group_name,
+      variantSubGroupName:
+        bodyData.variant_type === PRODUCT_VARIANT_TYPES.COMBINE ?
+          bodyData.variant_sub_group_name :
+          undefined,
+      attributes: bodyData.attributes?.length ?
+        mapAttributes(bodyData.attributes) :
+        undefined,
+      ...mapInventoryAndVariants(bodyData),
+      shipping: mapShipping(bodyData.shipping),
+    });
 
-    await createProduct({
-      ...bodyData,
-      images,
-    } as RequestCreateProductBody);
+    const storageKeys = await uploadImage(productDraft.id);
+    if (!storageKeys) return;
+
+    await setProductImagesByKeys({
+      id: productDraft.id,
+      images: storageKeys.map((key, index) => ({
+        storageKey: key,
+        rank: index + 1,
+      })),
+    });
+
+    if (stateSubmit.state === PRODUCT_STATES.ACTIVE) {
+      await publishProduct(productDraft.id);
+    }
 
     toast.add({
       ...toastCustom.success,
-      title: 'Create product success',
+      title: stateSubmit.state === PRODUCT_STATES.ACTIVE ?
+        'Create product success' :
+        'Save draft success',
     });
     await router.push(ROUTES.ACCOUNT + ROUTES.SHOP + ROUTES.PRODUCTS);
   }
