@@ -13,8 +13,8 @@ const {
   isPending: isPendingGetDetailProduct,
 } = useGetDetailProduct(productId, {
   onResponse: ({ response }) => {
-    if (response.status === 200 && response._data?.product) {
-      marketStore.userActivities.categoryIdProductVisited = response._data.product.category
+    if (response.status === 200 && response._data?.id) {
+      marketStore.userActivities.categoryIdProductVisited = response._data.categoryId
     }
     else {
       throw showError({
@@ -38,25 +38,25 @@ const inventorySelected = ref()
       <LoadingSvg :child-class="'!w-12 !h-12'" />
     </div>
     <div
-      v-else-if="dataGetDetailProduct?.product"
+      v-else-if="dataGetDetailProduct"
       class="space-y-20"
     >
       <div class="mb-20 grid grid-cols-10">
         <DetailProductImages
-          :images="dataGetDetailProduct.product.images"
+          :images="dataGetDetailProduct.images"
           class="col-span-6"
         />
         <div class="col-span-4 space-y-6">
           <DetailProductSummary
-            :product="dataGetDetailProduct.product"
+            :product="dataGetDetailProduct"
             :inventory-selected="inventorySelected"
           />
           <DetailProductAddToCartForm
             v-model:inventory-selected="inventorySelected"
-            :product="dataGetDetailProduct.product"
+            :product="dataGetDetailProduct"
           />
           <DetailProductMoreInfo
-            :product="dataGetDetailProduct.product"
+            :product="dataGetDetailProduct"
           />
         </div>
       </div>
@@ -64,7 +64,10 @@ const inventorySelected = ref()
       <!--          :shop-id="dataGetDetailProduct.product.shop.id" -->
       <!--          class="mb-16" -->
       <!--      /> -->
-      <DetailProductMoreProductsByCategory :category-id="dataGetDetailProduct.product.category" />
+      <DetailProductMoreProductsByCategory
+        v-if="dataGetDetailProduct.categoryId"
+        :category-id="dataGetDetailProduct.categoryId"
+      />
     </div>
   </div>
 </template>

@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { ResponseGetDetailProduct } from '~/types/request-api/product'
 
-const { product } = defineProps<ResponseGetDetailProduct>()
+const { product } = defineProps<{
+  product: ResponseGetDetailProduct
+}>()
 
 const items = [
   {
@@ -23,8 +25,8 @@ const items = [
 ]
 
 const processTime = computed(() => {
-  if (product?.shipping?.process_time) {
-    return product.shipping.process_time.substring(0, product.shipping.process_time.length - 1)
+  if (product?.shipping?.processTimeLabel) {
+    return product.shipping.processTimeLabel
   }
   return ''
 })
@@ -51,7 +53,7 @@ const processTime = computed(() => {
         </div>
         <div class="flex gap-2 p-1.5">
           <UIcon name="i-material-symbols:location-on-outline" />
-          Ship from {{ product?.shipping?.country }}
+          Ship from {{ product?.shipping?.originCountry }}
         </div>
       </div>
     </template>

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ROUTES } from '~/config/enums/routes'
-import type { ResponseGetProducts_Product } from '~/types/request-api/product'
+import type { ResponseGetProductsProduct } from '~/types/request-api/product'
 import { PRODUCT_CONFIG } from '~/config/enums/product'
 
 const { product } = defineProps<{
-  product: ResponseGetProducts_Product
+  product: ResponseGetProductsProduct
 }>()
 
 const router = useRouter()

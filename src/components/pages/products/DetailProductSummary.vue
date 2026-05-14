@@ -1,72 +1,56 @@
 <script setup lang="ts">
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import type { ResponseGetDetailProduct } from '~/types/request-api/product'
-import { useGetDetailProduct } from '~/services/product'
 import { PRODUCT_VARIANT_TYPES } from '~/config/enums/product'
 import type { ElementType } from '~/types/utils'
 
-dayjs.extend(relativeTime)
-
 const props = defineProps<{
-  product: ResponseGetDetailProduct['product']
-  inventorySelected: ElementType<ResponseGetDetailProduct['product']['inventories']>
+  product: ResponseGetDetailProduct
+  inventorySelected: ElementType<ResponseGetDetailProduct['inventory']>
 }>()
 
-const route = useRoute()
-
-const {
-  data: dataGetDetailProduct,
-} = useGetDetailProduct(route.params.id as string)
-
-const percentCoupon = computed(() => {
-  const coupon = dataGetDetailProduct.value?.percent_coupon
-  if (coupon) {
-    return {
-      ...coupon,
-      endInDays: Math.abs(dayjs(coupon.start_date).diff(coupon?.end_date, 'day')),
-    }
-  }
-  return undefined
+const sortedInventory = computed(() => {
+  return props.product.inventory
+    .slice()
+    .sort((left, right) => {
+      const leftPrice = left.salePrice ?? left.price
+      const rightPrice = right.salePrice ?? right.price
+      return leftPrice - rightPrice
+    })
 })
 
-// product sale, have variants, variant not select yet
 const plusSign = computed(() => {
   if (
     !props.inventorySelected
-    && dataGetDetailProduct.value && dataGetDetailProduct.value.product.variant_type !== PRODUCT_VARIANT_TYPES.NONE
-    && percentCoupon.value
+    && props.product.variantType !== PRODUCT_VARIANT_TYPES.NONE
   ) {
     return '+'
   }
   return ''
 })
 
-// product no sale, have variants, variant not select yet
 const highestPrice = computed(() => {
   if (
     !props.inventorySelected
-    && dataGetDetailProduct.value && dataGetDetailProduct.value.product.variant_type !== PRODUCT_VARIANT_TYPES.NONE
-    && !percentCoupon.value
+    && props.product.variantType !== PRODUCT_VARIANT_TYPES.NONE
+    && sortedInventory.value.length > 1
   ) {
-    return dataGetDetailProduct.value.product.inventories[
-      dataGetDetailProduct.value.product.inventories.length - 1
-    ].price
+    const highestInventory = sortedInventory.value[sortedInventory.value.length - 1]
+    return highestInventory.salePrice ?? highestInventory.price
   }
   return ''
 })
 
-// primary price
+const baseInventory = computed(() => sortedInventory.value[0])
+
 const lowestPrice = computed(() => {
-  if (percentCoupon.value) {
-    return props.inventorySelected?.sale_price || dataGetDetailProduct.value?.product.inventories[0].sale_price
-  }
-  return props.inventorySelected?.price || dataGetDetailProduct.value?.product.inventories[0].price
+  const inventory = props.inventorySelected ?? baseInventory.value
+  return inventory ? (inventory.salePrice ?? inventory.price) : ''
 })
 
 const originPrice = computed(() => {
-  if (percentCoupon.value) {
-    return props.inventorySelected?.price || dataGetDetailProduct.value?.product.inventories[0].price
+  const inventory = props.inventorySelected ?? baseInventory.value
+  if (inventory?.salePrice !== undefined) {
+    return inventory.price
   }
   return ''
 })
@@ -85,7 +69,7 @@ const originPrice = computed(() => {
         <div class="flex items-center space-x-3">
           <div
             class="price"
-            :class="percentCoupon && 'text-green-700'"
+            :class="originPrice && 'text-green-700'"
           >
             {{ convertCurrency(lowestPrice) }}{{ plusSign }}
             <span v-if="highestPrice">- {{ convertCurrency(highestPrice) }}</span>
@@ -96,14 +80,6 @@ const originPrice = computed(() => {
           >
             {{ convertCurrency(originPrice) }}
           </div>
-        </div>
-        <div>
-          <UBadge
-            v-if="percentCoupon && percentCoupon.percent_off"
-            color="green"
-          >
-            {{ percentCoupon.percent_off }}% off
-          </UBadge>
         </div>
       </div>
       <!--      <div -->

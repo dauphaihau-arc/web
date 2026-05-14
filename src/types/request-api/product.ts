@@ -1,12 +1,5 @@
 import type { Category } from '~/types/category';
 import type { RequestGetListParams } from '~/types/common';
-import type { Shop } from '~/types/shop';
-import type {
-  Product,
-  ProductInventory,
-  ProductShipping
-} from '~/types/product';
-import type { Coupon, PercentOff } from '~/types/coupon';
 
 // region get products
 export type GetProductsParams = Partial<{
@@ -19,7 +12,7 @@ export type GetProductsParams = Partial<{
   order: string
 }> & RequestGetListParams;
 
-export type ResponseGetProducts_Product = {
+export type ResponseGetProductsProduct = {
   id: string
   shop: {
     id: string
@@ -44,7 +37,7 @@ export type ResponseGetProducts_Product = {
 };
 
 export type ResponseGetProducts = {
-  items: ResponseGetProducts_Product[]
+  items: ResponseGetProductsProduct[]
   meta: {
     page: number
     limit: number
@@ -56,22 +49,54 @@ export type ResponseGetProducts = {
 };
 // endregion
 
-// region get detail product
-export type ResponseGetDetailProduct_Inventory = Pick<ProductInventory, 'id' | 'stock' | 'price' | 'variant'> & {
-  sale_price: ProductInventory['price']
-};
-
-type DetailProduct = {
-  shop: Pick<Shop, 'id' | 'shop_name'>
-  shipping: Pick<ProductShipping, 'country' | 'process_time'>
-  variant_group_name?: string
-  variant_sub_group_name?: string
-  inventories: ResponseGetDetailProduct_Inventory[]
-} & Pick<Product, 'id' | 'title' | 'description' | 'variant_type' | 'images' | 'category'>;
-
 export type ResponseGetDetailProduct = {
-  product: DetailProduct
-  percent_coupon?: Pick<Coupon, 'start_date' | 'end_date'> & Pick<PercentOff, 'percent_off'>
-  free_ship_coupon?: Pick<Coupon, 'start_date' | 'end_date'>
+  id: string
+  shop: {
+    id: string
+    publicId?: string
+    shopName: string
+  }
+  categoryId?: Category['id']
+  title: string
+  slug: string
+  description: string
+  whoMade: string
+  isDigital: boolean
+  variantType?: string
+  variantGroupName?: string
+  variantSubGroupName?: string
+  images: Array<{
+    id: string
+    storageKey: string
+    url?: string
+    rank: number
+  }>
+  variants: Array<{
+    id: string
+    name: string
+    optionValue1?: string
+    optionValue2?: string
+    imageStorageKey?: string
+    rank: number
+  }>
+  inventory: Array<{
+    id: string
+    productVariantId?: string
+    sku?: string
+    stock: number
+    price: number
+    salePrice?: number
+  }>
+  shipping?: {
+    originCountry: string
+    processTimeLabel: string
+    destinations: Array<{
+      id: string
+      countryCode: string
+      deliveryTimeLabel: string
+      service: string
+      chargeType: string
+      rank: number
+    }>
+  }
 };
-// endregion

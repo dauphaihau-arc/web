@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import type { Product } from '~/types/product'
+import type { ResponseGetDetailProduct } from '~/types/request-api/product'
 
 const { images } = defineProps<{
-  images: Product['images']
+  images: ResponseGetDetailProduct['images']
 }>()
 
 const selectedImg = ref(0)
 
 const image_url_selected = computed(() => {
-  return `domainAwsS3/${images[selectedImg.value].relative_url}`
+  return images[selectedImg.value]?.url
 })
 
 const onSelectPrevImg = () => {
@@ -35,7 +35,7 @@ const onSelectNextImg = () => {
       >
         <NuxtImg
           preload
-          :src="`domainAwsS3/${image.relative_url}`"
+          :src="image.url"
           width="100"
           height="100"
           :class="[
