@@ -15,10 +15,10 @@ const redirectByCategory = (rootCategory: Category) => {
 </script>
 
 <template>
-  <div v-if="dataRootCategories?.categories && dataRootCategories.categories.length > 0">
+  <div v-if="dataRootCategories && dataRootCategories.length > 0">
     <div class="flex gap-3">
       <div
-        v-for="(cg, index) of dataRootCategories.categories"
+        v-for="(cg, index) of dataRootCategories"
         :key="index"
       >
         <UButton

@@ -3,7 +3,7 @@ import { useGetProductsByMultiQueries } from '~/services/product'
 import type { Category } from '~/types/category'
 
 const groupSkeletons = 2
-const limit = 7
+const limit = 6
 const marketStore = useMarketStore()
 
 const categories = new Map<Category['id'], Category['name']>()
@@ -14,7 +14,7 @@ const queries = computed(() => {
       categories.set(cg.id, cg.name)
       return {
         limit,
-        category_id: cg.id,
+        categoryId: cg.id,
       }
     })
   }
@@ -87,7 +87,7 @@ const subCategories = computed(() => {
         v-for="(cg, i) of subCategories"
         :key="i"
       >
-        <div v-if="cg.results && cg.results.length > 0">
+        <div v-if="cg.items && cg.items.length > 0">
           <div class="mb-3">
             <h3 class="text-lg font-medium">
               {{ cg.categoryName }}
@@ -98,19 +98,11 @@ const subCategories = computed(() => {
           </div>
 
           <div class="grid grid-cols-6 gap-6">
-            <HomeProductCard
-              :product="cg.results[0]"
-              class="col-span-2"
-            />
-            <div class="col-span-4">
-              <div class="grid grid-cols-3 gap-6">
-                <div
-                  v-for="product of cg.results.slice(1)"
-                  :key="product.id"
-                >
-                  <HomeProductCard :product="product" />
-                </div>
-              </div>
+            <div
+              v-for="product of cg.items"
+              :key="product.id"
+            >
+              <HomeProductCard :product="product" />
             </div>
           </div>
         </div>

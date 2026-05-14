@@ -69,7 +69,7 @@ export function useGetCategories(
 }
 
 export function useGetRootCategories() {
-  return useQuery({
+  return useQuery<ResponseGetCategories>({
     queryKey: ['get-root-categories'],
     queryFn: () => {
       return useCustomFetch.get<ResponseGetCategories>(RESOURCES.CATEGORIES);

@@ -8,7 +8,7 @@ const marketStore = useMarketStore()
 const params = computed(() => {
   if (marketStore.userActivities?.rootCategoryProductVisited?.id) {
     return {
-      parent: marketStore.userActivities?.rootCategoryProductVisited.id,
+      parentId: marketStore.userActivities?.rootCategoryProductVisited.id,
     }
   }
   return undefined
@@ -65,7 +65,7 @@ const redirectPage = (subCategory: Category) => {
         />
       </div>
     </div>
-    <div v-else-if="dataGetCategories?.categories && dataGetCategories.categories.length > 0">
+    <div v-else-if="dataGetCategories && dataGetCategories.length > 0">
       <div class="mb-6">
         <h3 class="text-lg font-medium">
           Recommended categories for you
@@ -76,16 +76,16 @@ const redirectPage = (subCategory: Category) => {
       </div>
       <div class="flex gap-16">
         <div
-          v-for="cg of dataGetCategories.categories"
+          v-for="cg of dataGetCategories"
           :key="cg.id"
         >
           <div @click="() => redirectPage(cg)">
-            <div v-if="cg?.relative_url_image">
+            <div v-if="cg?.imageUrl">
               <NuxtImg
-                :src="`domainAwsS3/${cg.relative_url_image}`"
+                :src="cg.imageUrl"
                 width="100"
                 height="100"
-                class="cursor-pointer rounded-full"
+                class="size-[100px] cursor-pointer rounded-full object-cover"
               />
             </div>
             <div

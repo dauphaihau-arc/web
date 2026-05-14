@@ -7,7 +7,7 @@ const marketStore = useMarketStore()
 const params = computed(() => {
   if (marketStore.userActivities.categoryIdProductVisited) {
     return {
-      category_id: marketStore.userActivities.categoryIdProductVisited,
+      categoryId: marketStore.userActivities.categoryIdProductVisited,
       limit,
     }
   }
@@ -46,12 +46,9 @@ watch(error, (value) => {
             <USkeleton class="h-[160px]" />
           </div>
         </div>
-        <div
-          v-else-if="data?.results && data.results.length > 0"
-          class="grid grid-cols-5 gap-4"
-        >
+        <div v-else-if="data?.items && data.items.length > 0" class="grid grid-cols-5 gap-4">
           <div
-            v-for="(product, i) of data.results"
+            v-for="(product, i) of data.items"
             :key="i"
           >
             <HomeProductCard :product="product" />

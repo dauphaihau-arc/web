@@ -36,20 +36,20 @@ const productWhoMadeOpts = [
 
 const defaultValuesState = computed(() => {
   const base = {
-    is_digital: 'all',
+    isDigital: 'all',
     price: 'all',
-    who_made: 'all',
+    whoMade: 'all',
   }
 
-  const is_digital = route.query['is_digital']
-  if (is_digital) {
-    const found = isDigitalOpts.find(item => item.value.toString() === is_digital)
-    base.is_digital = (found?.value && found.value) || 'all'
+  const isDigital = route.query.isDigital
+  if (isDigital) {
+    const found = isDigitalOpts.find(item => item.value.toString() === isDigital)
+    base.isDigital = (found?.value && found.value) || 'all'
   }
-  const who_made = route.query['who_made']
-  if (who_made) {
-    const found = productWhoMadeOpts.find(item => item.value === who_made)
-    base.who_made = (found?.value && found.value) || 'all'
+  const whoMade = route.query.whoMade
+  if (whoMade) {
+    const found = productWhoMadeOpts.find(item => item.value === whoMade)
+    base.whoMade = (found?.value && found.value) || 'all'
   }
   // const order = route.query['order'];
   // if (order) {
@@ -83,22 +83,22 @@ watch(state, () => {
   <div>
     <UFormGroup
       label="Item format"
-      name="is_digital"
+      name="isDigital"
       class="mb-4"
     >
       <RadioGroupInput
-        v-model="state.is_digital"
+        v-model="state.isDigital"
         :options="isDigitalOpts"
       />
     </UFormGroup>
 
     <UFormGroup
       label="Item type"
-      name="who_made"
+      name="whoMade"
       class="mb-4"
     >
       <RadioGroupInput
-        v-model="state.who_made"
+        v-model="state.whoMade"
         :options="productWhoMadeOpts"
       />
     </UFormGroup>

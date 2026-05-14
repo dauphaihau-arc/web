@@ -12,16 +12,15 @@ const state = reactive({
   search: '',
 })
 
-watch(() => [route.query.s, props.show], () => {
-  if (!route.query?.s || !props.show) {
+watch(() => [route.query.search, props.show], () => {
+  if (!route.query?.search || !props.show) {
     state.search = ''
   }
 })
 
 const params = computed(() => ({
   limit,
-  title: state.search,
-  select: 'title',
+  search: state.search,
 }))
 
 const {
@@ -35,7 +34,7 @@ const redirectSearch = () => {
   router.push({
     path: ROUTES.SEARCH,
     query: {
-      s: state.search,
+      search: state.search,
     },
   })
 }
@@ -77,7 +76,7 @@ function highlightText(text: string) {
 
         <transition name="slide-down">
           <div
-            v-if="dataGetProducts?.results && dataGetProducts.results.length > 0"
+            v-if="dataGetProducts?.items && dataGetProducts.items.length > 0"
             class="mt-8"
           >
             <div class="mb-2 ml-4 text-[12px]  text-gray-500">
@@ -86,7 +85,7 @@ function highlightText(text: string) {
 
             <div class="ml-2 flex flex-col gap-1">
               <div
-                v-for="prod of dataGetProducts.results"
+                v-for="prod of dataGetProducts.items"
                 :key="prod.id"
               >
                 <div

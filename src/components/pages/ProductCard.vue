@@ -8,14 +8,6 @@ const props = defineProps<{
 }>()
 
 const router = useRouter()
-
-const freeShipCoupon = computed(() => {
-  return props.product?.free_ship_coupon
-})
-
-const salePercentCoupon = computed(() => {
-  return props.product?.percent_coupon
-})
 </script>
 
 <template>
@@ -24,10 +16,8 @@ const salePercentCoupon = computed(() => {
     @click="() => router.push(`${ROUTES.PRODUCTS}/${props.product?.id}`)"
   >
     <NuxtImg
-      :src="`domainAwsS3/${props.product?.image_relative_url}`"
-      width="200"
-      height="200"
-      class="size-full rounded"
+      :src="props.product.image?.url"
+      class="w-[200px] h-[200px] size-full rounded"
     />
 
     <div class="space-y-1">
@@ -36,33 +26,14 @@ const salePercentCoupon = computed(() => {
       </h1>
       <div class="flex flex-wrap items-center gap-2">
         <p class="text-base font-medium text-customGray-950">
-          {{ convertCurrency(props.product.inventory?.sale_price || props.product.inventory?.price) }}
-        </p>
-        <p
-          v-if="salePercentCoupon"
-          class="text-sm font-medium text-customGray-950 line-through decoration-1"
-        >
-          {{ convertCurrency(props.product.inventory.price) }}
-        </p>
-        <p
-          v-if="salePercentCoupon"
-          class="text-sm text-green-500"
-        >
-          ({{ salePercentCoupon.percent_off }}% off)
+          {{ convertCurrency(props.product.inventory?.salePrice || props.product.inventory?.price) }}
         </p>
       </div>
       <p class="text-sm text-customGray-800">
-        {{ props.product?.shop.shop_name }}
+        {{ props.product?.shop.shopName }}
       </p>
-      <UBadge
-        v-if="freeShipCoupon"
-        color="green"
-        variant="solid"
-      >
-        Free shipping
-      </UBadge>
       <p
-        v-if="props.product.inventory.stock < PRODUCT_CONFIG.LOW_STOCK"
+        v-if="props.product.inventory && props.product.inventory.stock < PRODUCT_CONFIG.LOW_STOCK"
         class="text-[13px] text-red-600"
       >
         Only {{ props.product.inventory.stock }} left - order soon

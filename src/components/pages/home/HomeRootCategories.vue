@@ -15,22 +15,20 @@ const redirectByCategory = (category: Category) => {
 </script>
 
 <template>
-  <div v-if="data?.categories && data.categories.length > 0">
+  <div v-if="data && data.length > 0">
     <h3 class="mb-6 text-center text-3xl font-normal">
       Shop by category
     </h3>
     <div class="flex justify-center gap-8">
       <div
-        v-for="(cg, index) of data.categories"
+        v-for="(cg, index) of data"
         :key="index"
       >
         <div @click="() => redirectByCategory(cg)">
           <NuxtImg
-            v-if="cg?.relative_url_image"
-            :src="`domainAwsS3/${cg.relative_url_image}`"
-            width="140"
-            height="210"
-            class="cursor-pointer rounded"
+            v-if="cg?.imageUrl"
+            :src="cg.imageUrl"
+            class="h-[210px] w-[140px] cursor-pointer rounded object-cover"
           />
           <div
             class="mt-2 cursor-pointer text-center text-[13px] font-semibold capitalize"

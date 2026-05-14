@@ -15,7 +15,7 @@ const params = computed(() => {
     return undefined
   }
   let defaultParams = {
-    category_id: category.id,
+    categoryId: category.id,
     page: page.value,
     limit,
   }
@@ -38,7 +38,7 @@ watch(() => page.value, () => {
 <template>
   <div class="pt-12">
     <div class="mb-4 flex items-center justify-between">
-      <CategoriesBreadcrumb :total-products="dataGetProducts?.total_results || 0" />
+      <CategoriesBreadcrumb :total-products="dataGetProducts?.meta.total || 0" />
       <SortProductsBy />
     </div>
 
@@ -66,25 +66,25 @@ watch(() => page.value, () => {
       </div>
       <div v-else>
         <div
-          v-if="dataGetProducts?.results"
+          v-if="dataGetProducts?.items"
           class="mb-16 grid grid-cols-4 gap-x-3 gap-y-8"
         >
           <div
-            v-for="product of dataGetProducts.results"
+            v-for="product of dataGetProducts.items"
             :key="product.id"
           >
             <ProductCard :product="product" />
           </div>
         </div>
         <div
-          v-if="dataGetProducts?.total_results && dataGetProducts.total_results > limit"
+          v-if="dataGetProducts?.meta.total && dataGetProducts.meta.total > limit"
           class="flex justify-center"
         >
           <UPagination
             v-model="page"
             size="xl"
             :page-count="limit"
-            :total="dataGetProducts?.total_results ?? 0"
+            :total="dataGetProducts?.meta.total ?? 0"
             :inactive-button="{ color: 'gray' }"
           />
         </div>

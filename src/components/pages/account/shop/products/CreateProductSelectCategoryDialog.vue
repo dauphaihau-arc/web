@@ -10,7 +10,7 @@ const state = reactive({
   input: '',
   categoriesName: [] as string[],
   name: '' as Category['name'],
-  parent: null as Category['parent'],
+  parentId: null as Category['id'] | null,
   isOpen: false,
   rootCategories: [] as Category[],
   requiredCategories: [],
@@ -25,26 +25,26 @@ const subCategories = ref<{
 }>({})
 
 const params = computed(() => ({
-  parent: state.parent,
+  parentId: state.parentId ?? undefined,
 }))
 
 const { isPending, data } = useGetCategories(params.value)
 
 onMounted(() => {
   if (!state.rootCategories.length && data.value) {
-    state.rootCategories = data.value.categories
+    state.rootCategories = data.value
   }
 })
 
 watch(() => data.value, () => {
   if (data.value) {
-    subCategories.value[state.parent as string] = {
+    subCategories.value[state.parentId as string] = {
       name: state.name,
-      categories: data.value.categories,
+      categories: data.value,
     }
     state.categoriesName = Object.values(subCategories.value).map(item => item.name)
-    // if (!data.value.has_more && state.requiredCategories.length === 0) {
-    //   state.requiredCategories = data.value.categories.map(cg => cg.id);
+    // if (data.value.length === 0 && state.requiredCategories.length === 0) {
+    //   state.requiredCategories = data.value.map(cg => cg.id);
     //   console.log('state-required-categories', state.requiredCategories);
     // }
   }
@@ -52,27 +52,27 @@ watch(() => data.value, () => {
 
 const onSelectRootCategory = ({ id: categoryId, name }: Category) => {
   subCategories.value = {}
-  state.parent = categoryId
+  state.parentId = categoryId
   state.name = name
   state.categoriesName.push(name)
 }
 
-const onSelectSubCategory = ({ parent, id: categoryId, name }: Category) => {
-  if (categoryId === state.parent) {
+const onSelectSubCategory = ({ parentId, id: categoryId, name }: Category) => {
+  if (categoryId === state.parentId) {
     return
   }
-  subCategories.value[parent as string].categories.forEach((subCategory) => {
+  subCategories.value[parentId as string].categories.forEach((subCategory) => {
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete subCategories.value[subCategory.id]
   })
-  state.parent = categoryId
+  state.parentId = categoryId
   state.name = name
 }
 
 const onSave = () => {
   state.input = state.categoriesName[state.categoriesName.length - 1]
   state.isOpen = false
-  emit('onChangeCategory', state.parent as string)
+  emit('onChangeCategory', state.parentId as string)
 }
 </script>
 
@@ -224,7 +224,7 @@ const onSave = () => {
             Cancel
           </UButton>
           <UButton
-            :disabled="data?.has_more ?? true"
+            :disabled="(data?.length ?? 1) > 0"
             size="sm"
             @click="onSave"
           >

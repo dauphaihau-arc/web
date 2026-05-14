@@ -13,7 +13,7 @@ const params = computed(() => {
     return undefined
   }
   return {
-    parent: category.id,
+    parentId: category.id,
   }
 })
 
@@ -24,7 +24,7 @@ const {
 
 onMounted(() => {
   if (dataCategories.value) {
-    marketStore.userActivities.subCategoriesLastVisit = dataCategories.value.categories.slice(0, 2)
+    marketStore.userActivities.subCategoriesLastVisit = dataCategories.value.slice(0, 2)
   }
 })
 
@@ -50,10 +50,7 @@ const redirectPage = (category: Category) => {
     </div>
     <div v-else>
       <div class="flex flex-col gap-2">
-        <div
-          v-for="cg of dataCategories?.categories"
-          :key="cg.id"
-        >
+        <div v-for="cg of dataCategories" :key="cg.id">
           <div
             class="cursor-pointer text-base font-medium capitalize"
             @click="() => redirectPage(cg)"

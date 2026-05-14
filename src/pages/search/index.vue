@@ -5,7 +5,7 @@ definePageMeta({ layout: 'market' })
 
 const route = useRoute()
 
-if (!route.query?.s) {
+if (!route.query?.search) {
   throw showError({
     statusCode: 404,
     statusMessage: 'Page Not Found',
@@ -20,7 +20,7 @@ const queryParams = computed(() => {
   let defaultParams = {
     page: page.value,
     limit,
-    title: route.query.s as string,
+    search: route.query.search as string,
   }
   if (route.query) {
     defaultParams = { ...defaultParams, ...route.query }
@@ -34,7 +34,7 @@ const {
   isPending: isPendingGetProducts,
 } = useGetProducts(queryParams)
 
-watch(() => route.query.s, () => {
+watch(() => route.query.search, () => {
   refetch()
 })
 </script>
@@ -60,10 +60,10 @@ watch(() => route.query.s, () => {
         v-else
         class="pb-20"
       >
-        <div v-if="dataGetProducts?.results">
+        <div v-if="dataGetProducts?.items">
           <div class="mb-6 grid grid-cols-5 gap-3">
             <div
-              v-for="product of dataGetProducts.results"
+              v-for="product of dataGetProducts.items"
               :key="product.id"
             >
               <ProductCard :product="product" />
@@ -71,14 +71,14 @@ watch(() => route.query.s, () => {
           </div>
         </div>
         <div
-          v-if="dataGetProducts?.total_results && dataGetProducts.total_results > limit"
+          v-if="dataGetProducts?.meta.total && dataGetProducts.meta.total > limit"
           class="flex justify-center"
         >
           <UPagination
             v-model="page"
             :page-count="limit"
             size="xl"
-            :total="dataGetProducts?.total_results ?? 0"
+            :total="dataGetProducts?.meta.total ?? 0"
             :inactive-button="{ color: 'gray' }"
           />
         </div>

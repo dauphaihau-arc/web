@@ -9,7 +9,7 @@ const { categoryId } = defineProps<{
 }>()
 
 const queryParams = computed(() => ({
-  category_id: categoryId,
+  categoryId,
   limit,
 }))
 
@@ -22,11 +22,11 @@ const { data } = useGetProducts(queryParams)
       You may also like
     </h3>
     <div
-      v-if="data?.results"
+      v-if="data?.items"
       class="mb-6 grid grid-cols-6 gap-4"
     >
       <div
-        v-for="(product, i) of data.results"
+        v-for="(product, i) of data.items"
         :key="i"
       >
         <DetailProductCard :product="product" />

@@ -10,7 +10,7 @@ export function useGetProducts(
   options?: Partial<UseQueryOptions<ResponseGetProducts>>
 ) {
   return useQuery<ResponseGetProducts>({
-    enabled: !!params,
+    enabled: !!params.value,
     ...options,
     queryKey: ['get-products', params],
     queryFn: () => {
@@ -42,7 +42,7 @@ export function useGetDetailProduct(
 export function useGetProductsByMultiQueries(queries?: GetProductsParams[]) {
   return useQueries({
     queries: queries?.map(qp => ({
-      queryKey: [qp.category_id],
+      queryKey: [qp.categoryId],
       queryFn: async () => {
         const res = await useCustomFetch.get<ResponseGetProducts>(
           RESOURCES.PRODUCTS,
@@ -50,7 +50,7 @@ export function useGetProductsByMultiQueries(queries?: GetProductsParams[]) {
         );
         return {
           ...res,
-          categoryId: qp.category_id,
+          categoryId: qp.categoryId,
         };
       },
     })) ?? [],
