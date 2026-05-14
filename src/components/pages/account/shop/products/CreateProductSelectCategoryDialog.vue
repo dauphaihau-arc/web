@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { Category } from '~/types/category';
-import { useGetCategories } from '~/services/category';
+import type { Category } from '~/types/category'
+import { useGetCategories } from '~/services/category'
 
 const emit = defineEmits<
   { (e: 'onChangeCategory', value: Category['id']): void }
->();
+>()
 
 const state = reactive({
   input: '',
@@ -15,65 +15,65 @@ const state = reactive({
   rootCategories: [] as Category[],
   requiredCategories: [],
   categoryToEmit: '',
-});
+})
 
 const subCategories = ref<{
   [key: string]: {
     name: Category['name']
     categories: Category[]
   }
-}>({});
+}>({})
 
 const params = computed(() => ({
   parent: state.parent,
-}));
+}))
 
-const { isPending, data } = useGetCategories(params.value);
+const { isPending, data } = useGetCategories(params.value)
 
 onMounted(() => {
   if (!state.rootCategories.length && data.value) {
-    state.rootCategories = data.value.categories;
+    state.rootCategories = data.value.categories
   }
-});
+})
 
 watch(() => data.value, () => {
   if (data.value) {
     subCategories.value[state.parent as string] = {
       name: state.name,
       categories: data.value.categories,
-    };
-    state.categoriesName = Object.values(subCategories.value).map(item => item.name);
+    }
+    state.categoriesName = Object.values(subCategories.value).map(item => item.name)
     // if (!data.value.has_more && state.requiredCategories.length === 0) {
     //   state.requiredCategories = data.value.categories.map(cg => cg.id);
     //   console.log('state-required-categories', state.requiredCategories);
     // }
   }
-});
+})
 
 const onSelectRootCategory = ({ id: categoryId, name }: Category) => {
-  subCategories.value = {};
-  state.parent = categoryId;
-  state.name = name;
-  state.categoriesName.push(name);
-};
+  subCategories.value = {}
+  state.parent = categoryId
+  state.name = name
+  state.categoriesName.push(name)
+}
 
 const onSelectSubCategory = ({ parent, id: categoryId, name }: Category) => {
   if (categoryId === state.parent) {
-    return;
+    return
   }
   subCategories.value[parent as string].categories.forEach((subCategory) => {
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-    delete subCategories.value[subCategory.id];
-  });
-  state.parent = categoryId;
-  state.name = name;
-};
+    delete subCategories.value[subCategory.id]
+  })
+  state.parent = categoryId
+  state.name = name
+}
 
 const onSave = () => {
-  state.input = state.categoriesName[state.categoriesName.length - 1];
-  state.isOpen = false;
-  emit('onChangeCategory', state.parent as string);
-};
+  state.input = state.categoriesName[state.categoriesName.length - 1]
+  state.isOpen = false
+  emit('onChangeCategory', state.parent as string)
+}
 </script>
 
 <template>

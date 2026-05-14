@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { UserAddress } from '~/types/user-address';
-import { useDeleteUserAddress, useGetUserAddresses } from '~/services/user';
-import UpdateUserAddressDialog from '~/components/dialogs/UpdateUserAddressDialog.vue';
-import { CreateUserAddressDialog } from '#components';
+import type { UserAddress } from '~/types/user-address'
+import { useDeleteUserAddress, useGetUserAddresses } from '~/services/user'
+import UpdateUserAddressDialog from '~/components/dialogs/UpdateUserAddressDialog.vue'
+import { CreateUserAddressDialog } from '#components'
 
-definePageMeta({ layout: 'market', middleware: ['auth'] });
+definePageMeta({ layout: 'market', middleware: ['auth'] })
 
-const dialog = useModal();
+const dialog = useModal()
 
 const {
   isPending: isPendingGetUserAddresses,
@@ -15,26 +15,26 @@ const {
 } = useGetUserAddresses({
   select: '-user,-created_at,-updated_at',
   sortBy: '-is_primary',
-});
+})
 
 const {
   isPending: isPendingDeleteUserAddresses,
   mutate: deleteUserAddress,
 } = useDeleteUserAddress({
   onSuccess() {
-    refetch();
+    refetch()
   },
-});
+})
 
 const showUpdateDialog = (item: UserAddress) => {
   dialog.open(UpdateUserAddressDialog, {
     dataEdit: item,
-  });
-};
+  })
+}
 
 const showCreateDialog = () => {
-  dialog.open(CreateUserAddressDialog);
-};
+  dialog.open(CreateUserAddressDialog)
+}
 </script>
 
 <template>

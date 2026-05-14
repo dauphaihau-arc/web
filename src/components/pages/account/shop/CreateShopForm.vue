@@ -1,40 +1,40 @@
 <script setup lang="ts">
-import type { FormSubmitEvent } from '#ui/types';
-import { shopSchema } from '~/schemas/shop.schema';
-import type { Shop } from '~/types/shop';
-import { ROUTES } from '~/config/enums/routes';
-import { toastCustom } from '~/config/toast';
-import { useCreateShop } from '~/services/shop';
+import type { FormSubmitEvent } from '#ui/types'
+import { shopSchema } from '~/schemas/shop.schema'
+import type { Shop } from '~/types/shop'
+import { ROUTES } from '~/config/enums/routes'
+import { toastCustom } from '~/config/toast'
+import { useCreateShop } from '~/services/shop'
 
-const toast = useToast();
+const toast = useToast()
 
-const formRef = ref();
-const unknownErrorMsg = ref('');
+const formRef = ref()
+const unknownErrorMsg = ref('')
 
 const stateSubmit = reactive({
   shop_name: '',
-});
+})
 
 const {
   isPending: isPendingCreateShop,
   mutateAsync: createShop,
-} = useCreateShop();
+} = useCreateShop()
 
 async function onSubmit(event: FormSubmitEvent<{ shop_name: Shop['shop_name'] }>) {
-  formRef.value.clear();
+  formRef.value.clear()
   try {
-    await createShop(event.data);
+    await createShop(event.data)
     toast.add({
       ...toastCustom.success,
       title: 'Create shop success',
-    });
-    navigateTo(`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.DASHBOARD}`);
+    })
+    navigateTo(`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.DASHBOARD}`)
   }
   catch (error) {
     toast.add({
       ...toastCustom.error,
       title: 'Unknown error from server',
-    });
+    })
   }
 }
 </script>

@@ -1,28 +1,28 @@
 <script lang="ts" setup>
-import type { DropdownItem } from '#ui/types';
-import { ROUTES } from '~/config/enums/routes';
-import { PRODUCT_VARIANT_TYPES } from '~/config/enums/product';
-import type { Product } from '~/types/product';
-import type { ElementType } from '~/types/utils';
-import { useShopDeleteProduct, useShopGetProducts } from '~/services/shop';
+import type { DropdownItem } from '#ui/types'
+import { ROUTES } from '~/config/enums/routes'
+import { PRODUCT_VARIANT_TYPES } from '~/config/enums/product'
+import type { Product } from '~/types/product'
+import type { ElementType } from '~/types/utils'
+import { useShopDeleteProduct, useShopGetProducts } from '~/services/shop'
 
-definePageMeta({ layout: 'shop', middleware: ['auth'] });
+definePageMeta({ layout: 'shop', middleware: ['auth'] })
 
-const selected = ref([]);
-const pageCount = 10;
-const page = ref(1);
+const selected = ref([])
+const pageCount = 10
+const page = ref(1)
 
 const params = computed(() => ({
   page: page.value,
-}));
+}))
 
 const {
   isPending: isPendingShopGetProducts,
   data: dataShopGetProducts,
   refetch,
-} = useShopGetProducts(params);
+} = useShopGetProducts(params)
 
-const { mutateAsync: deleteProduct } = useShopDeleteProduct();
+const { mutateAsync: deleteProduct } = useShopDeleteProduct()
 
 const columns = [
   {
@@ -49,7 +49,7 @@ const columns = [
     key: 'actions',
     class: 'text-center',
   },
-];
+]
 
 const rows = computed(() => {
   if (dataShopGetProducts.value?.results && dataShopGetProducts.value.results.length > 0) {
@@ -59,10 +59,10 @@ const rows = computed(() => {
       image_url: `domainAwsS3/${product?.image_relative_url}`,
       inventories: product.inventories,
       variant_type: product.variant_type,
-    }));
+    }))
   }
-  return [];
-});
+  return []
+})
 
 const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem[][] => [
   [
@@ -84,7 +84,7 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
       click: () => {
         navigateTo(`${ROUTES.PRODUCTS}/${row.id}`, {
           open: { target: '_blank' },
-        });
+        })
       },
     },
   ],
@@ -95,11 +95,11 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
       click: () => removeProduct(row.id),
     },
   ],
-];
+]
 
 async function removeProduct(id: Product['id']) {
-  await deleteProduct(id);
-  await refetch();
+  await deleteProduct(id)
+  await refetch()
 }
 </script>
 

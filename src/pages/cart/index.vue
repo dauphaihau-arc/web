@@ -1,18 +1,18 @@
 <script lang="ts" setup>
-import { useCartStore } from '~/stores/cart';
-import { useGetCart } from '~/services/cart';
+import { useCartStore } from '~/stores/cart'
+import { useGetCart } from '~/services/cart'
 
-definePageMeta({ layout: 'market', middleware: ['auth'] });
+definePageMeta({ layout: 'market', middleware: ['auth'] })
 
-const cartStore = useCartStore();
+const cartStore = useCartStore()
 
-const wrapperSummaryOrderRef = ref<HTMLDivElement | null>(null);
-const contentSummaryOrderRef = ref<HTMLDivElement | null>(null);
+const wrapperSummaryOrderRef = ref<HTMLDivElement | null>(null)
+const contentSummaryOrderRef = ref<HTMLDivElement | null>(null)
 
 const {
   isPending: isPendingGetCart,
   data: dataGetCart,
-} = useGetCart();
+} = useGetCart()
 
 watch(dataGetCart, () => {
   if (cartStore.additionInfoShopCarts.size === 0 && dataGetCart.value?.cart?.shop_carts) {
@@ -20,39 +20,39 @@ watch(dataGetCart, () => {
       cartStore.additionInfoShopCarts.set(item.shop.id, {
         promo_codes: [],
         note: '',
-      });
-    });
+      })
+    })
   }
-}, { immediate: true });
+}, { immediate: true })
 
 function onScroll() {
-  const scrollTop = window.scrollY;
-  const viewportHeight = window.innerHeight;
+  const scrollTop = window.scrollY
+  const viewportHeight = window.innerHeight
 
   if (!wrapperSummaryOrderRef.value || !contentSummaryOrderRef.value) {
-    return;
+    return
   }
 
-  const wrapperContentTop = wrapperSummaryOrderRef.value?.getBoundingClientRect()?.top + window.pageYOffset;
-  const contentHeight = contentSummaryOrderRef.value?.getBoundingClientRect().height;
+  const wrapperContentTop = wrapperSummaryOrderRef.value?.getBoundingClientRect()?.top + window.pageYOffset
+  const contentHeight = contentSummaryOrderRef.value?.getBoundingClientRect().height
 
   if (contentHeight && scrollTop >= contentHeight - viewportHeight + wrapperContentTop) {
-    contentSummaryOrderRef.value.style.transform = `translateY(-${(contentHeight - viewportHeight + wrapperContentTop)}px)`;
-    contentSummaryOrderRef.value.style.position = 'fixed';
+    contentSummaryOrderRef.value.style.transform = `translateY(-${(contentHeight - viewportHeight + wrapperContentTop)}px)`
+    contentSummaryOrderRef.value.style.position = 'fixed'
   }
   else {
-    contentSummaryOrderRef.value.style.transform = '';
-    contentSummaryOrderRef.value.style.position = '';
+    contentSummaryOrderRef.value.style.transform = ''
+    contentSummaryOrderRef.value.style.position = ''
   }
 }
 
 onMounted(() => {
-  window.addEventListener('scroll', onScroll);
-});
+  window.addEventListener('scroll', onScroll)
+})
 
 onBeforeUnmount(() => {
-  window.removeEventListener('scroll', onScroll);
-});
+  window.removeEventListener('scroll', onScroll)
+})
 </script>
 
 <template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const { locale } = useI18n();
-const switchLocalePath = useSwitchLocalePath();
+const { locale } = useI18n()
+const switchLocalePath = useSwitchLocalePath()
 </script>
 
 <template>

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-const { status, waitForBackend } = useBackendStatus();
+const { status, waitForBackend } = useBackendStatus()
 
-const isBackendPending = computed(() => ['checking', 'waking'].includes(status.value));
-const isBackendError = computed(() => status.value === 'error');
+const isBackendPending = computed(() => ['checking', 'waking'].includes(status.value))
+const isBackendError = computed(() => status.value === 'error')
 
 const retryBackend = () => {
-  void waitForBackend();
-};
+  void waitForBackend()
+}
 </script>
 
 <template>

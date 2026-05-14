@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import type { Product } from '~/types/product';
-import { useShopGetProducts } from '~/services/shop';
-import type { ShopGetProductsQueryParams } from '~/types/request-api/shop-product';
+import type { Product } from '~/types/product'
+import { useShopGetProducts } from '~/services/shop'
+import type { ShopGetProductsQueryParams } from '~/types/request-api/shop-product'
 
-const productIdsModel = defineModel<Product['id'][]>();
+const productIdsModel = defineModel<Product['id'][]>()
 
-const isOpen = ref(false);
-const selectedRows = ref<Product[]>([]);
-const page = ref(1);
-const search = ref();
+const isOpen = ref(false)
+const selectedRows = ref<Product[]>([])
+const page = ref(1)
+const search = ref()
 
 const params = ref<ShopGetProductsQueryParams>({
   page: page.value,
   limit: 5,
-});
+})
 
 const {
   isPending: isPendingShopGetProducts,
   data: dataShopGetProducts,
   refetch: refetchShopGetProducts,
-} = useShopGetProducts(params);
+} = useShopGetProducts(params)
 
 defineShortcuts({
   escape: {
@@ -27,7 +27,7 @@ defineShortcuts({
     whenever: [isOpen],
     handler: () => { isOpen.value = false },
   },
-});
+})
 
 const columnsDialog = [
   {
@@ -43,7 +43,7 @@ const columnsDialog = [
     label: 'Stock',
     class: 'text-center',
   },
-];
+]
 
 const columnsPreviewTable = [
   ...columnsDialog,
@@ -52,46 +52,46 @@ const columnsPreviewTable = [
     label: 'Actions',
     class: 'text-center',
   },
-];
+]
 
 const rowsDialog = computed(() => {
   if (!dataShopGetProducts.value) {
-    return [];
+    return []
   }
   return dataShopGetProducts.value.results.map((prod) => {
-    toRaw(prod.inventories).sort((a, b) => a.price - b.price);
+    toRaw(prod.inventories).sort((a, b) => a.price - b.price)
     return {
       ...prod,
       lowestPrice: prod.inventories[0].price,
       highestPrice: prod.inventories.length > 1 ? prod.inventories[prod.inventories.length - 1].price : 0,
       stock: prod.inventories.reduce((acc, next) => acc + next.stock, 0),
-    };
-  });
-});
+    }
+  })
+})
 
 const applyProducts = () => {
-  productIdsModel.value = selectedRows.value.map(prod => prod.id);
-  isOpen.value = false;
-};
+  productIdsModel.value = selectedRows.value.map(prod => prod.id)
+  isOpen.value = false
+}
 
 const removeProduct = (id: Product['id']) => {
-  selectedRows.value = selectedRows.value.filter(row => row.id !== id);
+  selectedRows.value = selectedRows.value.filter(row => row.id !== id)
   if (productIdsModel.value) {
-    productIdsModel.value = productIdsModel.value.filter(productId => productId !== id);
+    productIdsModel.value = productIdsModel.value.filter(productId => productId !== id)
   }
-};
+}
 
 watchDebounced(
   search,
   () => {
     if (!search.value) {
-      delete params.value.title;
+      delete params.value.title
     }
-    else params.value.title = search.value;
-    refetchShopGetProducts();
+    else params.value.title = search.value
+    refetchShopGetProducts()
   },
-  { debounce: 500, maxWait: 1000 }
-);
+  { debounce: 500, maxWait: 1000 },
+)
 </script>
 
 <template>

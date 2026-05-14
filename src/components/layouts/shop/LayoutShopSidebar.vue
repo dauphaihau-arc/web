@@ -1,27 +1,27 @@
 <script setup lang="ts">
-import type { DropdownItem } from '#ui/types';
-import avatarDefault from '~/assets/images/avatar-default.jpg';
-import { ROUTES } from '~/config/enums/routes';
-import { useLogout } from '~/services/auth';
-import { useGetCurrentUser } from '~/services/user';
+import type { DropdownItem } from '#ui/types'
+import avatarDefault from '~/assets/images/avatar-default.jpg'
+import { ROUTES } from '~/config/enums/routes'
+import { useLogout } from '~/services/auth'
+import { useGetCurrentUser } from '~/services/user'
 
-const routes = useRoute();
-const { data: dataUserAuth } = useGetCurrentUser();
-const { mutate: logout } = useLogout();
+const routes = useRoute()
+const { data: dataUserAuth } = useGetCurrentUser()
+const { mutate: logout } = useLogout()
 
 const {
   ACCOUNT, SHOP, PRODUCTS, COUPONS,
-} = ROUTES;
+} = ROUTES
 
 type ILinkBase = {
   title: string
   route?: string
   disabled?: boolean
-};
+}
 
 export type ILink = {
   sub?: ILinkBase[]
-} & ILinkBase;
+} & ILinkBase
 
 const itemsLinkSidebar: ILink[] = [
   {
@@ -62,9 +62,9 @@ const itemsLinkSidebar: ILink[] = [
     route: `${ACCOUNT}${SHOP}/finances`,
     disabled: true,
   },
-];
+]
 
-const isOpen = ref(false);
+const isOpen = ref(false)
 
 const itemsShopDropdown: DropdownItem[][] = [
   [
@@ -74,7 +74,7 @@ const itemsShopDropdown: DropdownItem[][] = [
         src: avatarDefault,
       },
       click: () => {
-        navigateTo(ROUTES.ACCOUNT);
+        navigateTo(ROUTES.ACCOUNT)
       },
     },
   ],
@@ -88,7 +88,7 @@ const itemsShopDropdown: DropdownItem[][] = [
       label: 'Arc Marketplace',
       icon: 'i-heroicons-arrow-right-circle-20-solid',
       click: () => {
-        navigateTo(ROUTES.HOME);
+        navigateTo(ROUTES.HOME)
       },
     },
   ],
@@ -99,7 +99,7 @@ const itemsShopDropdown: DropdownItem[][] = [
       click: logout,
     },
   ],
-];
+]
 </script>
 
 <template>

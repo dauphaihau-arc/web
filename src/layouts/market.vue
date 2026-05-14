@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ROUTES } from '~/config/enums/routes';
+import { ROUTES } from '~/config/enums/routes'
 
-const route = useRoute();
+const route = useRoute()
 
 onMounted(() => {
-  window.scrollTo(0, 0);
-});
+  window.scrollTo(0, 0)
+})
 
 const linksAccountSidebar = [
   {
@@ -36,13 +36,13 @@ const linksAccountSidebar = [
     icon: 'i-heroicons-cog',
     to: ROUTES.HOME,
   },
-];
+]
 
-const isAccountRoute = ref(false);
+const isAccountRoute = ref(false)
 
 watch(() => route.path, () => {
-  isAccountRoute.value = route.path.includes(ROUTES.ACCOUNT);
-});
+  isAccountRoute.value = route.path.includes(ROUTES.ACCOUNT)
+})
 </script>
 
 <template>

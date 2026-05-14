@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useGetUserAddresses } from '~/services/user';
-import { CreateUserAddressDialog } from '#components';
+import { useGetUserAddresses } from '~/services/user'
+import { CreateUserAddressDialog } from '#components'
 
-const cartStore = useCartStore();
-const dialog = useModal();
+const cartStore = useCartStore()
+const dialog = useModal()
 
 const {
   isPending: isPendingGetUserAddresses,
@@ -11,37 +11,37 @@ const {
 } = useGetUserAddresses({
   select: '-user,-created_at,-updated_at',
   sortBy: '-is_primary',
-});
+})
 
 const addressRadioOptions = computed(() => {
   if (dataUserAddress.value?.results && dataUserAddress.value.results.length > 0) {
-    return dataUserAddress.value.results;
+    return dataUserAddress.value.results
   }
-  return null;
-});
+  return null
+})
 
-const addressIdSelected = ref();
+const addressIdSelected = ref()
 
 watch(dataUserAddress, () => {
   if (addressRadioOptions.value && !cartStore.stateCheckoutNow.address) {
-    addressIdSelected.value = addressRadioOptions.value[0].id;
+    addressIdSelected.value = addressRadioOptions.value[0].id
   }
-}, { immediate: true });
+}, { immediate: true })
 
 watch(() => addressIdSelected.value, () => {
   if (dataUserAddress.value) {
     const address = dataUserAddress.value.results.find((item) => {
-      return item.id === addressIdSelected.value;
-    });
+      return item.id === addressIdSelected.value
+    })
     if (address) {
-      cartStore.stateCheckoutNow.address = address;
+      cartStore.stateCheckoutNow.address = address
     }
   }
-}, { immediate: true });
+}, { immediate: true })
 
 const showCreateDialog = () => {
-  dialog.open(CreateUserAddressDialog);
-};
+  dialog.open(CreateUserAddressDialog)
+}
 </script>
 
 <template>

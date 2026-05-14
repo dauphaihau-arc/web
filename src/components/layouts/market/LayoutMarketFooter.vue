@@ -104,7 +104,7 @@ const primaryLinks = [
       },
     ],
   },
-];
+]
 
 const secondaryLinks = [
   {
@@ -123,7 +123,7 @@ const secondaryLinks = [
     title: 'Privacy Policy',
     link: '/',
   },
-];
+]
 </script>
 
 <template>

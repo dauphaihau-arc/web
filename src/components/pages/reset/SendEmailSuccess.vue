@@ -1,32 +1,32 @@
 <script setup lang="ts">
-import { useForgetPassword } from '~/services/auth';
-import { toastCustom } from '~/config/toast';
-import { RESET_PASSWORD_VIEWS } from '~/config/enums/common';
+import { useForgetPassword } from '~/services/auth'
+import { toastCustom } from '~/config/toast'
+import { RESET_PASSWORD_VIEWS } from '~/config/enums/common'
 
 const emit = defineEmits<{
   changeView: [value: RESET_PASSWORD_VIEWS]
-}>();
+}>()
 
-const toast = useToast();
-const authStore = useAuthStore();
+const toast = useToast()
+const authStore = useAuthStore()
 
-const isResendEmail = ref(false);
+const isResendEmail = ref(false)
 
 const {
   mutateAsync: resend,
   isPending: isPendingResend,
-} = useForgetPassword();
+} = useForgetPassword()
 
 async function resendEmail() {
   try {
-    await resend(authStore.emailRequestForgetPassword);
-    isResendEmail.value = true;
+    await resend(authStore.emailRequestForgetPassword)
+    isResendEmail.value = true
   }
   catch (error) {
     toast.add({
       ...toastCustom.error,
       title: 'An unknown error occurred. Please try again',
-    });
+    })
   }
 }
 </script>

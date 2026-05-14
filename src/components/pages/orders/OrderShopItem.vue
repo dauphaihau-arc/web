@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import dayjs from 'dayjs';
-import type { ElementType } from '~/types/utils';
-import type { ResponseGetOrderShops } from '~/types/request-api/order';
+import dayjs from 'dayjs'
+import type { ElementType } from '~/types/utils'
+import type { ResponseGetOrderShops } from '~/types/request-api/order'
 
 const { orderShop } = defineProps<{
   orderShop: ElementType<ResponseGetOrderShops['order_shops']>
-}>();
+}>()
 
 const orderedAt = computed(() => {
   if (dayjs(orderShop.created_at).isValid()) {
-    return dayjs(orderShop.created_at).format('MMM DD, YYYY');
+    return dayjs(orderShop.created_at).format('MMM DD, YYYY')
   }
-  return '';
-});
+  return ''
+})
 </script>
 
 <template>

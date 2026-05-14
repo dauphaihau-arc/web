@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import type { FormError, FormSubmitEvent } from '#ui/types';
-import { consola } from 'consola';
-import { ROUTES } from '~/config/enums/routes';
-import { PRODUCT_VARIANT_TYPES } from '~/config/enums/product';
-import type { AddProductToCartBody, ResponseGetCart } from '~/types/request-api/cart';
-import type { ProductVariant } from '~/types/product';
-import { RegisterLoginDialog } from '#components';
-import { useAddProductToCart } from '~/services/cart';
-import { useGetCurrentUser } from '~/services/user';
-import type { ResponseGetDetailProduct, ResponseGetDetailProduct_Inventory } from '~/types/request-api/product';
-import { toastCustom } from '~/config/toast';
+import { consola } from 'consola'
+import type { FormError, FormSubmitEvent } from '#ui/types'
+import { ROUTES } from '~/config/enums/routes'
+import { PRODUCT_VARIANT_TYPES } from '~/config/enums/product'
+import type { AddProductToCartBody, ResponseGetCart } from '~/types/request-api/cart'
+import type { ProductVariant } from '~/types/product'
+import { RegisterLoginDialog } from '#components'
+import { useAddProductToCart } from '~/services/cart'
+import { useGetCurrentUser } from '~/services/user'
+import type { ResponseGetDetailProduct, ResponseGetDetailProduct_Inventory } from '~/types/request-api/product'
+import { toastCustom } from '~/config/toast'
 
 interface StateSubmit {
   quantity: number
@@ -17,169 +17,169 @@ interface StateSubmit {
   variantSubOption: string
 }
 
-type Inventory = ResponseGetDetailProduct_Inventory;
+type Inventory = ResponseGetDetailProduct_Inventory
 
-const props = defineProps<ResponseGetDetailProduct>();
-const { product } = props;
+const props = defineProps<ResponseGetDetailProduct>()
+const { product } = props
 
-const inventorySelectedModel = defineModel<Inventory>('inventorySelected');
+const inventorySelectedModel = defineModel<Inventory>('inventorySelected')
 
-const modal = useModal();
-const { data: dataUserAuth } = useGetCurrentUser();
-const queryClient = useQueryClient();
-const toast = useToast();
+const modal = useModal()
+const { data: dataUserAuth } = useGetCurrentUser()
+const queryClient = useQueryClient()
+const toast = useToast()
 
 const {
   mutateAsync: addProductToCart,
   isPending: isPendingAddProductToCart,
-} = useAddProductToCart();
+} = useAddProductToCart()
 
 // ------------- States
-const formRef = ref();
+const formRef = ref()
 
 const state = reactive({
   variantOpts: [] as ProductVariant['variant_name'][],
   subVariantOpts: [] as ProductVariant['variant_name'][],
   isBuyNow: false,
-});
+})
 
 const stateSubmit = reactive<StateSubmit>({
   quantity: 1,
   variantOption: '',
   variantSubOption: '',
-});
+})
 
 const maxQuantity = computed(() => {
   if (inventorySelectedModel.value) {
-    return inventorySelectedModel.value.stock;
+    return inventorySelectedModel.value.stock
   }
-  return product.inventories.reduce((acc, inv) => acc + inv.stock, 0);
-});
+  return product.inventories.reduce((acc, inv) => acc + inv.stock, 0)
+})
 
-const inventoriesMap = new Map<Inventory['variant'], Inventory>();
+const inventoriesMap = new Map<Inventory['variant'], Inventory>()
 
 // ------------- Lifecycle Hooks
 onMounted(() => {
   switch (product.variant_type) {
     case PRODUCT_VARIANT_TYPES.NONE:
-      inventorySelectedModel.value = props.product.inventories[0];
-      break;
+      inventorySelectedModel.value = props.product.inventories[0]
+      break
     case PRODUCT_VARIANT_TYPES.SINGLE:
       props.product.inventories.forEach((inv) => {
-        inventoriesMap.set(inv.variant, inv);
+        inventoriesMap.set(inv.variant, inv)
         if (inv.variant) {
-          state.variantOpts.push(inv.variant);
+          state.variantOpts.push(inv.variant)
         }
-      });
-      break;
+      })
+      break
     case PRODUCT_VARIANT_TYPES.COMBINE: {
       props.product.inventories.forEach((inv) => {
-        inventoriesMap.set(inv.variant, inv);
+        inventoriesMap.set(inv.variant, inv)
         if (inv.variant) {
-          const [primaryVariantName, subVariantName] = inv.variant.split('-');
+          const [primaryVariantName, subVariantName] = inv.variant.split('-')
           if (!state.variantOpts.includes(primaryVariantName)) {
-            state.variantOpts.push(primaryVariantName);
+            state.variantOpts.push(primaryVariantName)
           }
           if (!state.subVariantOpts.includes(subVariantName)) {
-            state.subVariantOpts.push(subVariantName);
+            state.subVariantOpts.push(subVariantName)
           }
         }
-      });
+      })
     }
-      break;
+      break
   }
-});
+})
 
 // ------------- Features
 const decreaseQty = () => {
-  if (stateSubmit.quantity === 1) return;
-  stateSubmit.quantity--;
-};
+  if (stateSubmit.quantity === 1) return
+  stateSubmit.quantity--
+}
 
 const validateForm = (stateValidate: StateSubmit): FormError[] => {
-  const errors: FormError[] = [];
+  const errors: FormError[] = []
 
   if (product.variant_type !== PRODUCT_VARIANT_TYPES.NONE) {
     if (!stateValidate.variantOption) {
       errors.push({
         path: 'variantOption',
         message: 'Required',
-      });
+      })
     }
 
     if (product.variant_type === PRODUCT_VARIANT_TYPES.COMBINE && !stateValidate.variantSubOption) {
       errors.push({
         path: 'variantSubOption',
         message: 'Required',
-      });
+      })
     }
   }
-  return errors;
-};
+  return errors
+}
 
 async function onSubmit(event: FormSubmitEvent<StateSubmit>) {
   if (!dataUserAuth.value?.user) {
-    modal.open(RegisterLoginDialog);
-    return;
+    modal.open(RegisterLoginDialog)
+    return
   }
-  formRef.value.clear();
+  formRef.value.clear()
 
   if (!inventorySelectedModel.value?.id) {
-    consola.error('inventory_id be undefined');
-    return;
+    consola.error('inventory_id be undefined')
+    return
   }
 
   const body: AddProductToCartBody = {
     inventory_id: inventorySelectedModel.value.id,
     quantity: event.data.quantity,
-  };
+  }
   if (state.isBuyNow) {
-    body.is_temp = true;
-    const { cart, summary_order } = await addProductToCart(body);
+    body.is_temp = true
+    const { cart, summary_order } = await addProductToCart(body)
     if (cart === null || !cart?.cart_id) {
       toast.add({
         ...toastCustom.error,
         title: 'Checkout failed',
-      });
-      return;
+      })
+      return
     }
-    queryClient.setQueryData<ResponseGetCart>(['get-cart', cart.cart_id], { cart, summary_order });
-    navigateTo(`${ROUTES.CHECKOUT}?c=${cart.cart_id}`);
-    return;
+    queryClient.setQueryData<ResponseGetCart>(['get-cart', cart.cart_id], { cart, summary_order })
+    navigateTo(`${ROUTES.CHECKOUT}?c=${cart.cart_id}`)
+    return
   }
 
-  const response = await addProductToCart(body);
+  const response = await addProductToCart(body)
   if (response.cart === null) {
     toast.add({
       ...toastCustom.error,
       title: 'Add product to cart failed',
-    });
-    return;
+    })
+    return
   }
-  queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], response);
-  navigateTo(ROUTES.CART);
+  queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], response)
+  navigateTo(ROUTES.CART)
 }
 
 // ------ Side effects
 watch(
   () => [stateSubmit.variantOption, stateSubmit.variantSubOption],
   () => {
-    stateSubmit.quantity = 1;
+    stateSubmit.quantity = 1
     if (product.variant_type === PRODUCT_VARIANT_TYPES.SINGLE) {
-      const foundInventory = inventoriesMap.get(stateSubmit.variantOption);
+      const foundInventory = inventoriesMap.get(stateSubmit.variantOption)
       if (foundInventory) {
-        inventorySelectedModel.value = foundInventory;
+        inventorySelectedModel.value = foundInventory
       }
     }
     if (product.variant_type === PRODUCT_VARIANT_TYPES.COMBINE) {
-      const foundInventory = inventoriesMap.get(`${stateSubmit.variantOption}-${stateSubmit.variantSubOption}`);
+      const foundInventory = inventoriesMap.get(`${stateSubmit.variantOption}-${stateSubmit.variantSubOption}`)
       if (foundInventory) {
-        inventorySelectedModel.value = foundInventory;
+        inventorySelectedModel.value = foundInventory
       }
     }
   },
-  { deep: true }
-);
+  { deep: true },
+)
 </script>
 
 <template>

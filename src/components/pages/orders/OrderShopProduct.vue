@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ROUTES } from '~/config/enums/routes';
-import type { ResponseGetOrderShopsProduct } from '~/types/request-api/order';
+import { ROUTES } from '~/config/enums/routes'
+import type { ResponseGetOrderShopsProduct } from '~/types/request-api/order'
 
 const { productOrder } = defineProps<{
   productOrder: ResponseGetOrderShopsProduct
-}>();
+}>()
 </script>
 
 <template>

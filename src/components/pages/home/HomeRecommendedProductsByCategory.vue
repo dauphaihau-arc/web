@@ -1,31 +1,31 @@
 <script lang="ts" setup>
-import { useGetProducts } from '~/services/product';
+import { useGetProducts } from '~/services/product'
 
-const limit = 10;
-const marketStore = useMarketStore();
+const limit = 10
+const marketStore = useMarketStore()
 
 const params = computed(() => {
   if (marketStore.userActivities.categoryIdProductVisited) {
     return {
       category_id: marketStore.userActivities.categoryIdProductVisited,
       limit,
-    };
+    }
   }
-  return undefined;
-});
+  return undefined
+})
 
 const {
   data,
   error,
   isPending: isPendingGetProducts,
-} = useGetProducts(params);
+} = useGetProducts(params)
 
 watch(error, (value) => {
-  const status = value?.statusCode || value?.status || value?.response?.status;
+  const status = value?.statusCode || value?.status || value?.response?.status
   if (status === 404) {
-    marketStore.clearCategoryRecommendationState();
+    marketStore.clearCategoryRecommendationState()
   }
-});
+})
 </script>
 
 <template>

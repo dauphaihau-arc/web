@@ -3,24 +3,24 @@
   use in cart, cart/checkout page
  */
 
-import { StatusCodes } from 'http-status-codes';
-import { FetchError } from 'ofetch';
-import { consola } from 'consola';
-import { type AdditionInfoShopCarts, useCartStore } from '~/stores/cart';
-import { COUPON_CONFIG } from '~/config/enums/coupon';
-import type { Shop } from '~/types/shop';
-import { useUpdateCart } from '~/services/cart';
-import { toastCustom } from '~/config/toast';
-import type { Coupon } from '~/types/coupon';
-import type { ResponseGetCart } from '~/types/request-api/cart';
+import { StatusCodes } from 'http-status-codes'
+import { FetchError } from 'ofetch'
+import { consola } from 'consola'
+import { type AdditionInfoShopCarts, useCartStore } from '~/stores/cart'
+import { COUPON_CONFIG } from '~/config/enums/coupon'
+import type { Shop } from '~/types/shop'
+import { useUpdateCart } from '~/services/cart'
+import { toastCustom } from '~/config/toast'
+import type { Coupon } from '~/types/coupon'
+import type { ResponseGetCart } from '~/types/request-api/cart'
 
 const { shopId } = defineProps<{
   shopId: Shop['id']
-}>();
+}>()
 
-const cartStore = useCartStore();
-const queryClient = useQueryClient();
-const toast = useToast();
+const cartStore = useCartStore()
+const queryClient = useQueryClient()
+const toast = useToast()
 
 const state = reactive({
   showAddCouponCodeInput: false,
@@ -28,68 +28,68 @@ const state = reactive({
   codes: [] as Coupon['code'][],
   invalidCodes: [] as Coupon['code'][],
   errorMsg: '',
-});
+})
 
 onMounted(() => {
-  const additionInfoOrderShop = cartStore.additionInfoShopCarts.get(shopId);
+  const additionInfoOrderShop = cartStore.additionInfoShopCarts.get(shopId)
   if (additionInfoOrderShop && additionInfoOrderShop.promo_codes.length > 0) {
-    state.codes = additionInfoOrderShop.promo_codes;
-    state.showAddCouponCodeInput = true;
+    state.codes = additionInfoOrderShop.promo_codes
+    state.showAddCouponCodeInput = true
   }
-});
+})
 
 const {
   mutateAsync: updateCart,
   isPending: isPendingUpdateCart,
-} = useUpdateCart({ onError: undefined });
+} = useUpdateCart({ onError: undefined })
 
 const addCoupon = async () => {
-  state.errorMsg = '';
+  state.errorMsg = ''
 
   if (state.invalidCodes.length > 0 && state.invalidCodes.includes(state.code)) {
-    state.errorMsg = 'Coupon code not found';
-    return;
+    state.errorMsg = 'Coupon code not found'
+    return
   }
 
   // clone additionInfoShopCarts, if request 200 assign clone to additionInfoShopCarts
   const tempAdditionInfoShopCarts = new Map<AdditionInfoShopCarts['key'], AdditionInfoShopCarts['value']>(
-    JSON.parse(JSON.stringify([...cartStore.additionInfoShopCarts]))
-  );
+    JSON.parse(JSON.stringify([...cartStore.additionInfoShopCarts])),
+  )
 
-  const tempAdditionInfoOrderShop = tempAdditionInfoShopCarts.get(shopId);
+  const tempAdditionInfoOrderShop = tempAdditionInfoShopCarts.get(shopId)
   if (!tempAdditionInfoOrderShop) {
-    consola.error('tempAdditionInfoOrderShop be undefined');
-    return;
+    consola.error('tempAdditionInfoOrderShop be undefined')
+    return
   }
-  tempAdditionInfoOrderShop.promo_codes.push(state.code);
+  tempAdditionInfoOrderShop.promo_codes.push(state.code)
 
   const addition_info_shop_carts = Array.from(tempAdditionInfoShopCarts)
     .map(([keyShopId, value]) => ({
       shop_id: keyShopId,
       promo_codes: value.promo_codes,
     }))
-    .filter(item => item.promo_codes.length > 0);
+    .filter(item => item.promo_codes.length > 0)
 
   try {
     const data = await updateCart({
       addition_info_shop_carts,
-    });
+    })
 
     queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], (oldData) => {
-      if (!oldData || !oldData.cart) return oldData;
-      if (!data.cart) return { ...oldData, cart: data.cart };
-      const foundShopCart = data.cart.shop_carts.find(sc => sc.shop.id === shopId);
-      if (!foundShopCart) return oldData;
+      if (!oldData || !oldData.cart) return oldData
+      if (!data.cart) return { ...oldData, cart: data.cart }
+      const foundShopCart = data.cart.shop_carts.find(sc => sc.shop.id === shopId)
+      if (!foundShopCart) return oldData
 
       const shopCartsUpdated = oldData.cart.shop_carts.map((sc) => {
         if (sc.shop.id === shopId) {
           return {
             ...sc,
             total_shipping_fee: foundShopCart.total_shipping_fee,
-          };
+          }
         }
-        return sc;
-      });
+        return sc
+      })
       return {
         ...oldData,
         cart: {
@@ -97,64 +97,64 @@ const addCoupon = async () => {
           shop_carts: shopCartsUpdated,
         },
         summary_order: data.summary_order,
-      };
-    });
+      }
+    })
 
-    cartStore.additionInfoShopCarts.set(shopId, tempAdditionInfoOrderShop);
-    state.codes = tempAdditionInfoOrderShop.promo_codes;
-    state.code = '';
+    cartStore.additionInfoShopCarts.set(shopId, tempAdditionInfoOrderShop)
+    state.codes = tempAdditionInfoOrderShop.promo_codes
+    state.code = ''
   }
   catch (error) {
     if (error instanceof FetchError) {
       switch (error.status) {
         case StatusCodes.NOT_FOUND:
-          state.errorMsg = 'Coupon code not found';
-          state.invalidCodes.push(state.code);
-          break;
+          state.errorMsg = 'Coupon code not found'
+          state.invalidCodes.push(state.code)
+          break
         case StatusCodes.UNPROCESSABLE_ENTITY:
           toast.add({
             ...toastCustom.error,
             title: error.data.message,
-          });
-          break;
+          })
+          break
         default:
           toast.add({
             ...toastCustom.error,
             title: 'Add coupon failed',
-          });
+          })
       }
     }
   }
-};
+}
 
 const deleteCoupon = async (code: Coupon['code']) => {
   const tempAdditionInfoShopCarts = new Map<AdditionInfoShopCarts['key'], AdditionInfoShopCarts['value']>(
-    JSON.parse(JSON.stringify([...cartStore.additionInfoShopCarts]))
-  );
-  const tempAdditionInfoOrderShop = tempAdditionInfoShopCarts.get(shopId);
+    JSON.parse(JSON.stringify([...cartStore.additionInfoShopCarts])),
+  )
+  const tempAdditionInfoOrderShop = tempAdditionInfoShopCarts.get(shopId)
 
   if (!tempAdditionInfoOrderShop) {
-    consola.error('tempAdditionInfoOrderShop be undefined');
-    return;
+    consola.error('tempAdditionInfoOrderShop be undefined')
+    return
   }
-  tempAdditionInfoOrderShop.promo_codes = tempAdditionInfoOrderShop.promo_codes.filter(c => c !== code);
+  tempAdditionInfoOrderShop.promo_codes = tempAdditionInfoOrderShop.promo_codes.filter(c => c !== code)
 
   const addition_info_shop_carts = Array.from(tempAdditionInfoShopCarts).map(([keyShopId, value]) => ({
     shop_id: keyShopId,
     promo_codes: value.promo_codes,
-  }));
+  }))
 
   try {
     const data = await updateCart({
       addition_info_shop_carts,
-    });
+    })
 
     // update cache get cart
     queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], (oldData) => {
-      if (!oldData || !oldData.cart) return oldData;
-      if (!data.cart) return { ...oldData, cart: data.cart };
-      const foundShopCart = data.cart.shop_carts.find(sc => sc.shop.id === shopId);
-      if (!oldData || !foundShopCart) return oldData;
+      if (!oldData || !oldData.cart) return oldData
+      if (!data.cart) return { ...oldData, cart: data.cart }
+      const foundShopCart = data.cart.shop_carts.find(sc => sc.shop.id === shopId)
+      if (!oldData || !foundShopCart) return oldData
 
       // update total_shipping_fee field
       const shopCartsUpdated = oldData.cart.shop_carts.map((sc) => {
@@ -162,10 +162,10 @@ const deleteCoupon = async (code: Coupon['code']) => {
           return {
             ...sc,
             total_shipping_fee: foundShopCart.total_shipping_fee,
-          };
+          }
         }
-        return sc;
-      });
+        return sc
+      })
       return {
         ...oldData,
         cart: {
@@ -173,58 +173,58 @@ const deleteCoupon = async (code: Coupon['code']) => {
           shop_carts: shopCartsUpdated,
         },
         summary_order: data.summary_order,
-      };
-    });
+      }
+    })
 
-    const additionInfoOrderShop = tempAdditionInfoShopCarts.get(shopId);
+    const additionInfoOrderShop = tempAdditionInfoShopCarts.get(shopId)
     if (!additionInfoOrderShop) {
-      consola.error('additionInfoOrderShop be undefined', additionInfoOrderShop);
-      throw new Error();
+      consola.error('additionInfoOrderShop be undefined', additionInfoOrderShop)
+      throw new Error()
     }
-    cartStore.additionInfoShopCarts.set(shopId, additionInfoOrderShop);
-    state.codes = tempAdditionInfoOrderShop.promo_codes;
+    cartStore.additionInfoShopCarts.set(shopId, additionInfoOrderShop)
+    state.codes = tempAdditionInfoOrderShop.promo_codes
   }
   catch (e) {
     toast.add({
       ...toastCustom.error,
       title: 'Delete coupon failed',
-    });
+    })
   }
-};
+}
 
 const toggleShowAddCouponInput = async () => {
-  state.showAddCouponCodeInput = !state.showAddCouponCodeInput;
+  state.showAddCouponCodeInput = !state.showAddCouponCodeInput
   if (!state.showAddCouponCodeInput) {
     const tempAdditionInfoShopCarts = new Map<AdditionInfoShopCarts['key'], AdditionInfoShopCarts['value']>(
-      JSON.parse(JSON.stringify([...cartStore.additionInfoShopCarts]))
-    );
-    const tempAdditionInfoOrderShop = tempAdditionInfoShopCarts.get(shopId);
+      JSON.parse(JSON.stringify([...cartStore.additionInfoShopCarts])),
+    )
+    const tempAdditionInfoOrderShop = tempAdditionInfoShopCarts.get(shopId)
 
     if (!tempAdditionInfoOrderShop) {
-      consola.error('tempAdditionInfoOrderShop be undefined');
-      return;
+      consola.error('tempAdditionInfoOrderShop be undefined')
+      return
     }
     if (tempAdditionInfoOrderShop.promo_codes.length === 0) {
-      return;
+      return
     }
-    tempAdditionInfoOrderShop.promo_codes = [];
+    tempAdditionInfoOrderShop.promo_codes = []
 
     const addition_info_shop_carts = Array.from(tempAdditionInfoShopCarts).map(([keyShopId, value]) => ({
       shop_id: keyShopId,
       promo_codes: value.promo_codes,
-    }));
+    }))
 
     try {
       const data = await updateCart({
         addition_info_shop_carts,
-      });
+      })
 
       // update cache get cart
       queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], (oldData) => {
-        if (!oldData || !oldData.cart) return oldData;
-        if (!data.cart) return { ...oldData, cart: data.cart };
-        const foundShopCart = data.cart.shop_carts.find(sc => sc.shop.id === shopId);
-        if (!oldData || !foundShopCart) return oldData;
+        if (!oldData || !oldData.cart) return oldData
+        if (!data.cart) return { ...oldData, cart: data.cart }
+        const foundShopCart = data.cart.shop_carts.find(sc => sc.shop.id === shopId)
+        if (!oldData || !foundShopCart) return oldData
 
         // update total_shipping_fee field
         const shopCartsUpdated = oldData.cart.shop_carts.map((sc) => {
@@ -232,10 +232,10 @@ const toggleShowAddCouponInput = async () => {
             return {
               ...sc,
               total_shipping_fee: foundShopCart.total_shipping_fee,
-            };
+            }
           }
-          return sc;
-        });
+          return sc
+        })
         return {
           ...oldData,
           cart: {
@@ -243,31 +243,31 @@ const toggleShowAddCouponInput = async () => {
             shop_carts: shopCartsUpdated,
           },
           summary_order: data.summary_order,
-        };
-      });
-      const additionInfoOrderShop = tempAdditionInfoShopCarts.get(shopId);
+        }
+      })
+      const additionInfoOrderShop = tempAdditionInfoShopCarts.get(shopId)
       if (!additionInfoOrderShop) {
-        consola.error('additionInfoOrderShop be undefined', additionInfoOrderShop);
-        throw new Error();
+        consola.error('additionInfoOrderShop be undefined', additionInfoOrderShop)
+        throw new Error()
       }
-      cartStore.additionInfoShopCarts.set(shopId, additionInfoOrderShop);
-      state.codes = [];
+      cartStore.additionInfoShopCarts.set(shopId, additionInfoOrderShop)
+      state.codes = []
     }
     catch (error) {
       toast.add({
         ...toastCustom.error,
         title: 'Delete all coupons failed',
-      });
+      })
     }
   }
-};
+}
 
 const disabledAddBtn = computed(() => {
-  return isPendingUpdateCart.value ||
-    state.codes.length === COUPON_CONFIG.MAX_USE_PER_ORDER ||
-    state.codes.includes(state.code) ||
-    !state.code;
-});
+  return isPendingUpdateCart.value
+    || state.codes.length === COUPON_CONFIG.MAX_USE_PER_ORDER
+    || state.codes.includes(state.code)
+    || !state.code
+})
 </script>
 
 <template>

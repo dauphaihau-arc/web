@@ -1,38 +1,38 @@
 <script setup lang="ts">
-import type { Category } from '~/types/category';
-import { useGetCategories } from '~/services/category';
-import { ROUTES } from '~/config/enums/routes';
+import type { Category } from '~/types/category'
+import { useGetCategories } from '~/services/category'
+import { ROUTES } from '~/config/enums/routes'
 
-const marketStore = useMarketStore();
+const marketStore = useMarketStore()
 
 const params = computed(() => {
   if (marketStore.userActivities?.rootCategoryProductVisited?.id) {
     return {
       parent: marketStore.userActivities?.rootCategoryProductVisited.id,
-    };
+    }
   }
-  return undefined;
-});
+  return undefined
+})
 
 const {
   data: dataGetCategories,
   error: errorGetCategories,
   isPending: isPendingGetCategories,
   isFetching: isFetchingGetCategories,
-} = useGetCategories(params.value);
+} = useGetCategories(params.value)
 
 watch(errorGetCategories, (value) => {
-  const status = value?.statusCode || value?.status || value?.response?.status;
+  const status = value?.statusCode || value?.status || value?.response?.status
   if (status === 404) {
-    marketStore.clearCategoryRecommendationState();
+    marketStore.clearCategoryRecommendationState()
   }
-});
+})
 
 const redirectPage = (subCategory: Category) => {
   if (marketStore.categoriesBreadcrumb && marketStore.userActivities?.rootCategoryProductVisited?.name) {
-    const lower = (str: string) => str.replaceAll(' ', '-').toLowerCase();
-    const toRootCategory = `${ROUTES.C}/${lower(marketStore.userActivities.rootCategoryProductVisited.name)}`;
-    const toSubCategory = `${toRootCategory}/${lower(subCategory.name)}`;
+    const lower = (str: string) => str.replaceAll(' ', '-').toLowerCase()
+    const toRootCategory = `${ROUTES.C}/${lower(marketStore.userActivities.rootCategoryProductVisited.name)}`
+    const toSubCategory = `${toRootCategory}/${lower(subCategory.name)}`
 
     marketStore.categoriesBreadcrumb = [
       {
@@ -43,10 +43,10 @@ const redirectPage = (subCategory: Category) => {
         ...subCategory,
         to: toSubCategory,
       },
-    ];
-    navigateTo(toSubCategory);
+    ]
+    navigateTo(toSubCategory)
   }
-};
+}
 </script>
 
 <template>

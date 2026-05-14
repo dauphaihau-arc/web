@@ -2,52 +2,52 @@
 /*
   use in cart page, cart/checkout page
  */
-import { ORDER_CONFIG } from '~/config/enums/order';
-import type { ResponseGetCart_ShopCart } from '~/types/request-api/cart';
+import { ORDER_CONFIG } from '~/config/enums/order'
+import type { ResponseGetCart_ShopCart } from '~/types/request-api/cart'
 
 const props = defineProps<{
   shopCart: ResponseGetCart_ShopCart
-}>();
+}>()
 
-const cartStore = useCartStore();
+const cartStore = useCartStore()
 
 const state = reactive({
   showNoteInput: false,
   note: '',
-});
+})
 
 onMounted(() => {
-  const orderShop = cartStore.additionInfoShopCarts.get(props.shopCart.shop.id);
+  const orderShop = cartStore.additionInfoShopCarts.get(props.shopCart.shop.id)
   if (orderShop && orderShop.note) {
-    state.showNoteInput = true;
-    state.note = orderShop.note;
+    state.showNoteInput = true
+    state.note = orderShop.note
   }
-});
+})
 
 watchDebounced(
   () => state.note,
   () => {
     if (props.shopCart?.shop?.id) {
-      const orderShop = cartStore.additionInfoShopCarts.get(props.shopCart.shop.id);
+      const orderShop = cartStore.additionInfoShopCarts.get(props.shopCart.shop.id)
       if (orderShop) {
-        orderShop.note = state.note;
-        cartStore.additionInfoShopCarts.set(props.shopCart.shop.id, orderShop);
+        orderShop.note = state.note
+        cartStore.additionInfoShopCarts.set(props.shopCart.shop.id, orderShop)
       }
     }
   },
-  { debounce: 500, maxWait: 1000 }
-);
+  { debounce: 500, maxWait: 1000 },
+)
 
 watch(() => state.showNoteInput, () => {
-  const additionInfoOrderShop = cartStore.additionInfoShopCarts.get(props.shopCart.shop.id);
+  const additionInfoOrderShop = cartStore.additionInfoShopCarts.get(props.shopCart.shop.id)
   if (!state.showNoteInput && additionInfoOrderShop) {
     cartStore.additionInfoShopCarts.set(props.shopCart.shop.id, {
       ...additionInfoOrderShop,
       note: '',
-    });
-    state.note = '';
+    })
+    state.note = ''
   }
-});
+})
 </script>
 
 <template>

@@ -1,191 +1,191 @@
 <script setup lang="ts">
-import dayjs from 'dayjs';
-import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import { consola } from 'consola';
+import dayjs from 'dayjs'
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import { consola } from 'consola'
 
-dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrAfter)
 
-const isPositiveNumeric = (string: string) => Number.isFinite(+string) && Number(string) > 0;
+const isPositiveNumeric = (string: string) => Number.isFinite(+string) && Number(string) > 0
 
-const regexHoursMinutes = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
-const regexHoursMinutesAMPM = /^([1-9]|1[0-2])\s?(AM|PM)?$/i;
-const regexHoursAMPM = /^([1-9]|1[0-2]):([0-5]\d)\s?(AM|PM)?$/i;
+const regexHoursMinutes = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/
+const regexHoursMinutesAMPM = /^([1-9]|1[0-2])\s?(AM|PM)?$/i
+const regexHoursAMPM = /^([1-9]|1[0-2]):([0-5]\d)\s?(AM|PM)?$/i
 
 const monthNames = ['january', 'february', 'march', 'april', 'may', 'june',
   'july', 'august', 'september', 'october', 'november', 'december',
-];
+]
 
-const dateInputValueFormat = 'D MMM YYYY, [at] HH:mm';
-const detailDateFormat = 'D MMM YYYY, HH:mm';
+const dateInputValueFormat = 'D MMM YYYY, [at] HH:mm'
+const detailDateFormat = 'D MMM YYYY, HH:mm'
 
 type DateOption = {
   dateValue: dayjs.Dayjs
   dateInputValueFormatted: string // show on input
   hintTitle?: string
   detailDateFormatted?: string // show on option
-};
+}
 
 const props = defineProps<{
   startDate?: dayjs.Dayjs
-}>();
+}>()
 
-const model = defineModel<dayjs.Dayjs | null>();
+const model = defineModel<dayjs.Dayjs | null>()
 
-const selectedDate = ref<DateOption>();
+const selectedDate = ref<DateOption>()
 
 onMounted(() => {
   if (model.value) {
     selectedDate.value = {
       dateInputValueFormatted: model.value.format(dateInputValueFormat),
       dateValue: model.value,
-    };
+    }
   }
-});
+})
 
 watch(model, () => {
   if (!model.value) {
-    selectedDate.value = undefined;
+    selectedDate.value = undefined
   }
-});
+})
 
 watch(selectedDate, () => {
-  model.value = selectedDate.value?.dateValue;
-});
+  model.value = selectedDate.value?.dateValue
+})
 
 const utcOffSet = computed(() => {
-  const currentUtcOffSet = dayjs().format('Z');
-  const time = currentUtcOffSet.substring(1);
-  const [hour, min] = time.split(':');
-  return `GMT ${currentUtcOffSet[0]}${parseInt(hour)}${parseInt(min) > 0 ? parseInt(min) : ''}`;
-});
+  const currentUtcOffSet = dayjs().format('Z')
+  const time = currentUtcOffSet.substring(1)
+  const [hour, min] = time.split(':')
+  return `GMT ${currentUtcOffSet[0]}${parseInt(hour)}${parseInt(min) > 0 ? parseInt(min) : ''}`
+})
 
-const currentDay = dayjs().date();
+const currentDay = dayjs().date()
 
 function suggestBestDateOption(words: string[]): DateOption | undefined {
-  const timeTypesWasSet = new Set<'hour' | 'day' | 'month' | 'year'>();
+  const timeTypesWasSet = new Set<'hour' | 'day' | 'month' | 'year'>()
 
   let dateOption = dayjs()
     .hour(0)
-    .minute(0);
+    .minute(0)
 
   if (props.startDate) {
-    dateOption = props.startDate;
+    dateOption = props.startDate
   }
 
-  consola.info('words', words);
+  consola.info('words', words)
 
   for (let word of words) {
-    word = word.toLowerCase();
+    word = word.toLowerCase()
 
     // case word is day ( 1 - 31 )
     if (!timeTypesWasSet.has('day') && isPositiveNumeric(word)) {
-      consola.info('case day');
-      const day = Number(word);
+      consola.info('case day')
+      const day = Number(word)
       if (day <= currentDay) {
-        dateOption = dateOption.add(1, 'month');
+        dateOption = dateOption.add(1, 'month')
       }
       if (!dayjs(`${dateOption.year()}-${dateOption.month()}-${day}`, 'YYYY-M-D', true).isValid()) {
-        return;
+        return
       }
-      dateOption = dateOption.date(day);
-      timeTypesWasSet.add('day');
+      dateOption = dateOption.date(day)
+      timeTypesWasSet.add('day')
     }
 
     // word is month name ( ex: Jun )
     else if (
-      !timeTypesWasSet.has('month') &&
-      word.match(/^[a-zA-Z]+$/) && monthNames.findIndex(name => name.includes(word)) !== -1
+      !timeTypesWasSet.has('month')
+      && word.match(/^[a-zA-Z]+$/) && monthNames.findIndex(name => name.includes(word)) !== -1
     ) {
-      consola.info('case month name');
-      const foundMonthIndex = monthNames.findIndex(name => name.includes(word));
-      dateOption = dateOption.month(foundMonthIndex);
-      timeTypesWasSet.add('month');
+      consola.info('case month name')
+      const foundMonthIndex = monthNames.findIndex(name => name.includes(word))
+      dateOption = dateOption.month(foundMonthIndex)
+      timeTypesWasSet.add('month')
     }
 
     // word is 1:00, 1am, or 1:10pm
     else if (
-      !timeTypesWasSet.has('hour') &&
-      ((word.match(regexHoursAMPM) || word.match(regexHoursMinutesAMPM)) || word.match(regexHoursMinutes))
+      !timeTypesWasSet.has('hour')
+      && ((word.match(regexHoursAMPM) || word.match(regexHoursMinutesAMPM)) || word.match(regexHoursMinutes))
     ) {
-      consola.info('case hour');
-      const [hour, min] = word.split(':');
-      let hourInt = parseInt(hour);
+      consola.info('case hour')
+      const [hour, min] = word.split(':')
+      let hourInt = parseInt(hour)
       if (word.includes('pm')) {
-        hourInt += 12;
+        hourInt += 12
       }
-      dateOption = dateOption.hour(hourInt);
+      dateOption = dateOption.hour(hourInt)
       if (min) {
-        dateOption = dateOption.minute(parseInt(min));
+        dateOption = dateOption.minute(parseInt(min))
       }
 
       // search hour <= current hour ( ex: current is 2pm, search 1pm ), -> increase day
       if (dayjs().isAfter(dateOption) || (props.startDate && props.startDate.isSameOrAfter(dateOption))) {
-        dateOption = dateOption.add(1, 'day');
+        dateOption = dateOption.add(1, 'day')
       }
-      timeTypesWasSet.add('hour');
+      timeTypesWasSet.add('hour')
     }
 
     // word is year
     else if (!timeTypesWasSet.has('year') && isPositiveNumeric(word) && word.length === 4) {
-      consola.info('case year');
-      dateOption = dateOption.year(Number(word));
-      timeTypesWasSet.add('year');
+      consola.info('case year')
+      dateOption = dateOption.year(Number(word))
+      timeTypesWasSet.add('year')
     }
   }
 
   if (
-    words.length >= 2 && // check words length to avoid case search with first word is hour ( ex: 1pm )
-    dateOption.isSame(dayjs(), 'day') && // second parameter 'day' will check day, month, and year.
-    !props.startDate
+    words.length >= 2 // check words length to avoid case search with first word is hour ( ex: 1pm )
+    && dateOption.isSame(dayjs(), 'day') // second parameter 'day' will check day, month, and year.
+    && !props.startDate
   ) {
-    consola.info('same day, month, year');
+    consola.info('same day, month, year')
     return {
       hintTitle: 'Now',
       dateInputValueFormatted: dayjs().format(dateInputValueFormat),
       detailDateFormatted: dayjs().format(detailDateFormat),
       dateValue: dayjs(),
-    };
+    }
   }
 
   if (words.length > 2 && props.startDate && dateOption.isSame(props.startDate, 'day')) {
-    consola.info('have startDate, add 1 hour');
-    dateOption = dateOption.add(1, 'hour');
+    consola.info('have startDate, add 1 hour')
+    dateOption = dateOption.add(1, 'hour')
   }
 
   // case search words start by '1 Jan' or '1 Nov' ( ex current date is 11 Nov ), increase year
   if (dateOption.isBefore(dayjs(), 'day')) {
-    consola.info('add 1 year');
-    dateOption = dateOption.add(1, 'year');
+    consola.info('add 1 year')
+    dateOption = dateOption.add(1, 'year')
   }
 
   if (props.startDate && dateOption.isBefore(props.startDate, 'day')) {
-    consola.info('have startDate, add 1 year');
-    dateOption = dateOption.add(1, 'year');
+    consola.info('have startDate, add 1 year')
+    dateOption = dateOption.add(1, 'year')
   }
 
   return {
     hintTitle: dateOption.format(dateInputValueFormat),
     dateInputValueFormatted: dateOption.format(dateInputValueFormat),
     dateValue: dateOption,
-  };
+  }
 }
 
 async function search(q: string) {
-  q = q.trim();
+  q = q.trim()
   if (!q.match(/^[:,0-9a-zA-Z ]+$/)) {
-    return [];
+    return []
   }
 
-  const words = q.split(' ').filter(w => w !== '');
+  const words = q.split(' ').filter(w => w !== '')
 
-  const firstWord = words[0].toLowerCase();
-  const secondWord = words[1]?.toLowerCase();
+  const firstWord = words[0].toLowerCase()
+  const secondWord = words[1]?.toLowerCase()
 
-  let dateOptions: DateOption[] = [];
+  let dateOptions: DateOption[] = []
 
-  const bestDateOption = suggestBestDateOption(words);
+  const bestDateOption = suggestBestDateOption(words)
   if (bestDateOption) {
-    dateOptions.push(bestDateOption);
+    dateOptions.push(bestDateOption)
   }
 
   // case first word start by now
@@ -195,38 +195,38 @@ async function search(q: string) {
       dateInputValueFormatted: dayjs().format(dateInputValueFormat),
       detailDateFormatted: dayjs().format(detailDateFormat),
       dateValue: dayjs(),
-    });
+    })
   }
 
   // region case first word is number
-  const limitDigit = 5;
+  const limitDigit = 5
   if (isPositiveNumeric(firstWord) && firstWord.length <= limitDigit) {
-    const firstWordInt = Number(firstWord);
+    const firstWordInt = Number(firstWord)
 
-    let formats: dayjs.ManipulateType[] = ['minute', 'hour', 'day', 'week', 'month', 'year'];
+    let formats: dayjs.ManipulateType[] = ['minute', 'hour', 'day', 'week', 'month', 'year']
 
     if (secondWord) {
-      formats = formats.filter(key => key.includes(secondWord));
+      formats = formats.filter(key => key.includes(secondWord))
     }
 
     const optionsByFormats = formats.map((unit) => {
-      const dateValue = props.startDate ? props.startDate.add(firstWordInt, unit) : dayjs().add(firstWordInt, unit);
-      const hintTitle = `${firstWordInt} ${unit}${firstWordInt > 1 ? 's' : ''}`;
-      const detailDateFormatted = dateValue.format(detailDateFormat);
-      const dateInputValueFormatted = dateValue.format(dateInputValueFormat);
+      const dateValue = props.startDate ? props.startDate.add(firstWordInt, unit) : dayjs().add(firstWordInt, unit)
+      const hintTitle = `${firstWordInt} ${unit}${firstWordInt > 1 ? 's' : ''}`
+      const detailDateFormatted = dateValue.format(detailDateFormat)
+      const dateInputValueFormatted = dateValue.format(dateInputValueFormat)
 
       return {
         dateValue,
         hintTitle,
         detailDateFormatted: `${detailDateFormatted} ${utcOffSet.value}`,
         dateInputValueFormatted,
-      };
-    });
-    dateOptions = [...dateOptions, ...optionsByFormats];
+      }
+    })
+    dateOptions = [...dateOptions, ...optionsByFormats]
   }
   // endregion
 
-  return dateOptions;
+  return dateOptions
 }
 </script>
 

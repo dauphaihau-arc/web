@@ -1,27 +1,27 @@
 <script setup lang="ts">
-import { ORDER_CONFIG } from '~/config/enums/order';
-import { useCartStore } from '~/stores/cart';
-import { PRODUCT_VARIANT_TYPES } from '~/config/enums/product';
-import { useGetCart, useUpdateCart } from '~/services/cart';
-import type { ResponseGetCart } from '~/types/request-api/cart';
-import type { Cart } from '~/types/cart';
+import { ORDER_CONFIG } from '~/config/enums/order'
+import { useCartStore } from '~/stores/cart'
+import { PRODUCT_VARIANT_TYPES } from '~/config/enums/product'
+import { useGetCart, useUpdateCart } from '~/services/cart'
+import type { ResponseGetCart } from '~/types/request-api/cart'
+import type { Cart } from '~/types/cart'
 
-const cartStore = useCartStore();
-const queryClient = useQueryClient();
-const route = useRoute();
+const cartStore = useCartStore()
+const queryClient = useQueryClient()
+const route = useRoute()
 
-const tempCartId = route.query['c'] as Cart['id'];
+const tempCartId = route.query['c'] as Cart['id']
 
 const {
   data: dataGetCart,
-} = useGetCart({ cart_id: tempCartId });
+} = useGetCart({ cart_id: tempCartId })
 
 const {
   mutateAsync: updateCart,
-} = useUpdateCart();
+} = useUpdateCart()
 
-const shopCart = computed(() => dataGetCart.value?.cart && dataGetCart?.value?.cart.shop_carts[0]);
-const productCart = computed(() => shopCart.value?.products[0]);
+const shopCart = computed(() => dataGetCart.value?.cart && dataGetCart?.value?.cart.shop_carts[0])
+const productCart = computed(() => shopCart.value?.products[0])
 
 // const percentCoupon = computed(() => {
 //   const coupon = productCart.value?.percent_coupon;
@@ -34,22 +34,22 @@ const productCart = computed(() => shopCart.value?.products[0]);
 //   return undefined;
 // });
 
-const showNoteInput = ref(!!cartStore.stateCheckoutNow.note);
+const showNoteInput = ref(!!cartStore.stateCheckoutNow.note)
 
-const tempProductQty = ref(productCart.value?.quantity || 0);
+const tempProductQty = ref(productCart.value?.quantity || 0)
 
 const variantNames = computed(() => {
   if (productCart.value && productCart.value.inventory.variant) {
-    const [primary, sub] = productCart.value.inventory.variant.split('-');
-    return { primary, sub };
+    const [primary, sub] = productCart.value.inventory.variant.split('-')
+    return { primary, sub }
   }
-  return { primary: '', sub: '' };
-});
+  return { primary: '', sub: '' }
+})
 
 const decreaseQty = () => {
-  if (tempProductQty.value === 1) return;
-  tempProductQty.value--;
-};
+  if (tempProductQty.value === 1) return
+  tempProductQty.value--
+}
 
 watchDebounced(
   tempProductQty,
@@ -57,18 +57,18 @@ watchDebounced(
     const { summary_order } = await updateCart({
       cart_id: tempCartId,
       quantity: tempProductQty.value,
-    });
+    })
 
     queryClient.setQueryData<ResponseGetCart>(['get-cart', tempCartId], (oldData) => {
-      if (!oldData) return oldData;
+      if (!oldData) return oldData
       return {
         ...oldData,
         summary_order,
-      };
-    });
+      }
+    })
   },
-  { debounce: 500, maxWait: 1000 }
-);
+  { debounce: 500, maxWait: 1000 },
+)
 </script>
 
 <template>

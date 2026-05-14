@@ -1,58 +1,58 @@
 <script setup lang="ts">
-import { PRODUCT_CONFIG } from '~/config/enums/product';
-import { toastCustom } from '~/config/toast';
+import { PRODUCT_CONFIG } from '~/config/enums/product'
+import { toastCustom } from '~/config/toast'
 
 const model = defineModel<File[]>({
   required: true,
-});
+})
 
-const toast = useToast();
+const toast = useToast()
 
-const fileInputRef = ref<HTMLInputElement | null>(null);
+const fileInputRef = ref<HTMLInputElement | null>(null)
 
 const state = reactive({
   fileImages: [] as File[],
   urlImages: [] as string[],
-});
+})
 
 const onPickFile = () => {
-  fileInputRef?.value?.click();
-};
+  fileInputRef?.value?.click()
+}
 
 function onFilePicked(event: Event) {
-  const target = event.target as HTMLInputElement;
-  const files = target.files as FileList;
+  const target = event.target as HTMLInputElement
+  const files = target.files as FileList
 
   if (
-    files.length > PRODUCT_CONFIG.MAX_IMAGES ||
-    files.length + state.urlImages.length > PRODUCT_CONFIG.MAX_IMAGES
+    files.length > PRODUCT_CONFIG.MAX_IMAGES
+    || files.length + state.urlImages.length > PRODUCT_CONFIG.MAX_IMAGES
   ) {
     toast.add({
       ...toastCustom.error,
       title: 'Upload failed',
       description: `You only have ${PRODUCT_CONFIG.MAX_IMAGES - state.fileImages.length} images left to upload`,
-    });
-    return;
+    })
+    return
   }
 
   for (let i = 0; i < files.length; i++) {
-    state.fileImages.push(files[i]);
-    const reader = new FileReader();
+    state.fileImages.push(files[i])
+    const reader = new FileReader()
     reader.addEventListener('load', () => {
-      state.urlImages.push(reader.result as string);
-    });
-    reader.readAsDataURL(files[i]);
+      state.urlImages.push(reader.result as string)
+    })
+    reader.readAsDataURL(files[i])
   }
 }
 
 const removeImage = (index: number) => {
-  state.fileImages.splice(index, 1);
-  state.urlImages.splice(index, 1);
-};
+  state.fileImages.splice(index, 1)
+  state.urlImages.splice(index, 1)
+}
 
 watch(state, () => {
-  model.value = state.fileImages;
-});
+  model.value = state.fileImages
+})
 </script>
 
 <template>

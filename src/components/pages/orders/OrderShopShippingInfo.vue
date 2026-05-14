@@ -1,38 +1,38 @@
 <script setup lang="ts">
-import dayjs from 'dayjs';
-import { ORDER_SHIPPING_STATUSES } from '~/config/enums/order';
-import type { ElementType } from '~/types/utils';
-import type { ResponseGetOrderShops } from '~/types/request-api/order';
+import dayjs from 'dayjs'
+import { ORDER_SHIPPING_STATUSES } from '~/config/enums/order'
+import type { ElementType } from '~/types/utils'
+import type { ResponseGetOrderShops } from '~/types/request-api/order'
 
 const { orderShop } = defineProps<{
   orderShop: ElementType<ResponseGetOrderShops['order_shops']>
-}>();
+}>()
 
 const shippingStatus = {
   [ORDER_SHIPPING_STATUSES.SHIPPED]: 'Shipped',
   [ORDER_SHIPPING_STATUSES.PRE_TRANSIT]: 'Pre-transit',
   [ORDER_SHIPPING_STATUSES.IN_TRANSIT]: 'In transit',
   [ORDER_SHIPPING_STATUSES.DELIVERED]: 'Delivered',
-};
+}
 
 const estimatedDelivery = computed(() => {
   if (dayjs(orderShop.shipping.estimated_delivery).isValid()) {
-    return dayjs(orderShop.shipping.estimated_delivery).format('MMM DD');
+    return dayjs(orderShop.shipping.estimated_delivery).format('MMM DD')
   }
-  return '';
-});
+  return ''
+})
 
 const shippingStatusUpdatedAt = computed(() => {
   if (dayjs(orderShop.shipping.updated_at).isValid()) {
-    return dayjs(orderShop.shipping.updated_at).format('MMM DD, YYYY');
+    return dayjs(orderShop.shipping.updated_at).format('MMM DD, YYYY')
   }
-  return '';
-});
+  return ''
+})
 
 const fromCountries = computed(() => {
-  if (!orderShop.shipping.from_countries) return;
-  return orderShop.shipping.from_countries.toString().replace(',', ', ');
-});
+  if (!orderShop.shipping.from_countries) return
+  return orderShop.shipping.from_countries.toString().replace(',', ', ')
+})
 </script>
 
 <template>

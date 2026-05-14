@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ROUTES } from '~/config/enums/routes';
-import { useGetCurrentUser } from '~/services/user';
+import { ROUTES } from '~/config/enums/routes'
+import { useGetCurrentUser } from '~/services/user'
 
-const { data: dataUserAuth } = useGetCurrentUser();
+const { data: dataUserAuth } = useGetCurrentUser()
 </script>
 
 <template>

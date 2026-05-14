@@ -5,32 +5,32 @@
 const props = defineProps<{
   steps: string[]
   disabled: boolean
-}>();
+}>()
 
 const model = defineModel<number>({
   required: true,
   default: 0,
-});
+})
 
-const widthAddition = 17.2;
-const steps = props.steps;
-const widthPerStep = 100 / steps.length;
+const widthAddition = 17.2
+const steps = props.steps
+const widthPerStep = 100 / steps.length
 
 const currentStep = computed(() => {
   if (model.value > steps.length) {
-    return steps.length;
+    return steps.length
   }
-  return model.value;
-});
+  return model.value
+})
 
 const valueProgress = computed(() => {
-  return (widthPerStep + widthAddition) * currentStep.value;
-});
+  return (widthPerStep + widthAddition) * currentStep.value
+})
 
 const clickStepDone = (index: number) => {
-  if (props.disabled) return;
-  model.value = index;
-};
+  if (props.disabled) return
+  model.value = index
+}
 </script>
 
 <template>

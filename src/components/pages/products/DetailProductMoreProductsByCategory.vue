@@ -1,19 +1,19 @@
 <script lang="ts" setup>
-import type { Category } from '~/types/category';
-import { useGetProducts } from '~/services/product';
+import type { Category } from '~/types/category'
+import { useGetProducts } from '~/services/product'
 
-const limit = 12;
+const limit = 12
 
 const { categoryId } = defineProps<{
   categoryId: Category['id']
-}>();
+}>()
 
 const queryParams = computed(() => ({
   category_id: categoryId,
   limit,
-}));
+}))
 
-const { data } = useGetProducts(queryParams);
+const { data } = useGetProducts(queryParams)
 </script>
 
 <template>

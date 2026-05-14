@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import { consola } from 'consola';
-import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types';
-import { createProductBodySchema, createProductInventorySchema } from '~/schemas/request/shop-product.schema';
+import { consola } from 'consola'
+import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
+import { createProductBodySchema, createProductInventorySchema } from '~/schemas/request/shop-product.schema'
 import {
   isDigitalOpts,
   PRODUCT_CONFIG,
   PRODUCT_STATES,
   PRODUCT_VARIANT_TYPES,
-  productWhoMadeOpts
-} from '~/config/enums/product';
-import { ROUTES } from '~/config/enums/routes';
-import { toastCustom } from '~/config/toast';
-import { CreateShippingProductDialog } from '#components';
+  productWhoMadeOpts,
+} from '~/config/enums/product'
+import { ROUTES } from '~/config/enums/routes'
+import { toastCustom } from '~/config/toast'
+import { CreateShippingProductDialog } from '#components'
 import {
   useShopCreateProduct,
   useShopPublishProduct,
-  useShopSetProductImagesByKeys
-} from '~/services/shop';
-import { useIssueProductImageUploadUrl } from '~/services/upload';
+  useShopSetProductImagesByKeys,
+} from '~/services/shop'
+import { useIssueProductImageUploadUrl } from '~/services/upload'
 import type {
   CombineVariant,
   CreateProductBody,
@@ -27,31 +27,31 @@ import type {
   StateCombineVariant,
   StateNoneVariant,
   StateSingleVariant,
-  StateSubmit
-} from '~/types/request-api/shop-product';
-import type { PickPartial } from '~/types/utils';
+  StateSubmit,
+} from '~/types/request-api/shop-product'
+import type { PickPartial } from '~/types/utils'
 
-const router = useRouter();
-const toast = useToast();
-const modal = useModal();
+const router = useRouter()
+const toast = useToast()
+const modal = useModal()
 
-const fileImages = ref<File[]>([]);
-const formRef = ref();
-const isProductHaveVariants = ref(false);
-const loadingSubmit = ref(false);
-const btnSubmitRef = ref();
-const enabledButtonSubmit = ref(false);
-const countValidate = ref(0);
+const fileImages = ref<File[]>([])
+const formRef = ref()
+const isProductHaveVariants = ref(false)
+const loadingSubmit = ref(false)
+const btnSubmitRef = ref()
+const enabledButtonSubmit = ref(false)
+const countValidate = ref(0)
 
-const shipping = ref<CreateProductShipping | undefined>();
+const shipping = ref<CreateProductShipping | undefined>()
 
 const noneVariant = reactive<StateNoneVariant>({
   stock: 1,
-});
+})
 
-const singleVariant = reactive<StateSingleVariant>({});
+const singleVariant = reactive<StateSingleVariant>({})
 
-const combineVariant = reactive<StateCombineVariant>({});
+const combineVariant = reactive<StateCombineVariant>({})
 
 const stateSubmit = reactive<StateSubmit>({
   who_made: productWhoMadeOpts[0].id,
@@ -60,49 +60,49 @@ const stateSubmit = reactive<StateSubmit>({
   variant_type: PRODUCT_VARIANT_TYPES.NONE,
   attributes: [],
   tags: [],
-});
+})
 
 const {
   mutateAsync: createProduct,
-} = useShopCreateProduct();
+} = useShopCreateProduct()
 
 const {
   mutateAsync: publishProduct,
-} = useShopPublishProduct();
+} = useShopPublishProduct()
 
 const {
   mutateAsync: setProductImagesByKeys,
-} = useShopSetProductImagesByKeys();
+} = useShopSetProductImagesByKeys()
 
 const {
   mutateAsync: issueProductImageUploadUrl,
-} = useIssueProductImageUploadUrl();
+} = useIssueProductImageUploadUrl()
 
 const showCreateShippingProductDialog = () => {
   modal.open(CreateShippingProductDialog, {
     initData: shipping.value,
     onApply(val) {
-      shipping.value = val;
+      shipping.value = val
     },
-  });
-};
+  })
+}
 
 const validateForm = (values: CreateProductBody): FormError[] => {
-  let errors: FormError[] = [];
-  countValidate.value++;
+  let errors: FormError[] = []
+  countValidate.value++
 
-  const result = createProductBodySchema.safeParse(values);
+  const result = createProductBodySchema.safeParse(values)
   if (!result.success) {
     errors = result.error.issues.map((detail) => {
-      const path = detail.path.at(-1);
+      const path = detail.path.at(-1)
       return {
         path: typeof path === 'string' ? path : '',
         message: detail.message,
-      };
-    });
+      }
+    })
   }
-  return errors;
-};
+  return errors
+}
 
 type CreateProductSubmitBody = {
   shipping: CreateProductShipping
@@ -110,34 +110,34 @@ type CreateProductSubmitBody = {
   NoneVariant |
   SingleVariant |
   CombineVariant
-);
+)
 
 async function uploadImage(productId: string) {
   if (fileImages.value.length === 0) {
-    consola.error('images is invalid');
-    return;
+    consola.error('images is invalid')
+    return
   }
 
-  const promisesUploadImages = [];
-  const storageKeys = [];
+  const promisesUploadImages = []
+  const storageKeys = []
 
   for (let i = 0; i < fileImages.value.length; i++) {
     const { presigned_url, key } = await issueProductImageUploadUrl({
       productId,
       contentType: fileImages.value[i].type,
       assetType: 'original',
-    });
+    })
 
     if (!presigned_url || !key) {
       toast.add({
         ...toastCustom.error,
         title: 'Oops',
         description: 'Something wrong',
-      });
-      return;
+      })
+      return
     }
 
-    storageKeys.push(key);
+    storageKeys.push(key)
 
     const promise = useFetch(presigned_url, {
       method: 'PUT',
@@ -145,27 +145,27 @@ async function uploadImage(productId: string) {
         'Content-Type': fileImages.value[i].type,
       },
       body: fileImages.value[i],
-    });
+    })
 
-    promisesUploadImages.push(promise);
+    promisesUploadImages.push(promise)
   }
 
-  await Promise.all(promisesUploadImages);
+  await Promise.all(promisesUploadImages)
 
-  return storageKeys;
+  return storageKeys
 }
 
 function mapAttributes(
-  attributes: NonNullable<CreateProductBody['attributes']>
+  attributes: NonNullable<CreateProductBody['attributes']>,
 ): RequestCreateProductDraftBody['attributes'] {
   return attributes.map(attribute => ({
     categoryAttributeId: attribute.attribute_id,
     selectedOptionId: attribute.selected,
-  }));
+  }))
 }
 
 function mapInventoryAndVariants(
-  bodyData: CreateProductSubmitBody
+  bodyData: CreateProductSubmitBody,
 ): Pick<RequestCreateProductDraftBody, 'inventory' | 'variants'> {
   if (bodyData.variant_type === PRODUCT_VARIANT_TYPES.NONE) {
     return {
@@ -177,12 +177,12 @@ function mapInventoryAndVariants(
           stock: bodyData.stock,
         },
       ],
-    };
+    }
   }
 
   if (bodyData.variant_type === PRODUCT_VARIANT_TYPES.SINGLE) {
     const variants = bodyData.variant_options.map((variant, index) => {
-      const clientKey = `variant-${index + 1}`;
+      const clientKey = `variant-${index + 1}`
 
       return {
         clientKey,
@@ -194,8 +194,8 @@ function mapInventoryAndVariants(
           sku: variant.sku,
           stock: variant.stock,
         },
-      };
-    });
+      }
+    })
 
     return {
       variants: variants.map(variant => ({
@@ -203,12 +203,12 @@ function mapInventoryAndVariants(
         optionValue1: variant.optionValue1,
       })),
       inventory: variants.map(variant => variant.inventory),
-    };
+    }
   }
 
   const variants = bodyData.variant_options.flatMap((variant, parentIndex) => {
     return variant.variant_options.map((subVariant, childIndex) => {
-      const clientKey = `variant-${parentIndex + 1}-${childIndex + 1}`;
+      const clientKey = `variant-${parentIndex + 1}-${childIndex + 1}`
 
       return {
         clientKey,
@@ -221,9 +221,9 @@ function mapInventoryAndVariants(
           sku: subVariant.sku,
           stock: subVariant.stock,
         },
-      };
-    });
-  });
+      }
+    })
+  })
 
   return {
     variants: variants.map(variant => ({
@@ -232,11 +232,11 @@ function mapInventoryAndVariants(
       optionValue2: variant.optionValue2,
     })),
     inventory: variants.map(variant => variant.inventory),
-  };
+  }
 }
 
 function mapShipping(
-  data: CreateProductShipping
+  data: CreateProductShipping,
 ): RequestCreateProductDraftBody['shipping'] {
   return {
     originCountry: data.country,
@@ -248,46 +248,46 @@ function mapShipping(
       service: destination.service,
       chargeType: destination.charge,
     })),
-  };
+  }
 }
 
 async function onSubmit(event: FormSubmitEvent<CreateProductBody>) {
-  const dataSubmit = event.data as PickPartial<CreateProductBody, 'attributes' | 'tags'>;
+  const dataSubmit = event.data as PickPartial<CreateProductBody, 'attributes' | 'tags'>
 
   if (fileImages.value.length === 0) {
-    consola.error('images is invalid');
-    return;
+    consola.error('images is invalid')
+    return
   }
   if (!shipping.value) {
-    consola.error('shipping be undefined');
-    return;
+    consola.error('shipping be undefined')
+    return
   }
   if (dataSubmit.tags && dataSubmit.tags.length === 0) {
-    delete dataSubmit.tags;
+    delete dataSubmit.tags
   }
   if (dataSubmit.attributes && dataSubmit.attributes.length === 0) {
-    delete dataSubmit.attributes;
+    delete dataSubmit.attributes
   }
 
   let bodyData: CreateProductSubmitBody = {
     ...dataSubmit,
     shipping: shipping.value,
-  } as CreateProductSubmitBody;
+  } as CreateProductSubmitBody
   switch (bodyData.variant_type) {
     case 'none':
-      bodyData = { ...bodyData, ...noneVariant as NoneVariant };
-      break;
+      bodyData = { ...bodyData, ...noneVariant as NoneVariant }
+      break
     case 'single':
-      if (!singleVariant.variant_options) return;
-      bodyData = { ...bodyData, ...singleVariant as SingleVariant };
-      break;
+      if (!singleVariant.variant_options) return
+      bodyData = { ...bodyData, ...singleVariant as SingleVariant }
+      break
     case 'combine':
-      if (!combineVariant.variant_options) return;
-      bodyData = { ...bodyData, ...combineVariant as CombineVariant };
-      break;
+      if (!combineVariant.variant_options) return
+      bodyData = { ...bodyData, ...combineVariant as CombineVariant }
+      break
   }
 
-  loadingSubmit.value = true;
+  loadingSubmit.value = true
 
   try {
     const productDraft = await createProduct({
@@ -299,22 +299,22 @@ async function onSubmit(event: FormSubmitEvent<CreateProductBody>) {
       nonTaxable: false,
       variantType: bodyData.variant_type,
       variantGroupName:
-        bodyData.variant_type === PRODUCT_VARIANT_TYPES.NONE ?
-          undefined :
-          bodyData.variant_group_name,
+        bodyData.variant_type === PRODUCT_VARIANT_TYPES.NONE
+          ? undefined
+          : bodyData.variant_group_name,
       variantSubGroupName:
-        bodyData.variant_type === PRODUCT_VARIANT_TYPES.COMBINE ?
-          bodyData.variant_sub_group_name :
-          undefined,
-      attributes: bodyData.attributes?.length ?
-        mapAttributes(bodyData.attributes) :
-        undefined,
+        bodyData.variant_type === PRODUCT_VARIANT_TYPES.COMBINE
+          ? bodyData.variant_sub_group_name
+          : undefined,
+      attributes: bodyData.attributes?.length
+        ? mapAttributes(bodyData.attributes)
+        : undefined,
       ...mapInventoryAndVariants(bodyData),
       shipping: mapShipping(bodyData.shipping),
-    });
+    })
 
-    const storageKeys = await uploadImage(productDraft.id);
-    if (!storageKeys) return;
+    const storageKeys = await uploadImage(productDraft.id)
+    if (!storageKeys) return
 
     await setProductImagesByKeys({
       id: productDraft.id,
@@ -322,65 +322,65 @@ async function onSubmit(event: FormSubmitEvent<CreateProductBody>) {
         storageKey: key,
         rank: index + 1,
       })),
-    });
+    })
 
     if (stateSubmit.state === PRODUCT_STATES.ACTIVE) {
-      await publishProduct(productDraft.id);
+      await publishProduct(productDraft.id)
     }
 
     toast.add({
       ...toastCustom.success,
-      title: stateSubmit.state === PRODUCT_STATES.ACTIVE ?
-        'Create product success' :
-        'Save draft success',
-    });
-    await router.push(ROUTES.ACCOUNT + ROUTES.SHOP + ROUTES.PRODUCTS);
+      title: stateSubmit.state === PRODUCT_STATES.ACTIVE
+        ? 'Create product success'
+        : 'Save draft success',
+    })
+    await router.push(ROUTES.ACCOUNT + ROUTES.SHOP + ROUTES.PRODUCTS)
   }
   catch (error) {
     toast.add({
       ...toastCustom.error,
       title: 'Create product failed',
-    });
+    })
   }
 
-  loadingSubmit.value = false;
+  loadingSubmit.value = false
 }
 
 function onErrorFrom(event: FormErrorEvent) {
   event.errors.sort((a, b) => {
-    const sortingArr = ['description', 'title'];
-    return sortingArr.indexOf(b.path) - sortingArr.indexOf(a.path);
-  });
-  const element = document.getElementById(event.errors[0].id);
-  element?.focus();
-  element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const sortingArr = ['description', 'title']
+    return sortingArr.indexOf(b.path) - sortingArr.indexOf(a.path)
+  })
+  const element = document.getElementById(event.errors[0].id)
+  element?.focus()
+  element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
 
 // enable button submit if valid
 watchDebounced(
   () => [stateSubmit, noneVariant, fileImages.value, shipping],
   () => {
-    const baseParsed = createProductBodySchema.safeParse(stateSubmit);
-    const conditions = [baseParsed.success, fileImages.value.length > 0, shipping.value];
+    const baseParsed = createProductBodySchema.safeParse(stateSubmit)
+    const conditions = [baseParsed.success, fileImages.value.length > 0, shipping.value]
 
     if (stateSubmit.variant_type === PRODUCT_VARIANT_TYPES.NONE) {
-      const resultParsed = createProductInventorySchema.safeParse(noneVariant);
-      conditions.push(resultParsed.success);
+      const resultParsed = createProductInventorySchema.safeParse(noneVariant)
+      conditions.push(resultParsed.success)
     }
-    enabledButtonSubmit.value = conditions.every(Boolean);
+    enabledButtonSubmit.value = conditions.every(Boolean)
   },
-  { debounce: 500, maxWait: 1000, deep: true }
-);
+  { debounce: 500, maxWait: 1000, deep: true },
+)
 
 watch(isProductHaveVariants, () => {
   if (isProductHaveVariants.value) {
-    noneVariant.price = undefined;
-    noneVariant.stock = 1;
+    noneVariant.price = undefined
+    noneVariant.stock = 1
   }
-  stateSubmit.variant_type = isProductHaveVariants.value ?
-    PRODUCT_VARIANT_TYPES.SINGLE :
-    PRODUCT_VARIANT_TYPES.NONE;
-});
+  stateSubmit.variant_type = isProductHaveVariants.value
+    ? PRODUCT_VARIANT_TYPES.SINGLE
+    : PRODUCT_VARIANT_TYPES.NONE
+})
 </script>
 
 <template>

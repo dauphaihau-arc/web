@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import CartAddRemoveNote from '~/components/pages/cart/CartAddRemoveNote.vue';
-import CartShippingSelect from '~/components/pages/cart/CartShippingSelect.vue';
-import type { ResponseGetCart_ShopCart } from '~/types/request-api/cart';
+import CartAddRemoveNote from '~/components/pages/cart/CartAddRemoveNote.vue'
+import CartShippingSelect from '~/components/pages/cart/CartShippingSelect.vue'
+import type { ResponseGetCart_ShopCart } from '~/types/request-api/cart'
 
 const props = defineProps<{
   shopCart: ResponseGetCart_ShopCart
-}>();
+}>()
 </script>
 
 <template>

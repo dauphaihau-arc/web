@@ -1,62 +1,62 @@
 <script setup lang="ts">
-import type { Category } from '~/types/category';
-import type { Product } from '~/types/product';
-import { useGetSearchCategories } from '~/services/category';
+import type { Category } from '~/types/category'
+import type { Product } from '~/types/product'
+import { useGetSearchCategories } from '~/services/category'
 
-const props = defineProps<{ title?: Product['title'], category?: Category | null }>();
+const props = defineProps<{ title?: Product['title'], category?: Category | null }>()
 
 const model = defineModel<Product['category'] | undefined>({
   required: true,
-});
+})
 
-const selected = ref();
-const querySearch = ref(props.category?.name ?? '');
-const placeholder = ref('');
-const hideOptions = ref(false);
+const selected = ref()
+const querySearch = ref(props.category?.name ?? '')
+const placeholder = ref('')
+const hideOptions = ref(false)
 
 const {
   isPending: isPendingGetSearchCategories,
   mutateAsync: searchCategories,
-} = useGetSearchCategories();
+} = useGetSearchCategories()
 
 async function search(q: Category['name']) {
-  if (!q) return [];
+  if (!q) return []
 
   try {
-    const response = await searchCategories(q);
-    hideOptions.value = false;
-    return response.categories;
+    const response = await searchCategories(q)
+    hideOptions.value = false
+    return response.categories
   }
   catch (error) {
-    return [];
+    return []
   }
 }
 
 watch(selected, () => {
-  model.value = selected.value.id;
-});
+  model.value = selected.value.id
+})
 
 watchDebounced(
   () => props.title,
   async () => {
     if (props.title && !selected.value) {
-      const categories = await search(props.title);
+      const categories = await search(props.title)
       if (categories) {
         placeholder.value = categories
           .map(c => c.lastNameCategory)
           .toString()
-          .replaceAll(',', ', ');
+          .replaceAll(',', ', ')
       }
     }
   },
-  { debounce: 500, maxWait: 1000 }
-);
+  { debounce: 500, maxWait: 1000 },
+)
 
 watch(querySearch, () => {
   if (!hideOptions.value) {
-    hideOptions.value = true;
+    hideOptions.value = true
   }
-});
+})
 </script>
 
 <template>

@@ -10,32 +10,32 @@ const props = defineProps<{
   disabled?: boolean
   valueAttribute?: keyof TOption
   row?: boolean
-}>();
+}>()
 
 const radioSelectedModel = defineModel<TValue>({
   required: true,
-});
+})
 
-const slots = useSlots();
+const slots = useSlots()
 
 function optionToValue(opt: TOption) {
   if (typeof opt === 'object') {
     if (props.valueAttribute) {
-      return opt[props.valueAttribute];
+      return opt[props.valueAttribute]
     }
     else if (Object.hasOwn(opt, 'value')) {
-      return opt.value;
+      return opt.value
     }
-    return '';
+    return ''
   }
-  return opt;
+  return opt
 }
 
 function optionToLabel(opt: TOption) {
   if (typeof opt === 'object' && opt.label) {
-    return opt.label;
+    return opt.label
   }
-  return optionToValue(opt) as TValue;
+  return optionToValue(opt) as TValue
 }
 </script>
 

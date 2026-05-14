@@ -2,24 +2,24 @@
 /*
   use in cart page, cart/checkout page
  */
-import type { ResponseGetOrderShopsProduct } from '~/types/request-api/order';
+import type { ResponseGetOrderShopsProduct } from '~/types/request-api/order'
 
 const { productOrder } = defineProps<{
   productOrder: ResponseGetOrderShopsProduct
-}>();
+}>()
 
 const state = reactive({
   v1: '',
   v2: '',
-});
+})
 
 onMounted(() => {
   if (productOrder.inventory.variant) {
-    const [v1, v2] = productOrder.inventory.variant.split('-');
-    state.v1 = v1;
-    state.v2 = v2;
+    const [v1, v2] = productOrder.inventory.variant.split('-')
+    state.v1 = v1
+    state.v2 = v2
   }
-});
+})
 </script>
 
 <template>

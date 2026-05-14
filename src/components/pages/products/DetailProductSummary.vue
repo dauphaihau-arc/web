@@ -1,75 +1,75 @@
 <script setup lang="ts">
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import type { ResponseGetDetailProduct } from '~/types/request-api/product';
-import { useGetDetailProduct } from '~/services/product';
-import { PRODUCT_VARIANT_TYPES } from '~/config/enums/product';
-import type { ElementType } from '~/types/utils';
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import type { ResponseGetDetailProduct } from '~/types/request-api/product'
+import { useGetDetailProduct } from '~/services/product'
+import { PRODUCT_VARIANT_TYPES } from '~/config/enums/product'
+import type { ElementType } from '~/types/utils'
 
-dayjs.extend(relativeTime);
+dayjs.extend(relativeTime)
 
 const props = defineProps<{
   product: ResponseGetDetailProduct['product']
   inventorySelected: ElementType<ResponseGetDetailProduct['product']['inventories']>
-}>();
+}>()
 
-const route = useRoute();
+const route = useRoute()
 
 const {
   data: dataGetDetailProduct,
-} = useGetDetailProduct(route.params.id as string);
+} = useGetDetailProduct(route.params.id as string)
 
 const percentCoupon = computed(() => {
-  const coupon = dataGetDetailProduct.value?.percent_coupon;
+  const coupon = dataGetDetailProduct.value?.percent_coupon
   if (coupon) {
     return {
       ...coupon,
       endInDays: Math.abs(dayjs(coupon.start_date).diff(coupon?.end_date, 'day')),
-    };
+    }
   }
-  return undefined;
-});
+  return undefined
+})
 
 // product sale, have variants, variant not select yet
 const plusSign = computed(() => {
   if (
-    !props.inventorySelected &&
-    dataGetDetailProduct.value && dataGetDetailProduct.value.product.variant_type !== PRODUCT_VARIANT_TYPES.NONE &&
-    percentCoupon.value
+    !props.inventorySelected
+    && dataGetDetailProduct.value && dataGetDetailProduct.value.product.variant_type !== PRODUCT_VARIANT_TYPES.NONE
+    && percentCoupon.value
   ) {
-    return '+';
+    return '+'
   }
-  return '';
-});
+  return ''
+})
 
 // product no sale, have variants, variant not select yet
 const highestPrice = computed(() => {
   if (
-    !props.inventorySelected &&
-    dataGetDetailProduct.value && dataGetDetailProduct.value.product.variant_type !== PRODUCT_VARIANT_TYPES.NONE &&
-    !percentCoupon.value
+    !props.inventorySelected
+    && dataGetDetailProduct.value && dataGetDetailProduct.value.product.variant_type !== PRODUCT_VARIANT_TYPES.NONE
+    && !percentCoupon.value
   ) {
     return dataGetDetailProduct.value.product.inventories[
       dataGetDetailProduct.value.product.inventories.length - 1
-    ].price;
+    ].price
   }
-  return '';
-});
+  return ''
+})
 
 // primary price
 const lowestPrice = computed(() => {
   if (percentCoupon.value) {
-    return props.inventorySelected?.sale_price || dataGetDetailProduct.value?.product.inventories[0].sale_price;
+    return props.inventorySelected?.sale_price || dataGetDetailProduct.value?.product.inventories[0].sale_price
   }
-  return props.inventorySelected?.price || dataGetDetailProduct.value?.product.inventories[0].price;
-});
+  return props.inventorySelected?.price || dataGetDetailProduct.value?.product.inventories[0].price
+})
 
 const originPrice = computed(() => {
   if (percentCoupon.value) {
-    return props.inventorySelected?.price || dataGetDetailProduct.value?.product.inventories[0].price;
+    return props.inventorySelected?.price || dataGetDetailProduct.value?.product.inventories[0].price
   }
-  return '';
-});
+  return ''
+})
 </script>
 
 <template>

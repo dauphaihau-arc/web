@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { PAYMENT_TYPES } from '~/config/enums/order';
+import { PAYMENT_TYPES } from '~/config/enums/order'
 
-definePageMeta({ layout: 'market' });
+definePageMeta({ layout: 'market' })
 
-const cartStore = useCartStore();
+const cartStore = useCartStore()
 
 const paymentOptions = [
   { value: PAYMENT_TYPES.CARD, label: 'Credit / Debit Card', description: 'We support Mastercard, Visa and Stripe' },
   { value: PAYMENT_TYPES.CASH, label: 'Cash on delivery', description: 'Pay with cash when your order is delivered' },
-];
+]
 </script>
 
 <template>

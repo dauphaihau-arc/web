@@ -1,42 +1,42 @@
 <script setup lang="ts">
-import { StatusCodes } from 'http-status-codes';
-import type { FormSubmitEvent } from '#ui/types';
-import { FetchError } from 'ofetch';
-import { userSchema } from '~/schemas/user.schema';
-import type { User } from '~/types/user';
-import { ROUTES } from '~/config/enums/routes';
-import { useLogin } from '~/services/auth';
-import type { LoginBody } from '~/types/auth';
+import { StatusCodes } from 'http-status-codes'
+import { FetchError } from 'ofetch'
+import type { FormSubmitEvent } from '#ui/types'
+import { userSchema } from '~/schemas/user.schema'
+import type { User } from '~/types/user'
+import { ROUTES } from '~/config/enums/routes'
+import { useLogin } from '~/services/auth'
+import type { LoginBody } from '~/types/auth'
 
-const formRef = ref();
-const unknownErrorServerMsg = ref('');
-const invalidUsers = new Map<User['email'], User['password'][]>();
-const stateSubmit: Partial<LoginBody> = reactive({});
+const formRef = ref()
+const unknownErrorServerMsg = ref('')
+const invalidUsers = new Map<User['email'], User['password'][]>()
+const stateSubmit: Partial<LoginBody> = reactive({})
 
 const {
   mutateAsync: login,
   isPending: isPendingLogin,
-} = useLogin();
+} = useLogin()
 
 async function onSubmit(event: FormSubmitEvent<LoginBody>) {
-  const { email, password } = event.data;
-  const invalidUser = invalidUsers.get(email);
+  const { email, password } = event.data
+  const invalidUser = invalidUsers.get(email)
   if (invalidUser && invalidUser.includes(password)) {
-    unknownErrorServerMsg.value = 'Incorrect email or password';
-    return;
+    unknownErrorServerMsg.value = 'Incorrect email or password'
+    return
   }
 
   try {
-    await login(event.data);
+    await login(event.data)
   }
   catch (error) {
     if (error instanceof FetchError) {
       if (error.status === StatusCodes.UNAUTHORIZED) {
-        invalidUser ? invalidUser.push(password) : invalidUsers.set(email, [password]);
-        unknownErrorServerMsg.value = 'Incorrect email or password';
-        return;
+        invalidUser ? invalidUser.push(password) : invalidUsers.set(email, [password])
+        unknownErrorServerMsg.value = 'Incorrect email or password'
+        return
       }
-      unknownErrorServerMsg.value = 'An unknown error occurred. Please try again';
+      unknownErrorServerMsg.value = 'An unknown error occurred. Please try again'
     }
   }
 }

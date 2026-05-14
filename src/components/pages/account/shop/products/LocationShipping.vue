@@ -1,46 +1,46 @@
 <script setup lang="ts">
-import { useGetCountries } from '~/services/address';
-import type { ProductStandardShipping } from '~/types/product';
+import { useGetCountries } from '~/services/address'
+import type { ProductStandardShipping } from '~/types/product'
 import {
   PRODUCT_SHIPPING_CHARGE,
   PRODUCT_SHIPPING_CONFIG,
   PRODUCT_SHIPPING_OTHER_COUNTRIES_OPTIONS,
-  PRODUCT_SHIPPING_SERVICES
-} from '~/config/enums/product';
+  PRODUCT_SHIPPING_SERVICES,
+} from '~/config/enums/product'
 
 const emit = defineEmits<{
   delete: []
   onChange: [value: ProductStandardShipping]
-}>();
+}>()
 
 defineProps<{
   index: number
   disabledDelete: boolean
-}>();
+}>()
 
 const model = defineModel<Partial<ProductStandardShipping>>({
   required: true,
-});
+})
 
-const { data: dataGetCountries } = useGetCountries();
+const { data: dataGetCountries } = useGetCountries()
 
 const chargeOptions = [
   { id: PRODUCT_SHIPPING_CHARGE.FREE_SHIPPING, label: 'Free shipping' },
   { id: PRODUCT_SHIPPING_CHARGE.FIXED_PRICE, label: 'Fixed price', disabled: true },
-];
+]
 
-const shippingServiceOptions = [PRODUCT_SHIPPING_SERVICES.OTHER];
+const shippingServiceOptions = [PRODUCT_SHIPPING_SERVICES.OTHER]
 
 const deliveryTimeOptions = new Array(PRODUCT_SHIPPING_CONFIG.MAX_DAYS_DELIVERY)
   .fill('')
   .map((_, idx) => (idx + 1)
-    .toString());
+    .toString())
 
 // ------------------ Models
 const stateDeliveryTime = reactive({
   from: 0,
   to: 0,
-});
+})
 
 // ------------------ Computed ref
 const countriesOptions = computed(() => {
@@ -50,7 +50,7 @@ const countriesOptions = computed(() => {
       .map(country => ({
         label: country.name,
         value: country.Iso2!,
-      }));
+      }))
 
     return [
       {
@@ -58,53 +58,53 @@ const countriesOptions = computed(() => {
         value: PRODUCT_SHIPPING_OTHER_COUNTRIES_OPTIONS.EVERYWHERE,
       },
       ...countries,
-    ];
+    ]
   }
-  return [];
-});
+  return []
+})
 
 const countryLabel = computed(() => {
   const selectedCountry = countriesOptions.value.find(
-    option => option.value === model.value.country
-  );
+    option => option.value === model.value.country,
+  )
 
-  return selectedCountry?.label ?? model.value.country;
-});
+  return selectedCountry?.label ?? model.value.country
+})
 
 const deliveryTimeToOptions = computed(() => {
   if (stateDeliveryTime.from) {
-    return deliveryTimeOptions.slice(stateDeliveryTime.from);
+    return deliveryTimeOptions.slice(stateDeliveryTime.from)
   }
-  return deliveryTimeOptions.slice(1);
-});
+  return deliveryTimeOptions.slice(1)
+})
 
 const charge = computed({
   get() {
-    return (model.value?.charge && chargeOptions.find(opt => opt.id === model.value.charge)) || chargeOptions[0];
+    return (model.value?.charge && chargeOptions.find(opt => opt.id === model.value.charge)) || chargeOptions[0]
   },
   set(newValue) {
-    model.value.charge = newValue.id;
+    model.value.charge = newValue.id
   },
-});
+})
 
 // ----------------- Lifecycle Hooks
 onMounted(() => {
   if (model.value.delivery_time) {
-    const [from, to] = model.value.delivery_time.split('-');
-    stateDeliveryTime.from = Number(from);
-    stateDeliveryTime.to = Number(to);
+    const [from, to] = model.value.delivery_time.split('-')
+    stateDeliveryTime.from = Number(from)
+    stateDeliveryTime.to = Number(to)
   }
-});
+})
 
 // ----------------- Side effects
 watch(stateDeliveryTime, () => {
   if (stateDeliveryTime.from && stateDeliveryTime.to && stateDeliveryTime.from < stateDeliveryTime.to) {
-    model.value.delivery_time = `${stateDeliveryTime.from}-${stateDeliveryTime.to}d`;
+    model.value.delivery_time = `${stateDeliveryTime.from}-${stateDeliveryTime.to}d`
   }
   else if (stateDeliveryTime.from >= stateDeliveryTime.to) {
-    stateDeliveryTime.to = 0;
+    stateDeliveryTime.to = 0
   }
-});
+})
 </script>
 
 <template>

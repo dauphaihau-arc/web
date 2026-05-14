@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import type { Category } from '~/types/category';
-import { useGetAttributesByCategory } from '~/services/category';
-import type { ProductAttribute } from '~/types/product';
-import type { ReqAttributeOption } from '~/types/request-api/shop-product';
+import type { Category } from '~/types/category'
+import { useGetAttributesByCategory } from '~/services/category'
+import type { ProductAttribute } from '~/types/product'
+import type { ReqAttributeOption } from '~/types/request-api/shop-product'
 
 const { categoryId, attributesSelected } = defineProps<{
   categoryId?: Category['id']
   attributesSelected?: ProductAttribute[]
 }
->();
+>()
 
 const attributesModel = defineModel<ReqAttributeOption[] | undefined>({
   default: [],
   required: true,
-});
+})
 
 const {
   data: dataGetAttributesByCategory,
-} = useGetAttributesByCategory(categoryId);
+} = useGetAttributesByCategory(categoryId)
 
-const state = reactive<Record<ReqAttributeOption['attribute_id'], ReqAttributeOption['selected']>>({});
+const state = reactive<Record<ReqAttributeOption['attribute_id'], ReqAttributeOption['selected']>>({})
 
 watch(() => dataGetAttributesByCategory.value, () => {
   if (dataGetAttributesByCategory.value?.attributes) {
@@ -27,35 +27,35 @@ watch(() => dataGetAttributesByCategory.value, () => {
     if (attributesSelected) {
       attributesSelected.forEach((attr) => {
         const attribute = dataGetAttributesByCategory.value?.attributes.find(
-          item => item.id === attr.attribute
-        );
+          item => item.id === attr.attribute,
+        )
         const selectedOption = attribute?.options?.find(option =>
-          option.id === attr.selected || option.value === attr.selected
-        );
+          option.id === attr.selected || option.value === attr.selected,
+        )
 
-        state[attr.attribute] = selectedOption?.id ?? attr.selected;
-      });
+        state[attr.attribute] = selectedOption?.id ?? attr.selected
+      })
     }
     else {
       dataGetAttributesByCategory.value.attributes.forEach((attr) => {
-        state[attr.id] = '';
-      });
+        state[attr.id] = ''
+      })
     }
   }
-}, { immediate: true });
+}, { immediate: true })
 
 watch(() => state, () => {
-  const attrsValid: ReqAttributeOption[] = [];
+  const attrsValid: ReqAttributeOption[] = []
   Object.keys(state).forEach((key) => {
     if (state[key]) {
       attrsValid.push({
         attribute_id: key,
         selected: state[key],
-      });
+      })
     }
-  });
-  attributesModel.value = attrsValid;
-}, { deep: true, immediate: true });
+  })
+  attributesModel.value = attrsValid
+}, { deep: true, immediate: true })
 </script>
 
 <template>

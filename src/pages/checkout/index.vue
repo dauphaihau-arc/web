@@ -1,27 +1,27 @@
 <script lang="ts" setup>
-import { useCartStore } from '~/stores/cart';
-import { CHECKOUT_NOW_STEPS } from '~/types/pages/checkout';
-import CheckoutCreateOrderBtn from '~/components/pages/checkout/CheckoutCreateOrderBtn.vue';
-import { useGetCart } from '~/services/cart';
-import type { Cart } from '~/types/cart';
+import { useCartStore } from '~/stores/cart'
+import { CHECKOUT_NOW_STEPS } from '~/types/pages/checkout'
+import CheckoutCreateOrderBtn from '~/components/pages/checkout/CheckoutCreateOrderBtn.vue'
+import { useGetCart } from '~/services/cart'
+import type { Cart } from '~/types/cart'
 
-definePageMeta({ layout: 'market', middleware: ['auth', 'checkout'] });
+definePageMeta({ layout: 'market', middleware: ['auth', 'checkout'] })
 
-const route = useRoute();
-const cartStore = useCartStore();
+const route = useRoute()
+const cartStore = useCartStore()
 
-const tempCartId = route.query['c'] as Cart['id'];
+const tempCartId = route.query['c'] as Cart['id']
 
 const {
   isPending: isPendingGetCart,
   data: dataGetCart,
-} = useGetCart({ cart_id: tempCartId });
+} = useGetCart({ cart_id: tempCartId })
 
-const steps = ['Billing Address', 'Payment', 'Review & Confirmation'];
+const steps = ['Billing Address', 'Payment', 'Review & Confirmation']
 
 onUnmounted(() => {
-  cartStore.resetStateCheckoutNow();
-});
+  cartStore.resetStateCheckoutNow()
+})
 </script>
 
 <template>

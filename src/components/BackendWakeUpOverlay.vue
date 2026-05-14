@@ -2,11 +2,11 @@
 defineProps<{
   isBackendPending: boolean
   isBackendError: boolean
-}>();
+}>()
 
 const emit = defineEmits<{
   retry: []
-}>();
+}>()
 </script>
 
 <template>

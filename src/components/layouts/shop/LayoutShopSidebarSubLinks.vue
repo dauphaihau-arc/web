@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { ILink } from './LayoutShopSidebar.vue';
+import type { ILink } from './LayoutShopSidebar.vue'
 
-const { data } = defineProps<{ data: ILink }>();
+const { data } = defineProps<{ data: ILink }>()
 
-const routes = useRoute();
+const routes = useRoute()
 
-const isOpen = ref(false);
+const isOpen = ref(false)
 
-const itemsLinkRoutes = Array.isArray(data.sub) && data.sub.map(item => item.route);
+const itemsLinkRoutes = Array.isArray(data.sub) && data.sub.map(item => item.route)
 </script>
 
 <template>

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { DropdownItem } from '#ui/types';
-import { ROUTES } from '~/config/enums/routes';
-import { CREATE_COUPON_PAGE_TYPES } from '~/config/enums/shop';
+import type { DropdownItem } from '#ui/types'
+import { ROUTES } from '~/config/enums/routes'
+import { CREATE_COUPON_PAGE_TYPES } from '~/config/enums/shop'
 
 const {
   ACCOUNT, SHOP, PRODUCTS, COUPONS,
-} = ROUTES;
+} = ROUTES
 
 const itemsHeaderDropdown: DropdownItem[][] = [
   [
@@ -14,7 +14,7 @@ const itemsHeaderDropdown: DropdownItem[][] = [
       icon: 'i-heroicons-cube',
       shortcuts: ['P'],
       click: () => {
-        navigateTo(`${ACCOUNT}${SHOP}${PRODUCTS}/new`);
+        navigateTo(`${ACCOUNT}${SHOP}${PRODUCTS}/new`)
       },
     },
     {
@@ -22,7 +22,7 @@ const itemsHeaderDropdown: DropdownItem[][] = [
       icon: 'i-heroicons-ticket',
       shortcuts: ['C'],
       click: () => {
-        navigateTo(`${ACCOUNT}${SHOP}${COUPONS}/new?type=${CREATE_COUPON_PAGE_TYPES.PROMO_CODE}`);
+        navigateTo(`${ACCOUNT}${SHOP}${COUPONS}/new?type=${CREATE_COUPON_PAGE_TYPES.PROMO_CODE}`)
       },
     },
     {
@@ -30,11 +30,11 @@ const itemsHeaderDropdown: DropdownItem[][] = [
       icon: 'i-hugeicons:sale-tag-01',
       shortcuts: ['S'],
       click: () => {
-        navigateTo(`${ACCOUNT}${SHOP}${COUPONS}/new?type=${CREATE_COUPON_PAGE_TYPES.SALE}`);
+        navigateTo(`${ACCOUNT}${SHOP}${COUPONS}/new?type=${CREATE_COUPON_PAGE_TYPES.SALE}`)
       },
     },
   ],
-];
+]
 </script>
 
 <template>

@@ -1,25 +1,25 @@
 <script lang="ts" setup>
-import { useCartStore } from '~/stores/cart';
-import { CHECKOUT_CART_STEPS } from '~/types/pages/cart/checkout';
-import { useGetCart } from '~/services/cart';
+import { useCartStore } from '~/stores/cart'
+import { CHECKOUT_CART_STEPS } from '~/types/pages/cart/checkout'
+import { useGetCart } from '~/services/cart'
 
-definePageMeta({ layout: 'market', middleware: ['auth'] });
+definePageMeta({ layout: 'market', middleware: ['auth'] })
 
-const cartStore = useCartStore();
+const cartStore = useCartStore()
 
 const {
   isPending: isPendingGetCart,
   data: dataGetCart,
-} = useGetCart();
+} = useGetCart()
 
 onBeforeUnmount(() => {
-  cartStore.resetStateCheckoutCart();
+  cartStore.resetStateCheckoutCart()
   if (cartStore.additionInfoShopCarts.size) {
-    cartStore.additionInfoShopCarts.clear();
+    cartStore.additionInfoShopCarts.clear()
   }
-});
+})
 
-const steps = ['Billing Address', 'Payment', 'Review & Confirmation'];
+const steps = ['Billing Address', 'Payment', 'Review & Confirmation']
 </script>
 
 <template>

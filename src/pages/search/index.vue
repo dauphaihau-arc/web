@@ -1,42 +1,42 @@
 <script lang="ts" setup>
-import { useGetProducts } from '~/services/product';
+import { useGetProducts } from '~/services/product'
 
-definePageMeta({ layout: 'market' });
+definePageMeta({ layout: 'market' })
 
-const route = useRoute();
+const route = useRoute()
 
 if (!route.query?.s) {
   throw showError({
     statusCode: 404,
     statusMessage: 'Page Not Found',
     fatal: true,
-  });
+  })
 }
 
-const limit = 30;
-const page = ref(1);
+const limit = 30
+const page = ref(1)
 
 const queryParams = computed(() => {
   let defaultParams = {
     page: page.value,
     limit,
     title: route.query.s as string,
-  };
-  if (route.query) {
-    defaultParams = { ...defaultParams, ...route.query };
   }
-  return defaultParams;
-});
+  if (route.query) {
+    defaultParams = { ...defaultParams, ...route.query }
+  }
+  return defaultParams
+})
 
 const {
   data: dataGetProducts,
   refetch,
   isPending: isPendingGetProducts,
-} = useGetProducts(queryParams);
+} = useGetProducts(queryParams)
 
 watch(() => route.query.s, () => {
-  refetch();
-});
+  refetch()
+})
 </script>
 
 <template>

@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { CREATE_COUPON_PAGE_TYPES } from '~/config/enums/shop';
-import { ROUTES } from '~/config/enums/routes';
+import { CREATE_COUPON_PAGE_TYPES } from '~/config/enums/shop'
+import { ROUTES } from '~/config/enums/routes'
 
-definePageMeta({ layout: 'shop', middleware: ['auth'] });
+definePageMeta({ layout: 'shop', middleware: ['auth'] })
 
-const route = useRoute();
+const route = useRoute()
 
 if (!route.query?.type) {
-  navigateTo(`${ROUTES.ACCOUNT}${ROUTES.SHOP}`);
+  navigateTo(`${ROUTES.ACCOUNT}${ROUTES.SHOP}`)
 }
 </script>
 

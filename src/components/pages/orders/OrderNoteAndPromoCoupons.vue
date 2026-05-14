@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { ElementType } from '~/types/utils';
-import type { ResponseGetOrderShops } from '~/types/request-api/order';
+import type { ElementType } from '~/types/utils'
+import type { ResponseGetOrderShops } from '~/types/request-api/order'
 
 defineProps<{
   orderShop: ElementType<ResponseGetOrderShops['order_shops']>
-}>();
+}>()
 </script>
 
 <template>

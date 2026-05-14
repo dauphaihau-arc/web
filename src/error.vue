@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ROUTES } from '~/config/enums/routes';
+import { ROUTES } from '~/config/enums/routes'
 
 interface IError {
   statusCode: number
@@ -9,27 +9,27 @@ interface IError {
 
 const { error } = defineProps<{
   error: IError
-}>();
+}>()
 
 const errorCode = computed(() => (
-  !(error instanceof Error) || !error ?
-    500 :
-    error.statusCode
-));
+  !(error instanceof Error) || !error
+    ? 500
+    : error.statusCode
+))
 
 const errorMessage = computed(() => (
-  !(error instanceof Error) || !error ?
-    'Something went wrong' :
-    error.statusMessage
-));
+  !(error instanceof Error) || !error
+    ? 'Something went wrong'
+    : error.statusMessage
+))
 
 const handleError = () => {
-  clearError({ redirect: ROUTES.HOME });
-};
+  clearError({ redirect: ROUTES.HOME })
+}
 
 useHead({
   title: computed(() => (errorCode.value === 404 ? 'Page Not Found' : errorMessage.value)),
-});
+})
 </script>
 
 <template>

@@ -1,50 +1,50 @@
 <script lang="ts" setup>
-import { useGetProductsByMultiQueries } from '~/services/product';
-import type { Category } from '~/types/category';
+import { useGetProductsByMultiQueries } from '~/services/product'
+import type { Category } from '~/types/category'
 
-const groupSkeletons = 2;
-const limit = 7;
-const marketStore = useMarketStore();
+const groupSkeletons = 2
+const limit = 7
+const marketStore = useMarketStore()
 
-const categories = new Map<Category['id'], Category['name']>();
+const categories = new Map<Category['id'], Category['name']>()
 
 const queries = computed(() => {
   if (marketStore.userActivities?.subCategoriesLastVisit) {
     return marketStore.userActivities.subCategoriesLastVisit.map((cg) => {
-      categories.set(cg.id, cg.name);
+      categories.set(cg.id, cg.name)
       return {
         limit,
         category_id: cg.id,
-      };
-    });
+      }
+    })
   }
-  return undefined;
-});
+  return undefined
+})
 
-const result = useGetProductsByMultiQueries(queries.value);
+const result = useGetProductsByMultiQueries(queries.value)
 
 watch(result, (value) => {
   const hasNotFound = value.some((entry) => {
-    const error = entry.error;
-    const status = error?.statusCode || error?.status || error?.response?.status;
-    return status === 404;
-  });
+    const error = entry.error
+    const status = error?.statusCode || error?.status || error?.response?.status
+    return status === 404
+  })
 
   if (hasNotFound) {
-    marketStore.clearCategoryRecommendationState();
+    marketStore.clearCategoryRecommendationState()
   }
-}, { deep: true });
+}, { deep: true })
 
 const subCategories = computed(() => {
-  const filtered = result.value.filter(value => value.status === 'success');
+  const filtered = result.value.filter(value => value.status === 'success')
   if (filtered.length > 0) {
     return filtered.map(val => ({
       ...toRaw(val.data),
       categoryName: val.data?.categoryId ? categories.get(val.data.categoryId) : '',
-    }));
+    }))
   }
-  return [];
-});
+  return []
+})
 </script>
 
 <template>

@@ -1,37 +1,37 @@
 <script setup lang="ts">
-import type { FormSubmitEvent } from '#ui/types';
-import { userSchema } from '~/schemas/user.schema';
-import { useResetPassword } from '~/services/auth';
-import { ROUTES } from '~/config/enums/routes';
-import type { ResetPasswordBody } from '~/types/auth';
+import type { FormSubmitEvent } from '#ui/types'
+import { userSchema } from '~/schemas/user.schema'
+import { useResetPassword } from '~/services/auth'
+import { ROUTES } from '~/config/enums/routes'
+import type { ResetPasswordBody } from '~/types/auth'
 
-const authStore = useAuthStore();
+const authStore = useAuthStore()
 
-const formRef = ref();
-const resetPasswordSuccess = ref(false);
-const unknownErrorServerMsg = ref('');
+const formRef = ref()
+const resetPasswordSuccess = ref(false)
+const unknownErrorServerMsg = ref('')
 
-const stateSubmit: Partial<ResetPasswordBody> = reactive({});
+const stateSubmit: Partial<ResetPasswordBody> = reactive({})
 
 const {
   mutateAsync: resetPassword,
   isPending: isPendingResetPassword,
-} = useResetPassword(authStore.tokenResetPassword);
+} = useResetPassword(authStore.tokenResetPassword)
 
 async function onSubmit(event: FormSubmitEvent<ResetPasswordBody>) {
-  formRef.value.clear();
-  const { password, passwordConfirm } = event.data;
+  formRef.value.clear()
+  const { password, passwordConfirm } = event.data
   if (password !== passwordConfirm) {
-    formRef.value.setErrors([{ path: 'passwordConfirm', message: 'This password does not match. Try again.' }]);
-    return;
+    formRef.value.setErrors([{ path: 'passwordConfirm', message: 'This password does not match. Try again.' }])
+    return
   }
 
   try {
-    await resetPassword(password);
-    resetPasswordSuccess.value = true;
+    await resetPassword(password)
+    resetPasswordSuccess.value = true
   }
   catch (error) {
-    unknownErrorServerMsg.value = 'An unknown error occurred. Please try again';
+    unknownErrorServerMsg.value = 'An unknown error occurred. Please try again'
   }
 }
 </script>

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useGetCurrentUser } from '~/services/user';
+import { useGetCurrentUser } from '~/services/user'
 
-const route = useRoute();
-const { data: dataUserAuth } = useGetCurrentUser();
-const modal = useModal();
+const route = useRoute()
+const { data: dataUserAuth } = useGetCurrentUser()
+const modal = useModal()
 
-const isOpen = ref(false);
-const isLoginForm = ref(true);
+const isOpen = ref(false)
+const isLoginForm = ref(true)
 
 defineShortcuts({
   escape: {
@@ -14,17 +14,17 @@ defineShortcuts({
     whenever: [isOpen],
     handler: () => { isOpen.value = false },
   },
-});
+})
 
 watch(() => route.path, () => {
-  modal.close();
-});
+  modal.close()
+})
 
 watch(() => dataUserAuth.value?.user, () => {
   if (dataUserAuth.value?.user) {
-    modal.close();
+    modal.close()
   }
-});
+})
 </script>
 
 <template>

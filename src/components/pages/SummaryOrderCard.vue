@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { ResponseGetCart_SummaryOrder } from '~/types/request-api/cart';
+import type { ResponseGetCart_SummaryOrder } from '~/types/request-api/cart'
 
 const props = defineProps<{
   loading: boolean
   summaryOrder?: ResponseGetCart_SummaryOrder
-}>();
+}>()
 </script>
 
 <template>

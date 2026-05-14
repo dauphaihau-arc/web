@@ -1,40 +1,40 @@
 <script lang="ts" setup>
-import { ROUTES } from '~/config/enums/routes';
-import { RegisterLoginDialog } from '#components';
-import { useLogout } from '~/services/auth';
-import { useGetCurrentUser } from '~/services/user';
-import { useGetCart } from '~/services/cart';
+import { ROUTES } from '~/config/enums/routes'
+import { RegisterLoginDialog } from '#components'
+import { useLogout } from '~/services/auth'
+import { useGetCurrentUser } from '~/services/user'
+import { useGetCart } from '~/services/cart'
 
-const props = defineProps<{ show: boolean }>();
+const props = defineProps<{ show: boolean }>()
 
-const router = useRouter();
-const modal = useModal();
-const { data: dataUserAuth } = useGetCurrentUser();
+const router = useRouter()
+const modal = useModal()
+const { data: dataUserAuth } = useGetCurrentUser()
 
 const {
   data: dataGetCart,
-} = useGetCart();
+} = useGetCart()
 
 const {
   mutate: logout,
   isPending: isPendingLogout,
-} = useLogout();
+} = useLogout()
 
 const showRegisterLoginDialog = () => {
-  modal.open(RegisterLoginDialog);
-};
+  modal.open(RegisterLoginDialog)
+}
 
 const handleLogout = () => {
-  if (isPendingLogout.value) return;
-  logout();
-};
+  if (isPendingLogout.value) return
+  logout()
+}
 
 const remainProductCart = computed(() => {
   if (dataGetCart.value?.cart) {
-    return dataGetCart.value.cart.summary_cart.total_products - dataGetCart.value.cart.products_recent_update.length;
+    return dataGetCart.value.cart.summary_cart.total_products - dataGetCart.value.cart.products_recent_update.length
   }
-  return 0;
-});
+  return 0
+})
 </script>
 
 <template>

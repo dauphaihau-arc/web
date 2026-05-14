@@ -1,71 +1,71 @@
 <script setup lang="ts">
-import type { FormSubmitEvent } from '#ui/types';
-import type { UserAddress, CreateBodyUserAddressBody } from '~/types/user-address';
-import { ADDRESS_CONFIG } from '~/config/enums/address';
-import { createUserAddressSchema } from '~/schemas/user-address.schema';
-import { toastCustom } from '~/config/toast';
-import { useUpdateUserAddress } from '~/services/user';
-import { useGetCountries, useGetStatesByCountry } from '~/services/address';
+import type { FormSubmitEvent } from '#ui/types'
+import type { UserAddress, CreateBodyUserAddressBody } from '~/types/user-address'
+import { ADDRESS_CONFIG } from '~/config/enums/address'
+import { createUserAddressSchema } from '~/schemas/user-address.schema'
+import { toastCustom } from '~/config/toast'
+import { useUpdateUserAddress } from '~/services/user'
+import { useGetCountries, useGetStatesByCountry } from '~/services/address'
 
-const props = defineProps<{ dataEdit: UserAddress }>();
+const props = defineProps<{ dataEdit: UserAddress }>()
 
-const toast = useToast();
-const dialog = useModal();
-const queryClient = useQueryClient();
+const toast = useToast()
+const dialog = useModal()
+const queryClient = useQueryClient()
 
-const formRef = ref();
+const formRef = ref()
 
-const stateSubmit = reactive<Partial<CreateBodyUserAddressBody>>({ ...props.dataEdit });
+const stateSubmit = reactive<Partial<CreateBodyUserAddressBody>>({ ...props.dataEdit })
 
 const {
   data: dataGetCountries,
   isPending: isPendingGetCountries,
-} = useGetCountries();
+} = useGetCountries()
 
 const {
   data: dataGetStatesByCountry,
   isFetching: isPendingGetStates,
   refetch: refetchGetStatesByCountry,
-} = useGetStatesByCountry(computed(() => stateSubmit.country));
+} = useGetStatesByCountry(computed(() => stateSubmit.country))
 
 const {
   mutateAsync: updateUserAddress,
-} = useUpdateUserAddress();
+} = useUpdateUserAddress()
 
 const countriesOptions = computed(() => {
-  return dataGetCountries.value?.data.map(co => co.name) || [];
-});
+  return dataGetCountries.value?.data.map(co => co.name) || []
+})
 
 const stateOptions = computed(() => {
-  return dataGetStatesByCountry.value?.data.states.map(st => st.name) || [];
-});
+  return dataGetStatesByCountry.value?.data.states.map(st => st.name) || []
+})
 
 onMounted(() => {
-  refetchGetStatesByCountry();
-});
+  refetchGetStatesByCountry()
+})
 
 async function onSubmit(event: FormSubmitEvent<CreateBodyUserAddressBody>) {
-  formRef.value.clear();
+  formRef.value.clear()
   try {
-    await updateUserAddress(event.data);
+    await updateUserAddress(event.data)
     await queryClient.invalidateQueries({
       queryKey: ['get-user-addresses'],
-    });
-    await dialog.close();
+    })
+    await dialog.close()
   }
   catch (error) {
     toast.add({
       ...toastCustom.error,
       title: 'Update address failed',
-    });
+    })
   }
 }
 
 watch(() => stateSubmit.country, () => {
-  stateSubmit.state = undefined;
-  stateSubmit.zip = undefined;
-  refetchGetStatesByCountry();
-});
+  stateSubmit.state = undefined
+  stateSubmit.zip = undefined
+  refetchGetStatesByCountry()
+})
 </script>
 
 <template>

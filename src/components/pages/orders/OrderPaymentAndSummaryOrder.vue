@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { ElementType } from '~/types/utils';
-import type { ResponseGetOrderShops } from '~/types/request-api/order';
-import { PAYMENT_TYPES } from '~/config/enums/order';
+import type { ElementType } from '~/types/utils'
+import type { ResponseGetOrderShops } from '~/types/request-api/order'
+import { PAYMENT_TYPES } from '~/config/enums/order'
 
 defineProps<{
   orderShop: ElementType<ResponseGetOrderShops['order_shops']>
-}>();
+}>()
 
-const showMore = ref(false);
+const showMore = ref(false)
 </script>
 
 <template>

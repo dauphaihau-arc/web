@@ -10,22 +10,22 @@ const props = defineProps<{
   help?: string
   value: TModel
   disabled?: boolean
-}>();
+}>()
 
 const model = defineModel<TModel>({
   required: true,
-});
+})
 
-const slots = useSlots();
+const slots = useSlots()
 
 const clickRadio = () => {
-  if (props.disabled) return;
-  model.value = props.value;
-};
+  if (props.disabled) return
+  model.value = props.value
+}
 
 const isChecked = computed(() => {
-  return model.value === props.value;
-});
+  return model.value === props.value
+})
 </script>
 
 <template>

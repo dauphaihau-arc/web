@@ -1,42 +1,42 @@
 <script setup lang="ts">
-import { StatusCodes } from 'http-status-codes';
-import { FetchError } from 'ofetch';
-import { useCartStore } from '~/stores/cart';
-import { toastCustom } from '~/config/toast';
-import { COUPON_CONFIG } from '~/config/enums/coupon';
-import type { Coupon } from '~/types/coupon';
-import { useUpdateCart } from '~/services/cart';
-import type { ResponseGetCart } from '~/types/request-api/cart';
+import { StatusCodes } from 'http-status-codes'
+import { FetchError } from 'ofetch'
+import { useCartStore } from '~/stores/cart'
+import { toastCustom } from '~/config/toast'
+import { COUPON_CONFIG } from '~/config/enums/coupon'
+import type { Coupon } from '~/types/coupon'
+import { useUpdateCart } from '~/services/cart'
+import type { ResponseGetCart } from '~/types/request-api/cart'
 
-const toast = useToast();
-const cartStore = useCartStore();
-const queryClient = useQueryClient();
-const route = useRoute();
+const toast = useToast()
+const cartStore = useCartStore()
+const queryClient = useQueryClient()
+const route = useRoute()
 
-const tempCartId = route.query['c'] as string;
+const tempCartId = route.query['c'] as string
 
 const state = reactive({
   showAddCouponInput: cartStore.stateCheckoutNow.promo_codes.length > 0,
   code: '',
   errorMsg: '',
-});
+})
 
 const {
   mutateAsync: updateCart,
   isPending: isPendingUpdateCart,
 } = useUpdateCart({
   onError: undefined,
-});
+})
 
 async function addCoupon() {
-  state.errorMsg = '';
+  state.errorMsg = ''
 
-  const errorMsg = cartStore.stateCheckoutNow.invalidCodes.get(state.code);
+  const errorMsg = cartStore.stateCheckoutNow.invalidCodes.get(state.code)
   if (errorMsg) {
-    state.errorMsg = errorMsg;
-    return;
+    state.errorMsg = errorMsg
+    return
   }
-  const tempCodes = [...cartStore.stateCheckoutNow.promo_codes, state.code];
+  const tempCodes = [...cartStore.stateCheckoutNow.promo_codes, state.code]
 
   try {
     const { summary_order } = await updateCart({
@@ -44,37 +44,37 @@ async function addCoupon() {
       addition_info_temp_cart: {
         promo_codes: tempCodes,
       },
-    });
-    updateCacheSummaryOrder(summary_order);
-    state.code = '';
-    cartStore.stateCheckoutNow.promo_codes = tempCodes;
+    })
+    updateCacheSummaryOrder(summary_order)
+    state.code = ''
+    cartStore.stateCheckoutNow.promo_codes = tempCodes
   }
   catch (error) {
     if (error instanceof FetchError) {
       switch (error.status) {
         case StatusCodes.NOT_FOUND:
-          state.errorMsg = 'Coupon code not found';
-          cartStore.stateCheckoutNow.invalidCodes.set(state.code, state.errorMsg);
-          break;
+          state.errorMsg = 'Coupon code not found'
+          cartStore.stateCheckoutNow.invalidCodes.set(state.code, state.errorMsg)
+          break
         case StatusCodes.UNPROCESSABLE_ENTITY:
           toast.add({
             ...toastCustom.error,
             title: error.data.message,
-          });
-          break;
+          })
+          break
         default:
           toast.add({
             ...toastCustom.error,
             title: 'Add coupon failed',
-          });
+          })
       }
     }
   }
 }
 
 async function deleteCoupon(code: Coupon['code']) {
-  const product = cartStore.stateCheckoutNow;
-  const newPromoCodes = product.promo_codes.filter(c => c !== code);
+  const product = cartStore.stateCheckoutNow
+  const newPromoCodes = product.promo_codes.filter(c => c !== code)
 
   try {
     const { summary_order } = await updateCart({
@@ -82,22 +82,22 @@ async function deleteCoupon(code: Coupon['code']) {
       addition_info_temp_cart: {
         promo_codes: newPromoCodes,
       },
-    });
-    updateCacheSummaryOrder(summary_order);
-    product.promo_codes = newPromoCodes;
+    })
+    updateCacheSummaryOrder(summary_order)
+    product.promo_codes = newPromoCodes
   }
   catch (error) {
     toast.add({
       ...toastCustom.error,
       title: 'Delete coupon failed',
-    });
+    })
   }
 }
 
 async function toggleShowAddCouponInput() {
-  state.showAddCouponInput = !state.showAddCouponInput;
+  state.showAddCouponInput = !state.showAddCouponInput
   if (!state.showAddCouponInput) {
-    const product = cartStore.stateCheckoutNow;
+    const product = cartStore.stateCheckoutNow
 
     try {
       const { summary_order } = await updateCart({
@@ -105,35 +105,35 @@ async function toggleShowAddCouponInput() {
         addition_info_temp_cart: {
           promo_codes: [],
         },
-      });
-      updateCacheSummaryOrder(summary_order);
-      product.promo_codes = [];
+      })
+      updateCacheSummaryOrder(summary_order)
+      product.promo_codes = []
     }
     catch (error) {
       toast.add({
         ...toastCustom.error,
         title: 'Delete all coupons failed',
-      });
+      })
     }
   }
 }
 
 function updateCacheSummaryOrder(summary_order: ResponseGetCart['summary_order']) {
   queryClient.setQueryData<ResponseGetCart>(['get-cart', tempCartId], (oldData) => {
-    if (!oldData) return oldData;
-    return { ...oldData, summary_order };
-  });
+    if (!oldData) return oldData
+    return { ...oldData, summary_order }
+  })
 }
 
 const disabledAddBtn = computed(() => {
-  return isPendingUpdateCart.value ||
-    cartStore.stateCheckoutNow.promo_codes.includes(state.code) ||
-    !state.code;
-});
+  return isPendingUpdateCart.value
+    || cartStore.stateCheckoutNow.promo_codes.includes(state.code)
+    || !state.code
+})
 
 const disabledInput = computed(() => {
-  return cartStore.stateCheckoutNow.promo_codes.length === COUPON_CONFIG.MAX_USE_PER_ORDER;
-});
+  return cartStore.stateCheckoutNow.promo_codes.length === COUPON_CONFIG.MAX_USE_PER_ORDER
+})
 </script>
 
 <template>

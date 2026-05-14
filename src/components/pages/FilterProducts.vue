@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { PRODUCT_WHO_MADE } from '~/config/enums/product';
+import { PRODUCT_WHO_MADE } from '~/config/enums/product'
 
-const route = useRoute();
-const router = useRouter();
+const route = useRoute()
+const router = useRouter()
 
 const isDigitalOpts = [
   { value: 'all', label: 'All' },
   { value: 'true', label: 'Digital' },
   { value: 'false', label: 'Physical' },
-];
+]
 
 // const priceOpts = [
 //   { value: 'all', label: 'Any price' },
@@ -32,24 +32,24 @@ const productWhoMadeOpts = [
   //   id: PRODUCT_WHO_MADE.SOMEONE_ELSE,
   //   label: 'Another company or person',
   // },
-];
+]
 
 const defaultValuesState = computed(() => {
   const base = {
     is_digital: 'all',
     price: 'all',
     who_made: 'all',
-  };
-
-  const is_digital = route.query['is_digital'];
-  if (is_digital) {
-    const found = isDigitalOpts.find(item => item.value.toString() === is_digital);
-    base.is_digital = (found?.value && found.value) || 'all';
   }
-  const who_made = route.query['who_made'];
+
+  const is_digital = route.query['is_digital']
+  if (is_digital) {
+    const found = isDigitalOpts.find(item => item.value.toString() === is_digital)
+    base.is_digital = (found?.value && found.value) || 'all'
+  }
+  const who_made = route.query['who_made']
   if (who_made) {
-    const found = productWhoMadeOpts.find(item => item.value === who_made);
-    base.who_made = (found?.value && found.value) || 'all';
+    const found = productWhoMadeOpts.find(item => item.value === who_made)
+    base.who_made = (found?.value && found.value) || 'all'
   }
   // const order = route.query['order'];
   // if (order) {
@@ -57,26 +57,26 @@ const defaultValuesState = computed(() => {
   //   if (foundOption) return foundOption;
   // }
   // return options[0];
-  return base;
-});
+  return base
+})
 
-const state = reactive(defaultValuesState.value);
+const state = reactive(defaultValuesState.value)
 
-type StateKeys = keyof typeof defaultValuesState.value;
+type StateKeys = keyof typeof defaultValuesState.value
 
 watch(state, () => {
-  const routeQuery = { ...route.query } as typeof defaultValuesState.value;
+  const routeQuery = { ...route.query } as typeof defaultValuesState.value
   Object.keys(state).forEach((key) => {
     if (state[key as StateKeys] !== 'all') {
-      routeQuery[key as StateKeys] = state[key as StateKeys];
+      routeQuery[key as StateKeys] = state[key as StateKeys]
     }
     else {
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-      delete routeQuery[key as StateKeys];
+      delete routeQuery[key as StateKeys]
     }
-  });
-  router.push({ query: routeQuery });
-});
+  })
+  router.push({ query: routeQuery })
+})
 </script>
 
 <template>

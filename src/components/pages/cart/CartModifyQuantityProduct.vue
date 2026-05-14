@@ -2,53 +2,53 @@
 /*
   use in cart page, cart/checkout page
  */
-import { watchDebounced } from '@vueuse/core';
-import { useCartStore } from '~/stores/cart';
-import { useUpdateCart } from '~/services/cart';
+import { watchDebounced } from '@vueuse/core'
+import { useCartStore } from '~/stores/cart'
+import { useUpdateCart } from '~/services/cart'
 import type {
   ResponseGetCart_ProductCart,
   ResponseGetCart,
-  UpdateCartBody
-} from '~/types/request-api/cart';
-import type { Shop } from '~/types/shop';
+  UpdateCartBody,
+} from '~/types/request-api/cart'
+import type { Shop } from '~/types/shop'
 
 const props = defineProps<{
   productCart: ResponseGetCart_ProductCart
   shopId: Shop['id']
-}>();
+}>()
 
-const cartStore = useCartStore();
-const queryClient = useQueryClient();
+const cartStore = useCartStore()
+const queryClient = useQueryClient()
 
-const tempProductQty = ref(props.productCart.quantity);
+const tempProductQty = ref(props.productCart.quantity)
 
 const {
   mutate: updateCart,
 } = useUpdateCart({
   onSuccess: (data) => {
     queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], (oldData) => {
-      if (!oldData || !oldData.cart) return oldData;
-      if (data.cart === null) return { ...oldData, cart: null };
-      const foundShopCart = data.cart.shop_carts.find(sc => sc.shop.id === props.shopId);
-      if (!foundShopCart) return oldData;
+      if (!oldData || !oldData.cart) return oldData
+      if (data.cart === null) return { ...oldData, cart: null }
+      const foundShopCart = data.cart.shop_carts.find(sc => sc.shop.id === props.shopId)
+      if (!foundShopCart) return oldData
 
       // update total_shipping_fee field
       const newShopCarts = oldData.cart.shop_carts.map((sc) => {
         if (sc.shop.id === props.shopId) {
           const newProducts = sc.products.map((pc) => {
             if (pc.inventory.id === props.productCart.inventory.id) {
-              return { ...pc, quantity: tempProductQty.value };
+              return { ...pc, quantity: tempProductQty.value }
             }
-            return pc;
-          });
+            return pc
+          })
           return {
             ...sc,
             products: newProducts,
             total_shipping_fee: foundShopCart?.total_shipping_fee,
-          };
+          }
         }
-        return sc;
-      });
+        return sc
+      })
 
       return {
         ...oldData,
@@ -58,15 +58,15 @@ const {
           shop_carts: newShopCarts,
         },
         summary_order: data.summary_order,
-      };
-    });
+      }
+    })
   },
-});
+})
 
 const decreaseQty = () => {
-  if (tempProductQty.value === 1) return;
-  tempProductQty.value--;
-};
+  if (tempProductQty.value === 1) return
+  tempProductQty.value--
+}
 
 watchDebounced(
   tempProductQty,
@@ -74,7 +74,7 @@ watchDebounced(
     const body: UpdateCartBody = {
       inventory_id: props.productCart.inventory.id,
       quantity: tempProductQty.value,
-    };
+    }
 
     const addition_info_shop_carts = Array
       .from(cartStore.additionInfoShopCarts)
@@ -82,16 +82,16 @@ watchDebounced(
         shop_id: keyShopId,
         promo_codes: value?.promo_codes || [],
       }))
-      .filter(item => item.promo_codes.length > 0);
+      .filter(item => item.promo_codes.length > 0)
 
     if (addition_info_shop_carts.length > 0) {
-      body.addition_info_shop_carts = addition_info_shop_carts;
+      body.addition_info_shop_carts = addition_info_shop_carts
     }
 
-    updateCart(body);
+    updateCart(body)
   },
-  { debounce: 500, maxWait: 1000 }
-);
+  { debounce: 500, maxWait: 1000 },
+)
 </script>
 
 <template>

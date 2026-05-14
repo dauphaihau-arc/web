@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { ROUTES } from '~/config/enums/routes';
-import type { ResponseGetProducts_Product } from '~/types/request-api/product';
-import { PRODUCT_CONFIG } from '~/config/enums/product';
+import { ROUTES } from '~/config/enums/routes'
+import type { ResponseGetProducts_Product } from '~/types/request-api/product'
+import { PRODUCT_CONFIG } from '~/config/enums/product'
 
 const { product } = defineProps<{
   product: ResponseGetProducts_Product
-}>();
+}>()
 
-const router = useRouter();
+const router = useRouter()
 
 const freeShipCoupon = computed(() => {
-  return product?.free_ship_coupon;
-});
+  return product?.free_ship_coupon
+})
 
 const salePercentCoupon = computed(() => {
-  return product?.percent_coupon;
-});
+  return product?.percent_coupon
+})
 </script>
 
 <template>

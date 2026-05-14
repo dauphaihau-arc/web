@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { ORDER_CONFIG } from '~/config/enums/order';
-import { useGetCart } from '~/services/cart';
-import { ROUTES } from '~/config/enums/routes';
+import { ORDER_CONFIG } from '~/config/enums/order'
+import { useGetCart } from '~/services/cart'
+import { ROUTES } from '~/config/enums/routes'
 
 const {
   isPending: isPendingGetCart,
   data: dataGetCart,
-} = useGetCart();
-const router = useRouter();
+} = useGetCart()
+const router = useRouter()
 
 const isTotalOrderInvalid = computed(() => {
   if (dataGetCart.value) {
-    return !(dataGetCart.value.summary_order.total_price < ORDER_CONFIG.MAX_ORDER_TOTAL);
+    return !(dataGetCart.value.summary_order.total_price < ORDER_CONFIG.MAX_ORDER_TOTAL)
   }
-  return true;
-});
+  return true
+})
 </script>
 
 <template>

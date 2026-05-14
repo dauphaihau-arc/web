@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { PRODUCT_CONFIG } from '~/config/enums/product';
-import type { StateNoneVariant } from '~/types/request-api/shop-product';
+import { PRODUCT_CONFIG } from '~/config/enums/product'
+import type { StateNoneVariant } from '~/types/request-api/shop-product'
 
-const props = defineProps<{ disabled?: boolean }>();
+const props = defineProps<{ disabled?: boolean }>()
 
 const noneVariantModel = defineModel<StateNoneVariant>('noneVariant', {
   default: {
     stock: 1,
   },
-});
+})
 </script>
 
 <template>

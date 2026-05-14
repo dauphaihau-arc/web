@@ -1,53 +1,53 @@
 <script setup lang="ts">
-import type { FormSubmitEvent } from '#ui/types';
-import { FetchError } from 'ofetch';
-import { StatusCodes } from 'http-status-codes';
-import { z } from 'zod';
-import { userSchema } from '~/schemas/user.schema';
-import type { User } from '~/types/user';
-import { LOCAL_STORAGE_KEYS } from '~/config/enums/local-storage-keys';
-import { useRegister } from '~/services/auth';
-import type { RegisterBody } from '~/types/auth';
+import { FetchError } from 'ofetch'
+import { StatusCodes } from 'http-status-codes'
+import { z } from 'zod'
+import type { FormSubmitEvent } from '#ui/types'
+import { userSchema } from '~/schemas/user.schema'
+import type { User } from '~/types/user'
+import { LOCAL_STORAGE_KEYS } from '~/config/enums/local-storage-keys'
+import { useRegister } from '~/services/auth'
+import type { RegisterBody } from '~/types/auth'
 
-const invalidEmails: string[] = [];
-const formRef = ref();
-const unknownErrorServerMsg = ref('');
+const invalidEmails: string[] = []
+const formRef = ref()
+const unknownErrorServerMsg = ref('')
 
-const stateSubmit: Partial<RegisterBody> = reactive({});
+const stateSubmit: Partial<RegisterBody> = reactive({})
 const registerSchema = z.object({
   displayName: userSchema.shape.name,
   email: userSchema.shape.email,
   password: userSchema.shape.password,
-});
+})
 
 const {
   mutateAsync: register,
   isPending: isPendingRegister,
-} = useRegister();
+} = useRegister()
 
 async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
-  formRef.value.clear();
+  formRef.value.clear()
   if (invalidEmails.includes(event.data.email)) {
-    formRef.value.setErrors([{ path: 'email', message: 'Invalid email' }]);
-    return;
+    formRef.value.setErrors([{ path: 'email', message: 'Invalid email' }])
+    return
   }
 
-  const userPreferences = parseJSON<User['market_preferences']>(localStorage[LOCAL_STORAGE_KEYS.GUEST_PREFERENCES]);
+  const userPreferences = parseJSON<User['market_preferences']>(localStorage[LOCAL_STORAGE_KEYS.GUEST_PREFERENCES])
 
   try {
     await register({
       ...event.data,
       market_preferences: userPreferences,
-    });
+    })
   }
   catch (error) {
     if (error instanceof FetchError) {
       if (error.status === StatusCodes.CONFLICT) {
-        formRef.value.setErrors([{ path: 'email', message: 'Email already taken' }]);
-        invalidEmails.push(event.data.email);
-        return;
+        formRef.value.setErrors([{ path: 'email', message: 'Email already taken' }])
+        invalidEmails.push(event.data.email)
+        return
       }
-      unknownErrorServerMsg.value = 'An unknown error occurred. Please try again';
+      unknownErrorServerMsg.value = 'An unknown error occurred. Please try again'
     }
   }
 }

@@ -1,21 +1,21 @@
 <script lang="ts" setup>
-import { ROUTES } from '~/config/enums/routes';
-import { isBackendWakeUpError } from '~/composables/useBackendStatus';
-import { useGetOrderShopsByCheckoutSession } from '~/services/order';
+import { ROUTES } from '~/config/enums/routes'
+import { isBackendWakeUpError } from '~/composables/useBackendStatus'
+import { useGetOrderShopsByCheckoutSession } from '~/services/order'
 
-definePageMeta({ layout: 'market' });
+definePageMeta({ layout: 'market' })
 
-const route = useRoute();
-const cartStore = useCartStore();
+const route = useRoute()
+const cartStore = useCartStore()
 
-const session_id = route.query['session_id'] as string;
+const session_id = route.query['session_id'] as string
 
 if (!session_id && cartStore.orderShops.length === 0) {
   throw showError({
     statusCode: 404,
     statusMessage: 'Page Not Found',
     fatal: true,
-  });
+  })
 }
 
 const {
@@ -25,37 +25,37 @@ const {
 } = useGetOrderShopsByCheckoutSession(session_id, {
   onResponseError: ({ response }) => {
     if ([502, 503, 504].includes(response.status)) {
-      return;
+      return
     }
 
     throw showError({
       statusCode: 404,
       statusMessage: 'Page Not Found',
       fatal: true,
-    });
+    })
   },
-});
+})
 
 const orderShops = computed(() => {
   if (dataGetOrderShopsByCheckoutSession.value?.order_shops) {
-    return dataGetOrderShopsByCheckoutSession.value.order_shops;
+    return dataGetOrderShopsByCheckoutSession.value.order_shops
   }
   else if (cartStore.orderShops.length > 0) {
-    return cartStore.orderShops;
+    return cartStore.orderShops
   }
-  return [];
-});
+  return []
+})
 
 const isBackendWakingUp = computed(() => (
-  !!errorGetOrderShopsByCheckoutSession.value &&
-  isBackendWakeUpError(errorGetOrderShopsByCheckoutSession.value)
-));
+  !!errorGetOrderShopsByCheckoutSession.value
+  && isBackendWakeUpError(errorGetOrderShopsByCheckoutSession.value)
+))
 
 onUnmounted(() => {
   if (cartStore.orderShops) {
-    cartStore.orderShops = [];
+    cartStore.orderShops = []
   }
-});
+})
 </script>
 
 <template>

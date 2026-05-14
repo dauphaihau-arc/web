@@ -1,38 +1,38 @@
 <script lang="ts" setup>
-import { useGetProducts } from '~/services/product';
+import { useGetProducts } from '~/services/product'
 
-definePageMeta({ layout: 'market' });
+definePageMeta({ layout: 'market' })
 
-const route = useRoute();
-const marketStore = useMarketStore();
+const route = useRoute()
+const marketStore = useMarketStore()
 
-const limit = 10;
-const page = ref(1);
+const limit = 10
+const page = ref(1)
 
 const params = computed(() => {
-  const category = marketStore.categoriesBreadcrumb.find(c => c.to === route.path);
+  const category = marketStore.categoriesBreadcrumb.find(c => c.to === route.path)
   if (!category) {
-    return undefined;
+    return undefined
   }
   let defaultParams = {
     category_id: category.id,
     page: page.value,
     limit,
-  };
-  if (route.query) {
-    defaultParams = { ...defaultParams, ...route.query };
   }
-  return defaultParams;
-});
+  if (route.query) {
+    defaultParams = { ...defaultParams, ...route.query }
+  }
+  return defaultParams
+})
 
 const {
   data: dataGetProducts,
   isPending: isPendingGetProducts,
-} = useGetProducts(params);
+} = useGetProducts(params)
 
 watch(() => page.value, () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}, { immediate: true });
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}, { immediate: true })
 </script>
 
 <template>

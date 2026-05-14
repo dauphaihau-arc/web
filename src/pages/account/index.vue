@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { useGetCurrentUser } from '~/services/user';
+import { useGetCurrentUser } from '~/services/user'
 
-definePageMeta({ layout: 'market', middleware: ['auth'] });
+definePageMeta({ layout: 'market', middleware: ['auth'] })
 
-const { data: dataUserAuth } = useGetCurrentUser();
+const { data: dataUserAuth } = useGetCurrentUser()
 </script>
 
 <template>

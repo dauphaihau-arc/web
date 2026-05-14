@@ -1,100 +1,100 @@
 <script setup lang="ts">
-import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types';
+import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import {
-  COUPON_APPLIES_TO, COUPON_CONFIG, COUPON_MIN_ORDER_TYPES, COUPON_TYPES
-} from '~/config/enums/coupon';
-import type { RequiredFields } from '~/types/utils';
-import { ROUTES } from '~/config/enums/routes';
-import { toastCustom } from '~/config/toast';
-import { useShopCreateCoupon } from '~/services/shop';
-import { PRODUCT_CONFIG } from '~/config/enums/product';
-import { createPromoCodeBodySchema } from '~/schemas/request/shop-coupon.schema';
-import type { CreatePromoCodeBody } from '~/types/coupon';
+  COUPON_APPLIES_TO, COUPON_CONFIG, COUPON_MIN_ORDER_TYPES, COUPON_TYPES,
+} from '~/config/enums/coupon'
+import type { RequiredFields } from '~/types/utils'
+import { ROUTES } from '~/config/enums/routes'
+import { toastCustom } from '~/config/toast'
+import { useShopCreateCoupon } from '~/services/shop'
+import { PRODUCT_CONFIG } from '~/config/enums/product'
+import { createPromoCodeBodySchema } from '~/schemas/request/shop-coupon.schema'
+import type { CreatePromoCodeBody } from '~/types/coupon'
 
-type StateSubmit = RequiredFields<Partial<CreatePromoCodeBody>, 'type' | 'applies_to' | 'min_order_type'>;
+type StateSubmit = RequiredFields<Partial<CreatePromoCodeBody>, 'type' | 'applies_to' | 'min_order_type'>
 
-const router = useRouter();
-const toast = useToast();
+const router = useRouter()
+const toast = useToast()
 
 const {
   mutateAsync: createCoupon,
   isPending: isPendingCreateCoupon,
-} = useShopCreateCoupon();
+} = useShopCreateCoupon()
 
 const couponTypeOptions = [
   { value: COUPON_TYPES.PERCENTAGE, label: 'Percentage off' },
   { value: COUPON_TYPES.FIXED_AMOUNT, label: 'Fixed amount off' },
   { value: COUPON_TYPES.FREE_SHIP, label: 'Free standard shipping' },
-];
+]
 
 const couponMinOrderOptions = [
   { value: COUPON_MIN_ORDER_TYPES.NONE, label: 'none' },
   { value: COUPON_MIN_ORDER_TYPES.NUMBER_OF_PRODUCTS, label: 'Number of items' },
   { value: COUPON_MIN_ORDER_TYPES.ORDER_TOTAL, label: 'Order total' },
-];
+]
 
 const couponAppliesToOptions = [
   { value: COUPON_APPLIES_TO.ALL, label: 'All products' },
   { value: COUPON_APPLIES_TO.SPECIFIC, label: 'Select products' },
-];
+]
 
 const state = reactive<StateSubmit>({
   type: COUPON_TYPES.PERCENTAGE,
   min_order_type: COUPON_MIN_ORDER_TYPES.NONE,
   applies_to: COUPON_APPLIES_TO.ALL,
-});
+})
 
-const formRef = ref();
-const btnSubmit = ref();
+const formRef = ref()
+const btnSubmit = ref()
 
 const validateForm = (stateValidate: CreatePromoCodeBody): FormError[] => {
-  let errors: FormError[] = [];
+  let errors: FormError[] = []
 
-  const result = createPromoCodeBodySchema.safeParse(stateValidate);
+  const result = createPromoCodeBodySchema.safeParse(stateValidate)
 
   if (!result.success) {
     errors = result.error.issues.map((detail) => {
-      const path = detail.path.at(-1);
+      const path = detail.path.at(-1)
       if (path === 'start_date' || path === 'end_date') {
-        log.error(`${path} is invalid: `, stateValidate[path]);
+        log.error(`${path} is invalid: `, stateValidate[path])
         return {
           path: 'duration',
           message: 'Invalid date',
-        };
+        }
       }
       return {
         path: typeof path === 'string' ? path : '',
         message: detail.message,
-      };
-    });
-    log.error('zod parse errors', errors);
+      }
+    })
+    log.error('zod parse errors', errors)
   }
-  return errors;
-};
+  return errors
+}
 
 async function onSubmit(event: FormSubmitEvent<CreatePromoCodeBody>) {
-  formRef.value.clear();
+  formRef.value.clear()
 
   try {
-    await createCoupon(event.data);
-    await router.push(`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.COUPONS}`);
+    await createCoupon(event.data)
+    await router.push(`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.COUPONS}`)
     toast.add({
       ...toastCustom.success,
       title: 'Create promo code success',
-    });
+    })
   }
   catch (error) {
     toast.add({
       ...toastCustom.error,
       title: 'Create promo code failed',
-    });
+    })
   }
 }
 
 function onError(event: FormErrorEvent) {
-  const element = document.getElementById(event.errors[0].id);
-  element?.focus();
-  element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const element = document.getElementById(event.errors[0].id)
+  element?.focus()
+  element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
 </script>
 

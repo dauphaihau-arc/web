@@ -1,29 +1,29 @@
 <script lang="ts" setup>
-import type { Product } from '~/types/product';
+import type { Product } from '~/types/product'
 
 const { images } = defineProps<{
   images: Product['images']
-}>();
+}>()
 
-const selectedImg = ref(0);
+const selectedImg = ref(0)
 
 const image_url_selected = computed(() => {
-  return `domainAwsS3/${images[selectedImg.value].relative_url}`;
-});
+  return `domainAwsS3/${images[selectedImg.value].relative_url}`
+})
 
 const onSelectPrevImg = () => {
   if (!selectedImg.value) {
-    return;
+    return
   }
-  selectedImg.value--;
-};
+  selectedImg.value--
+}
 
 const onSelectNextImg = () => {
   if (selectedImg.value === images.length - 1) {
-    return;
+    return
   }
-  selectedImg.value++;
-};
+  selectedImg.value++
+}
 </script>
 
 <template>

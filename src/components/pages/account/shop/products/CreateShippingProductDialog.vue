@@ -1,28 +1,28 @@
 <script setup lang="ts">
-import type { FormErrorEvent, FormSubmitEvent } from '#ui/types';
-import { useGetCountries } from '~/services/address';
-import { ADDRESS_CONFIG } from '~/config/enums/address';
-import type { ProductShipping, ProductStandardShipping } from '~/types/product';
-import { PRODUCT_SHIPPING_CHARGE, PRODUCT_SHIPPING_SERVICES } from '~/config/enums/product';
-import { createProductShippingSchema } from '~/schemas/request/shop-product.schema';
-import { useGetCurrentUser } from '~/services/user';
-import type { CreateProductShipping } from '~/types/request-api/shop-product';
+import type { FormErrorEvent, FormSubmitEvent } from '#ui/types'
+import { useGetCountries } from '~/services/address'
+import { ADDRESS_CONFIG } from '~/config/enums/address'
+import type { ProductShipping, ProductStandardShipping } from '~/types/product'
+import { PRODUCT_SHIPPING_CHARGE, PRODUCT_SHIPPING_SERVICES } from '~/config/enums/product'
+import { createProductShippingSchema } from '~/schemas/request/shop-product.schema'
+import { useGetCurrentUser } from '~/services/user'
+import type { CreateProductShipping } from '~/types/request-api/shop-product'
 
 type TStateSubmit = Partial<Pick<ProductShipping, 'country' | 'zip' | 'process_time'>> & {
   standard_shipping: Partial<ProductStandardShipping>[]
-};
+}
 
 const emit = defineEmits<{
   apply: [value: CreateProductShipping]
-}>();
+}>()
 
 const props = defineProps<{
   initData?: CreateProductShipping
-}>();
+}>()
 
-const modal = useModal();
-const { data: dataGetCountries } = useGetCountries();
-const { data: dataUserAuth } = useGetCurrentUser();
+const modal = useModal()
+const { data: dataGetCountries } = useGetCountries()
+const { data: dataUserAuth } = useGetCurrentUser()
 
 const processTimeOptions = [
   {
@@ -37,7 +37,7 @@ const processTimeOptions = [
     id: '1-3d',
     label: '1-3 days',
   },
-];
+]
 
 const countriesOptions = computed(() => {
   if (dataGetCountries.value) {
@@ -46,76 +46,76 @@ const countriesOptions = computed(() => {
       .map(country => ({
         label: country.name,
         value: country.Iso2!,
-      }));
+      }))
   }
-  return [];
-});
+  return []
+})
 
-const processTimeIdSelected = ref(processTimeOptions[0].id);
+const processTimeIdSelected = ref(processTimeOptions[0].id)
 
 const stateSubmit = reactive<TStateSubmit>({
   process_time: processTimeIdSelected.value,
   standard_shipping: [],
-});
+})
 
-const keyAnotherLocationList = ref(0);
-const keyValidateLocations = ref(0);
-const formRef = ref();
+const keyAnotherLocationList = ref(0)
+const keyValidateLocations = ref(0)
+const formRef = ref()
 
 const ensureOriginShipping = () => {
   if (!stateSubmit.standard_shipping[0]) {
     stateSubmit.standard_shipping.unshift({
       service: PRODUCT_SHIPPING_SERVICES.OTHER,
       charge: PRODUCT_SHIPPING_CHARGE.FREE_SHIPPING,
-    });
+    })
   }
 
-  return stateSubmit.standard_shipping[0];
-};
+  return stateSubmit.standard_shipping[0]
+}
 
 onMounted(() => {
   if (props.initData) {
-    Object.assign(stateSubmit, props.initData);
-    ensureOriginShipping();
-    return;
+    Object.assign(stateSubmit, props.initData)
+    ensureOriginShipping()
+    return
   }
   if (dataUserAuth.value?.user?.market_preferences?.region) {
-    const region = dataUserAuth.value.user.market_preferences.region;
+    const region = dataUserAuth.value.user.market_preferences.region
     const selectedCountry = dataGetCountries.value?.data.find(country =>
-      country.Iso2 === region || country.name === region
-    );
+      country.Iso2 === region || country.name === region,
+    )
 
-    stateSubmit.country = selectedCountry?.Iso2 ?? region;
-    ensureOriginShipping().country = stateSubmit.country;
+    stateSubmit.country = selectedCountry?.Iso2 ?? region
+    ensureOriginShipping().country = stateSubmit.country
   }
-});
+})
 
 const addLocation = () => {
   stateSubmit.standard_shipping.push({
     service: PRODUCT_SHIPPING_SERVICES.OTHER,
     charge: PRODUCT_SHIPPING_CHARGE.FREE_SHIPPING,
-  });
-};
+  })
+}
 
 const deleteLocation = (idx: number) => {
-  stateSubmit.standard_shipping = stateSubmit.standard_shipping.filter((_value, index) => index !== idx);
-  keyAnotherLocationList.value++;
-  keyValidateLocations.value = 0;
-};
+  stateSubmit.standard_shipping = stateSubmit.standard_shipping.filter((_value, index) => index !== idx)
+  keyAnotherLocationList.value++
+  keyValidateLocations.value = 0
+}
 
 function onSubmit(event: FormSubmitEvent<CreateProductShipping>) {
-  emit('apply', event.data);
-  modal.close();
+  emit('apply', event.data)
+  modal.close()
 }
 
 watch(() => stateSubmit.country, () => {
-  ensureOriginShipping().country = stateSubmit.country;
-});
+  ensureOriginShipping().country = stateSubmit.country
+})
 
 async function onError(event: FormErrorEvent) {
-  const element = document.getElementById(event.errors[0].id);
-  element?.focus();
-  element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const element = document.getElementById(event.errors[0].id)
+  element?.focus()
+  element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
 </script>
 

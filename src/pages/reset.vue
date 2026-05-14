@@ -1,39 +1,39 @@
 <script lang="ts" setup>
-import { StatusCodes } from 'http-status-codes';
-import { ROUTES } from '~/config/enums/routes';
-import { useVerifyToken } from '~/services/auth';
-import { RESET_PASSWORD_VIEWS } from '~/config/enums/common';
+import { StatusCodes } from 'http-status-codes'
+import { ROUTES } from '~/config/enums/routes'
+import { useVerifyToken } from '~/services/auth'
+import { RESET_PASSWORD_VIEWS } from '~/config/enums/common'
 
-definePageMeta({ layout: 'market' });
+definePageMeta({ layout: 'market' })
 
-const route = useRoute();
-const authStore = useAuthStore();
-const token = route.query?.t as string;
+const route = useRoute()
+const authStore = useAuthStore()
+const token = route.query?.t as string
 
 useVerifyToken(token, {
   onResponse({ response }) {
     if (response.status === StatusCodes.OK) {
-      authStore.tokenResetPassword = token;
-      navigateTo('/reset?v=1');
-      currentView.value = RESET_PASSWORD_VIEWS.RESET_PASSWORD;
+      authStore.tokenResetPassword = token
+      navigateTo('/reset?v=1')
+      currentView.value = RESET_PASSWORD_VIEWS.RESET_PASSWORD
     }
     else {
-      currentView.value = RESET_PASSWORD_VIEWS.TOKEN_INVALID;
+      currentView.value = RESET_PASSWORD_VIEWS.TOKEN_INVALID
     }
   },
-});
+})
 
-const currentView = ref(token ? '' : RESET_PASSWORD_VIEWS.SEND_EMAIL);
+const currentView = ref(token ? '' : RESET_PASSWORD_VIEWS.SEND_EMAIL)
 
 const changeView = (step: RESET_PASSWORD_VIEWS) => {
-  currentView.value = step;
-};
+  currentView.value = step
+}
 
 onMounted(() => {
   if (route.query?.v) {
-    navigateTo(ROUTES.RESET);
+    navigateTo(ROUTES.RESET)
   }
-});
+})
 </script>
 
 <template>

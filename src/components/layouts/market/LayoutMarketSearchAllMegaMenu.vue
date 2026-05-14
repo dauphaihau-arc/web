@@ -1,35 +1,35 @@
 <script lang="ts" setup>
-import { useGetProducts } from '~/services/product';
-import { ROUTES } from '~/config/enums/routes';
+import { useGetProducts } from '~/services/product'
+import { ROUTES } from '~/config/enums/routes'
 
-const props = defineProps<{ show: boolean }>();
+const props = defineProps<{ show: boolean }>()
 
-const route = useRoute();
-const router = useRouter();
-const limit = 5;
+const route = useRoute()
+const router = useRouter()
+const limit = 5
 
 const state = reactive({
   search: '',
-});
+})
 
 watch(() => [route.query.s, props.show], () => {
   if (!route.query?.s || !props.show) {
-    state.search = '';
+    state.search = ''
   }
-});
+})
 
 const params = computed(() => ({
   limit,
   title: state.search,
   select: 'title',
-}));
+}))
 
 const {
   data: dataGetProducts,
   refetch: refetchGetProducts,
 } = useGetProducts(params, {
   enabled: false,
-});
+})
 
 const redirectSearch = () => {
   router.push({
@@ -37,20 +37,20 @@ const redirectSearch = () => {
     query: {
       s: state.search,
     },
-  });
-};
+  })
+}
 
 watchDebounced(
   () => state.search,
   () => {
-    refetchGetProducts();
+    refetchGetProducts()
   },
-  { debounce: 500, maxWait: 1000 }
-);
+  { debounce: 500, maxWait: 1000 },
+)
 
 function highlightText(text: string) {
-  const re = new RegExp(state.search, 'gi');
-  return text.replace(re, match => `<span class="font-bold">${match}</span>`);
+  const re = new RegExp(state.search, 'gi')
+  return text.replace(re, match => `<span class="font-bold">${match}</span>`)
 }
 </script>
 

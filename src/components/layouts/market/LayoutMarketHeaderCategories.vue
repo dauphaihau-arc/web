@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import type { Category } from '~/types/category';
-import { ROUTES } from '~/config/enums/routes';
-import { useGetRootCategories } from '~/services/category';
+import type { Category } from '~/types/category'
+import { ROUTES } from '~/config/enums/routes'
+import { useGetRootCategories } from '~/services/category'
 
-const { data: dataRootCategories } = useGetRootCategories();
-const marketStore = useMarketStore();
+const { data: dataRootCategories } = useGetRootCategories()
+const marketStore = useMarketStore()
 
 const redirectByCategory = (rootCategory: Category) => {
-  const to = `${ROUTES.C}/${rootCategory.name.replaceAll(' ', '-').toLowerCase()}`;
-  marketStore.categoriesBreadcrumb = [{ ...rootCategory, to }];
-  marketStore.userActivities.rootCategoryProductVisited = rootCategory;
-  navigateTo(to);
-};
+  const to = `${ROUTES.C}/${rootCategory.name.replaceAll(' ', '-').toLowerCase()}`
+  marketStore.categoriesBreadcrumb = [{ ...rootCategory, to }]
+  marketStore.userActivities.rootCategoryProductVisited = rootCategory
+  navigateTo(to)
+}
 </script>
 
 <template>

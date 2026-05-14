@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import { useCartStore } from '~/stores/cart';
-import { CHECKOUT_NOW_STEPS } from '~/types/pages/checkout';
+import { useCartStore } from '~/stores/cart'
+import { CHECKOUT_NOW_STEPS } from '~/types/pages/checkout'
 
-const cartStore = useCartStore();
+const cartStore = useCartStore()
 
 const changeUserAddress = () => {
-  cartStore.stateCheckoutNow.currentStep = CHECKOUT_NOW_STEPS.ADDRESS_SHIPPING;
-};
+  cartStore.stateCheckoutNow.currentStep = CHECKOUT_NOW_STEPS.ADDRESS_SHIPPING
+}
 const changePayment = () => {
-  cartStore.stateCheckoutNow.currentStep = CHECKOUT_NOW_STEPS.PAYMENT;
-};
+  cartStore.stateCheckoutNow.currentStep = CHECKOUT_NOW_STEPS.PAYMENT
+}
 </script>
 
 <template>

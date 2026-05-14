@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { useShopGetDetailProduct } from '~/services/shop';
-import type { Product } from '~/types/product';
+import { useShopGetDetailProduct } from '~/services/shop'
+import type { Product } from '~/types/product'
 
-definePageMeta({ layout: 'shop', middleware: ['auth'] });
+definePageMeta({ layout: 'shop', middleware: ['auth'] })
 
-const route = useRoute();
+const route = useRoute()
 
 const {
   isPending,
@@ -14,9 +14,9 @@ const {
       statusCode: 404,
       statusMessage: 'Page Not Found',
       fatal: true,
-    });
+    })
   },
-});
+})
 </script>
 
 <template>

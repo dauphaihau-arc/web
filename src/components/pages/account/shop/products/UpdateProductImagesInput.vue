@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { PRODUCT_CONFIG } from '~/config/enums/product';
-import type { Product, ProductImage } from '~/types/product';
-import { toastCustom } from '~/config/toast';
+import { PRODUCT_CONFIG } from '~/config/enums/product'
+import type { Product, ProductImage } from '~/types/product'
+import { toastCustom } from '~/config/toast'
 
 const props = withDefaults(
   defineProps<{
@@ -11,69 +11,69 @@ const props = withDefaults(
   }>(),
   {
     images: () => [],
-  }
-);
+  },
+)
 
 const fileImages = defineModel<File[]>('newFileImages', {
   default: [],
-});
+})
 
 const idsImageForDelete = defineModel<Pick<ProductImage, 'id'>[]>('idsImageDelete', {
   default: [],
-});
+})
 
-const toast = useToast();
+const toast = useToast()
 
-const fileInputRef = ref<HTMLInputElement | null>(null);
+const fileInputRef = ref<HTMLInputElement | null>(null)
 
 const state = reactive({
   urlImages: [] as string[],
   imagesInDB: [...props.images],
   // fileImages: [] as File[],
   // idsImagesForDelete: [] as ProductImage['id'][],
-});
+})
 
 const onPickFile = () => {
-  fileInputRef?.value?.click();
-};
+  fileInputRef?.value?.click()
+}
 
 function onFilePicked(event: Event) {
-  const target = event.target as HTMLInputElement;
-  const files = target.files as FileList;
-  const totalImagesCurrent = state.urlImages.length + state.imagesInDB.length;
+  const target = event.target as HTMLInputElement
+  const files = target.files as FileList
+  const totalImagesCurrent = state.urlImages.length + state.imagesInDB.length
   if (
-    files.length > PRODUCT_CONFIG.MAX_IMAGES ||
-    files.length + totalImagesCurrent > PRODUCT_CONFIG.MAX_IMAGES
+    files.length > PRODUCT_CONFIG.MAX_IMAGES
+    || files.length + totalImagesCurrent > PRODUCT_CONFIG.MAX_IMAGES
   ) {
     toast.add({
       ...toastCustom.error,
       title: 'Upload failed',
       description: `You only have ${PRODUCT_CONFIG.MAX_IMAGES - totalImagesCurrent} images left to upload`,
-    });
-    return;
+    })
+    return
   }
   for (let i = 0; i < files.length; i++) {
     // state.fileImages.push(files[i]);
-    fileImages.value = [...fileImages.value, files[i]];
-    const reader = new FileReader();
+    fileImages.value = [...fileImages.value, files[i]]
+    const reader = new FileReader()
     reader.addEventListener('load', () => {
-      state.urlImages.push(reader.result as string);
-    });
-    reader.readAsDataURL(files[i]);
+      state.urlImages.push(reader.result as string)
+    })
+    reader.readAsDataURL(files[i])
   }
 }
 
 const removeImage = (index: number) => {
-  fileImages.value = fileImages.value.toSpliced(index, 1);
-  state.urlImages.splice(index, 1);
+  fileImages.value = fileImages.value.toSpliced(index, 1)
+  state.urlImages.splice(index, 1)
   // state.fileImages.splice(index, 1);
-};
+}
 
 const removeImageInDB = (id: ProductImage['id'], index: number) => {
-  state.imagesInDB.splice(index, 1);
+  state.imagesInDB.splice(index, 1)
   // state.idsImagesForDelete.push(id);
-  idsImageForDelete.value = [...idsImageForDelete.value, { id }];
-};
+  idsImageForDelete.value = [...idsImageForDelete.value, { id }]
+}
 
 // watch(state, () => {
 //   emit('onChange', {

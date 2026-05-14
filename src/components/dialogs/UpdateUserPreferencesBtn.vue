@@ -1,28 +1,28 @@
 <script setup lang="ts">
-import type { FormSubmitEvent } from '#ui/types';
-import type { MARKET_REGIONS } from '~/config/enums/market';
+import type { FormSubmitEvent } from '#ui/types'
+import type { MARKET_REGIONS } from '~/config/enums/market'
 import {
   MARKET_CONFIG,
   MARKET_CURRENCIES,
-  MARKET_LANGUAGES, MARKET_REGION_EMOJIS
-} from '~/config/enums/market';
-import type { UpdateUserBody } from '~/types/user';
-import { useGetCurrentUser, useUpdateUser } from '~/services/user';
-import { useGetCountries } from '~/services/address';
-import type { ElementType } from '~/types/utils';
+  MARKET_LANGUAGES, MARKET_REGION_EMOJIS,
+} from '~/config/enums/market'
+import type { UpdateUserBody } from '~/types/user'
+import { useGetCurrentUser, useUpdateUser } from '~/services/user'
+import { useGetCountries } from '~/services/address'
+import type { ElementType } from '~/types/utils'
 
 type State = {
   region: MARKET_REGIONS
   language: ElementType<typeof languageOpts>
   currency: ElementType<typeof currencyOpts>
-};
+}
 
-const marketStore = useMarketStore();
-const { data: dataUserAuth } = useGetCurrentUser();
+const marketStore = useMarketStore()
+const { data: dataUserAuth } = useGetCurrentUser()
 const {
   mutateAsync: updateUser,
   isPending: isPendingUpdateUser,
-} = useUpdateUser();
+} = useUpdateUser()
 
 const {
   data: dataGetCountries,
@@ -30,9 +30,9 @@ const {
   refetch: refetchGetCountries,
 } = useGetCountries({
   enabled: false,
-});
+})
 
-const isOpenDialog = ref(false);
+const isOpenDialog = ref(false)
 
 const currencyOpts = [
   {
@@ -79,7 +79,7 @@ const currencyOpts = [
     id: MARKET_CURRENCIES.VND,
     label: '₫ Vietnamese Dong (VND)',
   },
-];
+]
 
 const languageOpts = [
   {
@@ -94,59 +94,59 @@ const languageOpts = [
     id: MARKET_LANGUAGES.FR,
     label: 'Français (FR)',
   },
-];
+]
 
 const regionOpts = computed(() => {
   if (dataGetCountries.value?.data) {
-    return dataGetCountries.value.data.map(country => country.name);
+    return dataGetCountries.value.data.map(country => country.name)
   }
-  return [];
-});
+  return []
+})
 
 const state = reactive<State>({
   region: MARKET_CONFIG.BASE_REGION,
   language: languageOpts[0],
   currency: currencyOpts[0],
-});
+})
 
 watch(() => [marketStore.guestPreferences, dataUserAuth.value?.user], () => {
-  const userPreferences = dataUserAuth.value?.user?.market_preferences || marketStore.guestPreferences;
+  const userPreferences = dataUserAuth.value?.user?.market_preferences || marketStore.guestPreferences
   if (userPreferences) {
-    const currencyOpt = currencyOpts.find(opt => opt.id === userPreferences.currency);
+    const currencyOpt = currencyOpts.find(opt => opt.id === userPreferences.currency)
     if (currencyOpt) {
-      state.currency = currencyOpt;
+      state.currency = currencyOpt
     }
-    state.region = userPreferences.region;
+    state.region = userPreferences.region
   }
-}, { immediate: true });
+}, { immediate: true })
 
 watch(isOpenDialog, async () => {
   if (isOpenDialog.value && regionOpts.value.length === 0) {
-    refetchGetCountries();
+    refetchGetCountries()
   }
-});
+})
 
 const onSubmit = async (event: FormSubmitEvent<State>) => {
-  const { currency, language, region } = event.data;
+  const { currency, language, region } = event.data
 
   const preferences: UpdateUserBody['market_preferences'] = {
     currency: currency.id,
     language: language.id,
     region,
-  };
+  }
 
   if (dataUserAuth.value?.user) {
     await updateUser({
       market_preferences: preferences,
-    });
+    })
   }
   else {
-    marketStore.guestPreferences = preferences;
+    marketStore.guestPreferences = preferences
   }
 
-  isOpenDialog.value = false;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-};
+  isOpenDialog.value = false
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
 </script>
 
 <template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { ResponseGetDetailProduct } from '~/types/request-api/product';
+import type { ResponseGetDetailProduct } from '~/types/request-api/product'
 
-const { product } = defineProps<ResponseGetDetailProduct>();
+const { product } = defineProps<ResponseGetDetailProduct>()
 
 const items = [
   {
@@ -20,14 +20,14 @@ const items = [
     disabled: true,
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed neque elit, tristique placerat feugiat ac, facilisis vitae arcu. Proin eget egestas augue. Praesent ut sem nec arcu pellentesque aliquet. Duis dapibus diam vel metus tempus vulputate.',
   },
-];
+]
 
 const processTime = computed(() => {
   if (product?.shipping?.process_time) {
-    return product.shipping.process_time.substring(0, product.shipping.process_time.length - 1);
+    return product.shipping.process_time.substring(0, product.shipping.process_time.length - 1)
   }
-  return '';
-});
+  return ''
+})
 </script>
 
 <template>

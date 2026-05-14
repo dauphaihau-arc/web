@@ -1,36 +1,36 @@
 <script setup lang="ts">
-import { PRODUCT_CONFIG } from '~/config/enums/product';
-import type { Product } from '~/types/product';
+import { PRODUCT_CONFIG } from '~/config/enums/product'
+import type { Product } from '~/types/product'
 
 const tagsModel = defineModel<Product['tags']>({
   default: [],
   required: true,
-});
+})
 
 const state = reactive({
   input: '',
   errorMsgInput: '',
-});
+})
 
 const addTag = () => {
-  tagsModel.value = [...tagsModel.value, state.input];
-  state.input = '';
-};
+  tagsModel.value = [...tagsModel.value, state.input]
+  state.input = ''
+}
 
 const removeTag = (index: number) => {
-  tagsModel.value = tagsModel.value.toSpliced(index, 1);
-};
+  tagsModel.value = tagsModel.value.toSpliced(index, 1)
+}
 
 watchDebounced(
   () => state.input,
   () => {
-    state.errorMsgInput = '';
+    state.errorMsgInput = ''
     if (tagsModel.value.includes(state.input)) {
-      state.errorMsgInput = 'Duplicate';
+      state.errorMsgInput = 'Duplicate'
     }
   },
-  { debounce: 300, maxWait: 1000 }
-);
+  { debounce: 300, maxWait: 1000 },
+)
 </script>
 
 <template>

@@ -2,33 +2,33 @@
 /*
   use in cart page, cart/checkout page
  */
-import { ROUTES } from '~/config/enums/routes';
-import type { Shop } from '~/types/shop';
-import { useDeleteProductCart } from '~/services/cart';
-import type { ResponseGetCart_ProductCart, ResponseGetCart } from '~/types/request-api/cart';
+import { ROUTES } from '~/config/enums/routes'
+import type { Shop } from '~/types/shop'
+import { useDeleteProductCart } from '~/services/cart'
+import type { ResponseGetCart_ProductCart, ResponseGetCart } from '~/types/request-api/cart'
 
 const props = defineProps<{
   productCart: ResponseGetCart_ProductCart
   shopId: Shop['id']
-}>();
+}>()
 
-const route = useRoute();
-const queryClient = useQueryClient();
+const route = useRoute()
+const queryClient = useQueryClient()
 
 const {
   mutate: deleteProductCart,
 } = useDeleteProductCart(props.productCart.inventory.id, {
   onSuccess(data) {
     queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], (oldData) => {
-      if (!oldData || !oldData.cart) return oldData;
-      if (!data.cart) return { ...oldData, cart: data.cart };
-      const foundShopCart = data.cart.shop_carts.find(sc => sc.shop.id === props.shopId);
+      if (!oldData || !oldData.cart) return oldData
+      if (!data.cart) return { ...oldData, cart: data.cart }
+      const foundShopCart = data.cart.shop_carts.find(sc => sc.shop.id === props.shopId)
 
-      let newShopCarts = oldData.cart.shop_carts;
+      let newShopCarts = oldData.cart.shop_carts
 
       // products field be empty
       if (!foundShopCart) {
-        newShopCarts = data.cart.shop_carts;
+        newShopCarts = data.cart.shop_carts
       }
       else {
         // update total_shipping_fee & products fields
@@ -38,10 +38,10 @@ const {
               ...sc,
               products: foundShopCart.products.filter(prod => prod.inventory.id !== props.productCart.inventory.id),
               total_shipping_fee: foundShopCart?.total_shipping_fee,
-            };
+            }
           }
-          return sc;
-        });
+          return sc
+        })
       }
 
       return {
@@ -53,10 +53,10 @@ const {
           shop_carts: newShopCarts,
         },
         summary_order: data.summary_order,
-      };
-    });
+      }
+    })
   },
-});
+})
 
 // const percentCoupon = computed(() => {
 //   const coupon = props.productCart.percent_coupon;
@@ -70,8 +70,8 @@ const {
 // });
 
 const goToDetailProduct = () => {
-  navigateTo(`${ROUTES.PRODUCTS}/${props.productCart.product.id}`);
-};
+  navigateTo(`${ROUTES.PRODUCTS}/${props.productCart.product.id}`)
+}
 </script>
 
 <template>

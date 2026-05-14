@@ -3,29 +3,29 @@ const { page, pageCount, total = 0 } = defineProps<{
   page: number
   pageCount: number
   total: number | undefined
-}>();
+}>()
 
-const emit = defineEmits<{ (e: 'onChangePage', value: number): void }>();
+const emit = defineEmits<{ (e: 'onChangePage', value: number): void }>()
 
-const isBottomPage = ref(false);
-const pageRef = ref(page);
+const isBottomPage = ref(false)
+const pageRef = ref(page)
 
 onMounted(() => {
-  window.addEventListener('scroll', onScroll);
-});
+  window.addEventListener('scroll', onScroll)
+})
 
 onBeforeUnmount(() => {
-  window.removeEventListener('scroll', onScroll);
-});
+  window.removeEventListener('scroll', onScroll)
+})
 
 function onScroll() {
-  const { scrollTop, offsetHeight } = document.documentElement;
-  isBottomPage.value = scrollTop + window.innerHeight > offsetHeight;
+  const { scrollTop, offsetHeight } = document.documentElement
+  isBottomPage.value = scrollTop + window.innerHeight > offsetHeight
 }
 
 watch(pageRef, () => {
-  emit('onChangePage', pageRef.value);
-});
+  emit('onChangePage', pageRef.value)
+})
 </script>
 
 <template>

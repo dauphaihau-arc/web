@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import dayjs from 'dayjs';
-import type { Coupon } from '~/types/coupon';
+import dayjs from 'dayjs'
+import type { Coupon } from '~/types/coupon'
 
 type State = {
   startDate: dayjs.Dayjs
   endDate: dayjs.Dayjs | null
-};
+}
 
-const startDateModel = defineModel<Coupon['start_date']>('startDate');
-const endDateModel = defineModel<Coupon['end_date']>('endDate');
+const startDateModel = defineModel<Coupon['start_date']>('startDate')
+const endDateModel = defineModel<Coupon['end_date']>('endDate')
 
-const formatDisplayOnBtn = 'D MMM HH:mm';
+const formatDisplayOnBtn = 'D MMM HH:mm'
 
 const hintDurationOptions = [
   {
@@ -43,43 +43,43 @@ const hintDurationOptions = [
     startDate: dayjs(),
     endDate: dayjs().add(30, 'day'),
   },
-];
+]
 
-const hintDurationOptionsMap = new Map(hintDurationOptions.map((item, index) => [item.duration, index]));
+const hintDurationOptionsMap = new Map(hintDurationOptions.map((item, index) => [item.duration, index]))
 
-const selectedHintDuration = ref<number | undefined>(0);
+const selectedHintDuration = ref<number | undefined>(0)
 
 const state = reactive<State>({
   startDate: hintDurationOptions[0].startDate,
   endDate: hintDurationOptions[0].endDate,
-});
+})
 
 onMounted(() => {
-  startDateModel.value = state.startDate.toDate();
+  startDateModel.value = state.startDate.toDate()
   if (state.endDate) {
-    endDateModel.value = state.endDate.toDate();
+    endDateModel.value = state.endDate.toDate()
   }
-});
+})
 
 function onChangeDuration(idx: number) {
-  selectedHintDuration.value = idx;
-  state.startDate = hintDurationOptions[idx].startDate;
-  state.endDate = hintDurationOptions[idx].endDate;
-  startDateModel.value = hintDurationOptions[idx].startDate.toDate();
-  endDateModel.value = hintDurationOptions[idx].endDate.toDate();
+  selectedHintDuration.value = idx
+  state.startDate = hintDurationOptions[idx].startDate
+  state.endDate = hintDurationOptions[idx].endDate
+  startDateModel.value = hintDurationOptions[idx].startDate.toDate()
+  endDateModel.value = hintDurationOptions[idx].endDate.toDate()
 }
 
 watch(state, () => {
-  const durationStartEnd = state.startDate.diff(state.endDate, 'minute');
-  selectedHintDuration.value = hintDurationOptionsMap.get(durationStartEnd);
+  const durationStartEnd = state.startDate.diff(state.endDate, 'minute')
+  selectedHintDuration.value = hintDurationOptionsMap.get(durationStartEnd)
 
   if (state.endDate && state.endDate.isBefore(state.startDate)) {
-    state.endDate = null;
+    state.endDate = null
   }
 
-  startDateModel.value = state.startDate.toDate();
-  endDateModel.value = state.endDate ? state.endDate.toDate() : undefined;
-});
+  startDateModel.value = state.startDate.toDate()
+  endDateModel.value = state.endDate ? state.endDate.toDate() : undefined
+})
 </script>
 
 <template>

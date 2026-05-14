@@ -1,38 +1,38 @@
 <script setup lang="ts">
-import { consola } from 'consola';
-import type { Category } from '~/types/category';
-import { useGetCategories } from '~/services/category';
+import { consola } from 'consola'
+import type { Category } from '~/types/category'
+import { useGetCategories } from '~/services/category'
 
-const route = useRoute();
-const marketStore = useMarketStore();
+const route = useRoute()
+const marketStore = useMarketStore()
 
 const params = computed(() => {
-  const category = marketStore.categoriesBreadcrumb.find(c => c.to === route.fullPath);
+  const category = marketStore.categoriesBreadcrumb.find(c => c.to === route.fullPath)
   if (!category) {
-    consola.error('params be undefined');
-    return undefined;
+    consola.error('params be undefined')
+    return undefined
   }
   return {
     parent: category.id,
-  };
-});
+  }
+})
 
 const {
   isLoading: isLoadingGetCategories,
   data: dataCategories,
-} = useGetCategories(params.value);
+} = useGetCategories(params.value)
 
 onMounted(() => {
   if (dataCategories.value) {
-    marketStore.userActivities.subCategoriesLastVisit = dataCategories.value.categories.slice(0, 2);
+    marketStore.userActivities.subCategoriesLastVisit = dataCategories.value.categories.slice(0, 2)
   }
-});
+})
 
 const redirectPage = (category: Category) => {
-  const to = `${route.fullPath}/${category.name.replaceAll(' ', '-').toLowerCase()}`;
-  marketStore.categoriesBreadcrumb.push({ ...category, to });
-  navigateTo(to);
-};
+  const to = `${route.fullPath}/${category.name.replaceAll(' ', '-').toLowerCase()}`
+  marketStore.categoriesBreadcrumb.push({ ...category, to })
+  navigateTo(to)
+}
 </script>
 
 <template>

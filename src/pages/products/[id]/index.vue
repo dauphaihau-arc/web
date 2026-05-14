@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { useGetDetailProduct } from '~/services/product';
+import { useGetDetailProduct } from '~/services/product'
 
-definePageMeta({ layout: 'market' });
+definePageMeta({ layout: 'market' })
 
-const route = useRoute();
-const marketStore = useMarketStore();
+const route = useRoute()
+const marketStore = useMarketStore()
 
-const productId = route.params.id as string;
+const productId = route.params.id as string
 
 const {
   data: dataGetDetailProduct,
@@ -14,19 +14,19 @@ const {
 } = useGetDetailProduct(productId, {
   onResponse: ({ response }) => {
     if (response.status === 200 && response._data?.product) {
-      marketStore.userActivities.categoryIdProductVisited = response._data.product.category;
+      marketStore.userActivities.categoryIdProductVisited = response._data.product.category
     }
     else {
       throw showError({
         statusCode: 404,
         statusMessage: 'Product Not Found',
         fatal: true,
-      });
+      })
     }
   },
-});
+})
 
-const inventorySelected = ref();
+const inventorySelected = ref()
 </script>
 
 <template>

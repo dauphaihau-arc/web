@@ -2,22 +2,22 @@
 /*
   use in cart page, cart/checkout page
  */
-import type { ResponseGetCart_ProductCart } from '~/types/request-api/cart';
+import type { ResponseGetCart_ProductCart } from '~/types/request-api/cart'
 
-const props = defineProps<{ productCart: ResponseGetCart_ProductCart }>();
+const props = defineProps<{ productCart: ResponseGetCart_ProductCart }>()
 
 const state = reactive({
   v1: '',
   v2: '',
-});
+})
 
 onMounted(() => {
   if (props.productCart.inventory.variant) {
-    const [v1, v2] = props.productCart.inventory.variant.split('-');
-    state.v1 = v1;
-    state.v2 = v2;
+    const [v1, v2] = props.productCart.inventory.variant.split('-')
+    state.v1 = v1
+    state.v2 = v2
   }
-});
+})
 </script>
 
 <template>

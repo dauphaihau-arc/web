@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types';
+import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import {
-  COUPON_APPLIES_TO, COUPON_CONFIG, COUPON_MIN_ORDER_TYPES, COUPON_TYPES
-} from '~/config/enums/coupon';
-import type { RequiredFields } from '~/types/utils';
-import { ROUTES } from '~/config/enums/routes';
-import { useShopCreateCoupon } from '~/services/shop';
-import { toastCustom } from '~/config/toast';
-import { createSaleBodySchema } from '~/schemas/request/shop-coupon.schema';
-import type { CreateSaleBody } from '~/types/coupon';
+  COUPON_APPLIES_TO, COUPON_CONFIG, COUPON_MIN_ORDER_TYPES, COUPON_TYPES,
+} from '~/config/enums/coupon'
+import type { RequiredFields } from '~/types/utils'
+import { ROUTES } from '~/config/enums/routes'
+import { useShopCreateCoupon } from '~/services/shop'
+import { toastCustom } from '~/config/toast'
+import { createSaleBodySchema } from '~/schemas/request/shop-coupon.schema'
+import type { CreateSaleBody } from '~/types/coupon'
 
-const router = useRouter();
-const toast = useToast();
+const router = useRouter()
+const toast = useToast()
 
 const {
   mutateAsync: runSale,
   isPending: isPendingRunSale,
-} = useShopCreateCoupon();
+} = useShopCreateCoupon()
 
-type StateSubmit = RequiredFields<Partial<CreateSaleBody>, 'type' | 'applies_to' | 'min_order_type' | 'is_auto_sale'>;
+type StateSubmit = RequiredFields<Partial<CreateSaleBody>, 'type' | 'applies_to' | 'min_order_type' | 'is_auto_sale'>
 
 const couponTypeOptions = [
   {
@@ -29,70 +29,70 @@ const couponTypeOptions = [
     value: COUPON_TYPES.FREE_SHIP,
     label: 'Free standard shipping',
   },
-];
+]
 
 const couponMinOrderOptions = [
   { value: COUPON_MIN_ORDER_TYPES.NONE, label: 'none' },
   { value: COUPON_MIN_ORDER_TYPES.NUMBER_OF_PRODUCTS, label: 'Number of items' },
   { value: COUPON_MIN_ORDER_TYPES.ORDER_TOTAL, label: 'Order total' },
-];
+]
 
 const couponAppliesToOptions = [
   { value: COUPON_APPLIES_TO.ALL, label: 'All products' },
   { value: COUPON_APPLIES_TO.SPECIFIC, label: 'Select products' },
-];
+]
 
 const state = reactive<StateSubmit>({
   type: COUPON_TYPES.PERCENTAGE,
   min_order_type: COUPON_MIN_ORDER_TYPES.NONE,
   applies_to: COUPON_APPLIES_TO.ALL,
   is_auto_sale: true,
-});
+})
 
-const formRef = ref();
-const btnSubmit = ref();
+const formRef = ref()
+const btnSubmit = ref()
 
 const validate = (stateValidate: CreateSaleBody): FormError[] => {
-  let errors: FormError[] = [];
+  let errors: FormError[] = []
 
-  const result = createSaleBodySchema.safeParse(stateValidate);
+  const result = createSaleBodySchema.safeParse(stateValidate)
 
   if (!result.success) {
     errors = result.error.issues.map((detail) => {
-      const path = detail.path.at(-1);
+      const path = detail.path.at(-1)
       return {
         path: typeof path === 'string' ? path : '',
         message: detail.message,
-      };
-    });
-    log.error('zod parse errors', errors);
+      }
+    })
+    log.error('zod parse errors', errors)
   }
-  return errors;
-};
+  return errors
+}
 
 async function onSubmit(event: FormSubmitEvent<CreateSaleBody>) {
-  formRef.value.clear();
+  formRef.value.clear()
 
   try {
-    await runSale(event.data);
-    await router.push(`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.COUPONS}`);
+    await runSale(event.data)
+    await router.push(`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.COUPONS}`)
     toast.add({
       ...toastCustom.success,
       title: 'Run sale success',
-    });
+    })
   }
   catch (error) {
     toast.add({
       ...toastCustom.error,
       title: 'Run sale failed',
-    });
+    })
   }
 }
 
 function onError(event: FormErrorEvent) {
-  const element = document.getElementById(event.errors[0].id);
-  element?.focus();
-  element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const element = document.getElementById(event.errors[0].id)
+  element?.focus()
+  element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
 </script>
 

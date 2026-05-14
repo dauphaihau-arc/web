@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { useGetOrderShops } from '~/services/order';
+import { useGetOrderShops } from '~/services/order'
 
-definePageMeta({ layout: 'market', middleware: ['auth'] });
+definePageMeta({ layout: 'market', middleware: ['auth'] })
 
 const tabs = [
   {
@@ -19,7 +19,7 @@ const tabs = [
     disabled: true,
     content: '',
   },
-];
+]
 
 const {
   data: dataGetOrderShops,
@@ -27,7 +27,7 @@ const {
 } = useGetOrderShops({
   limit: 10,
   page: 1,
-});
+})
 </script>
 
 <template>

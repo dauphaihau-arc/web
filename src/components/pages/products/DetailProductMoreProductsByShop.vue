@@ -1,19 +1,19 @@
 <script lang="ts" setup>
-import type { Shop } from '~/types/shop';
-import { useGetProducts } from '~/services/product';
+import type { Shop } from '~/types/shop'
+import { useGetProducts } from '~/services/product'
 
-const limit = 6;
+const limit = 6
 
 const { shopId } = defineProps<{
   shopId: Shop['id']
-}>();
+}>()
 
 const queryParams = computed(() => ({
   shop_id: shopId,
   limit,
-}));
+}))
 
-const { data } = useGetProducts(queryParams);
+const { data } = useGetProducts(queryParams)
 </script>
 
 <template>

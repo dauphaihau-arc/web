@@ -2,11 +2,11 @@
 /*
   use in cart page, cart/checkout page
  */
-import type { ResponseGetCart_ShopCart } from '~/types/request-api/cart';
+import type { ResponseGetCart_ShopCart } from '~/types/request-api/cart'
 
 const props = defineProps<{
   shopCart: ResponseGetCart_ShopCart
-}>();
+}>()
 
 const options = [
   {
@@ -17,13 +17,13 @@ const options = [
     id: 'benjamincanac',
     label: '743,523₫ (Aug 1-5, Express)',
   },
-];
+]
 
-const selected = ref(options[0]);
+const selected = ref(options[0])
 
 const isSelectAnyProduct = computed(() => {
-  return props.shopCart.products.some(prod => prod.is_select_order);
-});
+  return props.shopCart.products.some(prod => prod.is_select_order)
+})
 </script>
 
 <template>

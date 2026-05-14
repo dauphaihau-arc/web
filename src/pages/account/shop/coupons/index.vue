@@ -1,31 +1,31 @@
 <script lang="ts" setup>
-import dayjs from 'dayjs';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
-import type { DropdownItem } from '#ui/types';
-import { ROUTES } from '~/config/enums/routes';
-import { COUPON_APPLIES_TO, COUPON_TYPES } from '~/config/enums/coupon';
-import { useShopDeleteCoupon, useShopGetCoupons } from '~/services/shop';
-import { CREATE_COUPON_PAGE_TYPES } from '~/config/enums/shop';
+import dayjs from 'dayjs'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+import type { DropdownItem } from '#ui/types'
+import { ROUTES } from '~/config/enums/routes'
+import { COUPON_APPLIES_TO, COUPON_TYPES } from '~/config/enums/coupon'
+import { useShopDeleteCoupon, useShopGetCoupons } from '~/services/shop'
+import { CREATE_COUPON_PAGE_TYPES } from '~/config/enums/shop'
 
-dayjs.extend(localizedFormat);
+dayjs.extend(localizedFormat)
 
-definePageMeta({ layout: 'shop', middleware: ['auth'] });
+definePageMeta({ layout: 'shop', middleware: ['auth'] })
 
-const selected = ref([]);
-const pageCount = 10;
-const page = ref(1);
+const selected = ref([])
+const pageCount = 10
+const page = ref(1)
 
 const params = computed(() => ({
   page: page.value,
-}));
+}))
 
 const {
   isPending: isPendingShopGetCoupons,
   data: dataShopGetCoupons,
   refetch: refetchShopGetCoupons,
-} = useShopGetCoupons(params);
+} = useShopGetCoupons(params)
 
-const { mutateAsync: deleteCoupon } = useShopDeleteCoupon();
+const { mutateAsync: deleteCoupon } = useShopDeleteCoupon()
 
 const columns = [
   {
@@ -55,7 +55,7 @@ const columns = [
   {
     key: 'actions',
   },
-];
+]
 
 const rows = computed(() => {
   if (dataShopGetCoupons.value?.results && dataShopGetCoupons.value.results.length > 0) {
@@ -64,10 +64,10 @@ const rows = computed(() => {
       start_date: dayjs(coupon.start_date).format('HH:mm L'),
       end_date: dayjs(coupon.end_date).format('HH:mm L'),
       actions: { class: 'text-right' },
-    }));
+    }))
   }
-  return [];
-});
+  return []
+})
 
 const itemsDropdownWithRow = (row: { id: string }): DropdownItem[][] => [
   [
@@ -101,12 +101,12 @@ const itemsDropdownWithRow = (row: { id: string }): DropdownItem[][] => [
       label: 'Delete',
       icon: 'i-heroicons-trash-20-solid',
       click: async () => {
-        await deleteCoupon(row.id);
-        await refetchShopGetCoupons();
+        await deleteCoupon(row.id)
+        await refetchShopGetCoupons()
       },
     },
   ],
-];
+]
 </script>
 
 <template>

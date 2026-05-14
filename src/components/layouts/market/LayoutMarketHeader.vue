@@ -1,66 +1,66 @@
 <script setup lang="ts">
-import { ROUTES } from '~/config/enums/routes';
-import { useGetCart } from '~/services/cart';
-import { useGetCurrentUser } from '~/services/user';
+import { ROUTES } from '~/config/enums/routes'
+import { useGetCart } from '~/services/cart'
+import { useGetCurrentUser } from '~/services/user'
 
-const route = useRoute();
+const route = useRoute()
 
 const {
   data: dataGetCart,
-} = useGetCart();
+} = useGetCart()
 
-const { data: dataUserAuth } = useGetCurrentUser();
+const { data: dataUserAuth } = useGetCurrentUser()
 
-const isShowCart = ref(false);
-const isShowSearch = ref(false);
+const isShowCart = ref(false)
+const isShowSearch = ref(false)
 
 watch(() => [route.path, route.query], () => {
-  isShowSearch.value = false;
-  isShowCart.value = false;
-});
+  isShowSearch.value = false
+  isShowCart.value = false
+})
 
 const onMouseleave = () => {
-  isShowSearch.value = false;
-  isShowCart.value = false;
-};
+  isShowSearch.value = false
+  isShowCart.value = false
+}
 
-const OFFSET = 60;
+const OFFSET = 60
 
 const state = reactive({
   showNavbar: true,
   lastScrollPosition: 0,
   scrollValue: 0,
-});
+})
 
 function onScroll() {
   if (window.pageYOffset < 0) {
-    return;
+    return
   }
   if (Math.abs(window.pageYOffset - state.lastScrollPosition) < OFFSET) {
-    return;
+    return
   }
-  state.showNavbar = window.pageYOffset < state.lastScrollPosition;
-  state.lastScrollPosition = window.pageYOffset;
+  state.showNavbar = window.pageYOffset < state.lastScrollPosition
+  state.lastScrollPosition = window.pageYOffset
 }
 
 onMounted(async () => {
-  state.lastScrollPosition = window.pageYOffset;
-  window.addEventListener('scroll', onScroll);
-  const viewportMeta = document.createElement('meta');
-  viewportMeta.name = 'viewport';
-  viewportMeta.content = 'width=device-width, initial-scale=1';
-  document.head.appendChild(viewportMeta);
-});
+  state.lastScrollPosition = window.pageYOffset
+  window.addEventListener('scroll', onScroll)
+  const viewportMeta = document.createElement('meta')
+  viewportMeta.name = 'viewport'
+  viewportMeta.content = 'width=device-width, initial-scale=1'
+  document.head.appendChild(viewportMeta)
+})
 
 const totalProductCarts = computed(() => {
   if (
-    dataUserAuth.value?.user &&
-    dataGetCart.value?.cart && dataGetCart.value.cart?.summary_cart?.total_products > 0
+    dataUserAuth.value?.user
+    && dataGetCart.value?.cart && dataGetCart.value.cart?.summary_cart?.total_products > 0
   ) {
-    return dataGetCart.value.cart.summary_cart.total_products;
+    return dataGetCart.value.cart.summary_cart.total_products
   }
-  return 0;
-});
+  return 0
+})
 </script>
 
 <template>
