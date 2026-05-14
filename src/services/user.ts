@@ -10,8 +10,12 @@ export function useGetCurrentUser() {
   return useQuery({
     enabled: false,
     queryKey: ['current-user'],
-    queryFn: () => {
-      return useCustomFetch.get<{ user: UserAuthenticated }>(RESOURCES.USER);
+    queryFn: async () => {
+      const user = await useCustomFetch.get<UserAuthenticated>(
+        `${RESOURCES.AUTH}/me`
+      );
+
+      return { user };
     },
   });
 }

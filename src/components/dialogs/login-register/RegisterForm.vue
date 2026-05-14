@@ -2,6 +2,7 @@
 import type { FormSubmitEvent } from '#ui/types';
 import { FetchError } from 'ofetch';
 import { StatusCodes } from 'http-status-codes';
+import { z } from 'zod';
 import { userSchema } from '~/schemas/user.schema';
 import type { User } from '~/types/user';
 import { LOCAL_STORAGE_KEYS } from '~/config/enums/local-storage-keys';
@@ -13,6 +14,11 @@ const formRef = ref();
 const unknownErrorServerMsg = ref('');
 
 const stateSubmit: Partial<RegisterBody> = reactive({});
+const registerSchema = z.object({
+  displayName: userSchema.shape.name,
+  email: userSchema.shape.email,
+  password: userSchema.shape.password,
+});
 
 const {
   mutateAsync: register,
@@ -69,17 +75,17 @@ async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
       <UForm
         ref="formRef"
         :validate-on="['submit']"
-        :schema="userSchema.pick({ name: true, email: true, password: true })"
+        :schema="registerSchema"
         :state="stateSubmit"
         @submit="onSubmit"
       >
         <UFormGroup
           label="Name"
-          name="name"
+          name="displayName"
           class="mb-4"
         >
           <UInput
-            v-model="stateSubmit.name"
+            v-model="stateSubmit.displayName"
             :disabled="isPendingRegister"
             size="xl"
           />

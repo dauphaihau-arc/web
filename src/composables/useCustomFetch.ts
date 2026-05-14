@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import type { SearchParameters } from 'ofetch';
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
-import { StatusCodes } from 'http-status-codes';
 import { LOCAL_STORAGE_KEYS } from '~/config/enums/local-storage-keys';
 import { RESOURCES } from '~/config/enums/resources';
 import { clearExpTokensInLS, setExpTokensToLS } from '~/services/auth';
@@ -74,18 +73,12 @@ const checkAccessAndRefreshToken = async () => {
   const isAccessTokenExpired = dayjs().isAfter(dayjs(accessTokenExp));
   if (isAccessTokenExpired) {
     await requestWithWakeUpRecovery(
-      () => baseCustomFetch(`${RESOURCES.AUTH}/refresh-tokens`, {
-        method: 'post',
-        onResponse: ({ response }) => {
-          if (response.status === StatusCodes.OK) {
-            setExpTokensToLS();
-          }
-          else {
-            clearExpTokensInLS();
-            throw new Error('Refresh token failed');
-          }
-        },
-      }),
+      async () => {
+        await baseCustomFetch(`${RESOURCES.AUTH}/refresh`, {
+          method: 'post',
+        });
+        setExpTokensToLS();
+      },
       { retryOnWakeUp: true }
     );
   }

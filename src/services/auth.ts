@@ -14,7 +14,7 @@ import { useGetCart } from '~/services/cart';
 export const setExpTokensToLS = () => {
   const config = useRuntimeConfig();
   localStorage[LOCAL_STORAGE_KEYS.ACCESS_TOKEN_EXP] = dayjs().add(Number(config.public.accessTokenExpirationMins), 'minutes');
-  localStorage[LOCAL_STORAGE_KEYS.REFRESH_TOKEN_EXP] = dayjs().add(Number(config.public.refreshTokenExpirationDays), 'minutes');
+  localStorage[LOCAL_STORAGE_KEYS.REFRESH_TOKEN_EXP] = dayjs().add(Number(config.public.refreshTokenExpirationDays), 'days');
 };
 
 export const clearExpTokensInLS = () => {
