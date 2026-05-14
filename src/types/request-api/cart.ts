@@ -1,108 +1,104 @@
-import type {
-  Product, ProductCombineVariant,
-  ProductImage,
-  ProductInventory, ProductSingleVariant,
-  ProductVariant
-} from '~/types/product';
-import type { Coupon, PercentOff } from '~/types/coupon';
+import type { Product, ProductCombineVariant, ProductImage, ProductInventory, ProductSingleVariant, ProductVariant } from '~/types/product';
+import type { Coupon } from '~/types/coupon';
 import type { Shop } from '~/types/shop';
-import type { Cart, ProductCart } from '~/types/cart';
+import type { Cart } from '~/types/cart';
 import type { User } from '~/types/user';
 
-// region get cart
-export type ResponseGetCart_ProductCart = Pick<ProductCart, 'quantity' | 'is_select_order'> & {
-  price: ProductInventory['price']
-  product: Pick<Product, 'id' | 'title' | 'variant_type'> & {
-    variant_group_name?: ProductSingleVariant['variant_group_name']
-    variant_sub_group_name?: ProductCombineVariant['variant_sub_group_name']
-    image: {
-      relative_url: ProductImage['relative_url']
-    }
-  }
-  inventory: Pick<ProductInventory, 'id' | 'price' | 'stock' | 'sku' | 'variant'> & {
-    sale_price?: ProductInventory['price']
-  }
-  percent_coupon?: Pick<Coupon, 'id' | 'start_date' | 'end_date'> & Pick<PercentOff, 'percent_off'>
-  freeship_coupon?: Pick<Coupon, 'id' | 'start_date' | 'end_date'>
-};
-
-export type ResponseGetCart_ShopCart = {
-  shop: Pick<Shop, 'id' | 'shop_name'>
-  products: ResponseGetCart_ProductCart[]
-  total_price: number
-  total_shipping_fee: number
-};
-
-export type ResponseGetCart_SummaryOrder = Record<
-  'subtotal_price' |
-  'total_discount' |
-  'subtotal_applies_total_discount' |
-  'total_shipping_fee' |
-  'total_price' |
-  'total_products'
-  , number>;
-
-export type ResponseGetCart_ProductCartRecentUpdate = {
+export type CartProductItem = {
+  id: string
+  quantity: number
+  isSelected: boolean
+  unitPrice: number
   product: Pick<Product, 'id' | 'title'> & {
-    image: {
-      relative_url: ProductImage['relative_url']
-    }
+    variantType: Product['variant_type']
+    variantGroupName?: ProductSingleVariant['variant_group_name']
+    variantSubGroupName?: ProductCombineVariant['variant_sub_group_name']
+    imageUrl?: ProductImage['relative_url']
   }
-  inventory: Pick<ProductInventory, 'variant'>
-  quantity: ProductCart['quantity']
+  inventory: {
+    id: ProductInventory['id']
+    price: ProductInventory['price']
+    salePrice?: ProductInventory['price']
+    stock: ProductInventory['stock']
+    sku?: ProductInventory['sku']
+    variantName?: ProductInventory['variant']
+  }
+};
+
+export type CartShopGroup = {
+  shop: {
+    id: Shop['id']
+    name: Shop['shop_name']
+  }
+  items: CartProductItem[]
+  totalPrice: number
+  totalShippingFee: number
+};
+
+export type CartSummary = {
+  subtotalPrice: number
+  totalDiscount: number
+  subtotalAfterDiscount: number
+  totalShippingFee: number
+  totalPrice: number
+  totalSelectedQuantity: number
+  totalQuantity: number
+};
+
+export type CartRecentItem = {
+  itemId: string
+  product: Pick<Product, 'id' | 'title'> & {
+    imageUrl?: ProductImage['relative_url']
+  }
+  inventory: {
+    variantName?: ProductInventory['variant']
+  }
+  quantity: number
+};
+
+export type CartResource = {
+  id: Cart['id']
+  userId: User['id']
+  isTemp: boolean
+  shopGroups: CartShopGroup[]
+  recentItems: CartRecentItem[]
+  totalQuantity: number
 };
 
 export type ResponseGetCart = {
-  cart: {
-    cart_id: Cart['id']
-    user_id: User['id']
-    shop_carts: ResponseGetCart_ShopCart[]
-    products_recent_update: ResponseGetCart_ProductCartRecentUpdate[]
-    summary_cart: {
-      total_products: number
-    }
-  } | null
-  summary_order: ResponseGetCart_SummaryOrder
+  cart: CartResource | null
+  summary: CartSummary
 };
-// endregion
 
-// region update cart
+export type ResponseGetCart_ProductCart = CartProductItem;
+export type ResponseGetCart_ShopCart = CartShopGroup;
+export type ResponseGetCart_SummaryOrder = CartSummary;
+
 export type UpdateCartBody = Partial<{
-  cart_id: Cart['id']
-  inventory_id: ProductInventory['id']
-  is_select_order: ResponseGetCart_ProductCart['is_select_order']
-  quantity: ResponseGetCart_ProductCart['quantity']
-  addition_info_temp_cart: {
-    promo_codes: Coupon['code'][]
+  cartId: Cart['id']
+  inventoryId: ProductInventory['id']
+  isSelected: boolean
+  quantity: number
+  additionInfoTempCart: {
+    promoCodes: Coupon['code'][]
+    note?: string
   }
-  addition_info_shop_carts: {
-    shop_id: Shop['id']
-    promo_codes?: Coupon['code'][]
-    note?: string[]
+  additionInfoShopCarts: {
+    shopId: Shop['id']
+    promoCodes?: Coupon['code'][]
+    note?: string
   }[]
 }>;
 
-export type ResponseUpdateCart = {
-  summary_order: ResponseGetCart_SummaryOrder
-  cart: ResponseGetCart['cart']
-};
-// endregion
+export type ResponseUpdateCart = ResponseGetCart;
 
-// region add product cart
 export type AddProductToCartBody = {
-  inventory_id: ProductInventory['id']
+  inventoryId: ProductInventory['id']
   quantity: number
-  variant_id?: ProductVariant['id']
-  is_temp?: boolean
+  variantId?: ProductVariant['id']
+  isTemp?: boolean
 };
 
-export type ResponseAddProductToCartBody = {
-  summary_order: ResponseGetCart_SummaryOrder
-  cart: ResponseGetCart['cart']
-};
-// endregion
+export type ResponseAddProductToCartBody = ResponseGetCart;
 
-export type ResponseDeleteProductCart = {
-  summary_order: ResponseGetCart_SummaryOrder
-  cart: ResponseGetCart['cart']
-};
+export type ResponseDeleteProductCart = ResponseGetCart;

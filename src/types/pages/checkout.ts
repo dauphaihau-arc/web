@@ -6,13 +6,13 @@ import type { Cart } from '~/types/cart';
 export enum CHECKOUT_NOW_STEPS { ADDRESS_SHIPPING, PAYMENT, REVIEW_CONFIRMATION, ORDER }
 
 export type StateCheckoutNow = {
-  temp_cart_id?: Cart['id']
+  tempCartId?: Cart['id']
   currentStep: CHECKOUT_NOW_STEPS
-  promo_codes: Coupon['code'][]
+  promoCodes: Coupon['code'][]
   note: string
   invalidCodes: Map<Coupon['code'], string>
   countRefreshConvertCurrency: number
-  payment_type: PAYMENT_TYPES
+  paymentType: PAYMENT_TYPES
   address: UserAddress | null
   isPendingCreateOrder: boolean
 };

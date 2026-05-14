@@ -10,7 +10,7 @@ const props = defineProps<{
 
 <template>
   <UCard
-    v-if="props.shopCart.products.length > 0"
+    v-if="props.shopCart.items.length > 0"
     :ui="{ base: 'overflow-visible' }"
     class="mb-10"
   >
@@ -21,12 +21,12 @@ const props = defineProps<{
           class="size-8"
         />
         <h3 class="text-lg font-medium">
-          {{ props.shopCart.shop?.shop_name }}
+          {{ props.shopCart.shop?.name }}
         </h3>
       </div>
       <div>
         <div
-          v-for="(productCart) of props.shopCart.products"
+          v-for="(productCart) of props.shopCart.items"
           :key="productCart.inventory.id"
         >
           <CartProduct

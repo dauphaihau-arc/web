@@ -16,7 +16,7 @@ const route = useRoute()
 const tempCartId = route.query['c'] as string
 
 const state = reactive({
-  showAddCouponInput: cartStore.stateCheckoutNow.promo_codes.length > 0,
+  showAddCouponInput: cartStore.stateCheckoutNow.promoCodes.length > 0,
   code: '',
   errorMsg: '',
 })
@@ -36,18 +36,18 @@ async function addCoupon() {
     state.errorMsg = errorMsg
     return
   }
-  const tempCodes = [...cartStore.stateCheckoutNow.promo_codes, state.code]
+  const tempCodes = [...cartStore.stateCheckoutNow.promoCodes, state.code]
 
   try {
-    const { summary_order } = await updateCart({
-      cart_id: tempCartId,
-      addition_info_temp_cart: {
-        promo_codes: tempCodes,
+    const { summary } = await updateCart({
+      cartId: tempCartId,
+      additionInfoTempCart: {
+        promoCodes: tempCodes,
       },
     })
-    updateCacheSummaryOrder(summary_order)
+    updateCacheSummaryOrder(summary)
     state.code = ''
-    cartStore.stateCheckoutNow.promo_codes = tempCodes
+    cartStore.stateCheckoutNow.promoCodes = tempCodes
   }
   catch (error) {
     if (error instanceof FetchError) {
@@ -74,17 +74,17 @@ async function addCoupon() {
 
 async function deleteCoupon(code: Coupon['code']) {
   const product = cartStore.stateCheckoutNow
-  const newPromoCodes = product.promo_codes.filter(c => c !== code)
+  const newPromoCodes = product.promoCodes.filter(c => c !== code)
 
   try {
-    const { summary_order } = await updateCart({
-      cart_id: tempCartId,
-      addition_info_temp_cart: {
-        promo_codes: newPromoCodes,
+    const { summary } = await updateCart({
+      cartId: tempCartId,
+      additionInfoTempCart: {
+        promoCodes: newPromoCodes,
       },
     })
-    updateCacheSummaryOrder(summary_order)
-    product.promo_codes = newPromoCodes
+    updateCacheSummaryOrder(summary)
+    product.promoCodes = newPromoCodes
   }
   catch (error) {
     toast.add({
@@ -100,14 +100,14 @@ async function toggleShowAddCouponInput() {
     const product = cartStore.stateCheckoutNow
 
     try {
-      const { summary_order } = await updateCart({
-        cart_id: tempCartId,
-        addition_info_temp_cart: {
-          promo_codes: [],
+      const { summary } = await updateCart({
+        cartId: tempCartId,
+        additionInfoTempCart: {
+          promoCodes: [],
         },
       })
-      updateCacheSummaryOrder(summary_order)
-      product.promo_codes = []
+      updateCacheSummaryOrder(summary)
+      product.promoCodes = []
     }
     catch (error) {
       toast.add({
@@ -118,21 +118,21 @@ async function toggleShowAddCouponInput() {
   }
 }
 
-function updateCacheSummaryOrder(summary_order: ResponseGetCart['summary_order']) {
+function updateCacheSummaryOrder(summary: ResponseGetCart['summary']) {
   queryClient.setQueryData<ResponseGetCart>(['get-cart', tempCartId], (oldData) => {
     if (!oldData) return oldData
-    return { ...oldData, summary_order }
+    return { ...oldData, summary }
   })
 }
 
 const disabledAddBtn = computed(() => {
   return isPendingUpdateCart.value
-    || cartStore.stateCheckoutNow.promo_codes.includes(state.code)
+    || cartStore.stateCheckoutNow.promoCodes.includes(state.code)
     || !state.code
 })
 
 const disabledInput = computed(() => {
-  return cartStore.stateCheckoutNow.promo_codes.length === COUPON_CONFIG.MAX_USE_PER_ORDER
+  return cartStore.stateCheckoutNow.promoCodes.length === COUPON_CONFIG.MAX_USE_PER_ORDER
 })
 </script>
 
@@ -178,11 +178,11 @@ const disabledInput = computed(() => {
     </UFormGroup>
 
     <div
-      v-if="cartStore.stateCheckoutNow.promo_codes.length > 0"
+      v-if="cartStore.stateCheckoutNow.promoCodes.length > 0"
       class="flex gap-3"
     >
       <div
-        v-for="(code, index) of cartStore.stateCheckoutNow.promo_codes"
+        v-for="(code, index) of cartStore.stateCheckoutNow.promoCodes"
         :key="index"
       >
         <div class="relative">

@@ -55,9 +55,9 @@ onMounted(async () => {
 const totalProductCarts = computed(() => {
   if (
     dataUserAuth.value?.user
-    && dataGetCart.value?.cart && dataGetCart.value.cart?.summary_cart?.total_products > 0
+    && dataGetCart.value?.cart && dataGetCart.value.cart?.totalQuantity > 0
   ) {
-    return dataGetCart.value.cart.summary_cart.total_products
+    return dataGetCart.value.cart.totalQuantity
   }
   return 0
 })

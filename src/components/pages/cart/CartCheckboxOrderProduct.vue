@@ -22,22 +22,21 @@ const {
       if (!oldData || !oldData.cart) return oldData
       if (!data.cart) return { ...oldData, cart: data.cart }
 
-      const foundShopCart = data.cart.shop_carts.find(sc => sc.shop.id === shopId)
+      const foundShopCart = data.cart.shopGroups.find(sc => sc.shop.id === shopId)
       if (!foundShopCart) return oldData
 
-      // update is_select_order, total_shipping_fee fields
-      const newShopCarts = oldData.cart.shop_carts.map((sc) => {
+      const newShopGroups = oldData.cart.shopGroups.map((sc) => {
         if (sc.shop.id === shopId) {
-          const newProducts = sc.products.map((prod) => {
+          const newItems = sc.items.map((prod) => {
             if (prod.inventory.id === inventoryId) {
-              return { ...prod, is_select_order: selectedCheckbox.value }
+              return { ...prod, isSelected: selectedCheckbox.value }
             }
             return prod
           })
           return {
             ...sc,
-            products: newProducts,
-            total_shipping_fee: foundShopCart?.total_shipping_fee,
+            items: newItems,
+            totalShippingFee: foundShopCart.totalShippingFee,
           }
         }
         return sc
@@ -47,9 +46,9 @@ const {
         ...oldData,
         cart: {
           ...oldData.cart,
-          shop_carts: newShopCarts,
+          shopGroups: newShopGroups,
         },
-        summary_order: data.summary_order,
+        summary: data.summary,
       }
     })
   },
@@ -57,8 +56,8 @@ const {
 
 watch(() => selectedCheckbox.value, async () => {
   updateProductCart({
-    inventory_id: inventoryId,
-    is_select_order: selectedCheckbox.value,
+    inventoryId,
+    isSelected: selectedCheckbox.value,
   })
 })
 </script>

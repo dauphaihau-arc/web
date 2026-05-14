@@ -15,7 +15,7 @@ const tempCartId = route.query['c'] as Cart['id']
 const {
   isPending: isPendingGetCart,
   data: dataGetCart,
-} = useGetCart({ cart_id: tempCartId })
+} = useGetCart({ cartId: tempCartId })
 
 const steps = ['Billing Address', 'Payment', 'Review & Confirmation']
 
@@ -64,7 +64,7 @@ onUnmounted(() => {
       <div class="col-span-4">
         <SummaryOrderCard
           :loading="isPendingGetCart"
-          :summary-order="dataGetCart?.summary_order"
+          :summary-order="dataGetCart?.summary"
         />
         <CheckoutCreateOrderBtn />
       </div>

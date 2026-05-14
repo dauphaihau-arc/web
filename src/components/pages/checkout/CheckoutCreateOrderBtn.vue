@@ -42,11 +42,11 @@ const onCreateOrder = async () => {
 
     const body: CreateOrderForBuyNowBody = {
       cart_id: tempCartId,
-      payment_type: cartStore.stateCheckoutNow.payment_type,
+      payment_type: cartStore.stateCheckoutNow.paymentType,
       user_address_id: addressId,
     }
-    if (cartStore.stateCheckoutNow.promo_codes.length > 0) {
-      body.promo_codes = cartStore.stateCheckoutNow.promo_codes
+    if (cartStore.stateCheckoutNow.promoCodes.length > 0) {
+      body.promo_codes = cartStore.stateCheckoutNow.promoCodes
     }
     if (cartStore.stateCheckoutNow.note) {
       body.note = cartStore.stateCheckoutNow.note

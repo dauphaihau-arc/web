@@ -130,21 +130,21 @@ async function onSubmit(event: FormSubmitEvent<StateSubmit>) {
   }
 
   const body: AddProductToCartBody = {
-    inventory_id: inventorySelectedModel.value.id,
+    inventoryId: inventorySelectedModel.value.id,
     quantity: event.data.quantity,
   }
   if (state.isBuyNow) {
-    body.is_temp = true
-    const { cart, summary_order } = await addProductToCart(body)
-    if (cart === null || !cart?.cart_id) {
+    body.isTemp = true
+    const response = await addProductToCart(body)
+    if (response.cart === null || !response.cart?.id) {
       toast.add({
         ...toastCustom.error,
         title: 'Checkout failed',
       })
       return
     }
-    queryClient.setQueryData<ResponseGetCart>(['get-cart', cart.cart_id], { cart, summary_order })
-    navigateTo(`${ROUTES.CHECKOUT}?c=${cart.cart_id}`)
+    queryClient.setQueryData<ResponseGetCart>(['get-cart', response.cart.id], response)
+    navigateTo(`${ROUTES.CHECKOUT}?c=${response.cart.id}`)
     return
   }
 

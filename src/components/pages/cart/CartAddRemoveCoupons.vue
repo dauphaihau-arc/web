@@ -32,8 +32,8 @@ const state = reactive({
 
 onMounted(() => {
   const additionInfoOrderShop = cartStore.additionInfoShopCarts.get(shopId)
-  if (additionInfoOrderShop && additionInfoOrderShop.promo_codes.length > 0) {
-    state.codes = additionInfoOrderShop.promo_codes
+  if (additionInfoOrderShop && additionInfoOrderShop.promoCodes.length > 0) {
+    state.codes = additionInfoOrderShop.promoCodes
     state.showAddCouponCodeInput = true
   }
 })
@@ -61,31 +61,31 @@ const addCoupon = async () => {
     consola.error('tempAdditionInfoOrderShop be undefined')
     return
   }
-  tempAdditionInfoOrderShop.promo_codes.push(state.code)
+  tempAdditionInfoOrderShop.promoCodes.push(state.code)
 
-  const addition_info_shop_carts = Array.from(tempAdditionInfoShopCarts)
+  const additionInfoShopCarts = Array.from(tempAdditionInfoShopCarts)
     .map(([keyShopId, value]) => ({
-      shop_id: keyShopId,
-      promo_codes: value.promo_codes,
+      shopId: keyShopId,
+      promoCodes: value.promoCodes,
     }))
-    .filter(item => item.promo_codes.length > 0)
+    .filter(item => item.promoCodes.length > 0)
 
   try {
     const data = await updateCart({
-      addition_info_shop_carts,
+      additionInfoShopCarts,
     })
 
     queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], (oldData) => {
       if (!oldData || !oldData.cart) return oldData
       if (!data.cart) return { ...oldData, cart: data.cart }
-      const foundShopCart = data.cart.shop_carts.find(sc => sc.shop.id === shopId)
+      const foundShopCart = data.cart.shopGroups.find(sc => sc.shop.id === shopId)
       if (!foundShopCart) return oldData
 
-      const shopCartsUpdated = oldData.cart.shop_carts.map((sc) => {
+      const shopGroupsUpdated = oldData.cart.shopGroups.map((sc) => {
         if (sc.shop.id === shopId) {
           return {
             ...sc,
-            total_shipping_fee: foundShopCart.total_shipping_fee,
+            totalShippingFee: foundShopCart.totalShippingFee,
           }
         }
         return sc
@@ -94,14 +94,14 @@ const addCoupon = async () => {
         ...oldData,
         cart: {
           ...oldData.cart,
-          shop_carts: shopCartsUpdated,
+          shopGroups: shopGroupsUpdated,
         },
-        summary_order: data.summary_order,
+        summary: data.summary,
       }
     })
 
     cartStore.additionInfoShopCarts.set(shopId, tempAdditionInfoOrderShop)
-    state.codes = tempAdditionInfoOrderShop.promo_codes
+    state.codes = tempAdditionInfoOrderShop.promoCodes
     state.code = ''
   }
   catch (error) {
@@ -137,31 +137,30 @@ const deleteCoupon = async (code: Coupon['code']) => {
     consola.error('tempAdditionInfoOrderShop be undefined')
     return
   }
-  tempAdditionInfoOrderShop.promo_codes = tempAdditionInfoOrderShop.promo_codes.filter(c => c !== code)
+  tempAdditionInfoOrderShop.promoCodes = tempAdditionInfoOrderShop.promoCodes.filter(c => c !== code)
 
-  const addition_info_shop_carts = Array.from(tempAdditionInfoShopCarts).map(([keyShopId, value]) => ({
-    shop_id: keyShopId,
-    promo_codes: value.promo_codes,
+  const additionInfoShopCarts = Array.from(tempAdditionInfoShopCarts).map(([keyShopId, value]) => ({
+    shopId: keyShopId,
+    promoCodes: value.promoCodes,
   }))
 
   try {
     const data = await updateCart({
-      addition_info_shop_carts,
+      additionInfoShopCarts,
     })
 
     // update cache get cart
     queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], (oldData) => {
       if (!oldData || !oldData.cart) return oldData
       if (!data.cart) return { ...oldData, cart: data.cart }
-      const foundShopCart = data.cart.shop_carts.find(sc => sc.shop.id === shopId)
+      const foundShopCart = data.cart.shopGroups.find(sc => sc.shop.id === shopId)
       if (!oldData || !foundShopCart) return oldData
 
-      // update total_shipping_fee field
-      const shopCartsUpdated = oldData.cart.shop_carts.map((sc) => {
+      const shopGroupsUpdated = oldData.cart.shopGroups.map((sc) => {
         if (sc.shop.id === shopId) {
           return {
             ...sc,
-            total_shipping_fee: foundShopCart.total_shipping_fee,
+            totalShippingFee: foundShopCart.totalShippingFee,
           }
         }
         return sc
@@ -170,9 +169,9 @@ const deleteCoupon = async (code: Coupon['code']) => {
         ...oldData,
         cart: {
           ...oldData.cart,
-          shop_carts: shopCartsUpdated,
+          shopGroups: shopGroupsUpdated,
         },
-        summary_order: data.summary_order,
+        summary: data.summary,
       }
     })
 
@@ -182,7 +181,7 @@ const deleteCoupon = async (code: Coupon['code']) => {
       throw new Error()
     }
     cartStore.additionInfoShopCarts.set(shopId, additionInfoOrderShop)
-    state.codes = tempAdditionInfoOrderShop.promo_codes
+    state.codes = tempAdditionInfoOrderShop.promoCodes
   }
   catch (e) {
     toast.add({
@@ -204,34 +203,33 @@ const toggleShowAddCouponInput = async () => {
       consola.error('tempAdditionInfoOrderShop be undefined')
       return
     }
-    if (tempAdditionInfoOrderShop.promo_codes.length === 0) {
+    if (tempAdditionInfoOrderShop.promoCodes.length === 0) {
       return
     }
-    tempAdditionInfoOrderShop.promo_codes = []
+    tempAdditionInfoOrderShop.promoCodes = []
 
-    const addition_info_shop_carts = Array.from(tempAdditionInfoShopCarts).map(([keyShopId, value]) => ({
-      shop_id: keyShopId,
-      promo_codes: value.promo_codes,
+    const additionInfoShopCarts = Array.from(tempAdditionInfoShopCarts).map(([keyShopId, value]) => ({
+      shopId: keyShopId,
+      promoCodes: value.promoCodes,
     }))
 
     try {
       const data = await updateCart({
-        addition_info_shop_carts,
+        additionInfoShopCarts,
       })
 
       // update cache get cart
       queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], (oldData) => {
         if (!oldData || !oldData.cart) return oldData
         if (!data.cart) return { ...oldData, cart: data.cart }
-        const foundShopCart = data.cart.shop_carts.find(sc => sc.shop.id === shopId)
+        const foundShopCart = data.cart.shopGroups.find(sc => sc.shop.id === shopId)
         if (!oldData || !foundShopCart) return oldData
 
-        // update total_shipping_fee field
-        const shopCartsUpdated = oldData.cart.shop_carts.map((sc) => {
+        const shopGroupsUpdated = oldData.cart.shopGroups.map((sc) => {
           if (sc.shop.id === shopId) {
             return {
               ...sc,
-              total_shipping_fee: foundShopCart.total_shipping_fee,
+              totalShippingFee: foundShopCart.totalShippingFee,
             }
           }
           return sc
@@ -240,9 +238,9 @@ const toggleShowAddCouponInput = async () => {
           ...oldData,
           cart: {
             ...oldData.cart,
-            shop_carts: shopCartsUpdated,
+            shopGroups: shopGroupsUpdated,
           },
-          summary_order: data.summary_order,
+          summary: data.summary,
         }
       })
       const additionInfoOrderShop = tempAdditionInfoShopCarts.get(shopId)

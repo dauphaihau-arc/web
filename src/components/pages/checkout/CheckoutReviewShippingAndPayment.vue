@@ -57,7 +57,7 @@ const changePayment = () => {
           </div>
           <div class="my-2 flex flex-col gap-4">
             <div class="capitalize">
-              {{ cartStore.stateCheckoutNow.payment_type }}
+              {{ cartStore.stateCheckoutNow.paymentType }}
             </div>
           </div>
 

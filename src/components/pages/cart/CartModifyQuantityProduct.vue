@@ -29,13 +29,12 @@ const {
     queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], (oldData) => {
       if (!oldData || !oldData.cart) return oldData
       if (data.cart === null) return { ...oldData, cart: null }
-      const foundShopCart = data.cart.shop_carts.find(sc => sc.shop.id === props.shopId)
+      const foundShopCart = data.cart.shopGroups.find(sc => sc.shop.id === props.shopId)
       if (!foundShopCart) return oldData
 
-      // update total_shipping_fee field
-      const newShopCarts = oldData.cart.shop_carts.map((sc) => {
+      const newShopGroups = oldData.cart.shopGroups.map((sc) => {
         if (sc.shop.id === props.shopId) {
-          const newProducts = sc.products.map((pc) => {
+          const newItems = sc.items.map((pc) => {
             if (pc.inventory.id === props.productCart.inventory.id) {
               return { ...pc, quantity: tempProductQty.value }
             }
@@ -43,8 +42,8 @@ const {
           })
           return {
             ...sc,
-            products: newProducts,
-            total_shipping_fee: foundShopCart?.total_shipping_fee,
+            items: newItems,
+            totalShippingFee: foundShopCart.totalShippingFee,
           }
         }
         return sc
@@ -54,10 +53,10 @@ const {
         ...oldData,
         cart: {
           ...oldData.cart,
-          products_recent_update: data.cart.products_recent_update,
-          shop_carts: newShopCarts,
+          recentItems: data.cart.recentItems,
+          shopGroups: newShopGroups,
         },
-        summary_order: data.summary_order,
+        summary: data.summary,
       }
     })
   },
@@ -72,20 +71,20 @@ watchDebounced(
   tempProductQty,
   async () => {
     const body: UpdateCartBody = {
-      inventory_id: props.productCart.inventory.id,
+      inventoryId: props.productCart.inventory.id,
       quantity: tempProductQty.value,
     }
 
-    const addition_info_shop_carts = Array
+    const additionInfoShopCarts = Array
       .from(cartStore.additionInfoShopCarts)
       .map(([keyShopId, value]) => ({
-        shop_id: keyShopId,
-        promo_codes: value?.promo_codes || [],
+        shopId: keyShopId,
+        promoCodes: value?.promoCodes || [],
       }))
-      .filter(item => item.promo_codes.length > 0)
+      .filter(item => item.promoCodes.length > 0)
 
-    if (addition_info_shop_carts.length > 0) {
-      body.addition_info_shop_carts = addition_info_shop_carts
+    if (additionInfoShopCarts.length > 0) {
+      body.additionInfoShopCarts = additionInfoShopCarts
     }
 
     updateCart(body)

@@ -41,7 +41,7 @@ const onCreateOrder = async () => {
     }
 
     const body: CreateOrderFromCartBody = {
-      payment_type: cartStore.stateCheckoutCart.payment_type,
+      payment_type: cartStore.stateCheckoutCart.paymentType,
       user_address_id: addressId,
     }
 
@@ -79,7 +79,7 @@ const onCreateOrder = async () => {
       .from(cartStore.additionInfoShopCarts)
       .map(([shopId, value]) => ({
         shop_id: shopId,
-        promo_codes: value.promo_codes,
+        promo_codes: value.promoCodes,
         note: value.note,
       }))
 

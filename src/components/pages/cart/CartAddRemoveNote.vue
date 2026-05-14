@@ -61,7 +61,7 @@ watch(() => state.showNoteInput, () => {
       @click="state.showNoteInput = !state.showNoteInput"
     >
       Add a note to
-      {{ props?.shopCart.shop?.shop_name }}
+      {{ props?.shopCart.shop?.name }}
     </UButton>
 
     <UFormGroup

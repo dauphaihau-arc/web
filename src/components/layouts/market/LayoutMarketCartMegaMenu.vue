@@ -31,7 +31,7 @@ const handleLogout = () => {
 
 const remainProductCart = computed(() => {
   if (dataGetCart.value?.cart) {
-    return dataGetCart.value.cart.summary_cart.total_products - dataGetCart.value.cart.products_recent_update.length
+    return dataGetCart.value.cart.totalQuantity - dataGetCart.value.cart.recentItems.length
   }
   return 0
 })
@@ -61,10 +61,10 @@ const remainProductCart = computed(() => {
 
         <div class="mb-10">
           <div v-if="dataUserAuth?.user">
-            <div v-if="dataGetCart?.cart && dataGetCart?.cart.products_recent_update.length > 0">
+            <div v-if="dataGetCart?.cart && dataGetCart?.cart.recentItems.length > 0">
               <div class="mb-6 space-y-8">
                 <div
-                  v-for="(productCart, index) in dataGetCart.cart.products_recent_update"
+                  v-for="(productCart, index) in dataGetCart.cart.recentItems"
                   :key="index"
                 >
                   <div
@@ -72,7 +72,7 @@ const remainProductCart = computed(() => {
                     @click="() => router.push(`${ROUTES.PRODUCTS}/${productCart.product.id}`)"
                   >
                     <NuxtImg
-                      :src="`domainAwsS3/${productCart.product?.image.relative_url}`"
+                      :src="`domainAwsS3/${productCart.product.imageUrl}`"
                       width="70"
                       height="70"
                       class="rounded"
@@ -82,7 +82,7 @@ const remainProductCart = computed(() => {
                         {{ productCart.product.title }}
                       </div>
                       <div class="text-[15px] text-zinc-500">
-                        {{ productCart.inventory.variant }}
+                        {{ productCart.inventory.variantName }}
                       </div>
                       <div class="text-[15px] tracking-wide text-zinc-500">
                         x{{ productCart.quantity }}

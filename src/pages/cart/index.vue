@@ -15,10 +15,10 @@ const {
 } = useGetCart()
 
 watch(dataGetCart, () => {
-  if (cartStore.additionInfoShopCarts.size === 0 && dataGetCart.value?.cart?.shop_carts) {
-    dataGetCart.value.cart.shop_carts.forEach((item) => {
+  if (cartStore.additionInfoShopCarts.size === 0 && dataGetCart.value?.cart?.shopGroups) {
+    dataGetCart.value.cart.shopGroups.forEach((item) => {
       cartStore.additionInfoShopCarts.set(item.shop.id, {
-        promo_codes: [],
+        promoCodes: [],
         note: '',
       })
     })
@@ -63,16 +63,16 @@ onBeforeUnmount(() => {
     >
       <LoadingSvg :child-class="'!w-12 !h-12'" />
     </div>
-    <div v-else-if="dataGetCart?.cart && dataGetCart.cart.shop_carts?.length > 0">
+    <div v-else-if="dataGetCart?.cart && dataGetCart.cart.shopGroups?.length > 0">
       <div>
         <h1 class="mb-4 text-2xl font-medium">
-          {{ dataGetCart?.cart?.summary_cart?.total_products }} products in your cart
+          {{ dataGetCart?.cart?.totalQuantity }} products in your cart
         </h1>
 
         <div class="grid grid-cols-12 gap-16">
           <div class="col-span-8">
             <CartShopCart
-              v-for="shopCart of dataGetCart.cart.shop_carts"
+              v-for="shopCart of dataGetCart.cart.shopGroups"
               :key="shopCart.shop.id"
               :shop-cart="shopCart"
             />

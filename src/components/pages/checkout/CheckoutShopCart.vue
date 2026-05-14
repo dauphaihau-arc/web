@@ -14,14 +14,14 @@ const tempCartId = route.query['c'] as Cart['id']
 
 const {
   data: dataGetCart,
-} = useGetCart({ cart_id: tempCartId })
+} = useGetCart({ cartId: tempCartId })
 
 const {
   mutateAsync: updateCart,
 } = useUpdateCart()
 
-const shopCart = computed(() => dataGetCart.value?.cart && dataGetCart?.value?.cart.shop_carts[0])
-const productCart = computed(() => shopCart.value?.products[0])
+const shopCart = computed(() => dataGetCart.value?.cart && dataGetCart?.value?.cart.shopGroups[0])
+const productCart = computed(() => shopCart.value?.items[0])
 
 // const percentCoupon = computed(() => {
 //   const coupon = productCart.value?.percent_coupon;
@@ -39,8 +39,8 @@ const showNoteInput = ref(!!cartStore.stateCheckoutNow.note)
 const tempProductQty = ref(productCart.value?.quantity || 0)
 
 const variantNames = computed(() => {
-  if (productCart.value && productCart.value.inventory.variant) {
-    const [primary, sub] = productCart.value.inventory.variant.split('-')
+  if (productCart.value && productCart.value.inventory.variantName) {
+    const [primary, sub] = productCart.value.inventory.variantName.split('-')
     return { primary, sub }
   }
   return { primary: '', sub: '' }
@@ -54,8 +54,8 @@ const decreaseQty = () => {
 watchDebounced(
   tempProductQty,
   async () => {
-    const { summary_order } = await updateCart({
-      cart_id: tempCartId,
+    const { summary } = await updateCart({
+      cartId: tempCartId,
       quantity: tempProductQty.value,
     })
 
@@ -63,7 +63,7 @@ watchDebounced(
       if (!oldData) return oldData
       return {
         ...oldData,
-        summary_order,
+        summary,
       }
     })
   },
@@ -79,11 +79,11 @@ watchDebounced(
   >
     <div class="flex flex-col">
       <h3 class="mb-3 text-lg font-medium">
-        {{ shopCart?.shop?.shop_name }}
+        {{ shopCart?.shop?.name }}
       </h3>
       <div class="mb-8 flex gap-4">
         <NuxtImg
-          :src="`domainAwsS3/${productCart?.product.image.relative_url}`"
+          :src="`domainAwsS3/${productCart?.product.imageUrl}`"
           width="180"
           height="180"
           class="max-h-[180px] max-w-[180px] cursor-pointer rounded"
@@ -98,19 +98,19 @@ watchDebounced(
             <div class="flex flex-col gap-1">
               <div
                 v-if="
-                  productCart.product.variant_type === PRODUCT_VARIANT_TYPES.SINGLE
-                    || productCart.product.variant_type === PRODUCT_VARIANT_TYPES.COMBINE
+                  productCart.product.variantType === PRODUCT_VARIANT_TYPES.SINGLE
+                    || productCart.product.variantType === PRODUCT_VARIANT_TYPES.COMBINE
                 "
                 class="text-lg text-zinc-500"
               >
-                {{ productCart?.product.variant_group_name }}:
+                {{ productCart?.product.variantGroupName }}:
                 {{ variantNames.primary }}
               </div>
               <div
-                v-if="productCart.product.variant_type === PRODUCT_VARIANT_TYPES.COMBINE"
+                v-if="productCart.product.variantType === PRODUCT_VARIANT_TYPES.COMBINE"
                 class="text-lg text-zinc-500"
               >
-                {{ productCart?.product.variant_sub_group_name }}:
+                {{ productCart?.product.variantSubGroupName }}:
                 {{ variantNames.sub }}
               </div>
             </div>
@@ -148,22 +148,15 @@ watchDebounced(
           </div>
 
           <div class="space-y-2 text-right">
-            <div v-if="productCart.inventory.sale_price && productCart.percent_coupon">
+            <div v-if="productCart.inventory.salePrice">
               <div class="text-xl font-medium text-green-700">
-                {{ convertCurrency(productCart.inventory.sale_price) }}
+                {{ convertCurrency(productCart.inventory.salePrice) }}
               </div>
               <div class="text-sm text-zinc-500">
                 <span class="line-through">
                   {{ convertCurrency(productCart.inventory.price) }}
                 </span>
-                ({{ productCart.percent_coupon.percent_off }}% off)
               </div>
-              <!--              <div -->
-              <!--                v-if="percentCoupon && percentCoupon.endInDays <= COUPON_CONFIG.AMOUNT_DAYS_WARN_END_SALE" -->
-              <!--                class="mt-1 font-medium text-green-700" -->
-              <!--              > -->
-              <!--                Sale ends in {{ percentCoupon.endInDays }} days -->
-              <!--              </div> -->
             </div>
             <div
               v-else
@@ -171,14 +164,6 @@ watchDebounced(
             >
               {{ convertCurrency(productCart.inventory.price) }}
             </div>
-
-            <UBadge
-              v-if="productCart.freeship_coupon"
-              color="green"
-              variant="solid"
-            >
-              Free shipping
-            </UBadge>
           </div>
         </div>
       </div>
@@ -196,7 +181,7 @@ watchDebounced(
             class="mb-3 w-fit"
             @click="showNoteInput = !showNoteInput"
           >
-            Add a note to {{ shopCart.shop.shop_name }}
+            Add a note to {{ shopCart.shop.name }}
           </UButton>
 
           <UTextarea

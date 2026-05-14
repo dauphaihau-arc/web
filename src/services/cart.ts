@@ -12,14 +12,14 @@ import { useGetCurrentUser } from '~/services/user';
 import type { Cart } from '~/types/cart';
 
 export function useGetCart(
-  params?: { cart_id: Cart['id'] },
+  params?: { cartId: Cart['id'] },
   queryOptions?: Partial<UseQueryOptions<ResponseGetCart>>
 ) {
   const { data: dataUserAuth } = useGetCurrentUser();
   return useQuery<ResponseGetCart>({
     ...queryOptions,
     enabled: !!dataUserAuth.value?.user,
-    queryKey: ['get-cart', params?.cart_id ?? 'my-cart'],
+    queryKey: ['get-cart', params?.cartId ?? 'my-cart'],
     queryFn: () => {
       return useCustomFetch.get<ResponseGetCart>(
         `${RESOURCES.USER}${RESOURCES.CART}`,
@@ -46,7 +46,11 @@ export function useAddProductToCart(
     mutationFn: (body: AddProductToCartBody) => {
       return useCustomFetch.post<ResponseAddProductToCartBody>(
         `${RESOURCES.USER}${RESOURCES.CART}`,
-        body
+        {
+          inventoryId: body.inventoryId,
+          quantity: body.quantity,
+          isTemp: body.isTemp,
+        }
       );
     },
   });
@@ -89,7 +93,7 @@ export function useDeleteProductCart(
     mutationFn: () => {
       return useCustomFetch.delete<ResponseDeleteProductCart>(
         `${RESOURCES.USER}${RESOURCES.CART}`,
-        { inventory_id: id },
+        { inventoryId: id },
         undefined
       );
     },

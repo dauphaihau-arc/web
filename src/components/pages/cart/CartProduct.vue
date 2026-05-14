@@ -22,22 +22,21 @@ const {
     queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], (oldData) => {
       if (!oldData || !oldData.cart) return oldData
       if (!data.cart) return { ...oldData, cart: data.cart }
-      const foundShopCart = data.cart.shop_carts.find(sc => sc.shop.id === props.shopId)
+      const foundShopCart = data.cart.shopGroups.find(sc => sc.shop.id === props.shopId)
 
-      let newShopCarts = oldData.cart.shop_carts
+      let newShopGroups = oldData.cart.shopGroups
 
-      // products field be empty
+      // items field be empty
       if (!foundShopCart) {
-        newShopCarts = data.cart.shop_carts
+        newShopGroups = data.cart.shopGroups
       }
       else {
-        // update total_shipping_fee & products fields
-        newShopCarts = oldData.cart.shop_carts.map((sc) => {
+        newShopGroups = oldData.cart.shopGroups.map((sc) => {
           if (sc.shop.id === props.shopId) {
             return {
               ...sc,
-              products: foundShopCart.products.filter(prod => prod.inventory.id !== props.productCart.inventory.id),
-              total_shipping_fee: foundShopCart?.total_shipping_fee,
+              items: foundShopCart.items.filter(item => item.inventory.id !== props.productCart.inventory.id),
+              totalShippingFee: foundShopCart.totalShippingFee,
             }
           }
           return sc
@@ -48,11 +47,11 @@ const {
         ...oldData,
         cart: {
           ...oldData.cart,
-          summary_cart: data.cart.summary_cart,
-          products_recent_update: data.cart.products_recent_update,
-          shop_carts: newShopCarts,
+          totalQuantity: data.cart.totalQuantity,
+          recentItems: data.cart.recentItems,
+          shopGroups: newShopGroups,
         },
-        summary_order: data.summary_order,
+        summary: data.summary,
       }
     })
   },
@@ -85,13 +84,13 @@ const goToDetailProduct = () => {
     >
       <CartCheckboxOrderProduct
         :shop-id="shopId"
-        :checked="(props.productCart.is_select_order)"
+        :checked="props.productCart.isSelected"
         :inventory-id="props.productCart.inventory.id"
       />
     </div>
 
     <NuxtImg
-      :src="`domainAwsS3/${props.productCart?.product?.image.relative_url}`"
+      :src="`domainAwsS3/${props.productCart?.product?.imageUrl}`"
       width="180"
       height="180"
       class="max-h-[180px] max-w-[180px] cursor-pointer rounded"
@@ -137,22 +136,15 @@ const goToDetailProduct = () => {
       </div>
 
       <div class="space-y-2 text-right">
-        <div v-if="props.productCart.inventory.sale_price && props.productCart.percent_coupon">
+        <div v-if="props.productCart.inventory.salePrice">
           <div class="text-xl font-medium text-green-700">
-            {{ convertCurrency(props.productCart.inventory.sale_price) }}
+            {{ convertCurrency(props.productCart.inventory.salePrice) }}
           </div>
           <div class="text-sm text-zinc-500">
             <span class="line-through">
               {{ convertCurrency(props.productCart.inventory.price) }}
             </span>
-            ({{ props.productCart.percent_coupon.percent_off }}% off)
           </div>
-          <!--          <div -->
-          <!--            v-if="percentCoupon && percentCoupon.endInDays <= COUPON_CONFIG.AMOUNT_DAYS_WARN_END_SALE" -->
-          <!--            class="mt-1 font-medium text-green-700" -->
-          <!--          > -->
-          <!--            Sale ends in {{ percentCoupon.endInDays }} days -->
-          <!--          </div> -->
         </div>
         <div
           v-else
@@ -160,14 +152,6 @@ const goToDetailProduct = () => {
         >
           {{ convertCurrency(props.productCart.inventory.price) }}
         </div>
-
-        <UBadge
-          v-if="props.productCart.freeship_coupon"
-          color="green"
-          variant="solid"
-        >
-          Free shipping
-        </UBadge>
       </div>
     </div>
   </div>

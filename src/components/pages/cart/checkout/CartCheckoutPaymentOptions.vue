@@ -18,7 +18,7 @@ const paymentOptions = [
         Payment options
       </legend>
       <RadioGroupInput
-        v-model="cartStore.stateCheckoutCart.payment_type"
+        v-model="cartStore.stateCheckoutCart.paymentType"
         :options="paymentOptions"
       >
         <template #label="{ option }">

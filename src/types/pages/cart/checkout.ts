@@ -8,7 +8,7 @@ export type StateCheckoutCart = {
   currentStep: CHECKOUT_CART_STEPS
   invalidCodes: Map<Coupon['code'], string>
   countRefreshConvertCurrency: number
-  payment_type: PAYMENT_TYPES
+  paymentType: PAYMENT_TYPES
   address: UserAddress | null
   isPendingCreateOrder: boolean
 };

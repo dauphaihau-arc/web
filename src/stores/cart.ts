@@ -10,7 +10,7 @@ import type { ResponseCreateOrder } from '~/types/request-api/order';
 export type AdditionInfoShopCarts = {
   key: Shop['id']
   value: {
-    promo_codes: Coupon['code'][]
+    promoCodes: Coupon['code'][]
     note: Order['note']
   }
 };
@@ -19,13 +19,13 @@ export const useCartStore = defineStore('cart', () => {
   const router = useRouter();
 
   const initStateCheckoutNow: StateCheckoutNow = {
-    promo_codes: [],
+    promoCodes: [],
     note: '',
     invalidCodes: new Map<Coupon['code'], string>(),
     currentStep: CHECKOUT_NOW_STEPS.ADDRESS_SHIPPING,
     countRefreshConvertCurrency: 0,
     isPendingCreateOrder: false,
-    payment_type: PAYMENT_TYPES.CARD,
+    paymentType: PAYMENT_TYPES.CARD,
     address: null,
   };
   const stateCheckoutNow = reactive<StateCheckoutNow>({ ...initStateCheckoutNow });
@@ -38,7 +38,7 @@ export const useCartStore = defineStore('cart', () => {
     currentStep: CHECKOUT_CART_STEPS.ADDRESS_SHIPPING,
     countRefreshConvertCurrency: 0,
     isPendingCreateOrder: false,
-    payment_type: PAYMENT_TYPES.CARD,
+    paymentType: PAYMENT_TYPES.CARD,
     address: null,
   };
   const stateCheckoutCart = reactive<StateCheckoutCart>({ ...initStateCheckoutCart });

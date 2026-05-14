@@ -10,22 +10,22 @@ const props = defineProps<{
 
 <template>
   <UCard
-    v-if="props.shopCart.products.length > 0 && props.shopCart.products.some(prod => !!prod.is_select_order)"
+    v-if="props.shopCart.items.length > 0 && props.shopCart.items.some(prod => !!prod.isSelected)"
     :ui="{ base: 'overflow-visible' }"
     class="mb-4"
   >
     <div class="flex flex-col">
       <h3 class="mb-3 text-lg font-medium">
-        {{ props.shopCart?.shop?.shop_name }}
+        {{ props.shopCart?.shop?.name }}
       </h3>
 
       <div>
         <div
-          v-for="(productCart) of props.shopCart.products"
+          v-for="(productCart) of props.shopCart.items"
           :key="productCart?.inventory?.id"
         >
           <CartProduct
-            v-if="productCart?.is_select_order"
+            v-if="productCart?.isSelected"
             :product-cart="productCart"
             :shop-id="props.shopCart?.shop?.id"
           />

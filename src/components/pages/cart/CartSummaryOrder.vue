@@ -11,7 +11,7 @@ const router = useRouter()
 
 const isTotalOrderInvalid = computed(() => {
   if (dataGetCart.value) {
-    return !(dataGetCart.value.summary_order.total_price < ORDER_CONFIG.MAX_ORDER_TOTAL)
+    return !(dataGetCart.value.summary.totalPrice < ORDER_CONFIG.MAX_ORDER_TOTAL)
   }
   return true
 })
@@ -21,7 +21,7 @@ const isTotalOrderInvalid = computed(() => {
   <div class="space-y-8">
     <SummaryOrderCard
       :loading="isPendingGetCart"
-      :summary-order="dataGetCart?.summary_order"
+      :summary-order="dataGetCart?.summary"
     />
     <div
       v-if="isTotalOrderInvalid"
@@ -32,7 +32,7 @@ const isTotalOrderInvalid = computed(() => {
     </div>
 
     <UButton
-      :disabled="isTotalOrderInvalid || dataGetCart?.summary_order.total_products === 0"
+      :disabled="isTotalOrderInvalid || dataGetCart?.summary.totalSelectedQuantity === 0"
       :ui="{
         rounded: 'shadow-border',
       }"

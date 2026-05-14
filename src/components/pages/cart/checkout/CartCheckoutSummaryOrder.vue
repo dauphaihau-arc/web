@@ -10,7 +10,7 @@ const {
 <template>
   <SummaryOrderCard
     :loading="isPendingGetCart"
-    :summary-order="dataGetCart?.summary_order"
+    :summary-order="dataGetCart?.summary"
   />
 </template>
 
