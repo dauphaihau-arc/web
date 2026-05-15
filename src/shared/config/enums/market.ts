@@ -1,4 +1,4 @@
-export enum MARKET_CURRENCIES {
+export enum MarketCurrencies {
   USD = 'USD',
   AUD = 'AUD',
   EUR = 'EUR',
@@ -12,24 +12,24 @@ export enum MARKET_CURRENCIES {
   VND = 'VND'
 }
 
-export enum MARKET_LANGUAGES {
+export enum MarketLanguages {
   EN = 'en',
   LA = 'la',
   FR = 'fr'
 }
 
-export enum MARKET_REGIONS {
+export enum MarketRegions {
   UNITED_STATES = 'United States',
   VIET_NAM = 'Vietnam'
 }
 
 export const MARKET_REGION_EMOJIS = {
-  [MARKET_REGIONS.UNITED_STATES]: '🇺🇸',
-  [MARKET_REGIONS.VIET_NAM]: '🇻🇳',
+  [MarketRegions.UNITED_STATES]: '🇺🇸',
+  [MarketRegions.VIET_NAM]: '🇻🇳',
 };
 
 export const MARKET_CONFIG = {
-  BASE_LANGUAGE: MARKET_LANGUAGES.EN,
-  BASE_REGION: MARKET_REGIONS.UNITED_STATES,
-  BASE_CURRENCY: MARKET_CURRENCIES.USD,
+  BASE_LANGUAGE: MarketLanguages.EN,
+  BASE_REGION: MarketRegions.UNITED_STATES,
+  BASE_CURRENCY: MarketCurrencies.USD,
 };

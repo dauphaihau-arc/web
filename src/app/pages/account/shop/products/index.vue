@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { DropdownItem } from '#ui/types'
 import { ROUTES } from '~/shared/config/enums/routes'
-import { PRODUCT_VARIANT_TYPES } from '~/shared/config/enums/product'
+import { ProductVariantTypes } from '~/shared/config/enums/product'
 import type { Product } from '~/shared/types/product'
 import type { ElementType } from '~/shared/types/utils'
 import { useShopDeleteProduct, useShopGetProducts } from '~/shared/services/shop'
@@ -181,7 +181,7 @@ async function removeProduct(id: Product['id']) {
         </template>
 
         <template #variant-data="{ row }">
-          <div v-if="row.variant_type === PRODUCT_VARIANT_TYPES.NONE">
+          <div v-if="row.variant_type === ProductVariantTypes.NONE">
             None
           </div>
           <div v-else>
@@ -190,7 +190,7 @@ async function removeProduct(id: Product['id']) {
               :key="index"
             >
               {{
-                row.variant_type === PRODUCT_VARIANT_TYPES.COMBINE
+                row.variant_type === ProductVariantTypes.COMBINE
                   ? inv.variant.replaceAll('-', ', ')
                   : inv.variant
               }}

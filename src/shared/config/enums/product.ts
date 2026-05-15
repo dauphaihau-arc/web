@@ -22,11 +22,11 @@ export const PRODUCT_SHIPPING_CONFIG = {
   MAX_DAYS_DELIVERY: 45,
 };
 
-export enum PRODUCT_SHIPPING_OTHER_COUNTRIES_OPTIONS {
+export enum ProductShippingOtherCountriesOptions {
   EVERYWHERE = 'everywhere'
 }
 
-export enum PRODUCT_STATES {
+export enum ProductStates {
   ACTIVE = 'active', // currently for sale.
   INACTIVE = 'inactive', // When updating a product
   DRAFT = 'draft', //  if product in any other state cannot be moved to draft
@@ -36,13 +36,13 @@ export enum PRODUCT_STATES {
   UNAVAILABLE = 'unavailable' // The Product has been removed by Arc admin for unspecified reasons. Products in this state may be missing some information which is normally required.
 }
 
-export enum PRODUCT_WHO_MADE {
+export enum ProductWhoMade {
   I_DID = 'i_did',
   COLLECTIVE = 'collective',
   SOMEONE_ELSE = 'someone_else'
 }
 
-export enum PRODUCT_VARIANT_TYPES {
+export enum ProductVariantTypes {
   NONE = 'none',
   SINGLE = 'single',
   COMBINE = 'combine'
@@ -53,15 +53,15 @@ export const PRODUCT_REGEX_NOT_URL = /^(?!http.*$).*/;
 
 export const productWhoMadeOpts = [
   {
-    id: PRODUCT_WHO_MADE.I_DID,
+    id: ProductWhoMade.I_DID,
     label: 'I did',
   },
   {
-    id: PRODUCT_WHO_MADE.COLLECTIVE,
+    id: ProductWhoMade.COLLECTIVE,
     label: 'A member of my shop',
   },
   {
-    id: PRODUCT_WHO_MADE.SOMEONE_ELSE,
+    id: ProductWhoMade.SOMEONE_ELSE,
     label: 'Another company or person',
   },
 ];
@@ -71,15 +71,15 @@ export const isDigitalOpts = [
   { value: true, label: 'Digital', help: 'A digital file that buyers will download.' },
 ];
 
-export enum PRODUCT_SHIPPING_CHARGE {
+export enum ProductShippingCharge {
   FIXED_PRICE = 'fixed_price',
   FREE_SHIPPING = 'free_shipping'
 }
 
-export enum PRODUCT_SHIPPING_SERVICES {
+export enum ProductShippingServices {
   OTHER = 'other'
 }
 
-export enum MARKET_GET_PRODUCTS_SORT_BY {
+export enum MarketGetProductsSortBy {
   OTHER = 'other'
 }

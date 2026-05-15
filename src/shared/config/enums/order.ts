@@ -1,4 +1,4 @@
-export enum ORDER_STATUSES {
+export enum OrderStatuses {
   CANCELED = 'canceled',
   PENDING = 'pending',
   AWAITING_PAYMENT = 'awaiting_payment',
@@ -9,7 +9,7 @@ export enum ORDER_STATUSES {
   ARCHIVED = 'archived'
 }
 
-export enum PAYMENT_TYPES {
+export enum PaymentTypes {
   CASH = 'cash',
   CARD = 'card'
 }
@@ -20,7 +20,7 @@ export const ORDER_CONFIG = {
   MAX_PROMO_COUPONS: 2,
 };
 
-export enum ORDER_SHIPPING_STATUSES {
+export enum OrderShippingStatuses {
   PRE_TRANSIT = 'pre_transit',
   IN_TRANSIT = 'in_transit',
   SHIPPED = 'shipped',

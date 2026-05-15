@@ -2,7 +2,7 @@
 import { StatusCodes } from 'http-status-codes'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { useVerifyToken } from '~/shared/services/auth'
-import { RESET_PASSWORD_VIEWS } from '~/shared/config/enums/common'
+import { ResetPasswordViews } from '~/shared/config/enums/common'
 
 definePageMeta({ layout: 'market' })
 
@@ -15,17 +15,17 @@ useVerifyToken(token, {
     if (response.status === StatusCodes.OK) {
       authStore.tokenResetPassword = token
       navigateTo('/reset?v=1')
-      currentView.value = RESET_PASSWORD_VIEWS.RESET_PASSWORD
+      currentView.value = ResetPasswordViews.RESET_PASSWORD
     }
     else {
-      currentView.value = RESET_PASSWORD_VIEWS.TOKEN_INVALID
+      currentView.value = ResetPasswordViews.TOKEN_INVALID
     }
   },
 })
 
-const currentView = ref(token ? '' : RESET_PASSWORD_VIEWS.SEND_EMAIL)
+const currentView = ref(token ? '' : ResetPasswordViews.SEND_EMAIL)
 
-const changeView = (step: RESET_PASSWORD_VIEWS) => {
+const changeView = (step: ResetPasswordViews) => {
   currentView.value = step
 }
 
@@ -39,7 +39,7 @@ onMounted(() => {
 <template>
   <div class="mx-auto mt-12 max-w-lg">
     <!--    Send email -->
-    <ResetPasswordCard v-if="currentView === RESET_PASSWORD_VIEWS.SEND_EMAIL">
+    <ResetPasswordCard v-if="currentView === ResetPasswordViews.SEND_EMAIL">
       <template #title>
         Reset your password
       </template>
@@ -53,7 +53,7 @@ onMounted(() => {
     </ResetPasswordCard>
 
     <!--  Send email success -->
-    <ResetPasswordCard v-if="currentView === RESET_PASSWORD_VIEWS.SEND_EMAIL_SUCCESS">
+    <ResetPasswordCard v-if="currentView === ResetPasswordViews.SEND_EMAIL_SUCCESS">
       <template #title>
         Check your email
       </template>
@@ -63,7 +63,7 @@ onMounted(() => {
     </ResetPasswordCard>
 
     <!--  Token invalid -->
-    <ResetPasswordCard v-if="currentView === RESET_PASSWORD_VIEWS.TOKEN_INVALID">
+    <ResetPasswordCard v-if="currentView === ResetPasswordViews.TOKEN_INVALID">
       <template #content>
         <div class="flex flex-col items-center justify-center">
           <Icon
@@ -76,7 +76,7 @@ onMounted(() => {
           </div>
           <UButton
             variant="link"
-            @click="currentView = RESET_PASSWORD_VIEWS.SEND_EMAIL"
+            @click="currentView = ResetPasswordViews.SEND_EMAIL"
           >
             Try resetting your password again.
           </UButton>
@@ -84,6 +84,6 @@ onMounted(() => {
       </template>
     </ResetPasswordCard>
 
-    <ResetPasswordForm v-if="currentView === RESET_PASSWORD_VIEWS.RESET_PASSWORD" />
+    <ResetPasswordForm v-if="currentView === ResetPasswordViews.RESET_PASSWORD" />
   </div>
 </template>

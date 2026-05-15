@@ -1,4 +1,4 @@
-export enum LOCAL_STORAGE_KEYS {
+export enum LocalStorageKeys {
   EXCHANGE_RATE = 'exchange-rate',
   GUEST_PREFERENCES = 'guest-preferences',
   IP_DATA = 'ip-data',

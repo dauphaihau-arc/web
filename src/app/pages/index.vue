@@ -5,8 +5,8 @@ definePageMeta({ layout: 'market' })
 <template>
   <div class="space-y-20 py-12">
     <HomeRecommendedProductsByCategory />
-    <HomeRecommendedProductsBySubCategories /> 
+    <HomeRecommendedProductsBySubCategories />
     <HomeRecommendedSubCategories />
-    <HomeRootCategories /> 
+    <HomeRootCategories />
   </div>
 </template>

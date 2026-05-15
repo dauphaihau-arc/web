@@ -15,9 +15,9 @@ import type {
 } from '~/shared/schemas/request/shop-product.schema';
 import type { RequestGetListParams } from '~/shared/types/common';
 import type {
-  PRODUCT_SHIPPING_CHARGE,
-  PRODUCT_VARIANT_TYPES,
-  PRODUCT_WHO_MADE
+  ProductShippingCharge,
+  ProductVariantTypes,
+  ProductWhoMade
 } from '~/shared/config/enums/product';
 import type { ElementType, PickPartial, RequiredFields } from '~/shared/types/utils';
 
@@ -35,16 +35,16 @@ export type VariantOption = Pick<ProductInventory, 'price' | 'stock' | 'sku'> & 
 };
 
 export type NoneVariant = {
-  variant_type: PRODUCT_VARIANT_TYPES.NONE
+  variant_type: ProductVariantTypes.NONE
 } & CreateProductInventory;
 
 export type SingleVariant = {
-  variant_type: PRODUCT_VARIANT_TYPES.SINGLE
+  variant_type: ProductVariantTypes.SINGLE
   variant_options: VariantOption[]
 } & Pick<ProductSingleVariant, 'variant_group_name'>;
 
 export type CombineVariant = {
-  variant_type: PRODUCT_VARIANT_TYPES.COMBINE
+  variant_type: ProductVariantTypes.COMBINE
   variant_options: {
     variant_name: ProductVariant['variant_name']
     variant_options: VariantOption[]
@@ -86,7 +86,7 @@ export type CreateProductDraftShipping = {
     countryCode: string
     deliveryTimeLabel: string
     service: string
-    chargeType: PRODUCT_SHIPPING_CHARGE
+    chargeType: ProductShippingCharge
   }[]
 };
 
@@ -94,10 +94,10 @@ export type RequestCreateProductDraftBody = {
   categoryId: string
   title: string
   description: string
-  whoMade: PRODUCT_WHO_MADE
+  whoMade: ProductWhoMade
   isDigital: boolean
   nonTaxable?: boolean
-  variantType: PRODUCT_VARIANT_TYPES
+  variantType: ProductVariantTypes
   variantGroupName?: string
   variantSubGroupName?: string
   images?: CreateProductDraftImage[]
@@ -113,9 +113,9 @@ export type ResponseShopProductDraft = {
   categoryId?: string
   title: string
   description: string
-  whoMade: PRODUCT_WHO_MADE
+  whoMade: ProductWhoMade
   isDigital: boolean
-  variantType?: PRODUCT_VARIANT_TYPES
+  variantType?: ProductVariantTypes
   variantGroupName?: string
   variantSubGroupName?: string
   images: {
@@ -155,7 +155,7 @@ export type ResponseShopProductDraft = {
       countryCode: string
       deliveryTimeLabel: string
       service: string
-      chargeType: PRODUCT_SHIPPING_CHARGE
+      chargeType: ProductShippingCharge
       rank: number
     }[]
   }

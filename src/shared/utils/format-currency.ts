@@ -1,4 +1,4 @@
-import { MARKET_CONFIG, MARKET_CURRENCIES } from '~/shared/config/enums/market';
+import { MARKET_CONFIG, MarketCurrencies } from '~/shared/config/enums/market';
 
 const locales = {
   USD: 'en-US',
@@ -14,7 +14,7 @@ const locales = {
   VND: 'vi-VN',
 };
 
-const zeroDecimalCurrencies = [MARKET_CURRENCIES.KRW, MARKET_CURRENCIES.JPY, MARKET_CURRENCIES.VND];
+const zeroDecimalCurrencies = [MarketCurrencies.KRW, MarketCurrencies.JPY, MarketCurrencies.VND];
 
 export default function (
   value: number | undefined,

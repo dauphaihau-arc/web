@@ -1,11 +1,11 @@
 import { ROUTES } from '~/shared/config/enums/routes';
-import { LOCAL_STORAGE_KEYS } from '~/shared/config/enums/local-storage-keys';
+import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys';
 import { useGetCurrentUser } from '~/shared/services/user';
 
 export default defineNuxtRouteMiddleware(async (to, _from) => {
   const { refetch, data } = useGetCurrentUser();
 
-  if (!data.value?.user && localStorage[LOCAL_STORAGE_KEYS.ACCESS_TOKEN_EXP]) {
+  if (!data.value?.user && localStorage[LocalStorageKeys.ACCESS_TOKEN_EXP]) {
     void refetch();
   }
 

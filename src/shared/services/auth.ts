@@ -2,24 +2,24 @@ import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import dayjs from 'dayjs';
 import { RESOURCES } from '~/shared/config/enums/resources';
 import type { User } from '~/shared/types/user';
-import { TOKEN_TYPES } from '~/shared/config/enums/token';
+import { TokenTypes } from '~/shared/config/enums/token';
 import { ROUTES } from '~/shared/config/enums/routes';
 import { toastCustom } from '~/shared/config/toast';
 import type {
   LoginBody, RegisterBody, UserAuthenticated
 } from '~/shared/types/auth';
-import { LOCAL_STORAGE_KEYS } from '~/shared/config/enums/local-storage-keys';
+import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys';
 import { useGetCart } from '~/shared/services/cart';
 
 export const setExpTokensToLS = () => {
   const config = useRuntimeConfig();
-  localStorage[LOCAL_STORAGE_KEYS.ACCESS_TOKEN_EXP] = dayjs().add(Number(config.public.accessTokenExpirationMins), 'minutes');
-  localStorage[LOCAL_STORAGE_KEYS.REFRESH_TOKEN_EXP] = dayjs().add(Number(config.public.refreshTokenExpirationDays), 'days');
+  localStorage[LocalStorageKeys.ACCESS_TOKEN_EXP] = dayjs().add(Number(config.public.accessTokenExpirationMins), 'minutes');
+  localStorage[LocalStorageKeys.REFRESH_TOKEN_EXP] = dayjs().add(Number(config.public.refreshTokenExpirationDays), 'days');
 };
 
 export const clearExpTokensInLS = () => {
-  localStorage.removeItem(LOCAL_STORAGE_KEYS.REFRESH_TOKEN_EXP);
-  localStorage.removeItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN_EXP);
+  localStorage.removeItem(LocalStorageKeys.REFRESH_TOKEN_EXP);
+  localStorage.removeItem(LocalStorageKeys.ACCESS_TOKEN_EXP);
 };
 
 export function useRegister() {
@@ -113,7 +113,7 @@ export function useVerifyToken(
     queryKey: ['verify-token'],
     queryFn: () => {
       return useCustomFetch.get(
-        `${RESOURCES.AUTH}/verify-token?token=${token}&type=${TOKEN_TYPES.RESET_PASSWORD}`,
+        `${RESOURCES.AUTH}/verify-token?token=${token}&type=${TokenTypes.RESET_PASSWORD}`,
         undefined,
         options
       );

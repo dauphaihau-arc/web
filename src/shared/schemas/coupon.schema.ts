@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import { PRODUCT_CONFIG } from '~/shared/config/enums/product';
 import {
-  COUPON_APPLIES_TO,
-  COUPON_TYPES,
-  COUPON_MIN_ORDER_TYPES,
+  CouponAppliesTo,
+  CouponTypes,
+  CouponMinOrderTypes,
   COUPON_CONFIG
 } from '~/shared/config/enums/coupon';
 import { objectIdSchema } from '~/shared/schemas/sub/object-id.schema';
@@ -20,11 +20,11 @@ export const baseCouponSchema = z.object({
       `Please enter a characters between
        ${COUPON_CONFIG.MIN_CHAR_CODE} and ${COUPON_CONFIG.MAX_CHAR_CODE}.`),
   type: z
-    .nativeEnum(COUPON_TYPES)
-    .default(COUPON_TYPES.FIXED_AMOUNT),
+    .nativeEnum(CouponTypes)
+    .default(CouponTypes.FIXED_AMOUNT),
   applies_to: z
-    .nativeEnum(COUPON_APPLIES_TO)
-    .default(COUPON_APPLIES_TO.ALL),
+    .nativeEnum(CouponAppliesTo)
+    .default(CouponAppliesTo.ALL),
   max_uses_per_user: z
     .number()
     .min(COUPON_CONFIG.MIN_USES_PER_USER,
@@ -39,8 +39,8 @@ export const baseCouponSchema = z.object({
     .max(COUPON_CONFIG.MAX_USES,
       `Please enter a value between 1 and ${COUPON_CONFIG.MAX_USES}.`),
   min_order_type: z
-    .nativeEnum(COUPON_MIN_ORDER_TYPES)
-    .default(COUPON_MIN_ORDER_TYPES.ORDER_TOTAL),
+    .nativeEnum(CouponMinOrderTypes)
+    .default(CouponMinOrderTypes.ORDER_TOTAL),
   start_date: z.coerce.date(),
   end_date: z.coerce.date(),
   uses_count: z
@@ -61,7 +61,7 @@ export const baseCouponSchema = z.object({
 });
 
 export const percentOffSchema = z.object({
-  type: z.literal(COUPON_TYPES.PERCENTAGE),
+  type: z.literal(CouponTypes.PERCENTAGE),
   percent_off: z
     .number()
     .min(1, 'Please enter a value between 1 and 99.')
@@ -69,7 +69,7 @@ export const percentOffSchema = z.object({
 });
 
 export const fixAmountSchema = z.object({
-  type: z.literal(COUPON_TYPES.FIXED_AMOUNT),
+  type: z.literal(CouponTypes.FIXED_AMOUNT),
   amount_off: z
     .number()
     .min(1, `Please enter a value between 1 and ${PRODUCT_CONFIG.MAX_PRICE - 1}.`)
@@ -78,21 +78,21 @@ export const fixAmountSchema = z.object({
 });
 
 export const minProductSchema = z.object({
-  min_order_type: z.literal(COUPON_MIN_ORDER_TYPES.NUMBER_OF_PRODUCTS),
+  min_order_type: z.literal(CouponMinOrderTypes.NUMBER_OF_PRODUCTS),
   min_products: z
     .number()
     .min(1),
 });
 
 export const minOrderValueSchema = z.object({
-  min_order_type: z.literal(COUPON_MIN_ORDER_TYPES.ORDER_TOTAL),
+  min_order_type: z.literal(CouponMinOrderTypes.ORDER_TOTAL),
   min_order_value: z
     .number()
     .min(1),
 });
 
 export const applyToSpecifySchema = z.object({
-  applies_to: z.literal(COUPON_APPLIES_TO.SPECIFIC),
+  applies_to: z.literal(CouponAppliesTo.SPECIFIC),
   applies_product_ids: z
     .array(objectIdSchema)
     .min(1, 'Add at least 1 product')
@@ -101,14 +101,14 @@ export const applyToSpecifySchema = z.object({
 
 export const conditionApplyToTypeSchema = z.discriminatedUnion(
   'applies_to', [
-    z.object({ applies_to: z.literal(COUPON_APPLIES_TO.ALL) }),
+    z.object({ applies_to: z.literal(CouponAppliesTo.ALL) }),
     applyToSpecifySchema,
   ]
 );
 
 export const conditionMinOrderTypeSchema = z.discriminatedUnion(
   'min_order_type', [
-    z.object({ min_order_type: z.literal(COUPON_MIN_ORDER_TYPES.NONE) }),
+    z.object({ min_order_type: z.literal(CouponMinOrderTypes.NONE) }),
     minProductSchema,
     minOrderValueSchema,
   ]
@@ -116,7 +116,7 @@ export const conditionMinOrderTypeSchema = z.discriminatedUnion(
 
 export const conditionTypeCouponSchema = z.discriminatedUnion(
   'type', [
-    z.object({ type: z.literal(COUPON_TYPES.FREE_SHIP) }),
+    z.object({ type: z.literal(CouponTypes.FREE_SHIP) }),
     percentOffSchema,
     fixAmountSchema,
   ]

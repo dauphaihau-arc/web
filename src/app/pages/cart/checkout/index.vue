@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useCartStore } from '~/shared/stores/cart'
-import { CHECKOUT_CART_STEPS } from '~/shared/types/pages/cart/checkout'
+import { CheckoutCartSteps } from '~/shared/types/pages/cart/checkout'
 import { useGetCart } from '~/shared/services/cart'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
@@ -42,16 +42,16 @@ const steps = ['Billing Address', 'Payment', 'Review & Confirmation']
     <div class="grid grid-cols-12 gap-16">
       <div class="col-span-8">
         <CartCheckoutUserAddressShipping
-          v-show="cartStore.stateCheckoutCart.currentStep === CHECKOUT_CART_STEPS.ADDRESS_SHIPPING"
+          v-show="cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.addressShipping"
           class="mb-10"
         />
         <CartCheckoutPaymentOptions
-          v-show="cartStore.stateCheckoutCart.currentStep === CHECKOUT_CART_STEPS.PAYMENT"
+          v-show="cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.payment"
         />
 
         <div
-          v-show="cartStore.stateCheckoutCart.currentStep === CHECKOUT_CART_STEPS.REVIEW_CONFIRMATION
-            || cartStore.stateCheckoutCart.currentStep === CHECKOUT_CART_STEPS.ORDER"
+          v-show="cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.reviewConfirmation
+            || cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.order"
         >
           <CartCheckoutReviewShippingAndPayment class="mb-12" />
           <div

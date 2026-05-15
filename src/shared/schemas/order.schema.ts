@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import {
-  PAYMENT_TYPES, ORDER_STATUSES, ORDER_SHIPPING_STATUSES, ORDER_CONFIG
+  PaymentTypes, OrderStatuses, OrderShippingStatuses, ORDER_CONFIG
 } from '~/shared/config/enums/order';
 import { objectIdSchema } from '~/shared/schemas/sub/object-id.schema';
 import { baseCouponSchema } from '~/shared/schemas/coupon.schema';
@@ -23,12 +23,12 @@ export const orderSchema = z.object({
   id: objectIdSchema,
   user: objectIdSchema,
   address: objectIdSchema,
-  payment_type: z.nativeEnum(PAYMENT_TYPES),
+  payment_type: z.nativeEnum(PaymentTypes),
   tracking_number: z.string(),
   stripe_charge_id: z.string(),
   currency: z.string().max(3),
-  status: z.nativeEnum(ORDER_STATUSES),
-  shipping_status: z.nativeEnum(ORDER_SHIPPING_STATUSES).default(ORDER_SHIPPING_STATUSES.PRE_TRANSIT),
+  status: z.nativeEnum(OrderStatuses),
+  shipping_status: z.nativeEnum(OrderShippingStatuses).default(OrderShippingStatuses.PRE_TRANSIT),
   products: z
     .array(orderProductSchema)
     .min(1),

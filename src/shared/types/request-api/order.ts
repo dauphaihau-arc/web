@@ -1,4 +1,4 @@
-import type { MARKET_CURRENCIES } from '~/shared/config/enums/market';
+import type { MarketCurrencies } from '~/shared/config/enums/market';
 import type { Shop } from '~/shared/types/shop';
 import type { Order, OrderShopProduct } from '~/shared/types/order';
 import type { Coupon, PercentOff } from '~/shared/types/coupon';
@@ -40,7 +40,7 @@ export type ResponseGetOrderShops = {
 // endregion
 
 export type CreateOrderFromCartBody = {
-  currency?: MARKET_CURRENCIES
+  currency?: MarketCurrencies
   payment_type: Order['payment_type']
   user_address_id: string
   addition_info_shop_carts?: {
@@ -54,7 +54,7 @@ export type CreateOrderForBuyNowBody = {
   cart_id: Cart['id']
   payment_type: Payment['type']
   user_address_id: string
-  currency?: MARKET_CURRENCIES
+  currency?: MarketCurrencies
   note?: Order['note']
   promo_codes?: Coupon['code'][]
 };

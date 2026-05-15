@@ -1,4 +1,4 @@
-export enum TOKEN_TYPES {
+export enum TokenTypes {
   ACCESS = 'access',
   REFRESH = 'refresh',
   RESET_PASSWORD = 'resetPassword',

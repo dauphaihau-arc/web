@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { COUPON_TYPES } from '~/shared/config/enums/coupon';
+import { CouponTypes } from '~/shared/config/enums/coupon';
 import {
   baseCouponSchema, conditionApplyToTypeSchema,
   conditionMinOrderTypeSchema,
@@ -28,7 +28,7 @@ export const createPromoCodeBodySchema = baseCreateCouponBodySchema
 
 export const createSaleBodySchema = baseCreateCouponBodySchema
   .merge(z.object({
-    type: z.union([z.literal(COUPON_TYPES.PERCENTAGE), z.literal(COUPON_TYPES.FREE_SHIP)]),
+    type: z.union([z.literal(CouponTypes.PERCENTAGE), z.literal(CouponTypes.FREE_SHIP)]),
   }))
   .and(conditionApplyToTypeSchema)
   .and(conditionMinOrderTypeSchema)

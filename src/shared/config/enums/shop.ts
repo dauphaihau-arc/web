@@ -1,4 +1,4 @@
-export enum CREATE_COUPON_PAGE_TYPES {
+export enum CreateCouponPageTypes {
   PROMO_CODE = 'promo_code',
   SALE = 'sale'
 }

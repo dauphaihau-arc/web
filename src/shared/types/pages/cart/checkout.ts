@@ -1,14 +1,19 @@
 import type { Coupon } from '~/shared/types/coupon';
-import type { PAYMENT_TYPES } from '~/shared/config/enums/order';
+import type { PaymentTypes } from '~/shared/config/enums/order';
 import type { UserAddress } from '~/shared/types/user-address';
 
-export enum CHECKOUT_CART_STEPS { ADDRESS_SHIPPING, PAYMENT, REVIEW_CONFIRMATION, ORDER }
+export enum CheckoutCartSteps {
+  addressShipping,
+  payment,
+  reviewConfirmation,
+  order
+}
 
 export type StateCheckoutCart = {
-  currentStep: CHECKOUT_CART_STEPS
+  currentStep: CheckoutCartSteps
   invalidCodes: Map<Coupon['code'], string>
   countRefreshConvertCurrency: number
-  paymentType: PAYMENT_TYPES
+  paymentType: PaymentTypes
   address: UserAddress | null
   isPendingCreateOrder: boolean
 };

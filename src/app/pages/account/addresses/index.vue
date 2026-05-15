@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { UserAddress } from '~/shared/types/user-address'
 import { useDeleteUserAddress, useGetUserAddresses } from '~/shared/services/user'
-import UpdateUserAddressDialog from '~/modules/dialogs/UpdateUserAddressDialog.vue'
-import CreateUserAddressDialog from '~/modules/dialogs/CreateUserAddressDialog.vue'
+import UpdateUserAddressDialog from '~/modules/dialogs/update-user-address-dialog.vue'
+import CreateUserAddressDialog from '~/modules/dialogs/create-user-address-dialog.vue'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 

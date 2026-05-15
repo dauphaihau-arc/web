@@ -1,4 +1,4 @@
-import type { MARKET_REGIONS, MARKET_CURRENCIES } from '~/shared/config/enums/market';
+import type { MarketRegions, MarketCurrencies } from '~/shared/config/enums/market';
 import type { Category } from '~/shared/types/category';
 
 export type ResponseGetExchangeRates = {
@@ -9,8 +9,8 @@ export type ResponseGetExchangeRates = {
 export type ResponseGetDataByIP = Record<
   'emoji_flag' | 'region' | 'city', string
 > & {
-  country_name: MARKET_REGIONS
-  currency: { code: MARKET_CURRENCIES }
+  country_name: MarketRegions
+  currency: { code: MarketCurrencies }
 };
 
 export type ExchangeRateStorage = {

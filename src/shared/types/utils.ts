@@ -4,13 +4,13 @@ export type UndefinableFields<T, Fields> = {
     : T[K]
 };
 
-export type Override<T extends object, K extends { [P in keyof T]?: unknown }> = Omit<T, keyof K> & K;
+export type Override<T extends object, K extends { [_K in keyof T]?: unknown }> = Omit<T, keyof K> & K;
 
 export type ElementType<T extends Iterable<unknown>> = T extends Iterable<infer E>
   ? E
   : never;
 
-export type NoUndefinedField<T> = { [P in keyof T]-?: NoUndefinedField<NonNullable<T[P]>> };
+export type NoUndefinedField<T> = { [K in keyof T]-?: NoUndefinedField<NonNullable<T[K]>> };
 
 export type PickPartial<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>> & Partial<Pick<T, K>>;
 

@@ -1,11 +1,11 @@
 import { z } from 'zod';
 import {
-  PRODUCT_STATES,
+  ProductStates,
   PRODUCT_REGEX_SLUG,
   PRODUCT_REGEX_NOT_URL,
-  PRODUCT_WHO_MADE,
+  ProductWhoMade,
   PRODUCT_CONFIG,
-  PRODUCT_VARIANT_TYPES
+  ProductVariantTypes
 } from '~/shared/config/enums/product';
 import { objectIdSchema } from '~/shared/schemas/sub/object-id.schema';
 
@@ -33,8 +33,8 @@ export const baseProductSchema = z.object({
   category: objectIdSchema,
   shipping: objectIdSchema,
   variant_type: z
-    .nativeEnum(PRODUCT_VARIANT_TYPES)
-    .default(PRODUCT_VARIANT_TYPES.NONE),
+    .nativeEnum(ProductVariantTypes)
+    .default(ProductVariantTypes.NONE),
   attributes: z.array(productAttributeSchema),
   title: z
     .string()
@@ -56,14 +56,14 @@ export const baseProductSchema = z.object({
     .max(PRODUCT_CONFIG.MAX_TAGS)
     .default([]),
   state: z
-    .nativeEnum(PRODUCT_STATES)
-    .default(PRODUCT_STATES.ACTIVE),
+    .nativeEnum(ProductStates)
+    .default(ProductStates.ACTIVE),
   is_digital: z
     .boolean()
     .default(false),
   who_made: z
-    .nativeEnum(PRODUCT_WHO_MADE)
-    .default(PRODUCT_WHO_MADE.I_DID),
+    .nativeEnum(ProductWhoMade)
+    .default(ProductWhoMade.I_DID),
   views: z
     .number()
     .optional(),
@@ -86,12 +86,12 @@ export const baseProductSchema = z.object({
 });
 
 const noneVariantSchema = z.object({
-  variant_type: z.literal(PRODUCT_VARIANT_TYPES.NONE),
+  variant_type: z.literal(ProductVariantTypes.NONE),
   inventory: objectIdSchema,
 });
 
 export const singleVariantSchema = z.object({
-  variant_type: z.literal(PRODUCT_VARIANT_TYPES.SINGLE),
+  variant_type: z.literal(ProductVariantTypes.SINGLE),
   variants: z.array(objectIdSchema),
   variant_group_name: z
     .string()
@@ -100,7 +100,7 @@ export const singleVariantSchema = z.object({
 });
 
 export const combineVariantSchema = z.object({
-  variant_type: z.literal(PRODUCT_VARIANT_TYPES.COMBINE),
+  variant_type: z.literal(ProductVariantTypes.COMBINE),
   variants: z.array(objectIdSchema),
   variant_group_name: z
     .string()
@@ -123,7 +123,7 @@ const conditionVariantTypeSchema = z.discriminatedUnion(
 export const productSchema = z.intersection(conditionVariantTypeSchema, baseProductSchema);
 
 export const productStateUserCanModify = z.union([
-  z.literal(PRODUCT_STATES.ACTIVE),
-  z.literal(PRODUCT_STATES.INACTIVE),
-  z.literal(PRODUCT_STATES.DRAFT),
-]).default(PRODUCT_STATES.ACTIVE);
+  z.literal(ProductStates.ACTIVE),
+  z.literal(ProductStates.INACTIVE),
+  z.literal(ProductStates.DRAFT),
+]).default(ProductStates.ACTIVE);

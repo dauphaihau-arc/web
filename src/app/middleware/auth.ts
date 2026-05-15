@@ -1,5 +1,5 @@
 import { ROUTES } from '~/shared/config/enums/routes';
-import { LOCAL_STORAGE_KEYS } from '~/shared/config/enums/local-storage-keys';
+import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys';
 import { useGetCurrentUser } from '~/shared/services/user';
 import { isBackendWakeUpError } from '~/shared/composables/use-backend-status';
 
@@ -10,7 +10,7 @@ export default defineNuxtRouteMiddleware(async () => {
     return;
   }
 
-  const hasAccessToken = !!localStorage[LOCAL_STORAGE_KEYS.ACCESS_TOKEN_EXP];
+  const hasAccessToken = !!localStorage[LocalStorageKeys.ACCESS_TOKEN_EXP];
 
   if (!hasAccessToken) {
     return navigateTo(ROUTES.HOME);

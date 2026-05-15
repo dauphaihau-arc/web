@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { StorageSerializers, useStorage } from '@vueuse/core';
 import type { User } from '~/shared/types/user';
-import { LOCAL_STORAGE_KEYS } from '~/shared/config/enums/local-storage-keys';
+import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys';
 import { useGetDataByIP, useGetExchangeRates } from '~/shared/services/market';
 import { useGetCurrentUser } from '~/shared/services/user';
 import type {
@@ -10,8 +10,8 @@ import type {
   ResponseGetDataByIP,
   UserActivitiesSessionStorage
 } from '~/shared/types/market';
-import { MARKET_CONFIG, MARKET_LANGUAGES } from '~/shared/config/enums/market';
-import { SESSION_STORAGE_KEYS } from '~/shared/config/enums/session-storage-keys';
+import { MARKET_CONFIG, MarketLanguages } from '~/shared/config/enums/market';
+import { SessionStorageKeys } from '~/shared/config/enums/session-storage-keys';
 
 dayjs.extend(utc);
 
@@ -19,22 +19,22 @@ export const useMarketStore = defineStore('market', () => {
   const { data: dataUserAuth } = useGetCurrentUser();
 
   const categoriesBreadcrumb = useStorage(
-    SESSION_STORAGE_KEYS.CATEGORIES_BREADCRUMB,
-    parseJSON<CategoriesBreadcrumbStorage[]>(sessionStorage.getItem(SESSION_STORAGE_KEYS.CATEGORIES_BREADCRUMB)) || [],
+    SessionStorageKeys.CATEGORIES_BREADCRUMB,
+    parseJSON<CategoriesBreadcrumbStorage[]>(sessionStorage.getItem(SessionStorageKeys.CATEGORIES_BREADCRUMB)) || [],
     sessionStorage // bind value with SS
   );
 
   const userActivities = useStorage<Partial<UserActivitiesSessionStorage>>(
-    SESSION_STORAGE_KEYS.USER_ACTIVITIES,
+    SessionStorageKeys.USER_ACTIVITIES,
     parseJSON<UserActivitiesSessionStorage>(
-      sessionStorage.getItem(SESSION_STORAGE_KEYS.USER_ACTIVITIES)
+      sessionStorage.getItem(SessionStorageKeys.USER_ACTIVITIES)
     ) || {},
     sessionStorage // bind value with SS
   );
 
   const exchangeRate = useStorage<ExchangeRateStorage>(
-    LOCAL_STORAGE_KEYS.EXCHANGE_RATE,
-    localStorage[LOCAL_STORAGE_KEYS.EXCHANGE_RATE],
+    LocalStorageKeys.EXCHANGE_RATE,
+    localStorage[LocalStorageKeys.EXCHANGE_RATE],
     localStorage, // bind value with LS
     {
       // specify type if defaultValue may be null | https://vueuse.org/core/useStorage/#custom-serialization
@@ -44,8 +44,8 @@ export const useMarketStore = defineStore('market', () => {
   );
 
   const guestPreferences = useStorage<User['market_preferences']>(
-    LOCAL_STORAGE_KEYS.GUEST_PREFERENCES,
-    localStorage[LOCAL_STORAGE_KEYS.GUEST_PREFERENCES],
+    LocalStorageKeys.GUEST_PREFERENCES,
+    localStorage[LocalStorageKeys.GUEST_PREFERENCES],
     localStorage, // bind value with LS
     {
       serializer: StorageSerializers.object,
@@ -82,7 +82,7 @@ export const useMarketStore = defineStore('market', () => {
           const data = response._data as ResponseGetDataByIP;
           guestPreferences.value = {
             currency: data.currency.code,
-            language: MARKET_LANGUAGES.EN,
+            language: MarketLanguages.EN,
             region: data.country_name || MARKET_CONFIG.BASE_REGION,
           };
         }

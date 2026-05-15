@@ -3,9 +3,9 @@ import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import type { DropdownItem } from '#ui/types'
 import { ROUTES } from '~/shared/config/enums/routes'
-import { COUPON_APPLIES_TO, COUPON_TYPES } from '~/shared/config/enums/coupon'
+import { CouponAppliesTo, CouponTypes } from '~/shared/config/enums/coupon'
 import { useShopDeleteCoupon, useShopGetCoupons } from '~/shared/services/shop'
-import { CREATE_COUPON_PAGE_TYPES } from '~/shared/config/enums/shop'
+import { CreateCouponPageTypes } from '~/shared/config/enums/shop'
 
 dayjs.extend(localizedFormat)
 
@@ -117,13 +117,13 @@ const itemsDropdownWithRow = (row: { id: string }): DropdownItem[][] => [
     <template #actions>
       <div class="space-x-3">
         <UButton
-          :to="`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.COUPONS}${ROUTES.NEW}?type=${CREATE_COUPON_PAGE_TYPES.PROMO_CODE}`"
+          :to="`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.COUPONS}${ROUTES.NEW}?type=${CreateCouponPageTypes.PROMO_CODE}`"
           size="sm"
         >
           + Create a promo code
         </UButton>
         <UButton
-          :to="`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.COUPONS}${ROUTES.NEW}?type=${CREATE_COUPON_PAGE_TYPES.SALE}`"
+          :to="`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.COUPONS}${ROUTES.NEW}?type=${CreateCouponPageTypes.SALE}`"
           size="sm"
         >
           + Run sale
@@ -152,25 +152,25 @@ const itemsDropdownWithRow = (row: { id: string }): DropdownItem[][] => [
 
         <template #applies-to-data="{ row }">
           <div class="text-center">
-            {{ row.applies_to === COUPON_APPLIES_TO.ALL ? 'All' : `${row.applies_product_ids.length}` }} products
+            {{ row.applies_to === CouponAppliesTo.ALL ? 'All' : `${row.applies_product_ids.length}` }} products
           </div>
         </template>
 
         <template #discount-data="{ row }">
           <div
-            v-if="row.type === COUPON_TYPES.FREE_SHIP"
+            v-if="row.type === CouponTypes.FREE_SHIP"
             class="text-center"
           >
             Freeship
           </div>
           <div
-            v-if="row.type === COUPON_TYPES.PERCENTAGE"
+            v-if="row.type === CouponTypes.PERCENTAGE"
             class="text-center"
           >
             {{ row.percent_off }}%
           </div>
           <div
-            v-if="row.type === COUPON_TYPES.FIXED_AMOUNT"
+            v-if="row.type === CouponTypes.FIXED_AMOUNT"
             class="text-center"
           >
             {{ formatCurrency(row.amount_off) }}

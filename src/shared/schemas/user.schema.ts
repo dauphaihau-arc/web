@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { USER_CONFIG, USER_REG_NAME, USER_REG_PASSWORD } from '~/shared/config/enums/user';
 import { objectIdSchema } from '~/shared/schemas/sub/object-id.schema';
-import { MARKET_CURRENCIES, MARKET_LANGUAGES, MARKET_REGIONS } from '~/shared/config/enums/market';
+import { MarketCurrencies, MarketLanguages, MarketRegions } from '~/shared/config/enums/market';
 
 export const userSchema = z.object({
   id: objectIdSchema,
@@ -33,9 +33,9 @@ export const userSchema = z.object({
     .optional(),
   shop: objectIdSchema.optional(),
   market_preferences: z.object({
-    region: z.nativeEnum(MARKET_REGIONS).default(MARKET_REGIONS.UNITED_STATES),
-    language: z.nativeEnum(MARKET_LANGUAGES).default(MARKET_LANGUAGES.EN),
-    currency: z.nativeEnum(MARKET_CURRENCIES).default(MARKET_CURRENCIES.USD),
+    region: z.nativeEnum(MarketRegions).default(MarketRegions.UNITED_STATES),
+    language: z.nativeEnum(MarketLanguages).default(MarketLanguages.EN),
+    currency: z.nativeEnum(MarketCurrencies).default(MarketCurrencies.USD),
   }).optional(),
   updated_at: z.date(),
   created_at: z.date(),

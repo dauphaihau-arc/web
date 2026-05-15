@@ -14,7 +14,7 @@ import type {
   , createProductInventorySchema
 } from '~/shared/schemas/request/shop-product.schema';
 import type { RequestGetListParams } from '~/shared/types/common';
-import type { PRODUCT_VARIANT_TYPES } from '~/shared/config/enums/product';
+import type { ProductVariantTypes } from '~/shared/config/enums/product';
 import type { ElementType, PickPartial, RequiredFields } from '~/shared/types/utils';
 
 // region create product
@@ -31,16 +31,16 @@ export type VariantOption = Pick<ProductInventory, 'price' | 'stock' | 'sku'> & 
 };
 
 export type NoneVariant = {
-  variant_type: PRODUCT_VARIANT_TYPES.NONE
+  variant_type: ProductVariantTypes.NONE
 } & CreateProductInventory;
 
 export type SingleVariant = {
-  variant_type: PRODUCT_VARIANT_TYPES.SINGLE
+  variant_type: ProductVariantTypes.SINGLE
   variant_options: VariantOption[]
 } & Pick<ProductSingleVariant, 'variant_group_name'>;
 
 export type CombineVariant = {
-  variant_type: PRODUCT_VARIANT_TYPES.COMBINE
+  variant_type: ProductVariantTypes.COMBINE
   variant_options: {
     variant_name: ProductVariant['variant_name']
     variant_options: VariantOption[]

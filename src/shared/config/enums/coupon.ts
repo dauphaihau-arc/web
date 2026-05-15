@@ -10,24 +10,24 @@ export const COUPON_CONFIG = {
   AMOUNT_DAYS_WARN_END_SALE: 7,
 };
 
-export enum COUPON_APPLIES_TO {
+export enum CouponAppliesTo {
   ALL = 'all',
   SPECIFIC = 'specific'
 }
 
-export enum COUPON_TYPES {
+export enum CouponTypes {
   FIXED_AMOUNT = 'fixed_amount',
   PERCENTAGE = 'percentage',
   FREE_SHIP = 'free_ship'
 }
 
-export enum COUPON_MIN_ORDER_TYPES {
+export enum CouponMinOrderTypes {
   NONE = 'none',
   NUMBER_OF_PRODUCTS = 'number_of_products',
   ORDER_TOTAL = 'order_total'
 }
 
-export enum COUPON_STATUS {
+export enum CouponStatus {
   INACTIVE = 'inactive',
   ACTIVE = 'active',
   EXPIRED = 'expired'

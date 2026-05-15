@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import type { SearchParameters } from 'ofetch';
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
-import { LOCAL_STORAGE_KEYS } from '~/shared/config/enums/local-storage-keys';
+import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys';
 import { RESOURCES } from '~/shared/config/enums/resources';
 import { clearExpTokensInLS, setExpTokensToLS } from '~/shared/services/auth';
 import { isBackendWakeUpError, useBackendStatus } from '~/shared/composables/use-backend-status';
@@ -59,8 +59,8 @@ const requestWithWakeUpRecovery = async <T>(
 };
 
 const checkAccessAndRefreshToken = async () => {
-  const refreshTokenExp = localStorage[LOCAL_STORAGE_KEYS.REFRESH_TOKEN_EXP];
-  const accessTokenExp = localStorage[LOCAL_STORAGE_KEYS.ACCESS_TOKEN_EXP];
+  const refreshTokenExp = localStorage[LocalStorageKeys.REFRESH_TOKEN_EXP];
+  const accessTokenExp = localStorage[LocalStorageKeys.ACCESS_TOKEN_EXP];
   if (!refreshTokenExp && !accessTokenExp) {
     return;
   }

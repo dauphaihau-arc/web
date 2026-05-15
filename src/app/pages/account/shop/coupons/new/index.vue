@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { CREATE_COUPON_PAGE_TYPES } from '~/shared/config/enums/shop'
+import { CreateCouponPageTypes } from '~/shared/config/enums/shop'
 import { ROUTES } from '~/shared/config/enums/routes'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
@@ -12,7 +12,7 @@ if (!route.query?.type) {
 </script>
 
 <template>
-  <LayoutShopWrapperContent v-if="route.query.type === CREATE_COUPON_PAGE_TYPES.PROMO_CODE">
+  <LayoutShopWrapperContent v-if="route.query.type === CreateCouponPageTypes.PROMO_CODE">
     <template #title>
       Create a promo code
     </template>
@@ -26,7 +26,7 @@ if (!route.query?.type) {
       </div>
     </template>
   </LayoutShopWrapperContent>
-  <LayoutShopWrapperContent v-else-if="route.query.type === CREATE_COUPON_PAGE_TYPES.SALE">
+  <LayoutShopWrapperContent v-else-if="route.query.type === CreateCouponPageTypes.SALE">
     <template #title>
       Set up a sale
     </template>

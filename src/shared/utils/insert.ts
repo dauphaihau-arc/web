@@ -4,7 +4,12 @@ export default function<T extends unknown[]>(
   index: number
 ): T {
   const newArr = arr.reduce((s: unknown[], a, i) => {
-    i === index ? s.push(item, a) : s.push(a);
+    if (i === index) {
+      s.push(item, a);
+    }
+    else {
+      s.push(a);
+    }
     return s;
   }, []);
   return newArr as T;

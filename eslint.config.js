@@ -39,6 +39,42 @@ export default withNuxt(
     },
   },
   {
+    files: ['src/shared/types/**/*.ts', 'src/server/api/**/*.ts'],
+    rules: {
+      '@typescript-eslint/naming-convention': [
+        'error',
+        {
+          selector: 'default',
+          format: ['camelCase'],
+          leadingUnderscore: 'allow',
+          trailingUnderscore: 'allow',
+        },
+        {
+          selector: 'variable',
+          format: ['camelCase', 'UPPER_CASE', 'PascalCase'],
+          leadingUnderscore: 'allow',
+          trailingUnderscore: 'allow',
+        },
+        {
+          selector: 'typeLike',
+          format: ['PascalCase'],
+        },
+        {
+          selector: 'property',
+          format: null,
+        },
+        {
+          selector: 'typeProperty',
+          format: null,
+        },
+        {
+          selector: 'objectLiteralProperty',
+          format: null,
+        },
+      ],
+    },
+  },
+  {
     ignores: [
       '**/*.config.js',
       '**/*.config.ts',

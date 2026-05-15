@@ -1,4 +1,11 @@
-import type { Product, ProductCombineVariant, ProductImage, ProductInventory, ProductSingleVariant, ProductVariant } from '~/shared/types/product';
+import type {
+  Product,
+  ProductCombineVariant,
+  ProductImage,
+  ProductInventory,
+  ProductSingleVariant,
+  ProductVariant
+} from '~/shared/types/product';
 import type { Coupon } from '~/shared/types/coupon';
 import type { Shop } from '~/shared/types/shop';
 import type { Cart } from '~/shared/types/cart';
@@ -70,9 +77,9 @@ export type ResponseGetCart = {
   summary: CartSummary
 };
 
-export type ResponseGetCart_ProductCart = CartProductItem;
-export type ResponseGetCart_ShopCart = CartShopGroup;
-export type ResponseGetCart_SummaryOrder = CartSummary;
+export type ResponseGetCartProductCart = CartProductItem;
+export type ResponseGetCartShopCart = CartShopGroup;
+export type ResponseGetCartSummaryOrder = CartSummary;
 
 export type UpdateCartBody = Partial<{
   cartId: Cart['id']

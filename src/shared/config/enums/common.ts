@@ -1,4 +1,4 @@
-export enum RESET_PASSWORD_VIEWS {
+export enum ResetPasswordViews {
   SEND_EMAIL,
   SEND_EMAIL_SUCCESS,
   TOKEN_INVALID,

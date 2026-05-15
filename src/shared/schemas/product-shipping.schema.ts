@@ -1,12 +1,12 @@
 import { z } from 'zod';
-import { PRODUCT_SHIPPING_CHARGE, PRODUCT_SHIPPING_SERVICES } from '~/shared/config/enums/product';
+import { ProductShippingCharge, ProductShippingServices } from '~/shared/config/enums/product';
 import { objectIdSchema } from '~/shared/schemas/sub/object-id.schema';
 
 export const productStandardShippingSchema = z.object({
   country: z.string(),
-  service: z.nativeEnum(PRODUCT_SHIPPING_SERVICES).default(PRODUCT_SHIPPING_SERVICES.OTHER),
+  service: z.nativeEnum(ProductShippingServices).default(ProductShippingServices.OTHER),
   delivery_time: z.string(),
-  charge: z.nativeEnum(PRODUCT_SHIPPING_CHARGE).default(PRODUCT_SHIPPING_CHARGE.FREE_SHIPPING),
+  charge: z.nativeEnum(ProductShippingCharge).default(ProductShippingCharge.FREE_SHIPPING),
 });
 
 export const productShippingSchema = z.object({
