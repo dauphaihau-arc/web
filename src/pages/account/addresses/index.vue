@@ -12,10 +12,7 @@ const {
   isPending: isPendingGetUserAddresses,
   data: dataUserAddress,
   refetch,
-} = useGetUserAddresses({
-  select: '-user,-created_at,-updated_at',
-  sortBy: '-is_primary',
-})
+} = useGetUserAddresses()
 
 const {
   isPending: isPendingDeleteUserAddresses,

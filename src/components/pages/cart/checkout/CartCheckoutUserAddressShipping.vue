@@ -8,10 +8,7 @@ const dialog = useModal()
 const {
   isPending: isPendingGetUserAddresses,
   data: dataUserAddress,
-} = useGetUserAddresses({
-  select: '-user,-created_at,-updated_at',
-  sortBy: '-is_primary',
-})
+} = useGetUserAddresses()
 
 const addressRadioOptions = computed(() => {
   if (dataUserAddress.value?.results && dataUserAddress.value.results.length > 0) {

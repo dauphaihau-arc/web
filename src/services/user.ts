@@ -1,7 +1,7 @@
 import type { MutationOptions } from '@tanstack/vue-query';
 import { RESOURCES } from '~/config/enums/resources';
 import type { User, UpdateUserBody } from '~/types/user';
-import type { ResponseBaseGetList, RequestGetListParams } from '~/types/common';
+import type { ResponseBaseGetList } from '~/types/common';
 import type { CreateBodyUserAddressBody, UserAddress } from '~/types/user-address';
 import type { UserAuthenticated } from '~/types/auth';
 import { toastCustom } from '~/config/toast';
@@ -45,14 +45,12 @@ export function useUpdateUser() {
   });
 }
 
-export function useGetUserAddresses(queryParams?: RequestGetListParams) {
+export function useGetUserAddresses() {
   return useQuery({
-    enabled: !!queryParams,
-    queryKey: ['get-user-addresses', queryParams],
+    queryKey: ['get-user-addresses'],
     queryFn: () => {
       return useCustomFetch.get<ResponseBaseGetList<UserAddress>>(
-        `${RESOURCES.USER}${RESOURCES.ADDRESSES}`,
-        queryParams || undefined
+        `${RESOURCES.ME}${RESOURCES.ADDRESSES}`
       );
     },
   });
@@ -63,7 +61,7 @@ export function useCreateUserAddress() {
     mutationKey: ['create-user-address'],
     mutationFn: async (body: CreateBodyUserAddressBody) => {
       return await useCustomFetch.post<{ address: UserAddress }>(
-        `${RESOURCES.USER}${RESOURCES.ADDRESSES}`,
+        `${RESOURCES.ME}${RESOURCES.ADDRESSES}`,
         body
       );
     },
@@ -76,7 +74,7 @@ export function useUpdateUserAddress() {
     mutationFn: async (body: Partial<UserAddress>) => {
       const { id, ...resBody } = body;
       return await useCustomFetch.patch<{ address: UserAddress }>(
-        `${RESOURCES.USER}${RESOURCES.ADDRESSES}/${id}`,
+        `${RESOURCES.ME}${RESOURCES.ADDRESSES}/${id}`,
         resBody
       );
     },
@@ -90,7 +88,7 @@ export function useDeleteUserAddress(
     mutationKey: ['delete-user-address'],
     mutationFn: async (id: UserAddress['id']) => {
       return await useCustomFetch.delete(
-        `${RESOURCES.USER}${RESOURCES.ADDRESSES}/${id}`
+        `${RESOURCES.ME}${RESOURCES.ADDRESSES}/${id}`
       );
     },
     ...options,
