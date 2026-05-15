@@ -104,7 +104,7 @@ const itemsShopDropdown: DropdownItem[][] = [
 
 <template>
   <aside
-    class="w-shop-layout-sidebar fixed z-[3] h-full"
+    class="w-shop-layout-sidebar fixed z-[3] h-full border-r border-gray-200"
     :class="[{ 'bg-layout-shop': !isOpen }]"
   >
     <UDropdown
@@ -160,7 +160,9 @@ const itemsShopDropdown: DropdownItem[][] = [
               class="link-default link-theme ml-2 mr-4 w-full"
               :class="[
                 'pl-5',
-                routes.path.includes(item.route) ? 'link-active' : 'link-inactive',
+                item.disabled
+                  ? 'cursor-not-allowed opacity-50 text-customGray-900'
+                  : routes.path.includes(item.route) ? 'link-active' : 'link-inactive',
               ]"
             >
               {{ item.title }}

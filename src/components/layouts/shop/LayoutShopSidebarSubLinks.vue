@@ -59,8 +59,9 @@ const itemsLinkRoutes = Array.isArray(data.sub) && data.sub.map(item => item.rou
                 :to="item?.disabled ? '' : item.route"
                 class="link-default link-theme w-full"
                 :class="[
-                  routes.path.indexOf(item.route as string) > -1 ? 'link-active' : 'link-inactive',
-                  item?.disabled && 'cursor-not-allowed',
+                  item.disabled
+                    ? 'cursor-not-allowed text-customGray-900'
+                    : routes.path.indexOf(item.route as string) > -1 ? 'link-active' : 'link-inactive',
                 ]"
               >
                 {{ item.title }}
