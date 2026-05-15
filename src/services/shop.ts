@@ -197,7 +197,7 @@ export function useShopCreateCoupon() {
     mutationKey: ['shop-create-coupon'],
     mutationFn: async (body: CreatePromoCodeBody | CreateSaleBody) => {
       const shopId = await resolveMyShopId(queryClient);
-      return useCustomFetch.post<{ product: Product }>(
+      return useCustomFetch.post<{ coupon: Coupon }>(
         `${RESOURCES.SHOPS}/${shopId}${RESOURCES.COUPONS}`,
         body
       );
