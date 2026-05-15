@@ -1,7 +1,6 @@
 import type { MARKET_CURRENCIES } from '~/config/enums/market';
 import type { Shop } from '~/types/shop';
 import type { Order, OrderShopProduct } from '~/types/order';
-import type { UserAddress } from '~/types/user-address';
 import type { Coupon, PercentOff } from '~/types/coupon';
 import type { Override } from '~/types/utils';
 import type { Product, ProductInventory } from '~/types/product';
@@ -43,7 +42,7 @@ export type ResponseGetOrderShops = {
 export type CreateOrderFromCartBody = {
   currency?: MARKET_CURRENCIES
   payment_type: Order['payment_type']
-  user_address_id: UserAddress['id']
+  user_address_id: string
   addition_info_shop_carts?: {
     shop_id: Shop['id']
     promo_codes: Coupon['code'][]
@@ -54,7 +53,7 @@ export type CreateOrderFromCartBody = {
 export type CreateOrderForBuyNowBody = {
   cart_id: Cart['id']
   payment_type: Payment['type']
-  user_address_id: UserAddress['id']
+  user_address_id: string
   currency?: MARKET_CURRENCIES
   note?: Order['note']
   promo_codes?: Coupon['code'][]
