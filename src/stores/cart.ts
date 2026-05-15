@@ -25,7 +25,7 @@ export const useCartStore = defineStore('cart', () => {
     currentStep: CHECKOUT_NOW_STEPS.ADDRESS_SHIPPING,
     countRefreshConvertCurrency: 0,
     isPendingCreateOrder: false,
-    paymentType: PAYMENT_TYPES.CARD,
+    paymentType: PAYMENT_TYPES.CASH,
     address: null,
   };
   const stateCheckoutNow = reactive<StateCheckoutNow>({ ...initStateCheckoutNow });
@@ -38,7 +38,7 @@ export const useCartStore = defineStore('cart', () => {
     currentStep: CHECKOUT_CART_STEPS.ADDRESS_SHIPPING,
     countRefreshConvertCurrency: 0,
     isPendingCreateOrder: false,
-    paymentType: PAYMENT_TYPES.CARD,
+    paymentType: PAYMENT_TYPES.CASH,
     address: null,
   };
   const stateCheckoutCart = reactive<StateCheckoutCart>({ ...initStateCheckoutCart });

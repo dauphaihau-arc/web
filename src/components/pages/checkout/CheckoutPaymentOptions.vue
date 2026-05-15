@@ -6,7 +6,6 @@ definePageMeta({ layout: 'market', middleware: ['auth'] })
 const cartStore = useCartStore()
 
 const paymentOptions = [
-  { value: PAYMENT_TYPES.CARD, label: 'Credit / Debit Card', description: 'We support Mastercard, Visa and Stripe' },
   { value: PAYMENT_TYPES.CASH, label: 'Cash on delivery', description: 'Pay with cash when your order is delivered' },
 ]
 </script>
