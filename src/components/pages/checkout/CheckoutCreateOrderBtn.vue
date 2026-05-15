@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { consola } from 'consola'
 import { PAYMENT_TYPES } from '~/config/enums/order'
+import { MARKET_CONFIG } from '~/config/enums/market'
 import { toastCustom } from '~/config/toast'
 import { ROUTES } from '~/config/enums/routes'
 import { useCartStore } from '~/stores/cart'
 import { useCreateOrderForBuyNow } from '~/services/order'
 import { CHECKOUT_NOW_STEPS } from '~/types/pages/checkout'
-import { useGetCurrentUser } from '~/services/user'
 import { useGetExchangeRates } from '~/services/market'
 import type { CreateOrderForBuyNowBody } from '~/types/request-api/order'
 import type { Cart } from '~/types/cart'
@@ -14,7 +14,6 @@ import type { Cart } from '~/types/cart'
 const cartStore = useCartStore()
 const toast = useToast()
 const marketStore = useMarketStore()
-const { data: dataUserAuth } = useGetCurrentUser()
 
 const route = useRoute()
 const tempCartId = route.query['c'] as Cart['id']
@@ -53,8 +52,8 @@ const onCreateOrder = async () => {
     }
 
     // region validate currency
-    const currencySelected = dataUserAuth?.value?.user?.market_preferences?.currency
-    if (!currencySelected || !marketStore.exchangeRate?.rates) {
+    const currencySelected = marketStore.guestPreferences?.currency || MARKET_CONFIG.BASE_CURRENCY
+    if (!marketStore.exchangeRate?.rates) {
       consola.error('currency or rates be undefined')
       throw Error()
     }

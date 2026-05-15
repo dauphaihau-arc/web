@@ -5,7 +5,6 @@ import { ADDRESS_CONFIG } from '~/config/enums/address'
 import type { ProductShipping, ProductStandardShipping } from '~/types/product'
 import { PRODUCT_SHIPPING_CHARGE, PRODUCT_SHIPPING_SERVICES } from '~/config/enums/product'
 import { createProductShippingSchema } from '~/schemas/request/shop-product.schema'
-import { useGetCurrentUser } from '~/services/user'
 import type { CreateProductShipping } from '~/types/request-api/shop-product'
 
 type TStateSubmit = Partial<Pick<ProductShipping, 'country' | 'zip' | 'process_time'>> & {
@@ -21,8 +20,8 @@ const props = defineProps<{
 }>()
 
 const modal = useModal()
+const marketStore = useMarketStore()
 const { data: dataGetCountries } = useGetCountries()
-const { data: dataUserAuth } = useGetCurrentUser()
 
 const processTimeOptions = [
   {
@@ -79,8 +78,8 @@ onMounted(() => {
     ensureOriginShipping()
     return
   }
-  if (dataUserAuth.value?.user?.market_preferences?.region) {
-    const region = dataUserAuth.value.user.market_preferences.region
+  if (marketStore.guestPreferences?.region) {
+    const region = marketStore.guestPreferences.region
     const selectedCountry = dataGetCountries.value?.data.find(country =>
       country.Iso2 === region || country.name === region,
     )

@@ -54,7 +54,7 @@ export const useMarketStore = defineStore('market', () => {
 
   // sync with LS
   watch(() => dataUserAuth.value?.user, () => {
-    if (dataUserAuth.value?.user) {
+    if (dataUserAuth.value?.user?.market_preferences) {
       guestPreferences.value = dataUserAuth.value.user.market_preferences;
     }
   });

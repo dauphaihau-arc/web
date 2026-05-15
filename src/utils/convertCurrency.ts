@@ -1,5 +1,4 @@
 import { MARKET_CONFIG } from '~/config/enums/market';
-import { useGetCurrentUser } from '~/services/user';
 
 const tempRates = {
   AUD: 1.534853,
@@ -20,12 +19,10 @@ export default function (amount: number | unknown) {
   }
 
   const marketStore = useMarketStore();
-  const { data: dataUserAuth } = useGetCurrentUser();
 
   const rates = marketStore.exchangeRate?.rates || tempRates;
 
-  const currency = dataUserAuth?.value?.user?.market_preferences?.currency ||
-    marketStore.guestPreferences?.currency ||
+  const currency = marketStore.guestPreferences?.currency ||
     MARKET_CONFIG.BASE_CURRENCY;
 
   if (currency === MARKET_CONFIG.BASE_CURRENCY) {
