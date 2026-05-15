@@ -1,10 +1,10 @@
 import { z } from 'zod';
-import { COUPON_TYPES } from '~/config/enums/coupon';
+import { COUPON_TYPES } from '~/shared/config/enums/coupon';
 import {
   baseCouponSchema, conditionApplyToTypeSchema,
   conditionMinOrderTypeSchema,
   conditionTypeCouponSchema
-} from '~/schemas/coupon.schema';
+} from '~/shared/schemas/coupon.schema';
 
 // region create promo code
 const baseCreateCouponBodySchema = baseCouponSchema.pick({

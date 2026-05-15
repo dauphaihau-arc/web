@@ -5,13 +5,13 @@ import type {
   productImageSchema,
   productSchema,
   singleVariantSchema
-} from '~/schemas/product.schema';
-import type { productInventorySchema } from '~/schemas/product-inventory.schema';
+} from '~/shared/schemas/product.schema';
+import type { productInventorySchema } from '~/shared/schemas/product-inventory.schema';
 import type {
   productStandardShippingSchema,
   productShippingSchema
-} from '~/schemas/product-shipping.schema';
-import type { productVariantSchema } from '~/schemas/product-variant.schema';
+} from '~/shared/schemas/product-shipping.schema';
+import type { productVariantSchema } from '~/shared/schemas/product-variant.schema';
 
 export type Product = z.infer<typeof productSchema>;
 export type ProductSingleVariant = z.infer<typeof singleVariantSchema>;

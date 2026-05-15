@@ -1,5 +1,5 @@
-import type { Category } from '~/types/category';
-import type { RequestGetListParams } from '~/types/common';
+import type { Category } from '~/shared/types/category';
+import type { RequestGetListParams } from '~/shared/types/common';
 
 // region get products
 export type GetProductsParams = Partial<{

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ResponseGetDetailProduct } from '~/types/request-api/product'
+import type { ResponseGetDetailProduct } from '~/shared/types/request-api/product'
 
 const { product } = defineProps<{
   product: ResponseGetDetailProduct

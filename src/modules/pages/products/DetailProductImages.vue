@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ResponseGetDetailProduct } from '~/types/request-api/product'
+import type { ResponseGetDetailProduct } from '~/shared/types/request-api/product'
 
 const { images } = defineProps<{
   images: ResponseGetDetailProduct['images']

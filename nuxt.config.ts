@@ -7,10 +7,6 @@ const awsHostBucketDomain = awsHostBucket
 const awsHostBucketAlias = awsHostBucket.replace(/\/+$/, '')
 
 export default defineNuxtConfig({
-  experimental: {
-    viteEnvironmentApi: true,
-  },
-
   app: {
     head: {
       titleTemplate: `%s - ${pkg.name}`,
@@ -43,21 +39,6 @@ export default defineNuxtConfig({
   },
   ssr: false,
   devtools: { enabled: true },
-
-  alias: {
-    '~/app': './src/app',
-    '~/modules': './src/modules',
-    '~/shared': './src/shared',
-    '~/assets': './src/app/assets',
-    '~/components': './src/modules',
-    '~/composables': './src/shared/composables',
-    '~/config': './src/shared/config',
-    '~/schemas': './src/shared/schemas',
-    '~/services': './src/shared/services',
-    '~/stores': './src/shared/stores',
-    '~/types': './src/shared/types',
-    '~/utils': './src/shared/utils',
-  },
 
   modules: [
     '@nuxt/eslint',

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
-import { userSchema } from '~/schemas/user.schema'
-import type { User } from '~/types/user'
-import { useForgetPassword } from '~/services/auth'
-import { RESET_PASSWORD_VIEWS } from '~/config/enums/common'
-import { toastCustom } from '~/config/toast'
+import { userSchema } from '~/shared/schemas/user.schema'
+import type { User } from '~/shared/types/user'
+import { useForgetPassword } from '~/shared/services/auth'
+import { RESET_PASSWORD_VIEWS } from '~/shared/config/enums/common'
+import { toastCustom } from '~/shared/config/toast'
 
 const emit = defineEmits<{
   changeView: [value: RESET_PASSWORD_VIEWS]

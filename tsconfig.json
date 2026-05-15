@@ -3,21 +3,6 @@
   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
     "ignoreDeprecations": "5.0",
-    "baseUrl": ".",
-    "paths": {
-      "~/app/*": ["./src/app/*"],
-      "~/modules/*": ["./src/modules/*"],
-      "~/shared/*": ["./src/shared/*"],
-      "~/assets/*": ["./src/app/assets/*"],
-      "~/components/*": ["./src/modules/*"],
-      "~/composables/*": ["./src/shared/composables/*"],
-      "~/config/*": ["./src/shared/config/*"],
-      "~/schemas/*": ["./src/shared/schemas/*"],
-      "~/services/*": ["./src/shared/services/*"],
-      "~/stores/*": ["./src/shared/stores/*"],
-      "~/types/*": ["./src/shared/types/*"],
-      "~/utils/*": ["./src/shared/utils/*"]
-    },
     "types": [
       "@pinia/nuxt"
     ],
@@ -34,8 +19,5 @@
     "noImplicitOverride": true,
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true
-  },
-  "includes": [
-    "types/*.d.ts"
-  ]
+  }
 }

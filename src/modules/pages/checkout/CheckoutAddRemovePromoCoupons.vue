@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { StatusCodes } from 'http-status-codes'
 import { FetchError } from 'ofetch'
-import { useCartStore } from '~/stores/cart'
-import { toastCustom } from '~/config/toast'
-import { COUPON_CONFIG } from '~/config/enums/coupon'
-import type { Coupon } from '~/types/coupon'
-import { useUpdateCart } from '~/services/cart'
-import type { ResponseGetCart } from '~/types/request-api/cart'
+import { useCartStore } from '~/shared/stores/cart'
+import { toastCustom } from '~/shared/config/toast'
+import { COUPON_CONFIG } from '~/shared/config/enums/coupon'
+import type { Coupon } from '~/shared/types/coupon'
+import { useUpdateCart } from '~/shared/services/cart'
+import type { ResponseGetCart } from '~/shared/types/request-api/cart'
 
 const toast = useToast()
 const cartStore = useCartStore()

@@ -1,8 +1,8 @@
-import type { Product, ProductCombineVariant, ProductImage, ProductInventory, ProductSingleVariant, ProductVariant } from '~/types/product';
-import type { Coupon } from '~/types/coupon';
-import type { Shop } from '~/types/shop';
-import type { Cart } from '~/types/cart';
-import type { User } from '~/types/user';
+import type { Product, ProductCombineVariant, ProductImage, ProductInventory, ProductSingleVariant, ProductVariant } from '~/shared/types/product';
+import type { Coupon } from '~/shared/types/coupon';
+import type { Shop } from '~/shared/types/shop';
+import type { Cart } from '~/shared/types/cart';
+import type { User } from '~/shared/types/user';
 
 export type CartProductItem = {
   id: string

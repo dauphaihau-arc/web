@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGetCurrentUser } from '~/services/user'
+import { useGetCurrentUser } from '~/shared/services/user'
 
 const route = useRoute()
 const { data: dataUserAuth } = useGetCurrentUser()

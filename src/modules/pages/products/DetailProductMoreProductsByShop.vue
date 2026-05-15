@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { Shop } from '~/types/shop'
-import { useGetProducts } from '~/services/product'
+import type { Shop } from '~/shared/types/shop'
+import { useGetProducts } from '~/shared/services/product'
 
 const limit = 6
 

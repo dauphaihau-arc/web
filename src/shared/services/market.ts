@@ -1,16 +1,20 @@
 import type { UseQueryOptions } from '@tanstack/vue-query';
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import { consola } from 'consola';
-import { MARKET_CONFIG } from '~/config/enums/market';
-import type { ResponseGetDataByIP, ResponseGetExchangeRates } from '~/types/market';
+import { MARKET_CONFIG } from '~/shared/config/enums/market';
+import type { ResponseGetDataByIP, ResponseGetExchangeRates } from '~/shared/types/market';
+
+type QueryOptions<TData> = Omit<
+  UseQueryOptions<TData, Error, TData, string[]>,
+  'queryKey' | 'queryFn'
+>;
 
 export function useGetExchangeRates(
-  queryOptions?: Partial<UseQueryOptions<ResponseGetExchangeRates>>,
+  queryOptions?: QueryOptions<ResponseGetExchangeRates>,
   nitroOptions?: NitroFetchOptions<NitroFetchRequest>
 ) {
   return useQuery<ResponseGetExchangeRates>({
     ...queryOptions,
-    server: false,
     queryKey: ['get-exchange-rates'],
     queryFn: () => {
       return useCustomFetch.get<ResponseGetExchangeRates>(
@@ -30,12 +34,11 @@ export function useGetExchangeRates(
 }
 
 export function useGetDataByIP(
-  queryOptions?: Partial<UseQueryOptions<ResponseGetDataByIP>>,
+  queryOptions?: QueryOptions<ResponseGetDataByIP>,
   nitroOptions?: NitroFetchOptions<NitroFetchRequest>
 ) {
   return useQuery<ResponseGetDataByIP>({
     ...queryOptions,
-    server: false,
     queryKey: ['get-ip-data'],
     queryFn: () => {
       return useCustomFetch.get<ResponseGetDataByIP>(

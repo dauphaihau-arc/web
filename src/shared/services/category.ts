@@ -1,7 +1,7 @@
-import { RESOURCES } from '~/config/enums/resources';
+import { RESOURCES } from '~/shared/config/enums/resources';
 import type {
   Category, CategorySearch, GetCategoriesParams, ResponseGetCategories
-} from '~/types/category';
+} from '~/shared/types/category';
 
 export type CategoryAttributeSelect = {
   id: string

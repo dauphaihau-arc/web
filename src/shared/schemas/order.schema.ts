@@ -1,11 +1,11 @@
 import { z } from 'zod';
 import {
   PAYMENT_TYPES, ORDER_STATUSES, ORDER_SHIPPING_STATUSES, ORDER_CONFIG
-} from '~/config/enums/order';
-import { objectIdSchema } from '~/schemas/sub/objectId.schema';
-import { baseCouponSchema } from '~/schemas/coupon.schema';
-import { baseProductSchema } from '~/schemas/product.schema';
-import { productInventorySchema } from '~/schemas/product-inventory.schema';
+} from '~/shared/config/enums/order';
+import { objectIdSchema } from '~/shared/schemas/sub/objectId.schema';
+import { baseCouponSchema } from '~/shared/schemas/coupon.schema';
+import { baseProductSchema } from '~/shared/schemas/product.schema';
+import { productInventorySchema } from '~/shared/schemas/product-inventory.schema';
 
 export const orderProductSchema = z.object({
   product: baseProductSchema.shape.id,

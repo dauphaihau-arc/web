@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { consola } from 'consola'
-import type { Category } from '~/types/category'
-import { useGetCategories } from '~/services/category'
+import type { Category } from '~/shared/types/category'
+import { useGetCategories } from '~/shared/services/category'
 
 const route = useRoute()
 const marketStore = useMarketStore()

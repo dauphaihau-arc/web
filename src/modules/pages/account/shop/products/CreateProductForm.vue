@@ -1,23 +1,23 @@
 <script setup lang="ts">
 import { consola } from 'consola'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
-import { createProductBodySchema, createProductInventorySchema } from '~/schemas/request/shop-product.schema'
+import { createProductBodySchema, createProductInventorySchema } from '~/shared/schemas/request/shop-product.schema'
 import {
   isDigitalOpts,
   PRODUCT_CONFIG,
   PRODUCT_STATES,
   PRODUCT_VARIANT_TYPES,
   productWhoMadeOpts,
-} from '~/config/enums/product'
-import { ROUTES } from '~/config/enums/routes'
-import { toastCustom } from '~/config/toast'
-import { CreateShippingProductDialog } from '#components'
+} from '~/shared/config/enums/product'
+import { ROUTES } from '~/shared/config/enums/routes'
+import { toastCustom } from '~/shared/config/toast'
+import CreateShippingProductDialog from '~/modules/pages/account/shop/products/CreateShippingProductDialog.vue'
 import {
   useShopCreateProduct,
   useShopPublishProduct,
   useShopSetProductImagesByKeys,
-} from '~/services/shop'
-import { useIssueProductImageUploadUrl } from '~/services/upload'
+} from '~/shared/services/shop'
+import { useIssueProductImageUploadUrl } from '~/shared/services/upload'
 import type {
   CombineVariant,
   CreateProductBody,
@@ -28,8 +28,8 @@ import type {
   StateNoneVariant,
   StateSingleVariant,
   StateSubmit,
-} from '~/types/request-api/shop-product'
-import type { PickPartial } from '~/types/utils'
+} from '~/shared/types/request-api/shop-product'
+import type { PickPartial } from '~/shared/types/utils'
 
 const router = useRouter()
 const toast = useToast()
@@ -602,5 +602,5 @@ watch(isProductHaveVariants, () => {
 </template>
 
 <style scoped>
-@import url("~/assets/css/layout-shop.css");
+@import url("~/app/assets/css/layout-shop.css");
 </style>

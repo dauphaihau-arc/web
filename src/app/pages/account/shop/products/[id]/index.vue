@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useShopGetDetailProduct } from '~/services/shop'
-import type { Product } from '~/types/product'
+import { useShopGetDetailProduct } from '~/shared/services/shop'
+import type { Product } from '~/shared/types/product'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 

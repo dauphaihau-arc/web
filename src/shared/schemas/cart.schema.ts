@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { objectIdSchema } from '~/schemas/sub/objectId.schema';
-import { CART_CONFIG } from '~/config/enums/cart';
-import { PRODUCT_CONFIG } from '~/config/enums/product';
+import { objectIdSchema } from '~/shared/schemas/sub/objectId.schema';
+import { CART_CONFIG } from '~/shared/config/enums/cart';
+import { PRODUCT_CONFIG } from '~/shared/config/enums/product';
 
 export const productCartSchema = z.object({
   id: objectIdSchema,

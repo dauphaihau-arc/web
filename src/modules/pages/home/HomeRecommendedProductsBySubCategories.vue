@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useGetProductsByMultiQueries } from '~/services/product'
-import type { Category } from '~/types/category'
+import { useGetProductsByMultiQueries } from '~/shared/services/product'
+import type { Category } from '~/shared/types/category'
 
 const groupSkeletons = 2
 const limit = 6

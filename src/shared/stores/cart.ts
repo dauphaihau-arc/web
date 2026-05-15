@@ -1,11 +1,11 @@
-import type { Order } from '~/types/order';
-import type { Shop } from '~/types/shop';
-import { CHECKOUT_NOW_STEPS, type StateCheckoutNow } from '~/types/pages/checkout';
-import { PAYMENT_TYPES } from '~/config/enums/order';
-import type { Coupon } from '~/types/coupon';
-import { CHECKOUT_CART_STEPS, type StateCheckoutCart } from '~/types/pages/cart/checkout';
-import { ROUTES } from '~/config/enums/routes';
-import type { ResponseCreateOrder } from '~/types/request-api/order';
+import type { Order } from '~/shared/types/order';
+import type { Shop } from '~/shared/types/shop';
+import { CHECKOUT_NOW_STEPS, type StateCheckoutNow } from '~/shared/types/pages/checkout';
+import { PAYMENT_TYPES } from '~/shared/config/enums/order';
+import type { Coupon } from '~/shared/types/coupon';
+import { CHECKOUT_CART_STEPS, type StateCheckoutCart } from '~/shared/types/pages/cart/checkout';
+import { ROUTES } from '~/shared/config/enums/routes';
+import type { ResponseCreateOrder } from '~/shared/types/request-api/order';
 
 export type AdditionInfoShopCarts = {
   key: Shop['id']

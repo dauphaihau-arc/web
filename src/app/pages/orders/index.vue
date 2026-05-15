@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useGetOrderShops } from '~/services/order'
+import { useGetOrderShops } from '~/shared/services/order'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 

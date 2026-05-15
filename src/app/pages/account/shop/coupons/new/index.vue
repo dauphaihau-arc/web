@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { CREATE_COUPON_PAGE_TYPES } from '~/config/enums/shop'
-import { ROUTES } from '~/config/enums/routes'
+import { CREATE_COUPON_PAGE_TYPES } from '~/shared/config/enums/shop'
+import { ROUTES } from '~/shared/config/enums/routes'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 

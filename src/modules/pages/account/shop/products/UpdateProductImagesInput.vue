@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { PRODUCT_CONFIG } from '~/config/enums/product'
-import type { Product, ProductImage } from '~/types/product'
-import { toastCustom } from '~/config/toast'
+import { PRODUCT_CONFIG } from '~/shared/config/enums/product'
+import type { Product, ProductImage } from '~/shared/types/product'
+import { toastCustom } from '~/shared/config/toast'
 
 const props = withDefaults(
   defineProps<{

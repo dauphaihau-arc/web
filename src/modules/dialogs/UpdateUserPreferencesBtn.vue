@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
-import type { MARKET_REGIONS } from '~/config/enums/market'
+import type { MARKET_REGIONS } from '~/shared/config/enums/market'
 import {
   MARKET_CONFIG,
   MARKET_CURRENCIES,
   MARKET_LANGUAGES, MARKET_REGION_EMOJIS,
-} from '~/config/enums/market'
-import type { UpdateUserBody } from '~/types/user'
-import { useGetCurrentUser, useUpdateUser } from '~/services/user'
-import { useGetCountries } from '~/services/address'
-import type { ElementType } from '~/types/utils'
+} from '~/shared/config/enums/market'
+import type { UpdateUserBody } from '~/shared/types/user'
+import { useGetCurrentUser, useUpdateUser } from '~/shared/services/user'
+import { useGetCountries } from '~/shared/services/address'
+import type { ElementType } from '~/shared/types/utils'
 
 type State = {
   region: MARKET_REGIONS

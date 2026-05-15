@@ -1,5 +1,5 @@
-import type { MARKET_REGIONS, MARKET_CURRENCIES } from '~/config/enums/market';
-import type { Category } from '~/types/category';
+import type { MARKET_REGIONS, MARKET_CURRENCIES } from '~/shared/config/enums/market';
+import type { Category } from '~/shared/types/category';
 
 export type ResponseGetExchangeRates = {
   rates: { [key: string]: number }

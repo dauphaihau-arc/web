@@ -1,12 +1,12 @@
 import { z } from 'zod';
-import { PRODUCT_CONFIG } from '~/config/enums/product';
+import { PRODUCT_CONFIG } from '~/shared/config/enums/product';
 import {
   COUPON_APPLIES_TO,
   COUPON_TYPES,
   COUPON_MIN_ORDER_TYPES,
   COUPON_CONFIG
-} from '~/config/enums/coupon';
-import { objectIdSchema } from '~/schemas/sub/objectId.schema';
+} from '~/shared/config/enums/coupon';
+import { objectIdSchema } from '~/shared/schemas/sub/objectId.schema';
 
 export const baseCouponSchema = z.object({
   id: objectIdSchema,

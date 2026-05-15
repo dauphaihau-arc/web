@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ROUTES } from '~/config/enums/routes'
-import { useGetCurrentUser } from '~/services/user'
+import { ROUTES } from '~/shared/config/enums/routes'
+import { useGetCurrentUser } from '~/shared/services/user'
 
 const { data: dataUserAuth } = useGetCurrentUser()
 </script>
@@ -31,7 +31,7 @@ const { data: dataUserAuth } = useGetCurrentUser()
           >
             <div class="flex items-center gap-3">
               <img
-                src="~/assets/images/avatar-default.jpg"
+                src="~/app/assets/images/avatar-default.jpg"
                 class="size-5 rounded-full"
                 alt="avatar"
               >

@@ -3,14 +3,14 @@
   use in cart page, cart/checkout page
  */
 import { watchDebounced } from '@vueuse/core'
-import { useCartStore } from '~/stores/cart'
-import { useUpdateCart } from '~/services/cart'
+import { useCartStore } from '~/shared/stores/cart'
+import { useUpdateCart } from '~/shared/services/cart'
 import type {
   ResponseGetCart_ProductCart,
   ResponseGetCart,
   UpdateCartBody,
-} from '~/types/request-api/cart'
-import type { Shop } from '~/types/shop'
+} from '~/shared/types/request-api/cart'
+import type { Shop } from '~/shared/types/shop'
 
 const props = defineProps<{
   productCart: ResponseGetCart_ProductCart

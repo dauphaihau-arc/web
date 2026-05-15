@@ -2,10 +2,10 @@
 /*
   use in cart page, cart/checkout page
  */
-import { ROUTES } from '~/config/enums/routes'
-import type { Shop } from '~/types/shop'
-import { useDeleteProductCart } from '~/services/cart'
-import type { ResponseGetCart_ProductCart, ResponseGetCart } from '~/types/request-api/cart'
+import { ROUTES } from '~/shared/config/enums/routes'
+import type { Shop } from '~/shared/types/shop'
+import { useDeleteProductCart } from '~/shared/services/cart'
+import type { ResponseGetCart_ProductCart, ResponseGetCart } from '~/shared/types/request-api/cart'
 
 const props = defineProps<{
   productCart: ResponseGetCart_ProductCart

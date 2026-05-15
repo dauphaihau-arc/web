@@ -2,13 +2,13 @@
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import {
   COUPON_APPLIES_TO, COUPON_CONFIG, COUPON_MIN_ORDER_TYPES, COUPON_TYPES,
-} from '~/config/enums/coupon'
-import type { RequiredFields } from '~/types/utils'
-import { ROUTES } from '~/config/enums/routes'
-import { useShopCreateCoupon } from '~/services/shop'
-import { toastCustom } from '~/config/toast'
-import { createSaleBodySchema } from '~/schemas/request/shop-coupon.schema'
-import type { CreateSaleBody } from '~/types/coupon'
+} from '~/shared/config/enums/coupon'
+import type { RequiredFields } from '~/shared/types/utils'
+import { ROUTES } from '~/shared/config/enums/routes'
+import { useShopCreateCoupon } from '~/shared/services/shop'
+import { toastCustom } from '~/shared/config/toast'
+import { createSaleBodySchema } from '~/shared/schemas/request/shop-coupon.schema'
+import type { CreateSaleBody } from '~/shared/types/coupon'
 
 const router = useRouter()
 const toast = useToast()

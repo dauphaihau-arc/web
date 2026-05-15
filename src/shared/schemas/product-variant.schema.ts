@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { objectIdSchema } from '~/schemas/sub/objectId.schema';
-import { PRODUCT_CONFIG, PRODUCT_REGEX_NOT_URL } from '~/config/enums/product';
+import { objectIdSchema } from '~/shared/schemas/sub/objectId.schema';
+import { PRODUCT_CONFIG, PRODUCT_REGEX_NOT_URL } from '~/shared/config/enums/product';
 
 export const productVariantOptSchema = z.object({
   id: objectIdSchema,

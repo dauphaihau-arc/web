@@ -1,5 +1,5 @@
 import type { z } from 'zod';
-import type { orderSchema, orderProductSchema } from '~/schemas/order.schema';
+import type { orderSchema, orderProductSchema } from '~/shared/schemas/order.schema';
 
 export type Order = z.infer<typeof orderSchema>;
 

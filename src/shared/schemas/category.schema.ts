@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { objectIdSchema } from '~/schemas/sub/objectId.schema';
-import { CATEGORY_CONFIG } from '~/config/enums/category';
+import { objectIdSchema } from '~/shared/schemas/sub/objectId.schema';
+import { CATEGORY_CONFIG } from '~/shared/config/enums/category';
 
 export const categorySchema = z.object({
   id: objectIdSchema,

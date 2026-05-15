@@ -6,11 +6,11 @@ import type {
   ProductCombineVariant,
   ProductInventory,
   ProductVariant,
-} from '~/types/product'
-import { PRODUCT_CONFIG, PRODUCT_VARIANT_TYPES } from '~/config/enums/product'
-import { productInventorySchema } from '~/schemas/product-inventory.schema'
-import type { IOnChangeUpdateVariants } from '~/components/pages/account/shop/products/UpdateProductForm.vue'
-import type { UpdateProductBody, UpdateVariantOptions } from '~/types/request-api/shop-product'
+} from '~/shared/types/product'
+import { PRODUCT_CONFIG, PRODUCT_VARIANT_TYPES } from '~/shared/config/enums/product'
+import { productInventorySchema } from '~/shared/schemas/product-inventory.schema'
+import type { IOnChangeUpdateVariants } from '~/modules/pages/account/shop/products/UpdateProductForm.vue'
+import type { UpdateProductBody, UpdateVariantOptions } from '~/shared/types/request-api/shop-product'
 
 type VariantOption = { id: ProductVariant['id'], variant_name: string, errorMsg: string }
 

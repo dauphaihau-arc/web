@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useForgetPassword } from '~/services/auth'
-import { toastCustom } from '~/config/toast'
-import { RESET_PASSWORD_VIEWS } from '~/config/enums/common'
+import { useForgetPassword } from '~/shared/services/auth'
+import { toastCustom } from '~/shared/config/toast'
+import { RESET_PASSWORD_VIEWS } from '~/shared/config/enums/common'
 
 const emit = defineEmits<{
   changeView: [value: RESET_PASSWORD_VIEWS]

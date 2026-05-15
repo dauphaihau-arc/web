@@ -2,11 +2,11 @@
 import { StatusCodes } from 'http-status-codes'
 import { FetchError } from 'ofetch'
 import type { FormSubmitEvent } from '#ui/types'
-import { userSchema } from '~/schemas/user.schema'
-import type { User } from '~/types/user'
-import { ROUTES } from '~/config/enums/routes'
-import { useLogin } from '~/services/auth'
-import type { LoginBody } from '~/types/auth'
+import { userSchema } from '~/shared/schemas/user.schema'
+import type { User } from '~/shared/types/user'
+import { ROUTES } from '~/shared/config/enums/routes'
+import { useLogin } from '~/shared/services/auth'
+import type { LoginBody } from '~/shared/types/auth'
 
 const formRef = ref()
 const unknownErrorServerMsg = ref('')

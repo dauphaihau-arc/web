@@ -6,13 +6,13 @@
 import { StatusCodes } from 'http-status-codes'
 import { FetchError } from 'ofetch'
 import { consola } from 'consola'
-import { type AdditionInfoShopCarts, useCartStore } from '~/stores/cart'
-import { COUPON_CONFIG } from '~/config/enums/coupon'
-import type { Shop } from '~/types/shop'
-import { useUpdateCart } from '~/services/cart'
-import { toastCustom } from '~/config/toast'
-import type { Coupon } from '~/types/coupon'
-import type { ResponseGetCart } from '~/types/request-api/cart'
+import { type AdditionInfoShopCarts, useCartStore } from '~/shared/stores/cart'
+import { COUPON_CONFIG } from '~/shared/config/enums/coupon'
+import type { Shop } from '~/shared/types/shop'
+import { useUpdateCart } from '~/shared/services/cart'
+import { toastCustom } from '~/shared/config/toast'
+import type { Coupon } from '~/shared/types/coupon'
+import type { ResponseGetCart } from '~/shared/types/request-api/cart'
 
 const { shopId } = defineProps<{
   shopId: Shop['id']

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
-import type { CreateBodyUserAddressBody } from '~/types/user-address'
-import { ADDRESS_CONFIG } from '~/config/enums/address'
-import { createUserAddressSchema } from '~/schemas/user-address.schema'
-import { toastCustom } from '~/config/toast'
-import { useCreateUserAddress } from '~/services/user'
-import { useGetCountries, useGetStatesByCountry } from '~/services/address'
+import type { CreateBodyUserAddressBody } from '~/shared/types/user-address'
+import { ADDRESS_CONFIG } from '~/shared/config/enums/address'
+import { createUserAddressSchema } from '~/shared/schemas/user-address.schema'
+import { toastCustom } from '~/shared/config/toast'
+import { useCreateUserAddress } from '~/shared/services/user'
+import { useGetCountries, useGetStatesByCountry } from '~/shared/services/address'
 
 const toast = useToast()
 const dialog = useModal()

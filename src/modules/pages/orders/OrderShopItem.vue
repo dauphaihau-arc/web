@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import type { ElementType } from '~/types/utils'
-import type { ResponseGetOrderShops } from '~/types/request-api/order'
+import type { ElementType } from '~/shared/types/utils'
+import type { ResponseGetOrderShops } from '~/shared/types/request-api/order'
 
 const { orderShop } = defineProps<{
   orderShop: ElementType<ResponseGetOrderShops['order_shops']>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import type { Coupon } from '~/types/coupon'
+import type { Coupon } from '~/shared/types/coupon'
 
 type State = {
   startDate: dayjs.Dayjs

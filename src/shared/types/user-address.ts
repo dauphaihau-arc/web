@@ -1,5 +1,5 @@
 import type { z } from 'zod';
-import type { userAddressSchema, createUserAddressSchema } from '~/schemas/user-address.schema';
+import type { userAddressSchema, createUserAddressSchema } from '~/shared/schemas/user-address.schema';
 
 export type UserAddress = z.infer<typeof userAddressSchema>;
 

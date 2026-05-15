@@ -2,8 +2,8 @@
 /*
   use in cart page, cart/checkout page
  */
-import { ORDER_CONFIG } from '~/config/enums/order'
-import type { ResponseGetCart_ShopCart } from '~/types/request-api/cart'
+import { ORDER_CONFIG } from '~/shared/config/enums/order'
+import type { ResponseGetCart_ShopCart } from '~/shared/types/request-api/cart'
 
 const props = defineProps<{
   shopCart: ResponseGetCart_ShopCart

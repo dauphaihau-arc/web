@@ -1,4 +1,4 @@
-import type { PAYMENT_TYPES } from '~/config/enums/order';
+import type { PAYMENT_TYPES } from '~/shared/config/enums/order';
 
 export type Payment = {
   type: PAYMENT_TYPES

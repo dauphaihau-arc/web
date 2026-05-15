@@ -1,10 +1,10 @@
 import dayjs from 'dayjs';
 import type { SearchParameters } from 'ofetch';
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
-import { LOCAL_STORAGE_KEYS } from '~/config/enums/local-storage-keys';
-import { RESOURCES } from '~/config/enums/resources';
-import { clearExpTokensInLS, setExpTokensToLS } from '~/services/auth';
-import { isBackendWakeUpError, useBackendStatus } from '~/composables/useBackendStatus';
+import { LOCAL_STORAGE_KEYS } from '~/shared/config/enums/local-storage-keys';
+import { RESOURCES } from '~/shared/config/enums/resources';
+import { clearExpTokensInLS, setExpTokensToLS } from '~/shared/services/auth';
+import { isBackendWakeUpError, useBackendStatus } from '~/shared/composables/useBackendStatus';
 
 type RequestBehavior = {
   retryOnWakeUp?: boolean

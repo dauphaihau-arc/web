@@ -1,6 +1,6 @@
 import type { ComputedRef } from 'vue';
 import type { UseQueryOptions } from '@tanstack/vue-query';
-import type { ResponseGetCountries, ResponseGetStatesByCountry } from '~/types/user-address';
+import type { ResponseGetCountries, ResponseGetStatesByCountry } from '~/shared/types/user-address';
 
 export function useGetCountries(options?: Partial<UseQueryOptions<ResponseGetCountries>>) {
   return useQuery<ResponseGetCountries>({

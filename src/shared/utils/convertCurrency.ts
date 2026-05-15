@@ -1,4 +1,4 @@
-import { MARKET_CONFIG } from '~/config/enums/market';
+import { MARKET_CONFIG } from '~/shared/config/enums/market';
 
 const tempRates = {
   AUD: 1.534853,

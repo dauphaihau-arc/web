@@ -1,13 +1,13 @@
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import type { UseQueryOptions } from '@tanstack/vue-query';
 import type { ComputedRef } from 'vue';
-import { RESOURCES } from '~/config/enums/resources';
-import type { Product } from '~/types/product';
+import { RESOURCES } from '~/shared/config/enums/resources';
+import type { Product } from '~/shared/types/product';
 import type {
   GetProductsParams,
   ResponseGetDetailProduct,
   ResponseGetProducts
-} from '~/types/request-api/product';
+} from '~/shared/types/request-api/product';
 
 export function useGetProducts(
   params: ComputedRef<GetProductsParams | undefined>,

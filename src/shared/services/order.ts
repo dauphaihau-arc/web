@@ -1,13 +1,13 @@
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
-import { RESOURCES } from '~/config/enums/resources';
+import { RESOURCES } from '~/shared/config/enums/resources';
 import type {
   CreateOrderFromCartBody,
   CreateOrderForBuyNowBody,
   ResponseCreateOrder,
   ResponseGetOrderShops,
   ResponseGetOrderShopsByCheckoutSession
-} from '~/types/request-api/order';
-import type { RequestGetListParams } from '~/types/common';
+} from '~/shared/types/request-api/order';
+import type { RequestGetListParams } from '~/shared/types/common';
 
 export function useCreateOrderForBuyNow() {
   return useMutation({

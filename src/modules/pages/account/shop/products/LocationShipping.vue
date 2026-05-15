@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useGetCountries } from '~/services/address'
-import type { ProductStandardShipping } from '~/types/product'
+import { useGetCountries } from '~/shared/services/address'
+import type { ProductStandardShipping } from '~/shared/types/product'
 import {
   PRODUCT_SHIPPING_CHARGE,
   PRODUCT_SHIPPING_CONFIG,
   PRODUCT_SHIPPING_OTHER_COUNTRIES_OPTIONS,
   PRODUCT_SHIPPING_SERVICES,
-} from '~/config/enums/product'
+} from '~/shared/config/enums/product'
 
 const emit = defineEmits<{
   delete: []

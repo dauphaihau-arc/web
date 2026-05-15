@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { ResponseGetDetailProduct } from '~/types/request-api/product'
-import { PRODUCT_VARIANT_TYPES } from '~/config/enums/product'
-import type { ElementType } from '~/types/utils'
+import type { ResponseGetDetailProduct } from '~/shared/types/request-api/product'
+import { PRODUCT_VARIANT_TYPES } from '~/shared/config/enums/product'
+import type { ElementType } from '~/shared/types/utils'
 
 const props = defineProps<{
   product: ResponseGetDetailProduct

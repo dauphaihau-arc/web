@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { DropdownItem } from '#ui/types'
-import avatarDefault from '~/assets/images/avatar-default.jpg'
-import { ROUTES } from '~/config/enums/routes'
-import { useLogout } from '~/services/auth'
-import { useGetCurrentUser } from '~/services/user'
+import avatarDefault from '~/app/assets/images/avatar-default.jpg'
+import { ROUTES } from '~/shared/config/enums/routes'
+import { useLogout } from '~/shared/services/auth'
+import { useGetCurrentUser } from '~/shared/services/user'
 
 const routes = useRoute()
 const { data: dataUserAuth } = useGetCurrentUser()
@@ -175,5 +175,5 @@ const itemsShopDropdown: DropdownItem[][] = [
 </template>
 
 <style scoped>
-@import url("~/assets/css/layout-shop.css");
+@import url("~/app/assets/css/layout-shop.css");
 </style>

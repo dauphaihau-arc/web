@@ -1,15 +1,15 @@
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import dayjs from 'dayjs';
-import { RESOURCES } from '~/config/enums/resources';
-import type { User } from '~/types/user';
-import { TOKEN_TYPES } from '~/config/enums/token';
-import { ROUTES } from '~/config/enums/routes';
-import { toastCustom } from '~/config/toast';
+import { RESOURCES } from '~/shared/config/enums/resources';
+import type { User } from '~/shared/types/user';
+import { TOKEN_TYPES } from '~/shared/config/enums/token';
+import { ROUTES } from '~/shared/config/enums/routes';
+import { toastCustom } from '~/shared/config/toast';
 import type {
   LoginBody, RegisterBody, UserAuthenticated
-} from '~/types/auth';
-import { LOCAL_STORAGE_KEYS } from '~/config/enums/local-storage-keys';
-import { useGetCart } from '~/services/cart';
+} from '~/shared/types/auth';
+import { LOCAL_STORAGE_KEYS } from '~/shared/config/enums/local-storage-keys';
+import { useGetCart } from '~/shared/services/cart';
 
 export const setExpTokensToLS = () => {
   const config = useRuntimeConfig();

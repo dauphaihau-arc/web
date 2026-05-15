@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { consola } from 'consola'
 import type { FormError, FormSubmitEvent } from '#ui/types'
-import { ROUTES } from '~/config/enums/routes'
-import { PRODUCT_VARIANT_TYPES } from '~/config/enums/product'
-import type { AddProductToCartBody, ResponseGetCart } from '~/types/request-api/cart'
-import { RegisterLoginDialog } from '#components'
-import { useAddProductToCart } from '~/services/cart'
-import { useGetCurrentUser } from '~/services/user'
-import type { ResponseGetDetailProduct } from '~/types/request-api/product'
-import { toastCustom } from '~/config/toast'
+import { ROUTES } from '~/shared/config/enums/routes'
+import { PRODUCT_VARIANT_TYPES } from '~/shared/config/enums/product'
+import type { AddProductToCartBody, ResponseGetCart } from '~/shared/types/request-api/cart'
+import RegisterLoginDialog from '~/modules/dialogs/login-register/RegisterLoginDialog.vue'
+import { useAddProductToCart } from '~/shared/services/cart'
+import { useGetCurrentUser } from '~/shared/services/user'
+import type { ResponseGetDetailProduct } from '~/shared/types/request-api/product'
+import { toastCustom } from '~/shared/config/toast'
 
 interface StateSubmit {
   quantity: number

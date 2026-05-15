@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { consola } from 'consola'
-import { PAYMENT_TYPES } from '~/config/enums/order'
-import { MARKET_CONFIG } from '~/config/enums/market'
-import { toastCustom } from '~/config/toast'
-import { ROUTES } from '~/config/enums/routes'
-import { useCartStore } from '~/stores/cart'
-import { useCreateOrderForBuyNow } from '~/services/order'
-import { CHECKOUT_NOW_STEPS } from '~/types/pages/checkout'
-import { useGetExchangeRates } from '~/services/market'
-import type { CreateOrderForBuyNowBody } from '~/types/request-api/order'
-import type { Cart } from '~/types/cart'
+import { PAYMENT_TYPES } from '~/shared/config/enums/order'
+import { MARKET_CONFIG } from '~/shared/config/enums/market'
+import { toastCustom } from '~/shared/config/toast'
+import { ROUTES } from '~/shared/config/enums/routes'
+import { useCartStore } from '~/shared/stores/cart'
+import { useCreateOrderForBuyNow } from '~/shared/services/order'
+import { CHECKOUT_NOW_STEPS } from '~/shared/types/pages/checkout'
+import { useGetExchangeRates } from '~/shared/services/market'
+import type { CreateOrderForBuyNowBody } from '~/shared/types/request-api/order'
+import type { Cart } from '~/shared/types/cart'
+import type { ResponseGetExchangeRates } from '~/shared/types/market'
 
 const cartStore = useCartStore()
 const toast = useToast()
@@ -61,9 +62,7 @@ const onCreateOrder = async () => {
 
     const ratePrev = marketStore.exchangeRate.rates[currencySelected]
 
-    const {
-      data: exchangeRates,
-    } = await refetchGetExchangeRates()
+    const { data: exchangeRates }: { data: ResponseGetExchangeRates | undefined } = await refetchGetExchangeRates()
 
     if (!exchangeRates?.rates) {
       consola.error('new rates be undefined')

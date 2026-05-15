@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { PAYMENT_TYPES } from '~/config/enums/order'
+import { PAYMENT_TYPES } from '~/shared/config/enums/order'
 
 definePageMeta({ layout: 'market' })
 

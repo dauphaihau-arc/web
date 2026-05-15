@@ -1,6 +1,6 @@
-import { ROUTES } from '~/config/enums/routes';
-import { isBackendWakeUpError } from '~/composables/useBackendStatus';
-import { useGetMyShop } from '~/services/shop';
+import { ROUTES } from '~/shared/config/enums/routes';
+import { isBackendWakeUpError } from '~/shared/composables/useBackendStatus';
+import { useGetMyShop } from '~/shared/services/shop';
 
 function getStatusCode(error: unknown) {
   const fetchError = error as {

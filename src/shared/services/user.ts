@@ -1,10 +1,10 @@
 import type { MutationOptions } from '@tanstack/vue-query';
-import { RESOURCES } from '~/config/enums/resources';
-import type { User, UpdateUserBody } from '~/types/user';
-import type { ResponseBaseGetList } from '~/types/common';
-import type { CreateBodyUserAddressBody, UserAddress } from '~/types/user-address';
-import type { UserAuthenticated } from '~/types/auth';
-import { toastCustom } from '~/config/toast';
+import { RESOURCES } from '~/shared/config/enums/resources';
+import type { User, UpdateUserBody } from '~/shared/types/user';
+import type { ResponseBaseGetList } from '~/shared/types/common';
+import type { CreateBodyUserAddressBody, UserAddress } from '~/shared/types/user-address';
+import type { UserAuthenticated } from '~/shared/types/auth';
+import { toastCustom } from '~/shared/config/toast';
 
 export function useGetCurrentUser() {
   return useQuery({

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ROUTES } from '~/config/enums/routes'
-import type { ResponseGetProducts_Product } from '~/types/request-api/product'
+import { ROUTES } from '~/shared/config/enums/routes'
+import type { ResponseGetProductsProduct } from '~/shared/types/request-api/product'
 
 const props = defineProps<{
-  product: ResponseGetProducts_Product
+  product: ResponseGetProductsProduct
   autoSize?: boolean
   fill?: boolean
 }>()

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PRODUCT_CONFIG } from '~/config/enums/product'
-import type { Product } from '~/types/product'
+import { PRODUCT_CONFIG } from '~/shared/config/enums/product'
+import type { Product } from '~/shared/types/product'
 
 const tagsModel = defineModel<Product['tags']>({
   default: [],

@@ -1,7 +1,7 @@
 import type { z } from 'zod';
-import type { couponSchema, percentOffSchema } from '~/schemas/coupon.schema';
-import type { RequestGetListParams } from '~/types/common';
-import type { createSaleBodySchema, createPromoCodeBodySchema } from '~/schemas/request/shop-coupon.schema';
+import type { couponSchema, percentOffSchema } from '~/shared/schemas/coupon.schema';
+import type { RequestGetListParams } from '~/shared/types/common';
+import type { createSaleBodySchema, createPromoCodeBodySchema } from '~/shared/schemas/request/shop-coupon.schema';
 
 export type Coupon = z.infer<typeof couponSchema>;
 

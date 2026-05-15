@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useGetProducts } from '~/services/product'
+import { useGetProducts } from '~/shared/services/product'
 
 definePageMeta({ layout: 'market' })
 

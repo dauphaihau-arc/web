@@ -1,21 +1,21 @@
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import type { ComputedRef } from 'vue';
-import { RESOURCES } from '~/config/enums/resources';
+import { RESOURCES } from '~/shared/config/enums/resources';
 import type {
   ShopGetProductsQueryParams,
   ResponseShopGetProducts,
   RequestCreateProductDraftBody,
   RequestUpdateProductBody,
   ResponseShopProductDraft
-} from '~/types/request-api/shop-product';
-import type { Shop } from '~/types/shop';
-import type { ResponseBaseGetList } from '~/types/common';
+} from '~/shared/types/request-api/shop-product';
+import type { Shop } from '~/shared/types/shop';
+import type { ResponseBaseGetList } from '~/shared/types/common';
 import type {
   Coupon, CreatePromoCodeBody, CreateSaleBody, GetCouponsParams
-} from '~/types/coupon';
-import { toastCustom } from '~/config/toast';
-import type { UserAuthenticated } from '~/types/auth';
-import type { Product } from '~/types/product';
+} from '~/shared/types/coupon';
+import { toastCustom } from '~/shared/config/toast';
+import type { UserAuthenticated } from '~/shared/types/auth';
+import type { Product } from '~/shared/types/product';
 
 export type MyShop = {
   id: string

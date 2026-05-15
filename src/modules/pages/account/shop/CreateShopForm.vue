@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
-import { shopSchema } from '~/schemas/shop.schema'
-import type { Shop } from '~/types/shop'
-import { ROUTES } from '~/config/enums/routes'
-import { toastCustom } from '~/config/toast'
-import { useCreateShop } from '~/services/shop'
+import { shopSchema } from '~/shared/schemas/shop.schema'
+import type { Shop } from '~/shared/types/shop'
+import { ROUTES } from '~/shared/config/enums/routes'
+import { toastCustom } from '~/shared/config/toast'
+import { useCreateShop } from '~/shared/services/shop'
 
 const toast = useToast()
 

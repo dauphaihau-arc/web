@@ -3,11 +3,11 @@ import { FetchError } from 'ofetch'
 import { StatusCodes } from 'http-status-codes'
 import { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
-import { userSchema } from '~/schemas/user.schema'
-import type { User } from '~/types/user'
-import { LOCAL_STORAGE_KEYS } from '~/config/enums/local-storage-keys'
-import { useRegister } from '~/services/auth'
-import type { RegisterBody } from '~/types/auth'
+import { userSchema } from '~/shared/schemas/user.schema'
+import type { User } from '~/shared/types/user'
+import { LOCAL_STORAGE_KEYS } from '~/shared/config/enums/local-storage-keys'
+import { useRegister } from '~/shared/services/auth'
+import type { RegisterBody } from '~/shared/types/auth'
 
 const invalidEmails: string[] = []
 const formRef = ref()

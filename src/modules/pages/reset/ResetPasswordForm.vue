@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
-import { userSchema } from '~/schemas/user.schema'
-import { useResetPassword } from '~/services/auth'
-import { ROUTES } from '~/config/enums/routes'
-import type { ResetPasswordBody } from '~/types/auth'
+import { userSchema } from '~/shared/schemas/user.schema'
+import { useResetPassword } from '~/shared/services/auth'
+import { ROUTES } from '~/shared/config/enums/routes'
+import type { ResetPasswordBody } from '~/shared/types/auth'
 
 const authStore = useAuthStore()
 

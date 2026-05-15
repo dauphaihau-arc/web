@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { DropdownItem } from '#ui/types'
-import { ROUTES } from '~/config/enums/routes'
-import { PRODUCT_VARIANT_TYPES } from '~/config/enums/product'
-import type { Product } from '~/types/product'
-import type { ElementType } from '~/types/utils'
-import { useShopDeleteProduct, useShopGetProducts } from '~/services/shop'
+import { ROUTES } from '~/shared/config/enums/routes'
+import { PRODUCT_VARIANT_TYPES } from '~/shared/config/enums/product'
+import type { Product } from '~/shared/types/product'
+import type { ElementType } from '~/shared/types/utils'
+import { useShopDeleteProduct, useShopGetProducts } from '~/shared/services/shop'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 

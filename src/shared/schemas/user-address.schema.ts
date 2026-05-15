@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { objectIdSchema } from '~/schemas/sub/objectId.schema';
-import { ADDRESS_CONFIG } from '~/config/enums/address';
+import { objectIdSchema } from '~/shared/schemas/sub/objectId.schema';
+import { ADDRESS_CONFIG } from '~/shared/config/enums/address';
 
 export const userAddressSchema = z.object({
   id: objectIdSchema,

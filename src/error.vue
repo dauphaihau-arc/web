@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ROUTES } from '~/config/enums/routes'
+import { ROUTES } from '~/shared/config/enums/routes'
 
 interface IError {
   statusCode: number

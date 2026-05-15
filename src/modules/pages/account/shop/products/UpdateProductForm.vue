@@ -2,26 +2,26 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
-import { updateProductSchema } from '~/schemas/request/shop-product.schema'
+import { updateProductSchema } from '~/shared/schemas/request/shop-product.schema'
 import {
   PRODUCT_VARIANT_TYPES, PRODUCT_CONFIG,
   productWhoMadeOpts,
-} from '~/config/enums/product'
-import { ROUTES } from '~/config/enums/routes'
+} from '~/shared/config/enums/product'
+import { ROUTES } from '~/shared/config/enums/routes'
 import type {
   Product,
   ProductImage, ProductSingleVariant, ProductCombineVariant,
-} from '~/types/product'
-import { toastCustom } from '~/config/toast'
-import { useGetPresignedUrl } from '~/services/upload'
-import { useShopGetDetailProduct, useShopUpdateProduct } from '~/services/shop'
+} from '~/shared/types/product'
+import { toastCustom } from '~/shared/config/toast'
+import { useGetPresignedUrl } from '~/shared/services/upload'
+import { useShopGetDetailProduct, useShopUpdateProduct } from '~/shared/services/shop'
 import type {
   NoneVariant,
   RequestUpdateProductBody,
   ResponseShopGetDetailProduct,
   UpdateProductBody,
-} from '~/types/request-api/shop-product'
-import type { NoUndefinedField } from '~/types/utils'
+} from '~/shared/types/request-api/shop-product'
+import type { NoUndefinedField } from '~/shared/types/utils'
 
 export type IOnChangeUpdateVariants = Partial<Pick<UpdateProductBody,
   'update_variants' | 'variant_inventories' |
@@ -481,5 +481,5 @@ watchDebounced(
 </template>
 
 <style scoped>
-@import url("~/assets/css/layout-shop.css");
+@import url("~/app/assets/css/layout-shop.css");
 </style>

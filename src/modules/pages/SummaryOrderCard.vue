@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CartSummary } from '~/types/request-api/cart'
+import type { CartSummary } from '~/shared/types/request-api/cart'
 
 const props = defineProps<{
   loading: boolean

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PRODUCT_CONFIG } from '~/config/enums/product'
-import { toastCustom } from '~/config/toast'
+import { PRODUCT_CONFIG } from '~/shared/config/enums/product'
+import { toastCustom } from '~/shared/config/toast'
 
 const model = defineModel<File[]>({
   required: true,

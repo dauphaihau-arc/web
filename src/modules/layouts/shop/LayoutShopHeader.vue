@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { DropdownItem } from '#ui/types'
-import { ROUTES } from '~/config/enums/routes'
-import { CREATE_COUPON_PAGE_TYPES } from '~/config/enums/shop'
+import { ROUTES } from '~/shared/config/enums/routes'
+import { CREATE_COUPON_PAGE_TYPES } from '~/shared/config/enums/shop'
 
 const {
   ACCOUNT, SHOP, PRODUCTS, COUPONS,

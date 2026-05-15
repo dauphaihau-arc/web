@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { PRODUCT_SHIPPING_CHARGE, PRODUCT_SHIPPING_SERVICES } from '~/config/enums/product';
-import { objectIdSchema } from '@/schemas/sub/objectId.schema';
+import { PRODUCT_SHIPPING_CHARGE, PRODUCT_SHIPPING_SERVICES } from '~/shared/config/enums/product';
+import { objectIdSchema } from '~/shared/schemas/sub/objectId.schema';
 
 export const productStandardShippingSchema = z.object({
   country: z.string(),

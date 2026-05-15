@@ -1,12 +1,12 @@
 import { z } from 'zod';
-import { objectIdSchema } from '~/schemas/sub/objectId.schema';
-import { productShippingSchema } from '~/schemas/product-shipping.schema';
-import { productInventorySchema } from '~/schemas/product-inventory.schema';
-import { productVariantOptSchema, productVariantSchema } from '~/schemas/product-variant.schema';
+import { objectIdSchema } from '~/shared/schemas/sub/objectId.schema';
+import { productShippingSchema } from '~/shared/schemas/product-shipping.schema';
+import { productInventorySchema } from '~/shared/schemas/product-inventory.schema';
+import { productVariantOptSchema, productVariantSchema } from '~/shared/schemas/product-variant.schema';
 import {
   baseProductSchema,
   productStateUserCanModify
-} from '~/schemas/product.schema';
+} from '~/shared/schemas/product.schema';
 
 // region create product
 export const createProductInventorySchema = productInventorySchema.pick({

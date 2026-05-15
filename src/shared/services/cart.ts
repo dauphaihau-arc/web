@@ -1,15 +1,15 @@
 import type { MutationOptions, UseQueryOptions } from '@tanstack/vue-query';
 import type { FetchError } from 'ofetch';
-import { RESOURCES } from '~/config/enums/resources';
+import { RESOURCES } from '~/shared/config/enums/resources';
 import type {
   AddProductToCartBody, ResponseGetCart,
   UpdateCartBody, ResponseUpdateCart,
   ResponseAddProductToCartBody, ResponseDeleteProductCart
-} from '~/types/request-api/cart';
-import type { ProductInventory } from '~/types/product';
-import { toastCustom } from '~/config/toast';
-import { useGetCurrentUser } from '~/services/user';
-import type { Cart } from '~/types/cart';
+} from '~/shared/types/request-api/cart';
+import type { ProductInventory } from '~/shared/types/product';
+import { toastCustom } from '~/shared/config/toast';
+import { useGetCurrentUser } from '~/shared/services/user';
+import type { Cart } from '~/shared/types/cart';
 
 export function useGetCart(
   params?: { cartId: Cart['id'] },

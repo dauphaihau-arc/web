@@ -6,20 +6,20 @@ import type {
   ProductInventory,
   ProductSingleVariant,
   ProductVariant
-} from '~/types/product';
+} from '~/shared/types/product';
 import type {
   createProductShippingSchema, createProductBodySchema,
   updateProductSchema,
   updateVariantOptionsSchema
   , createProductInventorySchema
-} from '~/schemas/request/shop-product.schema';
-import type { RequestGetListParams } from '~/types/common';
+} from '~/shared/schemas/request/shop-product.schema';
+import type { RequestGetListParams } from '~/shared/types/common';
 import type {
   PRODUCT_SHIPPING_CHARGE,
   PRODUCT_VARIANT_TYPES,
   PRODUCT_WHO_MADE
-} from '~/config/enums/product';
-import type { ElementType, PickPartial, RequiredFields } from '~/types/utils';
+} from '~/shared/config/enums/product';
+import type { ElementType, PickPartial, RequiredFields } from '~/shared/types/utils';
 
 // region create product
 export type CreateProductShipping = z.infer<typeof createProductShippingSchema>;

@@ -2,7 +2,7 @@
 /*
   use in cart page, cart/checkout page
  */
-import type { ResponseGetCart_ShopCart } from '~/types/request-api/cart'
+import type { ResponseGetCart_ShopCart } from '~/shared/types/request-api/cart'
 
 const props = defineProps<{
   shopCart: ResponseGetCart_ShopCart

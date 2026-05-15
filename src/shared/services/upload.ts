@@ -1,7 +1,7 @@
-import type { ResponseGetPresignedUrlData } from '~/types/upload';
-import { RESOURCES } from '~/config/enums/resources';
-import { useGetMyShop } from '~/services/shop';
-import type { Product } from '~/types/product';
+import type { ResponseGetPresignedUrlData } from '~/shared/types/upload';
+import { RESOURCES } from '~/shared/config/enums/resources';
+import { useGetMyShop } from '~/shared/services/shop';
+import type { Product } from '~/shared/types/product';
 
 export function useIssueProductImageUploadUrl() {
   const { data: dataMyShop, refetch } = useGetMyShop();

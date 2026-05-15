@@ -1,11 +1,11 @@
-import type { MARKET_CURRENCIES } from '~/config/enums/market';
-import type { Shop } from '~/types/shop';
-import type { Order, OrderShopProduct } from '~/types/order';
-import type { Coupon, PercentOff } from '~/types/coupon';
-import type { Override } from '~/types/utils';
-import type { Product, ProductInventory } from '~/types/product';
-import type { Payment } from '~/types/payment';
-import type { Cart } from '~/types/cart';
+import type { MARKET_CURRENCIES } from '~/shared/config/enums/market';
+import type { Shop } from '~/shared/types/shop';
+import type { Order, OrderShopProduct } from '~/shared/types/order';
+import type { Coupon, PercentOff } from '~/shared/types/coupon';
+import type { Override } from '~/shared/types/utils';
+import type { Product, ProductInventory } from '~/shared/types/product';
+import type { Payment } from '~/shared/types/payment';
+import type { Cart } from '~/shared/types/cart';
 
 // region get order shops
 export type ResponseGetOrderShopsProduct = Override<OrderShopProduct, {

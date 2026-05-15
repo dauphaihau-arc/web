@@ -1,17 +1,17 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { StorageSerializers, useStorage } from '@vueuse/core';
-import type { User } from '~/types/user';
-import { LOCAL_STORAGE_KEYS } from '~/config/enums/local-storage-keys';
-import { useGetDataByIP, useGetExchangeRates } from '~/services/market';
-import { useGetCurrentUser } from '~/services/user';
+import type { User } from '~/shared/types/user';
+import { LOCAL_STORAGE_KEYS } from '~/shared/config/enums/local-storage-keys';
+import { useGetDataByIP, useGetExchangeRates } from '~/shared/services/market';
+import { useGetCurrentUser } from '~/shared/services/user';
 import type {
   CategoriesBreadcrumbStorage, ExchangeRateStorage,
   ResponseGetDataByIP,
   UserActivitiesSessionStorage
-} from '~/types/market';
-import { MARKET_CONFIG, MARKET_LANGUAGES } from '~/config/enums/market';
-import { SESSION_STORAGE_KEYS } from '~/config/enums/session-storage-keys';
+} from '~/shared/types/market';
+import { MARKET_CONFIG, MARKET_LANGUAGES } from '~/shared/config/enums/market';
+import { SESSION_STORAGE_KEYS } from '~/shared/config/enums/session-storage-keys';
 
 dayjs.extend(utc);
 

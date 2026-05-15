@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PRODUCT_WHO_MADE } from '~/config/enums/product'
+import { PRODUCT_WHO_MADE } from '~/shared/config/enums/product'
 
 const route = useRoute()
 const router = useRouter()

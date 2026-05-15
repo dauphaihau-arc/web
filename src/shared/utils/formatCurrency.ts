@@ -1,4 +1,4 @@
-import { MARKET_CONFIG, MARKET_CURRENCIES } from '~/config/enums/market';
+import { MARKET_CONFIG, MARKET_CURRENCIES } from '~/shared/config/enums/market';
 
 const locales = {
   USD: 'en-US',

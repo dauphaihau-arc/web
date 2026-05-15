@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ROUTES } from '~/config/enums/routes'
-import type { ResponseGetProductsProduct } from '~/types/request-api/product'
-import { PRODUCT_CONFIG } from '~/config/enums/product'
+import { ROUTES } from '~/shared/config/enums/routes'
+import type { ResponseGetProductsProduct } from '~/shared/types/request-api/product'
+import { PRODUCT_CONFIG } from '~/shared/config/enums/product'
 
 const { product } = defineProps<{
   product: ResponseGetProductsProduct

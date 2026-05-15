@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { PRODUCT_CONFIG } from '~/config/enums/product';
-import { objectIdSchema } from '~/schemas/sub/objectId.schema';
+import { PRODUCT_CONFIG } from '~/shared/config/enums/product';
+import { objectIdSchema } from '~/shared/schemas/sub/objectId.schema';
 
 export const productInventorySchema = z.object({
   id: objectIdSchema,

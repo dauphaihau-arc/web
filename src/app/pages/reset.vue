@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { StatusCodes } from 'http-status-codes'
-import { ROUTES } from '~/config/enums/routes'
-import { useVerifyToken } from '~/services/auth'
-import { RESET_PASSWORD_VIEWS } from '~/config/enums/common'
+import { ROUTES } from '~/shared/config/enums/routes'
+import { useVerifyToken } from '~/shared/services/auth'
+import { RESET_PASSWORD_VIEWS } from '~/shared/config/enums/common'
 
 definePageMeta({ layout: 'market' })
 

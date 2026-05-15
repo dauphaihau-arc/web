@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
-import type { UserAddress, CreateBodyUserAddressBody } from '~/types/user-address'
-import { ADDRESS_CONFIG } from '~/config/enums/address'
-import { createUserAddressSchema } from '~/schemas/user-address.schema'
-import { toastCustom } from '~/config/toast'
-import { useUpdateUserAddress } from '~/services/user'
-import { useGetCountries, useGetStatesByCountry } from '~/services/address'
+import type { UserAddress, CreateBodyUserAddressBody } from '~/shared/types/user-address'
+import { ADDRESS_CONFIG } from '~/shared/config/enums/address'
+import { createUserAddressSchema } from '~/shared/schemas/user-address.schema'
+import { toastCustom } from '~/shared/config/toast'
+import { useUpdateUserAddress } from '~/shared/services/user'
+import { useGetCountries, useGetStatesByCountry } from '~/shared/services/address'
 
 const props = defineProps<{ dataEdit: UserAddress }>()
 

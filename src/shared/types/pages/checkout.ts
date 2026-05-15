@@ -1,7 +1,7 @@
-import type { PAYMENT_TYPES } from '~/config/enums/order';
-import type { UserAddress } from '~/types/user-address';
-import type { Coupon } from '~/types/coupon';
-import type { Cart } from '~/types/cart';
+import type { PAYMENT_TYPES } from '~/shared/config/enums/order';
+import type { UserAddress } from '~/shared/types/user-address';
+import type { Coupon } from '~/shared/types/coupon';
+import type { Cart } from '~/shared/types/cart';
 
 export enum CHECKOUT_NOW_STEPS { ADDRESS_SHIPPING, PAYMENT, REVIEW_CONFIRMATION, ORDER }
 

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { ProductInventory } from '~/types/product'
-import type { Shop } from '~/types/shop'
-import { useUpdateCart } from '~/services/cart'
-import type { ResponseGetCart } from '~/types/request-api/cart'
+import type { ProductInventory } from '~/shared/types/product'
+import type { Shop } from '~/shared/types/shop'
+import { useUpdateCart } from '~/shared/services/cart'
+import type { ResponseGetCart } from '~/shared/types/request-api/cart'
 
 const { checked, inventoryId, shopId } = defineProps<{
   checked: boolean

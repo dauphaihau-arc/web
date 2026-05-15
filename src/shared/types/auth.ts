@@ -1,5 +1,5 @@
-import type { User } from '~/types/user';
-import type { Shop } from '~/types/shop';
+import type { User } from '~/shared/types/user';
+import type { Shop } from '~/shared/types/shop';
 
 export type UserAuthenticated = Pick<User, 'name' | 'email' | 'is_email_verified' | 'market_preferences'> & {
   shop?: Pick<Shop, 'shop_name' | 'id'>

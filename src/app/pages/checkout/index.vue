@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { useCartStore } from '~/stores/cart'
-import { CHECKOUT_NOW_STEPS } from '~/types/pages/checkout'
-import CheckoutCreateOrderBtn from '~/components/pages/checkout/CheckoutCreateOrderBtn.vue'
-import { useGetCart } from '~/services/cart'
-import type { Cart } from '~/types/cart'
+import { useCartStore } from '~/shared/stores/cart'
+import { CHECKOUT_NOW_STEPS } from '~/shared/types/pages/checkout'
+import CheckoutCreateOrderBtn from '~/modules/pages/checkout/CheckoutCreateOrderBtn.vue'
+import { useGetCart } from '~/shared/services/cart'
+import type { Cart } from '~/shared/types/cart'
 
 definePageMeta({ layout: 'market', middleware: ['auth', 'checkout'] })
 

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useCartStore } from '~/stores/cart'
-import { useGetCart } from '~/services/cart'
+import { useCartStore } from '~/shared/stores/cart'
+import { useGetCart } from '~/shared/services/cart'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 

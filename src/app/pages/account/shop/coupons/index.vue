@@ -2,10 +2,10 @@
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import type { DropdownItem } from '#ui/types'
-import { ROUTES } from '~/config/enums/routes'
-import { COUPON_APPLIES_TO, COUPON_TYPES } from '~/config/enums/coupon'
-import { useShopDeleteCoupon, useShopGetCoupons } from '~/services/shop'
-import { CREATE_COUPON_PAGE_TYPES } from '~/config/enums/shop'
+import { ROUTES } from '~/shared/config/enums/routes'
+import { COUPON_APPLIES_TO, COUPON_TYPES } from '~/shared/config/enums/coupon'
+import { useShopDeleteCoupon, useShopGetCoupons } from '~/shared/services/shop'
+import { CREATE_COUPON_PAGE_TYPES } from '~/shared/config/enums/shop'
 
 dayjs.extend(localizedFormat)
 

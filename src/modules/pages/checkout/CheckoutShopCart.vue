@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ORDER_CONFIG } from '~/config/enums/order'
-import { useCartStore } from '~/stores/cart'
-import { PRODUCT_VARIANT_TYPES } from '~/config/enums/product'
-import { useGetCart, useUpdateCart } from '~/services/cart'
-import type { ResponseGetCart } from '~/types/request-api/cart'
-import type { Cart } from '~/types/cart'
+import { ORDER_CONFIG } from '~/shared/config/enums/order'
+import { useCartStore } from '~/shared/stores/cart'
+import { PRODUCT_VARIANT_TYPES } from '~/shared/config/enums/product'
+import { useGetCart, useUpdateCart } from '~/shared/services/cart'
+import type { ResponseGetCart } from '~/shared/types/request-api/cart'
+import type { Cart } from '~/shared/types/cart'
 
 const cartStore = useCartStore()
 const queryClient = useQueryClient()

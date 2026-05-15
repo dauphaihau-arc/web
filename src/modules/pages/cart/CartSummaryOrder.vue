@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ORDER_CONFIG } from '~/config/enums/order'
-import { useGetCart } from '~/services/cart'
-import { ROUTES } from '~/config/enums/routes'
+import { ORDER_CONFIG } from '~/shared/config/enums/order'
+import { useGetCart } from '~/shared/services/cart'
+import { ROUTES } from '~/shared/config/enums/routes'
 
 const {
   isPending: isPendingGetCart,

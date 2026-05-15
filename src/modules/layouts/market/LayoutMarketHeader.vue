@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ROUTES } from '~/config/enums/routes'
-import { useGetCart } from '~/services/cart'
-import { useGetCurrentUser } from '~/services/user'
+import { ROUTES } from '~/shared/config/enums/routes'
+import { useGetCart } from '~/shared/services/cart'
+import { useGetCurrentUser } from '~/shared/services/user'
 
 const route = useRoute()
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import type { Coupon } from '~/types/coupon'
+import type { Coupon } from '~/shared/types/coupon'
 
 const emit = defineEmits<{ (e: 'onChangeDuration', value: Pick<Coupon, 'start_date' | 'end_date'>): void }>()
 
