@@ -34,8 +34,30 @@ export default defineNuxtConfig({
   },
 
   srcDir: 'src/',
+  dir: {
+    assets: 'app/assets',
+    layouts: 'app/layouts',
+    middleware: 'app/middleware',
+    pages: 'app/pages',
+    plugins: 'app/plugins',
+  },
   ssr: false,
   devtools: { enabled: true },
+
+  alias: {
+    '~/app': './src/app',
+    '~/modules': './src/modules',
+    '~/shared': './src/shared',
+    '~/assets': './src/app/assets',
+    '~/components': './src/modules',
+    '~/composables': './src/shared/composables',
+    '~/config': './src/shared/config',
+    '~/schemas': './src/shared/schemas',
+    '~/services': './src/shared/services',
+    '~/stores': './src/shared/stores',
+    '~/types': './src/shared/types',
+    '~/utils': './src/shared/utils',
+  },
 
   modules: [
     '@nuxt/eslint',
@@ -81,15 +103,35 @@ export default defineNuxtConfig({
   },
 
   pinia: {
-    storesDirs: ['./src/stores/**'],
+    storesDirs: ['./src/shared/stores/**'],
   },
 
   components: [
     {
-      path: '~/components',
+      path: 'shared/components',
+      pathPrefix: false,
+    },
+    {
+      path: 'modules/common',
+      pathPrefix: false,
+    },
+    {
+      path: 'modules/dialogs',
+      pathPrefix: false,
+    },
+    {
+      path: 'modules/layouts',
+      pathPrefix: false,
+    },
+    {
+      path: 'modules/pages',
       pathPrefix: false,
     },
   ],
+
+  imports: {
+    dirs: ['shared/composables', 'shared/utils'],
+  },
 
   i18n: {
     locales: [
@@ -107,7 +149,7 @@ export default defineNuxtConfig({
       },
     ],
     lazy: true,
-    langDir: 'locales',
+    langDir: 'app/locales',
     defaultLocale: 'en',
   },
 
@@ -115,7 +157,7 @@ export default defineNuxtConfig({
     preference: 'light',
   },
 
-  css: ['~/assets/css/main.css'],
+  css: ['~/app/assets/css/main.css'],
 
   image: {
     provider: 'ipx',
