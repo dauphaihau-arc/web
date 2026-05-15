@@ -13,7 +13,7 @@ import type {
   ProductImage, ProductSingleVariant, ProductCombineVariant,
 } from '~/shared/types/product'
 import { toastCustom } from '~/shared/config/toast'
-import { useGetPresignedUrl } from '~/shared/services/upload'
+import { useIssueProductImageUploadUrl } from '~/shared/services/upload'
 import { useShopGetDetailProduct, useShopUpdateProduct } from '~/shared/services/shop'
 import type {
   NoneVariant,
@@ -39,8 +39,8 @@ const {
 } = useShopGetDetailProduct(productId)
 
 const {
-  mutateAsync: getPresignedUrl,
-} = useGetPresignedUrl()
+  mutateAsync: issueProductImageUploadUrl,
+} = useIssueProductImageUploadUrl()
 
 const {
   mutateAsync: updateProduct,
@@ -122,7 +122,11 @@ async function uploadImage() {
   const uploadImagesPromises = []
 
   for (let i = 0; i < fileImages.value.length; i++) {
-    const { presigned_url, key } = await getPresignedUrl()
+    const { presigned_url, key } = await issueProductImageUploadUrl({
+      productId,
+      contentType: fileImages.value[i].type,
+      assetType: 'original',
+    })
     if (!presigned_url || !key) {
       toast.add({
         ...toastCustom.error,

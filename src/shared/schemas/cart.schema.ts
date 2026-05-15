@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { objectIdSchema } from '~/shared/schemas/sub/objectId.schema';
+import { objectIdSchema } from '~/shared/schemas/sub/object-id.schema';
 import { CART_CONFIG } from '~/shared/config/enums/cart';
 import { PRODUCT_CONFIG } from '~/shared/config/enums/product';
 

@@ -6,7 +6,7 @@ import {
   COUPON_MIN_ORDER_TYPES,
   COUPON_CONFIG
 } from '~/shared/config/enums/coupon';
-import { objectIdSchema } from '~/shared/schemas/sub/objectId.schema';
+import { objectIdSchema } from '~/shared/schemas/sub/object-id.schema';
 
 export const baseCouponSchema = z.object({
   id: objectIdSchema,

@@ -7,7 +7,7 @@ const route = useRoute()
 const marketStore = useMarketStore()
 
 const params = computed(() => {
-  const category = marketStore.categoriesBreadcrumb.find(c => c.to === route.fullPath)
+  const category = marketStore.categoriesBreadcrumb.find((c: Category & { to: string }) => c.to === route.fullPath)
   if (!category) {
     consola.error('params be undefined')
     return undefined

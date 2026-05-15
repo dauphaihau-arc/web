@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useGetProducts } from '~/shared/services/product'
+import type { GetProductsParams } from '~/shared/types/request-api/product'
 
 definePageMeta({ layout: 'market' })
 
@@ -14,7 +15,7 @@ const params = computed(() => {
   if (!category) {
     return undefined
   }
-  let defaultParams = {
+  let defaultParams: GetProductsParams = {
     categoryId: category.id,
     page: page.value,
     limit,

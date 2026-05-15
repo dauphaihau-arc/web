@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { CategoriesBreadcrumbStorage } from '~/shared/types/market'
+
 const route = useRoute()
 const marketStore = useMarketStore()
 
@@ -14,7 +16,7 @@ const categoriesBreadcrumb = computed(() => {
   if (marketStore.categoriesBreadcrumb.length === 0) {
     return null
   }
-  return marketStore.categoriesBreadcrumb.map(c => ({ label: c.name, to: c.to }))
+  return marketStore.categoriesBreadcrumb.map((c: CategoriesBreadcrumbStorage) => ({ label: c.name, to: c.to }))
 })
 
 // on redirect to parent category, clear sub categories

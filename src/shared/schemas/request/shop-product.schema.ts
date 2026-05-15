@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { objectIdSchema } from '~/shared/schemas/sub/objectId.schema';
+import { objectIdSchema } from '~/shared/schemas/sub/object-id.schema';
 import { productShippingSchema } from '~/shared/schemas/product-shipping.schema';
 import { productInventorySchema } from '~/shared/schemas/product-inventory.schema';
 import { productVariantOptSchema, productVariantSchema } from '~/shared/schemas/product-variant.schema';

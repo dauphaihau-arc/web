@@ -4,7 +4,7 @@ import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import { LOCAL_STORAGE_KEYS } from '~/shared/config/enums/local-storage-keys';
 import { RESOURCES } from '~/shared/config/enums/resources';
 import { clearExpTokensInLS, setExpTokensToLS } from '~/shared/services/auth';
-import { isBackendWakeUpError, useBackendStatus } from '~/shared/composables/useBackendStatus';
+import { isBackendWakeUpError, useBackendStatus } from '~/shared/composables/use-backend-status';
 
 type RequestBehavior = {
   retryOnWakeUp?: boolean

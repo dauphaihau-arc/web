@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ROUTES } from '~/shared/config/enums/routes'
-import { isBackendWakeUpError } from '~/shared/composables/useBackendStatus'
+import { isBackendWakeUpError } from '~/shared/composables/use-backend-status'
 import { useGetOrderShopsByCheckoutSession } from '~/shared/services/order'
 
 definePageMeta({ layout: 'market' })

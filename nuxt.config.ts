@@ -118,15 +118,15 @@ export default defineNuxtConfig({
     locales: [
       {
         code: 'en',
-        file: 'en-US.js',
+        file: 'en-us.js',
       },
       {
         code: 'fr',
-        file: 'fr-FR.js',
+        file: 'fr-fr.js',
       },
       {
         code: 'la',
-        file: 'la-LA.js',
+        file: 'la-la.js',
       },
     ],
     lazy: true,

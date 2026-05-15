@@ -1,5 +1,5 @@
 import { ROUTES } from '~/shared/config/enums/routes';
-import { isBackendWakeUpError } from '~/shared/composables/useBackendStatus';
+import { isBackendWakeUpError } from '~/shared/composables/use-backend-status';
 import { useGetMyShop } from '~/shared/services/shop';
 
 function getStatusCode(error: unknown) {
