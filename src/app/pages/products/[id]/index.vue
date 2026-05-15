@@ -1,4 +1,10 @@
 <script lang="ts" setup>
+import LoadingSvg from '~/shared/components/loading-svg.vue'
+import DetailProductAddToCartForm from '~/modules/pages/products/detail-product-add-to-cart-form.vue'
+import DetailProductImages from '~/modules/pages/products/detail-product-images.vue'
+import DetailProductMoreInfo from '~/modules/pages/products/detail-product-more-info.vue'
+import DetailProductMoreProductsByCategory from '~/modules/pages/products/detail-product-more-products-by-category.vue'
+import DetailProductSummary from '~/modules/pages/products/detail-product-summary.vue'
 import { useGetDetailProduct } from '~/shared/services/product'
 
 definePageMeta({ layout: 'market' })

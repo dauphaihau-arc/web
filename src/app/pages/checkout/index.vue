@@ -1,7 +1,14 @@
 <script lang="ts" setup>
 import { useCartStore } from '~/shared/stores/cart'
 import { CheckoutNowSteps } from '~/shared/types/pages/checkout'
+import LoadingSvg from '~/shared/components/loading-svg.vue'
+import CheckoutStepper from '~/modules/pages/checkout-stepper.vue'
+import SummaryOrderCard from '~/modules/pages/summary-order-card.vue'
 import CheckoutCreateOrderBtn from '~/modules/pages/checkout/checkout-create-order-btn.vue'
+import CheckoutPaymentOptions from '~/modules/pages/checkout/checkout-payment-options.vue'
+import CheckoutReviewShippingAndPayment from '~/modules/pages/checkout/checkout-review-shipping-and-payment.vue'
+import CheckoutShopCart from '~/modules/pages/checkout/checkout-shop-cart.vue'
+import CheckoutUserAddressShipping from '~/modules/pages/checkout/checkout-user-address-shipping.vue'
 import { useGetCart } from '~/shared/services/cart'
 import type { Cart } from '~/shared/types/cart'
 

@@ -3,6 +3,7 @@ import type { UserAddress } from '~/shared/types/user-address'
 import { useDeleteUserAddress, useGetUserAddresses } from '~/shared/services/user'
 import UpdateUserAddressDialog from '~/modules/dialogs/update-user-address-dialog.vue'
 import CreateUserAddressDialog from '~/modules/dialogs/create-user-address-dialog.vue'
+import LoadingSvg from '~/shared/components/loading-svg.vue'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 
