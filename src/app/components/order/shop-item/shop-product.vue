@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VariantsProduct from './variants-product.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 import type { ResponseGetOrderShopsProduct } from '~/shared/types/request-api/order'
 
@@ -23,7 +24,7 @@ const { productOrder } = defineProps<{
             {{ productOrder?.title }}
           </div>
           <div class="space-y-1.5 text-zinc-500">
-            <OrderVariantsProduct :product-order="productOrder" />
+            <VariantsProduct :product-order="productOrder" />
             <div class="">
               Quantity: {{ productOrder?.quantity }}
             </div>

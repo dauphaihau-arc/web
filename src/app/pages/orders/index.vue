@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import LoadingSvg from '~/shared/ui/loading-svg.vue'
-import OrderShopItem from '~/app/components/orders/order-shop-item.vue'
+import ShopItem from '~/app/components/order/shop-item/shop-item.vue'
 import { useGetOrderShops } from '~/shared/server-state/order'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
@@ -55,7 +55,7 @@ const {
               v-for="orderShop in dataGetOrderShops.order_shops"
               :key="orderShop.id"
             >
-              <OrderShopItem :order-shop="orderShop" />
+              <ShopItem :order-shop="orderShop" />
             </div>
           </div>
         </template>

@@ -1,15 +1,16 @@
 <script lang="ts" setup>
-import type { Shop } from '~/shared/types/shop'
+import ProductCard from '~/app/components/detail-product/product-card.vue'
+import type { Category } from '~/shared/types/category'
 import { useGetProducts } from '~/shared/server-state/product'
 
-const limit = 6
+const limit = 12
 
-const { shopId } = defineProps<{
-  shopId: Shop['id']
+const { categoryId } = defineProps<{
+  categoryId: Category['id']
 }>()
 
 const queryParams = computed(() => ({
-  shopId,
+  categoryId,
   limit,
 }))
 
@@ -19,7 +20,7 @@ const { data } = useGetProducts(queryParams)
 <template>
   <div>
     <h3 class="mb-4 text-2xl font-medium">
-      More from this shop
+      You may also like
     </h3>
     <div
       v-if="data?.items"
@@ -29,7 +30,7 @@ const { data } = useGetProducts(queryParams)
         v-for="(product, i) of data.items"
         :key="i"
       >
-        <DetailProductCard :product="product" />
+        <ProductCard :product="product" />
       </div>
     </div>
   </div>

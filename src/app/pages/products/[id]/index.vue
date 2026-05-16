@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import LoadingSvg from '~/shared/ui/loading-svg.vue'
-import DetailProductAddToCartForm from '~/app/components/products/detail-product-add-to-cart-form.vue'
-import DetailProductImages from '~/app/components/products/detail-product-images.vue'
-import DetailProductMoreInfo from '~/app/components/products/detail-product-more-info.vue'
-import DetailProductMoreProductsByCategory from '~/app/components/products/detail-product-more-products-by-category.vue'
-import DetailProductSummary from '~/app/components/products/detail-product-summary.vue'
+import ProductAddToCartForm from '~/app/components/detail-product/add-to-cart-form.vue'
+import ProductImages from '~/app/components/detail-product/images.vue'
+import ProductMoreInfo from '~/app/components/detail-product/more-info.vue'
+import MoreProductsByCategory from '~/app/components/detail-product/more-products-by-category.vue'
+import ProductSummary from '~/app/components/detail-product/summary.vue'
 import { useGetDetailProduct } from '~/shared/server-state/product'
 
 definePageMeta({ layout: 'market' })
@@ -48,29 +48,29 @@ const inventorySelected = ref()
       class="space-y-20"
     >
       <div class="mb-20 grid grid-cols-10">
-        <DetailProductImages
+        <ProductImages
           :images="dataGetDetailProduct.images"
           class="col-span-6"
         />
         <div class="col-span-4 space-y-6">
-          <DetailProductSummary
+          <ProductSummary
             :product="dataGetDetailProduct"
             :inventory-selected="inventorySelected"
           />
-          <DetailProductAddToCartForm
+          <ProductAddToCartForm
             v-model:inventory-selected="inventorySelected"
             :product="dataGetDetailProduct"
           />
-          <DetailProductMoreInfo
+          <ProductMoreInfo
             :product="dataGetDetailProduct"
           />
         </div>
       </div>
-      <!--      <DetailProductMoreProductsByShop -->
+      <!--      <ProductMoreProductsByShop -->
       <!--          :shop-id="dataGetDetailProduct.product.shop.id" -->
       <!--          class="mb-16" -->
       <!--      /> -->
-      <DetailProductMoreProductsByCategory
+      <MoreProductsByCategory
         v-if="dataGetDetailProduct.categoryId"
         :category-id="dataGetDetailProduct.categoryId"
       />

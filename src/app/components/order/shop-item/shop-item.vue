@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
+import NoteAndPromoCoupons from './note-and-promo-coupons.vue'
+import PaymentAndSummaryOrder from './payment-and-summary-order.vue'
+import ShopActions from './shop-actions.vue'
+import ShopProduct from './shop-product.vue'
+import ShopShippingInfo from './shop-shipping-info.vue'
 import type { ElementType } from '~/shared/types/utils'
 import type { ResponseGetOrderShops } from '~/shared/types/request-api/order'
 
@@ -36,20 +41,20 @@ const orderedAt = computed(() => {
           v-for="(product, idx) of orderShop.products"
           :key="idx"
         >
-          <OrderShopProduct :product-order="product" />
+          <ShopProduct :product-order="product" />
         </div>
 
         <UDivider
           class="mb-3 mt-6"
         />
-        <OrderNoteAndPromoCoupons :order-shop="orderShop" />
-        <OrderPaymentAndSummaryOrder :order-shop="orderShop" />
+        <NoteAndPromoCoupons :order-shop="orderShop" />
+        <PaymentAndSummaryOrder :order-shop="orderShop" />
       </UCard>
     </div>
 
     <div class="col-span-3 -mt-4 w-5/6">
-      <OrderShopShippingInfo :order-shop="orderShop" />
-      <OrderShopActions />
+      <ShopShippingInfo :order-shop="orderShop" />
+      <ShopActions />
     </div>
   </div>
 </template>
