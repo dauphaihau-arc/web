@@ -1,5 +1,6 @@
 <script setup lang="ts">
-
+import LayoutShopHeader from './header.vue'
+import LayoutShopSidebar from './sidebar.vue'
 </script>
 
 <template>

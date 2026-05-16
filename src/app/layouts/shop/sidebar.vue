@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import LayoutShopSidebarSubLinks from './sidebar-sub-links.vue'
+import type { LinkItem } from './sidebar.types'
 import type { DropdownItem } from '#ui/types'
 import avatarDefault from '~/app/assets/images/avatar-default.jpg'
 import { ROUTES } from '~/shared/config/enums/routes'
@@ -13,17 +15,7 @@ const {
   ACCOUNT, SHOP, PRODUCTS, COUPONS,
 } = ROUTES
 
-type ILinkBase = {
-  title: string
-  route?: string
-  disabled?: boolean
-}
-
-export type ILink = {
-  sub?: ILinkBase[]
-} & ILinkBase
-
-const itemsLinkSidebar: ILink[] = [
+const itemsLinkSidebar: LinkItem[] = [
   {
     title: 'Dashboard',
     route: `${ACCOUNT}${SHOP}/dashboard`,

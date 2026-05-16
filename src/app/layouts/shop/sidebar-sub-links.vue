@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import type { ILink } from './layout-shop-sidebar.vue'
+import type { LinkItem } from './sidebar.types'
 
-const { data } = defineProps<{ data: ILink }>()
+const { data } = defineProps<{ data: LinkItem }>()
 
 const routes = useRoute()
 
 const isOpen = ref(false)
 
-const itemsLinkRoutes = Array.isArray(data.sub) && data.sub.map(item => item.route)
+const itemsLinkRoutes = Array.isArray(data.sub) && data.sub.map((item) => {
+  return item.route
+})
 </script>
 
 <template>

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import LoadingSvg from '~/shared/components/loading-svg.vue'
-import LayoutShopWrapperContent from '~/modules/layouts/shop/layout-shop-wrapper-content.vue'
+import LoadingSvg from '~/shared/ui/primitives/loading-svg.vue'
+import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import UpdateProductForm from '~/modules/pages/account/shop/products/update-product-form.vue'
 import { useShopGetDetailProduct } from '~/shared/services/shop'
 import type { Product } from '~/shared/types/product'

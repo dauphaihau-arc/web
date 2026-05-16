@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import LayoutShopWrapperContent from '~/modules/layouts/shop/layout-shop-wrapper-content.vue'
+import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import CreatePromoCodeForm from '~/modules/pages/account/shop/coupons/create-promo-code-form.vue'
 import RunSaleForm from '~/modules/pages/account/shop/coupons/run-sale-form.vue'
 import { CreateCouponPageTypes } from '~/shared/config/enums/shop'
