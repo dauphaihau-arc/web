@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import LoadingSvg from '~/shared/ui/primitives/loading-svg.vue'
-import CartShopCart from '~/modules/pages/cart/cart-shop-cart.vue'
-import CartSummaryOrder from '~/modules/pages/cart/cart-summary-order.vue'
+import LoadingSvg from '~/shared/ui/loading-svg.vue'
+import CartShopCart from '~/app/components/cart/cart-shop-cart.vue'
+import CartSummaryOrder from '~/app/components/cart/cart-summary-order.vue'
 import { useCartStore } from '~/shared/stores/cart'
 import { useGetCart } from '~/shared/server-state/cart'
 

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ROUTES } from '~/shared/config/enums/routes'
-import RegisterLoginDialog from '~/shared/ui/app/dialogs/login-register/register-login-dialog.vue'
+import RegisterLoginDialog from '~/app/components/dialogs/login-register/register-login-dialog.vue'
 import { useLogout } from '~/shared/server-state/auth'
 import { useGetCurrentUser } from '~/shared/server-state/user'
 import { useGetCart } from '~/shared/server-state/cart'

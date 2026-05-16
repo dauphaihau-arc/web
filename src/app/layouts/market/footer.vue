@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import UpdateUserPreferencesBtn from '~/shared/ui/app/dialogs/update-user-preferences-btn.vue'
+import UpdateUserPreferencesBtn from '~/app/components/dialogs/update-user-preferences-btn.vue'
 
 const primaryLinks = [
   {

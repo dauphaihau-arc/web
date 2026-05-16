@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BackendWakeUpOverlay from '~/shared/ui/primitives/backend-wake-up-overlay.vue'
+import BackendWakeUpOverlay from '~/shared/ui/backend-wake-up-overlay.vue'
 
 const { status, waitForBackend } = useBackendStatus()
 

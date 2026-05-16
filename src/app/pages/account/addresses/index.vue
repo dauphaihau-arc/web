@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import type { UserAddress } from '~/shared/types/user-address'
 import { useDeleteUserAddress, useGetUserAddresses } from '~/shared/server-state/user'
-import UpdateUserAddressDialog from '~/shared/ui/app/dialogs/update-user-address-dialog.vue'
-import CreateUserAddressDialog from '~/shared/ui/app/dialogs/create-user-address-dialog.vue'
-import LoadingSvg from '~/shared/ui/primitives/loading-svg.vue'
+import UpdateUserAddressDialog from '~/app/components/dialogs/update-user-address-dialog.vue'
+import CreateUserAddressDialog from '~/app/components/dialogs/create-user-address-dialog.vue'
+import LoadingSvg from '~/shared/ui/loading-svg.vue'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 

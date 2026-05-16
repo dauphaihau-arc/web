@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { DropdownItem } from '#ui/types'
-import LoadingSvg from '~/shared/ui/primitives/loading-svg.vue'
+import LoadingSvg from '~/shared/ui/loading-svg.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
-import FixedPagination from '~/modules/pages/account/shop/fixed-pagination.vue'
+import FixedPagination from '~/app/components/account/shop/fixed-pagination.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { ProductVariantTypes } from '~/shared/config/enums/product'
 import type { Product } from '~/shared/types/product'

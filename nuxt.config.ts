@@ -89,15 +89,7 @@ export default defineNuxtConfig({
 
   components: [
     {
-      path: 'shared/ui/primitives',
-      pathPrefix: false,
-    },
-    {
-      path: 'modules/common',
-      pathPrefix: false,
-    },
-    {
-      path: 'modules/pages',
+      path: 'shared/ui',
       pathPrefix: false,
     },
   ],

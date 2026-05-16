@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import HomeRecommendedProductsByCategory from '~/modules/pages/home/home-recommended-products-by-category.vue'
-import HomeRecommendedProductsBySubCategories from '~/modules/pages/home/home-recommended-products-by-sub-categories.vue'
-import HomeRecommendedSubCategories from '~/modules/pages/home/home-recommended-sub-categories.vue'
-import HomeRootCategories from '~/modules/pages/home/home-root-categories.vue'
+import HomeRecommendedProductsByCategory from '~/app/components/home/home-recommended-products-by-category.vue'
+import HomeRecommendedProductsBySubCategories from '~/app/components/home/home-recommended-products-by-sub-categories.vue'
+import HomeRecommendedSubCategories from '~/app/components/home/home-recommended-sub-categories.vue'
+import HomeRootCategories from '~/app/components/home/home-root-categories.vue'
 
 definePageMeta({ layout: 'market' })
 </script>

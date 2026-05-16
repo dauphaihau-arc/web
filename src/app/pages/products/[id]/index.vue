@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import LoadingSvg from '~/shared/ui/primitives/loading-svg.vue'
-import DetailProductAddToCartForm from '~/modules/pages/products/detail-product-add-to-cart-form.vue'
-import DetailProductImages from '~/modules/pages/products/detail-product-images.vue'
-import DetailProductMoreInfo from '~/modules/pages/products/detail-product-more-info.vue'
-import DetailProductMoreProductsByCategory from '~/modules/pages/products/detail-product-more-products-by-category.vue'
-import DetailProductSummary from '~/modules/pages/products/detail-product-summary.vue'
+import LoadingSvg from '~/shared/ui/loading-svg.vue'
+import DetailProductAddToCartForm from '~/app/components/products/detail-product-add-to-cart-form.vue'
+import DetailProductImages from '~/app/components/products/detail-product-images.vue'
+import DetailProductMoreInfo from '~/app/components/products/detail-product-more-info.vue'
+import DetailProductMoreProductsByCategory from '~/app/components/products/detail-product-more-products-by-category.vue'
+import DetailProductSummary from '~/app/components/products/detail-product-summary.vue'
 import { useGetDetailProduct } from '~/shared/server-state/product'
 
 definePageMeta({ layout: 'market' })
