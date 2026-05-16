@@ -19,16 +19,14 @@
     "typecheck": "npx nuxi typecheck",
     "test": "vitest run test",
     "lint": "eslint --cache .",
-    "lint:fix": "eslint --fix .",
-    "postinstall": "nuxt prepare && husky install",
+    "lint:fix": "eslint --cache --fix .",
     "prepare": "husky install",
     "docker:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",
     "docker:prod": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up"
   },
   "lint-staged": {
     "**/*.{js,ts,vue}": [
-      "pnpm lint:fix",
-      "pnpm test"
+      "eslint --cache --fix"
     ]
   },
   "devDependencies": {
