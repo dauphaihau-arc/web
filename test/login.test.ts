@@ -4,8 +4,8 @@ import {
 import { mount } from '@vue/test-utils';
 import { mountSuspended } from '@nuxt/test-utils/runtime';
 import type { Ref, ComponentPublicInstance } from 'vue';
-import LayoutMarketHeader from '~/components/layouts/market/LayoutMarketHeader.vue';
-import LoginForm from '~/components/dialogs/login-register/LoginForm.vue';
+import LayoutMarketHeader from '~/app/layouts/market/header.vue';
+import LoginForm from '~/app/components/dialogs/login-register/login-form.vue';
 
 describe('login', () => {
   it('show mega menu cart', async () => {
