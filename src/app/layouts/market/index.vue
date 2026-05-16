@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import LayoutMarketFooter from './footer.vue'
+import LayoutMarketHeader from './header.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 
 const route = useRoute()
