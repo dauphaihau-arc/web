@@ -6,7 +6,7 @@ body {
 }
 
 /*
-  Remove Arrows/Spinners from Input Number
+  Remove Arrows/LoadingSvgs from Input Number
 */
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,

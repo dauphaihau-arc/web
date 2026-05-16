@@ -381,7 +381,7 @@ watchDebounced(
         <!--          class="mb-4" -->
         <!--        > -->
         <!--          <div class="flex gap-16"> -->
-        <!--            <URadio -->
+        <!--            <URadioInput -->
         <!--              v-for="options of isDigitalOpts" -->
         <!--              :key="options.value.toString()" -->
         <!--              v-model="stateSubmit.is_digital" -->
