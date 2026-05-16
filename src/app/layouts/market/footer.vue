@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import UpdateUserPreferencesBtn from '~/shared/ui/app/dialogs/update-user-preferences-btn.vue'
+
 const primaryLinks = [
   {
     title: 'Shop',
