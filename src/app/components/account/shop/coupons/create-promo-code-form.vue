@@ -5,11 +5,15 @@ import {
 } from '~/shared/config/enums/coupon'
 import type { RequiredFields } from '~/shared/types/utils'
 import { ROUTES } from '~/shared/config/enums/routes'
+import WrapperFormGroupCard from '~/app/components/account/shop/wrapper-form-group-card.vue'
+import ApplyCouponOnProduct from '~/app/components/account/shop/coupons/apply-coupon-on-product.vue'
+import SearchStartEndDateInput from '~/app/components/account/shop/coupons/search-start-end-date-input.vue'
 import { toastCustom } from '~/shared/config/toast'
 import { useShopCreateCoupon } from '~/shared/server-state/shop'
 import { PRODUCT_CONFIG } from '~/shared/config/enums/product'
 import { createPromoCodeBodySchema } from '~/shared/schemas/request/shop-coupon.schema'
 import type { CreatePromoCodeBody } from '~/shared/types/coupon'
+import RadioGroupInput from '~/shared/ui/radio-group-input.vue'
 
 type StateSubmit = RequiredFields<Partial<CreatePromoCodeBody>, 'type' | 'applies_to' | 'min_order_type'>
 
@@ -299,7 +303,7 @@ function onError(event: FormErrorEvent) {
           </UFormGroup>
 
           <div v-if="state.applies_to === CouponAppliesTo.SPECIFIC">
-            <CreateCouponApplyCouponOnProduct v-model="state.applies_product_ids" />
+            <ApplyCouponOnProduct v-model="state.applies_product_ids" />
             <div
               v-if="formRef.getErrors('applies_product_ids')[0]?.message"
               class="mt-2 text-red-500"
