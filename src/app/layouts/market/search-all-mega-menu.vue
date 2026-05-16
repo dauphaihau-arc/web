@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useGetProducts } from '~/shared/services/product'
+import { useGetProducts } from '~/shared/server-state/product'
 import { ROUTES } from '~/shared/config/enums/routes'
 
 const props = defineProps<{ show: boolean }>()

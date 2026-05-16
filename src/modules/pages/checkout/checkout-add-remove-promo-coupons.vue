@@ -5,7 +5,7 @@ import { useCartStore } from '~/shared/stores/cart'
 import { toastCustom } from '~/shared/config/toast'
 import { COUPON_CONFIG } from '~/shared/config/enums/coupon'
 import type { Coupon } from '~/shared/types/coupon'
-import { useUpdateCart } from '~/shared/services/cart'
+import { useUpdateCart } from '~/shared/server-state/cart'
 import type { ResponseGetCart } from '~/shared/types/request-api/cart'
 
 const toast = useToast()

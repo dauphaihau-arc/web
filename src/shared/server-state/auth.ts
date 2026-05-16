@@ -9,7 +9,7 @@ import type {
   LoginBody, RegisterBody, UserAuthenticated
 } from '~/shared/types/auth';
 import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys';
-import { useGetCart } from '~/shared/services/cart';
+import { useGetCart } from '~/shared/server-state/cart';
 
 export const setExpTokensToLS = () => {
   const config = useRuntimeConfig();

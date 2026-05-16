@@ -7,8 +7,8 @@ import {
   MarketLanguages, MARKET_REGION_EMOJIS,
 } from '~/shared/config/enums/market'
 import type { UpdateUserBody } from '~/shared/types/user'
-import { useGetCurrentUser, useUpdateUser } from '~/shared/services/user'
-import { useGetCountries } from '~/shared/services/address'
+import { useGetCurrentUser, useUpdateUser } from '~/shared/server-state/user'
+import { useGetCountries } from '~/shared/server-state/address'
 import type { ElementType } from '~/shared/types/utils'
 
 type State = {

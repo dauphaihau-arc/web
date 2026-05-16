@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useGetProducts } from '~/shared/services/product'
+import { useGetProducts } from '~/shared/server-state/product'
 
 const limit = 10
 const marketStore = useMarketStore()

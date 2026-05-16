@@ -4,7 +4,7 @@ import { shopSchema } from '~/shared/schemas/shop.schema'
 import type { Shop } from '~/shared/types/shop'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { toastCustom } from '~/shared/config/toast'
-import { useCreateShop } from '~/shared/services/shop'
+import { useCreateShop } from '~/shared/server-state/shop'
 
 const toast = useToast()
 

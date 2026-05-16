@@ -4,7 +4,7 @@
  */
 import { ROUTES } from '~/shared/config/enums/routes'
 import type { Shop } from '~/shared/types/shop'
-import { useDeleteProductCart } from '~/shared/services/cart'
+import { useDeleteProductCart } from '~/shared/server-state/cart'
 import type { ResponseGetCartProductCart, ResponseGetCart } from '~/shared/types/request-api/cart'
 
 const props = defineProps<{

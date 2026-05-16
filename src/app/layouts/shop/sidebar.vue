@@ -4,8 +4,8 @@ import type { LinkItem } from './sidebar.types'
 import type { DropdownItem } from '#ui/types'
 import avatarDefault from '~/app/assets/images/avatar-default.jpg'
 import { ROUTES } from '~/shared/config/enums/routes'
-import { useLogout } from '~/shared/services/auth'
-import { useGetCurrentUser } from '~/shared/services/user'
+import { useLogout } from '~/shared/server-state/auth'
+import { useGetCurrentUser } from '~/shared/server-state/user'
 
 const routes = useRoute()
 const { data: dataUserAuth } = useGetCurrentUser()

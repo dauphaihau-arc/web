@@ -7,7 +7,7 @@ import { ROUTES } from '~/shared/config/enums/routes'
 import { ProductVariantTypes } from '~/shared/config/enums/product'
 import type { Product } from '~/shared/types/product'
 import type { ElementType } from '~/shared/types/utils'
-import { useShopDeleteProduct, useShopGetProducts } from '~/shared/services/shop'
+import { useShopDeleteProduct, useShopGetProducts } from '~/shared/server-state/shop'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 

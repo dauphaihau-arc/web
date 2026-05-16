@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { Category } from '~/shared/types/category'
-import { useGetProducts } from '~/shared/services/product'
+import { useGetProducts } from '~/shared/server-state/product'
 
 const limit = 12
 

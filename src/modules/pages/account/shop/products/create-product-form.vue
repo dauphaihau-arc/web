@@ -16,8 +16,8 @@ import {
   useShopCreateProduct,
   useShopPublishProduct,
   useShopSetProductImagesByKeys,
-} from '~/shared/services/shop'
-import { useIssueProductImageUploadUrl } from '~/shared/services/upload'
+} from '~/shared/server-state/shop'
+import { useIssueProductImageUploadUrl } from '~/shared/server-state/upload'
 import type {
   CombineVariant,
   CreateProductBody,

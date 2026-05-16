@@ -3,7 +3,7 @@ import LoadingSvg from '~/shared/ui/primitives/loading-svg.vue'
 import FilterProducts from '~/modules/pages/filter-products.vue'
 import ProductCard from '~/modules/pages/product-card.vue'
 import SortProductsBy from '~/modules/pages/sort-products-by.vue'
-import { useGetProducts } from '~/shared/services/product'
+import { useGetProducts } from '~/shared/server-state/product'
 
 definePageMeta({ layout: 'market' })
 

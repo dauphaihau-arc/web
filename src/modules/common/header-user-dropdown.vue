@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ROUTES } from '~/shared/config/enums/routes'
-import { useGetCurrentUser } from '~/shared/services/user'
+import { useGetCurrentUser } from '~/shared/server-state/user'
 
 const { data: dataUserAuth } = useGetCurrentUser()
 </script>

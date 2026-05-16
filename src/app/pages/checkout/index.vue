@@ -9,7 +9,7 @@ import CheckoutPaymentOptions from '~/modules/pages/checkout/checkout-payment-op
 import CheckoutReviewShippingAndPayment from '~/modules/pages/checkout/checkout-review-shipping-and-payment.vue'
 import CheckoutShopCart from '~/modules/pages/checkout/checkout-shop-cart.vue'
 import CheckoutUserAddressShipping from '~/modules/pages/checkout/checkout-user-address-shipping.vue'
-import { useGetCart } from '~/shared/services/cart'
+import { useGetCart } from '~/shared/server-state/cart'
 import type { Cart } from '~/shared/types/cart'
 
 definePageMeta({ layout: 'market', middleware: ['auth', 'checkout'] })

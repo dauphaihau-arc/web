@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { FormErrorEvent, FormSubmitEvent } from '#ui/types'
-import { useGetCountries } from '~/shared/services/address'
+import { useGetCountries } from '~/shared/server-state/address'
 import { ADDRESS_CONFIG } from '~/shared/config/enums/address'
 import type { ProductShipping, ProductStandardShipping } from '~/shared/types/product'
 import { ProductShippingCharge, ProductShippingServices } from '~/shared/config/enums/product'

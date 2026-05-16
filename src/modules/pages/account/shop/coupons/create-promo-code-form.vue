@@ -6,7 +6,7 @@ import {
 import type { RequiredFields } from '~/shared/types/utils'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { toastCustom } from '~/shared/config/toast'
-import { useShopCreateCoupon } from '~/shared/services/shop'
+import { useShopCreateCoupon } from '~/shared/server-state/shop'
 import { PRODUCT_CONFIG } from '~/shared/config/enums/product'
 import { createPromoCodeBodySchema } from '~/shared/schemas/request/shop-coupon.schema'
 import type { CreatePromoCodeBody } from '~/shared/types/coupon'

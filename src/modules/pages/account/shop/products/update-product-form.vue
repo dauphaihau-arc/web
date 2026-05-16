@@ -13,8 +13,8 @@ import type {
   ProductImage, ProductSingleVariant, ProductCombineVariant,
 } from '~/shared/types/product'
 import { toastCustom } from '~/shared/config/toast'
-import { useIssueProductImageUploadUrl } from '~/shared/services/upload'
-import { useShopGetDetailProduct, useShopUpdateProduct } from '~/shared/services/shop'
+import { useIssueProductImageUploadUrl } from '~/shared/server-state/upload'
+import { useShopGetDetailProduct, useShopUpdateProduct } from '~/shared/server-state/shop'
 import type {
   NoneVariant,
   RequestUpdateProductBody,

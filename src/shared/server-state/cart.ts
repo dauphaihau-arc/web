@@ -2,13 +2,16 @@ import type { MutationOptions, UseQueryOptions } from '@tanstack/vue-query';
 import type { FetchError } from 'ofetch';
 import { RESOURCES } from '~/shared/config/enums/resources';
 import type {
-  AddProductToCartBody, ResponseGetCart,
-  UpdateCartBody, ResponseUpdateCart,
-  ResponseAddProductToCartBody, ResponseDeleteProductCart
+  AddProductToCartBody,
+  ResponseGetCart,
+  UpdateCartBody,
+  ResponseUpdateCart,
+  ResponseAddProductToCartBody,
+  ResponseDeleteProductCart
 } from '~/shared/types/request-api/cart';
 import type { ProductInventory } from '~/shared/types/product';
 import { toastCustom } from '~/shared/config/toast';
-import { useGetCurrentUser } from '~/shared/services/user';
+import { useGetCurrentUser } from '~/shared/server-state/user';
 import type { Cart } from '~/shared/types/cart';
 
 export function useGetCart(
@@ -31,7 +34,11 @@ export function useGetCart(
 }
 
 export function useAddProductToCart(
-  options?: MutationOptions<ResponseAddProductToCartBody, FetchError, AddProductToCartBody>
+  options?: MutationOptions<
+    ResponseAddProductToCartBody,
+    FetchError,
+    AddProductToCartBody
+  >
 ) {
   const toast = useToast();
   return useMutation({

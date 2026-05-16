@@ -7,7 +7,7 @@ import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import FixedPagination from '~/modules/pages/account/shop/fixed-pagination.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { CouponAppliesTo, CouponTypes } from '~/shared/config/enums/coupon'
-import { useShopDeleteCoupon, useShopGetCoupons } from '~/shared/services/shop'
+import { useShopDeleteCoupon, useShopGetCoupons } from '~/shared/server-state/shop'
 import { CreateCouponPageTypes } from '~/shared/config/enums/shop'
 
 dayjs.extend(localizedFormat)

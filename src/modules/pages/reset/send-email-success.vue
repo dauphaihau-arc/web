@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useForgetPassword } from '~/shared/services/auth'
+import { useForgetPassword } from '~/shared/server-state/auth'
 import { toastCustom } from '~/shared/config/toast'
 import { ResetPasswordViews } from '~/shared/config/enums/common'
 

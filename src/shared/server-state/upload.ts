@@ -1,6 +1,6 @@
 import type { ResponseGetPresignedUrlData } from '~/shared/types/upload';
 import { RESOURCES } from '~/shared/config/enums/resources';
-import { useGetMyShop } from '~/shared/services/shop';
+import { useGetMyShop } from '~/shared/server-state/shop';
 import type { Product } from '~/shared/types/product';
 
 export function useIssueProductImageUploadUrl() {
@@ -12,7 +12,9 @@ export function useIssueProductImageUploadUrl() {
       contentType: string
       assetType?: 'original'
     }) => {
-      const shopId = dataMyShop.value?.id ?? (await refetch({ throwOnError: true })).data?.id;
+      const shopId =
+        dataMyShop.value?.id ??
+        (await refetch({ throwOnError: true })).data?.id;
 
       return useCustomFetch.post<ResponseGetPresignedUrlData>(
         `${RESOURCES.SHOPS}/${shopId}${RESOURCES.PRODUCTS}/${input.productId}/image-uploads`,

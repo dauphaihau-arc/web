@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Category } from '~/shared/types/category'
-import { useGetCategories } from '~/shared/services/category'
+import { useGetCategories } from '~/shared/server-state/category'
 import { ROUTES } from '~/shared/config/enums/routes'
 
 const marketStore = useMarketStore()

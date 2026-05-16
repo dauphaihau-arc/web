@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
 import { userSchema } from '~/shared/schemas/user.schema'
-import { useResetPassword } from '~/shared/services/auth'
+import { useResetPassword } from '~/shared/server-state/auth'
 import { ROUTES } from '~/shared/config/enums/routes'
 import type { ResetPasswordBody } from '~/shared/types/auth'
 

@@ -2,7 +2,7 @@
 import LoadingSvg from '~/shared/ui/primitives/loading-svg.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import UpdateProductForm from '~/modules/pages/account/shop/products/update-product-form.vue'
-import { useShopGetDetailProduct } from '~/shared/services/shop'
+import { useShopGetDetailProduct } from '~/shared/server-state/shop'
 import type { Product } from '~/shared/types/product'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })

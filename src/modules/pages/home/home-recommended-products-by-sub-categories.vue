@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useGetProductsByMultiQueries } from '~/shared/services/product'
+import { useGetProductsByMultiQueries } from '~/shared/server-state/product'
 import type { Category } from '~/shared/types/category'
 
 const groupSkeletons = 2

@@ -4,8 +4,8 @@ import type { UserAddress, CreateBodyUserAddressBody } from '~/shared/types/user
 import { ADDRESS_CONFIG } from '~/shared/config/enums/address'
 import { createUserAddressSchema } from '~/shared/schemas/user-address.schema'
 import { toastCustom } from '~/shared/config/toast'
-import { useUpdateUserAddress } from '~/shared/services/user'
-import { useGetCountries, useGetStatesByCountry } from '~/shared/services/address'
+import { useUpdateUserAddress } from '~/shared/server-state/user'
+import { useGetCountries, useGetStatesByCountry } from '~/shared/server-state/address'
 
 const props = defineProps<{ dataEdit: UserAddress }>()
 

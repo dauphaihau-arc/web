@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ROUTES } from '~/shared/config/enums/routes'
 import RegisterLoginDialog from '~/shared/ui/app/dialogs/login-register/register-login-dialog.vue'
-import { useLogout } from '~/shared/services/auth'
-import { useGetCurrentUser } from '~/shared/services/user'
-import { useGetCart } from '~/shared/services/cart'
+import { useLogout } from '~/shared/server-state/auth'
+import { useGetCurrentUser } from '~/shared/server-state/user'
+import { useGetCart } from '~/shared/server-state/cart'
 
 const props = defineProps<{ show: boolean }>()
 

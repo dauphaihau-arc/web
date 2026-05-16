@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGetUserAddresses } from '~/shared/services/user'
+import { useGetUserAddresses } from '~/shared/server-state/user'
 import CreateUserAddressDialog from '~/shared/ui/app/dialogs/create-user-address-dialog.vue'
 
 const cartStore = useCartStore()

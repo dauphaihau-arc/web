@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import LoginForm from './login-form.vue'
 import RegisterForm from './register-form.vue'
-import { useGetCurrentUser } from '~/shared/services/user'
+import { useGetCurrentUser } from '~/shared/server-state/user'
 
 const route = useRoute()
 const { data: dataUserAuth } = useGetCurrentUser()

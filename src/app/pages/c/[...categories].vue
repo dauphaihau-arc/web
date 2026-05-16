@@ -4,7 +4,7 @@ import CategoriesSubCategories from '~/modules/pages/c/categories/categories-sub
 import FilterProducts from '~/modules/pages/filter-products.vue'
 import ProductCard from '~/modules/pages/product-card.vue'
 import SortProductsBy from '~/modules/pages/sort-products-by.vue'
-import { useGetProducts } from '~/shared/services/product'
+import { useGetProducts } from '~/shared/server-state/product'
 import type { GetProductsParams } from '~/shared/types/request-api/product'
 
 definePageMeta({ layout: 'market' })

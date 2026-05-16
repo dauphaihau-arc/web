@@ -6,7 +6,7 @@ import type { FormSubmitEvent } from '#ui/types'
 import { userSchema } from '~/shared/schemas/user.schema'
 import type { User } from '~/shared/types/user'
 import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys'
-import { useRegister } from '~/shared/services/auth'
+import { useRegister } from '~/shared/server-state/auth'
 import type { RegisterBody } from '~/shared/types/auth'
 
 const invalidEmails: string[] = []

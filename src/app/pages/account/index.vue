@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useGetCurrentUser } from '~/shared/services/user'
+import { useGetCurrentUser } from '~/shared/server-state/user'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 
