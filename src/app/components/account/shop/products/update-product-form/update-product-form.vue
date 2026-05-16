@@ -1,6 +1,8 @@
 <script setup lang="ts">
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
+import ImagesInput from './images-input.vue'
+import VariantInput from './variant-input.vue'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import { updateProductSchema } from '~/shared/schemas/request/shop-product.schema'
 import {
@@ -8,6 +10,11 @@ import {
   productWhoMadeOpts,
 } from '~/shared/config/enums/product'
 import { ROUTES } from '~/shared/config/enums/routes'
+import FormGroupCard from '~/app/components/account/shop/wrapper-form-group-card.vue'
+import NoneVariantInput from '~/app/components/account/shop/products/none-variant-input.vue'
+import SearchCategoryInput from '~/app/components/account/shop/products/search-category-input.vue'
+import SelectAttributesInput from '~/app/components/account/shop/products/select-attributes-input.vue'
+import TagsInput from '~/app/components/account/shop/products/tags-input.vue'
 import type {
   Product,
   ProductImage, ProductSingleVariant, ProductCombineVariant,
@@ -319,12 +326,12 @@ watchDebounced(
     @error="onError"
     @submit="onSubmit"
   >
-    <WrapperFormGroupCard>
+    <FormGroupCard>
       <template #title>
         Basic info
       </template>
       <template #content>
-        <UpdateProductImagesInput
+        <ImagesInput
           v-model:new-file-images="fileImages"
           v-model:ids-image-delete="images"
           class="mb-4"
@@ -363,9 +370,9 @@ watchDebounced(
           />
         </UFormGroup>
       </template>
-    </WrapperFormGroupCard>
+    </FormGroupCard>
 
-    <WrapperFormGroupCard>
+    <FormGroupCard>
       <template #title>
         Details
       </template>
@@ -408,24 +415,24 @@ watchDebounced(
 
         {{ stateSubmit.category_id }}
 
-        <UpdateCreateProductSearchCategoryInput
+        <SearchCategoryInput
           v-model="stateSubmit.category_id"
           :category="dataDetailProduct?.product.category"
           :title="stateSubmit.title"
         />
 
-        <UpdateCreateProductSelectAttributesInput
+        <SelectAttributesInput
           :key="stateSubmit.category_id"
           v-model="stateSubmit.attributes"
           :category-id="stateSubmit.category_id || dataDetailProduct?.product.category.id"
           :attributes-selected="dataDetailProduct?.product.attributes"
         />
 
-        <UpdateCreateProductTagsInput v-model="stateSubmit.tags" />
+        <TagsInput v-model="stateSubmit.tags" />
       </template>
-    </WrapperFormGroupCard>
+    </FormGroupCard>
 
-    <WrapperFormGroupCard>
+    <FormGroupCard>
       <template #title>
         Inventory and pricing
       </template>
@@ -440,21 +447,21 @@ watchDebounced(
             {{ !isVariantProduct ? 'Add variations' : 'Remove variations' }}
           </UButton>
 
-          <UpdateProductVariantInput
+          <VariantInput
             v-if="isVariantProduct && dataDetailProduct"
             :product="dataDetailProduct.product"
             :count-validate="countValidate"
             @on-change="onChangeVariants"
             @is-variants-updated="(count) => countValidateVariantsInputs = count"
           />
-          <UpdateCreateProductNoneVariantInput
+          <NoneVariantInput
             v-else
             v-model:none-variant="noneVariant"
             class="max-w-[40%]"
           />
         </div>
       </template>
-    </WrapperFormGroupCard>
+    </FormGroupCard>
 
     <button
       ref="btnSubmit"

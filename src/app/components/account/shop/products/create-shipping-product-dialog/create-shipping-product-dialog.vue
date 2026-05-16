@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import LocationShipping from './location-shipping.vue'
 import type { FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import { useGetCountries } from '~/shared/server-state/address'
 import { ADDRESS_CONFIG } from '~/shared/config/enums/address'

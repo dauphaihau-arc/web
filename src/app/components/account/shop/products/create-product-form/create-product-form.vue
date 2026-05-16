@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { consola } from 'consola'
+import ImagesInput from './images-input.vue'
+import VariantInput from './variant-input.vue'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import { createProductBodySchema, createProductInventorySchema } from '~/shared/schemas/request/shop-product.schema'
 import {
@@ -11,7 +13,12 @@ import {
 } from '~/shared/config/enums/product'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { toastCustom } from '~/shared/config/toast'
-import CreateShippingProductDialog from '~/app/components/account/shop/products/create-shipping-product-dialog.vue'
+import CreateShippingProductDialog from '~/app/components/account/shop/products/create-shipping-product-dialog/create-shipping-product-dialog.vue'
+import FormGroupCard from '~/app/components/account/shop/wrapper-form-group-card.vue'
+import NoneVariantInput from '~/app/components/account/shop/products/none-variant-input.vue'
+import SearchCategoryInput from '~/app/components/account/shop/products/search-category-input.vue'
+import SelectAttributesInput from '~/app/components/account/shop/products/select-attributes-input.vue'
+import TagsInput from '~/app/components/account/shop/products/tags-input.vue'
 import {
   useShopCreateProduct,
   useShopPublishProduct,
@@ -393,12 +400,12 @@ watch(isProductHaveVariants, () => {
     @error="onErrorFrom"
     @submit="onSubmit"
   >
-    <WrapperFormGroupCard>
+    <FormGroupCard>
       <template #title>
         Basic info
       </template>
       <template #content>
-        <CreateProductImagesInput
+        <ImagesInput
           v-model="fileImages"
           class="mb-4"
         />
@@ -433,9 +440,9 @@ watch(isProductHaveVariants, () => {
           />
         </UFormGroup>
       </template>
-    </WrapperFormGroupCard>
+    </FormGroupCard>
 
-    <WrapperFormGroupCard>
+    <FormGroupCard>
       <template #title>
         Details
       </template>
@@ -476,23 +483,23 @@ watch(isProductHaveVariants, () => {
             </UFormGroup>
           </div>
 
-          <UpdateCreateProductSearchCategoryInput
+          <SearchCategoryInput
             v-model="stateSubmit.category_id"
             :title="stateSubmit.title"
           />
 
-          <UpdateCreateProductSelectAttributesInput
+          <SelectAttributesInput
             v-if="stateSubmit.category_id"
             :key="stateSubmit.category_id"
             v-model="stateSubmit.attributes"
             :category-id="stateSubmit.category_id"
           />
-          <UpdateCreateProductTagsInput v-model="stateSubmit.tags" />
+          <TagsInput v-model="stateSubmit.tags" />
         </div>
       </template>
-    </WrapperFormGroupCard>
+    </FormGroupCard>
 
-    <WrapperFormGroupCard>
+    <FormGroupCard>
       <template #title>
         Shipping
       </template>
@@ -527,9 +534,9 @@ watch(isProductHaveVariants, () => {
           </UFormGroup>
         </div>
       </template>
-    </WrapperFormGroupCard>
+    </FormGroupCard>
 
-    <WrapperFormGroupCard>
+    <FormGroupCard>
       <template #title>
         Inventory and pricing
       </template>
@@ -543,14 +550,14 @@ watch(isProductHaveVariants, () => {
           >
             {{ !isProductHaveVariants ? 'Add variantions' : 'Remove variantions' }}
           </UButton>
-          <CreateProductVariantInput
+          <VariantInput
             v-if="isProductHaveVariants"
             v-model:single-variant="singleVariant"
             v-model:combine-variant="combineVariant"
             v-model:variant-type="stateSubmit.variant_type"
             :count-validate="countValidate"
           />
-          <UpdateCreateProductNoneVariantInput
+          <NoneVariantInput
             v-else
             v-model:none-variant="noneVariant"
             :disabled="loadingSubmit"
@@ -558,7 +565,7 @@ watch(isProductHaveVariants, () => {
           />
         </div>
       </template>
-    </WrapperFormGroupCard>
+    </FormGroupCard>
 
     <button
       ref="btnSubmitRef"

@@ -9,7 +9,7 @@ import type {
 } from '~/shared/types/product'
 import { PRODUCT_CONFIG, ProductVariantTypes } from '~/shared/config/enums/product'
 import { productInventorySchema } from '~/shared/schemas/product-inventory.schema'
-import type { IOnChangeUpdateVariants } from '~/app/components/account/shop/products/update-product-form.vue'
+import type { IOnChangeUpdateVariants } from '~/app/components/account/shop/products/update-product-form/update-product-form.vue'
 import type { UpdateProductBody, UpdateVariantOptions } from '~/shared/types/request-api/shop-product'
 
 type VariantOption = { id: ProductVariant['id'], variant_name: string, errorMsg: string }
