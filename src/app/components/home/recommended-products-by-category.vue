@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import ProductCard from '~/app/components/home/product-card.vue'
 import { useGetProducts } from '~/shared/server-state/product'
 
 const limit = 10
@@ -54,7 +55,7 @@ watch(error, (value) => {
             v-for="(product, i) of data.items"
             :key="i"
           >
-            <HomeProductCard :product="product" />
+            <ProductCard :product="product" />
           </div>
         </div>
       </div>

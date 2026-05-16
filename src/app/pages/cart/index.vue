@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import LoadingSvg from '~/shared/ui/loading-svg.vue'
-import CartShopCart from '~/app/components/cart/cart-shop-cart.vue'
-import CartSummaryOrder from '~/app/components/cart/cart-summary-order.vue'
+import ShopCart from '~/app/components/cart/shop-cart.vue'
+import SummaryOrder from '~/app/components/cart/summary-order.vue'
 import { useCartStore } from '~/shared/stores/cart'
 import { useGetCart } from '~/shared/server-state/cart'
 
@@ -74,7 +74,7 @@ onBeforeUnmount(() => {
 
         <div class="grid grid-cols-12 gap-16">
           <div class="col-span-8">
-            <CartShopCart
+            <ShopCart
               v-for="shopCart of dataGetCart.cart.shopGroups"
               :key="shopCart.shop.id"
               :shop-cart="shopCart"
@@ -86,7 +86,7 @@ onBeforeUnmount(() => {
               ref="contentSummaryOrderRef"
               class="w-[400px]"
             >
-              <CartSummaryOrder />
+              <SummaryOrder />
             </div>
           </div>
         </div>

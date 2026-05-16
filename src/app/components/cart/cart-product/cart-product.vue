@@ -2,6 +2,9 @@
 /*
   use in cart page, cart/checkout page
  */
+import CartCheckboxOrderProduct from './checkbox-order-product.vue'
+import CartModifyQuantityProduct from './modify-quantity-product.vue'
+import CartVariantsProduct from './variants-product.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 import type { Shop } from '~/shared/types/shop'
 import { useDeleteProductCart } from '~/shared/server-state/cart'

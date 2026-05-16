@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import ProductCard from '~/app/components/home/product-card.vue'
 import { useGetProductsByMultiQueries } from '~/shared/server-state/product'
 import type { Category } from '~/shared/types/category'
 
@@ -102,7 +103,7 @@ const subCategories = computed(() => {
               v-for="product of cg.items"
               :key="product.id"
             >
-              <HomeProductCard :product="product" />
+              <ProductCard :product="product" />
             </div>
           </div>
         </div>

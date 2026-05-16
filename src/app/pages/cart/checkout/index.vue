@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import LoadingSvg from '~/shared/ui/loading-svg.vue'
 import CheckoutStepper from '~/app/components/checkout-stepper.vue'
-import CartCheckoutCreateOrderBtn from '~/app/components/cart/checkout/cart-checkout-create-order-btn.vue'
-import CartCheckoutPaymentOptions from '~/app/components/cart/checkout/cart-checkout-payment-options.vue'
-import CartCheckoutReviewShippingAndPayment from '~/app/components/cart/checkout/cart-checkout-review-shipping-and-payment.vue'
-import CartCheckoutShopCart from '~/app/components/cart/checkout/cart-checkout-shop-cart.vue'
-import CartCheckoutSummaryOrder from '~/app/components/cart/checkout/cart-checkout-summary-order.vue'
-import CartCheckoutUserAddressShipping from '~/app/components/cart/checkout/cart-checkout-user-address-shipping.vue'
+import CreateOrderBtn from '~/app/components/cart/checkout/create-order-btn.vue'
+import PaymentOptions from '~/app/components/cart/checkout/payment-options.vue'
+import ReviewShippingAndPayment from '~/app/components/cart/checkout/review-shipping-and-payment.vue'
+import ShopCart from '~/app/components/cart/checkout/shop-cart.vue'
+import SummaryOrder from '~/app/components/cart/checkout/summary-order.vue'
+import UserAddressShipping from '~/app/components/cart/checkout/user-address-shipping.vue'
 import { useCartStore } from '~/shared/stores/cart'
 import { CheckoutCartSteps } from '~/shared/types/pages/cart/checkout'
 import { useGetCart } from '~/shared/server-state/cart'
@@ -49,11 +49,11 @@ const steps = ['Billing Address', 'Payment', 'Review & Confirmation']
     />
     <div class="grid grid-cols-12 gap-16">
       <div class="col-span-8">
-        <CartCheckoutUserAddressShipping
+        <UserAddressShipping
           v-show="cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.addressShipping"
           class="mb-10"
         />
-        <CartCheckoutPaymentOptions
+        <PaymentOptions
           v-show="cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.payment"
         />
 
@@ -61,19 +61,19 @@ const steps = ['Billing Address', 'Payment', 'Review & Confirmation']
           v-show="cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.reviewConfirmation
             || cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.order"
         >
-          <CartCheckoutReviewShippingAndPayment class="mb-12" />
+          <ReviewShippingAndPayment class="mb-12" />
           <div
             v-for="shopCart of dataGetCart.cart.shopGroups"
             :key="shopCart.shop.id"
           >
-            <CartCheckoutShopCart :shop-cart="shopCart" />
+            <ShopCart :shop-cart="shopCart" />
           </div>
         </div>
       </div>
 
       <div class="col-span-4">
-        <CartCheckoutSummaryOrder />
-        <CartCheckoutCreateOrderBtn />
+        <SummaryOrder />
+        <CreateOrderBtn />
       </div>
     </div>
   </div>

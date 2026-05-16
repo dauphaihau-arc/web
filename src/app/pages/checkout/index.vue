@@ -4,11 +4,11 @@ import { CheckoutNowSteps } from '~/shared/types/pages/checkout'
 import LoadingSvg from '~/shared/ui/loading-svg.vue'
 import CheckoutStepper from '~/app/components/checkout-stepper.vue'
 import SummaryOrderCard from '~/app/components/summary-order-card.vue'
-import CheckoutCreateOrderBtn from '~/app/components/checkout/checkout-create-order-btn.vue'
-import CheckoutPaymentOptions from '~/app/components/checkout/checkout-payment-options.vue'
-import CheckoutReviewShippingAndPayment from '~/app/components/checkout/checkout-review-shipping-and-payment.vue'
-import CheckoutShopCart from '~/app/components/checkout/checkout-shop-cart.vue'
-import CheckoutUserAddressShipping from '~/app/components/checkout/checkout-user-address-shipping.vue'
+import CreateOrderBtn from '~/app/components/checkout/create-order-btn.vue'
+import PaymentOptions from '~/app/components/checkout/payment-options.vue'
+import ReviewShippingAndPayment from '~/app/components/checkout/review-shipping-and-payment.vue'
+import ShopCart from '~/app/components/checkout/shop-cart.vue'
+import UserAddressShipping from '~/app/components/checkout/user-address-shipping.vue'
 import { useGetCart } from '~/shared/server-state/cart'
 import type { Cart } from '~/shared/types/cart'
 
@@ -50,12 +50,12 @@ onUnmounted(() => {
     />
     <div class="grid grid-cols-12 gap-16">
       <div class="col-span-8">
-        <CheckoutUserAddressShipping
+        <UserAddressShipping
           v-show="cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.addressShipping"
           class="mb-10"
         />
 
-        <CheckoutPaymentOptions
+        <PaymentOptions
           v-show="cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.payment"
         />
 
@@ -63,8 +63,8 @@ onUnmounted(() => {
           v-show="cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.reviewConfirmation
             || cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.order"
         >
-          <CheckoutReviewShippingAndPayment class="mb-12" />
-          <CheckoutShopCart />
+          <ReviewShippingAndPayment class="mb-12" />
+          <ShopCart />
         </div>
       </div>
 
@@ -73,7 +73,7 @@ onUnmounted(() => {
           :loading="isPendingGetCart"
           :summary-order="dataGetCart?.summary"
         />
-        <CheckoutCreateOrderBtn />
+        <CreateOrderBtn />
       </div>
     </div>
   </div>

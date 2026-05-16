@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import CartAddRemoveNote from '~/app/components/cart/cart-add-remove-note.vue'
-import CartShippingSelect from '~/app/components/cart/cart-shipping-select.vue'
+import AddRemoveCoupons from '~/app/components/cart/add-remove-coupons.vue'
+import AddRemoveNote from '~/app/components/cart/add-remove-note.vue'
+import Product from '~/app/components/cart/cart-product/cart-product.vue'
+import ShippingSelect from '~/app/components/cart/shipping-select.vue'
 import type { ResponseGetCartShopCart } from '~/shared/types/request-api/cart'
 
 const props = defineProps<{
@@ -29,7 +31,7 @@ const props = defineProps<{
           v-for="(productCart) of props.shopCart.items"
           :key="productCart.inventory.id"
         >
-          <CartProduct
+          <Product
             :product-cart="productCart"
             :shop-id="props.shopCart.shop?.id"
           />
@@ -40,10 +42,10 @@ const props = defineProps<{
 
       <div class="mt-6 flex justify-between">
         <div class="flex w-fit flex-col gap-4">
-          <CartAddRemoveCoupons :shop-id="props.shopCart.shop?.id" />
-          <CartAddRemoveNote :shop-cart="props.shopCart" />
+          <AddRemoveCoupons :shop-id="props.shopCart.shop?.id" />
+          <AddRemoveNote :shop-cart="props.shopCart" />
         </div>
-        <CartShippingSelect
+        <ShippingSelect
           :shop-cart="props.shopCart"
         />
       </div>

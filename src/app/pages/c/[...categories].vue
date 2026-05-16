@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import CategoriesBreadcrumb from '~/app/components/c/categories/categories-breadcrumb.vue'
-import CategoriesSubCategories from '~/app/components/c/categories/categories-sub-categories.vue'
+import SubCategories from '~/app/components/c/categories/sub-categories.vue'
 import FilterProducts from '~/app/components/filter-products.vue'
 import ProductCard from '~/app/components/product-card.vue'
 import SortProductsBy from '~/app/components/sort-products-by.vue'
@@ -50,7 +50,7 @@ watch(() => page.value, () => {
 
     <div class="flex gap-12">
       <div class="min-w-[200px] max-w-[200px]">
-        <CategoriesSubCategories />
+        <SubCategories />
         <FilterProducts />
       </div>
       <div v-if="isPendingGetProducts">
