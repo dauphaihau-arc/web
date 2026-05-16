@@ -5,6 +5,8 @@
     TOption extends TValue | Record<string, any>
 "
 >
+import RadioInput from '~/shared/ui/primitives/radio-input.vue'
+
 const props = defineProps<{
   options: TOption[]
   disabled?: boolean

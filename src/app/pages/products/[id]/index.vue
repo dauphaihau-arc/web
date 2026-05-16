@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import LoadingSvg from '~/shared/components/loading-svg.vue'
+import LoadingSvg from '~/shared/ui/primitives/loading-svg.vue'
 import DetailProductAddToCartForm from '~/modules/pages/products/detail-product-add-to-cart-form.vue'
 import DetailProductImages from '~/modules/pages/products/detail-product-images.vue'
 import DetailProductMoreInfo from '~/modules/pages/products/detail-product-more-info.vue'

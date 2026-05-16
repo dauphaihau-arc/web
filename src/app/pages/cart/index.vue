@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import LoadingSvg from '~/shared/components/loading-svg.vue'
+import LoadingSvg from '~/shared/ui/primitives/loading-svg.vue'
 import CartShopCart from '~/modules/pages/cart/cart-shop-cart.vue'
 import CartSummaryOrder from '~/modules/pages/cart/cart-summary-order.vue'
 import { useCartStore } from '~/shared/stores/cart'

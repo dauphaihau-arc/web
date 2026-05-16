@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import BackendWakeUpOverlay from '~/shared/ui/primitives/backend-wake-up-overlay.vue'
+
 const { status, waitForBackend } = useBackendStatus()
 
 const isBackendPending = computed(() => ['checking', 'waking'].includes(status.value))

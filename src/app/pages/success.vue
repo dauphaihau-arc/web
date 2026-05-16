@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import LoadingSvg from '~/shared/components/loading-svg.vue'
+import LoadingSvg from '~/shared/ui/primitives/loading-svg.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { isBackendWakeUpError } from '~/shared/composables/use-backend-status'
 import { useGetOrderShopsByCheckoutSession } from '~/shared/services/order'

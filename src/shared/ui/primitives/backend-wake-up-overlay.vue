@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import LoadingSvg from '~/shared/ui/primitives/loading-svg.vue'
+
 defineProps<{
   isBackendPending: boolean
   isBackendError: boolean
