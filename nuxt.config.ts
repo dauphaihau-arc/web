@@ -89,6 +89,26 @@ export default defineNuxtConfig({
 
   components: [
     {
+      path: 'app/components',
+      ignore: [
+        'cart/checkout/shop-cart.vue',
+        'cart/checkout/summary-order.vue',
+        'checkout/create-order-btn.vue',
+        'checkout/payment-options.vue',
+        'checkout/review-shipping-and-payment.vue',
+        'checkout/shop-cart.vue',
+        'checkout/user-address-shipping.vue',
+        'home/product-card.vue',
+        'detail-product/product-card.vue',
+        'order/shop-item/variants-product.vue',
+        'account/shop/products/create-product-form/images-input.vue',
+        'account/shop/products/create-product-form/variant-input.vue',
+        'account/shop/products/update-product-form/images-input.vue',
+        'account/shop/products/update-product-form/variant-input.vue',
+      ],
+      pathPrefix: false,
+    },
+    {
       path: 'shared/ui',
       pathPrefix: false,
     },

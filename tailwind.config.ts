@@ -4,7 +4,6 @@ import tailwindTypography from '@tailwindcss/typography';
 export default <Partial<Config>>{
   content: [
     './src/app/**/*.{vue,js,jsx,mjs,ts,tsx}',
-    './src/modules/**/*.{vue,js,jsx,mjs,ts,tsx}',
     './src/shared/ui/**/*.{vue,js,jsx,mjs,ts,tsx}',
     './src/shared/composables/**/*.{js,ts,mjs}',
     './src/shared/utils/**/*.{js,ts,mjs}',
