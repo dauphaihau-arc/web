@@ -5,6 +5,7 @@ import type { User } from '~/shared/types/user';
 import { TokenTypes } from '~/shared/config/enums/token';
 import { ROUTES } from '~/shared/config/enums/routes';
 import { toastCustom } from '~/shared/config/toast';
+import { apiClient } from '~/shared/lib/api-client';
 import type {
   LoginBody, RegisterBody, UserAuthenticated
 } from '~/shared/types/auth';
@@ -28,7 +29,7 @@ export function useRegister() {
   return useMutation({
     mutationKey: ['register'],
     mutationFn: (body: RegisterBody) => {
-      return useCustomFetch.post<{ user: UserAuthenticated }>(
+      return apiClient.post<{ user: UserAuthenticated }>(
         `${RESOURCES.AUTH}/register`,
         body
       );
@@ -49,7 +50,7 @@ export function useLogin() {
   return useMutation({
     mutationKey: ['login'],
     mutationFn: (body: LoginBody) => {
-      return useCustomFetch.post<{ user: UserAuthenticated }>(
+      return apiClient.post<{ user: UserAuthenticated }>(
         `${RESOURCES.AUTH}/login`,
         body
       );
@@ -71,7 +72,7 @@ export function useLogout() {
   return useMutation({
     mutationKey: ['logout'],
     mutationFn: () => {
-      return useCustomFetch.post(
+      return apiClient.post(
         `${RESOURCES.AUTH}/logout`,
         null
       );
@@ -95,7 +96,7 @@ export function useForgetPassword() {
   return useMutation({
     mutationKey: ['forget-password'],
     mutationFn: (email: User['email']) => {
-      return useCustomFetch.post(
+      return apiClient.post(
         `${RESOURCES.AUTH}/forgot-password`,
         { email }
       );
@@ -112,7 +113,7 @@ export function useVerifyToken(
     retry: false,
     queryKey: ['verify-token'],
     queryFn: () => {
-      return useCustomFetch.get(
+      return apiClient.get(
         `${RESOURCES.AUTH}/verify-token?token=${token}&type=${TokenTypes.RESET_PASSWORD}`,
         undefined,
         options
@@ -129,7 +130,7 @@ export function useResetPassword(token: string) {
   return useMutation({
     mutationKey: ['reset-password'],
     mutationFn: (password: User['password']) => {
-      return useCustomFetch.post<{ user: UserAuthenticated }>(
+      return apiClient.post<{ user: UserAuthenticated }>(
         `${RESOURCES.AUTH}/reset-password?token=${token}`,
         { password }
       );

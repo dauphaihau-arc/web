@@ -1,5 +1,6 @@
 import type { MutationOptions } from '@tanstack/vue-query';
 import { RESOURCES } from '~/shared/config/enums/resources';
+import { apiClient } from '~/shared/lib/api-client';
 import type { User, UpdateUserBody } from '~/shared/types/user';
 import type { ResponseBaseGetList } from '~/shared/types/common';
 import type { CreateBodyUserAddressBody, UserAddress } from '~/shared/types/user-address';
@@ -11,7 +12,7 @@ export function useGetCurrentUser() {
     enabled: false,
     queryKey: ['current-user'],
     queryFn: async () => {
-      const user = await useCustomFetch.get<UserAuthenticated>(
+      const user = await apiClient.get<UserAuthenticated>(
         `${RESOURCES.AUTH}/me`
       );
 
@@ -26,7 +27,7 @@ export function useUpdateUser() {
   return useMutation({
     mutationKey: ['update-user'],
     mutationFn: async (body: UpdateUserBody) => {
-      return await useCustomFetch.patch<{ user: User }>(
+      return await apiClient.patch<{ user: User }>(
         RESOURCES.USER,
         body
       );
@@ -49,7 +50,7 @@ export function useGetUserAddresses() {
   return useQuery({
     queryKey: ['get-user-addresses'],
     queryFn: () => {
-      return useCustomFetch.get<ResponseBaseGetList<UserAddress>>(
+      return apiClient.get<ResponseBaseGetList<UserAddress>>(
         `${RESOURCES.ME}${RESOURCES.ADDRESSES}`
       );
     },
@@ -60,7 +61,7 @@ export function useCreateUserAddress() {
   return useMutation({
     mutationKey: ['create-user-address'],
     mutationFn: async (body: CreateBodyUserAddressBody) => {
-      return await useCustomFetch.post<{ address: UserAddress }>(
+      return await apiClient.post<{ address: UserAddress }>(
         `${RESOURCES.ME}${RESOURCES.ADDRESSES}`,
         body
       );
@@ -73,7 +74,7 @@ export function useUpdateUserAddress() {
     mutationKey: ['update-user-address'],
     mutationFn: async (body: Partial<UserAddress>) => {
       const { id, ...resBody } = body;
-      return await useCustomFetch.patch<{ address: UserAddress }>(
+      return await apiClient.patch<{ address: UserAddress }>(
         `${RESOURCES.ME}${RESOURCES.ADDRESSES}/${id}`,
         resBody
       );
@@ -87,7 +88,7 @@ export function useDeleteUserAddress(
   return useMutation({
     mutationKey: ['delete-user-address'],
     mutationFn: async (id: UserAddress['id']) => {
-      return await useCustomFetch.delete(
+      return await apiClient.delete(
         `${RESOURCES.ME}${RESOURCES.ADDRESSES}/${id}`
       );
     },

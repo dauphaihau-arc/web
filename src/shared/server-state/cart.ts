@@ -1,6 +1,7 @@
 import type { MutationOptions, UseQueryOptions } from '@tanstack/vue-query';
 import type { FetchError } from 'ofetch';
 import { RESOURCES } from '~/shared/config/enums/resources';
+import { apiClient } from '~/shared/lib/api-client';
 import type {
   AddProductToCartBody,
   ResponseGetCart,
@@ -24,7 +25,7 @@ export function useGetCart(
     enabled: !!dataUserAuth.value?.user,
     queryKey: ['get-cart', params?.cart_id ?? 'my-cart'],
     queryFn: () => {
-      return useCustomFetch.get<ResponseGetCart>(
+      return apiClient.get<ResponseGetCart>(
         `${RESOURCES.USER}${RESOURCES.CART}`,
         params ?? undefined
       );
@@ -51,7 +52,7 @@ export function useAddProductToCart(
     ...options,
     mutationKey: ['add-to-cart'],
     mutationFn: (body: AddProductToCartBody) => {
-      return useCustomFetch.post<ResponseAddProductToCartBody>(
+      return apiClient.post<ResponseAddProductToCartBody>(
         `${RESOURCES.USER}${RESOURCES.CART}`,
         {
           inventory_id: body.inventory_id,
@@ -76,7 +77,7 @@ export function useUpdateCart(
     },
     ...options,
     mutationFn: (body: UpdateCartBody) => {
-      return useCustomFetch.patch<ResponseUpdateCart>(
+      return apiClient.patch<ResponseUpdateCart>(
         `${RESOURCES.USER}${RESOURCES.CART}`,
         body
       );
@@ -98,7 +99,7 @@ export function useDeleteProductCart(
     },
     ...options,
     mutationFn: () => {
-      return useCustomFetch.delete<ResponseDeleteProductCart>(
+      return apiClient.delete<ResponseDeleteProductCart>(
         `${RESOURCES.USER}${RESOURCES.CART}`,
         { inventory_id: id },
         undefined

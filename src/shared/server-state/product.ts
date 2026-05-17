@@ -2,6 +2,7 @@ import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import type { UseQueryOptions } from '@tanstack/vue-query';
 import type { ComputedRef } from 'vue';
 import { RESOURCES } from '~/shared/config/enums/resources';
+import { apiClient } from '~/shared/lib/api-client';
 import type { Product } from '~/shared/types/product';
 import type {
   GetProductsParams,
@@ -18,7 +19,7 @@ export function useGetProducts(
     ...options,
     queryKey: ['get-products', params],
     queryFn: () => {
-      return useCustomFetch.get<ResponseGetProducts>(
+      return apiClient.get<ResponseGetProducts>(
         RESOURCES.PRODUCTS,
         params.value
       );
@@ -34,7 +35,7 @@ export function useGetDetailProduct(
     enabled: !!id,
     queryKey: ['get-detail-product', id],
     queryFn: () => {
-      return useCustomFetch.get<ResponseGetDetailProduct>(
+      return apiClient.get<ResponseGetDetailProduct>(
         `${RESOURCES.PRODUCTS}/${id}`,
         undefined,
         options
@@ -48,7 +49,7 @@ export function useGetProductsByMultiQueries(queries?: GetProductsParams[]) {
     queries: queries?.map(qp => ({
       queryKey: [qp.category_id],
       queryFn: async () => {
-        const res = await useCustomFetch.get<ResponseGetProducts>(
+        const res = await apiClient.get<ResponseGetProducts>(
           RESOURCES.PRODUCTS,
           qp
         );

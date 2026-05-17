@@ -1,5 +1,6 @@
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import { RESOURCES } from '~/shared/config/enums/resources';
+import { apiClient } from '~/shared/lib/api-client';
 import type {
   CreateOrderFromCartBody,
   CreateOrderForBuyNowBody,
@@ -12,7 +13,7 @@ import type { RequestGetListParams } from '~/shared/types/common';
 export function useCreateOrderForBuyNow() {
   return useMutation({
     mutationFn: (body: CreateOrderForBuyNowBody) => {
-      return useCustomFetch.put<ResponseCreateOrder>(
+      return apiClient.put<ResponseCreateOrder>(
         `${RESOURCES.USER}${RESOURCES.ORDERS}`,
         body
       );
@@ -23,7 +24,7 @@ export function useCreateOrderForBuyNow() {
 export function useCreateOrderFromCart() {
   return useMutation({
     mutationFn: (body: CreateOrderFromCartBody) => {
-      return useCustomFetch.post<ResponseCreateOrder>(
+      return apiClient.post<ResponseCreateOrder>(
         `${RESOURCES.USER}${RESOURCES.ORDERS}`,
         body
       );
@@ -35,7 +36,7 @@ export function useGetOrderShops(queryParams?: RequestGetListParams) {
   return useQuery({
     queryKey: ['get-order-shops'],
     queryFn: () => {
-      return useCustomFetch.get<ResponseGetOrderShops>(
+      return apiClient.get<ResponseGetOrderShops>(
         `${RESOURCES.USER}${RESOURCES.ORDERS}`,
         queryParams
       );
@@ -52,7 +53,7 @@ export function useGetOrderShopsByCheckoutSession(
     enabled: !!sessionId,
     queryKey: ['verify-cs'],
     queryFn: () => {
-      return useCustomFetch.delete<ResponseGetOrderShopsByCheckoutSession>(
+      return apiClient.delete<ResponseGetOrderShopsByCheckoutSession>(
         `${RESOURCES.USER}${RESOURCES.ORDERS}`,
         {
           session_id: sessionId,

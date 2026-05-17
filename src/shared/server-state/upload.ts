@@ -1,5 +1,6 @@
 import type { ResponseGetPresignedUrlData } from '~/shared/types/upload';
 import { RESOURCES } from '~/shared/config/enums/resources';
+import { apiClient } from '~/shared/lib/api-client';
 import { useGetMyShop } from '~/shared/server-state/shop';
 import type { Product } from '~/shared/types/product';
 
@@ -16,7 +17,7 @@ export function useIssueProductImageUploadUrl() {
         dataMyShop.value?.id ??
         (await refetch({ throwOnError: true })).data?.id;
 
-      return useCustomFetch.post<ResponseGetPresignedUrlData>(
+      return apiClient.post<ResponseGetPresignedUrlData>(
         `${RESOURCES.SHOPS}/${shopId}${RESOURCES.PRODUCTS}/${input.productId}/image-uploads`,
         {
           content_type: input.content_type,

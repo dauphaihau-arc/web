@@ -1,4 +1,5 @@
 import { RESOURCES } from '~/shared/config/enums/resources';
+import { apiClient } from '~/shared/lib/api-client';
 import type {
   Category, CategorySearch, GetCategoriesParams, ResponseGetCategories
 } from '~/shared/types/category';
@@ -60,7 +61,7 @@ export function useGetCategories(
     enabled: !!params,
     queryKey: ['get-categories', params],
     queryFn: () => {
-      return useCustomFetch.get<ResponseGetCategories>(
+      return apiClient.get<ResponseGetCategories>(
         RESOURCES.CATEGORIES,
         params
       );
@@ -72,7 +73,7 @@ export function useGetRootCategories() {
   return useQuery<ResponseGetCategories>({
     queryKey: ['get-root-categories'],
     queryFn: () => {
-      return useCustomFetch.get<ResponseGetCategories>(RESOURCES.CATEGORIES);
+      return apiClient.get<ResponseGetCategories>(RESOURCES.CATEGORIES);
     },
   });
 }
@@ -81,7 +82,7 @@ export function useGetSearchCategories() {
   return useMutation({
     mutationKey: ['get-search-categories'],
     mutationFn: (name: Category['name']) => {
-      return useCustomFetch.get<{ categories: CategorySearch[] }>(
+      return apiClient.get<{ categories: CategorySearch[] }>(
         `${RESOURCES.CATEGORIES}/search`,
         {
           name,
@@ -96,7 +97,7 @@ export function useGetAttributesByCategory(id?: Category['id']) {
     enabled: !!id,
     queryKey: ['get-attributes-by-category'],
     queryFn: async () => {
-      const response = await useCustomFetch.get<
+      const response = await apiClient.get<
         LegacyCategoryAttributesResponse | NestCategoryAttributesResponse
       >(
         `${RESOURCES.CATEGORIES}/${id}${RESOURCES.ATTRIBUTES}`

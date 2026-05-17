@@ -87,7 +87,7 @@ const checkAccessAndRefreshToken = async () => {
 type TBody = NitroFetchOptions<NitroFetchRequest>['body'];
 type TOptions = NitroFetchOptions<NitroFetchRequest>;
 
-export const useCustomFetch = {
+export const apiClient = {
   get: async <T>(
     url: string,
     params?: SearchParameters,

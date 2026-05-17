@@ -1,5 +1,6 @@
 import type { ComputedRef } from 'vue';
 import type { UseQueryOptions } from '@tanstack/vue-query';
+import { apiClient } from '~/shared/lib/api-client';
 import type { ResponseGetCountries, ResponseGetStatesByCountry } from '~/shared/types/user-address';
 
 export function useGetCountries(options?: Partial<UseQueryOptions<ResponseGetCountries>>) {
@@ -7,7 +8,7 @@ export function useGetCountries(options?: Partial<UseQueryOptions<ResponseGetCou
     ...options,
     queryKey: ['get-countries'],
     queryFn: () => {
-      return useCustomFetch.get<ResponseGetCountries>(
+      return apiClient.get<ResponseGetCountries>(
         'https://countriesnow.space/api/v0.1/countries/iso',
         undefined,
         {
@@ -24,7 +25,7 @@ export function useGetStatesByCountry(country: ComputedRef<string | undefined>) 
     enabled: false,
     queryKey: ['get-states-by-country', country],
     queryFn: () => {
-      return useCustomFetch.post<ResponseGetStatesByCountry>(
+      return apiClient.post<ResponseGetStatesByCountry>(
         'https://countriesnow.space/api/v0.1/countries/states',
         {
           country: country.value,
