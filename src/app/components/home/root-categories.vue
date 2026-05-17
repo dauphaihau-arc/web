@@ -26,8 +26,8 @@ const redirectByCategory = (category: Category) => {
       >
         <div @click="() => redirectByCategory(cg)">
           <NuxtImg
-            v-if="cg?.imageUrl"
-            :src="cg.imageUrl"
+            v-if="cg?.image_url"
+            :src="cg.image_url"
             class="h-[210px] w-[140px] cursor-pointer rounded object-cover"
           />
           <div

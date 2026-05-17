@@ -39,7 +39,11 @@ export default withNuxt(
     },
   },
   {
-    files: ['src/shared/types/**/*.ts', 'src/server/api/**/*.ts'],
+    files: [
+      'src/shared/types/**/*.ts',
+      'src/shared/server-state/**/*.ts',
+      'src/server/api/**/*.ts',
+    ],
     rules: {
       '@typescript-eslint/naming-convention': [
         'error',

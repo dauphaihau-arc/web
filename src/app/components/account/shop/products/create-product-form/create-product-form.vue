@@ -131,8 +131,8 @@ async function uploadImage(productId: string) {
   for (let i = 0; i < fileImages.value.length; i++) {
     const { presigned_url, key } = await issueProductImageUploadUrl({
       productId,
-      contentType: fileImages.value[i].type,
-      assetType: 'original',
+      content_type: fileImages.value[i].type,
+      asset_type: 'original',
     })
 
     if (!presigned_url || !key) {
@@ -166,8 +166,8 @@ function mapAttributes(
   attributes: NonNullable<CreateProductBody['attributes']>,
 ): RequestCreateProductDraftBody['attributes'] {
   return attributes.map(attribute => ({
-    categoryAttributeId: attribute.attribute_id,
-    selectedOptionId: attribute.selected,
+    category_attribute_id: attribute.attribute_id,
+    selected_option_id: attribute.selected,
   }))
 }
 
@@ -179,7 +179,7 @@ function mapInventoryAndVariants(
       inventory: [
         {
           price: bodyData.price!,
-          salePrice: undefined,
+          sale_price: undefined,
           sku: bodyData.sku,
           stock: bodyData.stock,
         },
@@ -192,12 +192,12 @@ function mapInventoryAndVariants(
       const clientKey = `variant-${index + 1}`
 
       return {
-        clientKey,
-        optionValue1: variant.variant_name,
+        client_key: clientKey,
+        option_value_1: variant.variant_name,
         inventory: {
-          variantClientKey: clientKey,
+          variant_client_key: clientKey,
           price: variant.price,
-          salePrice: undefined,
+          sale_price: undefined,
           sku: variant.sku,
           stock: variant.stock,
         },
@@ -206,8 +206,8 @@ function mapInventoryAndVariants(
 
     return {
       variants: variants.map(variant => ({
-        clientKey: variant.clientKey,
-        optionValue1: variant.optionValue1,
+        client_key: variant.client_key,
+        option_value_1: variant.option_value_1,
       })),
       inventory: variants.map(variant => variant.inventory),
     }
@@ -218,13 +218,13 @@ function mapInventoryAndVariants(
       const clientKey = `variant-${parentIndex + 1}-${childIndex + 1}`
 
       return {
-        clientKey,
-        optionValue1: variant.variant_name,
-        optionValue2: subVariant.variant_name,
+        client_key: clientKey,
+        option_value_1: variant.variant_name,
+        option_value_2: subVariant.variant_name,
         inventory: {
-          variantClientKey: clientKey,
+          variant_client_key: clientKey,
           price: subVariant.price,
-          salePrice: undefined,
+          sale_price: undefined,
           sku: subVariant.sku,
           stock: subVariant.stock,
         },
@@ -234,9 +234,9 @@ function mapInventoryAndVariants(
 
   return {
     variants: variants.map(variant => ({
-      clientKey: variant.clientKey,
-      optionValue1: variant.optionValue1,
-      optionValue2: variant.optionValue2,
+      client_key: variant.client_key,
+      option_value_1: variant.option_value_1,
+      option_value_2: variant.option_value_2,
     })),
     inventory: variants.map(variant => variant.inventory),
   }
@@ -246,14 +246,14 @@ function mapShipping(
   data: CreateProductShipping,
 ): RequestCreateProductDraftBody['shipping'] {
   return {
-    originCountry: data.country,
-    originZip: data.zip,
-    processTimeLabel: data.process_time,
+    origin_country: data.country,
+    origin_zip: data.zip,
+    process_time_label: data.process_time,
     destinations: data.standard_shipping.map(destination => ({
-      countryCode: destination.country,
-      deliveryTimeLabel: destination.delivery_time,
+      country_code: destination.country,
+      delivery_time_label: destination.delivery_time,
       service: destination.service,
-      chargeType: destination.charge,
+      charge_type: destination.charge,
     })),
   }
 }
@@ -298,18 +298,18 @@ async function onSubmit(event: FormSubmitEvent<CreateProductBody>) {
 
   try {
     const productDraft = await createProduct({
-      categoryId: bodyData.category_id,
+      category_id: bodyData.category_id,
       title: bodyData.title,
       description: bodyData.description,
-      whoMade: bodyData.who_made,
-      isDigital: bodyData.is_digital,
-      nonTaxable: false,
-      variantType: bodyData.variant_type,
-      variantGroupName:
+      who_made: bodyData.who_made,
+      is_digital: bodyData.is_digital,
+      non_taxable: false,
+      variant_type: bodyData.variant_type,
+      variant_group_name:
         bodyData.variant_type === ProductVariantTypes.NONE
           ? undefined
           : bodyData.variant_group_name,
-      variantSubGroupName:
+      variant_sub_group_name:
         bodyData.variant_type === ProductVariantTypes.COMBINE
           ? bodyData.variant_sub_group_name
           : undefined,
@@ -326,7 +326,7 @@ async function onSubmit(event: FormSubmitEvent<CreateProductBody>) {
     await setProductImagesByKeys({
       id: productDraft.id,
       images: storageKeys.map((key, index) => ({
-        storageKey: key,
+        storage_key: key,
         rank: index + 1,
       })),
     })
@@ -492,7 +492,7 @@ watch(isProductHaveVariants, () => {
             v-if="stateSubmit.category_id"
             :key="stateSubmit.category_id"
             v-model="stateSubmit.attributes"
-            :category-id="stateSubmit.category_id"
+            :category_id="stateSubmit.category_id"
           />
           <TagsInput v-model="stateSubmit.tags" />
         </div>

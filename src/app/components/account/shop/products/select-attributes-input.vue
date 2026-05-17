@@ -4,8 +4,8 @@ import { useGetAttributesByCategory } from '~/shared/server-state/category'
 import type { ProductAttribute } from '~/shared/types/product'
 import type { ReqAttributeOption } from '~/shared/types/request-api/shop-product'
 
-const { categoryId, attributesSelected } = defineProps<{
-  categoryId?: Category['id']
+const { category_id, attributesSelected } = defineProps<{
+  category_id?: Category['id']
   attributesSelected?: ProductAttribute[]
 }
 >()
@@ -17,7 +17,7 @@ const attributesModel = defineModel<ReqAttributeOption[] | undefined>({
 
 const {
   data: dataGetAttributesByCategory,
-} = useGetAttributesByCategory(categoryId)
+} = useGetAttributesByCategory(category_id)
 
 const state = reactive<Record<ReqAttributeOption['attribute_id'], ReqAttributeOption['selected']>>({})
 

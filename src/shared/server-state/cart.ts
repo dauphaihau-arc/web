@@ -15,14 +15,14 @@ import { useGetCurrentUser } from '~/shared/server-state/user';
 import type { Cart } from '~/shared/types/cart';
 
 export function useGetCart(
-  params?: { cartId: Cart['id'] },
+  params?: { cart_id: Cart['id'] },
   queryOptions?: Partial<UseQueryOptions<ResponseGetCart>>
 ) {
   const { data: dataUserAuth } = useGetCurrentUser();
   return useQuery<ResponseGetCart>({
     ...queryOptions,
     enabled: !!dataUserAuth.value?.user,
-    queryKey: ['get-cart', params?.cartId ?? 'my-cart'],
+    queryKey: ['get-cart', params?.cart_id ?? 'my-cart'],
     queryFn: () => {
       return useCustomFetch.get<ResponseGetCart>(
         `${RESOURCES.USER}${RESOURCES.CART}`,
@@ -54,9 +54,9 @@ export function useAddProductToCart(
       return useCustomFetch.post<ResponseAddProductToCartBody>(
         `${RESOURCES.USER}${RESOURCES.CART}`,
         {
-          inventoryId: body.inventoryId,
+          inventory_id: body.inventory_id,
           quantity: body.quantity,
-          isTemp: body.isTemp,
+          is_temp: body.is_temp,
         }
       );
     },
@@ -100,7 +100,7 @@ export function useDeleteProductCart(
     mutationFn: () => {
       return useCustomFetch.delete<ResponseDeleteProductCart>(
         `${RESOURCES.USER}${RESOURCES.CART}`,
-        { inventoryId: id },
+        { inventory_id: id },
         undefined
       );
     },

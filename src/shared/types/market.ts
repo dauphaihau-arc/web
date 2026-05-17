@@ -23,7 +23,7 @@ export interface CategoriesBreadcrumbStorage extends Category {
 }
 
 export type UserActivitiesSessionStorage = {
-  categoryIdProductVisited: Category['id'] // set categoryId each visit detail product page
+  categoryIdProductVisited: Category['id'] // set category_id each visit detail product page
   rootCategoryProductVisited: Category // set root category each redirect from home page
   subCategoriesLastVisit: Category[]
 };

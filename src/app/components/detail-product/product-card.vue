@@ -27,12 +27,12 @@ const router = useRouter()
         {{ product.title }}
       </h1>
       <p class="truncate text-[13px] text-customGray-900">
-        {{ product.shop.shopName }}
+        {{ product.shop.shop_name }}
       </p>
 
       <div class="">
         <p class="text-base font-medium text-customGray-950">
-          {{ convertCurrency(product.inventory?.salePrice || product.inventory?.price) }}
+          {{ convertCurrency(product.inventory?.sale_price || product.inventory?.price) }}
         </p>
       </div>
       <p

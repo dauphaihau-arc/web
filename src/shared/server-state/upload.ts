@@ -9,8 +9,8 @@ export function useIssueProductImageUploadUrl() {
     mutationKey: ['issue-product-image-upload-url'],
     mutationFn: async (input: {
       productId: Product['id']
-      contentType: string
-      assetType?: 'original'
+      content_type: string
+      asset_type?: 'original'
     }) => {
       const shopId =
         dataMyShop.value?.id ??
@@ -19,8 +19,8 @@ export function useIssueProductImageUploadUrl() {
       return useCustomFetch.post<ResponseGetPresignedUrlData>(
         `${RESOURCES.SHOPS}/${shopId}${RESOURCES.PRODUCTS}/${input.productId}/image-uploads`,
         {
-          contentType: input.contentType,
-          assetType: input.assetType ?? 'original',
+          content_type: input.content_type,
+          asset_type: input.asset_type ?? 'original',
         }
       );
     },

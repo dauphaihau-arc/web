@@ -15,7 +15,7 @@ const queries = computed(() => {
       categories.set(cg.id, cg.name)
       return {
         limit,
-        categoryId: cg.id,
+        category_id: cg.id,
       }
     })
   }
@@ -41,7 +41,7 @@ const subCategories = computed(() => {
   if (filtered.length > 0) {
     return filtered.map(val => ({
       ...toRaw(val.data),
-      categoryName: val.data?.categoryId ? categories.get(val.data.categoryId) : '',
+      categoryName: val.data?.category_id ? categories.get(val.data.category_id) : '',
     }))
   }
   return []

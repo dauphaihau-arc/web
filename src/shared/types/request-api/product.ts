@@ -3,12 +3,12 @@ import type { RequestGetListParams } from '~/shared/types/common';
 
 // region get products
 export type GetProductsParams = Partial<{
-  categoryId: Category['id']
-  shopId: string
+  category_id: Category['id']
+  shop_id: string
   search: string
   title: string
-  isDigital: boolean
-  whoMade: string
+  is_digital: boolean
+  who_made: string
   order: string
 }> & RequestGetListParams;
 
@@ -16,24 +16,24 @@ export type ResponseGetProductsProduct = {
   id: string
   shop: {
     id: string
-    publicId?: string
-    shopName: string
+    public_id?: string
+    shop_name: string
   }
-  categoryId?: Category['id']
+  category_id?: Category['id']
   title: string
   slug: string
   image?: {
-    storageKey: string
+    storage_key: string
     url?: string
   }
-  variantType?: string
+  variant_type?: string
   inventory?: {
     price: number
-    salePrice?: number
+    sale_price?: number
     stock: number
     sku?: string
   }
-  createdAt: string | Date
+  created_at: string | Date
 };
 
 export type ResponseGetProducts = {
@@ -42,9 +42,9 @@ export type ResponseGetProducts = {
     page: number
     limit: number
     total: number
-    totalPages: number
-    hasNextPage: boolean
-    hasPreviousPage: boolean
+    total_pages: number
+    has_next_page: boolean
+    has_previous_page: boolean
   }
 };
 // endregion
@@ -53,49 +53,49 @@ export type ResponseGetDetailProduct = {
   id: string
   shop: {
     id: string
-    publicId?: string
-    shopName: string
+    public_id?: string
+    shop_name: string
   }
-  categoryId?: Category['id']
+  category_id?: Category['id']
   title: string
   slug: string
   description: string
-  whoMade: string
-  isDigital: boolean
-  variantType?: string
-  variantGroupName?: string
-  variantSubGroupName?: string
+  who_made: string
+  is_digital: boolean
+  variant_type?: string
+  variant_group_name?: string
+  variant_sub_group_name?: string
   images: Array<{
     id: string
-    storageKey: string
+    storage_key: string
     url?: string
     rank: number
   }>
   variants: Array<{
     id: string
     name: string
-    optionValue1?: string
-    optionValue2?: string
-    imageStorageKey?: string
+    option_value_1?: string
+    option_value_2?: string
+    image_storage_key?: string
     rank: number
   }>
   inventory: Array<{
     id: string
-    productVariantId?: string
+    product_variant_id?: string
     sku?: string
     stock: number
     price: number
-    salePrice?: number
+    sale_price?: number
   }>
   shipping?: {
-    originCountry: string
-    processTimeLabel: string
+    origin_country: string
+    process_time_label: string
     destinations: Array<{
       id: string
-      countryCode: string
-      deliveryTimeLabel: string
+      country_code: string
+      delivery_time_label: string
       service: string
-      chargeType: string
+      charge_type: string
       rank: number
     }>
   }

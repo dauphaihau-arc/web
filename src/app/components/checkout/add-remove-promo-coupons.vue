@@ -40,9 +40,9 @@ async function addCoupon() {
 
   try {
     const { summary } = await updateCart({
-      cartId: tempCartId,
-      additionInfoTempCart: {
-        promoCodes: tempCodes,
+      cart_id: tempCartId,
+      addition_info_temp_cart: {
+        promo_codes: tempCodes,
       },
     })
     updateCacheSummaryOrder(summary)
@@ -78,9 +78,9 @@ async function deleteCoupon(code: Coupon['code']) {
 
   try {
     const { summary } = await updateCart({
-      cartId: tempCartId,
-      additionInfoTempCart: {
-        promoCodes: newPromoCodes,
+      cart_id: tempCartId,
+      addition_info_temp_cart: {
+        promo_codes: newPromoCodes,
       },
     })
     updateCacheSummaryOrder(summary)
@@ -101,9 +101,9 @@ async function toggleShowAddCouponInput() {
 
     try {
       const { summary } = await updateCart({
-        cartId: tempCartId,
-        additionInfoTempCart: {
-          promoCodes: [],
+        cart_id: tempCartId,
+        addition_info_temp_cart: {
+          promo_codes: [],
         },
       })
       updateCacheSummaryOrder(summary)

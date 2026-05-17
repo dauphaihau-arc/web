@@ -20,7 +20,7 @@ import type { Product } from '~/shared/types/product';
 export type MyShop = {
   id: string
   ownerUserId: string
-  shopName: string
+  shop_name: string
   status: string
 };
 
@@ -57,7 +57,7 @@ export function useCreateShop() {
             ...dataUserAuth.user,
             shop: {
               id: data.id,
-              shop_name: data.shopName,
+              shop_name: data.shop_name,
             },
           },
         });
@@ -119,7 +119,7 @@ export function useShopSetProductImagesByKeys() {
     mutationFn: async (body: {
       id: Product['id']
       images: {
-        storageKey: string
+        storage_key: string
         rank: number
       }[]
     }) => {

@@ -67,7 +67,7 @@ const showCreateDialog = () => {
             {{ item.full_name }}
           </div>
           <div class="">
-            {{ item.address1 }}
+            {{ item.address_1 }}
           </div>
           <div class="flex gap-2">
             <div>{{ item.city }}</div>

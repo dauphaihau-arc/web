@@ -29,10 +29,10 @@ const {
     queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], (oldData) => {
       if (!oldData || !oldData.cart) return oldData
       if (data.cart === null) return { ...oldData, cart: null }
-      const foundShopCart = data.cart.shopGroups.find(sc => sc.shop.id === props.shopId)
+      const foundShopCart = data.cart.shop_groups.find(sc => sc.shop.id === props.shopId)
       if (!foundShopCart) return oldData
 
-      const newShopGroups = oldData.cart.shopGroups.map((sc) => {
+      const newShopGroups = oldData.cart.shop_groups.map((sc) => {
         if (sc.shop.id === props.shopId) {
           const newItems = sc.items.map((pc) => {
             if (pc.inventory.id === props.productCart.inventory.id) {
@@ -43,7 +43,7 @@ const {
           return {
             ...sc,
             items: newItems,
-            totalShippingFee: foundShopCart.totalShippingFee,
+            total_shipping_fee: foundShopCart.total_shipping_fee,
           }
         }
         return sc
@@ -53,8 +53,8 @@ const {
         ...oldData,
         cart: {
           ...oldData.cart,
-          recentItems: data.cart.recentItems,
-          shopGroups: newShopGroups,
+          recent_items: data.cart.recent_items,
+          shop_groups: newShopGroups,
         },
         summary: data.summary,
       }
@@ -71,20 +71,20 @@ watchDebounced(
   tempProductQty,
   async () => {
     const body: UpdateCartBody = {
-      inventoryId: props.productCart.inventory.id,
+      inventory_id: props.productCart.inventory.id,
       quantity: tempProductQty.value,
     }
 
-    const additionInfoShopCarts = Array
+    const addition_info_shop_carts = Array
       .from(cartStore.additionInfoShopCarts)
       .map(([keyShopId, value]) => ({
-        shopId: keyShopId,
-        promoCodes: value?.promoCodes || [],
+        shop_id: keyShopId,
+        promo_codes: value?.promoCodes || [],
       }))
-      .filter(item => item.promoCodes.length > 0)
+      .filter(item => item.promo_codes.length > 0)
 
-    if (additionInfoShopCarts.length > 0) {
-      body.additionInfoShopCarts = additionInfoShopCarts
+    if (addition_info_shop_carts.length > 0) {
+      body.addition_info_shop_carts = addition_info_shop_carts
     }
 
     updateCart(body)

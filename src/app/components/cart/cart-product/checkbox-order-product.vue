@@ -4,9 +4,9 @@ import type { Shop } from '~/shared/types/shop'
 import { useUpdateCart } from '~/shared/server-state/cart'
 import type { ResponseGetCart } from '~/shared/types/request-api/cart'
 
-const { checked, inventoryId, shopId } = defineProps<{
+const { checked, inventory_id, shopId } = defineProps<{
   checked: boolean
-  inventoryId: ProductInventory['id']
+  inventory_id: ProductInventory['id']
   shopId: Shop['id']
 }>()
 
@@ -22,21 +22,21 @@ const {
       if (!oldData || !oldData.cart) return oldData
       if (!data.cart) return { ...oldData, cart: data.cart }
 
-      const foundShopCart = data.cart.shopGroups.find(sc => sc.shop.id === shopId)
+      const foundShopCart = data.cart.shop_groups.find(sc => sc.shop.id === shopId)
       if (!foundShopCart) return oldData
 
-      const newShopGroups = oldData.cart.shopGroups.map((sc) => {
+      const newShopGroups = oldData.cart.shop_groups.map((sc) => {
         if (sc.shop.id === shopId) {
           const newItems = sc.items.map((prod) => {
-            if (prod.inventory.id === inventoryId) {
-              return { ...prod, isSelected: selectedCheckbox.value }
+            if (prod.inventory.id === inventory_id) {
+              return { ...prod, is_selected: selectedCheckbox.value }
             }
             return prod
           })
           return {
             ...sc,
             items: newItems,
-            totalShippingFee: foundShopCart.totalShippingFee,
+            total_shipping_fee: foundShopCart.total_shipping_fee,
           }
         }
         return sc
@@ -46,7 +46,7 @@ const {
         ...oldData,
         cart: {
           ...oldData.cart,
-          shopGroups: newShopGroups,
+          shop_groups: newShopGroups,
         },
         summary: data.summary,
       }
@@ -56,8 +56,8 @@ const {
 
 watch(() => selectedCheckbox.value, async () => {
   updateProductCart({
-    inventoryId,
-    isSelected: selectedCheckbox.value,
+    inventory_id,
+    is_select_order: selectedCheckbox.value,
   })
 })
 </script>

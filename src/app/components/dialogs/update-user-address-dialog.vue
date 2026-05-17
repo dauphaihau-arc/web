@@ -104,22 +104,22 @@ watch(() => stateSubmit.country, () => {
           <UFormGroup
             required
             label="Street UserAddress"
-            name="address1"
+            name="address_1"
             class="mb-4"
           >
             <UInput
-              v-model="stateSubmit.address1"
+              v-model="stateSubmit.address_1"
               :maxlength="ADDRESS_CONFIG.MAX_CHAR_ADDRESS"
               size="xl"
             />
           </UFormGroup>
           <UFormGroup
             label="Apt / Suite / Other"
-            name="address2"
+            name="address_2"
             class="mb-4"
           >
             <UInput
-              v-model="stateSubmit.address2"
+              v-model="stateSubmit.address_2"
               :maxlength="ADDRESS_CONFIG.MAX_CHAR_ADDRESS"
               size="xl"
             />

@@ -57,49 +57,49 @@ export type RequestCreateProductBody = CreateProductBody & {
 } & (NoneVariant | SingleVariant | CombineVariant);
 
 export type CreateProductDraftImage = {
-  storageKey: string
+  storage_key: string
   rank: number
 };
 
 export type CreateProductDraftAttribute = {
-  categoryAttributeId: string
-  selectedOptionId?: string
-  selectedText?: string
+  category_attribute_id: string
+  selected_option_id?: string
+  selected_text?: string
 };
 
 export type CreateProductDraftVariant = {
-  clientKey: string
-  optionValue1: string
-  optionValue2?: string
+  client_key: string
+  option_value_1: string
+  option_value_2?: string
 };
 
 export type CreateProductDraftInventory = Pick<ProductInventory, 'price' | 'sku' | 'stock'> & {
-  variantClientKey?: string
-  salePrice?: number
+  variant_client_key?: string
+  sale_price?: number
 };
 
 export type CreateProductDraftShipping = {
-  originCountry: string
-  originZip: string
-  processTimeLabel: string
+  origin_country: string
+  origin_zip: string
+  process_time_label: string
   destinations: {
-    countryCode: string
-    deliveryTimeLabel: string
+    country_code: string
+    delivery_time_label: string
     service: string
-    chargeType: ProductShippingCharge
+    charge_type: ProductShippingCharge
   }[]
 };
 
 export type RequestCreateProductDraftBody = {
-  categoryId: string
+  category_id: string
   title: string
   description: string
-  whoMade: ProductWhoMade
-  isDigital: boolean
-  nonTaxable?: boolean
-  variantType: ProductVariantTypes
-  variantGroupName?: string
-  variantSubGroupName?: string
+  who_made: ProductWhoMade
+  is_digital: boolean
+  non_taxable?: boolean
+  variant_type: ProductVariantTypes
+  variant_group_name?: string
+  variant_sub_group_name?: string
   images?: CreateProductDraftImage[]
   attributes?: CreateProductDraftAttribute[]
   variants?: CreateProductDraftVariant[]
@@ -109,53 +109,53 @@ export type RequestCreateProductDraftBody = {
 
 export type ResponseShopProductDraft = {
   id: string
-  shopId: string
-  categoryId?: string
+  shop_id: string
+  category_id?: string
   title: string
   description: string
-  whoMade: ProductWhoMade
-  isDigital: boolean
-  variantType?: ProductVariantTypes
-  variantGroupName?: string
-  variantSubGroupName?: string
+  who_made: ProductWhoMade
+  is_digital: boolean
+  variant_type?: ProductVariantTypes
+  variant_group_name?: string
+  variant_sub_group_name?: string
   images: {
     id: string
-    storageKey: string
+    storage_key: string
     rank: number
     url?: string
   }[]
   attributes: {
     id: string
-    categoryAttributeId: string
-    selectedOptionId?: string
-    selectedText?: string
+    category_attribute_id: string
+    selected_option_id?: string
+    selected_text?: string
   }[]
   variants: {
     id: string
     name: string
-    optionValue1?: string
-    optionValue2?: string
+    option_value_1?: string
+    option_value_2?: string
     rank: number
   }[]
   inventory: {
     id: string
-    productVariantId?: string
+    product_variant_id?: string
     sku?: string
     stock: number
     price: number
-    salePrice?: number
+    sale_price?: number
   }[]
   shipping?: {
     id: string
-    originCountry: string
-    originZip: string
-    processTimeLabel: string
+    origin_country: string
+    origin_zip: string
+    process_time_label: string
     destinations: {
       id: string
-      countryCode: string
-      deliveryTimeLabel: string
+      country_code: string
+      delivery_time_label: string
       service: string
-      chargeType: ProductShippingCharge
+      charge_type: ProductShippingCharge
       rank: number
     }[]
   }

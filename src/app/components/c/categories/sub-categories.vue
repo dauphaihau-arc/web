@@ -13,7 +13,7 @@ const params = computed(() => {
     return undefined
   }
   return {
-    parentId: category.id,
+    parent_id: category.id,
   }
 })
 

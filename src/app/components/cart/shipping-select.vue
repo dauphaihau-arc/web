@@ -22,7 +22,7 @@ const options = [
 const selected = ref(options[0])
 
 const isSelectAnyProduct = computed(() => {
-  return props.shopCart.items.some(prod => prod.isSelected)
+  return props.shopCart.items.some(prod => prod.is_selected)
 })
 </script>
 
@@ -30,15 +30,15 @@ const isSelectAnyProduct = computed(() => {
   <div class="flex gap-2 text-lg text-customGray-900">
     <p>Shipping fee:</p>
     <p
-      v-if="props.shopCart.totalShippingFee === 0 && isSelectAnyProduct"
+      v-if="props.shopCart.total_shipping_fee === 0 && isSelectAnyProduct"
       class="text-right font-normal text-green-700"
     >
       FREE
     </p>
     <p
-      v-else-if="props.shopCart.totalShippingFee > 0"
+      v-else-if="props.shopCart.total_shipping_fee > 0"
     >
-      {{ convertCurrency(props.shopCart.totalShippingFee) }}
+      {{ convertCurrency(props.shopCart.total_shipping_fee) }}
     </p>
     <p v-else>
       {{ convertCurrency(0) }}

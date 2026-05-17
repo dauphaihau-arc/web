@@ -25,8 +25,8 @@ const items = [
 ]
 
 const processTime = computed(() => {
-  if (product?.shipping?.processTimeLabel) {
-    return product.shipping.processTimeLabel
+  if (product?.shipping?.process_time_label) {
+    return product.shipping.process_time_label
   }
   return ''
 })
@@ -53,7 +53,7 @@ const processTime = computed(() => {
         </div>
         <div class="flex gap-2 p-1.5">
           <UIcon name="i-material-symbols:location-on-outline" />
-          Ship from {{ product?.shipping?.originCountry }}
+          Ship from {{ product?.shipping?.origin_country }}
         </div>
       </div>
     </template>

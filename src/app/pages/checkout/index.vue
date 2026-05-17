@@ -22,7 +22,7 @@ const tempCartId = route.query['c'] as Cart['id']
 const {
   isPending: isPendingGetCart,
   data: dataGetCart,
-} = useGetCart({ cartId: tempCartId })
+} = useGetCart({ cart_id: tempCartId })
 
 const steps = ['Billing Address', 'Payment', 'Review & Confirmation']
 

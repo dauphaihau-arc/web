@@ -26,7 +26,7 @@ const props = defineProps<{
     />
     <div class="absolute bottom-3 left-3 flex gap-1 space-y-0.5 rounded-lg bg-white px-2.5 py-1">
       <p class="text-md font-medium text-customGray-950">
-        {{ convertCurrency(props.product.inventory?.salePrice || props.product.inventory?.price) }}
+        {{ convertCurrency(props.product.inventory?.sale_price || props.product.inventory?.price) }}
       </p>
     </div>
     <slot name="content" />

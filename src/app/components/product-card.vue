@@ -26,11 +26,11 @@ const router = useRouter()
       </h1>
       <div class="flex flex-wrap items-center gap-2">
         <p class="text-base font-medium text-customGray-950">
-          {{ convertCurrency(props.product.inventory?.salePrice || props.product.inventory?.price) }}
+          {{ convertCurrency(props.product.inventory?.sale_price || props.product.inventory?.price) }}
         </p>
       </div>
       <p class="text-sm text-customGray-800">
-        {{ props.product?.shop.shopName }}
+        {{ props.product?.shop.shop_name }}
       </p>
       <p
         v-if="props.product.inventory && props.product.inventory.stock < PRODUCT_CONFIG.LOW_STOCK"

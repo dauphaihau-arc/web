@@ -30,7 +30,7 @@ const changePayment = () => {
               {{ cartStore.stateCheckoutNow.address?.full_name }}
             </div>
             <div class="">
-              {{ cartStore.stateCheckoutNow.address?.address1 }}
+              {{ cartStore.stateCheckoutNow.address?.address_1 }}
             </div>
             <div class="flex gap-2">
               <div>{{ cartStore.stateCheckoutNow.address?.city }}</div>

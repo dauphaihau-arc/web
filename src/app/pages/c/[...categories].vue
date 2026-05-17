@@ -21,7 +21,7 @@ const params = computed(() => {
     return undefined
   }
   let defaultParams: GetProductsParams = {
-    categoryId: category.id,
+    category_id: category.id,
     page: page.value,
     limit,
   }

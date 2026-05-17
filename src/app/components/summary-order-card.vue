@@ -30,10 +30,10 @@ const props = defineProps<{
           </div>
           <div class="price">
             <div>
-              {{ convertCurrency(props.summaryOrder?.subtotalPrice) }}
+              {{ convertCurrency(props.summaryOrder?.subtotal_price) }}
             </div>
             <div class="text-right">
-              {{ convertCurrency(props?.summaryOrder?.totalDiscount) }}
+              {{ convertCurrency(props?.summaryOrder?.total_discount) }}
             </div>
           </div>
         </div>
@@ -45,11 +45,11 @@ const props = defineProps<{
           </div>
           <div class="price">
             <div>
-              {{ convertCurrency(props?.summaryOrder?.subtotalAfterDiscount) }}
+              {{ convertCurrency(props?.summaryOrder?.subtotal_after_discount) }}
             </div>
             <div
-              v-if="props.summaryOrder?.totalShippingFee === 0
-                && props.summaryOrder.totalSelectedQuantity"
+              v-if="props.summaryOrder?.total_shipping_fee === 0
+                && props.summaryOrder.total_selected_quantity"
               class="text-right font-normal text-green-600"
             >
               FREE
@@ -58,17 +58,17 @@ const props = defineProps<{
               v-else
               class="text-right"
             >
-              {{ convertCurrency(props?.summaryOrder?.totalShippingFee) }}
+              {{ convertCurrency(props?.summaryOrder?.total_shipping_fee) }}
             </div>
           </div>
         </div>
         <UDivider class="my-3" />
         <div class="flex justify-between gap-3">
           <div class="text-lg font-medium">
-            Total ({{ props.summaryOrder?.totalSelectedQuantity }} {{ props.summaryOrder?.totalSelectedQuantity > 1 ? 'products' : 'product' }})
+            Total ({{ props.summaryOrder?.total_selected_quantity }} {{ props.summaryOrder?.total_selected_quantity > 1 ? 'products' : 'product' }})
           </div>
-          <div :class="['price', props.summaryOrder?.totalPrice > 0 && 'text-red-500']">
-            {{ convertCurrency(props.summaryOrder?.totalPrice) }}
+          <div :class="['price', props.summaryOrder?.total_price > 0 && 'text-red-500']">
+            {{ convertCurrency(props.summaryOrder?.total_price) }}
           </div>
         </div>
       </div>

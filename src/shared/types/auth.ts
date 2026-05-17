@@ -8,7 +8,7 @@ export type UserAuthenticated = Pick<User, 'name' | 'email' | 'is_email_verified
 export type LoginBody = Pick<User, 'email' | 'password'>;
 
 export type RegisterBody = Pick<User, 'email' | 'password' | 'market_preferences'> & {
-  displayName?: string
+  display_name?: string
 };
 
 export type ResetPasswordBody = Record<'password' | 'passwordConfirm', string>;

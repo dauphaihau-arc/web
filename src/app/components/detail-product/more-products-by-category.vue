@@ -5,12 +5,12 @@ import { useGetProducts } from '~/shared/server-state/product'
 
 const limit = 12
 
-const { categoryId } = defineProps<{
-  categoryId: Category['id']
+const { category_id } = defineProps<{
+  category_id: Category['id']
 }>()
 
 const queryParams = computed(() => ({
-  categoryId,
+  category_id,
   limit,
 }))
 

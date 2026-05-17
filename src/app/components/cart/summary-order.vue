@@ -11,7 +11,7 @@ const router = useRouter()
 
 const isTotalOrderInvalid = computed(() => {
   if (dataGetCart.value) {
-    return !(dataGetCart.value.summary.totalPrice < ORDER_CONFIG.MAX_ORDER_TOTAL)
+    return !(dataGetCart.value.summary.total_price < ORDER_CONFIG.MAX_ORDER_TOTAL)
   }
   return true
 })
@@ -32,7 +32,7 @@ const isTotalOrderInvalid = computed(() => {
     </div>
 
     <UButton
-      :disabled="isTotalOrderInvalid || dataGetCart?.summary.totalSelectedQuantity === 0"
+      :disabled="isTotalOrderInvalid || dataGetCart?.summary.total_selected_quantity === 0"
       :ui="{
         rounded: 'shadow-border',
       }"

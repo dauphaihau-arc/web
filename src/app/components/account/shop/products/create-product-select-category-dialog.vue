@@ -25,7 +25,7 @@ const subCategories = ref<{
 }>({})
 
 const params = computed(() => ({
-  parentId: state.parentId ?? undefined,
+  parent_id: state.parentId ?? undefined,
 }))
 
 const { isPending, data } = useGetCategories(params.value)
@@ -50,22 +50,22 @@ watch(() => data.value, () => {
   }
 })
 
-const onSelectRootCategory = ({ id: categoryId, name }: Category) => {
+const onSelectRootCategory = ({ id: category_id, name }: Category) => {
   subCategories.value = {}
-  state.parentId = categoryId
+  state.parentId = category_id
   state.name = name
   state.categoriesName.push(name)
 }
 
-const onSelectSubCategory = ({ parentId, id: categoryId, name }: Category) => {
-  if (categoryId === state.parentId) {
+const onSelectSubCategory = ({ parentId, id: category_id, name }: Category) => {
+  if (category_id === state.parentId) {
     return
   }
   subCategories.value[parentId as string].categories.forEach((subCategory) => {
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete subCategories.value[subCategory.id]
   })
-  state.parentId = categoryId
+  state.parentId = category_id
   state.name = name
 }
 

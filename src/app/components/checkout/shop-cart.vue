@@ -14,13 +14,13 @@ const tempCartId = route.query['c'] as Cart['id']
 
 const {
   data: dataGetCart,
-} = useGetCart({ cartId: tempCartId })
+} = useGetCart({ cart_id: tempCartId })
 
 const {
   mutateAsync: updateCart,
 } = useUpdateCart()
 
-const shopCart = computed(() => dataGetCart.value?.cart && dataGetCart?.value?.cart.shopGroups[0])
+const shopCart = computed(() => dataGetCart.value?.cart && dataGetCart?.value?.cart.shop_groups[0])
 const productCart = computed(() => shopCart.value?.items[0])
 
 // const percentCoupon = computed(() => {
@@ -39,8 +39,8 @@ const showNoteInput = ref(!!cartStore.stateCheckoutNow.note)
 const tempProductQty = ref(productCart.value?.quantity || 0)
 
 const variantNames = computed(() => {
-  if (productCart.value && productCart.value.inventory.variantName) {
-    const [primary, sub] = productCart.value.inventory.variantName.split('-')
+  if (productCart.value && productCart.value.inventory.variant_name) {
+    const [primary, sub] = productCart.value.inventory.variant_name.split('-')
     return { primary, sub }
   }
   return { primary: '', sub: '' }
@@ -55,7 +55,7 @@ watchDebounced(
   tempProductQty,
   async () => {
     const { summary } = await updateCart({
-      cartId: tempCartId,
+      cart_id: tempCartId,
       quantity: tempProductQty.value,
     })
 
@@ -83,7 +83,7 @@ watchDebounced(
       </h3>
       <div class="mb-8 flex gap-4">
         <NuxtImg
-          :src="`domainAwsS3/${productCart?.product.imageUrl}`"
+          :src="`domainAwsS3/${productCart?.product.image_url}`"
           width="180"
           height="180"
           class="max-h-[180px] max-w-[180px] cursor-pointer rounded"
@@ -98,19 +98,19 @@ watchDebounced(
             <div class="flex flex-col gap-1">
               <div
                 v-if="
-                  productCart.product.variantType === ProductVariantTypes.SINGLE
-                    || productCart.product.variantType === ProductVariantTypes.COMBINE
+                  productCart.product.variant_type === ProductVariantTypes.SINGLE
+                    || productCart.product.variant_type === ProductVariantTypes.COMBINE
                 "
                 class="text-lg text-zinc-500"
               >
-                {{ productCart?.product.variantGroupName }}:
+                {{ productCart?.product.variant_group_name }}:
                 {{ variantNames.primary }}
               </div>
               <div
-                v-if="productCart.product.variantType === ProductVariantTypes.COMBINE"
+                v-if="productCart.product.variant_type === ProductVariantTypes.COMBINE"
                 class="text-lg text-zinc-500"
               >
-                {{ productCart?.product.variantSubGroupName }}:
+                {{ productCart?.product.variant_sub_group_name }}:
                 {{ variantNames.sub }}
               </div>
             </div>
@@ -148,9 +148,9 @@ watchDebounced(
           </div>
 
           <div class="space-y-2 text-right">
-            <div v-if="productCart.inventory.salePrice">
+            <div v-if="productCart.inventory.sale_price">
               <div class="text-xl font-medium text-green-700">
-                {{ convertCurrency(productCart.inventory.salePrice) }}
+                {{ convertCurrency(productCart.inventory.sale_price) }}
               </div>
               <div class="text-sm text-zinc-500">
                 <span class="line-through">

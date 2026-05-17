@@ -12,8 +12,8 @@ const sortedInventory = computed(() => {
   return props.product.inventory
     .slice()
     .sort((left, right) => {
-      const leftPrice = left.salePrice ?? left.price
-      const rightPrice = right.salePrice ?? right.price
+      const leftPrice = left.sale_price ?? left.price
+      const rightPrice = right.sale_price ?? right.price
       return leftPrice - rightPrice
     })
 })
@@ -21,7 +21,7 @@ const sortedInventory = computed(() => {
 const plusSign = computed(() => {
   if (
     !props.inventorySelected
-    && props.product.variantType !== ProductVariantTypes.NONE
+    && props.product.variant_type !== ProductVariantTypes.NONE
   ) {
     return '+'
   }
@@ -31,11 +31,11 @@ const plusSign = computed(() => {
 const highestPrice = computed(() => {
   if (
     !props.inventorySelected
-    && props.product.variantType !== ProductVariantTypes.NONE
+    && props.product.variant_type !== ProductVariantTypes.NONE
     && sortedInventory.value.length > 1
   ) {
     const highestInventory = sortedInventory.value[sortedInventory.value.length - 1]
-    return highestInventory.salePrice ?? highestInventory.price
+    return highestInventory.sale_price ?? highestInventory.price
   }
   return ''
 })
@@ -44,12 +44,12 @@ const baseInventory = computed(() => sortedInventory.value[0])
 
 const lowestPrice = computed(() => {
   const inventory = props.inventorySelected ?? baseInventory.value
-  return inventory ? (inventory.salePrice ?? inventory.price) : ''
+  return inventory ? (inventory.sale_price ?? inventory.price) : ''
 })
 
 const originPrice = computed(() => {
   const inventory = props.inventorySelected ?? baseInventory.value
-  if (inventory?.salePrice !== undefined) {
+  if (inventory?.sale_price !== undefined) {
     return inventory.price
   }
   return ''

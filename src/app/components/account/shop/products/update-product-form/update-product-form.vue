@@ -131,8 +131,8 @@ async function uploadImage() {
   for (let i = 0; i < fileImages.value.length; i++) {
     const { presigned_url, key } = await issueProductImageUploadUrl({
       productId,
-      contentType: fileImages.value[i].type,
-      assetType: 'original',
+      content_type: fileImages.value[i].type,
+      asset_type: 'original',
     })
     if (!presigned_url || !key) {
       toast.add({
@@ -424,7 +424,7 @@ watchDebounced(
         <SelectAttributesInput
           :key="stateSubmit.category_id"
           v-model="stateSubmit.attributes"
-          :category-id="stateSubmit.category_id || dataDetailProduct?.product.category.id"
+          :category_id="stateSubmit.category_id || dataDetailProduct?.product.category.id"
           :attributes-selected="dataDetailProduct?.product.attributes"
         />
 

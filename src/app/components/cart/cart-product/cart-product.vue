@@ -25,21 +25,21 @@ const {
     queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], (oldData) => {
       if (!oldData || !oldData.cart) return oldData
       if (!data.cart) return { ...oldData, cart: data.cart }
-      const foundShopCart = data.cart.shopGroups.find(sc => sc.shop.id === props.shopId)
+      const foundShopCart = data.cart.shop_groups.find(sc => sc.shop.id === props.shopId)
 
-      let newShopGroups = oldData.cart.shopGroups
+      let newShopGroups = oldData.cart.shop_groups
 
       // items field be empty
       if (!foundShopCart) {
-        newShopGroups = data.cart.shopGroups
+        newShopGroups = data.cart.shop_groups
       }
       else {
-        newShopGroups = oldData.cart.shopGroups.map((sc) => {
+        newShopGroups = oldData.cart.shop_groups.map((sc) => {
           if (sc.shop.id === props.shopId) {
             return {
               ...sc,
               items: foundShopCart.items.filter(item => item.inventory.id !== props.productCart.inventory.id),
-              totalShippingFee: foundShopCart.totalShippingFee,
+              total_shipping_fee: foundShopCart.total_shipping_fee,
             }
           }
           return sc
@@ -50,9 +50,9 @@ const {
         ...oldData,
         cart: {
           ...oldData.cart,
-          totalQuantity: data.cart.totalQuantity,
-          recentItems: data.cart.recentItems,
-          shopGroups: newShopGroups,
+          total_quantity: data.cart.total_quantity,
+          recent_items: data.cart.recent_items,
+          shop_groups: newShopGroups,
         },
         summary: data.summary,
       }
@@ -87,13 +87,13 @@ const goToDetailProduct = () => {
     >
       <CartCheckboxOrderProduct
         :shop-id="shopId"
-        :checked="props.productCart.isSelected"
-        :inventory-id="props.productCart.inventory.id"
+        :checked="props.productCart.is_selected"
+        :inventory_id="props.productCart.inventory.id"
       />
     </div>
 
     <NuxtImg
-      :src="`domainAwsS3/${props.productCart?.product?.imageUrl}`"
+      :src="`domainAwsS3/${props.productCart?.product?.image_url}`"
       width="180"
       height="180"
       class="max-h-[180px] max-w-[180px] cursor-pointer rounded"
@@ -139,9 +139,9 @@ const goToDetailProduct = () => {
       </div>
 
       <div class="space-y-2 text-right">
-        <div v-if="props.productCart.inventory.salePrice">
+        <div v-if="props.productCart.inventory.sale_price">
           <div class="text-xl font-medium text-green-700">
-            {{ convertCurrency(props.productCart.inventory.salePrice) }}
+            {{ convertCurrency(props.productCart.inventory.sale_price) }}
           </div>
           <div class="text-sm text-zinc-500">
             <span class="line-through">

@@ -14,21 +14,21 @@ import type { User } from '~/shared/types/user';
 export type CartProductItem = {
   id: string
   quantity: number
-  isSelected: boolean
-  unitPrice: number
+  is_selected: boolean
+  unit_price: number
   product: Pick<Product, 'id' | 'title'> & {
-    variantType: Product['variant_type']
-    variantGroupName?: ProductSingleVariant['variant_group_name']
-    variantSubGroupName?: ProductCombineVariant['variant_sub_group_name']
-    imageUrl?: ProductImage['relative_url']
+    variant_type: Product['variant_type']
+    variant_group_name?: ProductSingleVariant['variant_group_name']
+    variant_sub_group_name?: ProductCombineVariant['variant_sub_group_name']
+    image_url?: ProductImage['relative_url']
   }
   inventory: {
     id: ProductInventory['id']
     price: ProductInventory['price']
-    salePrice?: ProductInventory['price']
+    sale_price?: ProductInventory['price']
     stock: ProductInventory['stock']
     sku?: ProductInventory['sku']
-    variantName?: ProductInventory['variant']
+    variant_name?: ProductInventory['variant']
   }
 };
 
@@ -38,38 +38,38 @@ export type CartShopGroup = {
     name: Shop['shop_name']
   }
   items: CartProductItem[]
-  totalPrice: number
-  totalShippingFee: number
+  total_price: number
+  total_shipping_fee: number
 };
 
 export type CartSummary = {
-  subtotalPrice: number
-  totalDiscount: number
-  subtotalAfterDiscount: number
-  totalShippingFee: number
-  totalPrice: number
-  totalSelectedQuantity: number
-  totalQuantity: number
+  subtotal_price: number
+  total_discount: number
+  subtotal_after_discount: number
+  total_shipping_fee: number
+  total_price: number
+  total_selected_quantity: number
+  total_quantity: number
 };
 
 export type CartRecentItem = {
-  itemId: string
+  item_id: string
   product: Pick<Product, 'id' | 'title'> & {
-    imageUrl?: ProductImage['relative_url']
+    image_url?: ProductImage['relative_url']
   }
   inventory: {
-    variantName?: ProductInventory['variant']
+    variant_name?: ProductInventory['variant']
   }
   quantity: number
 };
 
 export type CartResource = {
   id: Cart['id']
-  userId: User['id']
-  isTemp: boolean
-  shopGroups: CartShopGroup[]
-  recentItems: CartRecentItem[]
-  totalQuantity: number
+  user_id: User['id']
+  is_temp: boolean
+  shop_groups: CartShopGroup[]
+  recent_items: CartRecentItem[]
+  total_quantity: number
 };
 
 export type ResponseGetCart = {
@@ -82,17 +82,17 @@ export type ResponseGetCartShopCart = CartShopGroup;
 export type ResponseGetCartSummaryOrder = CartSummary;
 
 export type UpdateCartBody = Partial<{
-  cartId: Cart['id']
-  inventoryId: ProductInventory['id']
-  isSelected: boolean
+  cart_id: Cart['id']
+  inventory_id: ProductInventory['id']
+  is_select_order: boolean
   quantity: number
-  additionInfoTempCart: {
-    promoCodes: Coupon['code'][]
+  addition_info_temp_cart: {
+    promo_codes: Coupon['code'][]
     note?: string
   }
-  additionInfoShopCarts: {
-    shopId: Shop['id']
-    promoCodes?: Coupon['code'][]
+  addition_info_shop_carts: {
+    shop_id: Shop['id']
+    promo_codes?: Coupon['code'][]
     note?: string
   }[]
 }>;
@@ -100,10 +100,10 @@ export type UpdateCartBody = Partial<{
 export type ResponseUpdateCart = ResponseGetCart;
 
 export type AddProductToCartBody = {
-  inventoryId: ProductInventory['id']
+  inventory_id: ProductInventory['id']
   quantity: number
-  variantId?: ProductVariant['id']
-  isTemp?: boolean
+  variant_id?: ProductVariant['id']
+  is_temp?: boolean
 };
 
 export type ResponseAddProductToCartBody = ResponseGetCart;

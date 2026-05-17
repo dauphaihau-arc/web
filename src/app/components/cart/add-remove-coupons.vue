@@ -63,29 +63,29 @@ const addCoupon = async () => {
   }
   tempAdditionInfoOrderShop.promoCodes.push(state.code)
 
-  const additionInfoShopCarts = Array.from(tempAdditionInfoShopCarts)
+  const addition_info_shop_carts = Array.from(tempAdditionInfoShopCarts)
     .map(([keyShopId, value]) => ({
-      shopId: keyShopId,
-      promoCodes: value.promoCodes,
+      shop_id: keyShopId,
+      promo_codes: value.promoCodes,
     }))
-    .filter(item => item.promoCodes.length > 0)
+    .filter(item => item.promo_codes.length > 0)
 
   try {
     const data = await updateCart({
-      additionInfoShopCarts,
+      addition_info_shop_carts,
     })
 
     queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], (oldData) => {
       if (!oldData || !oldData.cart) return oldData
       if (!data.cart) return { ...oldData, cart: data.cart }
-      const foundShopCart = data.cart.shopGroups.find(sc => sc.shop.id === shopId)
+      const foundShopCart = data.cart.shop_groups.find(sc => sc.shop.id === shopId)
       if (!foundShopCart) return oldData
 
-      const shopGroupsUpdated = oldData.cart.shopGroups.map((sc) => {
+      const shopGroupsUpdated = oldData.cart.shop_groups.map((sc) => {
         if (sc.shop.id === shopId) {
           return {
             ...sc,
-            totalShippingFee: foundShopCart.totalShippingFee,
+            total_shipping_fee: foundShopCart.total_shipping_fee,
           }
         }
         return sc
@@ -94,7 +94,7 @@ const addCoupon = async () => {
         ...oldData,
         cart: {
           ...oldData.cart,
-          shopGroups: shopGroupsUpdated,
+          shop_groups: shopGroupsUpdated,
         },
         summary: data.summary,
       }
@@ -139,28 +139,28 @@ const deleteCoupon = async (code: Coupon['code']) => {
   }
   tempAdditionInfoOrderShop.promoCodes = tempAdditionInfoOrderShop.promoCodes.filter(c => c !== code)
 
-  const additionInfoShopCarts = Array.from(tempAdditionInfoShopCarts).map(([keyShopId, value]) => ({
-    shopId: keyShopId,
-    promoCodes: value.promoCodes,
+  const addition_info_shop_carts = Array.from(tempAdditionInfoShopCarts).map(([keyShopId, value]) => ({
+    shop_id: keyShopId,
+    promo_codes: value.promoCodes,
   }))
 
   try {
     const data = await updateCart({
-      additionInfoShopCarts,
+      addition_info_shop_carts,
     })
 
     // update cache get cart
     queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], (oldData) => {
       if (!oldData || !oldData.cart) return oldData
       if (!data.cart) return { ...oldData, cart: data.cart }
-      const foundShopCart = data.cart.shopGroups.find(sc => sc.shop.id === shopId)
+      const foundShopCart = data.cart.shop_groups.find(sc => sc.shop.id === shopId)
       if (!oldData || !foundShopCart) return oldData
 
-      const shopGroupsUpdated = oldData.cart.shopGroups.map((sc) => {
+      const shopGroupsUpdated = oldData.cart.shop_groups.map((sc) => {
         if (sc.shop.id === shopId) {
           return {
             ...sc,
-            totalShippingFee: foundShopCart.totalShippingFee,
+            total_shipping_fee: foundShopCart.total_shipping_fee,
           }
         }
         return sc
@@ -169,7 +169,7 @@ const deleteCoupon = async (code: Coupon['code']) => {
         ...oldData,
         cart: {
           ...oldData.cart,
-          shopGroups: shopGroupsUpdated,
+          shop_groups: shopGroupsUpdated,
         },
         summary: data.summary,
       }
@@ -208,28 +208,28 @@ const toggleShowAddCouponInput = async () => {
     }
     tempAdditionInfoOrderShop.promoCodes = []
 
-    const additionInfoShopCarts = Array.from(tempAdditionInfoShopCarts).map(([keyShopId, value]) => ({
-      shopId: keyShopId,
-      promoCodes: value.promoCodes,
+    const addition_info_shop_carts = Array.from(tempAdditionInfoShopCarts).map(([keyShopId, value]) => ({
+      shop_id: keyShopId,
+      promo_codes: value.promoCodes,
     }))
 
     try {
       const data = await updateCart({
-        additionInfoShopCarts,
+        addition_info_shop_carts,
       })
 
       // update cache get cart
       queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], (oldData) => {
         if (!oldData || !oldData.cart) return oldData
         if (!data.cart) return { ...oldData, cart: data.cart }
-        const foundShopCart = data.cart.shopGroups.find(sc => sc.shop.id === shopId)
+        const foundShopCart = data.cart.shop_groups.find(sc => sc.shop.id === shopId)
         if (!oldData || !foundShopCart) return oldData
 
-        const shopGroupsUpdated = oldData.cart.shopGroups.map((sc) => {
+        const shopGroupsUpdated = oldData.cart.shop_groups.map((sc) => {
           if (sc.shop.id === shopId) {
             return {
               ...sc,
-              totalShippingFee: foundShopCart.totalShippingFee,
+              total_shipping_fee: foundShopCart.total_shipping_fee,
             }
           }
           return sc
@@ -238,7 +238,7 @@ const toggleShowAddCouponInput = async () => {
           ...oldData,
           cart: {
             ...oldData.cart,
-            shopGroups: shopGroupsUpdated,
+            shop_groups: shopGroupsUpdated,
           },
           summary: data.summary,
         }

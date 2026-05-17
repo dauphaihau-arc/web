@@ -20,7 +20,7 @@ const {
 } = useGetDetailProduct(productId, {
   onResponse: ({ response }) => {
     if (response.status === 200 && response._data?.id) {
-      marketStore.userActivities.categoryIdProductVisited = response._data.categoryId
+      marketStore.userActivities.categoryIdProductVisited = response._data.category_id
     }
     else {
       throw showError({
@@ -71,8 +71,8 @@ const inventorySelected = ref()
       <!--          class="mb-16" -->
       <!--      /> -->
       <MoreProductsByCategory
-        v-if="dataGetDetailProduct.categoryId"
-        :category-id="dataGetDetailProduct.categoryId"
+        v-if="dataGetDetailProduct.category_id"
+        :category_id="dataGetDetailProduct.category_id"
       />
     </div>
   </div>

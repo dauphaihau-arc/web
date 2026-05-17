@@ -8,7 +8,7 @@ const marketStore = useMarketStore()
 const params = computed(() => {
   if (marketStore.userActivities?.rootCategoryProductVisited?.id) {
     return {
-      parentId: marketStore.userActivities?.rootCategoryProductVisited.id,
+      parent_id: marketStore.userActivities?.rootCategoryProductVisited.id,
     }
   }
   return undefined
@@ -80,9 +80,9 @@ const redirectPage = (subCategory: Category) => {
           :key="cg.id"
         >
           <div @click="() => redirectPage(cg)">
-            <div v-if="cg?.imageUrl">
+            <div v-if="cg?.image_url">
               <NuxtImg
-                :src="cg.imageUrl"
+                :src="cg.image_url"
                 width="100"
                 height="100"
                 class="size-[100px] cursor-pointer rounded-full object-cover"

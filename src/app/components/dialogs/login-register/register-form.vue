@@ -15,7 +15,7 @@ const unknownErrorServerMsg = ref('')
 
 const stateSubmit: Partial<RegisterBody> = reactive({})
 const registerSchema = z.object({
-  displayName: userSchema.shape.name,
+  display_name: userSchema.shape.name,
   email: userSchema.shape.email,
   password: userSchema.shape.password,
 })
@@ -81,11 +81,11 @@ async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
       >
         <UFormGroup
           label="Name"
-          name="displayName"
+          name="display_name"
           class="mb-4"
         >
           <UInput
-            v-model="stateSubmit.displayName"
+            v-model="stateSubmit.display_name"
             :disabled="isPendingRegister"
             size="xl"
           />

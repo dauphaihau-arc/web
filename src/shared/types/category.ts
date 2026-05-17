@@ -4,7 +4,7 @@ export type Category = {
   name: string
   rank: number
   imageStorageKey?: string
-  imageUrl?: string
+  image_url?: string
   attributes: {
     id: string
     name: string
@@ -19,7 +19,9 @@ export type Category = {
   }[]
 };
 
-export type GetCategoriesParams = Partial<Pick<Category, 'parentId'>>;
+export type GetCategoriesParams = {
+  parent_id?: Category['id']
+};
 
 export type ResponseGetCategories = Category[];
 

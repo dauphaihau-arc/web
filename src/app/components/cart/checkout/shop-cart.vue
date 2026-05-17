@@ -12,7 +12,7 @@ const props = defineProps<{
 
 <template>
   <UCard
-    v-if="props.shopCart.items.length > 0 && props.shopCart.items.some(prod => !!prod.isSelected)"
+    v-if="props.shopCart.items.length > 0 && props.shopCart.items.some(prod => !!prod.is_selected)"
     :ui="{ base: 'overflow-visible' }"
     class="mb-4"
   >
@@ -27,7 +27,7 @@ const props = defineProps<{
           :key="productCart?.inventory?.id"
         >
           <Product
-            v-if="productCart?.isSelected"
+            v-if="productCart?.is_selected"
             :product-cart="productCart"
             :shop-id="props.shopCart?.shop?.id"
           />

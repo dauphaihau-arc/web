@@ -38,7 +38,7 @@ const steps = ['Billing Address', 'Payment', 'Review & Confirmation']
     <LoadingSvg :child-class="'!w-12 !h-12'" />
   </div>
   <div
-    v-else-if="dataGetCart?.cart && dataGetCart.cart.shopGroups?.length > 0"
+    v-else-if="dataGetCart?.cart && dataGetCart.cart.shop_groups?.length > 0"
     class="py-16"
   >
     <CheckoutStepper
@@ -63,7 +63,7 @@ const steps = ['Billing Address', 'Payment', 'Review & Confirmation']
         >
           <ReviewShippingAndPayment class="mb-12" />
           <div
-            v-for="shopCart of dataGetCart.cart.shopGroups"
+            v-for="shopCart of dataGetCart.cart.shop_groups"
             :key="shopCart.shop.id"
           >
             <ShopCart :shop-cart="shopCart" />

@@ -66,29 +66,29 @@ onMounted(() => {
     variantNameById.set(variant.id, variant.name)
   })
 
-  switch (product.variantType) {
+  switch (product.variant_type) {
     case ProductVariantTypes.NONE:
       inventorySelectedModel.value = props.product.inventory[0]
       break
     case ProductVariantTypes.SINGLE:
       props.product.inventory.forEach((inv) => {
-        const variantName = inv.productVariantId
-          ? variantNameById.get(inv.productVariantId)
+        const variant_name = inv.product_variant_id
+          ? variantNameById.get(inv.product_variant_id)
           : undefined
-        if (variantName) {
-          inventoriesMap.set(variantName, inv)
-          state.variantOpts.push(variantName)
+        if (variant_name) {
+          inventoriesMap.set(variant_name, inv)
+          state.variantOpts.push(variant_name)
         }
       })
       break
     case ProductVariantTypes.COMBINE: {
       props.product.inventory.forEach((inv) => {
-        const variantName = inv.productVariantId
-          ? variantNameById.get(inv.productVariantId)
+        const variant_name = inv.product_variant_id
+          ? variantNameById.get(inv.product_variant_id)
           : undefined
-        if (variantName) {
-          inventoriesMap.set(variantName, inv)
-          const [primaryVariantName, subVariantName] = variantName.split(' / ')
+        if (variant_name) {
+          inventoriesMap.set(variant_name, inv)
+          const [primaryVariantName, subVariantName] = variant_name.split(' / ')
           if (!state.variantOpts.includes(primaryVariantName)) {
             state.variantOpts.push(primaryVariantName)
           }
@@ -111,7 +111,7 @@ const decreaseQty = () => {
 const validateForm = (stateValidate: StateSubmit): FormError[] => {
   const errors: FormError[] = []
 
-  if (product.variantType !== ProductVariantTypes.NONE) {
+  if (product.variant_type !== ProductVariantTypes.NONE) {
     if (!stateValidate.variantOption) {
       errors.push({
         path: 'variantOption',
@@ -119,7 +119,7 @@ const validateForm = (stateValidate: StateSubmit): FormError[] => {
       })
     }
 
-    if (product.variantType === ProductVariantTypes.COMBINE && !stateValidate.variantSubOption) {
+    if (product.variant_type === ProductVariantTypes.COMBINE && !stateValidate.variantSubOption) {
       errors.push({
         path: 'variantSubOption',
         message: 'Required',
@@ -142,11 +142,11 @@ async function onSubmit(event: FormSubmitEvent<StateSubmit>) {
   }
 
   const body: AddProductToCartBody = {
-    inventoryId: inventorySelectedModel.value.id,
+    inventory_id: inventorySelectedModel.value.id,
     quantity: event.data.quantity,
   }
   if (state.isBuyNow) {
-    body.isTemp = true
+    body.is_temp = true
     const response = await addProductToCart(body)
     if (response.cart === null || !response.cart?.id) {
       toast.add({
@@ -177,13 +177,13 @@ watch(
   () => [stateSubmit.variantOption, stateSubmit.variantSubOption],
   () => {
     stateSubmit.quantity = 1
-    if (product.variantType === ProductVariantTypes.SINGLE) {
+    if (product.variant_type === ProductVariantTypes.SINGLE) {
       const foundInventory = inventoriesMap.get(stateSubmit.variantOption)
       if (foundInventory) {
         inventorySelectedModel.value = foundInventory
       }
     }
-    if (product.variantType === ProductVariantTypes.COMBINE) {
+    if (product.variant_type === ProductVariantTypes.COMBINE) {
       const foundInventory = inventoriesMap.get(`${stateSubmit.variantOption} / ${stateSubmit.variantSubOption}`)
       if (foundInventory) {
         inventorySelectedModel.value = foundInventory
@@ -205,27 +205,27 @@ watch(
   >
     <div class="mb-6 flex w-1/3 flex-col gap-4">
       <UFormGroup
-        v-if="product.variantType === ProductVariantTypes.SINGLE
-          || product.variantType === ProductVariantTypes.COMBINE"
-        :label="product.variantGroupName"
+        v-if="product.variant_type === ProductVariantTypes.SINGLE
+          || product.variant_type === ProductVariantTypes.COMBINE"
+        :label="product.variant_group_name"
         name="variantOption"
       >
         <USelectMenu
           v-model="stateSubmit.variantOption"
-          :placeholder="`Select a ${product.variantGroupName}`"
+          :placeholder="`Select a ${product.variant_group_name}`"
           size="lg"
           :options="state.variantOpts"
         />
       </UFormGroup>
 
       <UFormGroup
-        v-if="product.variantType === ProductVariantTypes.COMBINE"
-        :label="product.variantSubGroupName"
+        v-if="product.variant_type === ProductVariantTypes.COMBINE"
+        :label="product.variant_sub_group_name"
         name="variantSubOption"
       >
         <USelectMenu
           v-model="stateSubmit.variantSubOption"
-          :placeholder="`Select a ${product.variantSubGroupName}`"
+          :placeholder="`Select a ${product.variant_sub_group_name}`"
           size="lg"
           :options="state.subVariantOpts"
         />

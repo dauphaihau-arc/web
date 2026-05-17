@@ -46,7 +46,7 @@ export function useGetDetailProduct(
 export function useGetProductsByMultiQueries(queries?: GetProductsParams[]) {
   return useQueries({
     queries: queries?.map(qp => ({
-      queryKey: [qp.categoryId],
+      queryKey: [qp.category_id],
       queryFn: async () => {
         const res = await useCustomFetch.get<ResponseGetProducts>(
           RESOURCES.PRODUCTS,
@@ -54,7 +54,7 @@ export function useGetProductsByMultiQueries(queries?: GetProductsParams[]) {
         );
         return {
           ...res,
-          categoryId: qp.categoryId,
+          category_id: qp.category_id,
         };
       },
     })) ?? [],

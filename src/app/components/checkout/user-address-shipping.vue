@@ -80,7 +80,7 @@ const showCreateDialog = () => {
                 <span class="font-normal">{{ option.phone }}</span>
               </div>
               <div class="">
-                {{ option.address1 }}, {{ option.city }}, {{ option.zip }}, {{ option.country }}
+                {{ option.address_1 }}, {{ option.city }}, {{ option.zip }}, {{ option.country }}
               </div>
             </div>
           </template>
