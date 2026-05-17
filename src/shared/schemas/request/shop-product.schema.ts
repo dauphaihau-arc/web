@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { objectIdSchema } from '~/shared/schemas/sub/object-id.schema';
+import { idSchema } from '~/shared/schemas/sub/id.schema';
 import { productShippingSchema } from '~/shared/schemas/product-shipping.schema';
 import { productInventorySchema } from '~/shared/schemas/product-inventory.schema';
 import { productVariantOptSchema, productVariantSchema } from '~/shared/schemas/product-variant.schema';
@@ -35,11 +35,11 @@ export const createProductBodySchema = baseProductSchema
     z.object({
       attributes: z.array(
         z.object({
-          attribute_id: objectIdSchema,
+          attribute_id: idSchema,
           selected: z.string(),
         })
       ).default([]),
-      category_id: objectIdSchema,
+      category_id: idSchema,
       state: productStateUserCanModify,
       tags: baseProductSchema.shape.tags.default([]),
     })
@@ -67,10 +67,10 @@ export const updateProductSchema = baseProductSchema
     z.object({
       tags: baseProductSchema.shape.tags.default([]).optional(),
       state: productStateUserCanModify,
-      category_id: objectIdSchema,
+      category_id: idSchema,
       attributes: z.array(
         z.object({
-          attribute_id: objectIdSchema,
+          attribute_id: idSchema,
           selected: z.string(),
         })
       ).optional(),

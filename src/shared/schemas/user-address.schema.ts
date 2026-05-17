@@ -1,10 +1,10 @@
 import { z } from 'zod';
-import { objectIdSchema } from '~/shared/schemas/sub/object-id.schema';
+import { idSchema } from '~/shared/schemas/sub/id.schema';
 import { ADDRESS_CONFIG } from '~/shared/config/enums/address';
 
 export const userAddressSchema = z.object({
-  id: objectIdSchema,
-  user: objectIdSchema,
+  id: idSchema,
+  user: idSchema,
   full_name: z.string().max(ADDRESS_CONFIG.MAX_CHAR_FULL_NAME),
   address_1: z.string().max(ADDRESS_CONFIG.MAX_CHAR_ADDRESS),
   address_2: z.string().max(ADDRESS_CONFIG.MAX_CHAR_ADDRESS).optional(),

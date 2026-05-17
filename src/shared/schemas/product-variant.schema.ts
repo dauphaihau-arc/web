@@ -1,17 +1,17 @@
 import { z } from 'zod';
-import { objectIdSchema } from '~/shared/schemas/sub/object-id.schema';
+import { idSchema } from '~/shared/schemas/sub/id.schema';
 import { PRODUCT_CONFIG, PRODUCT_REGEX_NOT_URL } from '~/shared/config/enums/product';
 
 export const productVariantOptSchema = z.object({
-  id: objectIdSchema,
-  variant: objectIdSchema,
-  inventory: objectIdSchema,
+  id: idSchema,
+  variant: idSchema,
+  inventory: idSchema,
 });
 
 export const productVariantSchema = z.object({
-  id: objectIdSchema,
-  product: objectIdSchema,
-  inventory: objectIdSchema.optional(),
+  id: idSchema,
+  product: idSchema,
+  inventory: idSchema.optional(),
   variant_name: z
     .string()
     .min(1)

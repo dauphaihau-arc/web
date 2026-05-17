@@ -1,9 +1,9 @@
 import { z } from 'zod';
-import { objectIdSchema } from '~/shared/schemas/sub/object-id.schema';
+import { idSchema } from '~/shared/schemas/sub/id.schema';
 
 export const categoryAttributeSchema = z.object({
-  id: objectIdSchema,
-  category: objectIdSchema,
+  id: idSchema,
+  category: idSchema,
   name: z.string(),
   options: z.array(z.string()).optional(),
   updated_at: z.date(),

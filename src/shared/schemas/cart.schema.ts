@@ -1,13 +1,13 @@
 import { z } from 'zod';
-import { objectIdSchema } from '~/shared/schemas/sub/object-id.schema';
+import { idSchema } from '~/shared/schemas/sub/id.schema';
 import { CART_CONFIG } from '~/shared/config/enums/cart';
 import { PRODUCT_CONFIG } from '~/shared/config/enums/product';
 
 export const productCartSchema = z.object({
-  id: objectIdSchema,
-  inventory: objectIdSchema,
-  product: objectIdSchema,
-  variant: objectIdSchema.optional(),
+  id: idSchema,
+  inventory: idSchema,
+  product: idSchema,
+  variant: idSchema.optional(),
   quantity: z.number().max(PRODUCT_CONFIG.MAX_STOCK),
   is_select_order: z
     .boolean()
@@ -17,16 +17,16 @@ export const productCartSchema = z.object({
 });
 
 export const shopCartSchema = z.object({
-  id: objectIdSchema,
-  shop: objectIdSchema,
+  id: idSchema,
+  shop: idSchema,
   products: z.array(productCartSchema),
   created_at: z.date(),
   updated_at: z.date(),
 });
 
 export const cartSchema = z.object({
-  id: objectIdSchema,
-  user: objectIdSchema,
+  id: idSchema,
+  user: idSchema,
   items: z
     .array(shopCartSchema)
     .max(CART_CONFIG.MAX_ITEMS),

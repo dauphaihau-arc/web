@@ -1,11 +1,11 @@
 import { z } from 'zod';
 import { PRODUCT_CONFIG } from '~/shared/config/enums/product';
-import { objectIdSchema } from '~/shared/schemas/sub/object-id.schema';
+import { idSchema } from '~/shared/schemas/sub/id.schema';
 
 export const productInventorySchema = z.object({
-  id: objectIdSchema,
-  shop: objectIdSchema,
-  product: objectIdSchema,
+  id: idSchema,
+  shop: idSchema,
+  product: idSchema,
   price: z
     .number()
     .min(PRODUCT_CONFIG.MIN_PRICE, `Price must at least ${PRODUCT_CONFIG.MIN_PRICE}$`)

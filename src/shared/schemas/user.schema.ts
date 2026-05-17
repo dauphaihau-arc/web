@@ -1,10 +1,10 @@
 import { z } from 'zod';
 import { USER_CONFIG, USER_REG_NAME, USER_REG_PASSWORD } from '~/shared/config/enums/user';
-import { objectIdSchema } from '~/shared/schemas/sub/object-id.schema';
+import { idSchema } from '~/shared/schemas/sub/id.schema';
 import { MarketCurrencies, MarketLanguages, MarketRegions } from '~/shared/config/enums/market';
 
 export const userSchema = z.object({
-  id: objectIdSchema,
+  id: idSchema,
   name: z
     .string({
       required_error: 'Name is required',
@@ -31,7 +31,7 @@ export const userSchema = z.object({
   is_email_verified: z
     .boolean()
     .optional(),
-  shop: objectIdSchema.optional(),
+  shop: idSchema.optional(),
   market_preferences: z.object({
     region: z.nativeEnum(MarketRegions).default(MarketRegions.UNITED_STATES),
     language: z.nativeEnum(MarketLanguages).default(MarketLanguages.EN),

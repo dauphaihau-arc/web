@@ -2,7 +2,7 @@ import { z } from 'zod';
 import {
   PaymentTypes, OrderStatuses, OrderShippingStatuses, ORDER_CONFIG
 } from '~/shared/config/enums/order';
-import { objectIdSchema } from '~/shared/schemas/sub/object-id.schema';
+import { idSchema } from '~/shared/schemas/sub/id.schema';
 import { baseCouponSchema } from '~/shared/schemas/coupon.schema';
 import { baseProductSchema } from '~/shared/schemas/product.schema';
 import { productInventorySchema } from '~/shared/schemas/product-inventory.schema';
@@ -20,9 +20,9 @@ export const orderProductSchema = z.object({
 });
 
 export const orderSchema = z.object({
-  id: objectIdSchema,
-  user: objectIdSchema,
-  address: objectIdSchema,
+  id: idSchema,
+  user: idSchema,
+  address: idSchema,
   payment_type: z.nativeEnum(PaymentTypes),
   tracking_number: z.string(),
   stripe_charge_id: z.string(),

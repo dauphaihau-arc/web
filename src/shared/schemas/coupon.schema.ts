@@ -6,11 +6,11 @@ import {
   CouponMinOrderTypes,
   COUPON_CONFIG
 } from '~/shared/config/enums/coupon';
-import { objectIdSchema } from '~/shared/schemas/sub/object-id.schema';
+import { idSchema } from '~/shared/schemas/sub/id.schema';
 
 export const baseCouponSchema = z.object({
-  id: objectIdSchema,
-  shop: objectIdSchema,
+  id: idSchema,
+  shop: idSchema,
   code: z
     .string()
     .min(COUPON_CONFIG.MIN_CHAR_CODE,
@@ -50,7 +50,7 @@ export const baseCouponSchema = z.object({
     .boolean()
     .default(false),
   users_used: z
-    .array(objectIdSchema)
+    .array(idSchema)
     .optional(),
   is_auto_sale: z
     .boolean()
@@ -94,7 +94,7 @@ export const minOrderValueSchema = z.object({
 export const applyToSpecifySchema = z.object({
   applies_to: z.literal(CouponAppliesTo.SPECIFIC),
   applies_product_ids: z
-    .array(objectIdSchema)
+    .array(idSchema)
     .min(1, 'Add at least 1 product')
     .default([]),
 });

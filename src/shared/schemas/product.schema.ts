@@ -7,10 +7,10 @@ import {
   PRODUCT_CONFIG,
   ProductVariantTypes
 } from '~/shared/config/enums/product';
-import { objectIdSchema } from '~/shared/schemas/sub/object-id.schema';
+import { idSchema } from '~/shared/schemas/sub/id.schema';
 
 export const productImageSchema = z.object({
-  id: objectIdSchema,
+  id: idSchema,
   relative_url: z
     .string()
     .startsWith('shop', 'must start with shop')
@@ -23,15 +23,15 @@ export const productImageSchema = z.object({
 });
 
 export const productAttributeSchema = z.object({
-  attribute: objectIdSchema,
+  attribute: idSchema,
   selected: z.string(),
 });
 
 export const baseProductSchema = z.object({
-  id: objectIdSchema,
-  shop: objectIdSchema,
-  category: objectIdSchema,
-  shipping: objectIdSchema,
+  id: idSchema,
+  shop: idSchema,
+  category: idSchema,
+  shipping: idSchema,
   variant_type: z
     .nativeEnum(ProductVariantTypes)
     .default(ProductVariantTypes.NONE),
@@ -87,12 +87,12 @@ export const baseProductSchema = z.object({
 
 const noneVariantSchema = z.object({
   variant_type: z.literal(ProductVariantTypes.NONE),
-  inventory: objectIdSchema,
+  inventory: idSchema,
 });
 
 export const singleVariantSchema = z.object({
   variant_type: z.literal(ProductVariantTypes.SINGLE),
-  variants: z.array(objectIdSchema),
+  variants: z.array(idSchema),
   variant_group_name: z
     .string()
     .min(1)
@@ -101,7 +101,7 @@ export const singleVariantSchema = z.object({
 
 export const combineVariantSchema = z.object({
   variant_type: z.literal(ProductVariantTypes.COMBINE),
-  variants: z.array(objectIdSchema),
+  variants: z.array(idSchema),
   variant_group_name: z
     .string()
     .min(1)

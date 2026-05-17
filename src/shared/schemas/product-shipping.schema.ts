@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ProductShippingCharge, ProductShippingServices } from '~/shared/config/enums/product';
-import { objectIdSchema } from '~/shared/schemas/sub/object-id.schema';
+import { idSchema } from '~/shared/schemas/sub/id.schema';
 
 export const productStandardShippingSchema = z.object({
   country: z.string(),
@@ -10,9 +10,9 @@ export const productStandardShippingSchema = z.object({
 });
 
 export const productShippingSchema = z.object({
-  id: objectIdSchema,
-  shop: objectIdSchema,
-  product: objectIdSchema,
+  id: idSchema,
+  shop: idSchema,
+  product: idSchema,
   country: z.string(),
   zip: z.string().max(10),
   process_time: z.string(),

@@ -1,10 +1,10 @@
 import { z } from 'zod';
-import { objectIdSchema } from '~/shared/schemas/sub/object-id.schema';
+import { idSchema } from '~/shared/schemas/sub/id.schema';
 import { CATEGORY_CONFIG } from '~/shared/config/enums/category';
 
 export const categorySchema = z.object({
-  id: objectIdSchema,
-  parent: objectIdSchema
+  id: idSchema,
+  parent: idSchema
     .nullable()
     .optional(),
   name: z

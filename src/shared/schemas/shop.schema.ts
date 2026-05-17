@@ -1,9 +1,9 @@
 import { z } from 'zod';
-import { objectIdSchema } from '~/shared/schemas/sub/object-id.schema';
+import { idSchema } from '~/shared/schemas/sub/id.schema';
 
 export const shopSchema = z.object({
-  id: objectIdSchema,
-  user: objectIdSchema.describe('the user that owns this shop'),
+  id: idSchema,
+  user: idSchema.describe('the user that owns this shop'),
   shop_name: z
     .string({
       required_error: 'shop_name is required',
