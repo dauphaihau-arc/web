@@ -1,6 +1,7 @@
 import type { MutationOptions } from '@tanstack/vue-query';
 import { RESOURCES } from '~/shared/config/enums/resources';
 import { apiClient } from '~/shared/lib/api-client';
+import { clearExpTokensInLS } from '~/shared/server-state/auth';
 import type { User, UpdateUserBody } from '~/shared/types/user';
 import type { ResponseBaseGetList } from '~/shared/types/common';
 import type { CreateBodyUserAddressBody, UserAddress } from '~/shared/types/user-address';
@@ -11,12 +12,28 @@ export function useGetCurrentUser() {
   return useQuery({
     enabled: false,
     queryKey: ['current-user'],
+    retry: false,
     queryFn: async () => {
-      const user = await apiClient.get<UserAuthenticated>(
-        `${RESOURCES.AUTH}/me`
-      );
+      try {
+        const user = await apiClient.get<UserAuthenticated>(
+          `${RESOURCES.AUTH}/me`
+        );
 
-      return { user };
+        return { user };
+      }
+      catch (error) {
+        const statusCode = (
+          error as { response?: { status?: number }, statusCode?: number, status?: number }
+        ).response?.status ??
+        (error as { statusCode?: number }).statusCode ??
+        (error as { status?: number }).status;
+
+        if (statusCode === 401) {
+          clearExpTokensInLS();
+        }
+
+        throw error;
+      }
     },
   });
 }
