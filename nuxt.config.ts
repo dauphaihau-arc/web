@@ -1,10 +1,10 @@
 import pkg from './package.json'
 
-const awsHostBucket = process.env.AWS_S3_HOST_BUCKET || ''
-const awsHostBucketDomain = awsHostBucket
-  ? new URL(awsHostBucket).hostname
+const assetHost = process.env.ASSET_HOST || ''
+const assetHostDomain = assetHost
+  ? new URL(assetHost).hostname
   : ''
-const awsHostBucketAlias = awsHostBucket.replace(/\/+$/, '')
+const awsHostBucketAlias = assetHost.replace(/\/+$/, '')
 
 export default defineNuxtConfig({
   app: {
@@ -77,7 +77,7 @@ export default defineNuxtConfig({
     public: {
       apiBaseURL: process.env.API_BASE_URL,
       apiVersion: process.env.API_VERSION,
-      awsHostBucket: process.env.AWS_S3_HOST_BUCKET,
+      assetHost: process.env.ASSET_HOST,
       accessTokenExpirationMins: process.env.ACCESS_TOKEN_EXPIRATION_MINS,
       refreshTokenExpirationDays: process.env.REFRESH_TOKEN_EXPIRATION_DAYS,
     },
@@ -149,9 +149,9 @@ export default defineNuxtConfig({
     ipx: {
       maxAge: 2592000,
     },
-    domains: awsHostBucketDomain ? [awsHostBucketDomain] : [],
+    domains: assetHostDomain ? [assetHostDomain] : [],
     alias: {
-      domainAwsS3: awsHostBucketAlias
+      assetHost: awsHostBucketAlias
     }
   },
 

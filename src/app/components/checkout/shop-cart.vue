@@ -83,7 +83,7 @@ watchDebounced(
       </h3>
       <div class="mb-8 flex gap-4">
         <NuxtImg
-          :src="`domainAwsS3/${productCart?.product.image_url}`"
+          :src="`/assetHost/${productCart?.product.image_url}`"
           width="180"
           height="180"
           class="max-h-[180px] max-w-[180px] cursor-pointer rounded"

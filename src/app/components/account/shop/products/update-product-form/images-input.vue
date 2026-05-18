@@ -101,7 +101,7 @@ const removeImageInDB = (id: ProductImage['id'], index: number) => {
           @click="removeImageInDB(img.id, index)"
         >
           <NuxtImg
-            :src="`domainAwsS3/${img?.relative_url}`"
+            :src="`/assetHost/${img?.relative_url}`"
             class="size-image"
           />
           <div

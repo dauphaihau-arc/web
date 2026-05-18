@@ -59,7 +59,7 @@ const rows = computed(() => {
     return dataShopGetProducts.value.results.map(product => ({
       id: product.id,
       title: product.title,
-      image_url: `domainAwsS3/${product?.image_relative_url}`,
+      image_url: `/assetHost/${product?.image_relative_url}`,
       inventories: product.inventories,
       variant_type: product.variant_type,
     }))
