@@ -18,8 +18,9 @@ export type UserAuthenticated = {
 
 export type LoginBody = Pick<User, 'email' | 'password'>;
 
-export type RegisterBody = Pick<User, 'email' | 'password' | 'market_preferences'> & {
+export type RegisterBody = Pick<User, 'email' | 'password'> & {
   display_name?: string
+  preferences?: NonNullable<User['market_preferences']>
 };
 
 export type ResetPasswordBody = Record<'password' | 'passwordConfirm', string>;

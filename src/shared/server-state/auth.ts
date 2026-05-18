@@ -31,7 +31,12 @@ export function useRegister() {
     mutationFn: (body: RegisterBody) => {
       return apiClient.post<{ user: UserAuthenticated }>(
         `${RESOURCES.AUTH}/register`,
-        body
+        {
+          email: body.email,
+          password: body.password,
+          display_name: body.display_name,
+          preferences: body.preferences,
+        }
       );
     },
     onSuccess: (data) => {

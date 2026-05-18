@@ -37,7 +37,7 @@ async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
   try {
     await register({
       ...event.data,
-      market_preferences: userPreferences,
+      preferences: userPreferences,
     })
   }
   catch (error) {
