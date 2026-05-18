@@ -37,7 +37,7 @@ const { data: dataUserAuth } = useGetCurrentUser()
               >
               <div class="text-left">
                 <div>
-                  {{ dataUserAuth?.user?.name }}
+                  {{ dataUserAuth?.user?.display_name }}
                 </div>
                 <div class="text-xs text-zinc-500/70">
                   View your profile

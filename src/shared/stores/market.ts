@@ -54,8 +54,8 @@ export const useMarketStore = defineStore('market', () => {
 
   // sync with LS
   watch(() => dataUserAuth.value?.user, () => {
-    if (dataUserAuth.value?.user?.market_preferences) {
-      guestPreferences.value = dataUserAuth.value.user.market_preferences;
+    if (dataUserAuth.value?.user?.preferences) {
+      guestPreferences.value = dataUserAuth.value.user.preferences;
     }
   });
 
@@ -75,7 +75,7 @@ export const useMarketStore = defineStore('market', () => {
   );
 
   useGetDataByIP(
-    { enabled: !dataUserAuth.value?.user.market_preferences && !guestPreferences.value },
+    { enabled: !dataUserAuth.value?.user.preferences && !guestPreferences.value },
     {
       onResponse: ({ response }) => {
         if (response.status === 200) {

@@ -177,7 +177,7 @@ const remainProductCart = computed(() => {
                 name="i-heroicons-arrow-left-start-on-rectangle"
                 color="gray"
               />
-              Logout {{ dataUserAuth?.user?.name }}
+              Logout {{ dataUserAuth?.user?.display_name }}
             </div>
           </div>
         </div>

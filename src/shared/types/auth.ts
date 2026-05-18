@@ -1,8 +1,19 @@
 import type { User } from '~/shared/types/user';
 import type { Shop } from '~/shared/types/shop';
 
-export type UserAuthenticated = Pick<User, 'name' | 'email' | 'is_email_verified' | 'market_preferences'> & {
-  shop?: Pick<Shop, 'shop_name' | 'id'>
+export type UserAuthenticated = {
+  id: string
+  email: User['email']
+  display_name?: string
+  status: string
+  session_id: string
+  roles: string[]
+  permissions: string[]
+  preferences?: NonNullable<User['market_preferences']>
+  shop?: {
+    id: Shop['id']
+    shop_name: Shop['shop_name']
+  }
 };
 
 export type LoginBody = Pick<User, 'email' | 'password'>;

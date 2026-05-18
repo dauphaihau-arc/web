@@ -110,7 +110,7 @@ const state = reactive<State>({
 })
 
 watch(() => [marketStore.guestPreferences, dataUserAuth.value?.user], () => {
-  const userPreferences = marketStore.guestPreferences || dataUserAuth.value?.user?.market_preferences
+  const userPreferences = marketStore.guestPreferences || dataUserAuth.value?.user?.preferences
   if (userPreferences) {
     const currencyOpt = currencyOpts.find(opt => opt.id === userPreferences.currency)
     if (currencyOpt) {
