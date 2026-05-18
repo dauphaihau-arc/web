@@ -33,6 +33,29 @@ type LegacyCategoryAttributesResponse = {
   attributes: CategoryAttributeSelect[]
 };
 
+function normalizeCategory(response: ResponseGetCategories[number]): Category {
+  return {
+    id: response.id,
+    parentId: response.parent_id,
+    name: response.name,
+    rank: response.rank,
+    imageStorageKey: response.image_storage_key,
+    imageUrl: response.image_url,
+    attributes: response.attributes.map(attribute => ({
+      id: attribute.id,
+      name: attribute.name,
+      inputType: attribute.input_type,
+      isRequired: attribute.is_required,
+      rank: attribute.rank,
+      options: attribute.options.map(option => ({
+        id: option.id,
+        value: option.value,
+        rank: option.rank,
+      })),
+    })),
+  };
+}
+
 function normalizeCategoryAttributesResponse(
   response: LegacyCategoryAttributesResponse | NestCategoryAttributesResponse
 ): LegacyCategoryAttributesResponse {
@@ -57,23 +80,27 @@ function normalizeCategoryAttributesResponse(
 export function useGetCategories(
   params?: GetCategoriesParams
 ) {
-  return useQuery<ResponseGetCategories>({
+  return useQuery<Category[]>({
     enabled: !!params,
     queryKey: ['get-categories', params],
-    queryFn: () => {
-      return apiClient.get<ResponseGetCategories>(
+    queryFn: async () => {
+      const response = await apiClient.get<ResponseGetCategories>(
         RESOURCES.CATEGORIES,
         params
       );
+
+      return response.map(normalizeCategory);
     },
   });
 }
 
 export function useGetRootCategories() {
-  return useQuery<ResponseGetCategories>({
+  return useQuery<Category[]>({
     queryKey: ['get-root-categories'],
-    queryFn: () => {
-      return apiClient.get<ResponseGetCategories>(RESOURCES.CATEGORIES);
+    queryFn: async () => {
+      const response = await apiClient.get<ResponseGetCategories>(RESOURCES.CATEGORIES);
+
+      return response.map(normalizeCategory);
     },
   });
 }

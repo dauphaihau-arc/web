@@ -80,9 +80,9 @@ const redirectPage = (subCategory: Category) => {
           :key="cg.id"
         >
           <div @click="() => redirectPage(cg)">
-            <div v-if="cg?.image_url">
+            <div v-if="cg?.imageUrl">
               <NuxtImg
-                :src="cg.image_url"
+                :src="cg.imageUrl"
                 width="100"
                 height="100"
                 class="size-[100px] cursor-pointer rounded-full object-cover"
