@@ -10,6 +10,16 @@ type RequestBehavior = {
   retryOnWakeUp?: boolean
 };
 
+function getStatusCode(error: unknown) {
+  const fetchError = error as {
+    response?: { status?: number }
+    statusCode?: number
+    status?: number
+  };
+
+  return fetchError.response?.status ?? fetchError.statusCode ?? fetchError.status;
+}
+
 const baseCustomFetch = async <
   DefaultT = unknown,
   DefaultR extends NitroFetchRequest = NitroFetchRequest,
@@ -40,6 +50,10 @@ const requestWithWakeUpRecovery = async <T>(
     return response;
   }
   catch (error) {
+    if (getStatusCode(error) === 401) {
+      clearExpTokensInLS();
+    }
+
     if (!behavior?.retryOnWakeUp || !isBackendWakeUpError(error)) {
       throw error;
     }
