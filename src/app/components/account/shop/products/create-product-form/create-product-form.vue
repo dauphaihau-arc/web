@@ -588,7 +588,7 @@ watch(isProductHaveVariants, () => {
       :loading="loadingSubmit && stateSubmit.state === ProductStates.DRAFT"
       size="md"
       type="submit"
-      variant="soft"
+      variant="outline"
       @click="() => {
         stateSubmit.state = ProductStates.DRAFT;
         btnSubmitRef.click();

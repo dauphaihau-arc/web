@@ -271,7 +271,7 @@ watch(
     <div class="flex gap-4">
       <UButton
         size="xl"
-        variant="soft"
+        variant="outline"
         type="submit"
         :disabled="isPendingAddProductToCart"
         @click="state.isBuyNow = false"
