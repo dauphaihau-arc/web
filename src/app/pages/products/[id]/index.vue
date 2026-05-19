@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import LoadingSvg from '~/shared/ui/loading-svg.vue'
-import ProductAddToCartForm from '~/app/components/detail-product/add-to-cart-form.vue'
+import AddToCartForm from '~/app/components/detail-product/add-to-cart-form.vue'
 import ProductImages from '~/app/components/detail-product/images.vue'
-import ProductMoreInfo from '~/app/components/detail-product/more-info.vue'
+import MoreInfo from '~/app/components/detail-product/more-info.vue'
 import MoreProductsByCategory from '~/app/components/detail-product/more-products-by-category.vue'
 import ProductSummary from '~/app/components/detail-product/summary.vue'
 import { useGetDetailProduct } from '~/shared/server-state/product'
@@ -57,11 +57,11 @@ const inventorySelected = ref()
             :product="dataGetDetailProduct"
             :inventory-selected="inventorySelected"
           />
-          <ProductAddToCartForm
+          <AddToCartForm
             v-model:inventory-selected="inventorySelected"
             :product="dataGetDetailProduct"
           />
-          <ProductMoreInfo
+          <MoreInfo
             :product="dataGetDetailProduct"
           />
         </div>
