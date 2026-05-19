@@ -7,7 +7,6 @@ import { useGetCart } from '~/shared/server-state/cart'
 
 const props = defineProps<{ show: boolean }>()
 
-const router = useRouter()
 const modal = useModal()
 const { data: dataUserAuth } = useGetCurrentUser()
 
@@ -67,9 +66,9 @@ const remainProductCart = computed(() => {
                   v-for="(productCart, index) in dataGetCart.cart.recent_items"
                   :key="index"
                 >
-                  <div
-                    class="flex cursor-pointer items-center gap-6"
-                    @click="() => router.push(`${ROUTES.PRODUCTS}/${productCart.product.id}`)"
+                  <NuxtLink
+                    class="flex items-center gap-6"
+                    :to="`${ROUTES.PRODUCTS}/${productCart.product.id}`"
                   >
                     <NuxtImg
                       :src="productCart.product.image_url"
@@ -88,7 +87,7 @@ const remainProductCart = computed(() => {
                         x{{ productCart.quantity }}
                       </div>
                     </div>
-                  </div>
+                  </NuxtLink>
                 </div>
               </div>
               <div
@@ -139,36 +138,36 @@ const remainProductCart = computed(() => {
             My Profile
           </div>
           <div class="flex flex-col gap-2">
-            <div
+            <NuxtLink
               class="item-profile"
-              @click="() => router.push(ROUTES.ORDERS)"
+              :to="ROUTES.ORDERS"
             >
               <UIcon
                 name="i-heroicons-cube"
                 color="gray"
               />
               Orders
-            </div>
-            <div
+            </NuxtLink>
+            <NuxtLink
               class="item-profile"
-              @click="() => router.push(ROUTES.ACCOUNT)"
+              :to="ROUTES.ACCOUNT"
             >
               <UIcon
                 name="i-heroicons-user"
                 color="gray"
               />
               Account
-            </div>
-            <div
+            </NuxtLink>
+            <NuxtLink
               class="item-profile"
-              @click="() => router.push(ROUTES.ACCOUNT + ROUTES.SHOP)"
+              :to="ROUTES.ACCOUNT + ROUTES.SHOP"
             >
               <UIcon
                 name="i-heroicons-building-storefront"
                 color="gray"
               />
               Manage Shop
-            </div>
+            </NuxtLink>
             <div
               class="item-profile"
               @click="handleLogout"
