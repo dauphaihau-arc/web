@@ -135,6 +135,8 @@ async function onSubmit(event: FormSubmitEvent<StateSubmit>) {
     return
   }
   formRef.value.clear()
+  const isBuyNow = state.isBuyNow
+  state.isBuyNow = false
 
   if (!inventorySelectedModel.value?.id) {
     consola.error('inventory_id be undefined')
@@ -145,7 +147,7 @@ async function onSubmit(event: FormSubmitEvent<StateSubmit>) {
     inventory_id: inventorySelectedModel.value.id,
     quantity: event.data.quantity,
   }
-  if (state.isBuyNow) {
+  if (isBuyNow) {
     body.is_temp = true
     const response = await addProductToCart(body)
     if (response.cart === null || !response.cart?.id) {
@@ -169,7 +171,10 @@ async function onSubmit(event: FormSubmitEvent<StateSubmit>) {
     return
   }
   queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], response)
-  navigateTo(ROUTES.CART)
+  toast.add({
+    ...toastCustom.success,
+    title: 'Added to cart',
+  })
 }
 
 // ------ Side effects
@@ -269,8 +274,9 @@ watch(
         variant="soft"
         type="submit"
         :disabled="isPendingAddProductToCart"
+        @click="state.isBuyNow = false"
       >
-        Add to card
+        Add to cart
       </UButton>
       <UButton
         size="xl"
