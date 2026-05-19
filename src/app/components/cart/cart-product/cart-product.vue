@@ -93,7 +93,7 @@ const goToDetailProduct = () => {
     </div>
 
     <NuxtImg
-      :src="`/assetHost/${props.productCart?.product?.image_url}`"
+      :src="props.productCart?.product?.image_url"
       width="180"
       height="180"
       class="max-h-[180px] max-w-[180px] cursor-pointer rounded"

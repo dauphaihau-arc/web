@@ -72,7 +72,7 @@ const remainProductCart = computed(() => {
                     @click="() => router.push(`${ROUTES.PRODUCTS}/${productCart.product.id}`)"
                   >
                     <NuxtImg
-                      :src="`/assetHost/${productCart.product.image_url}`"
+                      :src="productCart.product.image_url"
                       width="70"
                       height="70"
                       class="rounded"
