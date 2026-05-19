@@ -36,20 +36,20 @@ const productWhoMadeOpts = [
 
 const defaultValuesState = computed(() => {
   const base = {
-    isDigital: 'all',
+    is_digital: 'all',
     price: 'all',
-    whoMade: 'all',
+    who_made: 'all',
   }
 
-  const isDigital = route.query.isDigital
+  const isDigital = route.query.is_digital
   if (isDigital) {
     const found = isDigitalOpts.find(item => item.value.toString() === isDigital)
-    base.isDigital = (found?.value && found.value) || 'all'
+    base.is_digital = (found?.value && found.value) || 'all'
   }
-  const whoMade = route.query.whoMade
+  const whoMade = route.query.who_made
   if (whoMade) {
     const found = productWhoMadeOpts.find(item => item.value === whoMade)
-    base.whoMade = (found?.value && found.value) || 'all'
+    base.who_made = (found?.value && found.value) || 'all'
   }
   // const order = route.query['order'];
   // if (order) {
@@ -65,14 +65,14 @@ const state = reactive(defaultValuesState.value)
 type StateKeys = keyof typeof defaultValuesState.value
 
 watch(state, () => {
-  const routeQuery = { ...route.query } as typeof defaultValuesState.value
+  const routeQuery = { ...route.query } as Record<string, string>
   Object.keys(state).forEach((key) => {
     if (state[key as StateKeys] !== 'all') {
-      routeQuery[key as StateKeys] = state[key as StateKeys]
+      routeQuery[key] = state[key as StateKeys]
     }
     else {
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-      delete routeQuery[key as StateKeys]
+      delete routeQuery[key]
     }
   })
   router.push({ query: routeQuery })
@@ -83,22 +83,22 @@ watch(state, () => {
   <div>
     <UFormGroup
       label="Item format"
-      name="isDigital"
+      name="is_digital"
       class="mb-4"
     >
       <RadioGroupInput
-        v-model="state.isDigital"
+        v-model="state.is_digital"
         :options="isDigitalOpts"
       />
     </UFormGroup>
 
     <UFormGroup
       label="Item type"
-      name="whoMade"
+      name="who_made"
       class="mb-4"
     >
       <RadioGroupInput
-        v-model="state.whoMade"
+        v-model="state.who_made"
         :options="productWhoMadeOpts"
       />
     </UFormGroup>
