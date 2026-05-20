@@ -43,13 +43,13 @@ watch(() => page.value, () => {
 
 <template>
   <div class="pt-12">
-    <div class="mb-4 flex items-center justify-between">
+    <div class="sticky top-3 z-[2] mb-4 flex items-center justify-between bg-white py-2">
       <CategoriesBreadcrumb :total-products="dataGetProducts?.meta.total || 0" />
       <SortProductsBy />
     </div>
 
-    <div class="flex gap-12">
-      <div class="min-w-[200px] max-w-[200px]">
+    <div class="flex items-start gap-12">
+      <div class="sticky top-28 min-w-[200px] max-w-[200px]">
         <SubCategories />
         <FilterProducts />
       </div>
