@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ResponseGetProductsProduct } from '~/shared/types/request-api/product'
 import { PRODUCT_CONFIG } from '~/shared/config/enums/product'
-import { getProductDetailPath } from '~/shared/utils/product-route'
+import { routes } from '~/shared/navigation/routes'
 
 const { product } = defineProps<{
   product: ResponseGetProductsProduct
@@ -13,7 +13,7 @@ const router = useRouter()
 <template>
   <div
     class="flex cursor-pointer flex-col gap-2"
-    @click="() => router.push(getProductDetailPath(product))"
+    @click="() => router.push(routes.productDetail(product.shop.slug, product.slug))"
   >
     <NuxtImg
       :src="product.image?.url"

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ResponseGetProductsProduct } from '~/shared/types/request-api/product'
-import { getProductDetailPath } from '~/shared/utils/product-route'
+import { routes } from '~/shared/navigation/routes'
 
 const props = defineProps<{
   product: ResponseGetProductsProduct
@@ -15,7 +15,7 @@ const props = defineProps<{
       'relative flex cursor-pointer flex-col gap-2',
       props.fill ? 'h-full' : '',
     ]"
-    :to="getProductDetailPath(props.product)"
+    :to="routes.productDetail(props.product.shop.slug, props.product.slug)"
   >
     <NuxtImg
       :src="props.product.image?.url"

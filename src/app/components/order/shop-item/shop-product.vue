@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import VariantsProduct from './variants-product.vue'
 import type { ResponseGetOrderShopsProduct } from '~/shared/types/request-api/order'
-import { getProductDetailPath } from '~/shared/utils/product-route'
+import { routes } from '~/shared/navigation/routes'
 
 const { productOrder } = defineProps<{
   productOrder: ResponseGetOrderShopsProduct
@@ -32,7 +32,7 @@ const { productOrder } = defineProps<{
         </div>
         <div class="flex items-center gap-3">
           <UButton
-            :to="getProductDetailPath(productOrder.product)"
+            :to="routes.productDetail(productOrder.product.shop.slug, productOrder.product.slug)"
             size="md"
           >
             Buy this again

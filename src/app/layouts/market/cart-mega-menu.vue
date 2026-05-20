@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import { ROUTES } from '~/shared/config/enums/routes'
 import RegisterLoginDialog from '~/app/components/dialogs/login-register/register-login-dialog.vue'
+import { routes } from '~/shared/navigation/routes'
 import { useLogout } from '~/shared/server-state/auth'
 import { useGetCurrentUser } from '~/shared/server-state/user'
 import { useGetCart } from '~/shared/server-state/cart'
-import { getProductDetailPath } from '~/shared/utils/product-route'
 
 const props = defineProps<{ show: boolean }>()
 
@@ -50,7 +49,7 @@ const remainProductCart = computed(() => {
           </div>
           <UButton
             v-if="dataUserAuth?.user"
-            :to="ROUTES.CART"
+            :to="routes.cart()"
             label="Review Cart"
           >
             <template #trailing>
@@ -69,7 +68,7 @@ const remainProductCart = computed(() => {
                 >
                   <NuxtLink
                     class="flex items-center gap-6"
-                    :to="getProductDetailPath(productCart.product)"
+                    :to="routes.productDetail(productCart.product.shop.slug, productCart.product.slug)"
                   >
                     <NuxtImg
                       :src="productCart.product.image_url"
@@ -141,7 +140,7 @@ const remainProductCart = computed(() => {
           <div class="flex flex-col gap-2">
             <NuxtLink
               class="item-profile"
-              :to="ROUTES.ORDERS"
+              :to="routes.orders()"
             >
               <UIcon
                 name="i-heroicons-cube"
@@ -151,7 +150,7 @@ const remainProductCart = computed(() => {
             </NuxtLink>
             <NuxtLink
               class="item-profile"
-              :to="ROUTES.ACCOUNT"
+              :to="routes.account()"
             >
               <UIcon
                 name="i-heroicons-user"
@@ -161,7 +160,7 @@ const remainProductCart = computed(() => {
             </NuxtLink>
             <NuxtLink
               class="item-profile"
-              :to="ROUTES.ACCOUNT + ROUTES.SHOP"
+              :to="routes.accountShop()"
             >
               <UIcon
                 name="i-heroicons-building-storefront"

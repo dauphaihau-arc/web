@@ -5,10 +5,10 @@ import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import FixedPagination from '~/app/components/account/shop/fixed-pagination.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { ProductVariantTypes } from '~/shared/config/enums/product'
+import { routes } from '~/shared/navigation/routes'
 import type { Product } from '~/shared/types/product'
 import type { ElementType } from '~/shared/types/utils'
 import { useShopDeleteProduct, useShopGetProducts, useGetMyShop } from '~/shared/server-state/shop'
-import { getProductDetailPath } from '~/shared/utils/product-route'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 
@@ -93,13 +93,7 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
           return
         }
 
-        navigateTo(getProductDetailPath({
-          id: row.id,
-          slug: row.slug,
-          shop: {
-            slug: dataMyShop.value.slug,
-          },
-        }), {
+        navigateTo(routes.productDetail(dataMyShop.value.slug, row.slug), {
           open: { target: '_blank' },
         })
       },
