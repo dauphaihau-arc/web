@@ -5,6 +5,7 @@ import { shopHeaderCreateLinks } from '~/shared/navigation/menu'
 const itemsHeaderDropdown: DropdownItem[][] = [
   shopHeaderCreateLinks.map(item => ({
     ...item,
+    shortcuts: [...item.shortcuts],
     click: () => navigateTo(item.to),
   })),
 ]
