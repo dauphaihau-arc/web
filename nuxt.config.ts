@@ -78,8 +78,6 @@ export default defineNuxtConfig({
       apiBaseURL: process.env.API_BASE_URL,
       apiVersion: process.env.API_VERSION,
       assetHost: process.env.ASSET_HOST,
-      accessTokenExpirationMins: process.env.ACCESS_TOKEN_EXPIRATION_MINS,
-      refreshTokenExpirationDays: process.env.REFRESH_TOKEN_EXPIRATION_DAYS,
     },
   },
 

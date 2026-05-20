@@ -2,12 +2,13 @@
 import { FetchError } from 'ofetch'
 import { StatusCodes } from 'http-status-codes'
 import { z } from 'zod'
-import type { FormSubmitEvent } from '#ui/types'
+import type { FormError, FormSubmitEvent } from '#ui/types'
 import { userSchema } from '~/shared/schemas/user.schema'
 import type { User } from '~/shared/types/user'
 import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys'
-import { useRegister } from '~/shared/server-state/auth'
+import { useAuthClientConfig, useRegister } from '~/shared/server-state/auth'
 import type { RegisterBody } from '~/shared/types/auth'
+import { appendPasswordError } from '~/shared/utils/password-policy'
 
 const invalidEmails: string[] = []
 const formRef = ref()
@@ -17,13 +18,31 @@ const stateSubmit: Partial<RegisterBody> = reactive({})
 const registerSchema = z.object({
   display_name: userSchema.shape.name,
   email: userSchema.shape.email,
-  password: userSchema.shape.password,
 })
 
 const {
   mutateAsync: register,
   isPending: isPendingRegister,
 } = useRegister()
+const { data: authClientConfig, isLoading: isLoadingAuthClientConfig } = useAuthClientConfig()
+
+const validateForm = (stateValidate: Partial<RegisterBody> & { display_name?: string }): FormError[] => {
+  const errors: FormError[] = []
+
+  const parsed = registerSchema.safeParse(stateValidate)
+  if (!parsed.success) {
+    for (const issue of parsed.error.issues) {
+      const path = issue.path[0]
+      if (typeof path === 'string') {
+        errors.push({ path, message: issue.message })
+      }
+    }
+  }
+
+  appendPasswordError(errors, 'password', stateValidate.password, authClientConfig.value)
+
+  return errors
+}
 
 async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
   formRef.value.clear()
@@ -75,7 +94,7 @@ async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
       <UForm
         ref="formRef"
         :validate-on="['submit']"
-        :schema="registerSchema"
+        :validate="validateForm"
         :state="stateSubmit"
         @submit="onSubmit"
       >
@@ -117,7 +136,7 @@ async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
         </UFormGroup>
 
         <UButton
-          :loading="isPendingRegister"
+          :loading="isPendingRegister || isLoadingAuthClientConfig"
           size="xl"
           block
           type="submit"

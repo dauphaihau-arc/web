@@ -6,18 +6,30 @@ import type { ResponseBaseGetList } from '~/shared/types/common';
 import type { CreateBodyUserAddressBody, UserAddress } from '~/shared/types/user-address';
 import type { UserAuthenticated } from '~/shared/types/auth';
 import { toastCustom } from '~/shared/config/toast';
+import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys';
+
+export function hasStoredSession() {
+  return Boolean(
+    localStorage[LocalStorageKeys.ACCESS_TOKEN_EXP] ||
+    localStorage[LocalStorageKeys.REFRESH_TOKEN_EXP]
+  );
+}
+
+export const currentUserQueryOptions = {
+  queryKey: ['current-user'],
+  retry: false,
+  queryFn: async () => {
+    const user = await apiClient.get<UserAuthenticated>(
+      `${RESOURCES.AUTH}/me`
+    );
+    return { user };
+  },
+} as const;
 
 export function useGetCurrentUser() {
   return useQuery({
-    enabled: false,
-    queryKey: ['current-user'],
-    retry: false,
-    queryFn: async () => {
-      const user = await apiClient.get<UserAuthenticated>(
-        `${RESOURCES.AUTH}/me`
-      );
-      return { user };
-    },
+    enabled: hasStoredSession(),
+    ...currentUserQueryOptions,
   });
 }
 

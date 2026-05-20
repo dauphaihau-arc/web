@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { FormSubmitEvent } from '#ui/types'
-import { userSchema } from '~/shared/schemas/user.schema'
-import { useResetPassword } from '~/shared/server-state/auth'
+import type { FormError, FormSubmitEvent } from '#ui/types'
+import { useAuthClientConfig, useResetPassword } from '~/shared/server-state/auth'
 import { ROUTES } from '~/shared/config/enums/routes'
 import type { ResetPasswordBody } from '~/shared/types/auth'
+import { appendPasswordError } from '~/shared/utils/password-policy'
 
 const authStore = useAuthStore()
 
@@ -17,6 +17,15 @@ const {
   mutateAsync: resetPassword,
   isPending: isPendingResetPassword,
 } = useResetPassword(authStore.tokenResetPassword)
+const { data: authClientConfig, isLoading: isLoadingAuthClientConfig } = useAuthClientConfig()
+
+const validateForm = (stateValidate: Partial<ResetPasswordBody>): FormError[] => {
+  const errors: FormError[] = []
+
+  appendPasswordError(errors, 'password', stateValidate.password, authClientConfig.value)
+
+  return errors
+}
 
 async function onSubmit(event: FormSubmitEvent<ResetPasswordBody>) {
   formRef.value.clear()
@@ -62,7 +71,7 @@ async function onSubmit(event: FormSubmitEvent<ResetPasswordBody>) {
           <UForm
             ref="formRef"
             :validate-on="['submit']"
-            :schema="userSchema.pick({ password: true })"
+            :validate="validateForm"
             :state="stateSubmit"
             @submit="onSubmit"
           >
@@ -92,7 +101,7 @@ async function onSubmit(event: FormSubmitEvent<ResetPasswordBody>) {
             </UFormGroup>
 
             <UButton
-              :loading="isPendingResetPassword"
+              :loading="isPendingResetPassword || isLoadingAuthClientConfig"
               size="xl"
               block
               type="submit"

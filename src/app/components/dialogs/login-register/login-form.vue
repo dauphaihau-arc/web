@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { StatusCodes } from 'http-status-codes'
 import { FetchError } from 'ofetch'
-import type { FormSubmitEvent } from '#ui/types'
+import type { FormError, FormSubmitEvent } from '#ui/types'
 import { userSchema } from '~/shared/schemas/user.schema'
 import type { User } from '~/shared/types/user'
 import { ROUTES } from '~/shared/config/enums/routes'
-import { useLogin } from '~/shared/server-state/auth'
+import { useAuthClientConfig, useLogin } from '~/shared/server-state/auth'
 import type { LoginBody } from '~/shared/types/auth'
+import { appendPasswordError } from '~/shared/utils/password-policy'
 
 const formRef = ref()
 const unknownErrorServerMsg = ref('')
@@ -17,6 +18,23 @@ const {
   mutateAsync: login,
   isPending: isPendingLogin,
 } = useLogin()
+const { data: authClientConfig, isLoading: isLoadingAuthClientConfig } = useAuthClientConfig()
+
+const validateForm = (stateValidate: Partial<LoginBody>): FormError[] => {
+  const errors: FormError[] = []
+
+  const emailValidation = userSchema.shape.email.safeParse(stateValidate.email)
+  if (!emailValidation.success) {
+    const issue = emailValidation.error.issues[0]
+    if (issue) {
+      errors.push({ path: 'email', message: issue.message })
+    }
+  }
+
+  appendPasswordError(errors, 'password', stateValidate.password, authClientConfig.value)
+
+  return errors
+}
 
 async function onSubmit(event: FormSubmitEvent<LoginBody>) {
   const { email, password } = event.data
@@ -61,7 +79,7 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
       <UForm
         ref="formRef"
         :validate-on="['submit']"
-        :schema="userSchema.pick({ email: true, password: true })"
+        :validate="validateForm"
         :state="stateSubmit"
         @submit="onSubmit"
       >
@@ -98,7 +116,7 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
         </NuxtLink>
 
         <UButton
-          :loading="isPendingLogin"
+          :loading="isPendingLogin || isLoadingAuthClientConfig"
           size="xl"
           block
           type="submit"

@@ -1,4 +1,5 @@
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
+import type { QueryClient } from '@tanstack/vue-query';
 import dayjs from 'dayjs';
 import { RESOURCES } from '~/shared/config/enums/resources';
 import type { User } from '~/shared/types/user';
@@ -7,15 +8,22 @@ import { routes } from '~/shared/navigation/routes';
 import { toastCustom } from '~/shared/config/toast';
 import { apiClient } from '~/shared/lib/api-client';
 import type {
-  LoginBody, RegisterBody, UserAuthenticated
+  AuthClientConfig, LoginBody, RegisterBody, UserAuthenticated
 } from '~/shared/types/auth';
 import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys';
 import { useGetCart } from '~/shared/server-state/cart';
+import { DEFAULT_AUTH_CLIENT_CONFIG } from '~/shared/utils/password-policy';
 
-export const setExpTokensToLS = () => {
-  const config = useRuntimeConfig();
-  localStorage[LocalStorageKeys.ACCESS_TOKEN_EXP] = dayjs().add(Number(config.public.accessTokenExpirationMins), 'minutes');
-  localStorage[LocalStorageKeys.REFRESH_TOKEN_EXP] = dayjs().add(Number(config.public.refreshTokenExpirationDays), 'days');
+export const setExpTokensToLS = (queryClient?: Pick<QueryClient, 'getQueryData'>) => {
+  const authClientConfig = queryClient?.getQueryData<AuthClientConfig>(['auth', 'client-config']) ??
+    DEFAULT_AUTH_CLIENT_CONFIG;
+
+  localStorage[LocalStorageKeys.ACCESS_TOKEN_EXP] = dayjs()
+    .add(authClientConfig.session.access_token_ttl_seconds, 'seconds')
+    .toISOString();
+  localStorage[LocalStorageKeys.REFRESH_TOKEN_EXP] = dayjs()
+    .add(authClientConfig.session.refresh_token_ttl_seconds, 'seconds')
+    .toISOString();
 };
 
 export const clearExpTokensInLS = () => {
@@ -42,7 +50,7 @@ export function useRegister() {
     onSuccess: (data) => {
       if (data?.user) {
         queryClient.setQueryData(['current-user'], { user: data.user });
-        setExpTokensToLS();
+        setExpTokensToLS(queryClient);
       }
     },
   });
@@ -63,7 +71,7 @@ export function useLogin() {
     onSuccess: (data) => {
       if (data?.user) {
         queryClient.setQueryData(['current-user'], { user: data.user });
-        setExpTokensToLS();
+        setExpTokensToLS(queryClient);
         getCart();
       }
     },
@@ -127,6 +135,21 @@ export function useVerifyToken(
   });
 }
 
+export const authClientConfigQueryOptions = {
+  queryKey: ['auth', 'client-config'],
+  queryFn: () => {
+    return apiClient.get<AuthClientConfig>(`${RESOURCES.AUTH}/client-config`, undefined, undefined, {
+      retryOnWakeUp: true,
+    });
+  },
+  staleTime: 1000 * 60 * 60,
+  gcTime: 1000 * 60 * 60 * 24,
+} as const;
+
+export function useAuthClientConfig() {
+  return useQuery(authClientConfigQueryOptions);
+}
+
 export function useResetPassword(token: string) {
   const authStore = useAuthStore();
   const queryClient = useQueryClient();
@@ -143,7 +166,7 @@ export function useResetPassword(token: string) {
     onSuccess: (data) => {
       if (data?.user) {
         queryClient.setQueryData(['current-user'], { user: data.user });
-        setExpTokensToLS();
+        setExpTokensToLS(queryClient);
         authStore.tokenResetPassword = '';
         getCart();
       }
