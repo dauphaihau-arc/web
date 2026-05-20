@@ -3,58 +3,16 @@ import LayoutShopSidebarSubLinks from './sidebar-sub-links.vue'
 import type { LinkItem } from './sidebar.types'
 import type { DropdownItem } from '#ui/types'
 import avatarDefault from '~/app/assets/images/avatar-default.jpg'
-import { ROUTES } from '~/shared/config/enums/routes'
+import { shopSidebarLinks } from '~/shared/navigation/menu'
+import { routes as appRoutes } from '~/shared/navigation/routes'
 import { useLogout } from '~/shared/server-state/auth'
 import { useGetCurrentUser } from '~/shared/server-state/user'
 
-const routes = useRoute()
+const route = useRoute()
 const { data: dataUserAuth } = useGetCurrentUser()
 const { mutate: logout } = useLogout()
 
-const {
-  ACCOUNT, SHOP, PRODUCTS, COUPONS,
-} = ROUTES
-
-const itemsLinkSidebar: LinkItem[] = [
-  {
-    title: 'Dashboard',
-    route: `${ACCOUNT}${SHOP}/dashboard`,
-    disabled: true,
-  },
-  {
-    title: 'Products',
-    route: ACCOUNT + SHOP + PRODUCTS,
-  },
-  {
-    title: 'Messages',
-    route: `${ACCOUNT}${SHOP}/messages`,
-    disabled: true,
-  },
-  {
-    title: 'Orders & Shipping',
-    route: `${ACCOUNT}${SHOP}/orders`,
-    disabled: true,
-  },
-  {
-    title: 'Marketing',
-    sub: [
-      {
-        title: 'Ads',
-        disabled: true,
-        route: `${ACCOUNT}${SHOP}/ads`,
-      },
-      {
-        title: 'Coupons',
-        route: `${ACCOUNT}${SHOP}${COUPONS}`,
-      },
-    ],
-  },
-  {
-    title: 'Finances',
-    route: `${ACCOUNT}${SHOP}/finances`,
-    disabled: true,
-  },
-]
+const itemsLinkSidebar: LinkItem[] = shopSidebarLinks
 
 const isOpen = ref(false)
 
@@ -66,7 +24,7 @@ const itemsShopDropdown: DropdownItem[][] = [
         src: avatarDefault,
       },
       click: () => {
-        navigateTo(ROUTES.ACCOUNT)
+        navigateTo(appRoutes.account())
       },
     },
   ],
@@ -80,7 +38,7 @@ const itemsShopDropdown: DropdownItem[][] = [
       label: 'Arc Marketplace',
       icon: 'i-heroicons-arrow-right-circle-20-solid',
       click: () => {
-        navigateTo(ROUTES.HOME)
+        navigateTo(appRoutes.home())
       },
     },
   ],
@@ -126,7 +84,7 @@ const itemsShopDropdown: DropdownItem[][] = [
         :key="index"
       >
         <LayoutShopSidebarSubLinks
-          v-if="item?.sub || !item.route"
+          v-if="item?.sub || !item.to"
           :data="item"
         />
 
@@ -136,7 +94,7 @@ const itemsShopDropdown: DropdownItem[][] = [
         >
           <!--          :class="[item.disabled && 'opacity-50']" -->
           <UDivider
-            :ui="{ border: { base: routes.path.indexOf(item.route) > -1 ? 'border-primary' : 'border-transparent' } }"
+            :ui="{ border: { base: item.matchPath && route.path.startsWith(item.matchPath) ? 'border-primary' : 'border-transparent' } }"
             orientation="vertical"
             class="h-auto w-[3px]"
             size="sm"
@@ -147,14 +105,14 @@ const itemsShopDropdown: DropdownItem[][] = [
             :prevent="!item.disabled"
           >
             <NuxtLink
-              :to="item?.disabled ? '' : item.route"
+              :to="item?.disabled ? '' : item.to"
               prefetch
               class="link-default link-theme ml-2 mr-4 w-full"
               :class="[
                 'pl-5',
                 item.disabled
                   ? 'cursor-not-allowed opacity-50 text-customGray-900'
-                  : routes.path.includes(item.route) ? 'link-active' : 'link-inactive',
+                  : item.matchPath && route.path.startsWith(item.matchPath) ? 'link-active' : 'link-inactive',
               ]"
             >
               {{ item.title }}

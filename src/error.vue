@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ROUTES } from '~/shared/config/enums/routes'
+import { routes } from '~/shared/navigation/routes'
 
 interface IError {
   statusCode: number
@@ -24,7 +24,7 @@ const errorMessage = computed(() => (
 ))
 
 const handleError = () => {
-  clearError({ redirect: ROUTES.HOME })
+  clearError({ redirect: routes.home() })
 }
 
 useHead({

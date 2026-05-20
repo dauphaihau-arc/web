@@ -1,39 +1,12 @@
 <script setup lang="ts">
 import type { DropdownItem } from '#ui/types'
-import { ROUTES } from '~/shared/config/enums/routes'
-import { CreateCouponPageTypes } from '~/shared/config/enums/shop'
-
-const {
-  ACCOUNT, SHOP, PRODUCTS, COUPONS,
-} = ROUTES
+import { shopHeaderCreateLinks } from '~/shared/navigation/menu'
 
 const itemsHeaderDropdown: DropdownItem[][] = [
-  [
-    {
-      label: 'Create Product',
-      icon: 'i-heroicons-cube',
-      shortcuts: ['P'],
-      click: () => {
-        navigateTo(`${ACCOUNT}${SHOP}${PRODUCTS}/new`)
-      },
-    },
-    {
-      label: 'Create Coupon',
-      icon: 'i-heroicons-ticket',
-      shortcuts: ['C'],
-      click: () => {
-        navigateTo(`${ACCOUNT}${SHOP}${COUPONS}/new?type=${CreateCouponPageTypes.PROMO_CODE}`)
-      },
-    },
-    {
-      label: 'Run Sale',
-      icon: 'i-hugeicons:sale-tag-01',
-      shortcuts: ['S'],
-      click: () => {
-        navigateTo(`${ACCOUNT}${SHOP}${COUPONS}/new?type=${CreateCouponPageTypes.SALE}`)
-      },
-    },
-  ],
+  shopHeaderCreateLinks.map(item => ({
+    ...item,
+    click: () => navigateTo(item.to),
+  })),
 ]
 </script>
 

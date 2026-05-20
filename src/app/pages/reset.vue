@@ -4,7 +4,7 @@ import ForgetPasswordForm from '~/app/components/reset/forget-password-form.vue'
 import ResetPasswordCard from '~/app/components/reset/reset-password-card.vue'
 import ResetPasswordForm from '~/app/components/reset/reset-password-form.vue'
 import SendEmailSuccess from '~/app/components/reset/send-email-success.vue'
-import { ROUTES } from '~/shared/config/enums/routes'
+import { routes } from '~/shared/navigation/routes'
 import { useVerifyToken } from '~/shared/server-state/auth'
 import { ResetPasswordViews } from '~/shared/config/enums/common'
 
@@ -18,7 +18,7 @@ useVerifyToken(token, {
   onResponse({ response }) {
     if (response.status === StatusCodes.OK) {
       authStore.tokenResetPassword = token
-      navigateTo('/reset?v=1')
+      navigateTo(routes.reset({ v: 1 }))
       currentView.value = ResetPasswordViews.RESET_PASSWORD
     }
     else {
@@ -35,7 +35,7 @@ const changeView = (step: ResetPasswordViews) => {
 
 onMounted(() => {
   if (route.query?.v) {
-    navigateTo(ROUTES.RESET)
+    navigateTo(routes.reset())
   }
 })
 </script>

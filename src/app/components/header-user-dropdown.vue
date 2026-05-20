@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ROUTES } from '~/shared/config/enums/routes'
+import { routes } from '~/shared/navigation/routes'
 import { useGetCurrentUser } from '~/shared/server-state/user'
 
 const { data: dataUserAuth } = useGetCurrentUser()
@@ -27,7 +27,7 @@ const { data: dataUserAuth } = useGetCurrentUser()
           <UButton
             color="gray"
             variant="ghost"
-            :to="ROUTES.ACCOUNT"
+            :to="routes.account()"
           >
             <div class="flex items-center gap-3">
               <img

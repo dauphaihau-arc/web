@@ -1,9 +1,9 @@
-import { ROUTES } from '~/shared/config/enums/routes';
 import type { Cart } from '~/shared/types/cart';
+import { routes } from '~/shared/navigation/routes';
 
 export default defineNuxtRouteMiddleware((to) => {
   const cartId = to.query['c'] as Cart['id'];
   if (!cartId) {
-    return navigateTo(ROUTES.HOME);
+    return navigateTo(routes.home());
   }
 });

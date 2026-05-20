@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { RESOURCES } from '~/shared/config/enums/resources';
 import type { User } from '~/shared/types/user';
 import { TokenTypes } from '~/shared/config/enums/token';
-import { ROUTES } from '~/shared/config/enums/routes';
+import { routes } from '~/shared/navigation/routes';
 import { toastCustom } from '~/shared/config/toast';
 import { apiClient } from '~/shared/lib/api-client';
 import type {
@@ -86,7 +86,7 @@ export function useLogout() {
       queryClient.setQueryData(['current-user'], { user: null });
       queryClient.setQueryData(['get-cart', 'my-cart'], null);
       clearExpTokensInLS();
-      navigateTo(ROUTES.HOME);
+      navigateTo(routes.home());
     },
     onError() {
       toast.add({

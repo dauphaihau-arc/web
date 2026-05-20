@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import LayoutMarketFooter from './footer.vue'
 import LayoutMarketHeader from './header.vue'
-import { ROUTES } from '~/shared/config/enums/routes'
+import { accountSidebarLinks } from '~/shared/navigation/menu'
+import { routePaths } from '~/shared/navigation/routes'
 
 const route = useRoute()
 
@@ -9,42 +10,11 @@ onMounted(() => {
   window.scrollTo(0, 0)
 })
 
-const linksAccountSidebar = [
-  {
-    label: 'Account',
-    icon: 'i-heroicons-user',
-    to: ROUTES.ACCOUNT,
-  },
-  {
-    label: 'Shipping',
-    icon: 'i-heroicons-map-pin',
-    to: ROUTES.ACCOUNT + ROUTES.ADDRESSES,
-  },
-  {
-    label: 'Payment',
-    disabled: true,
-    icon: 'i-heroicons-credit-card',
-    to: ROUTES.HOME,
-  },
-  {
-    label: 'Privacy',
-    disabled: true,
-    icon: 'i-heroicons-shield-check',
-    to: ROUTES.HOME,
-  },
-  {
-    label: 'Preferences',
-    disabled: true,
-    icon: 'i-heroicons-cog',
-    to: ROUTES.HOME,
-  },
-]
-
 const isAccountRoute = ref(false)
 
 watch(() => route.path, () => {
-  isAccountRoute.value = route.path.includes(ROUTES.ACCOUNT)
-})
+  isAccountRoute.value = route.path.startsWith(routePaths.account)
+}, { immediate: true })
 </script>
 
 <template>
@@ -57,7 +27,7 @@ watch(() => route.path, () => {
       >
         <UVerticalNavigation
           class="h-fit w-1/5 flex-none"
-          :links="linksAccountSidebar"
+          :links="accountSidebarLinks"
           :ui="{
             wrapper: 'border-s border-gray-200 dark:border-gray-800 space-y-2',
             base: 'group block border-s -ms-px leading-6 before:hidden py-2 flex items-center',

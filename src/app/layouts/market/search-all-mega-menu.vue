@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useGetProducts } from '~/shared/server-state/product'
-import { ROUTES } from '~/shared/config/enums/routes'
+import { routes } from '~/shared/navigation/routes'
 
 const props = defineProps<{ show: boolean }>()
 
@@ -31,12 +31,7 @@ const {
 })
 
 const redirectSearch = () => {
-  router.push({
-    path: ROUTES.SEARCH,
-    query: {
-      search: state.search,
-    },
-  })
+  router.push(routes.search({ search: state.search }))
 }
 
 watchDebounced(

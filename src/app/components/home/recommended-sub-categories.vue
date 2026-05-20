@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Category } from '~/shared/types/category'
 import { useGetCategories } from '~/shared/server-state/category'
-import { ROUTES } from '~/shared/config/enums/routes'
+import { getRoutePath, routes } from '~/shared/navigation/routes'
 
 const marketStore = useMarketStore()
 
@@ -31,8 +31,9 @@ watch(errorGetCategories, (value) => {
 const redirectPage = (subCategory: Category) => {
   if (marketStore.categoriesBreadcrumb && marketStore.userActivities?.rootCategoryProductVisited?.name) {
     const lower = (str: string) => str.replaceAll(' ', '-').toLowerCase()
-    const toRootCategory = `${ROUTES.C}/${lower(marketStore.userActivities.rootCategoryProductVisited.name)}`
-    const toSubCategory = `${toRootCategory}/${lower(subCategory.name)}`
+    const rootCategorySlug = lower(marketStore.userActivities.rootCategoryProductVisited.name)
+    const toRootCategory = getRoutePath(routes.category(rootCategorySlug))
+    const toSubCategory = getRoutePath(routes.category([rootCategorySlug, lower(subCategory.name)]))
 
     marketStore.categoriesBreadcrumb = [
       {

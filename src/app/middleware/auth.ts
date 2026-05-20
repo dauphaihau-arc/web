@@ -1,5 +1,5 @@
-import { ROUTES } from '~/shared/config/enums/routes';
 import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys';
+import { routes } from '~/shared/navigation/routes';
 import { useGetCurrentUser } from '~/shared/server-state/user';
 import { isBackendWakeUpError } from '~/shared/composables/use-backend-status';
 
@@ -13,14 +13,14 @@ export default defineNuxtRouteMiddleware(async () => {
   const hasAccessToken = !!localStorage[LocalStorageKeys.ACCESS_TOKEN_EXP];
 
   if (!hasAccessToken) {
-    return navigateTo(ROUTES.HOME);
+    return navigateTo(routes.home());
   }
 
   try {
     const response = await refetch({ throwOnError: true });
 
     if (!response.data?.user) {
-      return navigateTo(ROUTES.HOME);
+      return navigateTo(routes.home());
     }
   }
   catch (error) {
@@ -29,6 +29,6 @@ export default defineNuxtRouteMiddleware(async () => {
       return;
     }
 
-    return navigateTo(ROUTES.HOME);
+    return navigateTo(routes.home());
   }
 });

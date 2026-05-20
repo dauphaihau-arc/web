@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { consola } from 'consola'
 import type { FormError, FormSubmitEvent } from '#ui/types'
-import { ROUTES } from '~/shared/config/enums/routes'
 import { ProductVariantTypes } from '~/shared/config/enums/product'
 import type { AddProductToCartBody, ResponseGetCart } from '~/shared/types/request-api/cart'
 import RegisterLoginDialog from '~/app/components/dialogs/login-register/register-login-dialog.vue'
+import { routes } from '~/shared/navigation/routes'
 import { useAddProductToCart } from '~/shared/server-state/cart'
 import { useGetCurrentUser } from '~/shared/server-state/user'
 import type { ResponseGetDetailProduct } from '~/shared/types/request-api/product'
@@ -158,7 +158,7 @@ async function onSubmit(event: FormSubmitEvent<StateSubmit>) {
       return
     }
     queryClient.setQueryData<ResponseGetCart>(['get-cart', response.cart.id], response)
-    navigateTo(`${ROUTES.CHECKOUT}?c=${response.cart.id}`)
+    navigateTo(routes.checkout({ c: response.cart.id }))
     return
   }
 

@@ -1,31 +1,36 @@
 <script setup lang="ts">
 import type { LinkItem } from './sidebar.types'
+import { isRouteActive } from '~/shared/navigation/routes'
 
 const { data } = defineProps<{ data: LinkItem }>()
 
-const routes = useRoute()
+const route = useRoute()
 
 const isOpen = ref(false)
 
-const itemsLinkRoutes = Array.isArray(data.sub) && data.sub.map((item) => {
-  return item.route
-})
+const itemsLinkPaths = Array.isArray(data.sub)
+  ? data.sub.flatMap(item => item.matchPath ? [item.matchPath] : [])
+  : false
+
+function isActive(path?: string) {
+  return !!path && route.path.startsWith(path)
+}
 </script>
 
 <template>
-  <div v-if="!itemsLinkRoutes" />
+  <div v-if="!itemsLinkPaths" />
   <div v-else>
     <div
       :class="[
         'link-default w-full cursor-pointer border-l-2 border-transparent pl-2 pr-3 ',
-        new RegExp(itemsLinkRoutes.join('|')).test(routes.path) && '!border-primary border-l-2',
+        itemsLinkPaths.some(path => route.path.startsWith(path)) && '!border-primary border-l-2',
       ]"
       @click="isOpen = !isOpen"
     >
       <div
         class="link-theme flex w-full justify-between"
         :class="[
-          new RegExp(itemsLinkRoutes.join('|')).test(routes.path) ? 'link-active' : 'link-inactive',
+          itemsLinkPaths.some(path => route.path.startsWith(path)) ? 'link-active' : 'link-inactive',
         ]"
       >
         {{ data.title }}
@@ -52,18 +57,20 @@ const itemsLinkRoutes = Array.isArray(data.sub) && data.sub.map((item) => {
               :class="[item.disabled && 'opacity-50']"
             >
               <UDivider
-                :ui="{ border: { base: routes.path.indexOf(item.route as string) > -1 ? 'border-primary' : '' } }"
+                :ui="{ border: { base: isActive(item.matchPath) ? 'border-primary' : '' } }"
                 orientation="vertical"
                 class="h-auto w-4"
               />
 
               <NuxtLink
-                :to="item?.disabled ? '' : item.route"
+                :to="item?.disabled ? '' : item.to"
                 class="link-default link-theme w-full"
                 :class="[
                   item.disabled
                     ? 'cursor-not-allowed text-customGray-900'
-                    : routes.path.indexOf(item.route as string) > -1 ? 'link-active' : 'link-inactive',
+                    : isActive(item.matchPath) || isRouteActive(route.path, item.to || '')
+                      ? 'link-active'
+                      : 'link-inactive',
                 ]"
               >
                 {{ item.title }}

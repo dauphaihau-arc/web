@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import type { Category } from '~/shared/types/category'
-import { ROUTES } from '~/shared/config/enums/routes'
+import { getRoutePath, routes } from '~/shared/navigation/routes'
 import { useGetRootCategories } from '~/shared/server-state/category'
 
 const { data: dataRootCategories } = useGetRootCategories()
 const marketStore = useMarketStore()
 
 const redirectByCategory = (rootCategory: Category) => {
-  const to = `${ROUTES.C}/${rootCategory.name.replaceAll(' ', '-').toLowerCase()}`
+  const to = getRoutePath(routes.category(rootCategory.name.replaceAll(' ', '-').toLowerCase()))
   marketStore.categoriesBreadcrumb = [{ ...rootCategory, to }]
   marketStore.userActivities.rootCategoryProductVisited = rootCategory
   navigateTo(to)

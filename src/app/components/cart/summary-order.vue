@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ORDER_CONFIG } from '~/shared/config/enums/order'
 import { useGetCart } from '~/shared/server-state/cart'
-import { ROUTES } from '~/shared/config/enums/routes'
+import { routes } from '~/shared/navigation/routes'
 
 const {
   isPending: isPendingGetCart,
@@ -39,7 +39,7 @@ const isTotalOrderInvalid = computed(() => {
       block
       class="mx-auto"
       size="xl"
-      @click="router.push(`${ROUTES.CART}${ROUTES.CHECKOUT}`)"
+      @click="router.push(routes.cartCheckout())"
     >
       Proceed to checkout
     </UButton>

@@ -1,5 +1,5 @@
-import { ROUTES } from '~/shared/config/enums/routes';
 import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys';
+import { routePaths, routes } from '~/shared/navigation/routes';
 import { useGetCurrentUser } from '~/shared/server-state/user';
 
 export default defineNuxtRouteMiddleware(async (to, _from) => {
@@ -9,7 +9,7 @@ export default defineNuxtRouteMiddleware(async (to, _from) => {
     void refetch();
   }
 
-  if (data.value?.user && [ROUTES.RESET].includes(to.path as ROUTES)) {
-    return navigateTo(ROUTES.HOME);
+  if (data.value?.user && to.path === routePaths.reset) {
+    return navigateTo(routes.home());
   }
 });

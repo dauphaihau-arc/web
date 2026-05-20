@@ -4,7 +4,7 @@ import { CheckoutNowSteps, type StateCheckoutNow } from '~/shared/types/pages/ch
 import { PaymentTypes } from '~/shared/config/enums/order';
 import type { Coupon } from '~/shared/types/coupon';
 import { CheckoutCartSteps, type StateCheckoutCart } from '~/shared/types/pages/cart/checkout';
-import { ROUTES } from '~/shared/config/enums/routes';
+import { routePaths } from '~/shared/navigation/routes';
 import type { ResponseCreateOrder } from '~/shared/types/request-api/order';
 
 export type AdditionInfoShopCarts = {
@@ -54,9 +54,11 @@ export const useCartStore = defineStore('cart', () => {
   const orderShops = ref<ResponseCreateOrder['order_shops']>([]);
 
   watch(router.currentRoute, () => {
+    const activeCheckoutPaths: string[] = [routePaths.cartCheckout, routePaths.cart];
+
     if (
       additionInfoShopCarts.value.size &&
-      ![`${ROUTES.CART}${ROUTES.CHECKOUT}`, ROUTES.CART].includes(router.currentRoute.value.path)
+      !activeCheckoutPaths.includes(router.currentRoute.value.path)
     ) {
       additionInfoShopCarts.value.clear();
     }
