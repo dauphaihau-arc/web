@@ -4,7 +4,7 @@ import { RESOURCES } from '~/shared/config/enums/resources';
 import { apiClient } from '~/shared/lib/api-client';
 import type {
   ShopGetProductsQueryParams,
-  ResponseShopGetProducts,
+  ResponseShopGetProductsList,
   RequestCreateProductDraftBody,
   RequestUpdateProductBody,
   ResponseShopProductDraft
@@ -185,7 +185,7 @@ export function useShopGetProducts(
     queryKey: ['shop-get-products', queryParams],
     queryFn: async () => {
       const shopId = await resolveMyShopId(queryClient);
-      return apiClient.get<ResponseBaseGetList<ResponseShopGetProducts>>(
+      return apiClient.get<ResponseShopGetProductsList>(
         `${RESOURCES.SHOPS}/${shopId}${RESOURCES.PRODUCTS}`,
         queryParams.value
       );

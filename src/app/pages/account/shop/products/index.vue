@@ -7,10 +7,23 @@ import { ROUTES } from '~/shared/config/enums/routes'
 import { ProductVariantTypes } from '~/shared/config/enums/product'
 import { routes } from '~/shared/navigation/routes'
 import type { Product } from '~/shared/types/product'
+import type { ResponseShopGetProducts } from '~/shared/types/request-api/shop-product'
 import type { ElementType } from '~/shared/types/utils'
 import { useShopDeleteProduct, useShopGetProducts, useGetMyShop } from '~/shared/server-state/shop'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
+
+type ProductRow = {
+  id: string
+  slug: string
+  title: string
+  imageUrl: string
+  variants: ResponseShopGetProducts['variants']
+  inventory: ResponseShopGetProducts['inventory']
+  variantType: ProductVariantTypes
+}
+
+type ProductVariantRow = ProductRow['variants'][number]
 
 const selected = ref([])
 const pageCount = 10
@@ -57,19 +70,23 @@ const columns = [
   },
 ]
 
-const rows = computed(() => {
-  if (dataShopGetProducts.value?.results && dataShopGetProducts.value.results.length > 0) {
-    return dataShopGetProducts.value.results.map(product => ({
-      id: product.id,
-      slug: product.slug,
-      title: product.title,
-      image_url: `/assetHost/${product?.image_relative_url}`,
-      inventories: product.inventories,
-      variant_type: product.variant_type,
-    }))
+const rows = computed<ProductRow[]>(() => {
+  if (!dataShopGetProducts.value) {
+    return []
   }
-  return []
+
+  return dataShopGetProducts.value.items.map(product => ({
+    id: product.id,
+    slug: product.slug,
+    title: product.title,
+    imageUrl: product.images[0]?.url ?? '',
+    variants: product.variants,
+    inventory: product.inventory,
+    variantType: product.variantType ?? ProductVariantTypes.NONE,
+  }))
 })
+
+const totalProducts = computed(() => dataShopGetProducts.value?.meta.total ?? 0)
 
 const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem[][] => [
   [
@@ -128,35 +145,6 @@ async function removeProduct(id: Product['id']) {
       </UButton>
     </template>
     <template #content>
-      <!--    <div class="w-fit"> -->
-      <!--      <UPopover> -->
-      <!--    <UButton -->
-      <!--      color="white" -->
-      <!--      label="Status" -->
-      <!--      trailing-icon="i-heroicons-chevron-down-20-solid" -->
-      <!--    /> -->
-
-      <!--        <template #panel> -->
-      <!--          <div class="p-4"> -->
-      <!--            <Placeholder class="h-20 w-48"/> -->
-      <!--            <h3 class="font-semibold mb-3"> -->
-      <!--              Filter by status -->
-      <!--            </h3> -->
-      <!--            <div v-for="status of productStates"> -->
-      <!--              <UCheckbox -->
-      <!--                  :id="status" -->
-      <!--                  v-model="selectedCheckbox" -->
-      <!--                  name="status" -->
-      <!--                  :label="status" -->
-      <!--                  :value="status" -->
-      <!--                  class="mb-2" -->
-      <!--              /> -->
-      <!--            </div> -->
-      <!--          </div> -->
-      <!--        </template> -->
-      <!--      </UPopover> -->
-      <!--    </div> -->
-
       <UTable
         v-model="selected"
         class="mb-20"
@@ -168,7 +156,7 @@ async function removeProduct(id: Product['id']) {
         <template #title-data="{ row }">
           <div class="flex max-w-[200px] gap-2">
             <NuxtImg
-              :src="row.image_url"
+              :src="row.imageUrl"
               width="50"
               height="50"
               class="rounded"
@@ -183,7 +171,7 @@ async function removeProduct(id: Product['id']) {
         <template #sku-data="{ row }">
           <div>
             <div
-              v-for="(inv, idx) of row.inventories"
+              v-for="(inv, idx) of row.inventory"
               :key="idx"
             >
               {{ inv?.sku || '-' }}
@@ -192,18 +180,17 @@ async function removeProduct(id: Product['id']) {
         </template>
 
         <template #variant-data="{ row }">
-          <div v-if="row.variant_type === ProductVariantTypes.NONE">
+          <div v-if="row.variantType === ProductVariantTypes.NONE">
             None
           </div>
           <div v-else>
             <div
-              v-for="(inv, index) of row.inventories"
+              v-for="(inv, index) of row.inventory"
               :key="index"
             >
               {{
-                row.variant_type === ProductVariantTypes.COMBINE
-                  ? inv.variant.replaceAll('-', ', ')
-                  : inv.variant
+                row.variants.find((variant: ProductVariantRow) => variant.id === inv.productVariantId)?.name?.replaceAll('-', ', ')
+                  || '-'
               }}
             </div>
           </div>
@@ -212,7 +199,7 @@ async function removeProduct(id: Product['id']) {
         <template #price-data="{ row }">
           <div>
             <div
-              v-for="(inv, idx) of row.inventories"
+              v-for="(inv, idx) of row.inventory"
               :key="idx"
             >
               {{ formatCurrency(inv.price) }}
@@ -223,7 +210,7 @@ async function removeProduct(id: Product['id']) {
         <template #stock-data="{ row }">
           <div>
             <div
-              v-for="(inv, idx) of row.inventories"
+              v-for="(inv, idx) of row.inventory"
               :key="idx"
             >
               {{ inv.stock }}
@@ -234,7 +221,6 @@ async function removeProduct(id: Product['id']) {
         <template #actions-data="{ row }">
           <div class="flex items-center justify-center">
             <UTooltip text="Feature not available">
-              <!-- :to="`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.PRODUCTS}/${row.id}`" -->
               <UButton
                 color="gray"
                 variant="ghost"
@@ -266,7 +252,7 @@ async function removeProduct(id: Product['id']) {
       <FixedPagination
         :page="page"
         :page-count="pageCount"
-        :total="dataShopGetProducts?.total_results"
+        :total="totalProducts"
         @on-change-page="(val) => page = val"
       />
     </template>

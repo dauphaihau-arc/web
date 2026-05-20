@@ -177,10 +177,47 @@ export type StateSubmit = RequiredFields<
 // region get products
 export type ShopGetProductsQueryParams = Partial<Pick<Product, 'title' > & RequestGetListParams>;
 
-export type ResponseShopGetProducts = Pick<Product, 'id' | 'title' | 'variant_type'> & {
+export type ResponseShopGetProducts = {
+  id: string
   slug: string
-  image_relative_url: ProductImage['relative_url']
-  inventories: Pick<ProductInventory, 'variant' | 'price' | 'stock' | 'sku'>[]
+  title: string
+  variantType?: ProductVariantTypes
+  images: {
+    id: string
+    storageKey: string
+    url?: string
+    rank: number
+  }[]
+  variants: {
+    id: string
+    name: string
+    optionValue1?: string
+    optionValue2?: string
+    imageStorageKey?: string
+    rank: number
+  }[]
+  inventory: {
+    id: string
+    productVariantId?: string
+    sku?: string
+    stock: number
+    price: number
+    salePrice?: number
+  }[]
+};
+
+export type ResponseShopGetProductsMeta = {
+  page: number
+  limit: number
+  total: number
+  totalPages: number
+  hasNextPage: boolean
+  hasPreviousPage: boolean
+};
+
+export type ResponseShopGetProductsList = {
+  items: ResponseShopGetProducts[]
+  meta: ResponseShopGetProductsMeta
 };
 // endregion
 

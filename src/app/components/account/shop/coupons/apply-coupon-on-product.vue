@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import type { Product } from '~/shared/types/product'
 import { useShopGetProducts } from '~/shared/server-state/shop'
-import type { ShopGetProductsQueryParams } from '~/shared/types/request-api/shop-product'
+import type { ResponseShopGetProducts, ShopGetProductsQueryParams } from '~/shared/types/request-api/shop-product'
+
+type ProductCouponRow = ResponseShopGetProducts & {
+  lowestPrice: number
+  highestPrice: number
+  stock: number
+}
 
 const productIdsModel = defineModel<Product['id'][]>()
 
 const isOpen = ref(false)
-const selectedRows = ref<Product[]>([])
+const selectedRows = ref<ProductCouponRow[]>([])
 const page = ref(1)
 const search = ref()
 
@@ -54,17 +60,19 @@ const columnsPreviewTable = [
   },
 ]
 
-const rowsDialog = computed(() => {
+const rowsDialog = computed<ProductCouponRow[]>(() => {
   if (!dataShopGetProducts.value) {
     return []
   }
-  return dataShopGetProducts.value.results.map((prod) => {
-    toRaw(prod.inventories).sort((a, b) => a.price - b.price)
+
+  return dataShopGetProducts.value.items.map((prod) => {
+    const inventory = [...toRaw(prod.inventory)].sort((a, b) => a.price - b.price)
+
     return {
       ...prod,
-      lowestPrice: prod.inventories[0].price,
-      highestPrice: prod.inventories.length > 1 ? prod.inventories[prod.inventories.length - 1].price : 0,
-      stock: prod.inventories.reduce((acc, next) => acc + next.stock, 0),
+      lowestPrice: inventory[0]?.price ?? 0,
+      highestPrice: inventory.length > 1 ? inventory[inventory.length - 1].price : 0,
+      stock: inventory.reduce((acc, next) => acc + next.stock, 0),
     }
   })
 })
