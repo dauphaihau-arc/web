@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ROUTES } from '~/shared/config/enums/routes'
 import type { ResponseGetProductsProduct } from '~/shared/types/request-api/product'
+import { getProductDetailPath } from '~/shared/utils/product-route'
 
 const props = defineProps<{
   product: ResponseGetProductsProduct
@@ -15,7 +15,7 @@ const props = defineProps<{
       'relative flex cursor-pointer flex-col gap-2',
       props.fill ? 'h-full' : '',
     ]"
-    :to="`${ROUTES.PRODUCTS}/${props.product.id}`"
+    :to="getProductDetailPath(props.product)"
   >
     <NuxtImg
       :src="props.product.image?.url"

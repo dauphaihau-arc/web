@@ -178,6 +178,7 @@ export type StateSubmit = RequiredFields<
 export type ShopGetProductsQueryParams = Partial<Pick<Product, 'title' > & RequestGetListParams>;
 
 export type ResponseShopGetProducts = Pick<Product, 'id' | 'title' | 'variant_type'> & {
+  slug: string
   image_relative_url: ProductImage['relative_url']
   inventories: Pick<ProductInventory, 'variant' | 'price' | 'stock' | 'sku'>[]
 };

@@ -3,7 +3,6 @@ import type { UseQueryOptions } from '@tanstack/vue-query';
 import type { ComputedRef } from 'vue';
 import { RESOURCES } from '~/shared/config/enums/resources';
 import { apiClient } from '~/shared/lib/api-client';
-import type { Product } from '~/shared/types/product';
 import type {
   GetProductsParams,
   ResponseGetDetailProduct,
@@ -27,16 +26,17 @@ export function useGetProducts(
   });
 }
 
-export function useGetDetailProduct(
-  id: Product['id'],
+export function useGetDetailProductBySlug(
+  shopSlug: string,
+  productSlug: string,
   options?: NitroFetchOptions<NitroFetchRequest>
 ) {
   return useQuery({
-    enabled: !!id,
-    queryKey: ['get-detail-product', id],
+    enabled: !!shopSlug && !!productSlug,
+    queryKey: ['get-detail-product-by-slug', shopSlug, productSlug],
     queryFn: () => {
       return apiClient.get<ResponseGetDetailProduct>(
-        `${RESOURCES.PRODUCTS}/${id}`,
+        `${RESOURCES.PRODUCTS}/by-slug/${shopSlug}/${productSlug}`,
         undefined,
         options
       );

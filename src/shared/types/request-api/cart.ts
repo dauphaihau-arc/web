@@ -17,6 +17,10 @@ export type CartProductItem = {
   is_selected: boolean
   unit_price: number
   product: Pick<Product, 'id' | 'title'> & {
+    slug: string
+    shop: {
+      slug: string
+    }
     variant_type: Product['variant_type']
     variant_group_name?: ProductSingleVariant['variant_group_name']
     variant_sub_group_name?: ProductCombineVariant['variant_sub_group_name']
@@ -55,6 +59,10 @@ export type CartSummary = {
 export type CartRecentItem = {
   item_id: string
   product: Pick<Product, 'id' | 'title'> & {
+    slug: string
+    shop: {
+      slug: string
+    }
     image_url?: ProductImage['relative_url']
   }
   inventory: {

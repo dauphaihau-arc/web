@@ -10,6 +10,10 @@ import type { Cart } from '~/shared/types/cart';
 // region get order shops
 export type ResponseGetOrderShopsProduct = Override<OrderShopProduct, {
   product: Pick<Product, 'shipping' | 'id'> & {
+    slug: string
+    shop: {
+      slug: string
+    }
     variant_group_name?: string
     variant_sub_group_name?: string
   }
@@ -27,7 +31,9 @@ type Shipping = {
 };
 
 type ResponseGetOrderShopsOrderShop = {
-  shop: Pick<Shop, 'id' | 'shop_name'>
+  shop: Pick<Shop, 'id' | 'shop_name'> & {
+    slug: string
+  }
   payment: Pick<Payment, 'type' | 'card_funding' | 'card_last4' | 'card_brand'>
   products: ResponseGetOrderShopsProduct[]
   promo_coupons: Pick<Coupon, 'id' | 'code'>[]
@@ -63,12 +69,16 @@ export type ResponseCreateOrder = {
   checkout_session_url: string
   order_shops: {
     id: Order['id']
-    shop: Pick<Shop, 'id' | 'shop_name'>
+    shop: Pick<Shop, 'id' | 'shop_name'> & {
+      slug: string
+    }
   }[]
 };
 
 export type ResponseGetOrderShopsByCheckoutSession = {
   order_shops: {
-    shop: Pick<Shop, 'shop_name'>
+    shop: Pick<Shop, 'shop_name'> & {
+      slug: string
+    }
   }[]
 };

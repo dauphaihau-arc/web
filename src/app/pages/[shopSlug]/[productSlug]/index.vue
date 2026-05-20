@@ -5,19 +5,20 @@ import ProductImages from '~/app/components/detail-product/images.vue'
 import MoreInfo from '~/app/components/detail-product/more-info.vue'
 import MoreProductsByCategory from '~/app/components/detail-product/more-products-by-category.vue'
 import ProductSummary from '~/app/components/detail-product/summary.vue'
-import { useGetDetailProduct } from '~/shared/server-state/product'
+import { useGetDetailProductBySlug } from '~/shared/server-state/product'
 
 definePageMeta({ layout: 'market' })
 
 const route = useRoute()
 const marketStore = useMarketStore()
 
-const productId = route.params.id as string
+const shopSlug = route.params.shopSlug as string
+const productSlug = route.params.productSlug as string
 
 const {
   data: dataGetDetailProduct,
   isPending: isPendingGetDetailProduct,
-} = useGetDetailProduct(productId, {
+} = useGetDetailProductBySlug(shopSlug, productSlug, {
   onResponse: ({ response }) => {
     if (response.status === 200 && response._data?.id) {
       marketStore.userActivities.categoryIdProductVisited = response._data.category_id
@@ -66,10 +67,6 @@ const inventorySelected = ref()
           />
         </div>
       </div>
-      <!--      <ProductMoreProductsByShop -->
-      <!--          :shop-id="dataGetDetailProduct.product.shop.id" -->
-      <!--          class="mb-16" -->
-      <!--      /> -->
       <MoreProductsByCategory
         v-if="dataGetDetailProduct.category_id"
         :category_id="dataGetDetailProduct.category_id"

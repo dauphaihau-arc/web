@@ -6,6 +6,7 @@ import CartCheckboxOrderProduct from './checkbox-order-product.vue'
 import CartModifyQuantityProduct from './modify-quantity-product.vue'
 import CartVariantsProduct from './variants-product.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
+import { getProductDetailPath } from '~/shared/utils/product-route'
 import type { Shop } from '~/shared/types/shop'
 import { useDeleteProductCart } from '~/shared/server-state/cart'
 import type { ResponseGetCartProductCart, ResponseGetCart } from '~/shared/types/request-api/cart'
@@ -72,7 +73,7 @@ const {
 // });
 
 const goToDetailProduct = () => {
-  navigateTo(`${ROUTES.PRODUCTS}/${props.productCart.product.id}`)
+  navigateTo(getProductDetailPath(props.productCart.product))
 }
 </script>
 

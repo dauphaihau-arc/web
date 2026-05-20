@@ -18,6 +18,7 @@ export type ResponseGetProductsProduct = {
     id: string
     public_id?: string
     shop_name: string
+    slug: string
   }
   category_id?: Category['id']
   title: string
@@ -55,6 +56,7 @@ export type ResponseGetDetailProduct = {
     id: string
     public_id?: string
     shop_name: string
+    slug: string
   }
   category_id?: Category['id']
   title: string

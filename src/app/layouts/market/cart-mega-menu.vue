@@ -4,6 +4,7 @@ import RegisterLoginDialog from '~/app/components/dialogs/login-register/registe
 import { useLogout } from '~/shared/server-state/auth'
 import { useGetCurrentUser } from '~/shared/server-state/user'
 import { useGetCart } from '~/shared/server-state/cart'
+import { getProductDetailPath } from '~/shared/utils/product-route'
 
 const props = defineProps<{ show: boolean }>()
 
@@ -68,7 +69,7 @@ const remainProductCart = computed(() => {
                 >
                   <NuxtLink
                     class="flex items-center gap-6"
-                    :to="`${ROUTES.PRODUCTS}/${productCart.product.id}`"
+                    :to="getProductDetailPath(productCart.product)"
                   >
                     <NuxtImg
                       :src="productCart.product.image_url"

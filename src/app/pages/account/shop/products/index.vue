@@ -7,7 +7,8 @@ import { ROUTES } from '~/shared/config/enums/routes'
 import { ProductVariantTypes } from '~/shared/config/enums/product'
 import type { Product } from '~/shared/types/product'
 import type { ElementType } from '~/shared/types/utils'
-import { useShopDeleteProduct, useShopGetProducts } from '~/shared/server-state/shop'
+import { useShopDeleteProduct, useShopGetProducts, useGetMyShop } from '~/shared/server-state/shop'
+import { getProductDetailPath } from '~/shared/utils/product-route'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 
@@ -24,6 +25,8 @@ const {
   data: dataShopGetProducts,
   refetch,
 } = useShopGetProducts(params)
+
+const { data: dataMyShop } = useGetMyShop()
 
 const { mutateAsync: deleteProduct } = useShopDeleteProduct()
 
@@ -58,6 +61,7 @@ const rows = computed(() => {
   if (dataShopGetProducts.value?.results && dataShopGetProducts.value.results.length > 0) {
     return dataShopGetProducts.value.results.map(product => ({
       id: product.id,
+      slug: product.slug,
       title: product.title,
       image_url: `/assetHost/${product?.image_relative_url}`,
       inventories: product.inventories,
@@ -85,7 +89,17 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
       label: 'Preview',
       icon: 'i-heroicons-arrow-right-circle-20-solid',
       click: () => {
-        navigateTo(`${ROUTES.PRODUCTS}/${row.id}`, {
+        if (!dataMyShop.value?.slug) {
+          return
+        }
+
+        navigateTo(getProductDetailPath({
+          id: row.id,
+          slug: row.slug,
+          shop: {
+            slug: dataMyShop.value.slug,
+          },
+        }), {
           open: { target: '_blank' },
         })
       },
