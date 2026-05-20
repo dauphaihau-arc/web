@@ -1,4 +1,4 @@
-import { currentUserQueryOptions, hasStoredSession } from '~/shared/server-state/user';
+import { currentUserQueryOptions, hasStoredSession } from '~/shared/server-state/me/current-user.query';
 
 export default defineNuxtPlugin(() => {
   if (!hasStoredSession()) {

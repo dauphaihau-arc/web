@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ORDER_CONFIG } from '~/shared/config/enums/order'
-import { useGetCart } from '~/shared/server-state/cart'
+import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
 import { routes } from '~/shared/navigation/routes'
 
 const {

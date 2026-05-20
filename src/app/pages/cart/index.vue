@@ -3,7 +3,7 @@ import LoadingSvg from '~/shared/ui/loading-svg.vue'
 import ShopCart from '~/app/components/cart/shop-cart.vue'
 import SummaryOrder from '~/app/components/cart/summary-order.vue'
 import { useCartStore } from '~/shared/stores/cart'
-import { useGetCart } from '~/shared/server-state/cart'
+import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 

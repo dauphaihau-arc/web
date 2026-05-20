@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ProductInventory } from '~/shared/types/product'
 import type { Shop } from '~/shared/types/shop'
-import { useUpdateCart } from '~/shared/server-state/cart'
+import { useUpdateCart } from '~/shared/server-state/me/cart/update-cart.mutation'
 import type { ResponseGetCart } from '~/shared/types/request-api/cart'
 
 const { checked, inventory_id, shopId } = defineProps<{

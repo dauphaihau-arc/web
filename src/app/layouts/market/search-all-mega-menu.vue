@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useGetProducts } from '~/shared/server-state/product'
+import { useGetProducts } from '~/shared/server-state/product/products.query'
 import { routes } from '~/shared/navigation/routes'
 
 const props = defineProps<{ show: boolean }>()

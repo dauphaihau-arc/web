@@ -2,7 +2,7 @@
 import LoadingSvg from '~/shared/ui/loading-svg.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { isBackendWakeUpError } from '~/shared/composables/use-backend-status'
-import { useGetOrderShopsByCheckoutSession } from '~/shared/server-state/order'
+import { useGetOrderShopsByCheckoutSession } from '~/shared/server-state/me/orders/order-shops.query'
 
 definePageMeta({ layout: 'market' })
 

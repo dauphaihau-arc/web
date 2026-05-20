@@ -5,8 +5,8 @@ import type { DropdownItem } from '#ui/types'
 import avatarDefault from '~/app/assets/images/avatar-default.jpg'
 import { shopSidebarLinks } from '~/shared/navigation/menu'
 import { routes as appRoutes } from '~/shared/navigation/routes'
-import { useLogout } from '~/shared/server-state/auth'
-import { useGetCurrentUser } from '~/shared/server-state/user'
+import { useLogout } from '~/shared/server-state/auth/logout.mutation'
+import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 
 const route = useRoute()
 const { data: dataUserAuth } = useGetCurrentUser()

@@ -3,7 +3,7 @@ import type { SearchParameters } from 'ofetch';
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys';
 import { RESOURCES } from '~/shared/config/enums/resources';
-import { clearExpTokensInLS, setExpTokensToLS } from '~/shared/server-state/auth';
+import { clearExpTokensInLS, setExpTokensToLS } from '~/shared/server-state/auth/token-storage';
 import { isBackendWakeUpError, useBackendStatus } from '~/shared/composables/use-backend-status';
 
 type RequestBehavior = {

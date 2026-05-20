@@ -40,6 +40,7 @@ export default withNuxt(
   },
   {
     files: [
+      'src/shared/api/**/*.ts',
       'src/shared/types/**/*.ts',
       'src/shared/server-state/**/*.ts',
       'src/server/api/**/*.ts',

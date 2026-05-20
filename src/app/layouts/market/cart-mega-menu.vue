@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import RegisterLoginDialog from '~/app/components/dialogs/login-register/register-login-dialog.vue'
 import { routes } from '~/shared/navigation/routes'
-import { useLogout } from '~/shared/server-state/auth'
-import { useGetCurrentUser } from '~/shared/server-state/user'
-import { useGetCart } from '~/shared/server-state/cart'
+import { useLogout } from '~/shared/server-state/auth/logout.mutation'
+import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
+import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
 
 const props = defineProps<{ show: boolean }>()
 

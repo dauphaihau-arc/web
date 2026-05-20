@@ -9,7 +9,9 @@ import { routes } from '~/shared/navigation/routes'
 import type { Product } from '~/shared/types/product'
 import type { ResponseShopGetProducts } from '~/shared/types/request-api/shop-product'
 import type { ElementType } from '~/shared/types/utils'
-import { useShopDeleteProduct, useShopGetProducts, useGetMyShop } from '~/shared/server-state/shop'
+import { useShopDeleteProduct } from '~/shared/server-state/shop/product/delete-product.mutation'
+import { useShopGetProducts } from '~/shared/server-state/shop/product/list.query'
+import { useGetMyShop } from '~/shared/server-state/shop/my-shop.query'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 

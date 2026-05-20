@@ -19,12 +19,10 @@ import NoneVariantInput from '~/app/components/account/shop/products/none-varian
 import SearchCategoryInput from '~/app/components/account/shop/products/search-category-input.vue'
 import SelectAttributesInput from '~/app/components/account/shop/products/select-attributes-input.vue'
 import TagsInput from '~/app/components/account/shop/products/tags-input.vue'
-import {
-  useShopCreateProduct,
-  useShopPublishProduct,
-  useShopSetProductImagesByKeys,
-} from '~/shared/server-state/shop'
-import { useIssueProductImageUploadUrl } from '~/shared/server-state/upload'
+import { useShopCreateProduct } from '~/shared/server-state/shop/product/create-product.mutation'
+import { useShopPublishProduct } from '~/shared/server-state/shop/product/publish-product.mutation'
+import { useShopSetProductImagesByKeys } from '~/shared/server-state/shop/product/set-product-images-by-keys.mutation'
+import { useIssueProductImageUploadUrl } from '~/shared/server-state/upload/issue-product-image-upload-url.mutation'
 import type {
   CombineVariant,
   CreateProductBody,

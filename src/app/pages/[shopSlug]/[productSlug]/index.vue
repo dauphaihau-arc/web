@@ -5,7 +5,7 @@ import ProductImages from '~/app/components/detail-product/images.vue'
 import MoreInfo from '~/app/components/detail-product/more-info.vue'
 import MoreProductsByCategory from '~/app/components/detail-product/more-products-by-category.vue'
 import ProductSummary from '~/app/components/detail-product/summary.vue'
-import { useGetDetailProductBySlug } from '~/shared/server-state/product'
+import { useGetDetailProductBySlug } from '~/shared/server-state/product/detail-by-slug.query'
 
 definePageMeta({ layout: 'market' })
 

@@ -5,7 +5,7 @@ import ResetPasswordCard from '~/app/components/reset/reset-password-card.vue'
 import ResetPasswordForm from '~/app/components/reset/reset-password-form.vue'
 import SendEmailSuccess from '~/app/components/reset/send-email-success.vue'
 import { routes } from '~/shared/navigation/routes'
-import { useVerifyToken } from '~/shared/server-state/auth'
+import { useVerifyToken } from '~/shared/server-state/auth/verify-token.query'
 import { ResetPasswordViews } from '~/shared/config/enums/common'
 
 definePageMeta({ layout: 'market' })

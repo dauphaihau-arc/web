@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Product } from '~/shared/types/product'
-import { useShopGetProducts } from '~/shared/server-state/shop'
+import { useShopGetProducts } from '~/shared/server-state/shop/product/list.query'
 import type { ResponseShopGetProducts, ShopGetProductsQueryParams } from '~/shared/types/request-api/shop-product'
 
 type ProductCouponRow = ResponseShopGetProducts & {

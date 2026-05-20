@@ -2,7 +2,7 @@
 import type { FormSubmitEvent } from '#ui/types'
 import { userSchema } from '~/shared/schemas/user.schema'
 import type { User } from '~/shared/types/user'
-import { useForgetPassword } from '~/shared/server-state/auth'
+import { useForgetPassword } from '~/shared/server-state/auth/forgot-password.mutation'
 import { ResetPasswordViews } from '~/shared/config/enums/common'
 import { toastCustom } from '~/shared/config/toast'
 

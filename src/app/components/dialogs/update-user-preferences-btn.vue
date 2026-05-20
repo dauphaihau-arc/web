@@ -6,9 +6,10 @@ import {
   MarketCurrencies,
   MarketLanguages, MARKET_REGION_EMOJIS,
 } from '~/shared/config/enums/market'
-import type { UpdateUserBody } from '~/shared/types/user'
-import { useGetCurrentUser, useUpdateUser } from '~/shared/server-state/user'
-import { useGetCountries } from '~/shared/server-state/address'
+import type { User } from '~/shared/models/user'
+import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
+import { useUpdateCurrentUser } from '~/shared/server-state/me/update-current-user.mutation'
+import { useGetCountries } from '~/shared/server-state/location/countries.query'
 import type { ElementType } from '~/shared/types/utils'
 
 type State = {
@@ -20,9 +21,9 @@ type State = {
 const marketStore = useMarketStore()
 const { data: dataUserAuth } = useGetCurrentUser()
 const {
-  mutateAsync: updateUser,
+  mutateAsync: updateCurrentUser,
   isPending: isPendingUpdateUser,
-} = useUpdateUser()
+} = useUpdateCurrentUser()
 
 const {
   data: dataGetCountries,
@@ -129,15 +130,15 @@ watch(isOpenDialog, async () => {
 const onSubmit = async (event: FormSubmitEvent<State>) => {
   const { currency, language, region } = event.data
 
-  const preferences: UpdateUserBody['market_preferences'] = {
+  const preferences: NonNullable<User['market_preferences']> = {
     currency: currency.id,
     language: language.id,
     region,
   }
 
   if (dataUserAuth.value?.user) {
-    await updateUser({
-      market_preferences: preferences,
+    await updateCurrentUser({
+      preferences,
     })
   }
   else {

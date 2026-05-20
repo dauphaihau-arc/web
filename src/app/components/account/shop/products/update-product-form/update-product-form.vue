@@ -20,8 +20,9 @@ import type {
   ProductImage, ProductSingleVariant, ProductCombineVariant,
 } from '~/shared/types/product'
 import { toastCustom } from '~/shared/config/toast'
-import { useIssueProductImageUploadUrl } from '~/shared/server-state/upload'
-import { useShopGetDetailProduct, useShopUpdateProduct } from '~/shared/server-state/shop'
+import { useIssueProductImageUploadUrl } from '~/shared/server-state/upload/issue-product-image-upload-url.mutation'
+import { useShopGetDetailProduct } from '~/shared/server-state/shop/product/detail.query'
+import { useShopUpdateProduct } from '~/shared/server-state/shop/product/update-product.mutation'
 import type {
   NoneVariant,
   RequestUpdateProductBody,

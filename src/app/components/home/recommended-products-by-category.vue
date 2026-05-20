@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import ProductCard from '~/app/components/home/product-card.vue'
-import { useGetProducts } from '~/shared/server-state/product'
+import { useGetProducts } from '~/shared/server-state/product/products.query'
 
 const limit = 10
 const marketStore = useMarketStore()

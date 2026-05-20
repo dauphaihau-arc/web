@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { routes } from '~/shared/navigation/routes'
-import { useGetCurrentUser } from '~/shared/server-state/user'
+import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 
 const { data: dataUserAuth } = useGetCurrentUser()
 </script>

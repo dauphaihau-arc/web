@@ -4,7 +4,7 @@
  */
 import { watchDebounced } from '@vueuse/core'
 import { useCartStore } from '~/shared/stores/cart'
-import { useUpdateCart } from '~/shared/server-state/cart'
+import { useUpdateCart } from '~/shared/server-state/me/cart/update-cart.mutation'
 import type {
   ResponseGetCartProductCart,
   ResponseGetCart,

@@ -1,6 +1,6 @@
 import { isBackendWakeUpError } from '~/shared/composables/use-backend-status';
 import { routes } from '~/shared/navigation/routes';
-import { useGetCurrentUser } from '~/shared/server-state/user';
+import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query';
 
 export default defineNuxtRouteMiddleware(async () => {
   const { data: dataUserAuth, refetch } = useGetCurrentUser();

@@ -3,8 +3,8 @@ import CartMegaMenu from './cart-mega-menu.vue'
 import HeaderCategories from './header-categories.vue'
 import SearchAllMegaMenu from './search-all-mega-menu.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
-import { useGetCart } from '~/shared/server-state/cart'
-import { useGetCurrentUser } from '~/shared/server-state/user'
+import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
+import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 
 const route = useRoute()
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '#ui/types'
-import { useAuthClientConfig, useResetPassword } from '~/shared/server-state/auth'
+import { useAuthClientConfig } from '~/shared/server-state/auth/client-config.query'
+import { useResetPassword } from '~/shared/server-state/auth/reset-password.mutation'
 import { ROUTES } from '~/shared/config/enums/routes'
 import type { ResetPasswordBody } from '~/shared/types/auth'
 import { appendPasswordError } from '~/shared/utils/password-policy'

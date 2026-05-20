@@ -3,8 +3,9 @@ import utc from 'dayjs/plugin/utc';
 import { StorageSerializers, useStorage } from '@vueuse/core';
 import type { User } from '~/shared/types/user';
 import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys';
-import { useGetDataByIP, useGetExchangeRates } from '~/shared/server-state/market';
-import { useGetCurrentUser } from '~/shared/server-state/user';
+import { useGetExchangeRates } from '~/shared/server-state/market/exchange-rates.query';
+import { useGetDataByIP } from '~/shared/server-state/market/ip-data.query';
+import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query';
 import type {
   CategoriesBreadcrumbStorage, ExchangeRateStorage,
   ResponseGetDataByIP,

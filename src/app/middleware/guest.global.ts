@@ -1,6 +1,6 @@
 import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys';
 import { routePaths, routes } from '~/shared/navigation/routes';
-import { useGetCurrentUser } from '~/shared/server-state/user';
+import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query';
 
 export default defineNuxtRouteMiddleware(async (to, _from) => {
   const { refetch, data } = useGetCurrentUser();

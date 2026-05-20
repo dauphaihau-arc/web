@@ -1,6 +1,6 @@
 import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys';
 import { routes } from '~/shared/navigation/routes';
-import { useGetCurrentUser } from '~/shared/server-state/user';
+import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query';
 import { isBackendWakeUpError } from '~/shared/composables/use-backend-status';
 
 export default defineNuxtRouteMiddleware(async () => {

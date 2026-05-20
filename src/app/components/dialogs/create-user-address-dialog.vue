@@ -4,8 +4,8 @@ import type { CreateBodyUserAddressBody } from '~/shared/types/user-address'
 import { ADDRESS_CONFIG } from '~/shared/config/enums/address'
 import { createUserAddressSchema } from '~/shared/schemas/user-address.schema'
 import { toastCustom } from '~/shared/config/toast'
-import { useCreateUserAddress } from '~/shared/server-state/user'
-import { useGetCountries, useGetStatesByCountry } from '~/shared/server-state/address'
+import { useCreateUserAddress } from '~/shared/server-state/me/address/create-address.mutation'
+import { useGetCountries, useGetStatesByCountry } from '~/shared/server-state/location/countries.query'
 
 const toast = useToast()
 const dialog = useModal()

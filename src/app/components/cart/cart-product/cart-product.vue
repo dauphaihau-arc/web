@@ -8,7 +8,7 @@ import CartVariantsProduct from './variants-product.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { routes } from '~/shared/navigation/routes'
 import type { Shop } from '~/shared/types/shop'
-import { useDeleteProductCart } from '~/shared/server-state/cart'
+import { useDeleteProductCart } from '~/shared/server-state/me/cart/delete-product.mutation'
 import type { ResponseGetCartProductCart, ResponseGetCart } from '~/shared/types/request-api/cart'
 
 const props = defineProps<{

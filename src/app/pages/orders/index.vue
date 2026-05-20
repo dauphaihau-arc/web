@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import LoadingSvg from '~/shared/ui/loading-svg.vue'
 import ShopItem from '~/app/components/order/shop-item/shop-item.vue'
-import { useGetOrderShops } from '~/shared/server-state/order'
+import { useGetOrderShops } from '~/shared/server-state/me/orders/order-shops.query'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 

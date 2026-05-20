@@ -9,7 +9,7 @@ import WrapperFormGroupCard from '~/app/components/account/shop/wrapper-form-gro
 import ApplyCouponOnProduct from '~/app/components/account/shop/coupons/apply-coupon-on-product.vue'
 import SearchStartEndDateInput from '~/app/components/account/shop/coupons/search-start-end-date-input.vue'
 import { toastCustom } from '~/shared/config/toast'
-import { useShopCreateCoupon } from '~/shared/server-state/shop'
+import { useShopCreateCoupon } from '~/shared/server-state/shop/coupon/create-coupon.mutation'
 import { PRODUCT_CONFIG } from '~/shared/config/enums/product'
 import { createPromoCodeBodySchema } from '~/shared/schemas/request/shop-coupon.schema'
 import type { CreatePromoCodeBody } from '~/shared/types/coupon'

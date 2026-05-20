@@ -2,7 +2,8 @@
 import { ORDER_CONFIG } from '~/shared/config/enums/order'
 import { useCartStore } from '~/shared/stores/cart'
 import { ProductVariantTypes } from '~/shared/config/enums/product'
-import { useGetCart, useUpdateCart } from '~/shared/server-state/cart'
+import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
+import { useUpdateCart } from '~/shared/server-state/me/cart/update-cart.mutation'
 import type { ResponseGetCart } from '~/shared/types/request-api/cart'
 import type { Cart } from '~/shared/types/cart'
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import LocationShipping from './location-shipping.vue'
 import type { FormErrorEvent, FormSubmitEvent } from '#ui/types'
-import { useGetCountries } from '~/shared/server-state/address'
+import { useGetCountries } from '~/shared/server-state/location/countries.query'
 import { ADDRESS_CONFIG } from '~/shared/config/enums/address'
 import type { ProductShipping, ProductStandardShipping } from '~/shared/types/product'
 import { ProductShippingCharge, ProductShippingServices } from '~/shared/config/enums/product'
