@@ -2,9 +2,9 @@
 import { ORDER_CONFIG } from '~/shared/config/enums/order'
 import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { ProductVariantTypes } from '~/shared/config/enums/product'
-import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
-import { useUpdateCart } from '~/shared/server-state/me/cart/update-cart.mutation'
-import type { GetCartResponse } from '~/shared/api/me/cart/contracts/cart.contract'
+import { useGetCart } from '~/shared/server-state/cart/cart.query'
+import { useUpdateCart } from '~/shared/server-state/cart/update-cart.mutation'
+import type { GetCartResponse } from '~/shared/api/cart/contracts/cart.contract'
 
 const cartStore = useCartStore()
 const queryClient = useQueryClient()

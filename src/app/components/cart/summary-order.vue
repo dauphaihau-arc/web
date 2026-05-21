@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ORDER_CONFIG } from '~/shared/config/enums/order'
-import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
+import RegisterLoginDialog from '~/app/components/dialogs/login-register/register-login-dialog.vue'
+import { useGetCart } from '~/shared/server-state/cart/cart.query'
 import { routes } from '~/shared/navigation/routes'
+import { setPostAuthRedirect } from '~/shared/server-state/auth/post-auth-redirect'
 
+const modal = useModal()
 const {
   isPending: isPendingGetCart,
   data: dataGetCart,
@@ -15,6 +18,22 @@ const isTotalOrderInvalid = computed(() => {
   }
   return true
 })
+
+const proceedLabel = computed(() => {
+  return dataGetCart.value?.requires_sign_in_for_checkout
+    ? 'Sign in to checkout'
+    : 'Proceed to checkout'
+})
+
+function proceedToCheckout() {
+  if (dataGetCart.value?.requires_sign_in_for_checkout) {
+    setPostAuthRedirect('/cart/checkout')
+    modal.open(RegisterLoginDialog)
+    return
+  }
+
+  router.push(routes.cartCheckout())
+}
 </script>
 
 <template>
@@ -39,9 +58,9 @@ const isTotalOrderInvalid = computed(() => {
       block
       class="mx-auto"
       size="xl"
-      @click="router.push(routes.cartCheckout())"
+      @click="proceedToCheckout()"
     >
-      Proceed to checkout
+      {{ proceedLabel }}
     </UButton>
   </div>
 </template>

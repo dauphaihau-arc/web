@@ -1,36 +1,33 @@
 import type {
   AddProductToCartRequest,
-  AddProductToCartResponse
-  ,
+  AddProductToCartResponse,
   DeleteCartProductRequest,
-  DeleteCartProductResponse
-  ,
+  DeleteCartProductResponse,
   GetCartRequest,
-  GetCartResponse
-  ,
+  GetCartResponse,
   UpdateCartRequest,
   UpdateCartResponse
 } from './contracts/cart.contract';
 import { apiClient } from '~/shared/lib/api-client';
 
-export const meCartApi = {
+export const cartApi = {
   add(payload: AddProductToCartRequest) {
     return apiClient.post<AddProductToCartResponse>(
-      '/me/cart',
+      '/cart/items',
       payload
     );
   },
 
   get(params?: GetCartRequest) {
     return apiClient.get<GetCartResponse>(
-      '/me/cart',
+      '/cart',
       params
     );
   },
 
   remove(params: DeleteCartProductRequest) {
     return apiClient.delete<DeleteCartProductResponse>(
-      '/me/cart',
+      '/cart/items',
       params,
       undefined
     );
@@ -38,8 +35,14 @@ export const meCartApi = {
 
   update(payload: UpdateCartRequest) {
     return apiClient.patch<UpdateCartResponse>(
-      '/me/cart',
+      '/cart/items',
       payload
+    );
+  },
+
+  merge() {
+    return apiClient.post<GetCartResponse>(
+      '/cart/merge'
     );
   },
 };

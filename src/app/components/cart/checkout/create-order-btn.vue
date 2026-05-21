@@ -9,7 +9,7 @@ import { useCreateOrderFromCart } from '~/shared/server-state/me/orders/create-o
 import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { useGetExchangeRates } from '~/shared/server-state/market/exchange-rates.query'
 import type { CreateOrderFromCartRequest } from '~/shared/api/me/order/contracts/order.contract'
-import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
+import { useGetCart } from '~/shared/server-state/cart/cart.query'
 import type { ExchangeRatesResponse as ResponseGetExchangeRates } from '~/shared/api/market/contracts/market.contract'
 
 const marketStore = useMarketStore()

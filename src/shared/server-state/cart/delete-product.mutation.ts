@@ -1,6 +1,6 @@
 import type { MutationOptions } from '@tanstack/vue-query';
-import { meCartApi } from '~/shared/api/me/cart/me-cart.api';
-import type { DeleteCartProductResponse } from '~/shared/api/me/cart/contracts/cart.contract';
+import { cartApi } from '~/shared/api/cart/cart.api';
+import type { DeleteCartProductResponse } from '~/shared/api/cart/contracts/cart.contract';
 import { toastCustom } from '~/shared/config/toast';
 
 export function useDeleteProductCart(
@@ -16,8 +16,6 @@ export function useDeleteProductCart(
       });
     },
     ...options,
-    mutationFn: () => {
-      return meCartApi.remove({ inventory_id: id });
-    },
+    mutationFn: () => cartApi.remove({ inventory_id: id }),
   });
 }

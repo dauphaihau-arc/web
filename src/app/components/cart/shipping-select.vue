@@ -2,7 +2,7 @@
 /*
   use in cart page, cart/checkout page
  */
-import type { CartShopGroup } from '~/shared/api/me/cart/cart.shared'
+import type { CartShopGroup } from '~/shared/api/cart/cart.shared'
 
 const props = defineProps<{
   shopCart: CartShopGroup

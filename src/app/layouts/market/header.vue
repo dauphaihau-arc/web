@@ -7,7 +7,7 @@ import RegisterLoginDialog from '~/app/components/dialogs/login-register/registe
 import { ROUTES } from '~/shared/config/enums/routes'
 import { routes } from '~/shared/navigation/routes'
 import { useLogout } from '~/shared/server-state/auth/logout.mutation'
-import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
+import { useGetCart } from '~/shared/server-state/cart/cart.query'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 
 const route = useRoute()
@@ -65,13 +65,7 @@ onMounted(async () => {
 })
 
 const totalProductCarts = computed(() => {
-  if (
-    dataUserAuth.value?.user
-    && dataGetCart.value?.cart && dataGetCart.value.cart?.total_quantity > 0
-  ) {
-    return dataGetCart.value.cart.total_quantity
-  }
-  return 0
+  return dataGetCart.value?.cart?.total_quantity ?? 0
 })
 
 type UserDropdownItem = Omit<DropdownItem, 'icon'> & {

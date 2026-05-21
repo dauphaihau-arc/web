@@ -1,7 +1,7 @@
 import type { MutationOptions } from '@tanstack/vue-query';
 import type { FetchError } from 'ofetch';
-import { meCartApi } from '~/shared/api/me/cart/me-cart.api';
-import type { UpdateCartRequest, UpdateCartResponse } from '~/shared/api/me/cart/contracts/cart.contract';
+import { cartApi } from '~/shared/api/cart/cart.api';
+import type { UpdateCartRequest, UpdateCartResponse } from '~/shared/api/cart/contracts/cart.contract';
 import { toastCustom } from '~/shared/config/toast';
 
 export function useUpdateCart(
@@ -16,8 +16,6 @@ export function useUpdateCart(
       });
     },
     ...options,
-    mutationFn: (body: UpdateCartRequest) => {
-      return meCartApi.update(body);
-    },
+    mutationFn: (body: UpdateCartRequest) => cartApi.update(body),
   });
 }

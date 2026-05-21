@@ -2,10 +2,10 @@
 import { consola } from 'consola'
 import type { FormError, FormSubmitEvent } from '#ui/types'
 import { ProductVariantTypes } from '~/shared/config/enums/product'
-import type { AddProductToCartRequest, AddProductToCartResponse } from '~/shared/api/me/cart/contracts/cart.contract'
+import type { AddProductToCartRequest, AddProductToCartResponse } from '~/shared/api/cart/contracts/cart.contract'
 import RegisterLoginDialog from '~/app/components/dialogs/login-register/register-login-dialog.vue'
 import { routes } from '~/shared/navigation/routes'
-import { useAddProductToCart } from '~/shared/server-state/me/cart/add-product.mutation'
+import { useAddProductToCart } from '~/shared/server-state/cart/add-product.mutation'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contracts/product.contract'
 import { toastCustom } from '~/shared/config/toast'
@@ -130,10 +130,6 @@ const validateForm = (stateValidate: StateSubmit): FormError[] => {
 }
 
 async function onSubmit(event: FormSubmitEvent<StateSubmit>) {
-  if (!dataUserAuth.value?.user) {
-    modal.open(RegisterLoginDialog)
-    return
-  }
   formRef.value.clear()
   const isBuyNow = state.isBuyNow
   state.isBuyNow = false
@@ -147,6 +143,11 @@ async function onSubmit(event: FormSubmitEvent<StateSubmit>) {
     inventory_id: inventorySelectedModel.value.id,
     quantity: event.data.quantity,
   }
+  if (isBuyNow && !dataUserAuth.value?.user) {
+    modal.open(RegisterLoginDialog)
+    return
+  }
+
   if (isBuyNow) {
     body.is_temp = true
     const response = await addProductToCart(body)

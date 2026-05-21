@@ -97,7 +97,7 @@ watch(() => stateSubmit.country, () => {
           </UFormGroup>
           <UFormGroup
             required
-            label="Street UserAddress"
+            label="Street"
             name="address_1"
             class="mb-4"
           >

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useUpdateCart } from '~/shared/server-state/me/cart/update-cart.mutation'
-import type { GetCartResponse } from '~/shared/api/me/cart/contracts/cart.contract'
+import { useUpdateCart } from '~/shared/server-state/cart/update-cart.mutation'
+import type { GetCartResponse } from '~/shared/api/cart/contracts/cart.contract'
 
 const { checked, inventory_id, shopId } = defineProps<{
   checked: boolean

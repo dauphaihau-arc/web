@@ -4,11 +4,11 @@
  */
 import { watchDebounced } from '@vueuse/core'
 import { useCartStore } from '~/shared/stores/cart/cart.store'
-import { useUpdateCart } from '~/shared/server-state/me/cart/update-cart.mutation'
+import { useUpdateCart } from '~/shared/server-state/cart/update-cart.mutation'
 import type {
   CartProductItem,
-} from '~/shared/api/me/cart/cart.shared'
-import type { GetCartResponse, UpdateCartRequest } from '~/shared/api/me/cart/contracts/cart.contract'
+} from '~/shared/api/cart/cart.shared'
+import type { GetCartResponse, UpdateCartRequest } from '~/shared/api/cart/contracts/cart.contract'
 
 const props = defineProps<{
   productCart: CartProductItem

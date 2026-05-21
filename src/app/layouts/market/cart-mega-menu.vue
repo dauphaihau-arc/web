@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { routes } from '~/shared/navigation/routes'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
-import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
+import { useGetCart } from '~/shared/server-state/cart/cart.query'
 
 const props = defineProps<{ show: boolean }>()
 
@@ -31,7 +31,7 @@ const remainProductCart = computed(() => {
             Cart
           </div>
           <UButton
-            v-if="dataUserAuth?.user"
+            v-if="dataGetCart?.cart?.total_quantity"
             :to="routes.cart()"
             label="Review Cart"
           >
@@ -42,60 +42,56 @@ const remainProductCart = computed(() => {
         </div>
 
         <div class="mb-10">
-          <div v-if="dataUserAuth?.user">
-            <div v-if="dataGetCart?.cart && dataGetCart?.cart.recent_items.length > 0">
-              <div class="mb-6 space-y-8">
-                <div
-                  v-for="(productCart, index) in dataGetCart.cart.recent_items"
-                  :key="index"
-                >
-                  <NuxtLink
-                    class="flex items-center gap-6"
-                    :to="routes.productDetail(productCart.product.shop.slug, productCart.product.slug)"
-                  >
-                    <NuxtImg
-                      :src="productCart.product.image_url"
-                      width="70"
-                      height="70"
-                      class="rounded"
-                    />
-                    <div>
-                      <div class="text-xl font-medium">
-                        {{ productCart.product.title }}
-                      </div>
-                      <div class="text-[15px] text-zinc-500">
-                        {{ productCart.inventory.variant_name }}
-                      </div>
-                      <div class="text-[15px] tracking-wide text-zinc-500">
-                        x{{ productCart.quantity }}
-                      </div>
-                    </div>
-                  </NuxtLink>
-                </div>
-              </div>
+          <div v-if="dataGetCart?.cart && dataGetCart?.cart.recent_items.length > 0">
+            <div class="mb-6 space-y-8">
               <div
-                v-if="remainProductCart > 0"
-                class="text-customGray-950"
+                v-for="(productCart, index) in dataGetCart.cart.recent_items"
+                :key="index"
               >
-                {{ remainProductCart }} more product in your Cart
+                <NuxtLink
+                  class="flex items-center gap-6"
+                  :to="routes.productDetail(productCart.product.shop.slug, productCart.product.slug)"
+                >
+                  <NuxtImg
+                    :src="productCart.product.image_url"
+                    width="70"
+                    height="70"
+                    class="rounded"
+                  />
+                  <div>
+                    <div class="text-xl font-medium">
+                      {{ productCart.product.title }}
+                    </div>
+                    <div class="text-[15px] text-zinc-500">
+                      {{ productCart.inventory.variant_name }}
+                    </div>
+                    <div class="text-[15px] tracking-wide text-zinc-500">
+                      x{{ productCart.quantity }}
+                    </div>
+                  </div>
+                </NuxtLink>
               </div>
             </div>
             <div
-              v-else
+              v-if="remainProductCart > 0"
               class="text-customGray-950"
             >
-              Your cart is empty.
+              {{ remainProductCart }} more product in your Cart
             </div>
           </div>
           <div
             v-else
-            class="flex items-center gap-1"
+            class="text-sm text-customGray-950"
           >
-            <span class=" text-sm text-customGray-950">
-              Log in to see products you added into cart
-            </span>
+            Your cart is empty.
           </div>
         </div>
+        <p
+          v-if="!dataUserAuth?.user && dataGetCart?.requires_sign_in_for_checkout"
+          class="text-sm text-zinc-500"
+        >
+          Sign in when you&apos;re ready to check out.
+        </p>
       </div>
     </div>
   </transition>

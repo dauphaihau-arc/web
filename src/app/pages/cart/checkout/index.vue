@@ -9,7 +9,7 @@ import SummaryOrder from '~/app/components/cart/checkout/summary-order.vue'
 import UserAddressShipping from '~/app/components/cart/checkout/user-address-shipping.vue'
 import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { CheckoutCartSteps } from '~/shared/stores/cart/cart.store.types'
-import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
+import { useGetCart } from '~/shared/server-state/cart/cart.query'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 

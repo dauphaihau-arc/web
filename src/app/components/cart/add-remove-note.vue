@@ -3,7 +3,7 @@
   use in cart page, cart/checkout page
  */
 import { ORDER_CONFIG } from '~/shared/config/enums/order'
-import type { CartShopGroup } from '~/shared/api/me/cart/cart.shared'
+import type { CartShopGroup } from '~/shared/api/cart/cart.shared'
 
 const props = defineProps<{
   shopCart: CartShopGroup

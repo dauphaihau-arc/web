@@ -8,9 +8,9 @@ import { FetchError } from 'ofetch'
 import { consola } from 'consola'
 import { type AdditionInfoShopCarts, useCartStore } from '~/shared/stores/cart/cart.store'
 import { COUPON_CONFIG } from '~/shared/config/enums/coupon'
-import { useUpdateCart } from '~/shared/server-state/me/cart/update-cart.mutation'
+import { useUpdateCart } from '~/shared/server-state/cart/update-cart.mutation'
 import { toastCustom } from '~/shared/config/toast'
-import type { GetCartResponse } from '~/shared/api/me/cart/contracts/cart.contract'
+import type { GetCartResponse } from '~/shared/api/cart/contracts/cart.contract'
 
 const { shopId } = defineProps<{
   shopId: string
