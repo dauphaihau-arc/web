@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { consola } from 'consola'
 import ImagesInput from './images-input.vue'
 import VariantInput from './variant-input.vue'
+import { useCreateProductSubmit } from './use-create-product-submit'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import { createProductBodySchema, createProductInventorySchema } from '~/shared/schemas/request/shop-product.schema'
 import {
@@ -12,38 +12,27 @@ import {
   productWhoMadeOpts,
 } from '~/shared/config/enums/product'
 import { ROUTES } from '~/shared/config/enums/routes'
-import { toastCustom } from '~/shared/config/toast'
 import CreateShippingProductDialog from '~/app/components/account/shop/products/create-shipping-product-dialog/create-shipping-product-dialog.vue'
 import FormGroupCard from '~/app/components/account/shop/wrapper-form-group-card.vue'
 import NoneVariantInput from '~/app/components/account/shop/products/none-variant-input.vue'
 import SearchCategoryInput from '~/app/components/account/shop/products/search-category-input.vue'
 import SelectAttributesInput from '~/app/components/account/shop/products/select-attributes-input.vue'
 import TagsInput from '~/app/components/account/shop/products/tags-input.vue'
-import { useShopCreateProduct } from '~/shared/server-state/shop/product/create-product.mutation'
-import { useShopPublishProduct } from '~/shared/server-state/shop/product/publish-product.mutation'
-import { useShopSetProductImagesByKeys } from '~/shared/server-state/shop/product/set-product-images-by-keys.mutation'
-import { useIssueProductImageUploadUrl } from '~/shared/server-state/upload/issue-product-image-upload-url.mutation'
 import type {
-  CombineVariant,
   CreateProductBody,
-  CreateProductShipping, NoneVariant,
-  SingleVariant,
+  CreateProductShipping,
   StateCombineVariant,
   StateNoneVariant,
   StateSingleVariant,
   StateSubmit,
 } from '~/shared/api/shop/product/form'
-import type { CreateDraftProductRequest as RequestCreateProductDraftBody } from '~/shared/api/shop/product/create-draft'
-import type { PickPartial } from '~/shared/contracts/utils'
 
 const router = useRouter()
-const toast = useToast()
 const modal = useModal()
 
 const fileImages = ref<File[]>([])
 const formRef = ref()
 const isProductHaveVariants = ref(false)
-const loadingSubmit = ref(false)
 const btnSubmitRef = ref()
 const enabledButtonSubmit = ref(false)
 const countValidate = ref(0)
@@ -68,20 +57,16 @@ const stateSubmit = reactive<StateSubmit>({
 })
 
 const {
-  mutateAsync: createProduct,
-} = useShopCreateProduct()
-
-const {
-  mutateAsync: publishProduct,
-} = useShopPublishProduct()
-
-const {
-  mutateAsync: setProductImagesByKeys,
-} = useShopSetProductImagesByKeys()
-
-const {
-  mutateAsync: issueProductImageUploadUrl,
-} = useIssueProductImageUploadUrl()
+  loadingSubmit,
+  submit,
+} = useCreateProductSubmit({
+  fileImages,
+  shipping,
+  noneVariant,
+  singleVariant,
+  combineVariant,
+  stateSubmit,
+})
 
 const showCreateShippingProductDialog = () => {
   modal.open(CreateShippingProductDialog, {
@@ -109,246 +94,8 @@ const validateForm = (values: CreateProductBody): FormError[] => {
   return errors
 }
 
-type CreateProductSubmitBody = {
-  shipping: CreateProductShipping
-} & PickPartial<CreateProductBody, 'attributes' | 'tags'> & (
-  NoneVariant |
-  SingleVariant |
-  CombineVariant
-)
-
-async function uploadImage(productId: string) {
-  if (fileImages.value.length === 0) {
-    consola.error('images is invalid')
-    return
-  }
-
-  const promisesUploadImages = []
-  const storageKeys = []
-
-  for (let i = 0; i < fileImages.value.length; i++) {
-    const { presigned_url, key } = await issueProductImageUploadUrl({
-      productId,
-      content_type: fileImages.value[i].type,
-      asset_type: 'original',
-    })
-
-    if (!presigned_url || !key) {
-      toast.add({
-        ...toastCustom.error,
-        title: 'Oops',
-        description: 'Something wrong',
-      })
-      return
-    }
-
-    storageKeys.push(key)
-
-    const promise = useFetch(presigned_url, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': fileImages.value[i].type,
-      },
-      body: fileImages.value[i],
-    })
-
-    promisesUploadImages.push(promise)
-  }
-
-  await Promise.all(promisesUploadImages)
-
-  return storageKeys
-}
-
-function mapAttributes(
-  attributes: NonNullable<CreateProductBody['attributes']>,
-): RequestCreateProductDraftBody['attributes'] {
-  return attributes.map(attribute => ({
-    category_attribute_id: attribute.attribute_id,
-    selected_option_id: attribute.selected,
-  }))
-}
-
-function mapInventoryAndVariants(
-  bodyData: CreateProductSubmitBody,
-): Pick<RequestCreateProductDraftBody, 'inventory' | 'variants'> {
-  if (bodyData.variant_type === ProductVariantTypes.NONE) {
-    return {
-      inventory: [
-        {
-          price: bodyData.price!,
-          sale_price: undefined,
-          sku: bodyData.sku,
-          stock: bodyData.stock,
-        },
-      ],
-    }
-  }
-
-  if (bodyData.variant_type === ProductVariantTypes.SINGLE) {
-    const variants = bodyData.variant_options.map((variant, index) => {
-      const clientKey = `variant-${index + 1}`
-
-      return {
-        client_key: clientKey,
-        option_value_1: variant.variant_name,
-        inventory: {
-          variant_client_key: clientKey,
-          price: variant.price,
-          sale_price: undefined,
-          sku: variant.sku,
-          stock: variant.stock,
-        },
-      }
-    })
-
-    return {
-      variants: variants.map(variant => ({
-        client_key: variant.client_key,
-        option_value_1: variant.option_value_1,
-      })),
-      inventory: variants.map(variant => variant.inventory),
-    }
-  }
-
-  const variants = bodyData.variant_options.flatMap((variant, parentIndex) => {
-    return variant.variant_options.map((subVariant, childIndex) => {
-      const clientKey = `variant-${parentIndex + 1}-${childIndex + 1}`
-
-      return {
-        client_key: clientKey,
-        option_value_1: variant.variant_name,
-        option_value_2: subVariant.variant_name,
-        inventory: {
-          variant_client_key: clientKey,
-          price: subVariant.price,
-          sale_price: undefined,
-          sku: subVariant.sku,
-          stock: subVariant.stock,
-        },
-      }
-    })
-  })
-
-  return {
-    variants: variants.map(variant => ({
-      client_key: variant.client_key,
-      option_value_1: variant.option_value_1,
-      option_value_2: variant.option_value_2,
-    })),
-    inventory: variants.map(variant => variant.inventory),
-  }
-}
-
-function mapShipping(
-  data: CreateProductShipping,
-): RequestCreateProductDraftBody['shipping'] {
-  return {
-    origin_country: data.country,
-    origin_zip: data.zip,
-    process_time_label: data.process_time,
-    destinations: data.standard_shipping.map(destination => ({
-      country_code: destination.country,
-      delivery_time_label: destination.delivery_time,
-      service: destination.service,
-      charge_type: destination.charge,
-    })),
-  }
-}
-
 async function onSubmit(event: FormSubmitEvent<CreateProductBody>) {
-  const dataSubmit = event.data as PickPartial<CreateProductBody, 'attributes' | 'tags'>
-
-  if (fileImages.value.length === 0) {
-    consola.error('images is invalid')
-    return
-  }
-  if (!shipping.value) {
-    consola.error('shipping be undefined')
-    return
-  }
-  if (dataSubmit.tags && dataSubmit.tags.length === 0) {
-    delete dataSubmit.tags
-  }
-  if (dataSubmit.attributes && dataSubmit.attributes.length === 0) {
-    delete dataSubmit.attributes
-  }
-
-  let bodyData: CreateProductSubmitBody = {
-    ...dataSubmit,
-    shipping: shipping.value,
-  } as CreateProductSubmitBody
-  switch (bodyData.variant_type) {
-    case 'none':
-      bodyData = { ...bodyData, ...noneVariant as NoneVariant }
-      break
-    case 'single':
-      if (!singleVariant.variant_options) return
-      bodyData = { ...bodyData, ...singleVariant as SingleVariant }
-      break
-    case 'combine':
-      if (!combineVariant.variant_options) return
-      bodyData = { ...bodyData, ...combineVariant as CombineVariant }
-      break
-  }
-
-  loadingSubmit.value = true
-
-  try {
-    const productDraft = await createProduct({
-      category_id: bodyData.category_id,
-      title: bodyData.title,
-      description: bodyData.description,
-      who_made: bodyData.who_made,
-      is_digital: bodyData.is_digital,
-      non_taxable: false,
-      variant_type: bodyData.variant_type,
-      variant_group_name:
-        bodyData.variant_type === ProductVariantTypes.NONE
-          ? undefined
-          : bodyData.variant_group_name,
-      variant_sub_group_name:
-        bodyData.variant_type === ProductVariantTypes.COMBINE
-          ? bodyData.variant_sub_group_name
-          : undefined,
-      attributes: bodyData.attributes?.length
-        ? mapAttributes(bodyData.attributes)
-        : undefined,
-      ...mapInventoryAndVariants(bodyData),
-      shipping: mapShipping(bodyData.shipping),
-    })
-
-    const storageKeys = await uploadImage(productDraft.id)
-    if (!storageKeys) return
-
-    await setProductImagesByKeys({
-      id: productDraft.id,
-      images: storageKeys.map((key, index) => ({
-        storage_key: key,
-        rank: index + 1,
-      })),
-    })
-
-    if (stateSubmit.state === ProductStates.ACTIVE) {
-      await publishProduct(productDraft.id)
-    }
-
-    toast.add({
-      ...toastCustom.success,
-      title: stateSubmit.state === ProductStates.ACTIVE
-        ? 'Create product success'
-        : 'Save draft success',
-    })
-    await router.push(ROUTES.ACCOUNT + ROUTES.SHOP + ROUTES.PRODUCTS)
-  }
-  catch (error) {
-    toast.add({
-      ...toastCustom.error,
-      title: 'Create product failed',
-    })
-  }
-
-  loadingSubmit.value = false
+  await submit(event.data)
 }
 
 function onErrorFrom(event: FormErrorEvent) {
