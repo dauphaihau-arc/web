@@ -1,4 +1,4 @@
-import type { Category } from '~/shared/api/category/categories';
+import type { Category } from '~/shared/api/category/category';
 
 export type GetDetailProductBySlugResponse = {
   id: string

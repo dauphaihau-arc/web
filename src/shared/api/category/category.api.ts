@@ -1,9 +1,13 @@
 import type {
-  CategorySearch,
-  GetCategoriesRequest,
-  GetCategoriesResponse,
   GetCategoryAttributesResponse
-} from './categories';
+} from './get-category-attributes';
+import type {
+  GetCategoriesRequest,
+  GetCategoriesResponse
+} from './get-categories';
+import type {
+  GetCategorySuggestionsResponse
+} from './get-category-suggestions';
 import { apiClient } from '~/shared/lib/api-client';
 
 export const categoryApi = {
@@ -20,9 +24,9 @@ export const categoryApi = {
     );
   },
 
-  search(name: string) {
-    return apiClient.get<{ categories: CategorySearch[] }>(
-      '/categories/search',
+  getSuggestions(name: string) {
+    return apiClient.get<GetCategorySuggestionsResponse>(
+      '/categories/suggestions',
       { name }
     );
   },

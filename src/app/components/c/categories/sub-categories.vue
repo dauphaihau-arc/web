@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { consola } from 'consola'
-import type { Category } from '~/shared/api/category/categories'
+import type { Category } from '~/shared/api/category/category'
 import { useGetCategories } from '~/shared/server-state/category/categories.query'
 
 const route = useRoute()

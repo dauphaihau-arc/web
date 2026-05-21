@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Category } from '~/shared/api/category/categories'
+import type { Category } from '~/shared/api/category/category'
 import { useGetAttributesByCategory } from '~/shared/server-state/category/attributes.query'
 import type { ProductAttribute } from '~/shared/models/product'
 import type { ReqAttributeOption } from '~/shared/api/shop/product/form'

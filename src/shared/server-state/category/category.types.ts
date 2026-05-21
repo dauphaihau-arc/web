@@ -1,13 +1,6 @@
-import type { Category, GetCategoriesResponse as ResponseGetCategories } from '~/shared/api/category/categories';
-
-export type CategoryAttributeSelect = {
-  id: string
-  name: string
-  options?: {
-    id: string
-    value: string
-  }[]
-};
+import type { Category } from '~/shared/api/category/category';
+import type { GetCategoriesResponse } from '~/shared/api/category/get-categories';
+import type { CategoryAttributeSelect } from '~/shared/api/category/get-category-attributes';
 
 type NestCategoryAttributeOption = {
   id: string
@@ -29,7 +22,7 @@ export type LegacyCategoryAttributesResponse = {
   attributes: CategoryAttributeSelect[]
 };
 
-export function normalizeCategory(response: ResponseGetCategories[number]): Category {
+export function normalizeCategory(response: GetCategoriesResponse[number]): Category {
   return {
     id: response.id,
     parentId: response.parent_id,

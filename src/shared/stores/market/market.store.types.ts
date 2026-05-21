@@ -1,4 +1,4 @@
-import type { Category } from '~/shared/api/category/categories';
+import type { Category } from '~/shared/api/category/category';
 import type { ExchangeRatesResponse } from '~/shared/api/market/exchange-rates';
 
 export type ExchangeRateStorage = {
