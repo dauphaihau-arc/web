@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { consola } from 'consola'
-import { CheckoutCartSteps } from '~/shared/checkout/cart-checkout.types'
+import { CheckoutCartSteps } from '~/shared/stores/cart/cart.store.types'
 import { PaymentTypes } from '~/shared/config/enums/order'
 import { MARKET_CONFIG } from '~/shared/config/enums/market'
 import { toastCustom } from '~/shared/config/toast'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { useCreateOrderFromCart } from '~/shared/server-state/me/orders/create-order-from-cart.mutation'
-import { useCartStore } from '~/shared/stores/cart'
+import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { useGetExchangeRates } from '~/shared/server-state/market/exchange-rates.query'
-import type { CreateOrderFromCartRequest } from '~/shared/api/me/orders/create-order-from-cart'
+import type { CreateOrderFromCartRequest } from '~/shared/api/me/order/create-order-from-cart'
 import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
-import type { ExchangeRatesResponse as ResponseGetExchangeRates } from '~/shared/market/market.types'
+import type { ExchangeRatesResponse as ResponseGetExchangeRates } from '~/shared/api/market/exchange-rates'
 
 const marketStore = useMarketStore()
 const toast = useToast()
@@ -123,8 +123,8 @@ function nextStep() {
   <div class="mx-auto mt-8">
     <UButton
       v-if="
-        cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.addressShipping
-          || cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.payment
+        cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.ADDRESS_SHIPPING
+          || cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.PAYMENT
       "
       block
       size="xl"
@@ -135,7 +135,7 @@ function nextStep() {
       Continue
     </UButton>
     <UButton
-      v-else-if="cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.reviewConfirmation"
+      v-else-if="cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.REVIEW_CONFIRMATION"
       block
       size="xl"
       :loading="cartStore.stateCheckoutCart.isPendingCreateOrder"

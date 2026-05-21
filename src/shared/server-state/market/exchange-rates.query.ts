@@ -2,8 +2,8 @@ import type { UseQueryOptions } from '@tanstack/vue-query';
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import { consola } from 'consola';
 import { MARKET_CONFIG } from '~/shared/config/enums/market';
+import type { ExchangeRatesResponse } from '~/shared/api/market/exchange-rates';
 import { apiClient } from '~/shared/lib/api-client';
-import type { ExchangeRatesResponse } from '~/shared/market/market.types';
 
 type QueryOptions<TData> = Omit<
   UseQueryOptions<TData, Error, TData, string[]>,

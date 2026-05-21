@@ -6,11 +6,11 @@ import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys';
 import { useGetExchangeRates } from '~/shared/server-state/market/exchange-rates.query';
 import { useGetDataByIP } from '~/shared/server-state/market/ip-data.query';
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query';
+import type { IpDataResponse } from '~/shared/api/market/ip-data';
 import type {
   CategoriesBreadcrumbStorage, ExchangeRateStorage,
-  IpDataResponse,
   UserActivitiesSessionStorage
-} from '~/shared/market/market.types';
+} from '~/shared/stores/market/market.store.types';
 import { MARKET_CONFIG, MarketLanguages } from '~/shared/config/enums/market';
 import { SessionStorageKeys } from '~/shared/config/enums/session-storage-keys';
 

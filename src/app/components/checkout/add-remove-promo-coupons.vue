@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { StatusCodes } from 'http-status-codes'
 import { FetchError } from 'ofetch'
-import { useCartStore } from '~/shared/stores/cart'
+import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { toastCustom } from '~/shared/config/toast'
 import { COUPON_CONFIG } from '~/shared/config/enums/coupon'
 import type { Coupon } from '~/shared/models/coupon'

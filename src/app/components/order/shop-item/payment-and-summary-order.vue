@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ElementType } from '~/shared/contracts/utils'
-import type { GetOrderShopsResponse } from '~/shared/api/me/orders/get-order-shops'
+import type { GetOrderShopsResponse } from '~/shared/api/me/order/get-order-shops'
 import { PaymentTypes } from '~/shared/config/enums/order'
 
 defineProps<{

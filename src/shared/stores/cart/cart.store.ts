@@ -1,11 +1,12 @@
 import type { Order } from '~/shared/models/order';
 import type { Shop } from '~/shared/models/shop';
-import { CheckoutNowSteps, type StateCheckoutNow } from '~/shared/checkout/checkout.types';
+import {
+  CheckoutNowSteps, CheckoutCartSteps, type StateCheckoutNow, type StateCheckoutCart
+} from '~/shared/stores/cart/cart.store.types';
 import { PaymentTypes } from '~/shared/config/enums/order';
 import type { Coupon } from '~/shared/models/coupon';
-import { CheckoutCartSteps, type StateCheckoutCart } from '~/shared/checkout/cart-checkout.types';
 import { routePaths } from '~/shared/navigation/routes';
-import type { CreateOrderResponse } from '~/shared/api/me/orders/create-order.shared';
+import type { CreateOrderResponse } from '~/shared/api/me/order/create-order.shared';
 
 export type AdditionInfoShopCarts = {
   key: Shop['id']
@@ -22,7 +23,7 @@ export const useCartStore = defineStore('cart', () => {
     promoCodes: [],
     note: '',
     invalidCodes: new Map<Coupon['code'], string>(),
-    currentStep: CheckoutNowSteps.addressShipping,
+    currentStep: CheckoutNowSteps.ADDRESS_SHIPPING,
     countRefreshConvertCurrency: 0,
     isPendingCreateOrder: false,
     paymentType: PaymentTypes.CASH,
@@ -35,7 +36,7 @@ export const useCartStore = defineStore('cart', () => {
 
   const initStateCheckoutCart: StateCheckoutCart = {
     invalidCodes: new Map<Coupon['code'], string>(),
-    currentStep: CheckoutCartSteps.addressShipping,
+    currentStep: CheckoutCartSteps.ADDRESS_SHIPPING,
     countRefreshConvertCurrency: 0,
     isPendingCreateOrder: false,
     paymentType: PaymentTypes.CASH,

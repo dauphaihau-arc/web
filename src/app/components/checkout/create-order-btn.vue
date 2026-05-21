@@ -4,13 +4,13 @@ import { PaymentTypes } from '~/shared/config/enums/order'
 import { MARKET_CONFIG } from '~/shared/config/enums/market'
 import { toastCustom } from '~/shared/config/toast'
 import { ROUTES } from '~/shared/config/enums/routes'
-import { useCartStore } from '~/shared/stores/cart'
+import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { useCreateOrderForBuyNow } from '~/shared/server-state/me/orders/create-order-buy-now.mutation'
-import { CheckoutNowSteps } from '~/shared/checkout/checkout.types'
+import { CheckoutNowSteps } from '~/shared/stores/cart/cart.store.types'
 import { useGetExchangeRates } from '~/shared/server-state/market/exchange-rates.query'
-import type { CreateOrderForBuyNowRequest } from '~/shared/api/me/orders/create-order-buy-now'
+import type { CreateOrderForBuyNowRequest } from '~/shared/api/me/order/create-order-buy-now'
 import type { Cart } from '~/shared/models/cart'
-import type { ExchangeRatesResponse as ResponseGetExchangeRates } from '~/shared/market/market.types'
+import type { ExchangeRatesResponse as ResponseGetExchangeRates } from '~/shared/api/market/exchange-rates'
 
 const cartStore = useCartStore()
 const toast = useToast()
@@ -115,8 +115,8 @@ function nextStep() {
   <div class="mx-auto mt-8">
     <UButton
       v-if="
-        cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.addressShipping
-          || cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.payment
+        cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.ADDRESS_SHIPPING
+          || cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.PAYMENT
       "
       block
       size="xl"
@@ -127,7 +127,7 @@ function nextStep() {
       Continue
     </UButton>
     <UButton
-      v-else-if="cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.reviewConfirmation"
+      v-else-if="cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.REVIEW_CONFIRMATION"
       block
       size="xl"
       :loading="cartStore.stateCheckoutNow.isPendingCreateOrder"

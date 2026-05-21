@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ORDER_CONFIG } from '~/shared/config/enums/order'
-import { useCartStore } from '~/shared/stores/cart'
+import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { ProductVariantTypes } from '~/shared/config/enums/product'
 import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
 import { useUpdateCart } from '~/shared/server-state/me/cart/update-cart.mutation'

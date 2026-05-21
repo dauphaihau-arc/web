@@ -3,7 +3,7 @@
   use in cart page, cart/checkout page
  */
 import { watchDebounced } from '@vueuse/core'
-import { useCartStore } from '~/shared/stores/cart'
+import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { useUpdateCart } from '~/shared/server-state/me/cart/update-cart.mutation'
 import type {
   CartProductItem,

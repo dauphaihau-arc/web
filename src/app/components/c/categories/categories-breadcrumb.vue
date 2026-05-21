@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { CategoriesBreadcrumbStorage } from '~/shared/market/market.types'
+import type { CategoriesBreadcrumbStorage } from '~/shared/stores/market/market.store.types'
 
 const route = useRoute()
 const marketStore = useMarketStore()

@@ -1,9 +1,9 @@
+import type { Payment } from './payment';
 import type { Coupon, PercentOff } from '~/shared/models/coupon';
 import type { Order, OrderShopProduct } from '~/shared/models/order';
 import type { Product, ProductInventory } from '~/shared/models/product';
 import type { Shop } from '~/shared/models/shop';
 import type { Override } from '~/shared/contracts/utils';
-import type { Payment } from '~/shared/contracts/payment';
 
 export type ResponseGetOrderShopsProduct = Override<OrderShopProduct, {
   product: Pick<Product, 'shipping' | 'id'> & {

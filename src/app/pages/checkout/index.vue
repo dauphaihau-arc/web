@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useCartStore } from '~/shared/stores/cart'
-import { CheckoutNowSteps } from '~/shared/checkout/checkout.types'
+import { useCartStore } from '~/shared/stores/cart/cart.store'
+import { CheckoutNowSteps } from '~/shared/stores/cart/cart.store.types'
 import LoadingSvg from '~/shared/ui/loading-svg.vue'
 import CheckoutStepper from '~/app/components/checkout-stepper.vue'
 import SummaryOrderCard from '~/app/components/summary-order-card.vue'
@@ -51,17 +51,17 @@ onUnmounted(() => {
     <div class="grid grid-cols-12 gap-16">
       <div class="col-span-8">
         <UserAddressShipping
-          v-show="cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.addressShipping"
+          v-show="cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.ADDRESS_SHIPPING"
           class="mb-10"
         />
 
         <PaymentOptions
-          v-show="cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.payment"
+          v-show="cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.PAYMENT"
         />
 
         <div
-          v-show="cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.reviewConfirmation
-            || cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.order"
+          v-show="cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.REVIEW_CONFIRMATION
+            || cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.ORDER"
         >
           <ReviewShippingAndPayment class="mb-12" />
           <ShopCart />

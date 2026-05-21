@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import { useCartStore } from '~/shared/stores/cart'
-import { CheckoutCartSteps } from '~/shared/checkout/cart-checkout.types'
+import { useCartStore } from '~/shared/stores/cart/cart.store'
+import { CheckoutCartSteps } from '~/shared/stores/cart/cart.store.types'
 
 const cartStore = useCartStore()
 
 const changeUserAddress = () => {
-  cartStore.stateCheckoutCart.currentStep = CheckoutCartSteps.addressShipping
+  cartStore.stateCheckoutCart.currentStep = CheckoutCartSteps.ADDRESS_SHIPPING
 }
 
 const changePayment = () => {
-  cartStore.stateCheckoutCart.currentStep = CheckoutCartSteps.payment
+  cartStore.stateCheckoutCart.currentStep = CheckoutCartSteps.PAYMENT
 }
 </script>
 

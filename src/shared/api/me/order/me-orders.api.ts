@@ -14,21 +14,21 @@ import { apiClient } from '~/shared/lib/api-client';
 export const meOrdersApi = {
   createForBuyNow(payload: CreateOrderForBuyNowRequest) {
     return apiClient.put<CreateOrderForBuyNowResponse>(
-      '/user/orders',
+      '/me/orders',
       payload
     );
   },
 
   createFromCart(payload: CreateOrderFromCartRequest) {
     return apiClient.post<CreateOrderFromCartResponse>(
-      '/user/orders',
+      '/me/orders',
       payload
     );
   },
 
   getShops(params?: GetOrderShopsRequest) {
     return apiClient.get<GetOrderShopsResponse>(
-      '/user/orders',
+      '/me/orders',
       params
     );
   },
@@ -38,7 +38,7 @@ export const meOrdersApi = {
     options?: NitroFetchOptions<NitroFetchRequest>
   ) {
     return apiClient.delete<GetOrderShopsByCheckoutSessionResponse>(
-      '/user/orders',
+      '/me/orders',
       { session_id: sessionId },
       undefined,
       options,

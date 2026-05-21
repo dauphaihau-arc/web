@@ -6,7 +6,7 @@
 import { StatusCodes } from 'http-status-codes'
 import { FetchError } from 'ofetch'
 import { consola } from 'consola'
-import { type AdditionInfoShopCarts, useCartStore } from '~/shared/stores/cart'
+import { type AdditionInfoShopCarts, useCartStore } from '~/shared/stores/cart/cart.store'
 import { COUPON_CONFIG } from '~/shared/config/enums/coupon'
 import type { Shop } from '~/shared/models/shop'
 import { useUpdateCart } from '~/shared/server-state/me/cart/update-cart.mutation'

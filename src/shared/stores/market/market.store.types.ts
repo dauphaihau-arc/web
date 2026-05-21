@@ -1,17 +1,5 @@
-import type { MarketCurrencies, MarketRegions } from '~/shared/config/enums/market';
 import type { Category } from '~/shared/api/category/categories';
-
-export type ExchangeRatesResponse = {
-  rates: { [key: string]: number }
-  time_next_update_unix: number
-};
-
-export type IpDataResponse = Record<
-  'emoji_flag' | 'region' | 'city', string
-> & {
-  country_name: MarketRegions
-  currency: { code: MarketCurrencies }
-};
+import type { ExchangeRatesResponse } from '~/shared/api/market/exchange-rates';
 
 export type ExchangeRateStorage = {
   rates: ExchangeRatesResponse['rates']

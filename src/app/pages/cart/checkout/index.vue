@@ -7,8 +7,8 @@ import ReviewShippingAndPayment from '~/app/components/cart/checkout/review-ship
 import ShopCart from '~/app/components/cart/checkout/shop-cart.vue'
 import SummaryOrder from '~/app/components/cart/checkout/summary-order.vue'
 import UserAddressShipping from '~/app/components/cart/checkout/user-address-shipping.vue'
-import { useCartStore } from '~/shared/stores/cart'
-import { CheckoutCartSteps } from '~/shared/checkout/cart-checkout.types'
+import { useCartStore } from '~/shared/stores/cart/cart.store'
+import { CheckoutCartSteps } from '~/shared/stores/cart/cart.store.types'
 import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
@@ -50,16 +50,16 @@ const steps = ['Billing Address', 'Payment', 'Review & Confirmation']
     <div class="grid grid-cols-12 gap-16">
       <div class="col-span-8">
         <UserAddressShipping
-          v-show="cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.addressShipping"
+          v-show="cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.ADDRESS_SHIPPING"
           class="mb-10"
         />
         <PaymentOptions
-          v-show="cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.payment"
+          v-show="cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.PAYMENT"
         />
 
         <div
-          v-show="cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.reviewConfirmation
-            || cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.order"
+          v-show="cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.REVIEW_CONFIRMATION
+            || cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.ORDER"
         >
           <ReviewShippingAndPayment class="mb-12" />
           <div
