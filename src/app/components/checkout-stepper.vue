@@ -60,10 +60,9 @@ const clickStepDone = (index: number) => {
             items-center justify-center sm:size-6"
           >
             <div v-if="(percent > (widthPerStep + widthAddition) * (index)) || currentStep === index + 1">
-              <Icon
-                name="i-material-symbols:check-circle-rounded"
+              <AppIcon
+                name="check"
                 class="done size-5"
-                mode="svg"
                 @click="() => clickStepDone(index)"
               />
             </div>

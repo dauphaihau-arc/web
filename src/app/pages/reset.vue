@@ -70,10 +70,9 @@ onMounted(() => {
     <ResetPasswordCard v-if="currentView === ResetPasswordViews.TOKEN_INVALID">
       <template #content>
         <div class="flex flex-col items-center justify-center">
-          <Icon
-            name="ph:warning-duotone"
-            color="black"
-            class="mb-3 size-7"
+          <AppIcon
+            name="warning"
+            class="mb-3 size-7 text-black"
           />
           <div>
             This password reset link has expired.

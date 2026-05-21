@@ -124,7 +124,7 @@ const goToDetailProduct = () => {
         <div class="flex gap-5">
           <UTooltip text="Feature not available">
             <div class="flex cursor-pointer items-center gap-1">
-              <Icon name="uil:pen" />
+              <AppIcon name="edit" />
               <p>Edit</p>
             </div>
           </UTooltip>
@@ -133,7 +133,7 @@ const goToDetailProduct = () => {
             class="flex cursor-pointer items-center gap-1"
             @click.once="deleteProductCart()"
           >
-            <Icon name="uil:trash" />
+            <AppIcon name="trash" />
             <p>Remove</p>
           </div>
         </div>

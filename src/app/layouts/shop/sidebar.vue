@@ -16,7 +16,11 @@ const itemsLinkSidebar: LinkItem[] = shopSidebarLinks
 
 const isOpen = ref(false)
 
-const itemsShopDropdown: DropdownItem[][] = [
+type ShopDropdownItem = Omit<DropdownItem, 'icon'> & {
+  icon?: string
+}
+
+const itemsShopDropdown: ShopDropdownItem[][] = [
   [
     {
       label: 'Profile',
@@ -31,12 +35,12 @@ const itemsShopDropdown: DropdownItem[][] = [
   [
     {
       label: 'Archive',
-      icon: 'i-heroicons-archive-box-20-solid',
+      icon: 'archive',
       disabled: true,
     },
     {
       label: 'Arc Marketplace',
-      icon: 'i-heroicons-arrow-right-circle-20-solid',
+      icon: 'marketplace',
       click: () => {
         navigateTo(appRoutes.home())
       },
@@ -45,7 +49,7 @@ const itemsShopDropdown: DropdownItem[][] = [
   [
     {
       label: 'Logout',
-      icon: 'i-heroicons-arrow-left-start-on-rectangle',
+      icon: 'logout',
       click: logout,
     },
   ],
@@ -58,18 +62,35 @@ const itemsShopDropdown: DropdownItem[][] = [
     :class="[{ 'bg-layout-shop': !isOpen }]"
   >
     <UDropdown
-      :items="itemsShopDropdown"
+      :items="itemsShopDropdown as DropdownItem[][]"
       :popper="{ placement: 'bottom-start', offsetDistance: 20, offsetSkid: -8 }"
       class="mx-4 mb-6 mt-3 rounded-md p-2 pr-3  duration-200 hover:bg-customGray-200/50"
     >
+      <template #item="{ item }">
+        <div class="flex items-center gap-2">
+          <UAvatar
+            v-if="item.avatar"
+            size="2xs"
+            v-bind="item.avatar"
+          />
+          <AppIcon
+            v-else-if="item.icon"
+            :name="item.icon"
+            size="xs"
+            class="text-gray-500"
+          />
+          <span>{{ item.label }}</span>
+        </div>
+      </template>
+
       <div class="flex items-center gap-2">
         <UButton
           color="gray"
           class="p-2"
         >
-          <Icon
-            name="uil:shop"
-            class="size-4"
+          <AppIcon
+            name="shop"
+            size="xs"
           />
         </UButton>
         <div class="text-sm font-medium text-customGray-950">

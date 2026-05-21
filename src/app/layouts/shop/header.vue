@@ -41,8 +41,8 @@ const itemsHeaderDropdown: DropdownItem[][] = [
           variant="ghost"
           class="icon-button"
         >
-          <Icon
-            name="i-heroicons-bell"
+          <AppIcon
+            name="bell"
             class="heroicon-sw-2"
           />
         </UButton>
@@ -53,8 +53,8 @@ const itemsHeaderDropdown: DropdownItem[][] = [
           variant="ghost"
           class="icon-button"
         >
-          <Icon
-            name="i-heroicons-cog-8-tooth"
+          <AppIcon
+            name="settings"
             class="heroicon-sw-2"
           />
         </UButton>
@@ -76,5 +76,4 @@ const itemsHeaderDropdown: DropdownItem[][] = [
 </template>
 
 <style scoped>
-
 </style>

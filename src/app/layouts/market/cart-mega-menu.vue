@@ -1,32 +1,15 @@
 <script lang="ts" setup>
-import RegisterLoginDialog from '~/app/components/dialogs/login-register/register-login-dialog.vue'
 import { routes } from '~/shared/navigation/routes'
-import { useLogout } from '~/shared/server-state/auth/logout.mutation'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
 
 const props = defineProps<{ show: boolean }>()
 
-const modal = useModal()
 const { data: dataUserAuth } = useGetCurrentUser()
 
 const {
   data: dataGetCart,
 } = useGetCart()
-
-const {
-  mutate: logout,
-  isPending: isPendingLogout,
-} = useLogout()
-
-const showRegisterLoginDialog = () => {
-  modal.open(RegisterLoginDialog)
-}
-
-const handleLogout = () => {
-  if (isPendingLogout.value) return
-  logout()
-}
 
 const remainProductCart = computed(() => {
   if (dataGetCart.value?.cart) {
@@ -104,80 +87,13 @@ const remainProductCart = computed(() => {
               Your cart is empty.
             </div>
           </div>
-
           <div
             v-else
             class="flex items-center gap-1"
           >
-            <UButton
-              id="login-btn"
-              size="sm"
-              variant="link"
-              label="Log in"
-              :trailing="false"
-              :ui="{
-                base: 'underline',
-                padding: {
-                  sm: 'p-0',
-                },
-              }"
-              @click="showRegisterLoginDialog"
-            />
-
             <span class=" text-sm text-customGray-950">
-              to see products you added into cart
+              Log in to see products you added into cart
             </span>
-          </div>
-        </div>
-
-        <div
-          v-if="dataUserAuth?.user"
-          id="user-profile"
-        >
-          <div class="mb-2 text-customGray-950">
-            My Profile
-          </div>
-          <div class="flex flex-col gap-2">
-            <NuxtLink
-              class="item-profile"
-              :to="routes.orders()"
-            >
-              <UIcon
-                name="i-heroicons-cube"
-                color="gray"
-              />
-              Orders
-            </NuxtLink>
-            <NuxtLink
-              class="item-profile"
-              :to="routes.account()"
-            >
-              <UIcon
-                name="i-heroicons-user"
-                color="gray"
-              />
-              Account
-            </NuxtLink>
-            <NuxtLink
-              class="item-profile"
-              :to="routes.accountShop()"
-            >
-              <UIcon
-                name="i-heroicons-building-storefront"
-                color="gray"
-              />
-              Manage Shop
-            </NuxtLink>
-            <div
-              class="item-profile"
-              @click="handleLogout"
-            >
-              <UIcon
-                name="i-heroicons-arrow-left-start-on-rectangle"
-                color="gray"
-              />
-              Logout {{ dataUserAuth?.user?.display_name }}
-            </div>
           </div>
         </div>
       </div>

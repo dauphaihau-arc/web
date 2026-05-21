@@ -202,9 +202,9 @@ const itemsDropdownWithRow = (row: { id: string }): DropdownItem[][] => [
                 variant="ghost"
                 class="p-1.5"
               >
-                <Icon
-                  name="i-material-symbols:ink-pen-rounded"
-                  class=" cursor-pointer"
+                <AppIcon
+                  name="edit"
+                  class="cursor-pointer"
                 />
               </UButton>
             </UTooltip>

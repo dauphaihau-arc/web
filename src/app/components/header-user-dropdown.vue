@@ -13,9 +13,9 @@ const { data: dataUserAuth } = useGetCurrentUser()
           color="gray"
           variant="ghost"
         >
-          <Icon
-            name="uil:user"
-            color="black"
+          <AppIcon
+            name="user"
+            class="text-black"
           />
         </UButton>
       </UTooltip>

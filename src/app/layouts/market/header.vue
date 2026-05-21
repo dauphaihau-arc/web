@@ -2,17 +2,26 @@
 import CartMegaMenu from './cart-mega-menu.vue'
 import HeaderCategories from './header-categories.vue'
 import SearchAllMegaMenu from './search-all-mega-menu.vue'
+import type { DropdownItem } from '#ui/types'
+import RegisterLoginDialog from '~/app/components/dialogs/login-register/register-login-dialog.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
+import { routes } from '~/shared/navigation/routes'
+import { useLogout } from '~/shared/server-state/auth/logout.mutation'
 import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 
 const route = useRoute()
+const modal = useModal()
 
 const {
   data: dataGetCart,
 } = useGetCart()
 
 const { data: dataUserAuth } = useGetCurrentUser()
+const {
+  mutate: logout,
+  isPending: isPendingLogout,
+} = useLogout()
 
 const isShowCart = ref(false)
 const isShowSearch = ref(false)
@@ -64,6 +73,49 @@ const totalProductCarts = computed(() => {
   }
   return 0
 })
+
+type UserDropdownItem = Omit<DropdownItem, 'icon'> & {
+  icon?: string
+}
+
+const itemsUserDropdown = computed<UserDropdownItem[][]>(() => [
+  [
+    {
+      label: 'Orders',
+      icon: 'orders',
+      click: () => navigateTo(routes.orders()),
+    },
+    {
+      label: 'Account',
+      icon: 'account',
+      click: () => navigateTo(routes.account()),
+    },
+    {
+      label: 'Manage Shop',
+      icon: 'manageShop',
+      click: () => navigateTo(routes.accountShop()),
+    },
+  ],
+  [
+    {
+      label: `Logout ${dataUserAuth.value?.user?.display_name ?? ''}`.trim(),
+      icon: 'logout',
+      disabled: isPendingLogout.value,
+      click: () => {
+        if (isPendingLogout.value) return
+        logout()
+      },
+    },
+  ],
+])
+
+const userInitial = computed(() => {
+  return dataUserAuth.value?.user?.display_name?.trim().charAt(0).toUpperCase() || 'U'
+})
+
+const showRegisterLoginDialog = () => {
+  modal.open(RegisterLoginDialog)
+}
 </script>
 
 <template>
@@ -94,7 +146,7 @@ const totalProductCarts = computed(() => {
           />
         </div>
         <div class="relative flex h-fit items-center gap-4">
-          <div class="absolute right-12 flex gap-4">
+          <div class="absolute right-12 flex items-center gap-4">
             <UTooltip text="Search">
               <UButton
                 color="gray"
@@ -103,13 +155,59 @@ const totalProductCarts = computed(() => {
                 @click="isShowSearch = !isShowSearch"
                 @mouseover="isShowCart = false"
               >
-                <Icon
-                  name="i-uil:search"
-                  mode="svg"
-                  class="size-5"
-                />
+                <AppIcon name="search" />
               </UButton>
             </UTooltip>
+
+            <template v-if="dataUserAuth?.user">
+              <UDropdown
+                :items="itemsUserDropdown as DropdownItem[][]"
+                :popper="{ placement: 'bottom-end' }"
+              >
+                <template #item="{ item }">
+                  <div class="flex items-center gap-2">
+                    <AppIcon
+                      v-if="item.icon"
+                      :name="item.icon"
+                      size="xs"
+                      class="text-gray-500"
+                    />
+                    <span>{{ item.label }}</span>
+                  </div>
+                </template>
+
+                <template #default="{ open: isAccountDropdownOpen }">
+                  <UTooltip
+                    text="My account"
+                    :prevent="isAccountDropdownOpen"
+                  >
+                    <UButton
+                      color="gray"
+                      variant="ghost"
+                      class="rounded-full p-0"
+                      @mouseover="isShowCart = false"
+                    >
+                      <div class="user-avatar">
+                        {{ userInitial }}
+                      </div>
+                    </UButton>
+                  </UTooltip>
+                </template>
+              </UDropdown>
+            </template>
+            <template v-else>
+              <UTooltip text="Sign in">
+                <UButton
+                  color="gray"
+                  variant="ghost"
+                  class="icon-button"
+                  @click="showRegisterLoginDialog"
+                  @mouseover="isShowCart = false"
+                >
+                  <AppIcon name="user" />
+                </UButton>
+              </UTooltip>
+            </template>
           </div>
 
           <UTooltip text="Cart">
@@ -133,11 +231,7 @@ const totalProductCarts = computed(() => {
                 variant="ghost"
                 color="gray"
               >
-                <Icon
-                  name="i-uil:cart"
-                  mode="svg"
-                  class="size-5"
-                />
+                <AppIcon name="cart" />
               </UButton>
             </UChip>
           </UTooltip>
@@ -164,6 +258,10 @@ const totalProductCarts = computed(() => {
 <style scoped>
 .icon-button {
   padding: 8px;
+}
+
+.user-avatar {
+  @apply flex size-6 items-center justify-center rounded-full bg-gray-200 text-sm font-semibold text-gray-700;
 }
 
 .overlay {

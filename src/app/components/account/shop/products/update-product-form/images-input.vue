@@ -164,8 +164,8 @@ const removeImageInDB = (id: string, index: number) => {
         :class="[props.loading ? 'cursor-wait' : 'cursor-pointer']"
         @click="onPickFile"
       >
-        <Icon
-          name="material-symbols:android-camera"
+        <AppIcon
+          name="camera"
           class="w-full"
         />
         <p>Add a photo</p>

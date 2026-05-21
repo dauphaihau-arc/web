@@ -87,8 +87,8 @@ function highlightText(text: string) {
                   class="product"
                   @click="redirectSearch"
                 >
-                  <Icon
-                    name="uil:search"
+                  <AppIcon
+                    name="search"
                     class="w-3"
                   />
                   <!-- eslint-disable-next-line vue/no-v-html -->

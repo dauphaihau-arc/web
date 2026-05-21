@@ -96,8 +96,8 @@ watch(state, () => {
         class="wrapper-input-file"
         @click="onPickFile"
       >
-        <Icon
-          name="material-symbols:android-camera"
+        <AppIcon
+          name="camera"
           class="w-full"
         />
         <p>Add a photo</p>

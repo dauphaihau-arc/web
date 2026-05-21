@@ -59,18 +59,18 @@ const onSelectNextImg = () => {
         class="arrow absolute bottom-3 right-16"
         @click="onSelectPrevImg"
       >
-        <Icon
-          name="i-material-symbols:arrow-back-ios-new-rounded"
-          color="black"
+        <AppIcon
+          name="arrowLeft"
+          class="text-black"
         />
       </div>
       <div
         class="arrow absolute bottom-3 right-3"
         @click="onSelectNextImg"
       >
-        <Icon
-          name="i-material-symbols:arrow-forward-ios"
-          color="black"
+        <AppIcon
+          name="arrowForward"
+          class="text-black"
         />
       </div>
     </div>
