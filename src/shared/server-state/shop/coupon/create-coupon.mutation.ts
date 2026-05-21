@@ -1,6 +1,6 @@
 import { resolveMyShopId } from '../resolve-my-shop-id';
 import { shopCouponApi } from '~/shared/api/shop/coupon/coupon.api';
-import type { CreateShopCouponRequest } from '~/shared/api/shop/coupon/create';
+import type { CreateShopCouponRequest } from '~/shared/api/shop/coupon/contracts/coupon.contract';
 
 export function useShopCreateCoupon() {
   const queryClient = useQueryClient();

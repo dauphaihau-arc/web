@@ -1,14 +1,13 @@
 import { resolveMyShopId } from '../resolve-my-shop-id';
 import { RESOURCES } from '~/shared/config/enums/resources';
 import { apiClient } from '~/shared/lib/api-client';
-import type { Product } from '~/shared/models/product';
 
 export function useShopSetProductAttributes() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ['shop-set-product-attributes'],
     mutationFn: async (body: {
-      id: Product['id']
+      id: string
       attributes: {
         category_attribute_id: string
         selected_option_id?: string

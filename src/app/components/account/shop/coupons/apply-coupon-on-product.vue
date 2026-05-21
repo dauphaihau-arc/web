@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import type { Product } from '~/shared/models/product'
 import { useShopGetProducts } from '~/shared/server-state/shop/product/list.query'
-import type { ListShopProductsItem, ListShopProductsRequest } from '~/shared/api/shop/product/list'
+import type {
+  ListShopProductsItem,
+  ListShopProductsRequest,
+} from '~/shared/api/shop/product/contracts/read.contract'
 
 type ProductCouponRow = ListShopProductsItem & {
   lowestPrice: number
@@ -9,7 +11,7 @@ type ProductCouponRow = ListShopProductsItem & {
   stock: number
 }
 
-const productIdsModel = defineModel<Product['id'][]>()
+const productIdsModel = defineModel<string[]>()
 
 const isOpen = ref(false)
 const selectedRows = ref<ProductCouponRow[]>([])
@@ -82,7 +84,7 @@ const applyProducts = () => {
   isOpen.value = false
 }
 
-const removeProduct = (id: Product['id']) => {
+const removeProduct = (id: string) => {
   selectedRows.value = selectedRows.value.filter(row => row.id !== id)
   if (productIdsModel.value) {
     productIdsModel.value = productIdsModel.value.filter(productId => productId !== id)

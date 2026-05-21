@@ -1,6 +1,6 @@
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import { productApi } from '~/shared/api/product/product.api';
-import type { GetDetailProductBySlugResponse } from '~/shared/api/product/detail-by-slug';
+import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contracts/product.contract';
 
 export function useGetDetailProductBySlug(
   shopSlug: string,

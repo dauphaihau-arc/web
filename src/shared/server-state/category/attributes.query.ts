@@ -4,7 +4,7 @@ import type {
 } from './category.types';
 import { normalizeCategoryAttributesResponse } from './category.types';
 import { categoryApi } from '~/shared/api/category/category.api';
-import type { Category } from '~/shared/api/category/category';
+import type { Category } from '~/shared/models/category';
 
 export function useGetAttributesByCategory(id?: Category['id']) {
   return useQuery({

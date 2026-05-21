@@ -1,7 +1,10 @@
 import type { ComputedRef } from 'vue';
 import type { UseQueryOptions } from '@tanstack/vue-query';
 import { locationApi } from '~/shared/api/location/location.api';
-import type { GetCountriesResponse, GetStatesByCountryResponse } from '~/shared/api/location/countries';
+import type {
+  GetCountriesResponse,
+  GetStatesByCountryResponse
+} from '~/shared/api/location/contracts/location.contract';
 
 export function useGetCountries(options?: Partial<UseQueryOptions<GetCountriesResponse>>) {
   return useQuery<GetCountriesResponse>({

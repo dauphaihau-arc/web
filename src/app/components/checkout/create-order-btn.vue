@@ -8,16 +8,15 @@ import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { useCreateOrderForBuyNow } from '~/shared/server-state/me/orders/create-order-buy-now.mutation'
 import { CheckoutNowSteps } from '~/shared/stores/cart/cart.store.types'
 import { useGetExchangeRates } from '~/shared/server-state/market/exchange-rates.query'
-import type { CreateOrderForBuyNowRequest } from '~/shared/api/me/order/create-order-buy-now'
-import type { Cart } from '~/shared/models/cart'
-import type { ExchangeRatesResponse as ResponseGetExchangeRates } from '~/shared/api/market/exchange-rates'
+import type { CreateOrderForBuyNowRequest } from '~/shared/api/me/order/contracts/order.contract'
+import type { ExchangeRatesResponse as ResponseGetExchangeRates } from '~/shared/api/market/contracts/market.contract'
 
 const cartStore = useCartStore()
 const toast = useToast()
 const marketStore = useMarketStore()
 
 const route = useRoute()
-const tempCartId = route.query['c'] as Cart['id']
+const tempCartId = route.query['c'] as string
 
 const {
   mutateAsync: createOrder,

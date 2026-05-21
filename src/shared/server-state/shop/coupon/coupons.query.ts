@@ -1,7 +1,7 @@
 import type { ComputedRef } from 'vue';
 import { resolveMyShopId } from '../resolve-my-shop-id';
 import { shopCouponApi } from '~/shared/api/shop/coupon/coupon.api';
-import type { ListShopCouponsRequest, ListShopCouponsResponse } from '~/shared/api/shop/coupon/list';
+import type { ListShopCouponsRequest, ListShopCouponsResponse } from '~/shared/api/shop/coupon/contracts/coupon.contract';
 
 export function useShopGetCoupons(queryParams: ComputedRef<ListShopCouponsRequest>) {
   const queryClient = useQueryClient();

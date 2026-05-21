@@ -1,12 +1,12 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { StorageSerializers, useStorage } from '@vueuse/core';
-import type { User } from '~/shared/models/user';
+import type { AuthPreferences } from '~/shared/api/auth/contracts/auth-user.contract';
 import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys';
 import { useGetExchangeRates } from '~/shared/server-state/market/exchange-rates.query';
 import { useGetDataByIP } from '~/shared/server-state/market/ip-data.query';
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query';
-import type { IpDataResponse } from '~/shared/api/market/ip-data';
+import type { IpDataResponse } from '~/shared/api/market/contracts/market.contract';
 import type {
   CategoriesBreadcrumbStorage, ExchangeRateStorage,
   UserActivitiesSessionStorage
@@ -44,7 +44,7 @@ export const useMarketStore = defineStore('market', () => {
     }
   );
 
-  const guestPreferences = useStorage<User['market_preferences']>(
+  const guestPreferences = useStorage<AuthPreferences>(
     LocalStorageKeys.GUEST_PREFERENCES,
     localStorage[LocalStorageKeys.GUEST_PREFERENCES],
     localStorage, // bind value with LS

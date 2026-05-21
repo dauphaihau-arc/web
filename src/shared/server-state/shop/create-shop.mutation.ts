@@ -1,6 +1,6 @@
 import { shopApi } from '~/shared/api/shop/shop.api';
-import type { CreateShopRequest } from '~/shared/api/shop/shop.api';
-import type { UserAuthenticated } from '~/shared/api/auth/login';
+import type { CreateShopRequest } from '~/shared/api/shop/contracts/shop.contract';
+import type { UserAuthenticated } from '~/shared/api/auth/contracts/auth-user.contract';
 
 export function useCreateShop() {
   const queryClient = useQueryClient();

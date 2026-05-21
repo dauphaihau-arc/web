@@ -7,17 +7,19 @@ import { useIssueProductImageUploadUrl } from '~/shared/server-state/upload/issu
 import { useShopSetProductAttributes } from '~/shared/server-state/shop/product/set-product-attributes.mutation';
 import { useShopSetProductImagesByKeys } from '~/shared/server-state/shop/product/set-product-images-by-keys.mutation';
 import { useShopUpdateProduct } from '~/shared/server-state/shop/product/update-product.mutation';
-import type { DetailShopProductResponse } from '~/shared/api/shop/product/detail';
-import type { UpdateProductBody } from '~/shared/api/shop/product/form';
-import type { Product, ProductImage } from '~/shared/models/product';
+import type { DetailShopProductResponse } from '~/shared/api/shop/product/contracts/read.contract';
+import type {
+  ProductImageReference,
+  UpdateProductBody
+} from '~/shared/api/shop/product/contracts/form.contract';
 import pick from '~/shared/utils/pick';
 
 type UseUpdateProductSubmitInput = {
-  productId: Product['id']
+  productId: string
   queryClient: QueryClient
   dataDetailProduct: Ref<DetailShopProductResponse | undefined>
   fileImages: Ref<File[]>
-  idsImageForDelete: Ref<Pick<ProductImage, 'id'>[]>
+  idsImageForDelete: Ref<Required<Pick<ProductImageReference, 'id'>>[]>
 };
 
 function buildDetailPayload(dataSubmit: UpdateProductBody) {
@@ -43,7 +45,7 @@ function buildAttributesPayload(
 
 function buildImagesPayload(
   dataDetailProduct: DetailShopProductResponse | undefined,
-  idsImageForDelete: Pick<ProductImage, 'id'>[],
+  idsImageForDelete: Required<Pick<ProductImageReference, 'id'>>[],
   uploadedKeys: string[] = []
 ) {
   const currentImages = dataDetailProduct?.product.images ?? [];

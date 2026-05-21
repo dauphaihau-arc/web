@@ -1,5 +1,5 @@
 import { setExpTokensToLS } from './token-storage';
-import type { RegisterRequest } from '~/shared/api/auth/register';
+import type { RegisterRequest } from '~/shared/api/auth/contracts/register.contract';
 import { authApi } from '~/shared/api/auth/auth.api';
 
 export function useRegister() {

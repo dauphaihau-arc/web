@@ -1,7 +1,7 @@
 import type { MutationOptions } from '@tanstack/vue-query';
 import type { FetchError } from 'ofetch';
 import { meCartApi } from '~/shared/api/me/cart/me-cart.api';
-import type { AddProductToCartRequest, AddProductToCartResponse } from '~/shared/api/me/cart/add-product';
+import type { AddProductToCartRequest, AddProductToCartResponse } from '~/shared/api/me/cart/contracts/cart.contract';
 import { toastCustom } from '~/shared/config/toast';
 
 export function useAddProductToCart(

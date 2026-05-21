@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useGetCountries } from '~/shared/server-state/location/countries.query'
-import type { ProductStandardShipping } from '~/shared/models/product'
+import type { CreateProductShipping } from '~/shared/api/shop/product/contracts/form.contract'
 import {
   ProductShippingCharge,
   PRODUCT_SHIPPING_CONFIG,
@@ -8,9 +8,11 @@ import {
   ProductShippingServices,
 } from '~/shared/config/enums/product'
 
+type ShippingLocation = CreateProductShipping['standard_shipping'][number]
+
 const emit = defineEmits<{
   delete: []
-  onChange: [value: ProductStandardShipping]
+  onChange: [value: ShippingLocation]
 }>()
 
 defineProps<{
@@ -18,7 +20,7 @@ defineProps<{
   disabledDelete: boolean
 }>()
 
-const model = defineModel<Partial<ProductStandardShipping>>({
+const model = defineModel<Partial<ShippingLocation>>({
   required: true,
 })
 

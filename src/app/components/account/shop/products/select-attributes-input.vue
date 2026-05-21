@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import type { Category } from '~/shared/api/category/category'
+import type { Category } from '~/shared/models/category'
 import { useGetAttributesByCategory } from '~/shared/server-state/category/attributes.query'
-import type { ProductAttribute } from '~/shared/models/product'
-import type { ReqAttributeOption } from '~/shared/api/shop/product/form'
+import type { ReqAttributeOption } from '~/shared/api/shop/product/contracts/form.contract'
+
+type ProductAttributeSelection = {
+  attribute: string
+  selected: string
+}
 
 const { category_id, attributesSelected } = defineProps<{
+  // eslint-disable-next-line vue/prop-name-casing
   category_id?: Category['id']
-  attributesSelected?: ProductAttribute[]
+  attributesSelected?: ProductAttributeSelection[]
 }
 >()
 

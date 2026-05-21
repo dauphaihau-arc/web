@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import type { Coupon } from '~/shared/models/coupon'
 
 type State = {
   startDate: dayjs.Dayjs
   endDate: dayjs.Dayjs | null
 }
 
-const startDateModel = defineModel<Coupon['start_date'] | Date>('startDate')
-const endDateModel = defineModel<Coupon['end_date'] | Date>('endDate')
+const startDateModel = defineModel<Date | string>('startDate')
+const endDateModel = defineModel<Date | string | undefined>('endDate')
 
 const formatDisplayOnBtn = 'D MMM HH:mm'
 

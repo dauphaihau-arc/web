@@ -1,5 +1,5 @@
 import { setExpTokensToLS } from './token-storage';
-import type { LoginRequest } from '~/shared/api/auth/login';
+import type { LoginRequest } from '~/shared/api/auth/contracts/login.contract';
 import { authApi } from '~/shared/api/auth/auth.api';
 import { useGetCart } from '~/shared/server-state/me/cart/cart.query';
 

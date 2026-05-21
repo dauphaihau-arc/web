@@ -1,7 +1,7 @@
 import { normalizeCategory } from './category.types';
 import { categoryApi } from '~/shared/api/category/category.api';
-import type { Category } from '~/shared/api/category/category';
-import type { GetCategoriesRequest as GetCategoriesParams } from '~/shared/api/category/get-categories';
+import type { Category } from '~/shared/models/category';
+import type { GetCategoriesRequest as GetCategoriesParams } from '~/shared/api/category/contracts/category.contract';
 
 export function useGetCategories(
   params?: GetCategoriesParams

@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
-import type { UserAddress } from '~/shared/models/user-address'
-import type { CreateUserAddressRequest } from '~/shared/api/me/address/address'
+import type {
+  CreateUserAddressRequest,
+  GetUserAddressesResponse,
+  UpdateUserAddressRequest,
+} from '~/shared/api/me/address/contracts/address.contract'
 import { ADDRESS_CONFIG } from '~/shared/config/enums/address'
-import { createUserAddressSchema } from '~/shared/schemas/user-address.schema'
+import { addressFormSchema } from '~/shared/schemas/forms/address/address-form.schema'
 import { toastCustom } from '~/shared/config/toast'
 import { useUpdateUserAddress } from '~/shared/server-state/me/address/update-address.mutation'
 import { useGetCountries, useGetStatesByCountry } from '~/shared/server-state/location/countries.query'
+
+type UserAddress = GetUserAddressesResponse['results'][number]
 
 const props = defineProps<{ dataEdit: UserAddress }>()
 
@@ -48,7 +53,11 @@ onMounted(() => {
 async function onSubmit(event: FormSubmitEvent<CreateUserAddressRequest>) {
   formRef.value.clear()
   try {
-    await updateUserAddress(event.data)
+    const payload: UpdateUserAddressRequest = {
+      id: props.dataEdit.id,
+      ...event.data,
+    }
+    await updateUserAddress(payload)
     await queryClient.invalidateQueries({
       queryKey: ['get-user-addresses'],
     })
@@ -87,7 +96,7 @@ watch(() => stateSubmit.country, () => {
           ref="formRef"
           :validate-on="['submit']"
           :state="stateSubmit"
-          :schema="createUserAddressSchema"
+          :schema="addressFormSchema"
           @submit="onSubmit"
         >
           <UFormGroup

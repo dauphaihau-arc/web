@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import type { ProductCombineVariant, ProductInventory, ProductVariant } from '~/shared/models/product'
 import { PRODUCT_CONFIG, ProductVariantTypes } from '~/shared/config/enums/product'
 import { productInventorySchema } from '~/shared/schemas/product-inventory.schema'
 import type {
   StateCombineVariant,
   StateSingleVariant,
-} from '~/shared/api/shop/product/form'
+} from '~/shared/api/shop/product/contracts/form.contract'
 import type { NoUndefinedField } from '~/shared/contracts/utils'
 
 const props = defineProps<{ countValidate: number }>()
@@ -13,6 +12,14 @@ const props = defineProps<{ countValidate: number }>()
 const generateRandomId = () => new Date().getTime()
 
 type VariantOption = { id: number, variant_name: string, errorMsg: string }
+type InventoryFields = {
+  price?: number
+  stock?: number
+  sku?: string
+}
+type VariantFields = {
+  variant_name?: string
+}
 
 type State = {
   isActiveSubVariant: boolean
@@ -22,7 +29,9 @@ type State = {
   errorSubVariantOption: string
   errorVariantGroupName: string
   errorVariantSubGroupName: string
-} & Pick<ProductCombineVariant, 'variant_group_name' | 'variant_sub_group_name'>
+  variant_group_name?: string
+  variant_sub_group_name?: string
+}
 & Record<'variants' | 'subVariants', VariantOption[]>
 
 type VariantTable = {
@@ -30,9 +39,7 @@ type VariantTable = {
   sub_variant_name?: string
   errorPrice: string
   errorStock: string
-  price?: ProductInventory['price']
-} & Pick<ProductVariant, 'variant_name'> &
-Pick<ProductInventory, | 'stock' | 'sku'>
+} & InventoryFields & VariantFields
 
 const singleVariantModel = defineModel<StateSingleVariant>('singleVariant', {
   default: {},

@@ -8,9 +8,9 @@ import { ROUTES } from '~/shared/config/enums/routes'
 import { useCreateOrderFromCart } from '~/shared/server-state/me/orders/create-order-from-cart.mutation'
 import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { useGetExchangeRates } from '~/shared/server-state/market/exchange-rates.query'
-import type { CreateOrderFromCartRequest } from '~/shared/api/me/order/create-order-from-cart'
+import type { CreateOrderFromCartRequest } from '~/shared/api/me/order/contracts/order.contract'
 import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
-import type { ExchangeRatesResponse as ResponseGetExchangeRates } from '~/shared/api/market/exchange-rates'
+import type { ExchangeRatesResponse as ResponseGetExchangeRates } from '~/shared/api/market/contracts/market.contract'
 
 const marketStore = useMarketStore()
 const toast = useToast()

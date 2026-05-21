@@ -1,5 +1,5 @@
 import { meOrdersApi } from '~/shared/api/me/order/me-orders.api';
-import type { CreateOrderForBuyNowRequest } from '~/shared/api/me/order/create-order-buy-now';
+import type { CreateOrderForBuyNowRequest } from '~/shared/api/me/order/contracts/order.contract';
 
 export function useCreateOrderForBuyNow() {
   return useMutation({

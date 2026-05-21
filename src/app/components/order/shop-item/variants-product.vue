@@ -2,7 +2,7 @@
 /*
   use in cart page, cart/checkout page
  */
-import type { ResponseGetOrderShopsProduct } from '~/shared/api/me/order/orders.shared'
+import type { ResponseGetOrderShopsProduct } from '~/shared/api/me/order/contracts/order.contract'
 
 const { productOrder } = defineProps<{
   productOrder: ResponseGetOrderShopsProduct

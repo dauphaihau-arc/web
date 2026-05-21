@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GetDetailProductBySlugResponse } from '~/shared/api/product/detail-by-slug'
+import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contracts/product.contract'
 import { ProductVariantTypes } from '~/shared/config/enums/product'
 import type { ElementType } from '~/shared/contracts/utils'
 

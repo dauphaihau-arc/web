@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import type { ProductInventory } from '~/shared/models/product'
-import type { Shop } from '~/shared/models/shop'
 import { useUpdateCart } from '~/shared/server-state/me/cart/update-cart.mutation'
-import type { GetCartResponse } from '~/shared/api/me/cart/get-cart'
+import type { GetCartResponse } from '~/shared/api/me/cart/contracts/cart.contract'
 
 const { checked, inventory_id, shopId } = defineProps<{
   checked: boolean
-  inventory_id: ProductInventory['id']
-  shopId: Shop['id']
+  // eslint-disable-next-line vue/prop-name-casing
+  inventory_id: string
+  shopId: string
 }>()
 
 const queryClient = useQueryClient()

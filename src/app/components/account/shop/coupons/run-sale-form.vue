@@ -10,8 +10,8 @@ import ApplyCouponOnProduct from '~/app/components/account/shop/coupons/apply-co
 import SearchStartEndDateInput from '~/app/components/account/shop/coupons/search-start-end-date-input.vue'
 import { useShopCreateCoupon } from '~/shared/server-state/shop/coupon/create-coupon.mutation'
 import { toastCustom } from '~/shared/config/toast'
-import { createSaleBodySchema } from '~/shared/schemas/request/shop-coupon.schema'
-import type { CreateSaleBody } from '~/shared/api/shop/coupon/form'
+import { createSaleFormSchema } from '~/shared/schemas/forms/shop/coupon/create-sale-form.schema'
+import type { CreateSaleBody } from '~/shared/api/shop/coupon/contracts/coupon.contract'
 import RadioGroupInput from '~/shared/ui/radio-group-input.vue'
 
 const router = useRouter()
@@ -59,7 +59,7 @@ const btnSubmit = ref()
 const validate = (stateValidate: CreateSaleBody): FormError[] => {
   let errors: FormError[] = []
 
-  const result = createSaleBodySchema.safeParse(stateValidate)
+  const result = createSaleFormSchema.safeParse(stateValidate)
 
   if (!result.success) {
     errors = result.error.issues.map((detail) => {

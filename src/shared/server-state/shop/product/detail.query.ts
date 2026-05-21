@@ -1,10 +1,9 @@
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import { resolveMyShopId } from '../resolve-my-shop-id';
 import { shopProductApi } from '~/shared/api/shop/product/product.api';
-import type { Product } from '~/shared/models/product';
 
 export function useShopGetDetailProduct(
-  id: Product['id'],
+  id: string,
   options?: NitroFetchOptions<NitroFetchRequest>
 ) {
   const queryClient = useQueryClient();

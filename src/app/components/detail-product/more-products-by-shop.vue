@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import ProductCard from '~/app/components/detail-product/product-card.vue'
-import type { Shop } from '~/shared/models/shop'
 import { useGetProducts } from '~/shared/server-state/product/products.query'
 
 const limit = 6
 
 const { shopId } = defineProps<{
-  shopId: Shop['id']
+  shopId: string
 }>()
 
 const queryParams = computed(() => ({

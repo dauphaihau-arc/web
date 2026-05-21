@@ -1,5 +1,5 @@
-import type { Category } from '~/shared/api/category/category';
-import type { GetCategorySuggestionsResponse } from '~/shared/api/category/get-category-suggestions';
+import type { Category } from '~/shared/models/category';
+import type { GetCategorySuggestionsResponse } from '~/shared/api/category/contracts/category.contract';
 import { categoryApi } from '~/shared/api/category/category.api';
 
 export function useGetSuggestCategories() {

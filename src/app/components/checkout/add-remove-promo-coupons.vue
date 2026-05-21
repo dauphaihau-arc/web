@@ -4,9 +4,8 @@ import { FetchError } from 'ofetch'
 import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { toastCustom } from '~/shared/config/toast'
 import { COUPON_CONFIG } from '~/shared/config/enums/coupon'
-import type { Coupon } from '~/shared/models/coupon'
 import { useUpdateCart } from '~/shared/server-state/me/cart/update-cart.mutation'
-import type { GetCartResponse } from '~/shared/api/me/cart/get-cart'
+import type { GetCartResponse } from '~/shared/api/me/cart/contracts/cart.contract'
 
 const toast = useToast()
 const cartStore = useCartStore()
@@ -72,7 +71,7 @@ async function addCoupon() {
   }
 }
 
-async function deleteCoupon(code: Coupon['code']) {
+async function deleteCoupon(code: string) {
   const product = cartStore.stateCheckoutNow
   const newPromoCodes = product.promoCodes.filter(c => c !== code)
 

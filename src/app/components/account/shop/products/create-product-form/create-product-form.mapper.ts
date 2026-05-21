@@ -7,8 +7,8 @@ import type {
   StateCombineVariant,
   StateNoneVariant,
   StateSingleVariant
-} from '~/shared/api/shop/product/form';
-import type { CreateDraftProductRequest as RequestCreateProductDraftBody } from '~/shared/api/shop/product/create-draft';
+} from '~/shared/api/shop/product/contracts/form.contract';
+import type { CreateDraftProductRequest as RequestCreateProductDraftBody } from '~/shared/api/shop/product/contracts/create-draft.contract';
 import type { PickPartial } from '~/shared/contracts/utils';
 
 export type CreateProductSubmitBody = {

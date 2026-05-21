@@ -19,7 +19,7 @@ import type {
   StateNoneVariant,
   StateSingleVariant,
   StateSubmit
-} from '~/shared/api/shop/product/form';
+} from '~/shared/api/shop/product/contracts/form.contract';
 import type { PickPartial } from '~/shared/contracts/utils';
 
 type UseCreateProductSubmitInput = {

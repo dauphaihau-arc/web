@@ -4,14 +4,13 @@ import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { ProductVariantTypes } from '~/shared/config/enums/product'
 import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
 import { useUpdateCart } from '~/shared/server-state/me/cart/update-cart.mutation'
-import type { GetCartResponse } from '~/shared/api/me/cart/get-cart'
-import type { Cart } from '~/shared/models/cart'
+import type { GetCartResponse } from '~/shared/api/me/cart/contracts/cart.contract'
 
 const cartStore = useCartStore()
 const queryClient = useQueryClient()
 const route = useRoute()
 
-const tempCartId = route.query['c'] as Cart['id']
+const tempCartId = route.query['c'] as string
 
 const {
   data: dataGetCart,

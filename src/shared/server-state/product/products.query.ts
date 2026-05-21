@@ -4,7 +4,7 @@ import { productApi } from '~/shared/api/product/product.api';
 import type {
   GetProductsRequest,
   GetProductsResponse
-} from '~/shared/api/product/list';
+} from '~/shared/api/product/contracts/product.contract';
 
 export function useGetProducts(
   params: ComputedRef<GetProductsRequest | undefined>,

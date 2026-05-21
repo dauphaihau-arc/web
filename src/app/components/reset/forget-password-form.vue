@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
-import { userSchema } from '~/shared/schemas/user.schema'
-import type { User } from '~/shared/models/user'
+import type { ForgotPasswordRequest } from '~/shared/api/auth/contracts/forgot-password.contract'
 import { useForgetPassword } from '~/shared/server-state/auth/forgot-password.mutation'
 import { ResetPasswordViews } from '~/shared/config/enums/common'
 import { toastCustom } from '~/shared/config/toast'
+import { forgotPasswordFormSchema } from '~/shared/schemas/forms/auth/forgot-password-form.schema'
 
 const emit = defineEmits<{
   changeView: [value: ResetPasswordViews]
@@ -23,7 +23,7 @@ const {
   isPending: isPendingForgetPassword,
 } = useForgetPassword()
 
-async function onSubmit(event: FormSubmitEvent<Pick<User, 'email'>>) {
+async function onSubmit(event: FormSubmitEvent<ForgotPasswordRequest>) {
   authStore.emailRequestForgetPassword = event.data.email
   try {
     await forgetPassword(event.data.email)
@@ -42,7 +42,7 @@ async function onSubmit(event: FormSubmitEvent<Pick<User, 'email'>>) {
   <UForm
     ref="formRef"
     :validate-on="['submit']"
-    :schema="userSchema.pick({ email: true })"
+    :schema="forgotPasswordFormSchema"
     :state="stateSubmit"
     @submit="onSubmit"
   >

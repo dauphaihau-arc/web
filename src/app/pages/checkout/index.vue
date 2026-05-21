@@ -10,14 +10,13 @@ import ReviewShippingAndPayment from '~/app/components/checkout/review-shipping-
 import ShopCart from '~/app/components/checkout/shop-cart.vue'
 import UserAddressShipping from '~/app/components/checkout/user-address-shipping.vue'
 import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
-import type { Cart } from '~/shared/models/cart'
 
 definePageMeta({ layout: 'market', middleware: ['auth', 'checkout'] })
 
 const route = useRoute()
 const cartStore = useCartStore()
 
-const tempCartId = route.query['c'] as Cart['id']
+const tempCartId = route.query['c'] as string
 
 const {
   isPending: isPendingGetCart,

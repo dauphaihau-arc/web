@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GetProductsResponseItem } from '~/shared/api/product/list'
+import type { GetProductsResponseItem } from '~/shared/api/product/contracts/product.contract'
 import { routes } from '~/shared/navigation/routes'
 
 const props = defineProps<{

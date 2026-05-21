@@ -2,17 +2,16 @@
 import { StatusCodes } from 'http-status-codes'
 import { FetchError } from 'ofetch'
 import type { FormError, FormSubmitEvent } from '#ui/types'
-import { userSchema } from '~/shared/schemas/user.schema'
-import type { User } from '~/shared/models/user'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { useAuthClientConfig } from '~/shared/server-state/auth/client-config.query'
 import { useLogin } from '~/shared/server-state/auth/login.mutation'
-import type { LoginRequest as LoginBody } from '~/shared/api/auth/login'
+import type { LoginRequest as LoginBody } from '~/shared/api/auth/contracts/login.contract'
+import { loginFormSchema } from '~/shared/schemas/forms/auth/login-form.schema'
 import { appendPasswordError } from '~/shared/utils/password-policy'
 
 const formRef = ref()
 const unknownErrorServerMsg = ref('')
-const invalidUsers = new Map<User['email'], User['password'][]>()
+const invalidUsers = new Map<LoginBody['email'], LoginBody['password'][]>()
 const stateSubmit: Partial<LoginBody> = reactive({})
 
 const {
@@ -24,11 +23,13 @@ const { data: authClientConfig, isLoading: isLoadingAuthClientConfig } = useAuth
 const validateForm = (stateValidate: Partial<LoginBody>): FormError[] => {
   const errors: FormError[] = []
 
-  const emailValidation = userSchema.shape.email.safeParse(stateValidate.email)
-  if (!emailValidation.success) {
-    const issue = emailValidation.error.issues[0]
-    if (issue) {
-      errors.push({ path: 'email', message: issue.message })
+  const parsed = loginFormSchema.pick({ email: true }).safeParse(stateValidate)
+  if (!parsed.success) {
+    for (const issue of parsed.error.issues) {
+      const path = issue.path[0]
+      if (typeof path === 'string') {
+        errors.push({ path, message: issue.message })
+      }
     }
   }
 

@@ -1,6 +1,6 @@
 import type { QueryClient } from '@tanstack/vue-query';
 import dayjs from 'dayjs';
-import type { AuthClientConfigResponse } from '~/shared/api/auth/client-config';
+import type { AuthClientConfigResponse } from '~/shared/api/auth/contracts/client-config.contract';
 import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys';
 import { DEFAULT_AUTH_CLIENT_CONFIG } from '~/shared/utils/password-policy';
 

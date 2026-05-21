@@ -1,6 +1,6 @@
-import type { UserAuthenticated } from '~/shared/api/auth/login';
+import type { UserAuthenticated } from '~/shared/api/auth/contracts/auth-user.contract';
 import { meApi } from '~/shared/api/me/me.api';
-import type { UpdateCurrentUserRequest } from '~/shared/api/me/update-current-user';
+import type { UpdateMeRequest as UpdateCurrentUserRequest } from '~/shared/api/auth/contracts/update-me.contract';
 import { toastCustom } from '~/shared/config/toast';
 
 export function useUpdateCurrentUser() {

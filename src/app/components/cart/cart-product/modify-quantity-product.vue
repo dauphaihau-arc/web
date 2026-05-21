@@ -8,13 +8,11 @@ import { useUpdateCart } from '~/shared/server-state/me/cart/update-cart.mutatio
 import type {
   CartProductItem,
 } from '~/shared/api/me/cart/cart.shared'
-import type { GetCartResponse } from '~/shared/api/me/cart/get-cart'
-import type { UpdateCartRequest } from '~/shared/api/me/cart/update-cart'
-import type { Shop } from '~/shared/models/shop'
+import type { GetCartResponse, UpdateCartRequest } from '~/shared/api/me/cart/contracts/cart.contract'
 
 const props = defineProps<{
   productCart: CartProductItem
-  shopId: Shop['id']
+  shopId: string
 }>()
 
 const cartStore = useCartStore()

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { GetDetailProductBySlugResponse } from '~/shared/api/product/detail-by-slug'
+import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contracts/product.contract'
 
 const { images } = defineProps<{
   images: GetDetailProductBySlugResponse['images']

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ElementType } from '~/shared/contracts/utils'
-import type { GetOrderShopsResponse } from '~/shared/api/me/order/get-order-shops'
+import type { GetOrderShopsResponse } from '~/shared/api/me/order/contracts/order.contract'
 
 defineProps<{
   orderShop: ElementType<GetOrderShopsResponse['order_shops']>

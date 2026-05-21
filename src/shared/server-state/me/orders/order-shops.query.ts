@@ -2,7 +2,7 @@ import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import { meOrdersApi } from '~/shared/api/me/order/me-orders.api';
 import type {
   GetOrderShopsByCheckoutSessionResponse
-} from '~/shared/api/me/order/get-order-shops-by-checkout-session';
+} from '~/shared/api/me/order/contracts/order.contract';
 import type { RequestGetListParams } from '~/shared/contracts/common';
 
 export function useGetOrderShops(queryParams?: RequestGetListParams) {

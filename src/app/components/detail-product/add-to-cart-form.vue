@@ -2,12 +2,12 @@
 import { consola } from 'consola'
 import type { FormError, FormSubmitEvent } from '#ui/types'
 import { ProductVariantTypes } from '~/shared/config/enums/product'
-import type { AddProductToCartRequest, AddProductToCartResponse } from '~/shared/api/me/cart/add-product'
+import type { AddProductToCartRequest, AddProductToCartResponse } from '~/shared/api/me/cart/contracts/cart.contract'
 import RegisterLoginDialog from '~/app/components/dialogs/login-register/register-login-dialog.vue'
 import { routes } from '~/shared/navigation/routes'
 import { useAddProductToCart } from '~/shared/server-state/me/cart/add-product.mutation'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
-import type { GetDetailProductBySlugResponse } from '~/shared/api/product/detail-by-slug'
+import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contracts/product.contract'
 import { toastCustom } from '~/shared/config/toast'
 
 interface StateSubmit {

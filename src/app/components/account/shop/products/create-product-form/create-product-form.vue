@@ -3,7 +3,10 @@ import ImagesInput from './images-input.vue'
 import VariantInput from './variant-input.vue'
 import { useCreateProductSubmit } from './use-create-product-submit'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
-import { createProductBodySchema, createProductInventorySchema } from '~/shared/schemas/request/shop-product.schema'
+import {
+  createProductFormSchema,
+  createProductInventoryFormSchema,
+} from '~/shared/schemas/forms/shop/product/create-product-form.schema'
 import {
   isDigitalOpts,
   PRODUCT_CONFIG,
@@ -25,7 +28,7 @@ import type {
   StateNoneVariant,
   StateSingleVariant,
   StateSubmit,
-} from '~/shared/api/shop/product/form'
+} from '~/shared/api/shop/product/contracts/form.contract'
 
 const router = useRouter()
 const modal = useModal()
@@ -81,7 +84,7 @@ const validateForm = (values: CreateProductBody): FormError[] => {
   let errors: FormError[] = []
   countValidate.value++
 
-  const result = createProductBodySchema.safeParse(values)
+  const result = createProductFormSchema.safeParse(values)
   if (!result.success) {
     errors = result.error.issues.map((detail) => {
       const path = detail.path.at(-1)
@@ -112,11 +115,11 @@ function onErrorFrom(event: FormErrorEvent) {
 watchDebounced(
   () => [stateSubmit, noneVariant, fileImages.value, shipping],
   () => {
-    const baseParsed = createProductBodySchema.safeParse(stateSubmit)
+    const baseParsed = createProductFormSchema.safeParse(stateSubmit)
     const conditions = [baseParsed.success, fileImages.value.length > 0, shipping.value]
 
     if (stateSubmit.variant_type === ProductVariantTypes.NONE) {
-      const resultParsed = createProductInventorySchema.safeParse(noneVariant)
+      const resultParsed = createProductInventoryFormSchema.safeParse(noneVariant)
       conditions.push(resultParsed.success)
     }
     enabledButtonSubmit.value = conditions.every(Boolean)

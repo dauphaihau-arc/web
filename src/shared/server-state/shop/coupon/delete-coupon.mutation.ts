@@ -1,14 +1,13 @@
 import { resolveMyShopId } from '../resolve-my-shop-id';
 import { toastCustom } from '~/shared/config/toast';
 import { shopCouponApi } from '~/shared/api/shop/coupon/coupon.api';
-import type { Product } from '~/shared/models/product';
 
 export function useShopDeleteCoupon() {
   const queryClient = useQueryClient();
   const toast = useToast();
   return useMutation({
     mutationKey: ['shop-delete-coupon'],
-    mutationFn: async (id: Product['id']) => {
+    mutationFn: async (id: string) => {
       const shopId = await resolveMyShopId(queryClient);
       return shopCouponApi.delete(shopId, id);
     },

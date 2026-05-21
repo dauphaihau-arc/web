@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import type { Category } from '~/shared/api/category/category'
-import type { Product } from '~/shared/models/product'
+import type { Category } from '~/shared/models/category'
 import { useGetSuggestCategories } from '~/shared/server-state/category/suggest-categories.mutation'
 
-const props = defineProps<{ title?: Product['title'], category?: Category | null }>()
+const props = defineProps<{ title?: string, category?: Category | null }>()
 
-const model = defineModel<Product['category'] | undefined>({
+const model = defineModel<string | undefined>({
   required: true,
 })
 

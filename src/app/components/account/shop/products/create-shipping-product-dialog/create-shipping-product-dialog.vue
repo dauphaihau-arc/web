@@ -3,13 +3,13 @@ import LocationShipping from './location-shipping.vue'
 import type { FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import { useGetCountries } from '~/shared/server-state/location/countries.query'
 import { ADDRESS_CONFIG } from '~/shared/config/enums/address'
-import type { ProductShipping, ProductStandardShipping } from '~/shared/models/product'
 import { ProductShippingCharge, ProductShippingServices } from '~/shared/config/enums/product'
-import { createProductShippingSchema } from '~/shared/schemas/request/shop-product.schema'
-import type { CreateProductShipping } from '~/shared/api/shop/product/form'
+import { createProductShippingFormSchema } from '~/shared/schemas/forms/shop/product/create-product-form.schema'
+import type { CreateProductShipping } from '~/shared/api/shop/product/contracts/form.contract'
 
-type TStateSubmit = Partial<Pick<ProductShipping, 'country' | 'zip' | 'process_time'>> & {
-  standard_shipping: Partial<ProductStandardShipping>[]
+type ShippingLocation = CreateProductShipping['standard_shipping'][number]
+type TStateSubmit = Partial<Pick<CreateProductShipping, 'country' | 'zip' | 'process_time'>> & {
+  standard_shipping: Partial<ShippingLocation>[]
 }
 
 const emit = defineEmits<{
@@ -141,7 +141,7 @@ async function onError(event: FormErrorEvent) {
         :validate-on="['submit']"
         :state="stateSubmit"
         class="space-y-4"
-        :schema="createProductShippingSchema"
+        :schema="createProductShippingFormSchema"
         @error="onError"
         @submit="onSubmit"
       >

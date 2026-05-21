@@ -11,8 +11,8 @@ import SearchStartEndDateInput from '~/app/components/account/shop/coupons/searc
 import { toastCustom } from '~/shared/config/toast'
 import { useShopCreateCoupon } from '~/shared/server-state/shop/coupon/create-coupon.mutation'
 import { PRODUCT_CONFIG } from '~/shared/config/enums/product'
-import { createPromoCodeBodySchema } from '~/shared/schemas/request/shop-coupon.schema'
-import type { CreatePromoCodeBody } from '~/shared/api/shop/coupon/form'
+import { createPromoCodeFormSchema } from '~/shared/schemas/forms/shop/coupon/create-promo-code-form.schema'
+import type { CreatePromoCodeBody } from '~/shared/api/shop/coupon/contracts/coupon.contract'
 import RadioGroupInput from '~/shared/ui/radio-group-input.vue'
 
 type StateSubmit = RequiredFields<Partial<CreatePromoCodeBody>, 'type' | 'applies_to' | 'min_order_type'>
@@ -54,7 +54,7 @@ const btnSubmit = ref()
 const validateForm = (stateValidate: CreatePromoCodeBody): FormError[] => {
   let errors: FormError[] = []
 
-  const result = createPromoCodeBodySchema.safeParse(stateValidate)
+  const result = createPromoCodeFormSchema.safeParse(stateValidate)
 
   if (!result.success) {
     errors = result.error.issues.map((detail) => {

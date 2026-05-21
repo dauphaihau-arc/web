@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { FetchError } from 'ofetch'
 import { StatusCodes } from 'http-status-codes'
-import { z } from 'zod'
 import type { FormError, FormSubmitEvent } from '#ui/types'
-import { userSchema } from '~/shared/schemas/user.schema'
-import type { User } from '~/shared/models/user'
 import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys'
 import { useAuthClientConfig } from '~/shared/server-state/auth/client-config.query'
+import type { AuthPreferences } from '~/shared/api/auth/contracts/auth-user.contract'
 import { useRegister } from '~/shared/server-state/auth/register.mutation'
-import type { RegisterRequest as RegisterBody } from '~/shared/api/auth/register'
+import type { RegisterRequest as RegisterBody } from '~/shared/api/auth/contracts/register.contract'
+import { registerFormSchema } from '~/shared/schemas/forms/auth/register-form.schema'
 import { appendPasswordError } from '~/shared/utils/password-policy'
 
 const invalidEmails: string[] = []
@@ -16,10 +15,6 @@ const formRef = ref()
 const unknownErrorServerMsg = ref('')
 
 const stateSubmit: Partial<RegisterBody> = reactive({})
-const registerSchema = z.object({
-  display_name: userSchema.shape.name,
-  email: userSchema.shape.email,
-})
 
 const {
   mutateAsync: register,
@@ -30,7 +25,7 @@ const { data: authClientConfig, isLoading: isLoadingAuthClientConfig } = useAuth
 const validateForm = (stateValidate: Partial<RegisterBody> & { display_name?: string }): FormError[] => {
   const errors: FormError[] = []
 
-  const parsed = registerSchema.safeParse(stateValidate)
+  const parsed = registerFormSchema.safeParse(stateValidate)
   if (!parsed.success) {
     for (const issue of parsed.error.issues) {
       const path = issue.path[0]
@@ -52,7 +47,7 @@ async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
     return
   }
 
-  const userPreferences = parseJSON<User['market_preferences']>(localStorage[LocalStorageKeys.GUEST_PREFERENCES])
+  const userPreferences = parseJSON<AuthPreferences>(localStorage[LocalStorageKeys.GUEST_PREFERENCES])
 
   try {
     await register({

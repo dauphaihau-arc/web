@@ -1,5 +1,5 @@
 import { meOrdersApi } from '~/shared/api/me/order/me-orders.api';
-import type { CreateOrderFromCartRequest } from '~/shared/api/me/order/create-order-from-cart';
+import type { CreateOrderFromCartRequest } from '~/shared/api/me/order/contracts/order.contract';
 
 export function useCreateOrderFromCart() {
   return useMutation({

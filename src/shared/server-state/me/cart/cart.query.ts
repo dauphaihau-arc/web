@@ -1,11 +1,10 @@
 import type { UseQueryOptions } from '@tanstack/vue-query';
 import { meCartApi } from '~/shared/api/me/cart/me-cart.api';
-import type { GetCartResponse } from '~/shared/api/me/cart/get-cart';
+import type { GetCartResponse } from '~/shared/api/me/cart/contracts/cart.contract';
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query';
-import type { Cart } from '~/shared/models/cart';
 
 export function useGetCart(
-  params?: { cart_id: Cart['id'] },
+  params?: { cart_id: string },
   queryOptions?: Partial<UseQueryOptions<GetCartResponse>>
 ) {
   const { data: dataUserAuth } = useGetCurrentUser();

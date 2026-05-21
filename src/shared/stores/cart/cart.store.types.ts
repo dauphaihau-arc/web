@@ -1,7 +1,9 @@
 import type { PaymentTypes } from '~/shared/config/enums/order';
-import type { Cart } from '~/shared/models/cart';
-import type { Coupon } from '~/shared/models/coupon';
-import type { UserAddress } from '~/shared/models/user-address';
+import type { GetUserAddressesResponse } from '~/shared/api/me/address/contracts/address.contract';
+
+type UserAddress = GetUserAddressesResponse['results'][number];
+type CouponCode = string;
+type CartId = string;
 
 export enum CheckoutNowSteps {
   ADDRESS_SHIPPING,
@@ -11,11 +13,11 @@ export enum CheckoutNowSteps {
 }
 
 export type StateCheckoutNow = {
-  tempCartId?: Cart['id']
+  tempCartId?: CartId
   currentStep: CheckoutNowSteps
-  promoCodes: Coupon['code'][]
+  promoCodes: CouponCode[]
   note: string
-  invalidCodes: Map<Coupon['code'], string>
+  invalidCodes: Map<CouponCode, string>
   countRefreshConvertCurrency: number
   paymentType: PaymentTypes
   address: UserAddress | null
@@ -31,7 +33,7 @@ export enum CheckoutCartSteps {
 
 export type StateCheckoutCart = {
   currentStep: CheckoutCartSteps
-  invalidCodes: Map<Coupon['code'], string>
+  invalidCodes: Map<CouponCode, string>
   countRefreshConvertCurrency: number
   paymentType: PaymentTypes
   address: UserAddress | null

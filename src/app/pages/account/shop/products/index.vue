@@ -6,8 +6,7 @@ import FixedPagination from '~/app/components/account/shop/fixed-pagination.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { ProductVariantTypes } from '~/shared/config/enums/product'
 import { routes } from '~/shared/navigation/routes'
-import type { Product } from '~/shared/models/product'
-import type { ListShopProductsItem } from '~/shared/api/shop/product/list'
+import type { ListShopProductsItem } from '~/shared/api/shop/product/contracts/read.contract'
 import type { ElementType } from '~/shared/contracts/utils'
 import { useShopDeleteProduct } from '~/shared/server-state/shop/product/delete-product.mutation'
 import { useShopGetProducts } from '~/shared/server-state/shop/product/list.query'
@@ -132,7 +131,7 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
   ],
 ]
 
-async function removeProduct(id: Product['id']) {
+async function removeProduct(id: string) {
   await deleteProduct(id)
   await refetch()
 }

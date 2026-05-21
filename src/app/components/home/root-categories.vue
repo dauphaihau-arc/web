@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Category } from '~/shared/api/category/category'
+import type { Category } from '~/shared/models/category'
 import { getRoutePath, routes } from '~/shared/navigation/routes'
 import { useGetRootCategories } from '~/shared/server-state/category/categories.query'
 

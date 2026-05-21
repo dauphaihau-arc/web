@@ -1,9 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import { ProductVariantTypes } from '~/shared/config/enums/product';
-import type { DetailShopProductResponse } from '~/shared/api/shop/product/detail';
-import type { NoneVariant, UpdateProductBody } from '~/shared/api/shop/product/form';
-import type { ProductImage } from '~/shared/models/product';
+import type { DetailShopProductResponse } from '~/shared/api/shop/product/contracts/read.contract';
+import type {
+  NoneVariant,
+  ProductImageReference,
+  UpdateProductBody
+} from '~/shared/api/shop/product/contracts/form.contract';
 import pick from '~/shared/utils/pick';
 
 type DetailProduct = DetailShopProductResponse['product'];
@@ -57,7 +60,7 @@ export function pruneUnchangedUpdateFields(
 }
 
 export function hasRemovedAllImages(
-  idsImageForDelete: Pick<ProductImage, 'id'>[],
+  idsImageForDelete: Required<Pick<ProductImageReference, 'id'>>[],
   fileImages: File[],
   detailProduct?: DetailProduct
 ) {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GetProductsResponseItem } from '~/shared/api/product/list'
+import type { GetProductsResponseItem } from '~/shared/api/product/contracts/product.contract'
 import { PRODUCT_CONFIG } from '~/shared/config/enums/product'
 import { routes } from '~/shared/navigation/routes'
 

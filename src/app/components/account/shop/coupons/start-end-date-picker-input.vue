@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import type { Coupon } from '~/shared/models/coupon'
 
-const emit = defineEmits<{ (e: 'onChangeDuration', value: Pick<Coupon, 'start_date' | 'end_date'>): void }>()
+type CouponDateRange = {
+  start_date: Date
+  end_date: Date
+}
+
+const emit = defineEmits<{ (e: 'onChangeDuration', value: CouponDateRange): void }>()
 
 const selectedColor = 'indigo'
 

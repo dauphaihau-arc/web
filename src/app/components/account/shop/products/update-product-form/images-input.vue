@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import { PRODUCT_CONFIG } from '~/shared/config/enums/product'
-import type { Product, ProductImage } from '~/shared/models/product'
+import type { ProductImageReference } from '~/shared/api/shop/product/contracts/form.contract'
 import { toastCustom } from '~/shared/config/toast'
+
+type PersistedImage = Required<Pick<ProductImageReference, 'id' | 'relative_url'>> & {
+  rank?: number
+}
 
 const props = withDefaults(
   defineProps<{
     countValidate: number
     loading: boolean
-    images: Product['images']
+    images: PersistedImage[]
   }>(),
   {
     images: () => [],
@@ -18,7 +22,7 @@ const fileImages = defineModel<File[]>('newFileImages', {
   default: [],
 })
 
-const idsImageForDelete = defineModel<Pick<ProductImage, 'id'>[]>('idsImageDelete', {
+const idsImageForDelete = defineModel<Required<Pick<ProductImageReference, 'id'>>[]>('idsImageDelete', {
   default: [],
 })
 
@@ -69,7 +73,7 @@ const removeImage = (index: number) => {
   // state.fileImages.splice(index, 1);
 }
 
-const removeImageInDB = (id: ProductImage['id'], index: number) => {
+const removeImageInDB = (id: string, index: number) => {
   state.imagesInDB.splice(index, 1)
   // state.idsImagesForDelete.push(id);
   idsImageForDelete.value = [...idsImageForDelete.value, { id }]

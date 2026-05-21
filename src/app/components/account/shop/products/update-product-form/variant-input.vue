@@ -2,17 +2,16 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import type {
-  Product,
-  ProductCombineVariant,
-  ProductInventory,
-  ProductVariant,
-} from '~/shared/models/product'
+  DetailShopProductResponse,
+} from '~/shared/api/shop/product/contracts/read.contract'
 import { PRODUCT_CONFIG, ProductVariantTypes } from '~/shared/config/enums/product'
 import { productInventorySchema } from '~/shared/schemas/product-inventory.schema'
 import type { IOnChangeUpdateVariants } from '~/app/components/account/shop/products/update-product-form/update-product-form.vue'
-import type { UpdateProductBody, UpdateVariantOptions } from '~/shared/api/shop/product/form'
+import type { UpdateProductBody, UpdateVariantOptions } from '~/shared/api/shop/product/contracts/form.contract'
 
-type VariantOption = { id: ProductVariant['id'], variant_name: string, errorMsg: string }
+type VariantEditorProduct = DetailShopProductResponse['product']
+
+type VariantOption = { id: string, variant_name: string, errorMsg: string }
 
 type State = {
   isActiveSubVariant: boolean
@@ -22,31 +21,33 @@ type State = {
   errorSubVariantOption: string
   errorVariantGroupName: string
   errorVariantSubGroupName: string
-  variantIdsDelete: ProductVariant['id'][]
-  variantsCurrent: Map<ProductVariant['id'], ProductVariant['variant_name']>
+  variantIdsDelete: string[]
+  variantsCurrent: Map<string, string>
 } & Record<'variants' | 'subVariants', VariantOption[]>
-    // & Pick<IProduct, 'variant_group_name' | 'variant_sub_group_name'>
-& Partial<Pick<ProductCombineVariant, 'variant_group_name' | 'variant_sub_group_name'>>
+& {
+  variant_group_name?: string
+  variant_sub_group_name?: string
+}
 
 type VariantTable = {
   id: number
-  inventoryId?: ProductInventory['id'] | null
-  subVariantId?: ProductVariant['id'] | null
+  inventoryId?: string | null
+  subVariantId?: string | null
   sub_variant_name?: string
   errorPrice: string
   errorStock: string
   isUpdated?: boolean
-  price?: ProductInventory['price']
-} & Pick<ProductVariant, 'variant_name'> &
-Pick<ProductInventory, | 'stock' | 'sku'>
+  price?: number
+  stock?: number
+  sku?: string
+  variant_name?: string
+}
 
 const generateRandomId = () => new Date().getTime().toString()
 
 const props = defineProps<{
   countValidate: number
-  product: Product
-  // product: ProductPopulated
-  // product: ResponseShopGetDetailProduct['product']
+  product: VariantEditorProduct
 }>()
 
 const emit = defineEmits<{
@@ -387,7 +388,7 @@ watch(() => props.countValidate, () => {
   }
 
   // validate duplicate variant name
-  const variantNameMap = new Map<ProductVariant['variant_name'], number>()
+  const variantNameMap = new Map<string, number>()
   const errorMsg = 'Duplicate'
   let isAnyDuplicateVariantName = false
   state.variants.forEach((variant, idx) => {

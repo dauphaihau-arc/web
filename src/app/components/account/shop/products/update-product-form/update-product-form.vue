@@ -10,7 +10,7 @@ import {
 } from './update-product-form.mapper'
 import { useUpdateProductSubmit } from './use-update-product-submit'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
-import { updateProductSchema } from '~/shared/schemas/request/shop-product.schema'
+import { updateProductFormSchema } from '~/shared/schemas/forms/shop/product/update-product-form.schema'
 import {
   ProductVariantTypes, PRODUCT_CONFIG,
   productWhoMadeOpts,
@@ -21,25 +21,25 @@ import NoneVariantInput from '~/app/components/account/shop/products/none-varian
 import SearchCategoryInput from '~/app/components/account/shop/products/search-category-input.vue'
 import SelectAttributesInput from '~/app/components/account/shop/products/select-attributes-input.vue'
 import TagsInput from '~/app/components/account/shop/products/tags-input.vue'
-import type {
-  Product,
-  ProductImage, ProductSingleVariant, ProductCombineVariant,
-} from '~/shared/models/product'
 import { useShopGetDetailProduct } from '~/shared/server-state/shop/product/detail.query'
 import type {
   NoneVariant,
+  ProductImageReference,
   UpdateProductBody,
-} from '~/shared/api/shop/product/form'
+} from '~/shared/api/shop/product/contracts/form.contract'
 
 export type IOnChangeUpdateVariants = Partial<Pick<UpdateProductBody,
   'update_variants' | 'variant_inventories' |
   'new_single_variants' | 'variant_type' | 'new_combine_variants'
->> & (Omit<ProductSingleVariant, 'variants'> | Omit<ProductCombineVariant, 'variants'>) | null
+>> & {
+  variant_group_name?: string
+  variant_sub_group_name?: string
+} | null
 
 const route = useRoute()
 const queryClient = useQueryClient()
 
-const productId = route.params.id as Product['id']
+const productId = route.params.id as string
 
 const {
   data: dataDetailProduct,
@@ -61,7 +61,7 @@ const countValidateInputs = ref(0)
 const countValidateVariantsInputs = ref(0)
 
 const fileImages = ref<File[]>([])
-const idsImageForDelete = ref<Pick<ProductImage, 'id'>[]>([])
+const idsImageForDelete = ref<Required<Pick<ProductImageReference, 'id'>>[]>([])
 
 const {
   loadingSubmit,
@@ -98,7 +98,7 @@ const validateForm = (values: UpdateProductBody): FormError[] => {
   let errors: FormError[] = []
   countValidate.value++
 
-  const result = updateProductSchema.safeParse(values)
+  const result = updateProductFormSchema.safeParse(values)
 
   if (!result.success) {
     errors = result.error.issues.map((detail) => {
@@ -145,7 +145,7 @@ watchDebounced(
   () => {
     countValidateInputs.value++
 
-    const result = updateProductSchema.safeParse(stateSubmit)
+    const result = updateProductFormSchema.safeParse(stateSubmit)
 
     const isEmptyImages = hasRemovedAllImages(
       idsImageForDelete.value,
@@ -243,8 +243,6 @@ watchDebounced(
             />
           </UFormGroup>
         </div>
-
-        {{ stateSubmit.category_id }}
 
         <SearchCategoryInput
           v-model="stateSubmit.category_id"

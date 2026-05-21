@@ -7,14 +7,13 @@ import CartModifyQuantityProduct from './modify-quantity-product.vue'
 import CartVariantsProduct from './variants-product.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { routes } from '~/shared/navigation/routes'
-import type { Shop } from '~/shared/models/shop'
 import { useDeleteProductCart } from '~/shared/server-state/me/cart/delete-product.mutation'
 import type { CartProductItem } from '~/shared/api/me/cart/cart.shared'
-import type { GetCartResponse } from '~/shared/api/me/cart/get-cart'
+import type { GetCartResponse } from '~/shared/api/me/cart/contracts/cart.contract'
 
 const props = defineProps<{
   productCart: CartProductItem
-  shopId: Shop['id']
+  shopId: string
 }>()
 
 const route = useRoute()

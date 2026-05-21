@@ -1,6 +1,5 @@
-import type { Category } from '~/shared/api/category/category';
-import type { GetCategoriesResponse } from '~/shared/api/category/get-categories';
-import type { CategoryAttributeSelect } from '~/shared/api/category/get-category-attributes';
+import type { Category } from '~/shared/models/category';
+import type { CategoryAttributeSelect, GetCategoriesResponse } from '~/shared/api/category/contracts/category.contract';
 
 type NestCategoryAttributeOption = {
   id: string

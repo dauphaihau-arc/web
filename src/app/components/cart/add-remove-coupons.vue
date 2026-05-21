@@ -8,14 +8,12 @@ import { FetchError } from 'ofetch'
 import { consola } from 'consola'
 import { type AdditionInfoShopCarts, useCartStore } from '~/shared/stores/cart/cart.store'
 import { COUPON_CONFIG } from '~/shared/config/enums/coupon'
-import type { Shop } from '~/shared/models/shop'
 import { useUpdateCart } from '~/shared/server-state/me/cart/update-cart.mutation'
 import { toastCustom } from '~/shared/config/toast'
-import type { Coupon } from '~/shared/models/coupon'
-import type { GetCartResponse } from '~/shared/api/me/cart/get-cart'
+import type { GetCartResponse } from '~/shared/api/me/cart/contracts/cart.contract'
 
 const { shopId } = defineProps<{
-  shopId: Shop['id']
+  shopId: string
 }>()
 
 const cartStore = useCartStore()
@@ -25,8 +23,8 @@ const toast = useToast()
 const state = reactive({
   showAddCouponCodeInput: false,
   code: '',
-  codes: [] as Coupon['code'][],
-  invalidCodes: [] as Coupon['code'][],
+  codes: [] as string[],
+  invalidCodes: [] as string[],
   errorMsg: '',
 })
 
@@ -127,7 +125,7 @@ const addCoupon = async () => {
   }
 }
 
-const deleteCoupon = async (code: Coupon['code']) => {
+const deleteCoupon = async (code: string) => {
   const tempAdditionInfoShopCarts = new Map<AdditionInfoShopCarts['key'], AdditionInfoShopCarts['value']>(
     JSON.parse(JSON.stringify([...cartStore.additionInfoShopCarts])),
   )
@@ -219,7 +217,7 @@ const toggleShowAddCouponInput = async () => {
       })
 
       // update cache get cart
-      queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], (oldData) => {
+      queryClient.setQueryData<GetCartResponse>(['get-cart', 'my-cart'], (oldData) => {
         if (!oldData || !oldData.cart) return oldData
         if (!data.cart) return { ...oldData, cart: data.cart }
         const foundShopCart = data.cart.shop_groups.find(sc => sc.shop.id === shopId)

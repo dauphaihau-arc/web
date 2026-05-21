@@ -5,7 +5,7 @@ import FilterProducts from '~/app/components/filter-products.vue'
 import ProductCard from '~/app/components/product-card.vue'
 import SortProductsBy from '~/app/components/sort-products-by.vue'
 import { useGetProducts } from '~/shared/server-state/product/products.query'
-import type { GetProductsRequest } from '~/shared/api/product/list'
+import type { GetProductsRequest } from '~/shared/api/product/contracts/product.contract'
 
 definePageMeta({ layout: 'market' })
 

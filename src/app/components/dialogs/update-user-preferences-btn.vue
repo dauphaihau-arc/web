@@ -6,7 +6,7 @@ import {
   MarketCurrencies,
   MarketLanguages, MARKET_REGION_EMOJIS,
 } from '~/shared/config/enums/market'
-import type { User } from '~/shared/models/user'
+import type { AuthPreferences } from '~/shared/api/auth/contracts/auth-user.contract'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 import { useUpdateCurrentUser } from '~/shared/server-state/me/update-current-user.mutation'
 import { useGetCountries } from '~/shared/server-state/location/countries.query'
@@ -130,7 +130,7 @@ watch(isOpenDialog, async () => {
 const onSubmit = async (event: FormSubmitEvent<State>) => {
   const { currency, language, region } = event.data
 
-  const preferences: NonNullable<User['market_preferences']> = {
+  const preferences: AuthPreferences = {
     currency: currency.id,
     language: language.id,
     region,

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { UserAddress } from '~/shared/models/user-address'
+import type { GetUserAddressesResponse } from '~/shared/api/me/address/contracts/address.contract'
 import { useDeleteUserAddress } from '~/shared/server-state/me/address/delete-address.mutation'
 import { useGetUserAddresses } from '~/shared/server-state/me/address/addresses.query'
 import UpdateUserAddressDialog from '~/app/components/dialogs/update-user-address-dialog.vue'
@@ -24,6 +24,8 @@ const {
     refetch()
   },
 })
+
+type UserAddress = GetUserAddressesResponse['results'][number]
 
 const showUpdateDialog = (item: UserAddress) => {
   dialog.open(UpdateUserAddressDialog, {

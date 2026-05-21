@@ -1,14 +1,13 @@
 import { resolveMyShopId } from '../resolve-my-shop-id';
 import { RESOURCES } from '~/shared/config/enums/resources';
 import { apiClient } from '~/shared/lib/api-client';
-import type { Product } from '~/shared/models/product';
 
 export function useShopSetProductImagesByKeys() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ['shop-set-product-images-by-keys'],
     mutationFn: async (body: {
-      id: Product['id']
+      id: string
       images: {
         storage_key: string
         rank: number

@@ -10,7 +10,7 @@ import { CouponAppliesTo, CouponTypes } from '~/shared/config/enums/coupon'
 import { useShopDeleteCoupon } from '~/shared/server-state/shop/coupon/delete-coupon.mutation'
 import { useShopGetCoupons } from '~/shared/server-state/shop/coupon/coupons.query'
 import { CreateCouponPageTypes } from '~/shared/config/enums/shop'
-import type { Coupon } from '~/shared/models/coupon'
+import type { ListShopCouponsResponse } from '~/shared/api/shop/coupon/contracts/coupon.contract'
 
 dayjs.extend(localizedFormat)
 
@@ -64,7 +64,7 @@ const columns = [
 
 const rows = computed(() => {
   if (dataShopGetCoupons.value?.results && dataShopGetCoupons.value.results.length > 0) {
-    return dataShopGetCoupons.value.results.map((coupon: Coupon) => ({
+    return dataShopGetCoupons.value.results.map((coupon: ListShopCouponsResponse['results'][number]) => ({
       ...coupon,
       start_date: dayjs(coupon.start_date).format('HH:mm L'),
       end_date: dayjs(coupon.end_date).format('HH:mm L'),

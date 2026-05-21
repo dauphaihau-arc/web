@@ -1,18 +1,15 @@
-import type { Order } from '~/shared/models/order';
-import type { Shop } from '~/shared/models/shop';
 import {
   CheckoutNowSteps, CheckoutCartSteps, type StateCheckoutNow, type StateCheckoutCart
 } from '~/shared/stores/cart/cart.store.types';
 import { PaymentTypes } from '~/shared/config/enums/order';
-import type { Coupon } from '~/shared/models/coupon';
 import { routePaths } from '~/shared/navigation/routes';
-import type { CreateOrderResponse } from '~/shared/api/me/order/create-order.shared';
+import type { CreateOrderResponse } from '~/shared/api/me/order/contracts/order.contract';
 
 export type AdditionInfoShopCarts = {
-  key: Shop['id']
+  key: string
   value: {
-    promoCodes: Coupon['code'][]
-    note: Order['note']
+    promoCodes: string[]
+    note: string
   }
 };
 
@@ -22,7 +19,7 @@ export const useCartStore = defineStore('cart', () => {
   const initStateCheckoutNow: StateCheckoutNow = {
     promoCodes: [],
     note: '',
-    invalidCodes: new Map<Coupon['code'], string>(),
+    invalidCodes: new Map<string, string>(),
     currentStep: CheckoutNowSteps.ADDRESS_SHIPPING,
     countRefreshConvertCurrency: 0,
     isPendingCreateOrder: false,
@@ -35,7 +32,7 @@ export const useCartStore = defineStore('cart', () => {
   }
 
   const initStateCheckoutCart: StateCheckoutCart = {
-    invalidCodes: new Map<Coupon['code'], string>(),
+    invalidCodes: new Map<string, string>(),
     currentStep: CheckoutCartSteps.ADDRESS_SHIPPING,
     countRefreshConvertCurrency: 0,
     isPendingCreateOrder: false,

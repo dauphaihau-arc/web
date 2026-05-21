@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { PRODUCT_CONFIG } from '~/shared/config/enums/product'
-import type { Product } from '~/shared/models/product'
 
-const tagsModel = defineModel<Product['tags']>({
+const tagsModel = defineModel<string[]>({
   default: [],
   required: true,
 })
