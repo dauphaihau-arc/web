@@ -1,4 +1,4 @@
-import type { Category, ResponseGetCategories } from '~/shared/types/category';
+import type { Category, GetCategoriesResponse as ResponseGetCategories } from '~/shared/api/category/categories';
 
 export type CategoryAttributeSelect = {
   id: string

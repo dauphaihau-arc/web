@@ -3,7 +3,7 @@ import type { MarketCurrencies } from '~/shared/config/enums/market';
 import type { Cart } from '~/shared/models/cart';
 import type { Coupon } from '~/shared/models/coupon';
 import type { Order } from '~/shared/models/order';
-import type { Payment } from '~/shared/types/payment';
+import type { Payment } from '~/shared/contracts/payment';
 
 export type CreateOrderForBuyNowRequest = {
   cart_id: Cart['id']

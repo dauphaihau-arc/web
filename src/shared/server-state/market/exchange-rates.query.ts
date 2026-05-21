@@ -3,7 +3,7 @@ import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import { consola } from 'consola';
 import { MARKET_CONFIG } from '~/shared/config/enums/market';
 import { apiClient } from '~/shared/lib/api-client';
-import type { ResponseGetExchangeRates } from '~/shared/types/market';
+import type { ExchangeRatesResponse } from '~/shared/market/market.types';
 
 type QueryOptions<TData> = Omit<
   UseQueryOptions<TData, Error, TData, string[]>,
@@ -11,14 +11,14 @@ type QueryOptions<TData> = Omit<
 >;
 
 export function useGetExchangeRates(
-  queryOptions?: QueryOptions<ResponseGetExchangeRates>,
+  queryOptions?: QueryOptions<ExchangeRatesResponse>,
   nitroOptions?: NitroFetchOptions<NitroFetchRequest>
 ) {
-  return useQuery<ResponseGetExchangeRates>({
+  return useQuery<ExchangeRatesResponse>({
     ...queryOptions,
     queryKey: ['get-exchange-rates'],
     queryFn: () => {
-      return apiClient.get<ResponseGetExchangeRates>(
+      return apiClient.get<ExchangeRatesResponse>(
         `https://open.er-api.com/v6/latest/${MARKET_CONFIG.BASE_CURRENCY}`,
         undefined,
         {

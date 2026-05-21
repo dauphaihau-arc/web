@@ -3,7 +3,7 @@ import { meOrdersApi } from '~/shared/api/me/orders/me-orders.api';
 import type {
   GetOrderShopsByCheckoutSessionResponse
 } from '~/shared/api/me/orders/get-order-shops-by-checkout-session';
-import type { RequestGetListParams } from '~/shared/types/common';
+import type { RequestGetListParams } from '~/shared/contracts/common';
 
 export function useGetOrderShops(queryParams?: RequestGetListParams) {
   return useQuery({

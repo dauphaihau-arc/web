@@ -1,5 +1,6 @@
-import type { ResponseBaseGetList } from '~/shared/types/common';
-import type { Coupon, GetCouponsParams } from '~/shared/types/coupon';
+import type { Coupon } from '~/shared/models/coupon';
+import type { ResponseBaseGetList } from '~/shared/contracts/common';
+import type { GetCouponsParams } from './form';
 
 export type ListShopCouponsRequest = GetCouponsParams;
 export type ListShopCouponsResponse = ResponseBaseGetList<Coupon>;

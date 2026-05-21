@@ -2,7 +2,7 @@ import type { UseQueryOptions } from '@tanstack/vue-query';
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import { consola } from 'consola';
 import { apiClient } from '~/shared/lib/api-client';
-import type { ResponseGetDataByIP } from '~/shared/types/market';
+import type { IpDataResponse } from '~/shared/market/market.types';
 
 type QueryOptions<TData> = Omit<
   UseQueryOptions<TData, Error, TData, string[]>,
@@ -10,14 +10,14 @@ type QueryOptions<TData> = Omit<
 >;
 
 export function useGetDataByIP(
-  queryOptions?: QueryOptions<ResponseGetDataByIP>,
+  queryOptions?: QueryOptions<IpDataResponse>,
   nitroOptions?: NitroFetchOptions<NitroFetchRequest>
 ) {
-  return useQuery<ResponseGetDataByIP>({
+  return useQuery<IpDataResponse>({
     ...queryOptions,
     queryKey: ['get-ip-data'],
     queryFn: () => {
-      return apiClient.get<ResponseGetDataByIP>(
+      return apiClient.get<IpDataResponse>(
         '/api/ip-data',
         undefined,
         {

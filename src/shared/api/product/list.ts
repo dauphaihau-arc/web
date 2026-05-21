@@ -1,5 +1,5 @@
 import type { Category } from '~/shared/api/category/categories';
-import type { RequestGetListParams } from '~/shared/types/common';
+import type { RequestGetListParams } from '~/shared/contracts/common';
 
 export type GetProductsRequest = Partial<{
   category_id: Category['id']

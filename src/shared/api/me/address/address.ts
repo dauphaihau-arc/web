@@ -1,10 +1,11 @@
 import type { UserAddress } from '~/shared/models/user-address';
-import type { ResponseBaseGetList } from '~/shared/types/common';
-import type { CreateBodyUserAddressBody } from '~/shared/types/user-address';
+import type { z } from 'zod';
+import type { ResponseBaseGetList } from '~/shared/contracts/common';
+import type { createUserAddressSchema } from '~/shared/schemas/user-address.schema';
 
 export type GetUserAddressesResponse = ResponseBaseGetList<UserAddress>;
 
-export type CreateUserAddressRequest = CreateBodyUserAddressBody;
+export type CreateUserAddressRequest = z.infer<typeof createUserAddressSchema>;
 export type CreateUserAddressResponse = {
   address: UserAddress
 };

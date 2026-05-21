@@ -1,5 +1,5 @@
 import type { FormError } from '#ui/types';
-import type { AuthClientConfig } from '~/shared/types/auth';
+import type { AuthClientConfigResponse as AuthClientConfig } from '~/shared/api/auth/client-config';
 
 export const DEFAULT_AUTH_CLIENT_CONFIG: AuthClientConfig = {
   version: 'bootstrap-fallback-v1',

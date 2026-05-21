@@ -1,6 +1,6 @@
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import { productApi } from '~/shared/api/product/product.api';
-import type { ResponseGetDetailProduct } from '~/shared/types/request-api/product';
+import type { GetDetailProductBySlugResponse } from '~/shared/api/product/detail-by-slug';
 
 export function useGetDetailProductBySlug(
   shopSlug: string,
@@ -11,7 +11,7 @@ export function useGetDetailProductBySlug(
     enabled: !!shopSlug && !!productSlug,
     queryKey: ['get-detail-product-by-slug', shopSlug, productSlug],
     queryFn: () => {
-      return productApi.getDetailBySlug(shopSlug, productSlug, options) as Promise<ResponseGetDetailProduct>;
+      return productApi.getDetailBySlug(shopSlug, productSlug, options) as Promise<GetDetailProductBySlugResponse>;
     },
   });
 }

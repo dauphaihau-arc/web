@@ -1,5 +1,5 @@
 import type { Product } from '~/shared/models/product';
-import type { RequestGetListParams } from '~/shared/types/common';
+import type { RequestGetListParams } from '~/shared/contracts/common';
 import type { ProductVariantTypes } from '~/shared/config/enums/product';
 
 export type ListShopProductsRequest = Partial<Pick<Product, 'title'> & RequestGetListParams>;
