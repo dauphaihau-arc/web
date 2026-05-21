@@ -2,7 +2,7 @@ import type {
   GetCountriesResponse,
   GetStatesByCountryRequest,
   GetStatesByCountryResponse
-} from './countries';
+} from './contracts/location.contract';
 import { apiClient } from '~/shared/lib/api-client';
 
 export const locationApi = {

@@ -1,6 +1,9 @@
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
-import type { GetDetailProductBySlugResponse } from './detail-by-slug';
-import type { GetProductsRequest, GetProductsResponse } from './list';
+import type {
+  GetDetailProductBySlugResponse,
+  GetProductsRequest,
+  GetProductsResponse
+} from './contracts/product.contract';
 import { apiClient } from '~/shared/lib/api-client';
 
 export const productApi = {

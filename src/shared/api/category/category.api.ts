@@ -1,13 +1,11 @@
 import type {
   GetCategoryAttributesResponse
-} from './get-category-attributes';
-import type {
+  ,
   GetCategoriesRequest,
   GetCategoriesResponse
-} from './get-categories';
-import type {
+  ,
   GetCategorySuggestionsResponse
-} from './get-category-suggestions';
+} from './contracts/category.contract';
 import { apiClient } from '~/shared/lib/api-client';
 
 export const categoryApi = {

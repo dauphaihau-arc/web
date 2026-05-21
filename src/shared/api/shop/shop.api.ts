@@ -1,16 +1,9 @@
-import type { Shop } from '~/shared/models/shop';
+import type {
+  CreateShopRequest,
+  CreateShopResponse,
+  MyShopResponse
+} from './contracts/shop.contract';
 import { apiClient } from '~/shared/lib/api-client';
-
-export type MyShopResponse = {
-  id: string
-  ownerUserId: string
-  shop_name: string
-  slug: string
-  status: string
-};
-
-export type CreateShopRequest = Pick<Shop, 'shop_name'>;
-export type CreateShopResponse = MyShopResponse;
 
 export const shopApi = {
   create(payload: CreateShopRequest) {

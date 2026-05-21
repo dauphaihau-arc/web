@@ -1,19 +1,16 @@
 import type {
   AddProductToCartRequest,
   AddProductToCartResponse
-} from './add-product';
-import type {
+  ,
   DeleteCartProductRequest,
   DeleteCartProductResponse
-} from './delete-product';
-import type {
+  ,
   GetCartRequest,
   GetCartResponse
-} from './get-cart';
-import type {
+  ,
   UpdateCartRequest,
   UpdateCartResponse
-} from './update-cart';
+} from './contracts/cart.contract';
 import { apiClient } from '~/shared/lib/api-client';
 
 export const meCartApi = {

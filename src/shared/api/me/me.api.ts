@@ -1,15 +1,15 @@
-import type { GetCurrentUserResponse } from './current-user';
-import type { UpdateCurrentUserRequest, UpdateCurrentUserResponse } from './update-current-user';
+import type { AuthUser } from '~/shared/api/auth/contracts/auth-user.contract';
+import type { UpdateMeRequest, UpdateMeResponse } from '~/shared/api/auth/contracts/update-me.contract';
 import { apiClient } from '~/shared/lib/api-client';
 
 export const meApi = {
   getCurrent() {
-    return apiClient.get<GetCurrentUserResponse['user']>(
+    return apiClient.get<AuthUser>(
       '/auth/me'
     );
   },
-  updateCurrent(payload: UpdateCurrentUserRequest) {
-    return apiClient.patch<UpdateCurrentUserResponse>(
+  updateCurrent(payload: UpdateMeRequest) {
+    return apiClient.patch<UpdateMeResponse>(
       '/me',
       payload
     );

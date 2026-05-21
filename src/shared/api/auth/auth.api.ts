@@ -1,24 +1,23 @@
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
-import type { AuthClientConfigResponse } from './client-config';
+import type { AuthClientConfigResponse } from './contracts/client-config.contract';
 import type {
   ForgotPasswordRequest,
   ForgotPasswordResponse
-} from './forgot-password';
+} from './contracts/forgot-password.contract';
 import type {
   LoginRequest,
   LoginResponse
-} from './login';
-import type { LogoutResponse } from './logout';
+} from './contracts/login.contract';
 import type {
   RegisterRequest,
   RegisterResponse
-} from './register';
+} from './contracts/register.contract';
 import type {
   ResetPasswordResponse
-} from './reset-password';
+} from './contracts/reset-password.contract';
 import type {
   VerifyTokenResponse
-} from './verify-token';
+} from './contracts/verify-token.contract';
 import { apiClient } from '~/shared/lib/api-client';
 
 export const authApi = {
@@ -46,7 +45,7 @@ export const authApi = {
   },
 
   logout() {
-    return apiClient.post<LogoutResponse>(
+    return apiClient.post<undefined>(
       '/auth/logout',
       null
     );

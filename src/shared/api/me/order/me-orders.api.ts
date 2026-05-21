@@ -2,13 +2,14 @@ import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import type {
   CreateOrderForBuyNowRequest,
   CreateOrderForBuyNowResponse
-} from './create-order-buy-now';
-import type {
+  ,
   CreateOrderFromCartRequest,
   CreateOrderFromCartResponse
-} from './create-order-from-cart';
-import type { GetOrderShopsByCheckoutSessionResponse } from './get-order-shops-by-checkout-session';
-import type { GetOrderShopsRequest, GetOrderShopsResponse } from './get-order-shops';
+  ,
+  GetOrderShopsByCheckoutSessionResponse,
+  GetOrderShopsRequest,
+  GetOrderShopsResponse
+} from './contracts/order.contract';
 import { apiClient } from '~/shared/lib/api-client';
 
 export const meOrdersApi = {

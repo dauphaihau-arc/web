@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { USER_CONFIG, USER_REG_NAME, USER_REG_PASSWORD } from '~/shared/config/enums/user';
-import { idSchema } from '~/shared/schemas/sub/id.schema';
+import { idSchema } from '~/shared/schemas/primitives/id.schema';
 import { MarketCurrencies, MarketLanguages, MarketRegions } from '~/shared/config/enums/market';
 
 export const userSchema = z.object({

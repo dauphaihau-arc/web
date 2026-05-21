@@ -5,7 +5,7 @@ import type {
   GetUserAddressesResponse,
   UpdateUserAddressRequest,
   UpdateUserAddressResponse
-} from './address';
+} from './contracts/address.contract';
 import { apiClient } from '~/shared/lib/api-client';
 
 export const meAddressApi = {

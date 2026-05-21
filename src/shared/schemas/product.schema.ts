@@ -7,7 +7,7 @@ import {
   PRODUCT_CONFIG,
   ProductVariantTypes
 } from '~/shared/config/enums/product';
-import { idSchema } from '~/shared/schemas/sub/id.schema';
+import { idSchema } from '~/shared/schemas/primitives/id.schema';
 
 export const productImageSchema = z.object({
   id: idSchema,

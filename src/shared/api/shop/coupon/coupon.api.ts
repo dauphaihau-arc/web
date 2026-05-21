@@ -1,9 +1,11 @@
 import type {
   CreateShopCouponRequest,
   CreateShopCouponResponse
-} from './create';
-import type { DeleteShopCouponResponse } from './delete';
-import type { ListShopCouponsRequest, ListShopCouponsResponse } from './list';
+  ,
+  DeleteShopCouponResponse,
+  ListShopCouponsRequest,
+  ListShopCouponsResponse
+} from './contracts/coupon.contract';
 import { apiClient } from '~/shared/lib/api-client';
 
 export const shopCouponApi = {

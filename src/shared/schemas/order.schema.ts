@@ -2,7 +2,7 @@ import { z } from 'zod';
 import {
   PaymentTypes, OrderStatuses, OrderShippingStatuses, ORDER_CONFIG
 } from '~/shared/config/enums/order';
-import { idSchema } from '~/shared/schemas/sub/id.schema';
+import { idSchema } from '~/shared/schemas/primitives/id.schema';
 import { baseCouponSchema } from '~/shared/schemas/coupon.schema';
 import { baseProductSchema } from '~/shared/schemas/product.schema';
 import { productInventorySchema } from '~/shared/schemas/product-inventory.schema';

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { idSchema } from '~/shared/schemas/sub/id.schema';
+import { idSchema } from '~/shared/schemas/primitives/id.schema';
 import { ADDRESS_CONFIG } from '~/shared/config/enums/address';
 
 export const userAddressSchema = z.object({

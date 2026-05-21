@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { idSchema } from '~/shared/schemas/sub/id.schema';
+import { idSchema } from '~/shared/schemas/primitives/id.schema';
 import { PRODUCT_CONFIG, PRODUCT_REGEX_NOT_URL } from '~/shared/config/enums/product';
 
 export const productVariantOptSchema = z.object({

@@ -2,24 +2,21 @@ import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import type {
   CreateDraftProductRequest,
   CreateDraftProductResponse
-} from './create-draft';
+} from './contracts/create-draft.contract';
 import type {
-  DetailShopProductResponse
-} from './detail';
-import { normalizeDetailShopProductResponse } from './detail';
-import type {
-  ListShopProductsRequest,
-  ListShopProductsResponse
-} from './list';
-import type {
+  DetailShopProductResponse,
   IssueProductImageUploadUrlRequest,
-  IssueProductImageUploadUrlResponse
-} from './issue-image-upload-url';
-import type { RemoveProductResponse } from './remove';
+  IssueProductImageUploadUrlResponse,
+  ListShopProductsRequest,
+  ListShopProductsResponse,
+  RemoveProductResponse,
+  ShopProductDetailApiResponse
+} from './contracts/read.contract';
+import { normalizeDetailShopProductResponse } from './normalizers/detail-shop-product.normalizer';
 import type {
   UpdateProductRequestBody,
   UpdateProductResponse
-} from './update';
+} from './contracts/update-product.contract';
 import { apiClient } from '~/shared/lib/api-client';
 
 export const shopProductApi = {
@@ -40,7 +37,7 @@ export const shopProductApi = {
       undefined,
       options
     ).then(response =>
-      normalizeDetailShopProductResponse(response as Parameters<typeof normalizeDetailShopProductResponse>[0])
+      normalizeDetailShopProductResponse(response as ShopProductDetailApiResponse)
     );
   },
 
