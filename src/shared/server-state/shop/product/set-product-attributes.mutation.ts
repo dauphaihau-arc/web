@@ -3,22 +3,23 @@ import { RESOURCES } from '~/shared/config/enums/resources';
 import { apiClient } from '~/shared/lib/api-client';
 import type { Product } from '~/shared/models/product';
 
-export function useShopSetProductImagesByKeys() {
+export function useShopSetProductAttributes() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationKey: ['shop-set-product-images-by-keys'],
+    mutationKey: ['shop-set-product-attributes'],
     mutationFn: async (body: {
       id: Product['id']
-      images: {
-        storage_key: string
-        rank: number
+      attributes: {
+        category_attribute_id: string
+        selected_option_id?: string
+        selected_text?: string
       }[]
     }) => {
       const shopId = await resolveMyShopId(queryClient);
       return apiClient.put<undefined>(
-        `${RESOURCES.SHOPS}/${shopId}${RESOURCES.PRODUCTS}/${body.id}/images-by-keys`,
+        `${RESOURCES.SHOPS}/${shopId}${RESOURCES.PRODUCTS}/${body.id}/attributes`,
         {
-          images: body.images,
+          attributes: body.attributes,
         }
       );
     },

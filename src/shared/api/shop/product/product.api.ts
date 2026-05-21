@@ -6,6 +6,7 @@ import type {
 import type {
   DetailShopProductResponse
 } from './detail';
+import { normalizeDetailShopProductResponse } from './detail';
 import type {
   ListShopProductsRequest,
   ListShopProductsResponse
@@ -33,11 +34,13 @@ export const shopProductApi = {
     shopId: string,
     productId: string,
     options?: NitroFetchOptions<NitroFetchRequest>
-  ) {
-    return apiClient.get<DetailShopProductResponse>(
+  ): Promise<DetailShopProductResponse> {
+    return apiClient.get(
       `/shops/${shopId}/products/${productId}`,
       undefined,
       options
+    ).then(response =>
+      normalizeDetailShopProductResponse(response as Parameters<typeof normalizeDetailShopProductResponse>[0])
     );
   },
 

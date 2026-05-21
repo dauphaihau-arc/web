@@ -1,0 +1,182 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+import type { QueryClient } from '@tanstack/vue-query';
+import type { Ref } from 'vue';
+import { toastCustom } from '~/shared/config/toast';
+import { useIssueProductImageUploadUrl } from '~/shared/server-state/upload/issue-product-image-upload-url.mutation';
+import { useShopSetProductAttributes } from '~/shared/server-state/shop/product/set-product-attributes.mutation';
+import { useShopSetProductImagesByKeys } from '~/shared/server-state/shop/product/set-product-images-by-keys.mutation';
+import { useShopUpdateProduct } from '~/shared/server-state/shop/product/update-product.mutation';
+import type { DetailShopProductResponse } from '~/shared/api/shop/product/detail';
+import type { UpdateProductBody } from '~/shared/api/shop/product/form';
+import type { Product, ProductImage } from '~/shared/models/product';
+import pick from '~/shared/utils/pick';
+
+type UseUpdateProductSubmitInput = {
+  productId: Product['id']
+  queryClient: QueryClient
+  dataDetailProduct: Ref<DetailShopProductResponse | undefined>
+  fileImages: Ref<File[]>
+  idsImageForDelete: Ref<Pick<ProductImage, 'id'>[]>
+};
+
+function buildDetailPayload(dataSubmit: UpdateProductBody) {
+  return pick(dataSubmit, [
+    'title',
+    'description',
+    'who_made',
+    'is_digital',
+    'non_taxable',
+    'variant_group_name',
+    'variant_sub_group_name',
+  ]);
+}
+
+function buildAttributesPayload(
+  attributes: NonNullable<UpdateProductBody['attributes']>
+) {
+  return attributes.map(attribute => ({
+    category_attribute_id: attribute.attribute_id,
+    selected_option_id: attribute.selected,
+  }));
+}
+
+function buildImagesPayload(
+  dataDetailProduct: DetailShopProductResponse | undefined,
+  idsImageForDelete: Pick<ProductImage, 'id'>[],
+  uploadedKeys: string[] = []
+) {
+  const currentImages = dataDetailProduct?.product.images ?? [];
+  const deletedImageIds = new Set(idsImageForDelete.map(image => image.id));
+  const persistedImages = currentImages
+    .filter(image => !deletedImageIds.has(image.id))
+    .map(image => image.relative_url);
+
+  return [...persistedImages, ...uploadedKeys].map((storageKey, index) => ({
+    storage_key: storageKey,
+    rank: index + 1,
+  }));
+}
+
+export function useUpdateProductSubmit({
+  productId,
+  queryClient,
+  dataDetailProduct,
+  fileImages,
+  idsImageForDelete,
+}: UseUpdateProductSubmitInput) {
+  const toast = useToast();
+  const loadingSubmit = ref(false);
+
+  const {
+    mutateAsync: issueProductImageUploadUrl,
+  } = useIssueProductImageUploadUrl();
+
+  const {
+    mutateAsync: updateProduct,
+  } = useShopUpdateProduct();
+
+  const {
+    mutateAsync: setProductImagesByKeys,
+  } = useShopSetProductImagesByKeys();
+
+  const {
+    mutateAsync: setProductAttributes,
+  } = useShopSetProductAttributes();
+
+  async function uploadImage() {
+    if (fileImages.value.length === 0) return [];
+
+    const keys: string[] = [];
+    const uploadImagesPromises = [];
+
+    for (let i = 0; i < fileImages.value.length; i++) {
+      const { presigned_url: presignedUrl, key } = await issueProductImageUploadUrl({
+        productId,
+        content_type: fileImages.value[i].type,
+        asset_type: 'original',
+      });
+
+      if (!presignedUrl || !key) {
+        toast.add({
+          ...toastCustom.error,
+          title: 'Oops',
+          description: 'Something wrong',
+        });
+        throw new Error();
+      }
+
+      keys.push(key);
+
+      const promise = useFetch(presignedUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': fileImages.value[i].type,
+        },
+        body: fileImages.value[i],
+      });
+      uploadImagesPromises.push(promise);
+    }
+
+    await Promise.all(uploadImagesPromises);
+
+    return keys;
+  }
+
+  async function submit(dataSubmit: UpdateProductBody) {
+    loadingSubmit.value = true;
+
+    try {
+      const uploadedKeys = await uploadImage();
+      const detailPayload = buildDetailPayload(dataSubmit);
+
+      if (Object.keys(detailPayload).length > 0) {
+        await updateProduct({
+          ...detailPayload,
+          id: productId,
+        });
+      }
+
+      if (dataSubmit.attributes) {
+        await setProductAttributes({
+          id: productId,
+          attributes: buildAttributesPayload(dataSubmit.attributes),
+        });
+      }
+
+      if (uploadedKeys.length > 0 || idsImageForDelete.value.length > 0) {
+        await setProductImagesByKeys({
+          id: productId,
+          images: buildImagesPayload(
+            dataDetailProduct.value,
+            idsImageForDelete.value,
+            uploadedKeys
+          ),
+        });
+      }
+
+      await queryClient.invalidateQueries({
+        queryKey: ['shop-get-detail-product', productId],
+      });
+
+      toast.add({
+        ...toastCustom.success,
+        title: 'Update product success',
+      });
+    }
+    catch (error) {
+      toast.add({
+        ...toastCustom.error,
+        title: 'Update product failed',
+      });
+    }
+    finally {
+      loadingSubmit.value = false;
+    }
+  }
+
+  return {
+    loadingSubmit,
+    submit,
+  };
+}

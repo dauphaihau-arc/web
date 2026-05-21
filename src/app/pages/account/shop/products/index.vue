@@ -105,6 +105,11 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
       disabled: true,
     },
     {
+      label: 'Edit',
+      icon: 'i-heroicons-pencil-square-20-solid',
+      click: () => navigateTo(routes.accountShopProductDetail(row.id)),
+    },
+    {
       label: 'Preview',
       icon: 'i-heroicons-arrow-right-circle-20-solid',
       click: () => {

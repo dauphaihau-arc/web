@@ -11,6 +11,4 @@ export type UpdateProductRequest = {
   body: UpdateProductRequestBody
 };
 
-export type UpdateProductResponse = {
-  product: Product
-};
+export type UpdateProductResponse = undefined;
