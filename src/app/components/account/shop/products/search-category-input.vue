@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Category } from '~/shared/types/category'
-import type { Product } from '~/shared/types/product'
+import type { Category } from '~/shared/api/category/categories'
+import type { Product } from '~/shared/models/product'
 import { useGetSearchCategories } from '~/shared/server-state/category/search-categories.mutation'
 
 const props = defineProps<{ title?: Product['title'], category?: Category | null }>()

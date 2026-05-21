@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import VariantsProduct from './variants-product.vue'
-import type { ResponseGetOrderShopsProduct } from '~/shared/types/request-api/order'
+import type { ResponseGetOrderShopsProduct } from '~/shared/api/me/orders/orders.shared'
 import { routes } from '~/shared/navigation/routes'
 
 const { productOrder } = defineProps<{

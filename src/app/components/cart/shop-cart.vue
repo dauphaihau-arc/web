@@ -3,10 +3,10 @@ import AddRemoveCoupons from '~/app/components/cart/add-remove-coupons.vue'
 import AddRemoveNote from '~/app/components/cart/add-remove-note.vue'
 import Product from '~/app/components/cart/cart-product/cart-product.vue'
 import ShippingSelect from '~/app/components/cart/shipping-select.vue'
-import type { ResponseGetCartShopCart } from '~/shared/types/request-api/cart'
+import type { CartShopGroup } from '~/shared/api/me/cart/cart.shared'
 
 const props = defineProps<{
-  shopCart: ResponseGetCartShopCart
+  shopCart: CartShopGroup
 }>()
 </script>
 

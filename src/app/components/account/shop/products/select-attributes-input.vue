@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { Category } from '~/shared/types/category'
+import type { Category } from '~/shared/api/category/categories'
 import { useGetAttributesByCategory } from '~/shared/server-state/category/attributes.query'
-import type { ProductAttribute } from '~/shared/types/product'
-import type { ReqAttributeOption } from '~/shared/types/request-api/shop-product'
+import type { ProductAttribute } from '~/shared/models/product'
+import type { ReqAttributeOption } from '~/shared/api/shop/product/form'
 
 const { category_id, attributesSelected } = defineProps<{
   category_id?: Category['id']

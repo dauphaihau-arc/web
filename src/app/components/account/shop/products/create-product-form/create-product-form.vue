@@ -27,14 +27,14 @@ import type {
   CombineVariant,
   CreateProductBody,
   CreateProductShipping, NoneVariant,
-  RequestCreateProductDraftBody,
   SingleVariant,
   StateCombineVariant,
   StateNoneVariant,
   StateSingleVariant,
   StateSubmit,
-} from '~/shared/types/request-api/shop-product'
-import type { PickPartial } from '~/shared/types/utils'
+} from '~/shared/api/shop/product/form'
+import type { CreateDraftProductRequest as RequestCreateProductDraftBody } from '~/shared/api/shop/product/create-draft'
+import type { PickPartial } from '~/shared/contracts/utils'
 
 const router = useRouter()
 const toast = useToast()

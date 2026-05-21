@@ -7,12 +7,13 @@ import CartModifyQuantityProduct from './modify-quantity-product.vue'
 import CartVariantsProduct from './variants-product.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { routes } from '~/shared/navigation/routes'
-import type { Shop } from '~/shared/types/shop'
+import type { Shop } from '~/shared/models/shop'
 import { useDeleteProductCart } from '~/shared/server-state/me/cart/delete-product.mutation'
-import type { ResponseGetCartProductCart, ResponseGetCart } from '~/shared/types/request-api/cart'
+import type { CartProductItem } from '~/shared/api/me/cart/cart.shared'
+import type { GetCartResponse } from '~/shared/api/me/cart/get-cart'
 
 const props = defineProps<{
-  productCart: ResponseGetCartProductCart
+  productCart: CartProductItem
   shopId: Shop['id']
 }>()
 
@@ -23,7 +24,7 @@ const {
   mutate: deleteProductCart,
 } = useDeleteProductCart(props.productCart.inventory.id, {
   onSuccess(data) {
-    queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], (oldData) => {
+    queryClient.setQueryData<GetCartResponse>(['get-cart', 'my-cart'], (oldData) => {
       if (!oldData || !oldData.cart) return oldData
       if (!data.cart) return { ...oldData, cart: data.cart }
       const foundShopCart = data.cart.shop_groups.find(sc => sc.shop.id === props.shopId)

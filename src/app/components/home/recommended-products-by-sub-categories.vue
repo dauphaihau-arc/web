@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import ProductCard from '~/app/components/home/product-card.vue'
 import { useGetProductsByMultiQueries } from '~/shared/server-state/product/products.query'
-import type { Category } from '~/shared/types/category'
+import type { Category } from '~/shared/api/category/categories'
 
 const groupSkeletons = 2
 const limit = 6

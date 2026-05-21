@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { ProductCombineVariant, ProductInventory, ProductVariant } from '~/shared/types/product'
+import type { ProductCombineVariant, ProductInventory, ProductVariant } from '~/shared/models/product'
 import { PRODUCT_CONFIG, ProductVariantTypes } from '~/shared/config/enums/product'
 import { productInventorySchema } from '~/shared/schemas/product-inventory.schema'
 import type {
   StateCombineVariant,
   StateSingleVariant,
-} from '~/shared/types/request-api/shop-product'
-import type { NoUndefinedField } from '~/shared/types/utils'
+} from '~/shared/api/shop/product/form'
+import type { NoUndefinedField } from '~/shared/contracts/utils'
 
 const props = defineProps<{ countValidate: number }>()
 

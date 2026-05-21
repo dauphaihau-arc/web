@@ -10,7 +10,7 @@ import { CouponAppliesTo, CouponTypes } from '~/shared/config/enums/coupon'
 import { useShopDeleteCoupon } from '~/shared/server-state/shop/coupon/delete-coupon.mutation'
 import { useShopGetCoupons } from '~/shared/server-state/shop/coupon/coupons.query'
 import { CreateCouponPageTypes } from '~/shared/config/enums/shop'
-import type { Coupon } from '~/shared/types/coupon'
+import type { Coupon } from '~/shared/models/coupon'
 
 dayjs.extend(localizedFormat)
 

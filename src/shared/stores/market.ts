@@ -1,16 +1,16 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { StorageSerializers, useStorage } from '@vueuse/core';
-import type { User } from '~/shared/types/user';
+import type { User } from '~/shared/models/user';
 import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys';
 import { useGetExchangeRates } from '~/shared/server-state/market/exchange-rates.query';
 import { useGetDataByIP } from '~/shared/server-state/market/ip-data.query';
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query';
 import type {
   CategoriesBreadcrumbStorage, ExchangeRateStorage,
-  ResponseGetDataByIP,
+  IpDataResponse,
   UserActivitiesSessionStorage
-} from '~/shared/types/market';
+} from '~/shared/market/market.types';
 import { MARKET_CONFIG, MarketLanguages } from '~/shared/config/enums/market';
 import { SessionStorageKeys } from '~/shared/config/enums/session-storage-keys';
 
@@ -80,7 +80,7 @@ export const useMarketStore = defineStore('market', () => {
     {
       onResponse: ({ response }) => {
         if (response.status === 200) {
-          const data = response._data as ResponseGetDataByIP;
+          const data = response._data as IpDataResponse;
           guestPreferences.value = {
             currency: data.currency.code,
             language: MarketLanguages.EN,

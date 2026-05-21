@@ -3,10 +3,10 @@ import LocationShipping from './location-shipping.vue'
 import type { FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import { useGetCountries } from '~/shared/server-state/location/countries.query'
 import { ADDRESS_CONFIG } from '~/shared/config/enums/address'
-import type { ProductShipping, ProductStandardShipping } from '~/shared/types/product'
+import type { ProductShipping, ProductStandardShipping } from '~/shared/models/product'
 import { ProductShippingCharge, ProductShippingServices } from '~/shared/config/enums/product'
 import { createProductShippingSchema } from '~/shared/schemas/request/shop-product.schema'
-import type { CreateProductShipping } from '~/shared/types/request-api/shop-product'
+import type { CreateProductShipping } from '~/shared/api/shop/product/form'
 
 type TStateSubmit = Partial<Pick<ProductShipping, 'country' | 'zip' | 'process_time'>> & {
   standard_shipping: Partial<ProductStandardShipping>[]

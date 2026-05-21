@@ -3,7 +3,7 @@ import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import {
   CouponAppliesTo, COUPON_CONFIG, CouponMinOrderTypes, CouponTypes,
 } from '~/shared/config/enums/coupon'
-import type { RequiredFields } from '~/shared/types/utils'
+import type { RequiredFields } from '~/shared/contracts/utils'
 import { ROUTES } from '~/shared/config/enums/routes'
 import WrapperFormGroupCard from '~/app/components/account/shop/wrapper-form-group-card.vue'
 import ApplyCouponOnProduct from '~/app/components/account/shop/coupons/apply-coupon-on-product.vue'
@@ -12,7 +12,7 @@ import { toastCustom } from '~/shared/config/toast'
 import { useShopCreateCoupon } from '~/shared/server-state/shop/coupon/create-coupon.mutation'
 import { PRODUCT_CONFIG } from '~/shared/config/enums/product'
 import { createPromoCodeBodySchema } from '~/shared/schemas/request/shop-coupon.schema'
-import type { CreatePromoCodeBody } from '~/shared/types/coupon'
+import type { CreatePromoCodeBody } from '~/shared/api/shop/coupon/form'
 import RadioGroupInput from '~/shared/ui/radio-group-input.vue'
 
 type StateSubmit = RequiredFields<Partial<CreatePromoCodeBody>, 'type' | 'applies_to' | 'min_order_type'>

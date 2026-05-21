@@ -3,11 +3,11 @@ import { StatusCodes } from 'http-status-codes'
 import { FetchError } from 'ofetch'
 import type { FormError, FormSubmitEvent } from '#ui/types'
 import { userSchema } from '~/shared/schemas/user.schema'
-import type { User } from '~/shared/types/user'
+import type { User } from '~/shared/models/user'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { useAuthClientConfig } from '~/shared/server-state/auth/client-config.query'
 import { useLogin } from '~/shared/server-state/auth/login.mutation'
-import type { LoginBody } from '~/shared/types/auth'
+import type { LoginRequest as LoginBody } from '~/shared/api/auth/login'
 import { appendPasswordError } from '~/shared/utils/password-policy'
 
 const formRef = ref()

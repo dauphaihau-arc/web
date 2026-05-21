@@ -4,9 +4,9 @@ import { FetchError } from 'ofetch'
 import { useCartStore } from '~/shared/stores/cart'
 import { toastCustom } from '~/shared/config/toast'
 import { COUPON_CONFIG } from '~/shared/config/enums/coupon'
-import type { Coupon } from '~/shared/types/coupon'
+import type { Coupon } from '~/shared/models/coupon'
 import { useUpdateCart } from '~/shared/server-state/me/cart/update-cart.mutation'
-import type { ResponseGetCart } from '~/shared/types/request-api/cart'
+import type { GetCartResponse } from '~/shared/api/me/cart/get-cart'
 
 const toast = useToast()
 const cartStore = useCartStore()
@@ -118,8 +118,8 @@ async function toggleShowAddCouponInput() {
   }
 }
 
-function updateCacheSummaryOrder(summary: ResponseGetCart['summary']) {
-  queryClient.setQueryData<ResponseGetCart>(['get-cart', tempCartId], (oldData) => {
+function updateCacheSummaryOrder(summary: GetCartResponse['summary']) {
+  queryClient.setQueryData<GetCartResponse>(['get-cart', tempCartId], (oldData) => {
     if (!oldData) return oldData
     return { ...oldData, summary }
   })

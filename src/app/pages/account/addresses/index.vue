@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { UserAddress } from '~/shared/types/user-address'
+import type { UserAddress } from '~/shared/models/user-address'
 import { useDeleteUserAddress } from '~/shared/server-state/me/address/delete-address.mutation'
 import { useGetUserAddresses } from '~/shared/server-state/me/address/addresses.query'
 import UpdateUserAddressDialog from '~/app/components/dialogs/update-user-address-dialog.vue'

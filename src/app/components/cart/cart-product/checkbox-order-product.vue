@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { ProductInventory } from '~/shared/types/product'
-import type { Shop } from '~/shared/types/shop'
+import type { ProductInventory } from '~/shared/models/product'
+import type { Shop } from '~/shared/models/shop'
 import { useUpdateCart } from '~/shared/server-state/me/cart/update-cart.mutation'
-import type { ResponseGetCart } from '~/shared/types/request-api/cart'
+import type { GetCartResponse } from '~/shared/api/me/cart/get-cart'
 
 const { checked, inventory_id, shopId } = defineProps<{
   checked: boolean
@@ -18,7 +18,7 @@ const {
   mutate: updateProductCart,
 } = useUpdateCart({
   onSuccess(data) {
-    queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], (oldData) => {
+    queryClient.setQueryData<GetCartResponse>(['get-cart', 'my-cart'], (oldData) => {
       if (!oldData || !oldData.cart) return oldData
       if (!data.cart) return { ...oldData, cart: data.cart }
 

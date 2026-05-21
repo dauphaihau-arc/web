@@ -4,11 +4,11 @@ import { StatusCodes } from 'http-status-codes'
 import { z } from 'zod'
 import type { FormError, FormSubmitEvent } from '#ui/types'
 import { userSchema } from '~/shared/schemas/user.schema'
-import type { User } from '~/shared/types/user'
+import type { User } from '~/shared/models/user'
 import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys'
 import { useAuthClientConfig } from '~/shared/server-state/auth/client-config.query'
 import { useRegister } from '~/shared/server-state/auth/register.mutation'
-import type { RegisterBody } from '~/shared/types/auth'
+import type { RegisterRequest as RegisterBody } from '~/shared/api/auth/register'
 import { appendPasswordError } from '~/shared/utils/password-policy'
 
 const invalidEmails: string[] = []

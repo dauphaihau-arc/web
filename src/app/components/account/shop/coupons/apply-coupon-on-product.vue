@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { Product } from '~/shared/types/product'
+import type { Product } from '~/shared/models/product'
 import { useShopGetProducts } from '~/shared/server-state/shop/product/list.query'
-import type { ResponseShopGetProducts, ShopGetProductsQueryParams } from '~/shared/types/request-api/shop-product'
+import type { ListShopProductsItem, ListShopProductsRequest } from '~/shared/api/shop/product/list'
 
-type ProductCouponRow = ResponseShopGetProducts & {
+type ProductCouponRow = ListShopProductsItem & {
   lowestPrice: number
   highestPrice: number
   stock: number
@@ -16,7 +16,7 @@ const selectedRows = ref<ProductCouponRow[]>([])
 const page = ref(1)
 const search = ref()
 
-const params = ref<ShopGetProductsQueryParams>({
+const params = ref<ListShopProductsRequest>({
   page: page.value,
   limit: 5,
 })

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { ResponseGetDetailProduct } from '~/shared/types/request-api/product'
+import type { GetDetailProductBySlugResponse } from '~/shared/api/product/detail-by-slug'
 import { ProductVariantTypes } from '~/shared/config/enums/product'
-import type { ElementType } from '~/shared/types/utils'
+import type { ElementType } from '~/shared/contracts/utils'
 
 const props = defineProps<{
-  product: ResponseGetDetailProduct
-  inventorySelected: ElementType<ResponseGetDetailProduct['inventory']>
+  product: GetDetailProductBySlugResponse
+  inventorySelected: ElementType<GetDetailProductBySlugResponse['inventory']>
 }>()
 
 const sortedInventory = computed(() => {

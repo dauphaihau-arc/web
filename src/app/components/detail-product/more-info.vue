@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { ResponseGetDetailProduct } from '~/shared/types/request-api/product'
+import type { GetDetailProductBySlugResponse } from '~/shared/api/product/detail-by-slug'
 
 const { product } = defineProps<{
-  product: ResponseGetDetailProduct
+  product: GetDetailProductBySlugResponse
 }>()
 
 const items = [

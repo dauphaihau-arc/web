@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useCartStore } from '~/shared/stores/cart'
-import { CheckoutNowSteps } from '~/shared/types/pages/checkout'
+import { CheckoutNowSteps } from '~/shared/checkout/checkout.types'
 import LoadingSvg from '~/shared/ui/loading-svg.vue'
 import CheckoutStepper from '~/app/components/checkout-stepper.vue'
 import SummaryOrderCard from '~/app/components/summary-order-card.vue'
@@ -10,7 +10,7 @@ import ReviewShippingAndPayment from '~/app/components/checkout/review-shipping-
 import ShopCart from '~/app/components/checkout/shop-cart.vue'
 import UserAddressShipping from '~/app/components/checkout/user-address-shipping.vue'
 import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
-import type { Cart } from '~/shared/types/cart'
+import type { Cart } from '~/shared/models/cart'
 
 definePageMeta({ layout: 'market', middleware: ['auth', 'checkout'] })
 

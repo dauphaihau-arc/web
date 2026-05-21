@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
-import type { UserAddress, CreateBodyUserAddressBody } from '~/shared/types/user-address'
+import type { UserAddress } from '~/shared/models/user-address'
+import type { CreateUserAddressRequest } from '~/shared/api/me/address/address'
 import { ADDRESS_CONFIG } from '~/shared/config/enums/address'
 import { createUserAddressSchema } from '~/shared/schemas/user-address.schema'
 import { toastCustom } from '~/shared/config/toast'
@@ -15,7 +16,7 @@ const queryClient = useQueryClient()
 
 const formRef = ref()
 
-const stateSubmit = reactive<Partial<CreateBodyUserAddressBody>>({ ...props.dataEdit })
+const stateSubmit = reactive<Partial<CreateUserAddressRequest>>({ ...props.dataEdit })
 
 const {
   data: dataGetCountries,
@@ -44,7 +45,7 @@ onMounted(() => {
   refetchGetStatesByCountry()
 })
 
-async function onSubmit(event: FormSubmitEvent<CreateBodyUserAddressBody>) {
+async function onSubmit(event: FormSubmitEvent<CreateUserAddressRequest>) {
   formRef.value.clear()
   try {
     await updateUserAddress(event.data)

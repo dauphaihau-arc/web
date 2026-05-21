@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { consola } from 'consola'
-import { CheckoutCartSteps } from '~/shared/types/pages/cart/checkout'
+import { CheckoutCartSteps } from '~/shared/checkout/cart-checkout.types'
 import { PaymentTypes } from '~/shared/config/enums/order'
 import { MARKET_CONFIG } from '~/shared/config/enums/market'
 import { toastCustom } from '~/shared/config/toast'
@@ -8,9 +8,9 @@ import { ROUTES } from '~/shared/config/enums/routes'
 import { useCreateOrderFromCart } from '~/shared/server-state/me/orders/create-order-from-cart.mutation'
 import { useCartStore } from '~/shared/stores/cart'
 import { useGetExchangeRates } from '~/shared/server-state/market/exchange-rates.query'
-import type { CreateOrderFromCartBody } from '~/shared/types/request-api/order'
+import type { CreateOrderFromCartRequest } from '~/shared/api/me/orders/create-order-from-cart'
 import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
-import type { ResponseGetExchangeRates } from '~/shared/types/market'
+import type { ExchangeRatesResponse as ResponseGetExchangeRates } from '~/shared/market/market.types'
 
 const marketStore = useMarketStore()
 const toast = useToast()
@@ -40,7 +40,7 @@ const onCreateOrder = async () => {
       throw Error()
     }
 
-    const body: CreateOrderFromCartBody = {
+    const body: CreateOrderFromCartRequest = {
       payment_type: cartStore.stateCheckoutCart.paymentType,
       user_address_id: addressId,
     }

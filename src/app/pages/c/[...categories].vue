@@ -5,7 +5,7 @@ import FilterProducts from '~/app/components/filter-products.vue'
 import ProductCard from '~/app/components/product-card.vue'
 import SortProductsBy from '~/app/components/sort-products-by.vue'
 import { useGetProducts } from '~/shared/server-state/product/products.query'
-import type { GetProductsParams } from '~/shared/types/request-api/product'
+import type { GetProductsRequest } from '~/shared/api/product/list'
 
 definePageMeta({ layout: 'market' })
 
@@ -20,7 +20,7 @@ const params = computed(() => {
   if (!category) {
     return undefined
   }
-  let defaultParams: GetProductsParams = {
+  let defaultParams: GetProductsRequest = {
     category_id: category.id,
     page: page.value,
     limit,

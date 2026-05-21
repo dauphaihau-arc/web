@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
-import type { CreateBodyUserAddressBody } from '~/shared/types/user-address'
+import type { CreateUserAddressRequest } from '~/shared/api/me/address/address'
 import { ADDRESS_CONFIG } from '~/shared/config/enums/address'
 import { createUserAddressSchema } from '~/shared/schemas/user-address.schema'
 import { toastCustom } from '~/shared/config/toast'
@@ -13,7 +13,7 @@ const queryClient = useQueryClient()
 
 const formRef = ref()
 
-const stateSubmit = reactive<Partial<CreateBodyUserAddressBody>>({})
+const stateSubmit = reactive<Partial<CreateUserAddressRequest>>({})
 
 const {
   mutateAsync: createUserAddress,
@@ -38,7 +38,7 @@ const stateOptions = computed(() => {
   return dataGetStatesByCountry.value?.data.states.map(st => st.name) || []
 })
 
-async function onSubmit(event: FormSubmitEvent<CreateBodyUserAddressBody>) {
+async function onSubmit(event: FormSubmitEvent<CreateUserAddressRequest>) {
   formRef.value.clear()
   try {
     await createUserAddress(event.data)

@@ -6,9 +6,9 @@ import FixedPagination from '~/app/components/account/shop/fixed-pagination.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { ProductVariantTypes } from '~/shared/config/enums/product'
 import { routes } from '~/shared/navigation/routes'
-import type { Product } from '~/shared/types/product'
-import type { ResponseShopGetProducts } from '~/shared/types/request-api/shop-product'
-import type { ElementType } from '~/shared/types/utils'
+import type { Product } from '~/shared/models/product'
+import type { ListShopProductsItem } from '~/shared/api/shop/product/list'
+import type { ElementType } from '~/shared/contracts/utils'
 import { useShopDeleteProduct } from '~/shared/server-state/shop/product/delete-product.mutation'
 import { useShopGetProducts } from '~/shared/server-state/shop/product/list.query'
 import { useGetMyShop } from '~/shared/server-state/shop/my-shop.query'
@@ -20,8 +20,8 @@ type ProductRow = {
   slug: string
   title: string
   imageUrl: string
-  variants: ResponseShopGetProducts['variants']
-  inventory: ResponseShopGetProducts['inventory']
+  variants: ListShopProductsItem['variants']
+  inventory: ListShopProductsItem['inventory']
   variantType: ProductVariantTypes
 }
 

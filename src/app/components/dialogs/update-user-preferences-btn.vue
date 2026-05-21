@@ -10,7 +10,7 @@ import type { User } from '~/shared/models/user'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 import { useUpdateCurrentUser } from '~/shared/server-state/me/update-current-user.mutation'
 import { useGetCountries } from '~/shared/server-state/location/countries.query'
-import type { ElementType } from '~/shared/types/utils'
+import type { ElementType } from '~/shared/contracts/utils'
 
 type State = {
   region: MarketRegions

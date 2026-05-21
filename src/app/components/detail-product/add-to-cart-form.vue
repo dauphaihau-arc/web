@@ -2,12 +2,12 @@
 import { consola } from 'consola'
 import type { FormError, FormSubmitEvent } from '#ui/types'
 import { ProductVariantTypes } from '~/shared/config/enums/product'
-import type { AddProductToCartBody, ResponseGetCart } from '~/shared/types/request-api/cart'
+import type { AddProductToCartRequest, AddProductToCartResponse } from '~/shared/api/me/cart/add-product'
 import RegisterLoginDialog from '~/app/components/dialogs/login-register/register-login-dialog.vue'
 import { routes } from '~/shared/navigation/routes'
 import { useAddProductToCart } from '~/shared/server-state/me/cart/add-product.mutation'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
-import type { ResponseGetDetailProduct } from '~/shared/types/request-api/product'
+import type { GetDetailProductBySlugResponse } from '~/shared/api/product/detail-by-slug'
 import { toastCustom } from '~/shared/config/toast'
 
 interface StateSubmit {
@@ -16,10 +16,10 @@ interface StateSubmit {
   variantSubOption: string
 }
 
-type Inventory = ResponseGetDetailProduct['inventory'][number]
+type Inventory = GetDetailProductBySlugResponse['inventory'][number]
 
 const props = defineProps<{
-  product: ResponseGetDetailProduct
+  product: GetDetailProductBySlugResponse
 }>()
 const { product } = props
 
@@ -143,7 +143,7 @@ async function onSubmit(event: FormSubmitEvent<StateSubmit>) {
     return
   }
 
-  const body: AddProductToCartBody = {
+  const body: AddProductToCartRequest = {
     inventory_id: inventorySelectedModel.value.id,
     quantity: event.data.quantity,
   }
@@ -157,7 +157,7 @@ async function onSubmit(event: FormSubmitEvent<StateSubmit>) {
       })
       return
     }
-    queryClient.setQueryData<ResponseGetCart>(['get-cart', response.cart.id], response)
+    queryClient.setQueryData<AddProductToCartResponse>(['get-cart', response.cart.id], response)
     navigateTo(routes.checkout({ c: response.cart.id }))
     return
   }
@@ -170,7 +170,7 @@ async function onSubmit(event: FormSubmitEvent<StateSubmit>) {
     })
     return
   }
-  queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], response)
+  queryClient.setQueryData<AddProductToCartResponse>(['get-cart', 'my-cart'], response)
   toast.add({
     ...toastCustom.success,
     title: 'Added to cart',

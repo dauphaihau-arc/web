@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useGetCountries } from '~/shared/server-state/location/countries.query'
-import type { ProductStandardShipping } from '~/shared/types/product'
+import type { ProductStandardShipping } from '~/shared/models/product'
 import {
   ProductShippingCharge,
   PRODUCT_SHIPPING_CONFIG,

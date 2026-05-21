@@ -2,10 +2,10 @@
 /*
   use in cart page, cart/checkout page
  */
-import type { ResponseGetCartShopCart } from '~/shared/types/request-api/cart'
+import type { CartShopGroup } from '~/shared/api/me/cart/cart.shared'
 
 const props = defineProps<{
-  shopCart: ResponseGetCartShopCart
+  shopCart: CartShopGroup
 }>()
 
 const options = [

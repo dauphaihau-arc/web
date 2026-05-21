@@ -1,11 +1,11 @@
-import type { Order } from '~/shared/types/order';
-import type { Shop } from '~/shared/types/shop';
-import { CheckoutNowSteps, type StateCheckoutNow } from '~/shared/types/pages/checkout';
+import type { Order } from '~/shared/models/order';
+import type { Shop } from '~/shared/models/shop';
+import { CheckoutNowSteps, type StateCheckoutNow } from '~/shared/checkout/checkout.types';
 import { PaymentTypes } from '~/shared/config/enums/order';
-import type { Coupon } from '~/shared/types/coupon';
-import { CheckoutCartSteps, type StateCheckoutCart } from '~/shared/types/pages/cart/checkout';
+import type { Coupon } from '~/shared/models/coupon';
+import { CheckoutCartSteps, type StateCheckoutCart } from '~/shared/checkout/cart-checkout.types';
 import { routePaths } from '~/shared/navigation/routes';
-import type { ResponseCreateOrder } from '~/shared/types/request-api/order';
+import type { CreateOrderResponse } from '~/shared/api/me/orders/create-order.shared';
 
 export type AdditionInfoShopCarts = {
   key: Shop['id']
@@ -51,7 +51,7 @@ export const useCartStore = defineStore('cart', () => {
   const additionInfoShopCarts = ref(new Map<AdditionInfoShopCarts['key'], AdditionInfoShopCarts['value']>());
 
   // use for checkout by cash
-  const orderShops = ref<ResponseCreateOrder['order_shops']>([]);
+  const orderShops = ref<CreateOrderResponse['order_shops']>([]);
 
   watch(router.currentRoute, () => {
     const activeCheckoutPaths: string[] = [routePaths.cartCheckout, routePaths.cart];

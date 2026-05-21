@@ -8,11 +8,11 @@ import { FetchError } from 'ofetch'
 import { consola } from 'consola'
 import { type AdditionInfoShopCarts, useCartStore } from '~/shared/stores/cart'
 import { COUPON_CONFIG } from '~/shared/config/enums/coupon'
-import type { Shop } from '~/shared/types/shop'
+import type { Shop } from '~/shared/models/shop'
 import { useUpdateCart } from '~/shared/server-state/me/cart/update-cart.mutation'
 import { toastCustom } from '~/shared/config/toast'
-import type { Coupon } from '~/shared/types/coupon'
-import type { ResponseGetCart } from '~/shared/types/request-api/cart'
+import type { Coupon } from '~/shared/models/coupon'
+import type { GetCartResponse } from '~/shared/api/me/cart/get-cart'
 
 const { shopId } = defineProps<{
   shopId: Shop['id']
@@ -75,7 +75,7 @@ const addCoupon = async () => {
       addition_info_shop_carts,
     })
 
-    queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], (oldData) => {
+    queryClient.setQueryData<GetCartResponse>(['get-cart', 'my-cart'], (oldData) => {
       if (!oldData || !oldData.cart) return oldData
       if (!data.cart) return { ...oldData, cart: data.cart }
       const foundShopCart = data.cart.shop_groups.find(sc => sc.shop.id === shopId)
@@ -150,7 +150,7 @@ const deleteCoupon = async (code: Coupon['code']) => {
     })
 
     // update cache get cart
-    queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], (oldData) => {
+    queryClient.setQueryData<GetCartResponse>(['get-cart', 'my-cart'], (oldData) => {
       if (!oldData || !oldData.cart) return oldData
       if (!data.cart) return { ...oldData, cart: data.cart }
       const foundShopCart = data.cart.shop_groups.find(sc => sc.shop.id === shopId)

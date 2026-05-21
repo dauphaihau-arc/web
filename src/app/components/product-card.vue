@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { ResponseGetProductsProduct } from '~/shared/types/request-api/product'
+import type { GetProductsResponseItem } from '~/shared/api/product/list'
 import { PRODUCT_CONFIG } from '~/shared/config/enums/product'
 import { routes } from '~/shared/navigation/routes'
 
 const props = defineProps<{
-  product: ResponseGetProductsProduct
+  product: GetProductsResponseItem
 }>()
 
 const router = useRouter()

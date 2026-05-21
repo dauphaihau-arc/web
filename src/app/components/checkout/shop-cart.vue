@@ -4,8 +4,8 @@ import { useCartStore } from '~/shared/stores/cart'
 import { ProductVariantTypes } from '~/shared/config/enums/product'
 import { useGetCart } from '~/shared/server-state/me/cart/cart.query'
 import { useUpdateCart } from '~/shared/server-state/me/cart/update-cart.mutation'
-import type { ResponseGetCart } from '~/shared/types/request-api/cart'
-import type { Cart } from '~/shared/types/cart'
+import type { GetCartResponse } from '~/shared/api/me/cart/get-cart'
+import type { Cart } from '~/shared/models/cart'
 
 const cartStore = useCartStore()
 const queryClient = useQueryClient()
@@ -60,7 +60,7 @@ watchDebounced(
       quantity: tempProductQty.value,
     })
 
-    queryClient.setQueryData<ResponseGetCart>(['get-cart', tempCartId], (oldData) => {
+    queryClient.setQueryData<GetCartResponse>(['get-cart', tempCartId], (oldData) => {
       if (!oldData) return oldData
       return {
         ...oldData,

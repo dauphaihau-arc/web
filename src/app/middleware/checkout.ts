@@ -1,4 +1,4 @@
-import type { Cart } from '~/shared/types/cart';
+import type { Cart } from '~/shared/models/cart';
 import { routes } from '~/shared/navigation/routes';
 
 export default defineNuxtRouteMiddleware((to) => {

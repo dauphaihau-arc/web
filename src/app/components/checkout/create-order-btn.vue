@@ -6,11 +6,11 @@ import { toastCustom } from '~/shared/config/toast'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { useCartStore } from '~/shared/stores/cart'
 import { useCreateOrderForBuyNow } from '~/shared/server-state/me/orders/create-order-buy-now.mutation'
-import { CheckoutNowSteps } from '~/shared/types/pages/checkout'
+import { CheckoutNowSteps } from '~/shared/checkout/checkout.types'
 import { useGetExchangeRates } from '~/shared/server-state/market/exchange-rates.query'
-import type { CreateOrderForBuyNowBody } from '~/shared/types/request-api/order'
-import type { Cart } from '~/shared/types/cart'
-import type { ResponseGetExchangeRates } from '~/shared/types/market'
+import type { CreateOrderForBuyNowRequest } from '~/shared/api/me/orders/create-order-buy-now'
+import type { Cart } from '~/shared/models/cart'
+import type { ExchangeRatesResponse as ResponseGetExchangeRates } from '~/shared/market/market.types'
 
 const cartStore = useCartStore()
 const toast = useToast()
@@ -40,7 +40,7 @@ const onCreateOrder = async () => {
       throw new Error()
     }
 
-    const body: CreateOrderForBuyNowBody = {
+    const body: CreateOrderForBuyNowRequest = {
       cart_id: tempCartId,
       payment_type: cartStore.stateCheckoutNow.paymentType,
       user_address_id: addressId,

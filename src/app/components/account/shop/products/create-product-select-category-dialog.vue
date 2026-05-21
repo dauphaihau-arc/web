@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Category } from '~/shared/types/category'
+import type { Category } from '~/shared/api/category/categories'
 import { useGetCategories } from '~/shared/server-state/category/categories.query'
 
 const emit = defineEmits<

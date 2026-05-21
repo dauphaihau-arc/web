@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { ResponseGetProductsProduct } from '~/shared/types/request-api/product'
+import type { GetProductsResponseItem } from '~/shared/api/product/list'
 import { routes } from '~/shared/navigation/routes'
 
 const props = defineProps<{
-  product: ResponseGetProductsProduct
+  product: GetProductsResponseItem
   autoSize?: boolean
   fill?: boolean
 }>()

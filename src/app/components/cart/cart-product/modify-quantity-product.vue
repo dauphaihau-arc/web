@@ -6,14 +6,14 @@ import { watchDebounced } from '@vueuse/core'
 import { useCartStore } from '~/shared/stores/cart'
 import { useUpdateCart } from '~/shared/server-state/me/cart/update-cart.mutation'
 import type {
-  ResponseGetCartProductCart,
-  ResponseGetCart,
-  UpdateCartBody,
-} from '~/shared/types/request-api/cart'
-import type { Shop } from '~/shared/types/shop'
+  CartProductItem,
+} from '~/shared/api/me/cart/cart.shared'
+import type { GetCartResponse } from '~/shared/api/me/cart/get-cart'
+import type { UpdateCartRequest } from '~/shared/api/me/cart/update-cart'
+import type { Shop } from '~/shared/models/shop'
 
 const props = defineProps<{
-  productCart: ResponseGetCartProductCart
+  productCart: CartProductItem
   shopId: Shop['id']
 }>()
 
@@ -26,7 +26,7 @@ const {
   mutate: updateCart,
 } = useUpdateCart({
   onSuccess: (data) => {
-    queryClient.setQueryData<ResponseGetCart>(['get-cart', 'my-cart'], (oldData) => {
+    queryClient.setQueryData<GetCartResponse>(['get-cart', 'my-cart'], (oldData) => {
       if (!oldData || !oldData.cart) return oldData
       if (data.cart === null) return { ...oldData, cart: null }
       const foundShopCart = data.cart.shop_groups.find(sc => sc.shop.id === props.shopId)
@@ -70,7 +70,7 @@ const decreaseQty = () => {
 watchDebounced(
   tempProductQty,
   async () => {
-    const body: UpdateCartBody = {
+    const body: UpdateCartRequest = {
       inventory_id: props.productCart.inventory.id,
       quantity: tempProductQty.value,
     }

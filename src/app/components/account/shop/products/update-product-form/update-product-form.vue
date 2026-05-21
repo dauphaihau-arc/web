@@ -18,7 +18,7 @@ import TagsInput from '~/app/components/account/shop/products/tags-input.vue'
 import type {
   Product,
   ProductImage, ProductSingleVariant, ProductCombineVariant,
-} from '~/shared/types/product'
+} from '~/shared/models/product'
 import { toastCustom } from '~/shared/config/toast'
 import { useIssueProductImageUploadUrl } from '~/shared/server-state/upload/issue-product-image-upload-url.mutation'
 import { useShopGetDetailProduct } from '~/shared/server-state/shop/product/detail.query'
@@ -26,10 +26,10 @@ import { useShopUpdateProduct } from '~/shared/server-state/shop/product/update-
 import type {
   NoneVariant,
   RequestUpdateProductBody,
-  ResponseShopGetDetailProduct,
   UpdateProductBody,
-} from '~/shared/types/request-api/shop-product'
-import type { NoUndefinedField } from '~/shared/types/utils'
+} from '~/shared/api/shop/product/form'
+import type { DetailShopProductResponse as ResponseShopGetDetailProduct } from '~/shared/api/shop/product/detail'
+import type { NoUndefinedField } from '~/shared/contracts/utils'
 
 export type IOnChangeUpdateVariants = Partial<Pick<UpdateProductBody,
   'update_variants' | 'variant_inventories' |

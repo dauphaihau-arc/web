@@ -2,9 +2,9 @@
 /*
   use in cart page, cart/checkout page
  */
-import type { ResponseGetCartProductCart } from '~/shared/types/request-api/cart'
+import type { CartProductItem } from '~/shared/api/me/cart/cart.shared'
 
-const props = defineProps<{ productCart: ResponseGetCartProductCart }>()
+const props = defineProps<{ productCart: CartProductItem }>()
 
 const state = reactive({
   v1: '',

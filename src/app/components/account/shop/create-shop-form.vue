@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
 import { shopSchema } from '~/shared/schemas/shop.schema'
-import type { Shop } from '~/shared/types/shop'
+import type { Shop } from '~/shared/models/shop'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { toastCustom } from '~/shared/config/toast'
 import { useCreateShop } from '~/shared/server-state/shop/create-shop.mutation'

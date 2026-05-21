@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import ProductCard from '~/app/components/detail-product/product-card.vue'
-import type { Category } from '~/shared/types/category'
+import type { Category } from '~/shared/api/category/categories'
 import { useGetProducts } from '~/shared/server-state/product/products.query'
 
 const limit = 12
