@@ -122,11 +122,13 @@ async function onError(event: FormErrorEvent) {
 <template>
   <UModal
     :ui="{
-      margin: '!mb-72',
+      inner: 'fixed inset-0 overflow-hidden',
+      container: 'flex h-full items-center justify-center text-center',
+      margin: 'sm:my-8',
       width: 'w-full sm:max-w-xl',
     }"
   >
-    <div class="space-y-5 p-8">
+    <div class="flex max-h-[calc(100vh-4rem)] flex-col overflow-hidden p-8">
       <div class="space-y-1.5">
         <h1 class="text-2xl font-bold">
           Add custom shipping settings
@@ -140,7 +142,7 @@ async function onError(event: FormErrorEvent) {
         ref="formRef"
         :validate-on="['submit']"
         :state="stateSubmit"
-        class="space-y-4"
+        class="mt-5 min-h-0 flex-1 space-y-4 overflow-y-auto pr-2"
         :schema="createProductShippingFormSchema"
         @error="onError"
         @submit="onSubmit"
@@ -227,7 +229,7 @@ async function onError(event: FormErrorEvent) {
         </UButton>
       </UForm>
 
-      <div class="flex items-center justify-end gap-2">
+      <div class="mt-5 flex items-center justify-end gap-2 border-t border-gray-200 pt-4">
         <UButton
           size="sm"
           color="gray"

@@ -53,6 +53,7 @@ watch(() => page.value, () => {
         <SubCategories />
         <FilterProducts />
       </div>
+
       <div v-if="isPendingGetProducts">
         <div class="mb-16 grid grid-cols-4 gap-x-3 gap-y-8">
           <div
