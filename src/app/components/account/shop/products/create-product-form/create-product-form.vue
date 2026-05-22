@@ -39,6 +39,7 @@ const isProductHaveVariants = ref(false)
 const btnSubmitRef = ref()
 const enabledButtonSubmit = ref(false)
 const countValidate = ref(0)
+const hasImages = computed(() => fileImages.value.length > 0)
 
 const shipping = ref<CreateProductShipping | undefined>()
 
@@ -116,7 +117,7 @@ watchDebounced(
   () => [stateSubmit, noneVariant, fileImages.value, shipping],
   () => {
     const baseParsed = createProductFormSchema.safeParse(stateSubmit)
-    const conditions = [baseParsed.success, fileImages.value.length > 0, shipping.value]
+    const conditions = [baseParsed.success, shipping.value]
 
     if (stateSubmit.variant_type === ProductVariantTypes.NONE) {
       const resultParsed = createProductInventoryFormSchema.safeParse(noneVariant)
@@ -345,7 +346,7 @@ watch(isProductHaveVariants, () => {
       Save
     </UButton>
     <UButton
-      :disabled="!enabledButtonSubmit || loadingSubmit"
+      :disabled="!enabledButtonSubmit || !hasImages || loadingSubmit"
       :loading="loadingSubmit && stateSubmit.state === ProductStates.ACTIVE"
       size="md"
       type="submit"

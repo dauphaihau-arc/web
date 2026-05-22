@@ -113,7 +113,10 @@ export function useCreateProductSubmit({
       eventData as PickPartial<CreateProductBody, 'attributes' | 'tags'>
     );
 
-    if (fileImages.value.length === 0) {
+    if (
+      stateSubmit.state === ProductStates.ACTIVE &&
+      fileImages.value.length === 0
+    ) {
       consola.error('images is invalid');
       return;
     }
@@ -140,13 +143,15 @@ export function useCreateProductSubmit({
     try {
       const productDraft = await createProduct(buildCreateProductPayload(bodyData));
 
-      const storageKeys = await uploadImage(productDraft.id);
-      if (!storageKeys) return;
+      if (fileImages.value.length > 0) {
+        const storageKeys = await uploadImage(productDraft.id);
+        if (!storageKeys) return;
 
-      await setProductImagesByKeys({
-        id: productDraft.id,
-        images: buildCreateProductImagesPayload(storageKeys),
-      });
+        await setProductImagesByKeys({
+          id: productDraft.id,
+          images: buildCreateProductImagesPayload(storageKeys),
+        });
+      }
 
       if (stateSubmit.state === ProductStates.ACTIVE) {
         await publishProduct(productDraft.id);
