@@ -3,6 +3,7 @@ import type { FormSubmitEvent } from '#ui/types'
 import type {
   CreateUserAddressRequest,
   GetUserAddressesResponse,
+  UpdateUserAddressBody,
   UpdateUserAddressRequest,
 } from '~/shared/api/me/address/contracts/address.contract'
 import { ADDRESS_CONFIG } from '~/shared/config/enums/address'
@@ -21,7 +22,17 @@ const queryClient = useQueryClient()
 
 const formRef = ref()
 
-const stateSubmit = reactive<Partial<CreateUserAddressRequest>>({ ...props.dataEdit })
+const stateSubmit = reactive<Partial<CreateUserAddressRequest>>({
+  full_name: props.dataEdit.full_name,
+  address_1: props.dataEdit.address_1,
+  address_2: props.dataEdit.address_2,
+  city: props.dataEdit.city,
+  state: props.dataEdit.state,
+  zip: props.dataEdit.zip,
+  country: props.dataEdit.country,
+  phone: props.dataEdit.phone,
+  is_primary: props.dataEdit.is_primary,
+})
 
 const {
   data: dataGetCountries,
@@ -53,9 +64,20 @@ onMounted(() => {
 async function onSubmit(event: FormSubmitEvent<CreateUserAddressRequest>) {
   formRef.value.clear()
   try {
+    const body: UpdateUserAddressBody = {
+      full_name: event.data.full_name,
+      address_1: event.data.address_1,
+      address_2: event.data.address_2,
+      city: event.data.city,
+      state: event.data.state,
+      zip: event.data.zip,
+      country: event.data.country,
+      phone: event.data.phone,
+      is_primary: event.data.is_primary,
+    }
     const payload: UpdateUserAddressRequest = {
       id: props.dataEdit.id,
-      ...event.data,
+      ...body,
     }
     await updateUserAddress(payload)
     await queryClient.invalidateQueries({
@@ -79,154 +101,160 @@ watch(() => stateSubmit.country, () => {
 </script>
 
 <template>
-  <UModal
+  <BaseDialog
     :ui="{
-      inner: '-top-10',
+      modal: {
+        inner: '-top-10',
+      },
     }"
   >
-    <div class="space-y-5 p-12">
+    <template #header>
       <div class="space-y-1.5">
         <h1 class="text-3xl font-bold">
           Update address
         </h1>
       </div>
+    </template>
 
-      <div class="rounded">
-        <UForm
-          ref="formRef"
-          :validate-on="['submit']"
-          :state="stateSubmit"
-          :schema="addressFormSchema"
-          @submit="onSubmit"
+    <UForm
+      ref="formRef"
+      :validate-on="['submit']"
+      :state="stateSubmit"
+      :schema="addressFormSchema"
+      @submit="onSubmit"
+    >
+      <UFormGroup
+        required
+        label="Full Name"
+        name="full_name"
+        class="mb-4"
+      >
+        <UInput
+          v-model="stateSubmit.full_name"
+          :maxlength="ADDRESS_CONFIG.MAX_CHAR_FULL_NAME"
+          size="lg"
+        />
+      </UFormGroup>
+      <UFormGroup
+        required
+        label="Street UserAddress"
+        name="address_1"
+        class="mb-4"
+      >
+        <UInput
+          v-model="stateSubmit.address_1"
+          :maxlength="ADDRESS_CONFIG.MAX_CHAR_ADDRESS"
+          size="lg"
+        />
+      </UFormGroup>
+      <UFormGroup
+        label="Apt / Suite / Other"
+        name="address_2"
+        class="mb-4"
+      >
+        <UInput
+          v-model="stateSubmit.address_2"
+          :maxlength="ADDRESS_CONFIG.MAX_CHAR_ADDRESS"
+          size="lg"
+        />
+      </UFormGroup>
+      <UFormGroup
+        required
+        label="City"
+        name="city"
+        class="mb-4"
+      >
+        <UInput
+          v-model="stateSubmit.city"
+          :maxlength="ADDRESS_CONFIG.MAX_CHAR_CITY"
+          size="lg"
+        />
+      </UFormGroup>
+      <UFormGroup
+        required
+        label="Country"
+        name="country"
+        class="mb-4"
+      >
+        <USelectMenu
+          v-model="stateSubmit.country"
+          searchable
+          :loading="isPendingGetCountries"
+          :options="countriesOptions"
+          size="lg"
+        />
+      </UFormGroup>
+
+      <div class="mb-4 flex gap-3">
+        <UFormGroup
+          required
+          label="StateCheckoutNow/Province"
+          name="state"
+          class="w-1/2"
         >
-          <UFormGroup
-            required
-            label="Full Name"
-            name="full_name"
-            class="mb-4"
-          >
-            <UInput
-              v-model="stateSubmit.full_name"
-              :maxlength="ADDRESS_CONFIG.MAX_CHAR_FULL_NAME"
-              size="xl"
-            />
-          </UFormGroup>
-          <UFormGroup
-            required
-            label="Street UserAddress"
-            name="address_1"
-            class="mb-4"
-          >
-            <UInput
-              v-model="stateSubmit.address_1"
-              :maxlength="ADDRESS_CONFIG.MAX_CHAR_ADDRESS"
-              size="xl"
-            />
-          </UFormGroup>
-          <UFormGroup
-            label="Apt / Suite / Other"
-            name="address_2"
-            class="mb-4"
-          >
-            <UInput
-              v-model="stateSubmit.address_2"
-              :maxlength="ADDRESS_CONFIG.MAX_CHAR_ADDRESS"
-              size="xl"
-            />
-          </UFormGroup>
-          <UFormGroup
-            required
-            label="City"
-            name="city"
-            class="mb-4"
-          >
-            <UInput
-              v-model="stateSubmit.city"
-              :maxlength="ADDRESS_CONFIG.MAX_CHAR_CITY"
-              size="xl"
-            />
-          </UFormGroup>
-          <UFormGroup
-            required
-            label="Country"
-            name="country"
-            class="mb-4"
-          >
-            <USelectMenu
-              v-model="stateSubmit.country"
-              :loading="isPendingGetCountries"
-              :options="countriesOptions"
-              size="xl"
-            />
-          </UFormGroup>
-
-          <div class="mb-4 flex gap-3">
-            <UFormGroup
-              required
-              label="StateCheckoutNow/Province"
-              name="state"
-              class="w-1/2"
-            >
-              <USelectMenu
-                v-model="stateSubmit.state"
-                :loading="isPendingGetStates"
-                :disabled="!stateSubmit.country || isPendingGetStates"
-                :options="stateOptions"
-                size="xl"
-                trailing
-              />
-            </UFormGroup>
-            <UFormGroup
-              required
-              label="Zip/Postal code"
-              name="zip"
-              class="w-1/2"
-            >
-              <UInput
-                v-model="stateSubmit.zip"
-                v-numeric
-                :maxlength="ADDRESS_CONFIG.MAX_CHAR_ZIP"
-                size="xl"
-              />
-            </UFormGroup>
-          </div>
-          <UFormGroup
-            required
-            label="Phone"
-            name="phone"
-            class="mb-4"
-          >
-            <UInput
-              v-model="stateSubmit.phone"
-              v-numeric
-              size="xl"
-              :maxlength="ADDRESS_CONFIG.MAX_CHAR_PHONE"
-              type="phone"
-            />
-          </UFormGroup>
-
-          <UCheckbox
-            v-model="stateSubmit.is_primary"
-            label="Set as default"
-            name="is_primary"
+          <USelectMenu
+            v-model="stateSubmit.state"
+            searchable
+            :loading="isPendingGetStates"
+            :disabled="!stateSubmit.country || isPendingGetStates"
+            :options="stateOptions"
+            size="lg"
+            trailing
           />
-          <div class="mt-6 flex justify-end gap-3">
-            <UButton
-              size="xl"
-              color="gray"
-              @click="dialog.close"
-            >
-              Cancel
-            </UButton>
-            <UButton
-              size="xl"
-              type="submit"
-            >
-              Save
-            </UButton>
-          </div>
-        </UForm>
+        </UFormGroup>
+        <UFormGroup
+          required
+          label="Zip/Postal code"
+          name="zip"
+          class="w-1/2"
+        >
+          <UInput
+            v-model="stateSubmit.zip"
+            v-numeric
+            :maxlength="ADDRESS_CONFIG.MAX_CHAR_ZIP"
+            size="lg"
+          />
+        </UFormGroup>
       </div>
-    </div>
-  </UModal>
+      <UFormGroup
+        required
+        label="Phone"
+        name="phone"
+        class="mb-4"
+      >
+        <UInput
+          v-model="stateSubmit.phone"
+          v-numeric
+          size="lg"
+          :maxlength="ADDRESS_CONFIG.MAX_CHAR_PHONE"
+          type="phone"
+        />
+      </UFormGroup>
+
+      <UCheckbox
+        v-model="stateSubmit.is_primary"
+        label="Set as default"
+        name="is_primary"
+      />
+    </UForm>
+
+    <template #footer>
+      <div class="flex justify-end gap-3">
+        <UButton
+          size="md"
+          color="gray"
+          @click="dialog.close"
+        >
+          Cancel
+        </UButton>
+        <UButton
+          size="md"
+          type="submit"
+          @click="formRef?.submit"
+        >
+          Save
+        </UButton>
+      </div>
+    </template>
+  </BaseDialog>
 </template>
