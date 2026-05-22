@@ -196,7 +196,7 @@ const itemsDropdownWithRow = (row: { id: string }): DropdownItem[][] => [
 
         <template #actions-data="{ row }">
           <div class="flex items-center justify-end">
-            <UTooltip text="Feature not available">
+            <!-- <UTooltip text="Feature not available">
               <UButton
                 color="gray"
                 variant="ghost"
@@ -207,7 +207,7 @@ const itemsDropdownWithRow = (row: { id: string }): DropdownItem[][] => [
                   class="cursor-pointer"
                 />
               </UButton>
-            </UTooltip>
+            </UTooltip> -->
             <UDropdown :items="itemsDropdownWithRow(row)">
               <UButton
                 color="gray"
