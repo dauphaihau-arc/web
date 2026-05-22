@@ -89,6 +89,20 @@ const rows = computed<ProductRow[]>(() => {
 
 const totalProducts = computed(() => dataShopGetProducts.value?.meta.total ?? 0)
 
+function editProduct(row: ProductRow) {
+  navigateTo(routes.accountShopProductDetail(row.id))
+}
+
+function previewProduct(row: ProductRow) {
+  if (!dataMyShop.value?.slug) {
+    return
+  }
+
+  navigateTo(routes.productDetail(dataMyShop.value.slug, row.slug), {
+    open: { target: '_blank' },
+  })
+}
+
 const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem[][] => [
   [
     {
@@ -106,20 +120,12 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
     {
       label: 'Edit',
       icon: 'i-heroicons-pencil-square-20-solid',
-      click: () => navigateTo(routes.accountShopProductDetail(row.id)),
+      click: () => editProduct(row),
     },
     {
       label: 'Preview',
-      icon: 'i-heroicons-arrow-right-circle-20-solid',
-      click: () => {
-        if (!dataMyShop.value?.slug) {
-          return
-        }
-
-        navigateTo(routes.productDetail(dataMyShop.value.slug, row.slug), {
-          open: { target: '_blank' },
-        })
-      },
+      icon: 'i-heroicons-eye-20-solid',
+      click: () => previewProduct(row),
     },
   ],
   [
@@ -226,18 +232,26 @@ async function removeProduct(id: string) {
 
         <template #actions-data="{ row }">
           <div class="flex items-center justify-center">
-            <UTooltip text="Feature not available">
+            <div class="flex items-center justify-center">
               <UButton
                 color="gray"
                 variant="ghost"
-                class="p-1.5"
+                class="row-hover-action p-1.5 transition-opacity"
+                @click="editProduct(row)"
               >
                 <AppIcon
                   name="edit"
                   class="cursor-pointer"
                 />
               </UButton>
-            </UTooltip>
+              <UButton
+                color="gray"
+                variant="ghost"
+                class="row-hover-action p-1.5 transition-opacity"
+                icon="i-heroicons-eye-20-solid"
+                @click="previewProduct(row)"
+              />
+            </div>
             <UDropdown :items="itemsDropdownWithRow(row)">
               <UButton
                 color="gray"
@@ -264,3 +278,13 @@ async function removeProduct(id: string) {
     </template>
   </LayoutShopWrapperContent>
 </template>
+
+<style scoped>
+:deep(tbody tr .row-hover-action) {
+  opacity: 0;
+}
+
+:deep(tbody tr:hover .row-hover-action) {
+  opacity: 1;
+}
+</style>

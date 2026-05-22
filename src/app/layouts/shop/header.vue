@@ -63,7 +63,7 @@ const itemsHeaderDropdown: DropdownItem[][] = [
         <UTooltip text="Create">
           <UButton
             :ui="{ rounded: 'rounded-full' }"
-            icon="i-heroicons-plus"
+            icon="pajamas:plus"
             size="xs"
             color="primary"
             square
