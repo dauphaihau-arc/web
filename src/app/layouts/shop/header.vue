@@ -19,7 +19,7 @@ const itemsHeaderDropdown: DropdownItem[][] = [
               "
   >
     <div class="h-fit rounded-lg hover:bg-customGray-100">
-      <UInput
+      <!-- <UInput
         icon="i-heroicons-magnifying-glass-20-solid"
         placeholder="Search"
         variant="none"
@@ -31,7 +31,7 @@ const itemsHeaderDropdown: DropdownItem[][] = [
           },
         }"
         size="md"
-      />
+      /> -->
     </div>
 
     <div class="flex items-center gap-4">
