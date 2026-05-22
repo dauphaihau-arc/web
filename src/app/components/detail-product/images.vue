@@ -7,9 +7,17 @@ const { images } = defineProps<{
 
 const selectedImg = ref(0)
 
-const image_url_selected = computed(() => {
-  return images[selectedImg.value]?.url
+const selectedImage = computed(() => images[selectedImg.value])
+
+const imageUrlSelected = computed(() => {
+  return selectedImage.value?.variants?.detail_4x5?.url
+    ?? selectedImage.value?.url
 })
+
+const imageThumbSelected = (index: number) => {
+  return images[index]?.variants?.thumb_1x1?.url
+    ?? images[index]?.url
+}
 
 const onSelectPrevImg = () => {
   if (!selectedImg.value) {
@@ -35,7 +43,7 @@ const onSelectNextImg = () => {
       >
         <NuxtImg
           preload
-          :src="image.url"
+          :src="imageThumbSelected(index)"
           width="100"
           height="100"
           :class="[
@@ -50,7 +58,7 @@ const onSelectNextImg = () => {
     <div class="relative h-fit">
       <NuxtImg
         preload
-        :src="image_url_selected"
+        :src="imageUrlSelected"
         width="575"
         height="575"
         class="rounded"

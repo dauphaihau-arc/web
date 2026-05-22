@@ -7,6 +7,11 @@ const props = defineProps<{
   autoSize?: boolean
   fill?: boolean
 }>()
+
+const imageUrl = computed(() => {
+  return props.product.image?.variants?.card_1x1?.url
+    ?? props.product.image?.url
+})
 </script>
 
 <template>
@@ -18,7 +23,7 @@ const props = defineProps<{
     :to="routes.productDetail(props.product.shop.slug, props.product.slug)"
   >
     <NuxtImg
-      :src="props.product.image?.url"
+      :src="imageUrl"
       :class="[
         'rounded-lg object-cover',
         props.fill ? 'size-full' : props.autoSize ? 'size-full' : 'h-[160px] w-[250px]',

@@ -18,6 +18,11 @@ export const publicProductShopSchema = z.object({
 export const publicProductImageSchema = z.object({
   storage_key: z.string(),
   url: z.string().optional(),
+  variant: z.string().optional(),
+  variants: z.record(z.string(), z.object({
+    storage_key: z.string(),
+    url: z.string().optional(),
+  })).optional(),
 });
 
 export const publicProductInventorySummarySchema = z.object({
@@ -66,6 +71,13 @@ export const publicProductDetailImageSchema = z.object({
   storage_key: z.string(),
   url: z.string().optional(),
   rank: z.number(),
+  variants: z.record(z.string(), z.object({
+    storage_key: z.string(),
+    url: z.string().optional(),
+    width: z.number().optional(),
+    height: z.number().optional(),
+    format: z.string().optional(),
+  })).optional(),
 });
 
 export const publicProductDetailVariantSchema = z.object({

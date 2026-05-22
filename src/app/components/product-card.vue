@@ -8,20 +8,27 @@ const props = defineProps<{
 }>()
 
 const router = useRouter()
+
+const imageUrl = computed(() => {
+  return props.product.image?.variants?.card_1x1?.url
+    ?? props.product.image?.url
+})
 </script>
 
 <template>
   <div
-    class="flex cursor-pointer flex-col gap-2"
+    class="group flex h-full w-full cursor-pointer flex-col gap-3"
     @click="() => router.push(routes.productDetail(props.product.shop.slug, props.product.slug))"
   >
-    <NuxtImg
-      :src="props.product.image?.url"
-      class="w-[200px] h-[200px] size-full rounded"
-    />
+    <div class="flex h-[230px] w-full items-center justify-center overflow-hidden rounded-lg bg-white ring-1 ring-customGray-200">
+      <NuxtImg
+        :src="imageUrl"
+        class="size-full object-contain object-center transition-transform duration-300 group-hover:scale-[1.03]"
+      />
+    </div>
 
-    <div class="space-y-1">
-      <h1 class="truncate text-xl font-semibold">
+    <div class="flex min-h-[104px] flex-col gap-1">
+      <h1 class="line-clamp-2 overflow-hidden text-base font-semibold leading-6">
         {{ props.product?.title }}
       </h1>
       <div class="flex flex-wrap items-center gap-2">
@@ -29,12 +36,12 @@ const router = useRouter()
           {{ convertCurrency(props.product.inventory?.sale_price || props.product.inventory?.price) }}
         </p>
       </div>
-      <p class="text-sm text-customGray-800">
+      <p class="h-5 truncate text-sm text-customGray-800">
         {{ props.product?.shop.shop_name }}
       </p>
       <p
         v-if="props.product.inventory && props.product.inventory.stock < PRODUCT_CONFIG.LOW_STOCK"
-        class="text-[13px] text-red-600"
+        class="mt-auto text-[13px] text-red-600"
       >
         Only {{ props.product.inventory.stock }} left - order soon
       </p>

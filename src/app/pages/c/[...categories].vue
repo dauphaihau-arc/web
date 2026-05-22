@@ -43,7 +43,7 @@ watch(() => page.value, () => {
 
 <template>
   <div class="pt-12">
-    <div class="sticky top-3 z-[2] mb-4 flex items-center justify-between bg-white py-2">
+    <div class="sticky top-0 z-[2] mb-4 flex items-center justify-between bg-white py-2">
       <CategoriesBreadcrumb :total-products="dataGetProducts?.meta.total || 0" />
       <SortProductsBy />
     </div>
@@ -70,10 +70,13 @@ watch(() => page.value, () => {
           </div>
         </div>
       </div>
-      <div v-else>
+      <div
+        v-else
+        class="w-full"
+      >
         <div
           v-if="dataGetProducts?.items"
-          class="mb-16 grid grid-cols-4 gap-x-3 gap-y-8"
+          class="mb-16 grid grid-cols-4 gap-8"
         >
           <div
             v-for="product of dataGetProducts.items"

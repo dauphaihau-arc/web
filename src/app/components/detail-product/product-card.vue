@@ -8,6 +8,11 @@ const { product } = defineProps<{
 }>()
 
 const router = useRouter()
+
+const imageUrl = computed(() => {
+  return product.image?.variants?.card_1x1?.url
+    ?? product.image?.url
+})
 </script>
 
 <template>
@@ -16,7 +21,7 @@ const router = useRouter()
     @click="() => router.push(routes.productDetail(product.shop.slug, product.slug))"
   >
     <NuxtImg
-      :src="product.image?.url"
+      :src="imageUrl"
       width="210"
       height="160"
       class="rounded"
