@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ProductVariantTypes } from '~/shared/config/enums/product';
+import { ProductStates, ProductVariantTypes } from '~/shared/config/enums/product';
 
 const requestGetListParamsSchema = z.object({
   page: z.union([z.number(), z.any()]).optional(),
@@ -17,28 +17,29 @@ export const listShopProductsItemSchema = z.object({
   id: z.string(),
   slug: z.string(),
   title: z.string(),
-  variantType: z.nativeEnum(ProductVariantTypes).optional(),
+  state: z.nativeEnum(ProductStates).optional(),
+  variant_type: z.nativeEnum(ProductVariantTypes).optional(),
   images: z.array(z.object({
     id: z.string(),
-    storageKey: z.string(),
+    storage_key: z.string(),
     url: z.string().optional(),
     rank: z.number(),
   })),
   variants: z.array(z.object({
     id: z.string(),
     name: z.string(),
-    optionValue1: z.string().optional(),
-    optionValue2: z.string().optional(),
-    imageStorageKey: z.string().optional(),
+    option_value_1: z.string().optional(),
+    option_value_2: z.string().optional(),
+    image_storage_key: z.string().optional(),
     rank: z.number(),
   })),
   inventory: z.array(z.object({
     id: z.string(),
-    productVariantId: z.string().optional(),
+    product_variant_id: z.string().optional(),
     sku: z.string().optional(),
     stock: z.number(),
     price: z.number(),
-    salePrice: z.number().optional(),
+    sale_price: z.number().optional(),
   })),
 });
 
@@ -48,9 +49,9 @@ export const listShopProductsResponseSchema = z.object({
     page: z.number(),
     limit: z.number(),
     total: z.number(),
-    totalPages: z.number(),
-    hasNextPage: z.boolean(),
-    hasPreviousPage: z.boolean(),
+    total_pages: z.number(),
+    has_next_page: z.boolean(),
+    has_previous_page: z.boolean(),
   }),
 });
 

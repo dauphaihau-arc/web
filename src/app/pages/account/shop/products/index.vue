@@ -4,7 +4,7 @@ import LoadingSvg from '~/shared/ui/loading-svg.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import FixedPagination from '~/app/components/account/shop/fixed-pagination.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
-import { ProductVariantTypes } from '~/shared/config/enums/product'
+import { ProductStates, ProductVariantTypes } from '~/shared/config/enums/product'
 import { routes } from '~/shared/navigation/routes'
 import type { ListShopProductsItem } from '~/shared/api/shop/product/contracts/read.contract'
 import type { ElementType } from '~/shared/contracts/utils'
@@ -18,6 +18,7 @@ type ProductRow = {
   id: string
   slug: string
   title: string
+  state?: ProductStates
   imageUrl: string
   variants: ListShopProductsItem['variants']
   inventory: ListShopProductsItem['inventory']
@@ -27,11 +28,12 @@ type ProductRow = {
 type ProductVariantRow = ProductRow['variants'][number]
 
 const selected = ref([])
-const pageCount = 10
+const pageCount = 20
 const page = ref(1)
 
 const params = computed(() => ({
   page: page.value,
+  limit: pageCount,
 }))
 
 const {
@@ -67,7 +69,6 @@ const columns = [
   },
   {
     key: 'actions',
-    class: 'text-center',
   },
 ]
 
@@ -80,14 +81,41 @@ const rows = computed<ProductRow[]>(() => {
     id: product.id,
     slug: product.slug,
     title: product.title,
+    state: product.state,
     imageUrl: product.images[0]?.url ?? '',
     variants: product.variants,
     inventory: product.inventory,
-    variantType: product.variantType ?? ProductVariantTypes.NONE,
+    variantType: product.variant_type ?? ProductVariantTypes.NONE,
+    actions: { class: 'text-right' },
   }))
 })
 
-const totalProducts = computed(() => dataShopGetProducts.value?.meta.total ?? 0)
+const totalProducts = computed(() => {
+  const response = dataShopGetProducts.value as {
+    items?: unknown[]
+    meta?: {
+      total?: number
+      total_results?: number
+      total_pages?: number
+      limit?: number
+    }
+  } | undefined
+
+  const total = response?.meta?.total ?? response?.meta?.total_results
+  if (typeof total === 'number' && total > 0) {
+    return total
+  }
+
+  if (
+    typeof response?.meta?.total_pages === 'number'
+    && response.meta.total_pages > 0
+  ) {
+    return response.meta.total_pages * (response.meta.limit ?? pageCount)
+  }
+
+  return response?.items?.length ?? 0
+})
+const paginationKey = computed(() => `${page.value}-${totalProducts.value}`)
 
 function editProduct(row: ProductRow) {
   navigateTo(routes.accountShopProductDetail(row.id))
@@ -101,6 +129,10 @@ function previewProduct(row: ProductRow) {
   navigateTo(routes.productDetail(dataMyShop.value.slug, row.slug), {
     open: { target: '_blank' },
   })
+}
+
+function shouldShowPreviewButton(row: ProductRow) {
+  return row.state !== ProductStates.DRAFT
 }
 
 const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem[][] => [
@@ -122,11 +154,13 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
       icon: 'i-heroicons-pencil-square-20-solid',
       click: () => editProduct(row),
     },
-    {
-      label: 'Preview',
-      icon: 'i-heroicons-eye-20-solid',
-      click: () => previewProduct(row),
-    },
+    ...(shouldShowPreviewButton(row)
+      ? [{
+          label: 'Preview',
+          icon: 'i-heroicons-eye-20-solid',
+          click: () => previewProduct(row),
+        }]
+      : []),
   ],
   [
     {
@@ -159,7 +193,7 @@ async function removeProduct(id: string) {
     <template #content>
       <UTable
         v-model="selected"
-        class="mb-20"
+        class=""
         :rows="rows"
         :empty-state="{ icon: 'i-heroicons-archive-box-20-solid', label: 'No products.' }"
         :columns="columns"
@@ -168,6 +202,7 @@ async function removeProduct(id: string) {
         <template #title-data="{ row }">
           <div class="flex max-w-[200px] gap-2">
             <NuxtImg
+              v-if="row.imageUrl"
               :src="row.imageUrl"
               width="50"
               height="50"
@@ -201,7 +236,7 @@ async function removeProduct(id: string) {
               :key="index"
             >
               {{
-                row.variants.find((variant: ProductVariantRow) => variant.id === inv.productVariantId)?.name?.replaceAll('-', ', ')
+                row.variants.find((variant: ProductVariantRow) => variant.id === inv.product_variant_id)?.name?.replaceAll('-', ', ')
                   || '-'
               }}
             </div>
@@ -231,8 +266,8 @@ async function removeProduct(id: string) {
         </template>
 
         <template #actions-data="{ row }">
-          <div class="flex items-center justify-center">
-            <div class="flex items-center justify-center">
+          <div class="flex w-full items-center justify-end gap-1">
+            <div class="flex items-center">
               <UButton
                 color="gray"
                 variant="ghost"
@@ -245,6 +280,7 @@ async function removeProduct(id: string) {
                 />
               </UButton>
               <UButton
+                v-if="shouldShowPreviewButton(row)"
                 color="gray"
                 variant="ghost"
                 class="row-hover-action p-1.5 transition-opacity"
@@ -270,6 +306,7 @@ async function removeProduct(id: string) {
       </UTable>
 
       <FixedPagination
+        :key="paginationKey"
         :page="page"
         :page-count="pageCount"
         :total="totalProducts"
