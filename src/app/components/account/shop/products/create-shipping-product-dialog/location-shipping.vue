@@ -132,6 +132,7 @@ watch(stateDeliveryTime, () => {
     >
       <USelectMenu
         v-model="model.country"
+        searchable
         :options="countriesOptions"
         option-attribute="label"
         value-attribute="value"

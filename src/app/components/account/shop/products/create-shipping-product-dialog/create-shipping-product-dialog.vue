@@ -120,116 +120,104 @@ async function onError(event: FormErrorEvent) {
 </script>
 
 <template>
-  <UModal
-    :ui="{
-      inner: 'fixed inset-0 overflow-hidden',
-      container: 'flex h-full items-center justify-center text-center',
-      margin: 'sm:my-8',
-      width: 'w-full sm:max-w-xl',
-    }"
+  <BaseDialog
+    title="Add custom shipping settings"
+    description="We use these settings to calculate shipping costs and estimated delivery dates for buyers."
   >
-    <div class="flex max-h-[calc(100vh-4rem)] flex-col overflow-hidden p-8">
-      <div class="space-y-1.5">
-        <h1 class="text-2xl font-bold">
-          Add custom shipping settings
-        </h1>
-        <div>
-          We use these settings to calculate shipping costs and estimated delivery dates for buyers.
+    <UForm
+      ref="formRef"
+      :validate-on="['submit']"
+      :state="stateSubmit"
+      class="space-y-4"
+      :schema="createProductShippingFormSchema"
+      @error="onError"
+      @submit="onSubmit"
+    >
+      <UFormGroup
+        required
+        label="Country of origin"
+        name="country"
+        description="The country you're shipping from"
+        class="mb-4 flex w-full justify-between"
+        :ui="{ container: 'w-[61%]', description: 'w-36 text-xs' }"
+      >
+        <USelectMenu
+          v-model="stateSubmit.country"
+          searchable
+          :options="countriesOptions"
+          option-attribute="label"
+          value-attribute="value"
+          size="xl"
+        />
+      </UFormGroup>
+      <UFormGroup
+        required
+        label="Origin postal code"
+        description="Where will your orders ship from—home, the post office, or another location?"
+        name="zip"
+        class="mb-4 flex w-full gap-[62px]"
+        :ui="{ container: 'w-1/4', description: 'w-36 text-xs' }"
+      >
+        <UInput
+          v-model="stateSubmit.zip"
+          v-numeric
+          :maxlength="ADDRESS_CONFIG.MAX_CHAR_ZIP"
+          size="xl"
+        />
+      </UFormGroup>
+      <UFormGroup
+        required
+        label="Processing time"
+        description="How much time do you need to prepare an order and put it in the mail? "
+        name="process_time"
+        class="mb-4 flex w-full gap-[62px]"
+        :ui="{ container: 'w-1/3', description: 'w-36 text-xs' }"
+      >
+        <USelectMenu
+          v-model="processTimeIdSelected"
+          :options="processTimeOptions"
+          size="xl"
+          value-attribute="id"
+        />
+      </UFormGroup>
+
+      <UDivider />
+
+      <UFormGroup
+        required
+        label="Standard shipping"
+        description="Where will you ship to? We’ll show your listings to shoppers in the countries you add here. Estimate your shipping costsOpens a new tab"
+        class="mb-4"
+      />
+
+      <div
+        :key="keyAnotherLocationList"
+        class="space-y-5"
+      >
+        <div
+          v-for="(_item, idx) of stateSubmit.standard_shipping"
+          :key="idx"
+        >
+          <LocationShipping
+            v-model="stateSubmit.standard_shipping[idx]"
+            :key-validate="keyValidateLocations"
+            :index="idx"
+            :disabled-delete="idx === 0"
+            @delete="deleteLocation(idx)"
+          />
         </div>
       </div>
-
-      <UForm
-        ref="formRef"
-        :validate-on="['submit']"
-        :state="stateSubmit"
-        class="mt-5 min-h-0 flex-1 space-y-4 overflow-y-auto pr-2"
-        :schema="createProductShippingFormSchema"
-        @error="onError"
-        @submit="onSubmit"
+      <UButton
+        color="gray"
+        icon="i-heroicons-plus"
+        @click="addLocation"
       >
-        <UFormGroup
-          required
-          label="Country of origin"
-          name="country"
-          description="The country you're shipping from"
-          class="mb-4 flex w-full justify-between"
-          :ui="{ container: 'w-3/5', description: 'w-36 text-xs' }"
-        >
-          <USelectMenu
-            v-model="stateSubmit.country"
-            :options="countriesOptions"
-            option-attribute="label"
-            value-attribute="value"
-            size="xl"
-          />
-        </UFormGroup>
-        <UFormGroup
-          required
-          label="Origin postal code"
-          description="Where will your orders ship from—home, the post office, or another location?"
-          name="zip"
-          class="mb-4 flex w-full gap-[62px]"
-          :ui="{ container: 'w-1/4', description: 'w-36 text-xs' }"
-        >
-          <UInput
-            v-model="stateSubmit.zip"
-            v-numeric
-            :maxlength="ADDRESS_CONFIG.MAX_CHAR_ZIP"
-            size="xl"
-          />
-        </UFormGroup>
-        <UFormGroup
-          required
-          label="Processing time"
-          description="How much time do you need to prepare an order and put it in the mail? "
-          name="process_time"
-          class="mb-4 flex w-full gap-[62px]"
-          :ui="{ container: 'w-1/3', description: 'w-36 text-xs' }"
-        >
-          <USelectMenu
-            v-model="processTimeIdSelected"
-            :options="processTimeOptions"
-            size="xl"
-            value-attribute="id"
-          />
-        </UFormGroup>
+        Add another location
+      </UButton>
+    </UForm>
 
-        <UDivider />
-
-        <UFormGroup
-          required
-          label="Standard shipping"
-          description="Where will you ship to? We’ll show your listings to shoppers in the countries you add here. Estimate your shipping costsOpens a new tab"
-          class="mb-4"
-        />
-
-        <div
-          :key="keyAnotherLocationList"
-          class="space-y-5"
-        >
-          <div
-            v-for="(_item, idx) of stateSubmit.standard_shipping"
-            :key="idx"
-          >
-            <LocationShipping
-              v-model="stateSubmit.standard_shipping[idx]"
-              :key-validate="keyValidateLocations"
-              :index="idx"
-              :disabled-delete="idx === 0"
-              @delete="deleteLocation(idx)"
-            />
-          </div>
-        </div>
-        <UButton
-          color="gray"
-          icon="i-heroicons-plus"
-          @click="addLocation"
-        >
-          Add another location
-        </UButton>
-      </UForm>
-
-      <div class="mt-5 flex items-center justify-end gap-2 border-t border-gray-200 pt-4">
+    <template #footer>
+      <div class="flex w-full items-center justify-end gap-2">
         <UButton
           size="sm"
           color="gray"
@@ -245,9 +233,6 @@ async function onError(event: FormErrorEvent) {
           Apply
         </UButton>
       </div>
-    </div>
-  </UModal>
+    </template>
+  </BaseDialog>
 </template>
-
-<style scoped>
-</style>

@@ -63,154 +63,160 @@ watch(() => stateSubmit.country, () => {
 </script>
 
 <template>
-  <UModal
+  <BaseDialog
     :ui="{
-      inner: '-top-10',
+      modal: {
+        inner: '-top-10',
+      },
     }"
   >
-    <div class="space-y-5 p-12">
+    <template #header>
       <div class="space-y-1.5">
         <h1 class="text-3xl font-bold">
           Add new address
         </h1>
       </div>
+    </template>
 
-      <div class="rounded">
-        <UForm
-          ref="formRef"
-          :validate-on="['submit']"
-          :state="stateSubmit"
-          :schema="addressFormSchema"
-          @submit="onSubmit"
+    <UForm
+      ref="formRef"
+      :validate-on="['submit']"
+      :state="stateSubmit"
+      :schema="addressFormSchema"
+      @submit="onSubmit"
+    >
+      <UFormGroup
+        required
+        label="Full Name"
+        name="full_name"
+        class="mb-4"
+      >
+        <UInput
+          v-model="stateSubmit.full_name"
+          :maxlength="ADDRESS_CONFIG.MAX_CHAR_FULL_NAME"
+          size="lg"
+        />
+      </UFormGroup>
+      <UFormGroup
+        required
+        label="Street"
+        name="address_1"
+        class="mb-4"
+      >
+        <UInput
+          v-model="stateSubmit.address_1"
+          :maxlength="ADDRESS_CONFIG.MAX_CHAR_ADDRESS"
+          size="lg"
+        />
+      </UFormGroup>
+      <UFormGroup
+        label="Apt / Suite / Other"
+        name="address_2"
+        class="mb-4"
+      >
+        <UInput
+          v-model="stateSubmit.address_2"
+          :maxlength="ADDRESS_CONFIG.MAX_CHAR_ADDRESS"
+          size="lg"
+        />
+      </UFormGroup>
+      <UFormGroup
+        required
+        label="City"
+        name="city"
+        class="mb-4"
+      >
+        <UInput
+          v-model="stateSubmit.city"
+          :maxlength="ADDRESS_CONFIG.MAX_CHAR_CITY"
+          size="lg"
+        />
+      </UFormGroup>
+      <UFormGroup
+        required
+        label="Country"
+        name="country"
+        class="mb-4"
+      >
+        <USelectMenu
+          v-model="stateSubmit.country"
+          searchable
+          :loading="isPendingGetCountries"
+          :options="countriesOptions"
+          size="lg"
+        />
+      </UFormGroup>
+
+      <div class="mb-4 flex gap-3">
+        <UFormGroup
+          required
+          label="State/Province"
+          name="state"
+          class="w-1/2"
         >
-          <UFormGroup
-            required
-            label="Full Name"
-            name="full_name"
-            class="mb-4"
-          >
-            <UInput
-              v-model="stateSubmit.full_name"
-              :maxlength="ADDRESS_CONFIG.MAX_CHAR_FULL_NAME"
-              size="xl"
-            />
-          </UFormGroup>
-          <UFormGroup
-            required
-            label="Street"
-            name="address_1"
-            class="mb-4"
-          >
-            <UInput
-              v-model="stateSubmit.address_1"
-              :maxlength="ADDRESS_CONFIG.MAX_CHAR_ADDRESS"
-              size="xl"
-            />
-          </UFormGroup>
-          <UFormGroup
-            label="Apt / Suite / Other"
-            name="address_2"
-            class="mb-4"
-          >
-            <UInput
-              v-model="stateSubmit.address_2"
-              :maxlength="ADDRESS_CONFIG.MAX_CHAR_ADDRESS"
-              size="xl"
-            />
-          </UFormGroup>
-          <UFormGroup
-            required
-            label="City"
-            name="city"
-            class="mb-4"
-          >
-            <UInput
-              v-model="stateSubmit.city"
-              :maxlength="ADDRESS_CONFIG.MAX_CHAR_CITY"
-              size="xl"
-            />
-          </UFormGroup>
-          <UFormGroup
-            required
-            label="Country"
-            name="country"
-            class="mb-4"
-          >
-            <USelectMenu
-              v-model="stateSubmit.country"
-              :loading="isPendingGetCountries"
-              :options="countriesOptions"
-              size="xl"
-            />
-          </UFormGroup>
-
-          <div class="mb-4 flex gap-3">
-            <UFormGroup
-              required
-              label="State/Province"
-              name="state"
-              class="w-1/2"
-            >
-              <USelectMenu
-                v-model="stateSubmit.state"
-                :loading="isFetchingGetStates"
-                :disabled="!stateSubmit.country || isFetchingGetStates"
-                :options="stateOptions"
-                size="xl"
-                trailing
-              />
-            </UFormGroup>
-            <UFormGroup
-              required
-              label="Zip/Postal code"
-              name="zip"
-              class="w-1/2"
-            >
-              <UInput
-                v-model="stateSubmit.zip"
-                v-numeric
-                :maxlength="ADDRESS_CONFIG.MAX_CHAR_ZIP"
-                size="xl"
-              />
-            </UFormGroup>
-          </div>
-          <UFormGroup
-            required
-            label="Phone"
-            name="phone"
-            class="mb-4"
-          >
-            <UInput
-              v-model="stateSubmit.phone"
-              v-numeric
-              size="xl"
-              :maxlength="ADDRESS_CONFIG.MAX_CHAR_PHONE"
-              type="phone"
-            />
-          </UFormGroup>
-
-          <UCheckbox
-            v-model="stateSubmit.is_primary"
-            label="Set as default"
-            name="is_primary"
+          <USelectMenu
+            v-model="stateSubmit.state"
+            searchable
+            :loading="isFetchingGetStates"
+            :disabled="!stateSubmit.country || isFetchingGetStates"
+            :options="stateOptions"
+            size="lg"
+            trailing
           />
-          <div class="mt-6 flex justify-end gap-3">
-            <UButton
-              size="xl"
-              color="gray"
-              @click="dialog.close"
-            >
-              Cancel
-            </UButton>
-            <UButton
-              size="xl"
-              type="submit"
-            >
-              Save
-            </UButton>
-          </div>
-        </UForm>
+        </UFormGroup>
+        <UFormGroup
+          required
+          label="Zip/Postal code"
+          name="zip"
+          class="w-1/2"
+        >
+          <UInput
+            v-model="stateSubmit.zip"
+            v-numeric
+            :maxlength="ADDRESS_CONFIG.MAX_CHAR_ZIP"
+            size="lg"
+          />
+        </UFormGroup>
       </div>
-    </div>
-  </UModal>
+      <UFormGroup
+        required
+        label="Phone"
+        name="phone"
+        class="mb-4"
+      >
+        <UInput
+          v-model="stateSubmit.phone"
+          v-numeric
+          size="lg"
+          :maxlength="ADDRESS_CONFIG.MAX_CHAR_PHONE"
+          type="phone"
+        />
+      </UFormGroup>
+
+      <UCheckbox
+        v-model="stateSubmit.is_primary"
+        label="Set as default"
+        name="is_primary"
+      />
+    </UForm>
+
+    <template #footer>
+      <div class="flex justify-end gap-3">
+        <UButton
+          size="lg"
+          color="gray"
+          @click="dialog.close"
+        >
+          Cancel
+        </UButton>
+        <UButton
+          size="lg"
+          type="submit"
+          @click="formRef?.submit"
+        >
+          Save
+        </UButton>
+      </div>
+    </template>
+  </BaseDialog>
 </template>
