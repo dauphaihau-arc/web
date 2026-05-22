@@ -2,6 +2,7 @@
 import { PRODUCT_CONFIG, ProductVariantTypes } from '~/shared/config/enums/product'
 import { productInventorySchema } from '~/shared/schemas/product-inventory.schema'
 import type {
+  VariantOption as ProductVariantOption,
   StateCombineVariant,
   StateSingleVariant,
 } from '~/shared/api/shop/product/contracts/form.contract'
@@ -372,7 +373,7 @@ function emitData() {
         variant_name: sub_variant_name,
       })
       return acc
-    }, {} as Record<ProductVariant['variant_name'], Pick<NoUndefinedField<VariantTable>, 'price' | 'sku' | 'stock' | 'variant_name'>[]>)
+    }, {} as Record<NonNullable<ProductVariantOption['variant_name']>, Pick<NoUndefinedField<VariantTable>, 'price' | 'sku' | 'stock' | 'variant_name'>[]>)
 
     const combineVariants = Object.entries(variantsTableAsObj).map(([variant_name, variant_options]) => ({
       variant_name,

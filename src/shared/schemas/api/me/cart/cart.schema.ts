@@ -76,6 +76,7 @@ export const cartResourceSchema = z.object({
 export const cartResponseSchema = z.object({
   cart: cartResourceSchema.nullable(),
   summary: cartSummarySchema,
+  requires_sign_in_for_checkout: z.boolean().optional(),
 });
 
 export const getCartRequestSchema = z.object({
