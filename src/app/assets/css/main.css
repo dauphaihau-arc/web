@@ -34,6 +34,10 @@ input[type=number] {
   @apply w-[calc(100%-220px)] max-w-[1400px];
 }
 
+.shop-layout-content-inner {
+  @apply w-full px-10;
+}
+
 .bg-layout-shop {
  @apply bg-gradient-to-t from-[#f6f8fa] via-[#f6f8fa] to-[#fcfcfd]
 }

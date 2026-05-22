@@ -1,74 +1,58 @@
 <script lang="ts" setup>
-const { page, pageCount, total = 0 } = defineProps<{
+const props = withDefaults(defineProps<{
   page: number
   pageCount: number
-  total: number | undefined
-}>()
+  total: number | Ref<number> | ComputedRef<number> | undefined
+}>(), {
+  total: 0,
+})
 
 const emit = defineEmits<{ (e: 'onChangePage', value: number): void }>()
 
-const isBottomPage = ref(false)
-const pageRef = ref(page)
-
-onMounted(() => {
-  window.addEventListener('scroll', onScroll)
+const currentPage = computed({
+  get: () => props.page,
+  set: value => emit('onChangePage', value),
 })
-
-onBeforeUnmount(() => {
-  window.removeEventListener('scroll', onScroll)
-})
-
-function onScroll() {
-  const { scrollTop, offsetHeight } = document.documentElement
-  isBottomPage.value = scrollTop + window.innerHeight > offsetHeight
-}
-
-watch(pageRef, () => {
-  emit('onChangePage', pageRef.value)
-})
+const currentPageCount = computed(() => props.pageCount)
+const currentTotal = computed(() => unref(props.total) ?? 0)
 </script>
 
 <template>
   <div
-    class="flex w-full justify-end bg-white pb-2"
-    :class="{ 'fixed-pagination w-shop-layout-content': !isBottomPage || total <= pageCount }"
+    class="sticky bottom-0 z-[2] flex w-full justify-end bg-white pb-2"
   >
-    <div class="flex w-full items-center justify-between border-t border-gray-200 pt-2">
-      <div
-        v-if="total > pageCount"
-        class="text-base text-customGray-850"
-      >
-        Viewing
-        <span class="font-medium text-customGray-950">
-          {{ pageCount * (page - 1) + 1 }} - {{ pageCount * page }}
-        </span>
-        of
-        <span class="font-medium text-customGray-950">
-          {{ total }}
-        </span>
-        results
+    <div class="shop-layout-content-inner !px-0">
+      <div class="flex w-full items-center justify-between border-t border-gray-200 pt-2">
+        <div
+          v-if="currentTotal > currentPageCount"
+          class="text-base text-customGray-850"
+        >
+          Viewing
+          <span class="font-medium text-customGray-950">
+            {{ currentPageCount * (currentPage - 1) + 1 }} - {{ Math.min(currentPageCount * currentPage, currentTotal) }}
+          </span>
+          of
+          <span class="font-medium text-customGray-950">
+            {{ currentTotal }}
+          </span>
+          results
+        </div>
+        <div
+          v-else
+          class="text-md text-customGray-850"
+        >
+          <span class="font-medium text-customGray-950">
+            {{ currentTotal }}
+          </span> results
+        </div>
+        <UPagination
+          v-if="currentTotal > currentPageCount"
+          v-model="currentPage"
+          :total="currentTotal"
+          :page-count="currentPageCount"
+          :inactive-button="{ color: 'gray' }"
+        />
       </div>
-      <div
-        v-else
-        class="text-md text-customGray-850"
-      >
-        <span class="font-medium text-customGray-950">
-          {{ total }}
-        </span> results
-      </div>
-      <UPagination
-        v-if="total > pageCount"
-        v-model="pageRef"
-        :total="total ?? 0"
-        :page-count="pageCount"
-        :inactive-button="{ color: 'gray' }"
-      />
     </div>
   </div>
 </template>
-
-<style scoped>
-.fixed-pagination {
- @apply flex fixed z-[2] bottom-0 pr-20 2xl:pr-12;
-}
-</style>
