@@ -6,8 +6,11 @@ const { images } = defineProps<{
 }>()
 
 const selectedImg = ref(0)
+const previewImg = ref<number | null>(null)
 
-const selectedImage = computed(() => images[selectedImg.value])
+const currentImg = computed(() => previewImg.value ?? selectedImg.value)
+
+const selectedImage = computed(() => images[currentImg.value])
 
 const imageUrlSelected = computed(() => {
   return selectedImage.value?.variants?.detail_4x5?.url
@@ -19,11 +22,25 @@ const imageThumbSelected = (index: number) => {
     ?? images[index]?.url
 }
 
+const onPreviewImg = (index: number) => {
+  previewImg.value = index
+}
+
+const onResetPreviewImg = () => {
+  previewImg.value = null
+}
+
+const onSelectImg = (index: number) => {
+  selectedImg.value = index
+  previewImg.value = null
+}
+
 const onSelectPrevImg = () => {
   if (!selectedImg.value) {
     return
   }
   selectedImg.value--
+  previewImg.value = null
 }
 
 const onSelectNextImg = () => {
@@ -31,31 +48,43 @@ const onSelectNextImg = () => {
     return
   }
   selectedImg.value++
+  previewImg.value = null
 }
 </script>
 
 <template>
   <div class="flex gap-6">
-    <div class="flex w-fit flex-col gap-3">
+    <div
+      class="flex w-fit flex-col gap-3"
+      @mouseleave="onResetPreviewImg"
+    >
       <div
         v-for="(image, index) of images"
         :key="image.id"
       >
-        <NuxtImg
-          preload
-          :src="imageThumbSelected(index)"
-          width="100"
-          height="100"
+        <button
+          type="button"
           :class="[
-            'cursor-pointer rounded',
+            'block rounded p-1 bg-zinc-200 ring-2 ring-transparent',
             {
-              'ring-primary rounded ring': selectedImg === index,
+              '!ring-primary': selectedImg === index,
             }]"
-          @click="() => selectedImg = index"
-        />
+          @mouseenter="onPreviewImg(index)"
+          @focus="onPreviewImg(index)"
+          @blur="onResetPreviewImg"
+          @click="onSelectImg(index)"
+        >
+          <NuxtImg
+            preload
+            :src="imageThumbSelected(index)"
+            width="100"
+            height="100"
+            class="rounded"
+          />
+        </button>
       </div>
     </div>
-    <div class="relative h-fit">
+    <div class="relative h-fit bg-zinc-200 rounded">
       <NuxtImg
         preload
         :src="imageUrlSelected"
