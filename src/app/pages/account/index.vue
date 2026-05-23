@@ -1,9 +1,5 @@
 <script lang="ts" setup>
-import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
-
 definePageMeta({ layout: 'market', middleware: ['auth'] })
-
-const { data: dataUserAuth } = useGetCurrentUser()
 </script>
 
 <template>
@@ -17,7 +13,7 @@ const { data: dataUserAuth } = useGetCurrentUser()
           Name
         </div>
         <div class="font-light text-zinc-600">
-          {{ dataUserAuth?.user?.display_name }}
+          {{ $auth.user?.display_name }}
         </div>
       </div>
       <div>
@@ -25,7 +21,7 @@ const { data: dataUserAuth } = useGetCurrentUser()
           Email
         </div>
         <div class="font-light text-zinc-600">
-          {{ dataUserAuth?.user?.email }}
+          {{ $auth.user?.email }}
         </div>
       </div>
     </div>
