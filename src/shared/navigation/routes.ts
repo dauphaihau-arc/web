@@ -23,6 +23,7 @@ export const routePaths = {
   accountShopCoupons: '/account/shop/coupons',
   orders: '/orders',
   search: '/search',
+  orderDetail: '/orders',
   cart: '/cart',
   cartCheckout: '/cart/checkout',
   checkout: '/checkout',
@@ -48,6 +49,7 @@ export const routes = {
   cart: () => createRoute(routePaths.cart),
   cartCheckout: () => createRoute(routePaths.cartCheckout),
   checkout: (query?: { c?: string }) => createRoute(routePaths.checkout, query),
+  orderDetail: (id: string) => createRoute(`${routePaths.orderDetail}/${id}`),
   guestOrders: (query?: {
     email?: string
     orderId?: string

@@ -1,17 +1,28 @@
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import { meOrdersApi } from '~/shared/api/me/order/me-orders.api';
 import type {
+  GetMyOrderDetailResponse,
   GetOrderShopsByCheckoutSessionResponse
 } from '~/shared/api/me/order/contracts/order.contract';
 import type { RequestGetListParams } from '~/shared/contracts/common';
 
 export function useGetOrderShops(queryParams?: RequestGetListParams) {
   return useQuery({
-    queryKey: ['get-order-shops'],
+    queryKey: ['get-order-shops', queryParams],
     queryFn: () => {
       return meOrdersApi.getShops(queryParams);
     },
     enabled: !!queryParams,
+  });
+}
+
+export function useGetOrderById(orderId?: string) {
+  return useQuery({
+    enabled: !!orderId,
+    queryKey: ['get-order-by-id', orderId],
+    queryFn: () => {
+      return meOrdersApi.getById(orderId!) as Promise<GetMyOrderDetailResponse>;
+    },
   });
 }
 

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { OrderShippingStatuses } from '~/shared/config/enums/order';
+import { OrderShippingStatuses, OrderStatuses } from '~/shared/config/enums/order';
 
 export const paymentSchema = z.object({
   type: z.string(),
@@ -74,6 +74,19 @@ export const orderShopShippingSchema = z.object({
   to_country: z.string(),
   from_countries: z.array(z.string()),
   estimated_delivery: z.coerce.date(),
+  tracking_number: z.string().optional(),
+  shipping_carrier: z.string().optional(),
+  shipment_note: z.string().optional(),
+  shipped_at: z.coerce.date().optional(),
+  delivered_at: z.coerce.date().optional(),
+});
+
+export const orderCancelRequestSchema = z.object({
+  cancel_reason: z.string().max(1000).optional(),
+});
+
+export const orderSupportRequestSchema = z.object({
+  support_note: z.string().min(1).max(5000),
 });
 
 export const orderShopResourceSchema = z.object({
@@ -84,6 +97,7 @@ export const orderShopResourceSchema = z.object({
     slug: z.string(),
   }),
   payment: paymentSchema,
+  status: z.nativeEnum(OrderStatuses),
   products: z.array(orderShopProductSchema),
   promo_coupons: z.array(z.object({
     id: z.string(),
@@ -95,11 +109,33 @@ export const orderShopResourceSchema = z.object({
   total_discount: z.number(),
   total: z.number(),
   note: z.string().optional(),
+  canceled_at: z.coerce.date().optional(),
+  cancel_reason: z.string().optional(),
+  customer_support_note: z.string().optional(),
+  cancel_requested_at: z.coerce.date().optional(),
   created_at: z.coerce.date(),
 });
 
 export const getOrderShopsResponseSchema = z.object({
   order_shops: z.array(orderShopResourceSchema),
+});
+
+export const myOrderDetailResponseSchema = z.object({
+  order_shop: orderShopResourceSchema.extend({
+    customer: z.object({
+      email: z.string().email(),
+    }),
+    shipping_address: z.object({
+      full_name: z.string(),
+      address1: z.string(),
+      address2: z.string().optional(),
+      city: z.string(),
+      country: z.string(),
+      state: z.string(),
+      zip: z.string(),
+      phone: z.string().optional(),
+    }),
+  }),
 });
 
 export const getOrderShopsByCheckoutSessionRequestSchema = z.object({

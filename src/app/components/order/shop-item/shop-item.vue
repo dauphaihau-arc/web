@@ -8,13 +8,16 @@ import ShopShippingInfo from './shop-shipping-info.vue'
 import type { ElementType } from '~/shared/contracts/utils'
 import type { GetOrderShopsResponse } from '~/shared/api/me/order/contracts/order.contract'
 
-const { orderShop } = defineProps<{
+const props = withDefaults(defineProps<{
   orderShop: ElementType<GetOrderShopsResponse['order_shops']>
-}>()
+  showDetailLink?: boolean
+}>(), {
+  showDetailLink: true,
+})
 
 const orderedAt = computed(() => {
-  if (dayjs(orderShop.created_at).isValid()) {
-    return dayjs(orderShop.created_at).format('MMM DD, YYYY')
+  if (dayjs(props.orderShop.created_at).isValid()) {
+    return dayjs(props.orderShop.created_at).format('MMM DD, YYYY')
   }
   return ''
 })
@@ -28,17 +31,19 @@ const orderedAt = computed(() => {
           <div>
             Ordered from
             <UTooltip text="redirect to homepage shop not available">
-              <span class="text-customGray-900 underline underline-offset-2">{{ orderShop?.shop?.shop_name }}</span>
+              <span class="text-customGray-900 underline underline-offset-2">{{ props.orderShop?.shop?.shop_name }}</span>
             </UTooltip>
             on {{ orderedAt }}
           </div>
-          <div class="">
-            {{ convertCurrency(orderShop.total) }}
+          <div class="flex items-center gap-3">
+            <div>
+              {{ convertCurrency(props.orderShop.total) }}
+            </div>
           </div>
         </div>
 
         <div
-          v-for="(product, idx) of orderShop.products"
+          v-for="(product, idx) of props.orderShop.products"
           :key="idx"
         >
           <ShopProduct :product-order="product" />
@@ -47,14 +52,17 @@ const orderedAt = computed(() => {
         <UDivider
           class="mb-3 mt-6"
         />
-        <NoteAndPromoCoupons :order-shop="orderShop" />
-        <PaymentAndSummaryOrder :order-shop="orderShop" />
+        <NoteAndPromoCoupons :order-shop="props.orderShop" />
+        <PaymentAndSummaryOrder :order-shop="props.orderShop" />
       </UCard>
     </div>
 
     <div class="col-span-3 -mt-4 w-5/6">
-      <ShopShippingInfo :order-shop="orderShop" />
-      <ShopActions />
+      <ShopShippingInfo :order-shop="props.orderShop" />
+      <ShopActions
+        :order-shop="props.orderShop"
+        :show-view-order-link="props.showDetailLink"
+      />
     </div>
   </div>
 </template>
