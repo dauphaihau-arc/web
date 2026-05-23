@@ -21,9 +21,10 @@ export const routePaths = {
   accountShopDashboard: '/account/shop/dashboard',
   accountShopProducts: '/account/shop/products',
   accountShopCoupons: '/account/shop/coupons',
+  accountShopOrders: '/account/shop/orders',
   orders: '/orders',
-  search: '/search',
   orderDetail: '/orders',
+  search: '/search',
   cart: '/cart',
   cartCheckout: '/cart/checkout',
   checkout: '/checkout',
@@ -42,14 +43,16 @@ export const routes = {
   accountShopProductsNew: () => createRoute(`${routePaths.accountShopProducts}/new`),
   accountShopProductDetail: (id: string) => createRoute(`${routePaths.accountShopProducts}/${id}`),
   accountShopCoupons: () => createRoute(routePaths.accountShopCoupons),
+  accountShopOrders: () => createRoute(routePaths.accountShopOrders),
+  accountShopOrderDetail: (id: string) => createRoute(`${routePaths.accountShopOrders}/${id}`),
   accountShopCouponsNew: (type: CreateCouponPageTypes) =>
     createRoute(`${routePaths.accountShopCoupons}/new`, { type }),
   orders: () => createRoute(routePaths.orders),
+  orderDetail: (id: string) => createRoute(`${routePaths.orderDetail}/${id}`),
   search: (query?: { search?: string }) => createRoute(routePaths.search, query),
   cart: () => createRoute(routePaths.cart),
   cartCheckout: () => createRoute(routePaths.cartCheckout),
   checkout: (query?: { c?: string }) => createRoute(routePaths.checkout, query),
-  orderDetail: (id: string) => createRoute(`${routePaths.orderDetail}/${id}`),
   guestOrders: (query?: {
     email?: string
     orderId?: string

@@ -68,9 +68,8 @@ export const shopSidebarLinks: AppSidebarLink[] = [
   },
   {
     title: 'Orders & Shipping',
-    to: { path: `${routePaths.accountShop}/orders` },
-    matchPath: `${routePaths.accountShop}/orders`,
-    disabled: true,
+    to: routes.accountShopOrders(),
+    matchPath: routePaths.accountShopOrders,
   },
   {
     title: 'Marketing',

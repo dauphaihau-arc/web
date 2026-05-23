@@ -1,0 +1,112 @@
+import { z } from 'zod';
+import { OrderShippingStatuses, OrderStatuses, PaymentTypes } from '~/shared/config/enums/order';
+
+export const listShopOrdersRequestSchema = z.object({
+  page: z.number().optional(),
+  limit: z.number().optional(),
+  status: z.nativeEnum(OrderStatuses).optional(),
+  shipping_status: z.nativeEnum(OrderShippingStatuses).optional(),
+});
+
+export const shopOrderProductSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  image_url: z.string().optional(),
+  quantity: z.number(),
+  price: z.number(),
+  sale_price: z.number().nullable().optional(),
+  inventory: z.object({
+    variant: z.string().optional(),
+  }),
+  product: z.object({
+    id: z.string(),
+    slug: z.string(),
+    shop: z.object({
+      slug: z.string(),
+    }),
+    variant_group_name: z.string().optional(),
+    variant_sub_group_name: z.string().optional(),
+  }),
+  percent_coupon: z.object({
+    percent_off: z.number(),
+  }).nullable(),
+});
+
+export const shopOrderShippingSchema = z.object({
+  shipping_status: z.nativeEnum(OrderShippingStatuses),
+  updated_at: z.coerce.date(),
+  to_country: z.string(),
+  from_countries: z.array(z.string()),
+  estimated_delivery: z.coerce.date(),
+  tracking_number: z.string().optional(),
+  shipping_carrier: z.string().optional(),
+  shipment_note: z.string().optional(),
+  shipped_at: z.coerce.date().optional(),
+  delivered_at: z.coerce.date().optional(),
+});
+
+export const shopOrderSummarySchema = z.object({
+  id: z.string(),
+  shop: z.object({
+    id: z.string(),
+    shop_name: z.string(),
+    slug: z.string(),
+  }),
+  customer: z.object({
+    email: z.string().email(),
+    full_name: z.string(),
+  }),
+  payment: z.object({
+    type: z.nativeEnum(PaymentTypes),
+  }),
+  status: z.nativeEnum(OrderStatuses),
+  products: z.array(shopOrderProductSchema),
+  promo_coupons: z.array(z.object({
+    id: z.string(),
+    code: z.string(),
+  })),
+  shipping: shopOrderShippingSchema,
+  subtotal: z.number(),
+  total_shipping_fee: z.number(),
+  total_discount: z.number(),
+  total: z.number(),
+  note: z.string().optional(),
+  canceled_at: z.coerce.date().optional(),
+  cancel_reason: z.string().optional(),
+  created_at: z.coerce.date(),
+});
+
+export const listShopOrdersResponseSchema = z.object({
+  results: z.array(shopOrderSummarySchema),
+  page: z.number(),
+  limit: z.number(),
+  total_pages: z.number(),
+  total_results: z.number(),
+});
+
+export const shopOrderDetailResponseSchema = z.object({
+  order: shopOrderSummarySchema.extend({
+    shipping_address: z.object({
+      full_name: z.string(),
+      address1: z.string(),
+      address2: z.string().optional(),
+      city: z.string(),
+      country: z.string(),
+      state: z.string(),
+      zip: z.string(),
+      phone: z.string().optional(),
+    }),
+  }),
+});
+
+export const updateShopOrderStatusRequestSchema = z.object({
+  status: z.nativeEnum(OrderStatuses),
+  cancel_reason: z.string().max(1000).optional(),
+});
+
+export const updateShopOrderShipmentRequestSchema = z.object({
+  shipping_status: z.nativeEnum(OrderShippingStatuses).optional(),
+  tracking_number: z.string().max(255).optional(),
+  shipping_carrier: z.string().max(255).optional(),
+  shipment_note: z.string().max(5000).optional(),
+});
