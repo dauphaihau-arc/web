@@ -46,6 +46,30 @@ input[type=number] {
  @apply shadow-[0_3px_10px_rgb(0,0,0,0.2)];
 }
 
+.surface-backdrop {
+  position: absolute;
+  inset: 0;
+  bottom: -4rem;
+  pointer-events: none;
+  backdrop-filter: blur(0px);
+  background: transparent;
+  -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+  transition:
+    backdrop-filter 300ms,
+    background 300ms;
+  z-index: -1;
+}
+
+.surface-backdrop-active {
+  backdrop-filter: blur(10px);
+  background: linear-gradient(to bottom, rgb(255 255 255 / 0.85) 0%, transparent 100%);
+}
+
+.dark .surface-backdrop-active {
+  background: linear-gradient(to bottom, rgb(0 0 0 / 0.75) 0%, transparent 100%);
+}
+
 /* Set heroicon's stroke width */
 .heroicon-sw-2 path {
   stroke-width: 2 !important;

@@ -43,13 +43,14 @@ watch(() => page.value, () => {
 
 <template>
   <div class="pt-12">
-    <div class="sticky top-0 z-[2] mb-4 flex items-center justify-between bg-white py-2">
+    <div class="sticky top-0 z-[2] mb-4 flex items-center justify-between py-2">
+      <div class="surface-backdrop categories-toolbar-backdrop" />
       <CategoriesBreadcrumb :total-products="dataGetProducts?.meta.total || 0" />
       <SortProductsBy />
     </div>
 
     <div class="flex items-start gap-12">
-      <div class="sticky top-28 min-w-[200px] max-w-[200px]">
+      <div class="sticky top-16 min-w-[200px] max-w-[200px]">
         <SubCategories />
         <FilterProducts />
       </div>
@@ -102,3 +103,14 @@ watch(() => page.value, () => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.categories-toolbar-backdrop {
+  backdrop-filter: blur(2px);
+  background: linear-gradient(to bottom, rgb(255 255 255 / 0.99) 35%, rgb(255 255 255 / 0.99) 18%, transparent 100%);
+}
+
+:global(.dark) .categories-toolbar-backdrop {
+  background: linear-gradient(to bottom, rgb(0 0 0 / 0.82) 0%, rgb(0 0 0 / 0.58) 48%, transparent 100%);
+}
+</style>

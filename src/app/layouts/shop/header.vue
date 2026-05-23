@@ -30,8 +30,8 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
     class="shop-header fixed inset-x-0 z-[1] py-3"
   >
     <div
-      class="header-bg"
-      :class="{ scrolled }"
+      class="surface-backdrop"
+      :class="{ 'surface-backdrop-active': scrolled }"
     />
     <div class="max-w-shop-layout mx-auto flex">
       <div class="w-shop-layout-sidebar shrink-0" />
@@ -101,29 +101,5 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 <style scoped>
 .shop-header {
   position: fixed;
-}
-
-.header-bg {
-  position: absolute;
-  inset: 0;
-  bottom: -4rem;
-  pointer-events: none;
-  backdrop-filter: blur(0px);
-  background: transparent;
-  -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
-  transition:
-    backdrop-filter 300ms,
-    background 300ms;
-  z-index: -1;
-}
-
-.header-bg.scrolled {
-  backdrop-filter: blur(10px);
-  background: linear-gradient(to bottom, rgb(255 255 255 / 0.85) 0%, transparent 100%);
-}
-
-:global(.dark) .header-bg.scrolled {
-  background: linear-gradient(to bottom, rgb(0 0 0 / 0.75) 0%, transparent 100%);
 }
 </style>
