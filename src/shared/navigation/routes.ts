@@ -26,6 +26,7 @@ export const routePaths = {
   cart: '/cart',
   cartCheckout: '/cart/checkout',
   checkout: '/checkout',
+  guestOrders: '/guest-orders',
   success: '/success',
 } as const;
 
@@ -47,7 +48,36 @@ export const routes = {
   cart: () => createRoute(routePaths.cart),
   cartCheckout: () => createRoute(routePaths.cartCheckout),
   checkout: (query?: { c?: string }) => createRoute(routePaths.checkout, query),
-  success: () => createRoute(routePaths.success),
+  guestOrders: (query?: {
+    email?: string
+    orderId?: string
+    orderIds?: string
+    sessionId?: string
+    token?: string
+    zip?: string
+  }) =>
+    createRoute(routePaths.guestOrders, query ?
+      {
+        ...(query.email ? { email: query.email } : {}),
+        ...(query.orderId ? { order_id: query.orderId } : {}),
+        ...(query.orderIds ? { order_ids: query.orderIds } : {}),
+        ...(query.sessionId ? { session_id: query.sessionId } : {}),
+        ...(query.token ? { token: query.token } : {}),
+        ...(query.zip ? { zip: query.zip } : {}),
+      } :
+      undefined),
+  success: (query?: {
+    guestEmail?: string
+    orderIds?: string
+    sessionId?: string
+  }) =>
+    createRoute(routePaths.success, query ?
+      {
+        ...(query.guestEmail ? { guest_email: query.guestEmail } : {}),
+        ...(query.orderIds ? { order_ids: query.orderIds } : {}),
+        ...(query.sessionId ? { session_id: query.sessionId } : {}),
+      } :
+      undefined),
   category: (categories: string | string[]) => {
     const slug = Array.isArray(categories) ? categories.join('/') : categories;
     return createRoute(`${routePaths.category}/${slug}`);

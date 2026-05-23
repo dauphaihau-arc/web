@@ -11,7 +11,7 @@ import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { CheckoutCartSteps } from '~/shared/stores/cart/cart.store.types'
 import { useGetCart } from '~/shared/server-state/cart/cart.query'
 
-definePageMeta({ layout: 'market', middleware: ['auth'] })
+definePageMeta({ layout: 'market' })
 
 const cartStore = useCartStore()
 

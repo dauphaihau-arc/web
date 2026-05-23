@@ -1,11 +1,8 @@
 <script lang="ts" setup>
 import { routes } from '~/shared/navigation/routes'
-import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 import { useGetCart } from '~/shared/server-state/cart/cart.query'
 
 const props = defineProps<{ show: boolean }>()
-
-const { data: dataUserAuth } = useGetCurrentUser()
 
 const {
   data: dataGetCart,
@@ -86,12 +83,6 @@ const remainProductCart = computed(() => {
             Your cart is empty.
           </div>
         </div>
-        <p
-          v-if="!dataUserAuth?.user && dataGetCart?.requires_sign_in_for_checkout"
-          class="text-sm text-zinc-500"
-        >
-          Sign in when you&apos;re ready to check out.
-        </p>
       </div>
     </div>
   </transition>

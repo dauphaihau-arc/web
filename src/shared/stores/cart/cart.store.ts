@@ -25,6 +25,7 @@ export const useCartStore = defineStore('cart', () => {
     isPendingCreateOrder: false,
     paymentType: PaymentTypes.CASH,
     address: null,
+    guestEmail: '',
   };
   const stateCheckoutNow = reactive<StateCheckoutNow>({ ...initStateCheckoutNow });
   function resetStateCheckoutNow() {
@@ -38,6 +39,7 @@ export const useCartStore = defineStore('cart', () => {
     isPendingCreateOrder: false,
     paymentType: PaymentTypes.CASH,
     address: null,
+    guestEmail: '',
   };
   const stateCheckoutCart = reactive<StateCheckoutCart>({ ...initStateCheckoutCart });
 

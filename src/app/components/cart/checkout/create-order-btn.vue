@@ -5,9 +5,13 @@ import { PaymentTypes } from '~/shared/config/enums/order'
 import { MARKET_CONFIG } from '~/shared/config/enums/market'
 import { toastCustom } from '~/shared/config/toast'
 import { ROUTES } from '~/shared/config/enums/routes'
+import { routes } from '~/shared/navigation/routes'
+import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
+import { useCreateGuestOrderFromCart } from '~/shared/server-state/checkout/create-order-from-cart.mutation'
 import { useCreateOrderFromCart } from '~/shared/server-state/me/orders/create-order-from-cart.mutation'
 import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { useGetExchangeRates } from '~/shared/server-state/market/exchange-rates.query'
+import type { CreateGuestOrderFromCartRequest } from '~/shared/api/checkout/contracts/checkout.contract'
 import type { CreateOrderFromCartRequest } from '~/shared/api/me/order/contracts/order.contract'
 import { useGetCart } from '~/shared/server-state/cart/cart.query'
 import type { ExchangeRatesResponse as ResponseGetExchangeRates } from '~/shared/api/market/contracts/market.contract'
@@ -15,6 +19,7 @@ import type { ExchangeRatesResponse as ResponseGetExchangeRates } from '~/shared
 const marketStore = useMarketStore()
 const toast = useToast()
 const cartStore = useCartStore()
+const { data: dataUserAuth } = useGetCurrentUser()
 
 const {
   refetch: getCart,
@@ -23,6 +28,9 @@ const {
 const {
   mutateAsync: createOrder,
 } = useCreateOrderFromCart()
+const {
+  mutateAsync: createGuestOrder,
+} = useCreateGuestOrderFromCart()
 
 const {
   refetch: refetchGetExchangeRates,
@@ -34,16 +42,34 @@ const onCreateOrder = async () => {
   try {
     cartStore.stateCheckoutCart.isPendingCreateOrder = true
 
-    const addressId = cartStore.stateCheckoutCart.address?.id
-    if (!addressId) {
+    const address = cartStore.stateCheckoutCart.address
+    if (!address) {
       consola.error('addressId be undefined')
       throw Error()
     }
 
-    const body: CreateOrderFromCartRequest = {
-      payment_type: cartStore.stateCheckoutCart.paymentType,
-      user_address_id: addressId,
-    }
+    const isAuthenticated = !!dataUserAuth.value?.user
+    const body: CreateOrderFromCartRequest | CreateGuestOrderFromCartRequest = isAuthenticated
+      ? {
+          payment_type: cartStore.stateCheckoutCart.paymentType,
+          user_address_id: 'id' in address ? address.id : '',
+        }
+      : {
+          payment_type: cartStore.stateCheckoutCart.paymentType,
+          guest: {
+            email: cartStore.stateCheckoutCart.guestEmail,
+          },
+          shipping_address: {
+            full_name: address.full_name,
+            address_1: address.address_1,
+            address_2: address.address_2,
+            city: address.city,
+            country: address.country,
+            state: address.state,
+            zip: address.zip,
+            phone: address.phone,
+          },
+        }
 
     // region validate currency
     const currencySelected = marketStore.guestPreferences?.currency || MARKET_CONFIG.BASE_CURRENCY
@@ -89,7 +115,9 @@ const onCreateOrder = async () => {
     }
 
     if (body.payment_type === PaymentTypes.CARD) {
-      const { checkout_session_url } = await createOrder(body)
+      const { checkout_session_url } = isAuthenticated
+        ? await createOrder(body as CreateOrderFromCartRequest)
+        : await createGuestOrder(body as CreateGuestOrderFromCartRequest)
       if (!checkout_session_url) {
         consola.error('checkout_session_url be undefined', checkout_session_url)
         throw Error()
@@ -99,9 +127,17 @@ const onCreateOrder = async () => {
       })
     }
     else {
-      const { order_shops } = await createOrder(body)
+      const { order_shops } = isAuthenticated
+        ? await createOrder(body as CreateOrderFromCartRequest)
+        : await createGuestOrder(body as CreateGuestOrderFromCartRequest)
       cartStore.orderShops = order_shops
-      navigateTo(ROUTES.SUCCESS)
+      const guestOrderIds = order_shops.map(orderShop => orderShop.id).join(',')
+      navigateTo(isAuthenticated
+        ? ROUTES.SUCCESS
+        : routes.success({
+          guestEmail: cartStore.stateCheckoutCart.guestEmail,
+          orderIds: guestOrderIds,
+        }))
       getCart()
     }
   }

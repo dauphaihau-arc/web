@@ -1,9 +1,11 @@
 import type { PaymentTypes } from '~/shared/config/enums/order';
 import type { GetUserAddressesResponse } from '~/shared/api/me/address/contracts/address.contract';
+import type { GuestCheckoutAddress } from '~/shared/schemas/guest-checkout.schema';
 
 type UserAddress = GetUserAddressesResponse['results'][number];
 type CouponCode = string;
 type CartId = string;
+export type CheckoutAddress = UserAddress | GuestCheckoutAddress;
 
 export enum CheckoutNowSteps {
   ADDRESS_SHIPPING,
@@ -20,7 +22,8 @@ export type StateCheckoutNow = {
   invalidCodes: Map<CouponCode, string>
   countRefreshConvertCurrency: number
   paymentType: PaymentTypes
-  address: UserAddress | null
+  address: CheckoutAddress | null
+  guestEmail: string
   isPendingCreateOrder: boolean
 };
 
@@ -36,6 +39,7 @@ export type StateCheckoutCart = {
   invalidCodes: Map<CouponCode, string>
   countRefreshConvertCurrency: number
   paymentType: PaymentTypes
-  address: UserAddress | null
+  address: CheckoutAddress | null
+  guestEmail: string
   isPendingCreateOrder: boolean
 };

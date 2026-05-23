@@ -2,12 +2,15 @@
 import LoadingSvg from '~/shared/ui/loading-svg.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { isBackendWakeUpError } from '~/shared/composables/use-backend-status'
-import { useGetOrderShopsByCheckoutSession } from '~/shared/server-state/me/orders/order-shops.query'
+import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
+import { useGetCheckoutOrderShopsByCheckoutSession } from '~/shared/server-state/checkout/order-shops.query'
+import { routes } from '~/shared/navigation/routes'
 
 definePageMeta({ layout: 'market' })
 
 const route = useRoute()
 const cartStore = useCartStore()
+const { data: dataUserAuth } = useGetCurrentUser()
 
 const session_id = route.query['session_id'] as string
 
@@ -23,7 +26,7 @@ const {
   data: dataGetOrderShopsByCheckoutSession,
   isLoading: isLoadingGetOrderShopsByCheckoutSession,
   error: errorGetOrderShopsByCheckoutSession,
-} = useGetOrderShopsByCheckoutSession(session_id, {
+} = useGetCheckoutOrderShopsByCheckoutSession(session_id, {
   onResponseError: ({ response }) => {
     if ([502, 503, 504].includes(response.status)) {
       return
@@ -35,6 +38,24 @@ const {
       fatal: true,
     })
   },
+})
+
+const isAuthenticated = computed(() => !!dataUserAuth.value?.user)
+const guestOrdersRoute = computed(() => {
+  if (session_id) {
+    return routes.guestOrders({ sessionId: session_id })
+  }
+
+  const orderIds = (route.query.order_ids as string | undefined)
+    ?? cartStore.orderShops.map(orderShop => orderShop.id).join(',')
+  const email = (route.query.guest_email as string | undefined)
+    ?? cartStore.stateCheckoutCart.guestEmail
+    ?? cartStore.stateCheckoutNow.guestEmail
+
+  return routes.guestOrders({
+    ...(email ? { email } : {}),
+    ...(orderIds ? { orderIds } : {}),
+  })
 })
 
 const orderShops = computed(() => {
@@ -101,9 +122,9 @@ onUnmounted(() => {
       <div>
         <UButton
           size="lg"
-          :to="ROUTES.ORDERS"
+          :to="isAuthenticated ? ROUTES.ORDERS : guestOrdersRoute"
         >
-          View your order
+          {{ isAuthenticated ? 'View your order' : 'Track your order' }}
         </UButton>
       </div>
       <div class="">

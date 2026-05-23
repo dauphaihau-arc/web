@@ -1,14 +1,44 @@
 <script setup lang="ts">
+import { guestCheckoutFormSchema } from '~/shared/schemas/guest-checkout.schema'
+import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
+import { useGetCountries, useGetStatesByCountry } from '~/shared/server-state/location/countries.query'
 import { useGetUserAddresses } from '~/shared/server-state/me/address/addresses.query'
 import CreateUserAddressDialog from '~/app/components/dialogs/create-user-address-dialog.vue'
+import { ADDRESS_CONFIG } from '~/shared/config/enums/address'
 
 const cartStore = useCartStore()
 const dialog = useModal()
+const { data: dataUserAuth } = useGetCurrentUser()
+
+const isAuthenticated = computed(() => !!dataUserAuth.value?.user)
 
 const {
   isPending: isPendingGetUserAddresses,
   data: dataUserAddress,
 } = useGetUserAddresses()
+
+const {
+  data: dataGetCountries,
+  isPending: isPendingGetCountries,
+} = useGetCountries()
+
+const guestState = reactive({
+  email: cartStore.stateCheckoutNow.guestEmail,
+  full_name: '',
+  address_1: '',
+  address_2: '',
+  city: '',
+  country: '',
+  state: '',
+  zip: '',
+  phone: '',
+})
+
+const {
+  data: dataGetStatesByCountry,
+  isFetching: isFetchingGetStates,
+  refetch: refetchGetStatesByCountry,
+} = useGetStatesByCountry(computed(() => guestState.country))
 
 const addressRadioOptions = computed(() => {
   if (dataUserAddress.value?.results && dataUserAddress.value.results.length > 0) {
@@ -17,24 +47,71 @@ const addressRadioOptions = computed(() => {
   return null
 })
 
+const countriesOptions = computed(() => {
+  return dataGetCountries.value?.data.map(co => co.name) || []
+})
+
+const stateOptions = computed(() => {
+  return dataGetStatesByCountry.value?.data.states.map(st => st.name) || []
+})
+
 const addressIdSelected = ref()
 
 watch(dataUserAddress, () => {
-  if (addressRadioOptions.value && !cartStore.stateCheckoutNow.address) {
+  if (isAuthenticated.value && addressRadioOptions.value && !cartStore.stateCheckoutNow.address) {
     addressIdSelected.value = addressRadioOptions.value[0].id
   }
 }, { immediate: true })
 
 watch(() => addressIdSelected.value, () => {
-  if (dataUserAddress.value) {
+  if (isAuthenticated.value && dataUserAddress.value) {
     const address = dataUserAddress.value.results.find((item) => {
       return item.id === addressIdSelected.value
     })
     if (address) {
       cartStore.stateCheckoutNow.address = address
+      cartStore.stateCheckoutNow.guestEmail = ''
     }
   }
 }, { immediate: true })
+
+watch(() => guestState.country, () => {
+  if (isAuthenticated.value) {
+    return
+  }
+
+  guestState.state = ''
+  guestState.zip = ''
+
+  if (guestState.country) {
+    refetchGetStatesByCountry()
+  }
+})
+
+watch(guestState, () => {
+  if (isAuthenticated.value) {
+    return
+  }
+
+  const parsed = guestCheckoutFormSchema.safeParse(guestState)
+  if (parsed.success) {
+    cartStore.stateCheckoutNow.address = {
+      full_name: parsed.data.full_name,
+      address_1: parsed.data.address_1,
+      address_2: parsed.data.address_2,
+      city: parsed.data.city,
+      country: parsed.data.country,
+      state: parsed.data.state,
+      zip: parsed.data.zip,
+      phone: parsed.data.phone,
+    }
+    cartStore.stateCheckoutNow.guestEmail = parsed.data.email
+  }
+  else {
+    cartStore.stateCheckoutNow.address = null
+    cartStore.stateCheckoutNow.guestEmail = guestState.email
+  }
+}, { deep: true, immediate: true })
 
 const showCreateDialog = () => {
   dialog.open(CreateUserAddressDialog)
@@ -43,10 +120,10 @@ const showCreateDialog = () => {
 
 <template>
   <UCard>
-    <div>
+    <div v-if="isAuthenticated">
       <div class="mb-2 flex items-center justify-between">
         <legend class="mb-1 text-base font-bold text-gray-700">
-          Shipping UserAddress
+          Shipping Address
         </legend>
         <UButton
           color="primary"
@@ -75,16 +152,141 @@ const showCreateDialog = () => {
         >
           <template #label="{ option }">
             <div class="mb-6 flex w-full flex-col gap-1 text-customGray-950">
-              <div class="">
+              <div class="text-sm font-medium text-gray-700">
                 {{ option.full_name }} |
                 <span class="font-normal">{{ option.phone }}</span>
               </div>
-              <div class="">
+              <div class="text-sm text-gray-500">
                 {{ option.address_1 }}, {{ option.city }}, {{ option.zip }}, {{ option.country }}
               </div>
             </div>
           </template>
         </RadioGroupInput>
+      </div>
+    </div>
+
+    <div v-else>
+      <div class="mb-6 space-y-1">
+        <legend class="text-base font-bold text-gray-700">
+          Contact & Shipping
+        </legend>
+        <p class="text-sm text-gray-500">
+          Enter your email and shipping address to check out as a guest.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <UFormGroup
+          required
+          label="Email"
+          name="email"
+        >
+          <UInput
+            v-model="guestState.email"
+            size="lg"
+            maxlength="320"
+            type="email"
+          />
+        </UFormGroup>
+        <UFormGroup
+          required
+          label="Full Name"
+          name="full_name"
+        >
+          <UInput
+            v-model="guestState.full_name"
+            :maxlength="ADDRESS_CONFIG.MAX_CHAR_FULL_NAME"
+            size="lg"
+          />
+        </UFormGroup>
+        <UFormGroup
+          required
+          label="Street"
+          name="address_1"
+        >
+          <UInput
+            v-model="guestState.address_1"
+            :maxlength="ADDRESS_CONFIG.MAX_CHAR_ADDRESS"
+            size="lg"
+          />
+        </UFormGroup>
+        <UFormGroup
+          label="Apt / Suite / Other"
+          name="address_2"
+        >
+          <UInput
+            v-model="guestState.address_2"
+            :maxlength="ADDRESS_CONFIG.MAX_CHAR_ADDRESS"
+            size="lg"
+          />
+        </UFormGroup>
+        <UFormGroup
+          required
+          label="City"
+          name="city"
+        >
+          <UInput
+            v-model="guestState.city"
+            :maxlength="ADDRESS_CONFIG.MAX_CHAR_CITY"
+            size="lg"
+          />
+        </UFormGroup>
+        <UFormGroup
+          required
+          label="Country"
+          name="country"
+        >
+          <USelectMenu
+            v-model="guestState.country"
+            searchable
+            :loading="isPendingGetCountries"
+            :options="countriesOptions"
+            size="lg"
+          />
+        </UFormGroup>
+        <div class="flex gap-3">
+          <UFormGroup
+            required
+            label="State/Province"
+            name="state"
+            class="w-1/2"
+          >
+            <USelectMenu
+              v-model="guestState.state"
+              searchable
+              :loading="isFetchingGetStates"
+              :disabled="!guestState.country || isFetchingGetStates"
+              :options="stateOptions"
+              size="lg"
+            />
+          </UFormGroup>
+          <UFormGroup
+            required
+            label="Zip/Postal code"
+            name="zip"
+            class="w-1/2"
+          >
+            <UInput
+              v-model="guestState.zip"
+              v-numeric
+              :maxlength="ADDRESS_CONFIG.MAX_CHAR_ZIP"
+              size="lg"
+            />
+          </UFormGroup>
+        </div>
+        <UFormGroup
+          required
+          label="Phone"
+          name="phone"
+        >
+          <UInput
+            v-model="guestState.phone"
+            v-numeric
+            size="lg"
+            :maxlength="ADDRESS_CONFIG.MAX_CHAR_PHONE"
+            type="phone"
+          />
+        </UFormGroup>
       </div>
     </div>
   </UCard>
