@@ -2,13 +2,10 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { StorageSerializers, useStorage } from '@vueuse/core'
 import { LocalStorageKeys } from '@arc/enums/local-storage-keys'
-import { MARKET_CONFIG, MarketLanguages } from '@arc/enums/market'
 import { SessionStorageKeys } from '@arc/enums/session-storage-keys'
 import type { AuthPreferences } from '~/shared/api/auth/contracts/auth-user.contract'
 import { useGetExchangeRates } from '~/shared/server-state/market/exchange-rates.query'
-import { useGetDataByIP } from '~/shared/server-state/market/ip-data.query'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
-import type { IpDataResponse } from '~/shared/api/market/contracts/market.contract'
 import type {
   CategoriesBreadcrumbStorage, ExchangeRateStorage,
   UserActivitiesSessionStorage,
@@ -69,22 +66,6 @@ export const useMarketStore = defineStore('market', () => {
           exchangeRate.value = {
             rates: response._data.rates,
             exp: response._data.time_next_update_unix * 1000,
-          }
-        }
-      },
-    },
-  )
-
-  useGetDataByIP(
-    { enabled: !dataUserAuth.value?.user.preferences && !guestPreferences.value },
-    {
-      onResponse: ({ response }) => {
-        if (response.status === 200) {
-          const data = response._data as IpDataResponse
-          guestPreferences.value = {
-            currency: data.currency.code,
-            language: MarketLanguages.EN,
-            region: data.country_name || MARKET_CONFIG.BASE_REGION,
           }
         }
       },
