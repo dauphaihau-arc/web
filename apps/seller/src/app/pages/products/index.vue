@@ -118,7 +118,7 @@ const totalProducts = computed(() => {
 const paginationKey = computed(() => `${page.value}-${totalProducts.value}`)
 
 function editProduct(row: ProductRow) {
-  navigateTo(routes.accountShopProductDetail(row.id))
+  navigateTo(routes.productDetail(row.id))
 }
 
 function previewProduct(row: ProductRow) {
@@ -126,7 +126,7 @@ function previewProduct(row: ProductRow) {
     return
   }
 
-  navigateTo(routes.productDetail(dataMyShop.value.slug, row.slug), {
+  navigateTo(routes.storefrontProductDetail(dataMyShop.value.slug, row.slug), {
     open: { target: '_blank' },
   })
 }

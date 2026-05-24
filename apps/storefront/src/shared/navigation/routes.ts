@@ -1,5 +1,4 @@
 import type { LocationQueryRaw, RouteLocationRaw } from 'vue-router'
-import type { CreateCouponPageTypes } from '@arc/enums/shop'
 
 function createRoute(
   path: string,
@@ -17,11 +16,6 @@ export const routePaths = {
   reset: '/reset',
   account: '/account',
   accountAddresses: '/account/addresses',
-  accountShop: '/account/shop',
-  accountShopDashboard: '/account/shop/dashboard',
-  accountShopProducts: '/account/shop/products',
-  accountShopCoupons: '/account/shop/coupons',
-  accountShopOrders: '/account/shop/orders',
   orders: '/orders',
   orderDetail: '/orders',
   search: '/search',
@@ -37,16 +31,6 @@ export const routes = {
   reset: (query?: { v?: string | number }) => createRoute(routePaths.reset, query),
   account: () => createRoute(routePaths.account),
   accountAddresses: () => createRoute(routePaths.accountAddresses),
-  accountShop: () => createRoute(routePaths.accountShop),
-  accountShopDashboard: () => createRoute(routePaths.accountShopDashboard),
-  accountShopProducts: () => createRoute(routePaths.accountShopProducts),
-  accountShopProductsNew: () => createRoute(`${routePaths.accountShopProducts}/new`),
-  accountShopProductDetail: (id: string) => createRoute(`${routePaths.accountShopProducts}/${id}`),
-  accountShopCoupons: () => createRoute(routePaths.accountShopCoupons),
-  accountShopOrders: () => createRoute(routePaths.accountShopOrders),
-  accountShopOrderDetail: (id: string) => createRoute(`${routePaths.accountShopOrders}/${id}`),
-  accountShopCouponsNew: (type: CreateCouponPageTypes) =>
-    createRoute(`${routePaths.accountShopCoupons}/new`, { type }),
   orders: () => createRoute(routePaths.orders),
   orderDetail: (id: string) => createRoute(`${routePaths.orderDetail}/${id}`),
   search: (query?: { search?: string }) => createRoute(routePaths.search, query),

@@ -66,7 +66,7 @@ const rows = computed<Row[]>(() => {
 })
 
 function openDetail(row: Row) {
-  navigateTo(routes.accountShopOrderDetail(row.id))
+  navigateTo(routes.orderDetail(row.id))
 }
 
 const itemsDropdownWithRow = (row: Row): DropdownItem[][] => [

@@ -102,7 +102,7 @@ function openCancelDialog() {
     </template>
     <template #actions>
       <UButton
-        :to="routes.accountShopOrders()"
+        :to="routes.orders()"
         color="gray"
         variant="ghost"
       >

@@ -17,48 +17,17 @@ export type AppSidebarLink = {
   sub?: AppSidebarLink[]
 }
 
-export const accountSidebarLinks: AppNavigationItem[] = [
-  {
-    label: 'Account',
-    icon: 'i-heroicons-user',
-    to: routes.account(),
-  },
-  {
-    label: 'Shipping',
-    icon: 'i-heroicons-map-pin',
-    to: routes.accountAddresses(),
-  },
-  {
-    label: 'Payment',
-    disabled: true,
-    icon: 'i-heroicons-credit-card',
-    to: routes.home(),
-  },
-  {
-    label: 'Privacy',
-    disabled: true,
-    icon: 'i-heroicons-shield-check',
-    to: routes.home(),
-  },
-  {
-    label: 'Preferences',
-    disabled: true,
-    icon: 'i-heroicons-cog',
-    to: routes.home(),
-  },
-]
-
 export const shopSidebarLinks: AppSidebarLink[] = [
   {
     title: 'Dashboard',
-    to: routes.accountShopDashboard(),
-    matchPath: routePaths.accountShopDashboard,
+    to: routes.dashboard(),
+    matchPath: routePaths.dashboard,
     disabled: true,
   },
   {
     title: 'Products',
-    to: routes.accountShopProducts(),
-    matchPath: routePaths.accountShopProducts,
+    to: routes.products(),
+    matchPath: routePaths.products,
   },
   {
     title: 'Messages',
@@ -68,8 +37,8 @@ export const shopSidebarLinks: AppSidebarLink[] = [
   },
   {
     title: 'Orders & Shipping',
-    to: routes.accountShopOrders(),
-    matchPath: routePaths.accountShopOrders,
+    to: routes.orders(),
+    matchPath: routePaths.orders,
   },
   {
     title: 'Marketing',
@@ -82,8 +51,8 @@ export const shopSidebarLinks: AppSidebarLink[] = [
       },
       {
         title: 'Coupons',
-        to: routes.accountShopCoupons(),
-        matchPath: routePaths.accountShopCoupons,
+        to: routes.coupons(),
+        matchPath: routePaths.coupons,
       },
     ],
   },
@@ -100,18 +69,18 @@ export const shopHeaderCreateLinks = [
     label: 'Create Product',
     icon: 'i-heroicons-cube',
     shortcuts: ['P'],
-    to: routes.accountShopProductsNew(),
+    to: routes.productsNew(),
   },
   {
     label: 'Create Coupon',
     icon: 'i-heroicons-ticket',
     shortcuts: ['C'],
-    to: routes.accountShopCouponsNew(CreateCouponPageTypes.PROMO_CODE),
+    to: routes.couponsNew(CreateCouponPageTypes.PROMO_CODE),
   },
   {
     label: 'Run Sale',
     icon: 'i-hugeicons:sale-tag-01',
     shortcuts: ['S'],
-    to: routes.accountShopCouponsNew(CreateCouponPageTypes.SALE),
+    to: routes.couponsNew(CreateCouponPageTypes.SALE),
   },
 ] as const

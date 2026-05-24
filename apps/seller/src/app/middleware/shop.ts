@@ -6,7 +6,7 @@ export default defineNuxtRouteMiddleware(async () => {
   const { data: dataUserAuth, refetch } = useGetCurrentUser()
 
   if (dataUserAuth.value?.user?.shop) {
-    return navigateTo(routes.accountShopProducts())
+    return navigateTo(routes.products())
   }
 
   if (dataUserAuth.value?.user && !dataUserAuth.value.user.shop) {
@@ -14,7 +14,7 @@ export default defineNuxtRouteMiddleware(async () => {
       const response = await refetch({ throwOnError: true })
 
       if (response.data?.user?.shop) {
-        return navigateTo(routes.accountShopProducts())
+        return navigateTo(routes.products())
       }
 
       return
