@@ -19,7 +19,11 @@ export default defineNuxtConfig({
         },
         { hid: 'description', name: 'description', content: pkg.description },
       ],
-      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+      link: [
+        { rel: 'icon', type: 'image/png', href: '/favicon.png' },
+        { rel: 'shortcut icon', type: 'image/png', href: '/favicon.png' },
+        { rel: 'apple-touch-icon', href: '/favicon.png' },
+      ],
     },
     pageTransition: { name: 'page', mode: 'out-in' },
   },
