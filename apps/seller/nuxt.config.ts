@@ -156,10 +156,7 @@ export default defineNuxtConfig({
   css: ['~/app/assets/css/main.css'],
 
   image: {
-    provider: 'ipx',
-    ipx: {
-      maxAge: 2592000,
-    },
+    provider: 'none',
     domains: assetHostDomain ? [assetHostDomain] : [],
     alias: {
       assetHost: awsHostBucketAlias
