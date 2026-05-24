@@ -89,6 +89,7 @@ export default defineNuxtConfig({
       apiBaseURL: process.env.API_BASE_URL,
       apiVersion: process.env.API_VERSION,
       assetHost: process.env.ASSET_HOST,
+      storefrontAppURL: process.env.STOREFRONT_APP_URL || 'http://localhost:4000',
     },
   },
 

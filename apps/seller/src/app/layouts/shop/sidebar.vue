@@ -9,6 +9,7 @@ import { useLogout } from '~/shared/server-state/auth/logout.mutation'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 
 const route = useRoute()
+const config = useRuntimeConfig()
 const { data: dataUserAuth } = useGetCurrentUser()
 const { mutate: logout } = useLogout()
 
@@ -28,7 +29,7 @@ const itemsShopDropdown: ShopDropdownItem[][] = [
         src: avatarDefault,
       },
       click: () => {
-        navigateTo(appRoutes.account())
+        navigateTo(appRoutes.home())
       },
     },
   ],
@@ -42,7 +43,7 @@ const itemsShopDropdown: ShopDropdownItem[][] = [
       label: 'Arc Marketplace',
       icon: 'marketplace',
       click: () => {
-        navigateTo(appRoutes.home())
+        navigateTo(config.public.storefrontAppURL, { external: true })
       },
     },
   ],
