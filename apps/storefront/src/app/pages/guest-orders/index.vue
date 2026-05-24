@@ -10,7 +10,15 @@ definePageMeta({ layout: 'market' })
 
 const route = useRoute()
 const router = useRouter()
-const hasDirectLookup = computed(() => !!route.query.session_id || !!route.query.token)
+const hasDirectLookup = computed(() =>
+  !!route.query.session_id
+  || !!route.query.token
+  || !!(
+    route.query.email
+    && (route.query.order_id || route.query.order_ids)
+    && route.query.zip
+  ),
+)
 
 const state = reactive({
   email: (route.query.email as string | undefined) ?? '',
@@ -136,7 +144,7 @@ async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zi
     </UCard>
 
     <div
-      v-if="!isLoading"
+      v-if="isLoading"
       class="grid h-[40vh] w-full place-content-center text-center"
     >
       <div class="space-y-4 flex flex-col justify-center items-center">
@@ -165,7 +173,11 @@ async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zi
         v-for="orderShop in orderShops"
         :key="orderShop.id"
       >
-        <ShopItem :order-shop="orderShop" />
+        <ShopItem
+          :order-shop="orderShop"
+          :allow-post-purchase-actions="false"
+          :show-detail-link="false"
+        />
       </div>
     </div>
     <div

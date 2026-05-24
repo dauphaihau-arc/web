@@ -10,8 +10,10 @@ import type { GetOrderShopsResponse } from '~/shared/api/me/order/contracts/orde
 
 const props = withDefaults(defineProps<{
   orderShop: ElementType<GetOrderShopsResponse['order_shops']>
+  allowPostPurchaseActions?: boolean
   showDetailLink?: boolean
 }>(), {
+  allowPostPurchaseActions: true,
   showDetailLink: true,
 })
 
@@ -60,6 +62,7 @@ const orderedAt = computed(() => {
     <div class="col-span-3 -mt-4 w-5/6">
       <ShopShippingInfo :order-shop="props.orderShop" />
       <ShopActions
+        v-if="props.allowPostPurchaseActions"
         :order-shop="props.orderShop"
         :show-view-order-link="props.showDetailLink"
       />
