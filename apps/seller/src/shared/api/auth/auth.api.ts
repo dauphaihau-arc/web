@@ -53,7 +53,7 @@ export const authApi = {
 
   register(payload: RegisterRequest) {
     return apiClient.post<RegisterResponse>(
-      '/auth/register',
+      '/seller/auth/register',
       payload,
     )
   },
