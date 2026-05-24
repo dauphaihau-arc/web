@@ -89,7 +89,7 @@ const itemsUserDropdown = computed<UserDropdownItem[][]>(() => [
   ],
   [
     {
-      label: `Logout ${dataUserAuth.value?.user?.display_name ?? ''}`.trim(),
+      label: 'Logout',
       icon: 'logout',
       disabled: isPendingLogout.value,
       click: () => {
@@ -179,7 +179,8 @@ const showRegisterLoginDialog = () => {
           <template v-if="dataUserAuth?.user">
             <UDropdown
               :items="itemsUserDropdown as DropdownItem[][]"
-              :popper="{ placement: 'bottom-end' }"
+              :popper="{ placement: 'bottom' }"
+              :ui="{ width: 'w-32' }"
             >
               <template #item="{ item }">
                 <div class="flex items-center gap-2">
