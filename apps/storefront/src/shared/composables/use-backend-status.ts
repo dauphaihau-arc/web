@@ -1,102 +1,102 @@
-import type { FetchError } from 'ofetch';
+import type { FetchError } from 'ofetch'
 
-type BackendStatus = 'unknown' | 'checking' | 'waking' | 'ready' | 'error';
+type BackendStatus = 'unknown' | 'checking' | 'waking' | 'ready' | 'error'
 
-const WAKE_UP_RETRY_DELAYS_MS = [1500, 2500, 4000, 6000];
+const WAKE_UP_RETRY_DELAYS_MS = [1500, 2500, 4000, 6000]
 
-let wakeUpPromise: Promise<boolean> | null = null;
+let wakeUpPromise: Promise<boolean> | null = null
 
-function getApiBaseURL() {
-  const config = useRuntimeConfig();
-  return `${config.public.apiBaseURL}/v${config.public.apiVersion}`;
+function getHealthBaseURL() {
+  const config = useRuntimeConfig()
+  return config.public.apiBaseURL
 }
 
 function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 function getStatusCode(error: unknown) {
   const fetchError = error as Partial<FetchError> & {
     response?: { status?: number }
     statusCode?: number
-  };
+  }
 
-  return fetchError.response?.status ?? fetchError.statusCode;
+  return fetchError.response?.status ?? fetchError.statusCode
 }
 
 export function isBackendWakeUpError(error: unknown) {
-  const statusCode = getStatusCode(error);
+  const statusCode = getStatusCode(error)
 
   if (!statusCode) {
-    return true;
+    return true
   }
 
-  return [502, 503, 504].includes(statusCode);
+  return [502, 503, 504].includes(statusCode)
 }
 
 export function useBackendStatus() {
-  const status = useState<BackendStatus>('backend-status', () => 'unknown');
+  const status = useState<BackendStatus>('backend-status', () => 'unknown')
 
   const setStatus = (nextStatus: BackendStatus) => {
-    status.value = nextStatus;
-  };
+    status.value = nextStatus
+  }
 
   const markReady = () => {
-    setStatus('ready');
-  };
+    setStatus('ready')
+  }
 
   const markWaking = () => {
     if (status.value !== 'ready') {
-      setStatus('waking');
+      setStatus('waking')
     }
-  };
+  }
 
   const pingBackend = async () => {
     await $fetch('/health', {
-      baseURL: getApiBaseURL(),
+      baseURL: getHealthBaseURL(),
       credentials: 'include',
       retry: 0,
       timeout: 10000,
-    });
-  };
+    })
+  }
 
   const waitForBackend = async () => {
     if (wakeUpPromise) {
-      return await wakeUpPromise;
+      return await wakeUpPromise
     }
 
     wakeUpPromise = (async () => {
-      setStatus('checking');
+      setStatus('checking')
 
       for (let attempt = 0; attempt < WAKE_UP_RETRY_DELAYS_MS.length; attempt += 1) {
         try {
-          await pingBackend();
-          markReady();
-          return true;
+          await pingBackend()
+          markReady()
+          return true
         }
         catch {
-          setStatus('waking');
+          setStatus('waking')
 
           if (attempt === WAKE_UP_RETRY_DELAYS_MS.length - 1) {
-            setStatus('error');
-            return false;
+            setStatus('error')
+            return false
           }
 
-          await sleep(WAKE_UP_RETRY_DELAYS_MS[attempt]);
+          await sleep(WAKE_UP_RETRY_DELAYS_MS[attempt])
         }
       }
 
-      setStatus('error');
-      return false;
-    })();
+      setStatus('error')
+      return false
+    })()
 
     try {
-      return await wakeUpPromise;
+      return await wakeUpPromise
     }
     finally {
-      wakeUpPromise = null;
+      wakeUpPromise = null
     }
-  };
+  }
 
   return {
     status: readonly(status),
@@ -104,5 +104,5 @@ export function useBackendStatus() {
     markWaking,
     setStatus,
     waitForBackend,
-  };
+  }
 }

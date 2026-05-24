@@ -3,12 +3,14 @@ import type { FetchError } from 'ofetch'
 type BackendStatus = 'unknown' | 'checking' | 'waking' | 'ready' | 'error'
 
 const WAKE_UP_RETRY_DELAYS_MS = [1500, 2500, 4000, 6000]
+const HEALTH_CHECK_SUCCESS_COOLDOWN_MS = 10000
 
 let wakeUpPromise: Promise<boolean> | null = null
+let lastSuccessfulHealthCheckAt = 0
 
-function getApiBaseURL() {
+function getHealthBaseURL() {
   const config = useRuntimeConfig()
-  return `${config.public.apiBaseURL}/v${config.public.apiVersion}`
+  return config.public.apiBaseURL
 }
 
 function sleep(ms: number) {
@@ -53,7 +55,7 @@ export function useBackendStatus() {
 
   const pingBackend = async () => {
     await $fetch('/health', {
-      baseURL: getApiBaseURL(),
+      baseURL: getHealthBaseURL(),
       credentials: 'include',
       retry: 0,
       timeout: 10000,
@@ -61,6 +63,11 @@ export function useBackendStatus() {
   }
 
   const waitForBackend = async () => {
+    if (Date.now() - lastSuccessfulHealthCheckAt < HEALTH_CHECK_SUCCESS_COOLDOWN_MS) {
+      markReady()
+      return true
+    }
+
     if (wakeUpPromise) {
       return await wakeUpPromise
     }
@@ -71,6 +78,7 @@ export function useBackendStatus() {
       for (let attempt = 0; attempt < WAKE_UP_RETRY_DELAYS_MS.length; attempt += 1) {
         try {
           await pingBackend()
+          lastSuccessfulHealthCheckAt = Date.now()
           markReady()
           return true
         }
