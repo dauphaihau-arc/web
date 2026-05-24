@@ -1,0 +1,100 @@
+
+/** ================== Base ================== **/
+
+body {
+  @apply relative min-h-screen dark:bg-black dark:text-white;
+}
+
+/*
+  Remove Arrows/LoadingSvgs from Input Number
+*/
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.max-w-home-layout {
+  max-width: 1300px;
+}
+
+.max-w-shop-layout {
+  max-width: 1650px;
+}
+
+.w-shop-layout-sidebar {
+  width: 220px;
+}
+.w-shop-layout-content {
+  @apply w-[calc(100%-220px)] max-w-[1400px];
+}
+
+.shop-layout-content-inner {
+  @apply w-full px-10;
+}
+
+.bg-layout-shop {
+ @apply bg-gradient-to-t from-[#f6f8fa] via-[#f6f8fa] to-[#fcfcfd]
+}
+
+.shadow-border {
+ @apply shadow-[0_3px_10px_rgb(0,0,0,0.2)];
+}
+
+.surface-backdrop {
+  position: absolute;
+  inset: 0;
+  bottom: -4rem;
+  pointer-events: none;
+  backdrop-filter: blur(0px);
+  background: transparent;
+  -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+  transition:
+    backdrop-filter 300ms,
+    background 300ms;
+  z-index: -1;
+}
+
+.surface-backdrop-active {
+  backdrop-filter: blur(10px);
+  background: linear-gradient(to bottom, rgb(255 255 255 / 0.85) 0%, transparent 100%);
+}
+
+.dark .surface-backdrop-active {
+  background: linear-gradient(to bottom, rgb(0 0 0 / 0.75) 0%, transparent 100%);
+}
+
+/* Set heroicon's stroke width */
+.heroicon-sw-2 path {
+  stroke-width: 2 !important;
+}
+.heroicon-sw-1\.75 path {
+  stroke-width: 1.75 !important;
+}
+.heroicon-sw-1\.5 path {
+  stroke-width: 1.5 !important;
+}
+.heroicon-sw-1\.2 path {
+  stroke-width: 1.2 !important;
+}
+
+/** ================== Animations ================== **/
+/* use at nuxt.config.ts file, app.pageTransition */
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.2s;
+}
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+  filter: blur(1rem);
+}
+
+
+/** ================== Others ================== **/

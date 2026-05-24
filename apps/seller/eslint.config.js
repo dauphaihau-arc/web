@@ -82,11 +82,11 @@ export default withNuxt(
   {
     files: [
       'src/app/pages/**/*.vue',
-      'apps/storefront/src/app/pages/**/*.vue',
+      'apps/seller/src/app/pages/**/*.vue',
       'src/app/components/**/*.vue',
-      'apps/storefront/src/app/components/**/*.vue',
+      'apps/seller/src/app/components/**/*.vue',
       'src/app/layouts/**/*.vue',
-      'apps/storefront/src/app/layouts/**/*.vue',
+      'apps/seller/src/app/layouts/**/*.vue',
     ],
     rules: {
       'vue/multi-word-component-names': 'off',

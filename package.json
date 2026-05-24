@@ -14,13 +14,23 @@
     "lint": "pnpm --filter @arc/storefront lint",
     "lint:fix": "pnpm --filter @arc/storefront lint:fix",
     "dev:storefront": "pnpm --filter @arc/storefront dev",
+    "dev:seller": "pnpm --filter @arc/seller dev",
     "build:storefront": "pnpm --filter @arc/storefront build",
+    "build:seller": "pnpm --filter @arc/seller build",
     "typecheck:storefront": "pnpm --filter @arc/storefront typecheck",
+    "typecheck:seller": "pnpm --filter @arc/seller typecheck",
     "test:storefront": "pnpm --filter @arc/storefront test",
-    "lint:storefront": "pnpm --filter @arc/storefront lint"
+    "lint:storefront": "pnpm --filter @arc/storefront lint",
+    "lint:seller": "pnpm --filter @arc/seller lint"
   },
   "lint-staged": {
-    "**/*.{js,ts,vue}": [
+    "apps/storefront/**/*.{js,ts,vue}": [
+      "eslint --cache --fix --no-warn-ignored --config apps/storefront/eslint.config.js"
+    ],
+    "apps/seller/**/*.{js,ts,vue}": [
+      "eslint --cache --fix --no-warn-ignored --config apps/seller/eslint.config.js"
+    ],
+    "packages/**/*.{js,ts,vue}": [
       "eslint --cache --fix --no-warn-ignored --config apps/storefront/eslint.config.js"
     ]
   }

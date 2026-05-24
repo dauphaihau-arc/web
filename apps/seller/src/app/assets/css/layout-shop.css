@@ -1,0 +1,21 @@
+.link-default {
+  @apply font-medium text-sm;
+}
+
+.link-theme {
+  @apply py-1.5 px-3 rounded-md transition-all duration-200;
+}
+
+.link-active {
+  @apply text-primary hover:bg-[#efebfb]/40
+}
+
+.link-inactive {
+  @apply text-customGray-900 hover:bg-zinc-200/50;
+}
+
+.fixed-actions-form {
+  @apply fixed bottom-0 left-0
+        flex justify-end items-center gap-2
+        bg-white w-full pr-8 py-2.5 border-t
+}

@@ -84,11 +84,6 @@ const itemsUserDropdown = computed<UserDropdownItem[][]>(() => [
       icon: 'account',
       click: () => navigateTo(routes.account()),
     },
-    {
-      label: 'Manage Shop',
-      icon: 'manageShop',
-      click: () => navigateTo(routes.accountShop()),
-    },
   ],
   [
     {
