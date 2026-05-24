@@ -57,12 +57,14 @@ export const routes = {
       : undefined),
   success: (query?: {
     guestEmail?: string
+    guestZip?: string
     orderIds?: string
     sessionId?: string
   }) =>
     createRoute(routePaths.success, query
       ? {
           ...(query.guestEmail ? { guest_email: query.guestEmail } : {}),
+          ...(query.guestZip ? { guest_zip: query.guestZip } : {}),
           ...(query.orderIds ? { order_ids: query.orderIds } : {}),
           ...(query.sessionId ? { session_id: query.sessionId } : {}),
         }

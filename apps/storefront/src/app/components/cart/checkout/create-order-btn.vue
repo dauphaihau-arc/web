@@ -136,6 +136,7 @@ const onCreateOrder = async () => {
         ? ROUTES.SUCCESS
         : routes.success({
           guestEmail: cartStore.stateCheckoutCart.guestEmail,
+          guestZip: cartStore.stateCheckoutCart.address?.zip,
           orderIds: guestOrderIds,
         }))
       getCart()

@@ -51,10 +51,14 @@ const guestOrdersRoute = computed(() => {
   const email = (route.query.guest_email as string | undefined)
     ?? cartStore.stateCheckoutCart.guestEmail
     ?? cartStore.stateCheckoutNow.guestEmail
+  const zip = (route.query.guest_zip as string | undefined)
+    ?? cartStore.stateCheckoutCart.address?.zip
+    ?? cartStore.stateCheckoutNow.address?.zip
 
   return routes.guestOrders({
     ...(email ? { email } : {}),
     ...(orderIds ? { orderIds } : {}),
+    ...(zip ? { zip } : {}),
   })
 })
 
