@@ -1,13 +1,12 @@
-import dayjs from 'dayjs'
 import type { SearchParameters } from 'ofetch'
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack'
-import { LocalStorageKeys } from '@arc/enums/local-storage-keys'
 import { RESOURCES } from '@arc/enums/resources'
-import { clearExpTokensInLS, setExpTokensToLS } from '~/shared/server-state/auth/token-storage'
+import { clearExpTokensInLS } from '~/shared/server-state/auth/token-storage'
 import { isBackendWakeUpError, useBackendStatus } from '~/shared/composables/use-backend-status'
 
 type RequestBehavior = {
   retryOnWakeUp?: boolean
+  retryOnUnauthorized?: boolean
 }
 
 function getStatusCode(error: unknown) {
@@ -72,29 +71,38 @@ const requestWithWakeUpRecovery = async <T>(
   }
 }
 
-const checkAccessAndRefreshToken = async () => {
-  const refreshTokenExp = localStorage[LocalStorageKeys.REFRESH_TOKEN_EXP]
-  const accessTokenExp = localStorage[LocalStorageKeys.ACCESS_TOKEN_EXP]
-  if (!refreshTokenExp && !accessTokenExp) {
-    return
+const refreshSession = async () => {
+  await requestWithWakeUpRecovery(
+    () => baseCustomFetch(`${RESOURCES.AUTH}/refresh`, {
+      method: 'post',
+    }),
+    {
+      retryOnWakeUp: true,
+      retryOnUnauthorized: false,
+    },
+  )
+}
+
+const requestWithAuthRecovery = async <T>(
+  request: () => Promise<T>,
+  behavior?: RequestBehavior,
+) => {
+  try {
+    return await requestWithWakeUpRecovery(request, behavior)
   }
-  const isRefreshTokenValid = dayjs(refreshTokenExp).isValid()
-  const isRefreshTokenExpired = dayjs().isAfter(dayjs(refreshTokenExp))
-  if (!isRefreshTokenValid || isRefreshTokenExpired) {
-    clearExpTokensInLS()
-    return
-  }
-  const isAccessTokenExpired = dayjs().isAfter(dayjs(accessTokenExp))
-  if (isAccessTokenExpired) {
-    await requestWithWakeUpRecovery(
-      async () => {
-        await baseCustomFetch(`${RESOURCES.AUTH}/refresh`, {
-          method: 'post',
-        })
-        setExpTokensToLS()
-      },
-      { retryOnWakeUp: true },
-    )
+  catch (error) {
+    if (getStatusCode(error) !== 401 || behavior?.retryOnUnauthorized === false) {
+      throw error
+    }
+
+    try {
+      await refreshSession()
+      return await requestWithWakeUpRecovery(request, behavior)
+    }
+    catch {
+      clearExpTokensInLS()
+      throw error
+    }
   }
 }
 
@@ -108,10 +116,9 @@ export const apiClient = {
     option?: TOptions,
     behavior?: RequestBehavior,
   ) => {
-    await checkAccessAndRefreshToken()
-    return await requestWithWakeUpRecovery(
+    return await requestWithAuthRecovery(
       () => baseCustomFetch<T>(url, { method: 'get', params, ...option }),
-      { retryOnWakeUp: true, ...behavior },
+      { retryOnWakeUp: true, retryOnUnauthorized: true, ...behavior },
     )
   },
 
@@ -121,10 +128,9 @@ export const apiClient = {
     option?: TOptions,
     behavior?: RequestBehavior,
   ) => {
-    await checkAccessAndRefreshToken()
-    return await requestWithWakeUpRecovery(
+    return await requestWithAuthRecovery(
       () => baseCustomFetch<T>(url, { method: 'post', body, ...option }),
-      behavior,
+      { retryOnUnauthorized: true, ...behavior },
     )
   },
 
@@ -134,10 +140,9 @@ export const apiClient = {
     option?: TOptions,
     behavior?: RequestBehavior,
   ) => {
-    await checkAccessAndRefreshToken()
-    return await requestWithWakeUpRecovery(
+    return await requestWithAuthRecovery(
       () => baseCustomFetch<T>(url, { method: 'put', body, ...option }),
-      behavior,
+      { retryOnUnauthorized: true, ...behavior },
     )
   },
 
@@ -147,10 +152,9 @@ export const apiClient = {
     option?: TOptions,
     behavior?: RequestBehavior,
   ) => {
-    await checkAccessAndRefreshToken()
-    return await requestWithWakeUpRecovery(
+    return await requestWithAuthRecovery(
       () => baseCustomFetch<T>(url, { method: 'patch', body, ...option }),
-      behavior,
+      { retryOnUnauthorized: true, ...behavior },
     )
   },
 
@@ -161,12 +165,11 @@ export const apiClient = {
     option?: TOptions,
     behavior?: RequestBehavior,
   ) => {
-    await checkAccessAndRefreshToken()
-    return await requestWithWakeUpRecovery(
+    return await requestWithAuthRecovery(
       () => baseCustomFetch<T>(url, {
         method: 'delete', params, body, ...option,
       }),
-      behavior,
+      { retryOnUnauthorized: true, ...behavior },
     )
   },
 }

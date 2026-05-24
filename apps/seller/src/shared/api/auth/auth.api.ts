@@ -26,7 +26,7 @@ export const authApi = {
       '/auth/client-config',
       undefined,
       undefined,
-      { retryOnWakeUp: true },
+      { retryOnWakeUp: true, retryOnUnauthorized: false },
     )
   },
 
@@ -34,6 +34,8 @@ export const authApi = {
     return apiClient.post<ForgotPasswordResponse>(
       '/auth/forgot-password',
       payload,
+      undefined,
+      { retryOnUnauthorized: false },
     )
   },
 
@@ -41,6 +43,8 @@ export const authApi = {
     return apiClient.post<LoginResponse>(
       '/auth/login',
       payload,
+      undefined,
+      { retryOnUnauthorized: false },
     )
   },
 
@@ -48,6 +52,8 @@ export const authApi = {
     return apiClient.post<undefined>(
       '/auth/logout',
       null,
+      undefined,
+      { retryOnUnauthorized: false },
     )
   },
 
@@ -55,6 +61,8 @@ export const authApi = {
     return apiClient.post<RegisterResponse>(
       '/seller/auth/register',
       payload,
+      undefined,
+      { retryOnUnauthorized: false },
     )
   },
 
@@ -62,6 +70,8 @@ export const authApi = {
     return apiClient.post<ResetPasswordResponse>(
       `/auth/reset-password?token=${token}`,
       { password },
+      undefined,
+      { retryOnUnauthorized: false },
     )
   },
 
@@ -74,6 +84,7 @@ export const authApi = {
       `/auth/verify-token?token=${token}&type=${type}`,
       undefined,
       options,
+      { retryOnUnauthorized: false },
     )
   },
 }

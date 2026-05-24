@@ -1,4 +1,3 @@
-import { setExpTokensToLS } from './token-storage'
 import { consumePostAuthRedirect } from './post-auth-redirect'
 import type { ResetPasswordRequest } from '~/shared/api/auth/contracts/reset-password.contract'
 import { authApi } from '~/shared/api/auth/auth.api'
@@ -16,7 +15,6 @@ export function useResetPassword(token: string) {
     onSuccess: async (data) => {
       if (data?.user) {
         queryClient.setQueryData(['current-user'], { user: data.user })
-        setExpTokensToLS(queryClient)
         authStore.tokenResetPassword = ''
 
         const redirectPath = consumePostAuthRedirect()
@@ -25,7 +23,7 @@ export function useResetPassword(token: string) {
           return
         }
 
-        await navigateTo(routes.accountShopProducts())
+        await navigateTo(routes.products())
       }
     },
   })

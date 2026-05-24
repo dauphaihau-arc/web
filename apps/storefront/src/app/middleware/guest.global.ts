@@ -1,11 +1,10 @@
-import { LocalStorageKeys } from '@arc/enums/local-storage-keys'
 import { routePaths, routes } from '~/shared/navigation/routes'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 
 export default defineNuxtRouteMiddleware(async (to, _from) => {
   const { refetch, data } = useGetCurrentUser()
 
-  if (!data.value?.user && localStorage[LocalStorageKeys.ACCESS_TOKEN_EXP]) {
+  if (!data.value?.user) {
     void refetch()
   }
 

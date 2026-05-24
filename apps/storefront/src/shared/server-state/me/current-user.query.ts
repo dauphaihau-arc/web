@@ -1,12 +1,4 @@
-import { LocalStorageKeys } from '@arc/enums/local-storage-keys'
 import { meApi } from '~/shared/api/me/me.api'
-
-export function hasStoredSession() {
-  return Boolean(
-    localStorage[LocalStorageKeys.ACCESS_TOKEN_EXP]
-    || localStorage[LocalStorageKeys.REFRESH_TOKEN_EXP],
-  )
-}
 
 export const currentUserQueryOptions = {
   queryKey: ['current-user'],
@@ -19,7 +11,6 @@ export const currentUserQueryOptions = {
 
 export function useGetCurrentUser() {
   return useQuery({
-    enabled: hasStoredSession(),
     ...currentUserQueryOptions,
   })
 }

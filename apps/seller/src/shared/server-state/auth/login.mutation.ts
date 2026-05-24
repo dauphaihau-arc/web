@@ -1,4 +1,4 @@
-import { clearExpTokensInLS, setExpTokensToLS } from './token-storage'
+import { clearExpTokensInLS } from './token-storage'
 import { consumePostAuthRedirect } from './post-auth-redirect'
 import type { LoginRequest } from '~/shared/api/auth/contracts/login.contract'
 import { authApi } from '~/shared/api/auth/auth.api'
@@ -27,7 +27,6 @@ export function useLogin() {
     onSuccess: async (data) => {
       if (data?.user) {
         queryClient.setQueryData(['current-user'], { user: data.user })
-        setExpTokensToLS(queryClient)
 
         const redirectPath = consumePostAuthRedirect()
         if (redirectPath) {
@@ -35,7 +34,7 @@ export function useLogin() {
           return
         }
 
-        await navigateTo(routes.accountShopProducts())
+        await navigateTo(routes.products())
       }
     },
   })

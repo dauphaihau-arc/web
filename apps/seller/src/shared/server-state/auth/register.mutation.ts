@@ -1,4 +1,3 @@
-import { setExpTokensToLS } from './token-storage'
 import { consumePostAuthRedirect } from './post-auth-redirect'
 import type { RegisterRequest } from '~/shared/api/auth/contracts/register.contract'
 import { authApi } from '~/shared/api/auth/auth.api'
@@ -15,7 +14,6 @@ export function useRegister() {
     onSuccess: async (data) => {
       if (data?.user) {
         queryClient.setQueryData(['current-user'], { user: data.user })
-        setExpTokensToLS(queryClient)
 
         const redirectPath = consumePostAuthRedirect()
         if (redirectPath) {
@@ -23,7 +21,7 @@ export function useRegister() {
           return
         }
 
-        await navigateTo(routes.accountShopProducts())
+        await navigateTo(routes.products())
       }
     },
   })
