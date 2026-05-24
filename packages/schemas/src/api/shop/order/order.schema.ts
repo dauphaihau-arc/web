@@ -73,6 +73,8 @@ export const shopOrderSummarySchema = z.object({
   note: z.string().optional(),
   canceled_at: z.coerce.date().optional(),
   cancel_reason: z.string().optional(),
+  customer_support_note: z.string().optional(),
+  cancel_requested_at: z.coerce.date().optional(),
   created_at: z.coerce.date(),
 })
 

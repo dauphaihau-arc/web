@@ -329,6 +329,18 @@ function openCancelDialog() {
                 </div>
                 <div>{{ order.note }}</div>
               </div>
+              <div v-if="order.customer_support_note">
+                <div class="mb-1 font-medium text-zinc-900">
+                  Buyer support request
+                </div>
+                <div>{{ order.customer_support_note }}</div>
+              </div>
+              <div v-if="order.cancel_requested_at">
+                <div class="mb-1 font-medium text-zinc-900">
+                  Cancel requested
+                </div>
+                <div>{{ dayjs(order.cancel_requested_at).format('MMM DD, YYYY HH:mm') }}</div>
+              </div>
             </div>
           </UCard>
         </div>
