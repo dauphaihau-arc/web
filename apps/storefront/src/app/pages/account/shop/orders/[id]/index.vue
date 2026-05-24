@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
+import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
+import { buildTrackingUrl } from '@arc/utils/build-tracking-url'
 import LoadingSvg from '~/shared/ui/loading-svg.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import SellerCancelOrderDialog from '~/app/components/dialogs/seller-cancel-order-dialog.vue'
-import { OrderShippingStatuses, OrderStatuses } from '~/shared/config/enums/order'
 import { routes } from '~/shared/navigation/routes'
 import { useShopGetOrderDetail } from '~/shared/server-state/shop/order/detail.query'
 import { useShopUpdateOrderShipment } from '~/shared/server-state/shop/order/update-shipment.mutation'
-import { buildTrackingUrl } from '~/shared/utils'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 

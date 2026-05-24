@@ -1,29 +1,29 @@
-import { normalizeCategory } from './category.types';
-import { categoryApi } from '~/shared/api/category/category.api';
-import type { Category } from '~/shared/models/category';
-import type { GetCategoriesRequest as GetCategoriesParams } from '~/shared/api/category/contracts/category.contract';
+import type { Category } from '@arc/models/category'
+import { normalizeCategory } from './category.types'
+import { categoryApi } from '~/shared/api/category/category.api'
+import type { GetCategoriesRequest as GetCategoriesParams } from '~/shared/api/category/contracts/category.contract'
 
 export function useGetCategories(
-  params?: GetCategoriesParams
+  params?: GetCategoriesParams,
 ) {
   return useQuery<Category[]>({
     enabled: !!params,
     queryKey: ['get-categories', params],
     queryFn: async () => {
-      const response = await categoryApi.getCategories(params);
+      const response = await categoryApi.getCategories(params)
 
-      return response.map(normalizeCategory);
+      return response.map(normalizeCategory)
     },
-  });
+  })
 }
 
 export function useGetRootCategories() {
   return useQuery<Category[]>({
     queryKey: ['get-root-categories'],
     queryFn: async () => {
-      const response = await categoryApi.getCategories();
+      const response = await categoryApi.getCategories()
 
-      return response.map(normalizeCategory);
+      return response.map(normalizeCategory)
     },
-  });
+  })
 }

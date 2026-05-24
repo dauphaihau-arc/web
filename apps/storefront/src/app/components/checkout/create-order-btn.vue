@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { consola } from 'consola'
-import { PaymentTypes } from '~/shared/config/enums/order'
-import { MARKET_CONFIG } from '~/shared/config/enums/market'
+import { PaymentTypes } from '@arc/enums/order'
+import { MARKET_CONFIG } from '@arc/enums/market'
 import { toastCustom } from '~/shared/config/toast'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { useCartStore } from '~/shared/stores/cart/cart.store'

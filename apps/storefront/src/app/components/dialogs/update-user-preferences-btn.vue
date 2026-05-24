@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import type { FormSubmitEvent } from '#ui/types'
-import type { MarketRegions } from '~/shared/config/enums/market'
+import type { MarketRegions } from '@arc/enums/market'
 import {
   MARKET_CONFIG,
   MarketCurrencies,
   MarketLanguages, MARKET_REGION_EMOJIS,
-} from '~/shared/config/enums/market'
+} from '@arc/enums/market'
+import type { ElementType } from '@arc/contracts/utils'
+import type { FormSubmitEvent } from '#ui/types'
 import type { AuthPreferences } from '~/shared/api/auth/contracts/auth-user.contract'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 import { useUpdateCurrentUser } from '~/shared/server-state/me/update-current-user.mutation'
 import { useGetCountries } from '~/shared/server-state/location/countries.query'
-import type { ElementType } from '~/shared/contracts/utils'
 
 type State = {
   region: MarketRegions

@@ -1,6 +1,11 @@
 <script setup lang="ts">
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
+import { updateProductFormSchema } from '@arc/schemas/forms/shop/product/update-product-form.schema'
+import {
+  ProductVariantTypes, PRODUCT_CONFIG,
+  productWhoMadeOpts,
+} from '@arc/enums/product'
 import ImagesInput from './images-input.vue'
 import VariantInput from './variant-input.vue'
 import {
@@ -10,11 +15,6 @@ import {
 } from './update-product-form.mapper'
 import { useUpdateProductSubmit } from './use-update-product-submit'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
-import { updateProductFormSchema } from '~/shared/schemas/forms/shop/product/update-product-form.schema'
-import {
-  ProductVariantTypes, PRODUCT_CONFIG,
-  productWhoMadeOpts,
-} from '~/shared/config/enums/product'
 import { ROUTES } from '~/shared/config/enums/routes'
 import FormGroupCard from '~/app/components/account/shop/wrapper-form-group-card.vue'
 import NoneVariantInput from '~/app/components/account/shop/products/none-variant-input.vue'

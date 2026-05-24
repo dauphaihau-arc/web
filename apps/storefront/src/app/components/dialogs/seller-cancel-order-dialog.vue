@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { OrderStatuses } from '~/shared/config/enums/order'
+import { OrderStatuses } from '@arc/enums/order'
 import { useShopUpdateOrderStatus } from '~/shared/server-state/shop/order/update-status.mutation'
 
 const props = defineProps<{

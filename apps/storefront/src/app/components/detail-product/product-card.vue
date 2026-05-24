@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { PRODUCT_CONFIG } from '@arc/enums/product'
 import type { GetProductsResponseItem } from '~/shared/api/product/contracts/product.contract'
-import { PRODUCT_CONFIG } from '~/shared/config/enums/product'
 import { routes } from '~/shared/navigation/routes'
 
 const { product } = defineProps<{

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
+import type { ElementType } from '@arc/contracts/utils'
 import NoteAndPromoCoupons from './note-and-promo-coupons.vue'
 import PaymentAndSummaryOrder from './payment-and-summary-order.vue'
 import ShopActions from './shop-actions.vue'
 import ShopProduct from './shop-product.vue'
 import ShopShippingInfo from './shop-shipping-info.vue'
-import type { ElementType } from '~/shared/contracts/utils'
 import type { GetOrderShopsResponse } from '~/shared/api/me/order/contracts/order.contract'
 
 const props = withDefaults(defineProps<{

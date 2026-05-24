@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { ADDRESS_CONFIG } from '@arc/enums/address'
+import { addressFormSchema } from '@arc/schemas/forms/address/address-form.schema'
 import type { FormSubmitEvent } from '#ui/types'
 import type { CreateUserAddressRequest } from '~/shared/api/me/address/contracts/address.contract'
-import { ADDRESS_CONFIG } from '~/shared/config/enums/address'
-import { addressFormSchema } from '~/shared/schemas/forms/address/address-form.schema'
 import { toastCustom } from '~/shared/config/toast'
 import { useCreateUserAddress } from '~/shared/server-state/me/address/create-address.mutation'
 import { useGetCountries, useGetStatesByCountry } from '~/shared/server-state/location/countries.query'

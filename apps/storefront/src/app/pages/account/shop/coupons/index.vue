@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
+import { CouponAppliesTo, CouponTypes } from '@arc/enums/coupon'
+import { CreateCouponPageTypes } from '@arc/enums/shop'
 import type { DropdownItem } from '#ui/types'
 import LoadingSvg from '~/shared/ui/loading-svg.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import FixedPagination from '~/app/components/account/shop/fixed-pagination.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
-import { CouponAppliesTo, CouponTypes } from '~/shared/config/enums/coupon'
 import { useShopDeleteCoupon } from '~/shared/server-state/shop/coupon/delete-coupon.mutation'
 import { useShopGetCoupons } from '~/shared/server-state/shop/coupon/coupons.query'
-import { CreateCouponPageTypes } from '~/shared/config/enums/shop'
 import type { ListShopCouponsResponse } from '~/shared/api/shop/coupon/contracts/coupon.contract'
 
 dayjs.extend(localizedFormat)

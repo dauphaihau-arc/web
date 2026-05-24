@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import {
   CouponAppliesTo, COUPON_CONFIG, CouponMinOrderTypes, CouponTypes,
-} from '~/shared/config/enums/coupon'
-import type { RequiredFields } from '~/shared/contracts/utils'
+} from '@arc/enums/coupon'
+import type { RequiredFields } from '@arc/contracts/utils'
+import { createSaleFormSchema } from '@arc/schemas/forms/shop/coupon/create-sale-form.schema'
+import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import { ROUTES } from '~/shared/config/enums/routes'
 import WrapperFormGroupCard from '~/app/components/account/shop/wrapper-form-group-card.vue'
 import ApplyCouponOnProduct from '~/app/components/account/shop/coupons/apply-coupon-on-product.vue'
 import SearchStartEndDateInput from '~/app/components/account/shop/coupons/search-start-end-date-input.vue'
 import { useShopCreateCoupon } from '~/shared/server-state/shop/coupon/create-coupon.mutation'
 import { toastCustom } from '~/shared/config/toast'
-import { createSaleFormSchema } from '~/shared/schemas/forms/shop/coupon/create-sale-form.schema'
 import type { CreateSaleBody } from '~/shared/api/shop/coupon/contracts/coupon.contract'
 import RadioGroupInput from '~/shared/ui/radio-group-input.vue'
 

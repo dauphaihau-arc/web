@@ -2,7 +2,7 @@
 /*
   use in cart page, cart/checkout page
  */
-import { ORDER_CONFIG } from '~/shared/config/enums/order'
+import { ORDER_CONFIG } from '@arc/enums/order'
 import type { CartShopGroup } from '~/shared/api/cart/cart.shared'
 
 const props = defineProps<{

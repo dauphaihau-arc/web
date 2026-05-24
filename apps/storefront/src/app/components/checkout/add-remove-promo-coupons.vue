@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { StatusCodes } from 'http-status-codes'
 import { FetchError } from 'ofetch'
+import { COUPON_CONFIG } from '@arc/enums/coupon'
 import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { toastCustom } from '~/shared/config/toast'
-import { COUPON_CONFIG } from '~/shared/config/enums/coupon'
 import { useUpdateCart } from '~/shared/server-state/cart/update-cart.mutation'
 import type { GetCartResponse } from '~/shared/api/cart/contracts/cart.contract'
 

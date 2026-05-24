@@ -1,14 +1,14 @@
-import type { LocationQueryRaw, RouteLocationRaw } from 'vue-router';
-import type { CreateCouponPageTypes } from '~/shared/config/enums/shop';
+import type { LocationQueryRaw, RouteLocationRaw } from 'vue-router'
+import type { CreateCouponPageTypes } from '@arc/enums/shop'
 
 function createRoute(
   path: string,
-  query?: LocationQueryRaw
+  query?: LocationQueryRaw,
 ): RouteLocationRaw {
   if (!query) {
-    return { path };
+    return { path }
   }
-  return { path, query };
+  return { path, query }
 }
 
 export const routePaths = {
@@ -30,7 +30,7 @@ export const routePaths = {
   checkout: '/checkout',
   guestOrders: '/guest-orders',
   success: '/success',
-} as const;
+} as const
 
 export const routes = {
   home: () => createRoute(routePaths.home),
@@ -61,50 +61,50 @@ export const routes = {
     token?: string
     zip?: string
   }) =>
-    createRoute(routePaths.guestOrders, query ?
-      {
-        ...(query.email ? { email: query.email } : {}),
-        ...(query.orderId ? { order_id: query.orderId } : {}),
-        ...(query.orderIds ? { order_ids: query.orderIds } : {}),
-        ...(query.sessionId ? { session_id: query.sessionId } : {}),
-        ...(query.token ? { token: query.token } : {}),
-        ...(query.zip ? { zip: query.zip } : {}),
-      } :
-      undefined),
+    createRoute(routePaths.guestOrders, query
+      ? {
+          ...(query.email ? { email: query.email } : {}),
+          ...(query.orderId ? { order_id: query.orderId } : {}),
+          ...(query.orderIds ? { order_ids: query.orderIds } : {}),
+          ...(query.sessionId ? { session_id: query.sessionId } : {}),
+          ...(query.token ? { token: query.token } : {}),
+          ...(query.zip ? { zip: query.zip } : {}),
+        }
+      : undefined),
   success: (query?: {
     guestEmail?: string
     orderIds?: string
     sessionId?: string
   }) =>
-    createRoute(routePaths.success, query ?
-      {
-        ...(query.guestEmail ? { guest_email: query.guestEmail } : {}),
-        ...(query.orderIds ? { order_ids: query.orderIds } : {}),
-        ...(query.sessionId ? { session_id: query.sessionId } : {}),
-      } :
-      undefined),
+    createRoute(routePaths.success, query
+      ? {
+          ...(query.guestEmail ? { guest_email: query.guestEmail } : {}),
+          ...(query.orderIds ? { order_ids: query.orderIds } : {}),
+          ...(query.sessionId ? { session_id: query.sessionId } : {}),
+        }
+      : undefined),
   category: (categories: string | string[]) => {
-    const slug = Array.isArray(categories) ? categories.join('/') : categories;
-    return createRoute(`${routePaths.category}/${slug}`);
+    const slug = Array.isArray(categories) ? categories.join('/') : categories
+    return createRoute(`${routePaths.category}/${slug}`)
   },
   productDetail: (shopSlug: string, productSlug: string) =>
     createRoute(`/${shopSlug}/${productSlug}`),
-} as const;
+} as const
 
 export function getRoutePath(to: RouteLocationRaw): string {
   if (typeof to === 'string') {
-    return to;
+    return to
   }
 
   if ('path' in to && typeof to.path === 'string') {
-    return to.path;
+    return to.path
   }
 
-  return '';
+  return ''
 }
 
 export function isRouteActive(currentPath: string, target: RouteLocationRaw): boolean {
-  const targetPath = getRoutePath(target);
+  const targetPath = getRoutePath(target)
 
-  return targetPath.length > 0 && currentPath.startsWith(targetPath);
+  return targetPath.length > 0 && currentPath.startsWith(targetPath)
 }

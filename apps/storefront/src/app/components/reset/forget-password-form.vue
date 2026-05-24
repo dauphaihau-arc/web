@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { ResetPasswordViews } from '@arc/enums/common'
+import { forgotPasswordFormSchema } from '@arc/schemas/forms/auth/forgot-password-form.schema'
 import type { FormSubmitEvent } from '#ui/types'
 import type { ForgotPasswordRequest } from '~/shared/api/auth/contracts/forgot-password.contract'
 import { useForgetPassword } from '~/shared/server-state/auth/forgot-password.mutation'
-import { ResetPasswordViews } from '~/shared/config/enums/common'
 import { toastCustom } from '~/shared/config/toast'
-import { forgotPasswordFormSchema } from '~/shared/schemas/forms/auth/forgot-password-form.schema'
 
 const emit = defineEmits<{
   changeView: [value: ResetPasswordViews]

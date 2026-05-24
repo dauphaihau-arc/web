@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import { OrderShippingStatuses } from '~/shared/config/enums/order'
-import type { ElementType } from '~/shared/contracts/utils'
+import { OrderShippingStatuses } from '@arc/enums/order'
+import type { ElementType } from '@arc/contracts/utils'
 import type { GetOrderShopsResponse } from '~/shared/api/me/order/contracts/order.contract'
 
 const { orderShop } = defineProps<{

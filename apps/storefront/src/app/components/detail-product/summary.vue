@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { ProductVariantTypes } from '@arc/enums/product'
+import type { ElementType } from '@arc/contracts/utils'
 import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contracts/product.contract'
-import { ProductVariantTypes } from '~/shared/config/enums/product'
-import type { ElementType } from '~/shared/contracts/utils'
 
 const props = defineProps<{
   product: GetDetailProductBySlugResponse

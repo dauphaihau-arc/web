@@ -1,0 +1,11 @@
+export type Override<T extends object, K extends { [_K in keyof T]?: unknown }> = Omit<T, keyof K> & K
+
+export type ElementType<T extends Iterable<unknown>> = T extends Iterable<infer E>
+  ? E
+  : never
+
+export type NoUndefinedField<T> = { [K in keyof T]-?: NoUndefinedField<NonNullable<T[K]>> }
+
+export type PickPartial<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>> & Partial<Pick<T, K>>
+
+export type RequiredFields<T, K extends keyof T> = T & Required<Pick<T, K>>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Category } from '~/shared/models/category'
+import type { Category } from '@arc/models/category'
 import { useGetCategories } from '~/shared/server-state/category/categories.query'
 import { getRoutePath, routes } from '~/shared/navigation/routes'
 

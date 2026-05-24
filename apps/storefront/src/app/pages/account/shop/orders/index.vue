@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
+import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
 import type { DropdownItem } from '#ui/types'
 import LoadingSvg from '~/shared/ui/loading-svg.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import FixedPagination from '~/app/components/account/shop/fixed-pagination.vue'
-import { OrderShippingStatuses, OrderStatuses } from '~/shared/config/enums/order'
 import { routes } from '~/shared/navigation/routes'
 import { useShopGetOrders } from '~/shared/server-state/shop/order/list.query'
 import type { ShopOrderSummary } from '~/shared/api/shop/order/contracts/order.contract'

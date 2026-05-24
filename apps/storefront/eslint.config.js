@@ -80,6 +80,17 @@ export default withNuxt(
     },
   },
   {
+    files: [
+      'src/app/pages/**/*.vue',
+      'apps/storefront/src/app/pages/**/*.vue',
+      'src/app/components/**/*.vue',
+      'apps/storefront/src/app/components/**/*.vue',
+    ],
+    rules: {
+      'vue/multi-word-component-names': 'off',
+    },
+  },
+  {
     ignores: [
       '**/*.config.js',
       '**/*.config.ts',

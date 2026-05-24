@@ -1,11 +1,11 @@
 <script setup lang="ts">
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
+import { PRODUCT_CONFIG, ProductVariantTypes } from '@arc/enums/product'
+import { productInventorySchema } from '@arc/schemas/product-inventory.schema'
 import type {
   DetailShopProductResponse,
 } from '~/shared/api/shop/product/contracts/read.contract'
-import { PRODUCT_CONFIG, ProductVariantTypes } from '~/shared/config/enums/product'
-import { productInventorySchema } from '~/shared/schemas/product-inventory.schema'
 import type { IOnChangeUpdateVariants } from '~/app/components/account/shop/products/update-product-form/update-product-form.vue'
 import type { UpdateProductBody, UpdateVariantOptions } from '~/shared/api/shop/product/contracts/form.contract'
 

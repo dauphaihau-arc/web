@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { PRODUCT_CONFIG, ProductVariantTypes } from '~/shared/config/enums/product'
-import { productInventorySchema } from '~/shared/schemas/product-inventory.schema'
+import { PRODUCT_CONFIG, ProductVariantTypes } from '@arc/enums/product'
+import { productInventorySchema } from '@arc/schemas/product-inventory.schema'
+import type { NoUndefinedField } from '@arc/contracts/utils'
 import type {
   VariantOption as ProductVariantOption,
   StateCombineVariant,
   StateSingleVariant,
 } from '~/shared/api/shop/product/contracts/form.contract'
-import type { NoUndefinedField } from '~/shared/contracts/utils'
 
 const props = defineProps<{ countValidate: number }>()
 

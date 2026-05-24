@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { consola } from 'consola'
+import { ProductVariantTypes } from '@arc/enums/product'
 import type { FormError, FormSubmitEvent } from '#ui/types'
-import { ProductVariantTypes } from '~/shared/config/enums/product'
 import type { AddProductToCartRequest, AddProductToCartResponse } from '~/shared/api/cart/contracts/cart.contract'
 import { routes } from '~/shared/navigation/routes'
 import { useAddProductToCart } from '~/shared/server-state/cart/add-product.mutation'

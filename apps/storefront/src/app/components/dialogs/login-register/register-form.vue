@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { FetchError } from 'ofetch'
 import { StatusCodes } from 'http-status-codes'
+import { LocalStorageKeys } from '@arc/enums/local-storage-keys'
+import { registerFormSchema } from '@arc/schemas/forms/auth/register-form.schema'
 import type { FormError, FormSubmitEvent } from '#ui/types'
-import { LocalStorageKeys } from '~/shared/config/enums/local-storage-keys'
 import { useAuthClientConfig } from '~/shared/server-state/auth/client-config.query'
 import type { AuthPreferences } from '~/shared/api/auth/contracts/auth-user.contract'
 import { useRegister } from '~/shared/server-state/auth/register.mutation'
 import type { RegisterRequest as RegisterBody } from '~/shared/api/auth/contracts/register.contract'
-import { registerFormSchema } from '~/shared/schemas/forms/auth/register-form.schema'
 import { appendPasswordError } from '~/shared/utils/password-policy'
 
 const invalidEmails: string[] = []

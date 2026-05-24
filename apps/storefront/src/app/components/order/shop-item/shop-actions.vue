@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { OrderShippingStatuses, OrderStatuses } from '~/shared/config/enums/order'
+import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
+import type { ElementType } from '@arc/contracts/utils'
 import OrderCancelRequestDialog from '~/app/components/dialogs/order-cancel-request-dialog.vue'
 import OrderSupportRequestDialog from '~/app/components/dialogs/order-support-request-dialog.vue'
 import type { GetOrderShopsResponse } from '~/shared/api/me/order/contracts/order.contract'
-import type { ElementType } from '~/shared/contracts/utils'
 
 const props = withDefaults(defineProps<{
   orderShop: ElementType<GetOrderShopsResponse['order_shops']>

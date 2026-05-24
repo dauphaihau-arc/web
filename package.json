@@ -21,7 +21,7 @@
   },
   "lint-staged": {
     "**/*.{js,ts,vue}": [
-      "pnpm --filter @arc/storefront exec eslint --cache --fix"
+      "eslint --cache --fix --no-warn-ignored --config apps/storefront/eslint.config.js"
     ]
   }
 }

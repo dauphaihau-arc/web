@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PRODUCT_CONFIG } from '~/shared/config/enums/product'
+import { PRODUCT_CONFIG } from '@arc/enums/product'
 
 const tagsModel = defineModel<string[]>({
   default: [],

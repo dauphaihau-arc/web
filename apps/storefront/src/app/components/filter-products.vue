@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ProductWhoMade } from '~/shared/config/enums/product'
+import { ProductWhoMade } from '@arc/enums/product'
 
 const route = useRoute()
 const router = useRouter()

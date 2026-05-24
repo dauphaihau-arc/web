@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Category } from '~/shared/models/category'
+import type { Category } from '@arc/models/category'
 import { useGetAttributesByCategory } from '~/shared/server-state/category/attributes.query'
 import type { ReqAttributeOption } from '~/shared/api/shop/product/contracts/form.contract'
 

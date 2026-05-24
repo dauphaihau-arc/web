@@ -1,8 +1,8 @@
 <script lang="ts" setup>
+import { CreateCouponPageTypes } from '@arc/enums/shop'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import CreatePromoCodeForm from '~/app/components/account/shop/coupons/create-promo-code-form.vue'
 import RunSaleForm from '~/app/components/account/shop/coupons/run-sale-form.vue'
-import { CreateCouponPageTypes } from '~/shared/config/enums/shop'
 import { ROUTES } from '~/shared/config/enums/routes'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })

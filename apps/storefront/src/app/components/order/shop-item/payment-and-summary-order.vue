@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { ElementType } from '~/shared/contracts/utils'
+import type { ElementType } from '@arc/contracts/utils'
+import { PaymentTypes } from '@arc/enums/order'
 import type { GetOrderShopsResponse } from '~/shared/api/me/order/contracts/order.contract'
-import { PaymentTypes } from '~/shared/config/enums/order'
 
 defineProps<{
   orderShop: ElementType<GetOrderShopsResponse['order_shops']>

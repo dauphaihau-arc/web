@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PRODUCT_CONFIG } from '~/shared/config/enums/product'
+import { PRODUCT_CONFIG } from '@arc/enums/product'
 import type { ProductImageReference } from '~/shared/api/shop/product/contracts/form.contract'
 import { toastCustom } from '~/shared/config/toast'
 

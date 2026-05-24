@@ -1,4 +1,7 @@
+import { fileURLToPath } from 'node:url'
 import pkg from './package.json'
+
+const packagesDir = fileURLToPath(new URL('../../packages/', import.meta.url))
 
 const assetHost = process.env.ASSET_HOST || ''
 const assetHostDomain = assetHost
@@ -22,6 +25,14 @@ export default defineNuxtConfig({
       link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     },
     pageTransition: { name: 'page', mode: 'out-in' },
+  },
+
+  alias: {
+    '@arc/contracts': `${packagesDir}contracts/src`,
+    '@arc/models': `${packagesDir}models/src`,
+    '@arc/enums': `${packagesDir}enums/src`,
+    '@arc/schemas': `${packagesDir}schemas/src`,
+    '@arc/utils': `${packagesDir}utils/src`,
   },
 
   devServer: {
@@ -113,7 +124,7 @@ export default defineNuxtConfig({
   ],
 
   imports: {
-    dirs: ['shared/composables', 'shared/utils'],
+    dirs: ['shared/composables', 'shared/utils', `${packagesDir}utils/src`],
   },
 
   i18n: {

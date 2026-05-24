@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useGetCountries } from '~/shared/server-state/location/countries.query'
-import type { CreateProductShipping } from '~/shared/api/shop/product/contracts/form.contract'
 import {
   ProductShippingCharge,
   PRODUCT_SHIPPING_CONFIG,
   ProductShippingOtherCountriesOptions,
   ProductShippingServices,
-} from '~/shared/config/enums/product'
+} from '@arc/enums/product'
+import { useGetCountries } from '~/shared/server-state/location/countries.query'
+import type { CreateProductShipping } from '~/shared/api/shop/product/contracts/form.contract'
 
 type ShippingLocation = CreateProductShipping['standard_shipping'][number]
 

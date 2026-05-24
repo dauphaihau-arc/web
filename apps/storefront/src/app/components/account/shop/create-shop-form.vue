@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { shopSchema } from '@arc/schemas/shop.schema'
 import type { FormSubmitEvent } from '#ui/types'
-import { shopSchema } from '~/shared/schemas/shop.schema'
 import type { CreateShopRequest } from '~/shared/api/shop/contracts/shop.contract'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { toastCustom } from '~/shared/config/toast'

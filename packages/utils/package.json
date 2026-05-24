@@ -1,0 +1,9 @@
+{
+  "name": "@arc/utils",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*"
+  }
+}

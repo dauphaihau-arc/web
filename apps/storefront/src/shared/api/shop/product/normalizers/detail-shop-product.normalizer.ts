@@ -1,17 +1,17 @@
+import { ProductVariantTypes } from '@arc/enums/product'
 import type {
   DetailShopProductInventory,
   DetailShopProductResponse,
   DetailShopProductVariant,
   DetailShopProductVariantOption,
-  ShopProductDetailApiResponse
-} from '../contracts/read.contract';
-import { ProductVariantTypes } from '~/shared/config/enums/product';
+  ShopProductDetailApiResponse,
+} from '../contracts/read.contract'
 
 function normalizeInventory(
-  inventory?: ShopProductDetailApiResponse['inventory'][number]
+  inventory?: ShopProductDetailApiResponse['inventory'][number],
 ): DetailShopProductInventory {
   if (!inventory) {
-    return {};
+    return {}
   }
 
   return {
@@ -20,18 +20,18 @@ function normalizeInventory(
     stock: inventory.stock,
     sku: inventory.sku,
     sale_price: inventory.salePrice,
-  };
+  }
 }
 
 export function normalizeDetailShopProductResponse(
-  response: ShopProductDetailApiResponse
+  response: ShopProductDetailApiResponse,
 ): DetailShopProductResponse {
-  const variantType = response.variantType ?? ProductVariantTypes.NONE;
+  const variantType = response.variantType ?? ProductVariantTypes.NONE
   const inventoryByVariantId = new Map(
     response.inventory
       .filter(item => item.productVariantId)
-      .map(item => [item.productVariantId!, item])
-  );
+      .map(item => [item.productVariantId!, item]),
+  )
 
   const baseProduct = {
     id: response.id,
@@ -43,12 +43,12 @@ export function normalizeDetailShopProductResponse(
     variant_group_name: response.variantGroupName,
     variant_sub_group_name: response.variantSubGroupName,
     tags: [],
-    category: response.categoryId ?
-      {
-        id: response.categoryId,
-        name: '',
-      } :
-      null,
+    category: response.categoryId
+      ? {
+          id: response.categoryId,
+          name: '',
+        }
+      : null,
     images: response.images.map(image => ({
       id: image.id,
       relative_url: image.storageKey,
@@ -60,7 +60,7 @@ export function normalizeDetailShopProductResponse(
       attribute: attribute.categoryAttributeId,
       selected: attribute.selectedOptionId ?? attribute.selectedText ?? '',
     })),
-  };
+  }
 
   if (variantType === ProductVariantTypes.NONE) {
     return {
@@ -69,7 +69,7 @@ export function normalizeDetailShopProductResponse(
         inventory: normalizeInventory(response.inventory[0]),
         variants: [],
       },
-    };
+    }
   }
 
   if (variantType === ProductVariantTypes.SINGLE) {
@@ -83,15 +83,15 @@ export function normalizeDetailShopProductResponse(
           inventory: normalizeInventory(inventoryByVariantId.get(variant.id)),
         })),
       },
-    };
+    }
   }
 
-  const variantsByPrimaryOption = new Map<string, DetailShopProductVariant>();
+  const variantsByPrimaryOption = new Map<string, DetailShopProductVariant>()
 
   response.variants.forEach((variant) => {
-    const primaryOption = variant.optionValue1 ?? variant.name;
-    const secondaryOption = variant.optionValue2 ?? variant.name;
-    const existingGroup = variantsByPrimaryOption.get(primaryOption);
+    const primaryOption = variant.optionValue1 ?? variant.name
+    const secondaryOption = variant.optionValue2 ?? variant.name
+    const existingGroup = variantsByPrimaryOption.get(primaryOption)
     const variantOption: DetailShopProductVariantOption = {
       id: variant.id,
       variant: {
@@ -99,22 +99,22 @@ export function normalizeDetailShopProductResponse(
         variant_name: secondaryOption,
       },
       inventory: normalizeInventory(inventoryByVariantId.get(variant.id)),
-    };
+    }
 
     if (existingGroup) {
       existingGroup.variant_options = [
         ...(existingGroup.variant_options ?? []),
         variantOption,
-      ];
-      return;
+      ]
+      return
     }
 
     variantsByPrimaryOption.set(primaryOption, {
       id: variant.id,
       variant_name: primaryOption,
       variant_options: [variantOption],
-    });
-  });
+    })
+  })
 
   return {
     product: {
@@ -122,5 +122,5 @@ export function normalizeDetailShopProductResponse(
       inventory: {},
       variants: Array.from(variantsByPrimaryOption.values()),
     },
-  };
+  }
 }

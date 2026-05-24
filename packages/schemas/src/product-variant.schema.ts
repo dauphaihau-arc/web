@@ -1,0 +1,25 @@
+import { z } from 'zod'
+import { idSchema } from '@arc/schemas/primitives/id.schema'
+import { PRODUCT_CONFIG, PRODUCT_REGEX_NOT_URL } from '@arc/enums/product'
+
+export const productVariantOptSchema = z.object({
+  id: idSchema,
+  variant: idSchema,
+  inventory: idSchema,
+})
+
+export const productVariantSchema = z.object({
+  id: idSchema,
+  product: idSchema,
+  inventory: idSchema.optional(),
+  variant_name: z
+    .string()
+    .min(1)
+    .max(PRODUCT_CONFIG.MAX_CHAR_VARIANT_NAME),
+  image_relative_url: z
+    .string()
+    .startsWith('shop', 'must start with shop')
+    .regex(PRODUCT_REGEX_NOT_URL, 'must not absolute url')
+    .optional(),
+  variant_options: z.array(productVariantOptSchema).optional(),
+})

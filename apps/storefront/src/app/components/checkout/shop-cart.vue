@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ORDER_CONFIG } from '~/shared/config/enums/order'
+import { ORDER_CONFIG } from '@arc/enums/order'
+import { ProductVariantTypes } from '@arc/enums/product'
 import { useCartStore } from '~/shared/stores/cart/cart.store'
-import { ProductVariantTypes } from '~/shared/config/enums/product'
 import { useGetCart } from '~/shared/server-state/cart/cart.query'
 import { useUpdateCart } from '~/shared/server-state/cart/update-cart.mutation'
 import type { GetCartResponse } from '~/shared/api/cart/contracts/cart.contract'
