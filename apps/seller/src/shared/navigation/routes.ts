@@ -14,6 +14,7 @@ function createRoute(
 export const routePaths = {
   home: '/',
   login: '/login',
+  register: '/register',
   category: '/c',
   reset: '/reset',
   account: '/',
@@ -36,6 +37,7 @@ export const routePaths = {
 export const routes = {
   home: () => createRoute(routePaths.home),
   login: () => createRoute(routePaths.login),
+  register: () => createRoute(routePaths.register),
   reset: (query?: { v?: string | number }) => createRoute(routePaths.reset, query),
   account: () => createRoute(routePaths.account),
   accountAddresses: () => createRoute(routePaths.accountAddresses),

@@ -8,6 +8,7 @@ import { useAuthClientConfig } from '~/shared/server-state/auth/client-config.qu
 import { useLogin } from '~/shared/server-state/auth/login.mutation'
 import type { LoginRequest as LoginBody } from '~/shared/api/auth/contracts/login.contract'
 import { appendPasswordError } from '~/shared/utils/password-policy'
+import { SellerAccessRequiredError } from '~/shared/utils/seller-access'
 
 const formRef = ref()
 const unknownErrorServerMsg = ref('')
@@ -50,6 +51,11 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
     await login(event.data)
   }
   catch (error) {
+    if (error instanceof SellerAccessRequiredError) {
+      unknownErrorServerMsg.value = 'This account does not have seller access'
+      return
+    }
+
     if (error instanceof FetchError) {
       if (error.status === StatusCodes.UNAUTHORIZED) {
         invalidUser ? invalidUser.push(password) : invalidUsers.set(email, [password])

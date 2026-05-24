@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import LoginForm from '~/app/components/auth/login-form.vue'
+import { routes } from '~/shared/navigation/routes'
 
 useSeoMeta({
   title: 'Seller Login',
@@ -67,6 +68,16 @@ useSeoMeta({
             <div class="mt-8">
               <LoginForm />
             </div>
+
+            <p class="mt-6 text-sm text-slate-600">
+              Need an account?
+              <NuxtLink
+                :to="routes.register()"
+                class="font-semibold text-slate-950 underline decoration-slate-300 underline-offset-4"
+              >
+                Register
+              </NuxtLink>
+            </p>
           </div>
         </section>
       </div>
