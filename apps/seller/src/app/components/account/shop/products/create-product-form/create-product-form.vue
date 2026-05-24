@@ -1,9 +1,5 @@
 <script setup lang="ts">
 import {
-  createProductFormSchema,
-  createProductInventoryFormSchema,
-} from '@arc/schemas/forms/shop/product/create-product-form.schema'
-import {
   isDigitalOpts,
   PRODUCT_CONFIG,
   ProductStates,
@@ -13,6 +9,10 @@ import {
 import ImagesInput from './images-input.vue'
 import VariantInput from './variant-input.vue'
 import { useCreateProductSubmit } from './use-create-product-submit'
+import {
+  createProductFormSchema,
+  createProductInventoryFormSchema,
+} from '~/shared/schemas/forms/shop/product/create-product-form.schema'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import { ROUTES } from '~/shared/config/enums/routes'
 import CreateShippingProductDialog from '~/app/components/account/shop/products/create-shipping-product-dialog/create-shipping-product-dialog.vue'

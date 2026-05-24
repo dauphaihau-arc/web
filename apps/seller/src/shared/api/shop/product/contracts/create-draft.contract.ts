@@ -7,7 +7,7 @@ import type {
   createDraftProductRequestShippingSchema,
   createDraftProductRequestVariantSchema,
   createDraftProductResponseSchema,
-} from '@arc/schemas/api/shop/product/create-draft.schema'
+} from '~/shared/schemas/api/shop/product/create-draft.schema'
 
 export type CreateDraftProductRequestImage = z.infer<typeof createDraftProductRequestImageSchema>
 export type CreateDraftProductRequestAttribute = z.infer<typeof createDraftProductRequestAttributeSchema>

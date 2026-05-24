@@ -5,9 +5,9 @@ import type {
   listShopCouponsRequestSchema,
   listShopCouponsResponseSchema,
   shopCouponSchema,
-} from '@arc/schemas/api/shop/coupon/coupon.schema'
-import type { createPromoCodeFormSchema } from '@arc/schemas/forms/shop/coupon/create-promo-code-form.schema'
-import type { createSaleFormSchema } from '@arc/schemas/forms/shop/coupon/create-sale-form.schema'
+} from '~/shared/schemas/api/shop/coupon/coupon.schema'
+import type { createPromoCodeFormSchema } from '~/shared/schemas/forms/shop/coupon/create-promo-code-form.schema'
+import type { createSaleFormSchema } from '~/shared/schemas/forms/shop/coupon/create-sale-form.schema'
 
 export type ShopCoupon = z.infer<typeof shopCouponSchema>
 export type CreatePromoCodeBody = z.infer<typeof createPromoCodeFormSchema>

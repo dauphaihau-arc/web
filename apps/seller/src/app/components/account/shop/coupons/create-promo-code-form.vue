@@ -4,7 +4,7 @@ import {
 } from '@arc/enums/coupon'
 import type { RequiredFields } from '@arc/contracts/utils'
 import { PRODUCT_CONFIG } from '@arc/enums/product'
-import { createPromoCodeFormSchema } from '@arc/schemas/forms/shop/coupon/create-promo-code-form.schema'
+import { createPromoCodeFormSchema } from '~/shared/schemas/forms/shop/coupon/create-promo-code-form.schema'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import { ROUTES } from '~/shared/config/enums/routes'
 import WrapperFormGroupCard from '~/app/components/account/shop/wrapper-form-group-card.vue'

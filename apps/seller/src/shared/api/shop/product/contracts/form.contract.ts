@@ -1,14 +1,14 @@
 import type { z } from 'zod'
 import type { ElementType, PickPartial, RequiredFields } from '@arc/contracts/utils'
+import type { ProductVariantTypes } from '@arc/enums/product'
+import type { RequestGetListParams } from '@arc/contracts/common'
 import type {
   createProductFormSchema,
   createProductInventoryFormSchema,
   createProductShippingFormSchema,
   updateVariantOptionsFormSchema,
-} from '@arc/schemas/forms/shop/product/create-product-form.schema'
-import type { updateProductFormSchema } from '@arc/schemas/forms/shop/product/update-product-form.schema'
-import type { ProductVariantTypes } from '@arc/enums/product'
-import type { RequestGetListParams } from '@arc/contracts/common'
+} from '~/shared/schemas/forms/shop/product/create-product-form.schema'
+import type { updateProductFormSchema } from '~/shared/schemas/forms/shop/product/update-product-form.schema'
 
 export type CreateProductShipping = z.infer<typeof createProductShippingFormSchema>
 export type CreateProductInventory = z.infer<typeof createProductInventoryFormSchema>

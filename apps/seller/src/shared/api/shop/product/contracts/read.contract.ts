@@ -11,7 +11,7 @@ import type {
   listShopProductsResponseSchema,
   removeProductRequestSchema,
   shopProductDetailApiResponseSchema,
-} from '@arc/schemas/api/shop/product/read-product.schema'
+} from '~/shared/schemas/api/shop/product/read-product.schema'
 
 export type ListShopProductsRequest = z.infer<typeof listShopProductsRequestSchema>
 export type ListShopProductsItem = z.infer<typeof listShopProductsItemSchema>

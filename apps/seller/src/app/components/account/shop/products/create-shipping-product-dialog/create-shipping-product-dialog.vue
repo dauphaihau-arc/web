@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ADDRESS_CONFIG } from '@arc/enums/address'
 import { ProductShippingCharge, ProductShippingServices } from '@arc/enums/product'
-import { createProductShippingFormSchema } from '@arc/schemas/forms/shop/product/create-product-form.schema'
 import LocationShipping from './location-shipping.vue'
+import { createProductShippingFormSchema } from '~/shared/schemas/forms/shop/product/create-product-form.schema'
 import type { FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import { useGetCountries } from '~/shared/server-state/location/countries.query'
 import type { CreateProductShipping } from '~/shared/api/shop/product/contracts/form.contract'
