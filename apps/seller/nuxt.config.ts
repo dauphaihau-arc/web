@@ -4,9 +4,6 @@ import pkg from './package.json'
 const packagesDir = fileURLToPath(new URL('../../packages/', import.meta.url))
 
 const assetHost = process.env.ASSET_HOST || ''
-const assetHostDomain = assetHost
-  ? new URL(assetHost).hostname
-  : ''
 const awsHostBucketAlias = assetHost.replace(/\/+$/, '')
 
 export default defineNuxtConfig({
@@ -157,7 +154,6 @@ export default defineNuxtConfig({
 
   image: {
     provider: 'none',
-    domains: assetHostDomain ? [assetHostDomain] : [],
     alias: {
       assetHost: awsHostBucketAlias
     }
