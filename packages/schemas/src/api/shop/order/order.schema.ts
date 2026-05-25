@@ -58,6 +58,9 @@ export const shopOrderSummarySchema = z.object({
   }),
   payment: z.object({
     type: z.nativeEnum(PaymentTypes),
+    refund_status: z.enum(['pending', 'succeeded', 'failed', 'not_required']).optional(),
+    refunded_at: z.coerce.date().optional(),
+    refund_failed_reason: z.string().optional(),
   }),
   status: z.nativeEnum(OrderStatuses),
   products: z.array(shopOrderProductSchema),

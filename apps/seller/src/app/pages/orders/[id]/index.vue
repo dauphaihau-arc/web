@@ -289,6 +289,19 @@ function openCancelDialog() {
                 <span>Payment</span>
                 <span class="capitalize">{{ order.payment.type }}</span>
               </div>
+              <div
+                v-if="order.payment.refund_status"
+                class="flex justify-between"
+              >
+                <span>Refund</span>
+                <span class="capitalize">{{ order.payment.refund_status.replaceAll('_', ' ') }}</span>
+              </div>
+              <div
+                v-if="order.payment.refund_failed_reason"
+                class="text-zinc-500"
+              >
+                {{ order.payment.refund_failed_reason }}
+              </div>
               <div class="flex justify-between">
                 <span>Shipping</span>
                 <span class="capitalize">{{ order.shipping.shipping_status.replaceAll('_', ' ') }}</span>

@@ -106,6 +106,12 @@ const shippingAddressLines = computed(() => {
             <div v-if="dataOrder.order_shop.customer_support_note">
               Support request: {{ dataOrder.order_shop.customer_support_note }}
             </div>
+            <div v-if="dataOrder.order_shop.payment.refund_status">
+              Refund: {{ dataOrder.order_shop.payment.refund_status.replaceAll('_', ' ') }}
+            </div>
+            <div v-if="dataOrder.order_shop.payment.refund_failed_reason">
+              Refund issue: {{ dataOrder.order_shop.payment.refund_failed_reason }}
+            </div>
             <div>
               Contact: {{ dataOrder.order_shop.customer.email }}
             </div>

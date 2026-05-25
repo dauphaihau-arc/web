@@ -8,6 +8,9 @@ export const paymentSchema = z.object({
   card_brand: z.string().optional(),
   card_exp_month: z.number().optional(),
   card_exp_year: z.number().optional(),
+  refund_status: z.enum(['pending', 'succeeded', 'failed', 'not_required']).optional(),
+  refunded_at: z.coerce.date().optional(),
+  refund_failed_reason: z.string().optional(),
 })
 
 export const createOrderResponseSchema = z.object({

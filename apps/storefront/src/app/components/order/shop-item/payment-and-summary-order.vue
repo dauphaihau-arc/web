@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import dayjs from 'dayjs'
 import type { ElementType } from '@arc/contracts/utils'
 import { PaymentTypes } from '@arc/enums/order'
 import type { GetOrderShopsResponse } from '~/shared/api/me/order/contracts/order.contract'
@@ -46,6 +47,18 @@ const showMore = ref(false)
         </div>
         <div v-else-if="orderShop.payment.type === PaymentTypes.CASH">
           Cash
+        </div>
+        <div
+          v-if="orderShop.payment.refund_status"
+          class="pt-2 text-sm text-zinc-600"
+        >
+          Refund: {{ orderShop.payment.refund_status.replaceAll('_', ' ') }}
+          <span v-if="orderShop.payment.refunded_at">
+            on {{ dayjs(orderShop.payment.refunded_at).format('MMM DD, YYYY HH:mm') }}
+          </span>
+          <div v-if="orderShop.payment.refund_failed_reason">
+            {{ orderShop.payment.refund_failed_reason }}
+          </div>
         </div>
       </div>
 
