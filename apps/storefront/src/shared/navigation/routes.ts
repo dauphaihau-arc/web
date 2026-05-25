@@ -1,4 +1,12 @@
 import type { LocationQueryRaw, RouteLocationRaw } from 'vue-router'
+import {
+  buildCategoryPath,
+  buildOrderDetailPath,
+  buildProductDetailPath,
+  routePaths,
+} from './route-paths'
+
+export { routePaths } from './route-paths'
 
 function createRoute(
   path: string,
@@ -10,29 +18,13 @@ function createRoute(
   return { path, query }
 }
 
-export const routePaths = {
-  home: '/',
-  category: '/c',
-  reset: '/reset',
-  account: '/account',
-  accountAddresses: '/account/addresses',
-  orders: '/orders',
-  orderDetail: '/orders',
-  search: '/search',
-  cart: '/cart',
-  cartCheckout: '/cart/checkout',
-  checkout: '/checkout',
-  guestOrders: '/guest-orders',
-  success: '/success',
-} as const
-
 export const routes = {
   home: () => createRoute(routePaths.home),
   reset: (query?: { v?: string | number }) => createRoute(routePaths.reset, query),
   account: () => createRoute(routePaths.account),
   accountAddresses: () => createRoute(routePaths.accountAddresses),
   orders: () => createRoute(routePaths.orders),
-  orderDetail: (id: string) => createRoute(`${routePaths.orderDetail}/${id}`),
+  orderDetail: (id: string) => createRoute(buildOrderDetailPath(id)),
   search: (query?: { search?: string }) => createRoute(routePaths.search, query),
   cart: () => createRoute(routePaths.cart),
   cartCheckout: () => createRoute(routePaths.cartCheckout),
@@ -69,12 +61,10 @@ export const routes = {
           ...(query.sessionId ? { session_id: query.sessionId } : {}),
         }
       : undefined),
-  category: (categories: string | string[]) => {
-    const slug = Array.isArray(categories) ? categories.join('/') : categories
-    return createRoute(`${routePaths.category}/${slug}`)
-  },
+  category: (categories: string | string[]) =>
+    createRoute(buildCategoryPath(categories)),
   productDetail: (shopSlug: string, productSlug: string) =>
-    createRoute(`/${shopSlug}/${productSlug}`),
+    createRoute(buildProductDetailPath(shopSlug, productSlug)),
 } as const
 
 export function getRoutePath(to: RouteLocationRaw): string {
