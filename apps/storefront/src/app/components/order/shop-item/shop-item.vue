@@ -7,6 +7,10 @@ import ShopActions from './shop-actions.vue'
 import ShopProduct from './shop-product.vue'
 import ShopShippingInfo from './shop-shipping-info.vue'
 import type { GetOrderShopsResponse } from '~/shared/api/me/order/contracts/order.contract'
+import {
+  mergeOrderShopWithLiveUpdate,
+  useOrderLiveUpdates,
+} from '~/shared/realtime/order-live-updates'
 
 const props = withDefaults(defineProps<{
   orderShop: ElementType<GetOrderShopsResponse['order_shops']>
@@ -23,6 +27,15 @@ const orderedAt = computed(() => {
   }
   return ''
 })
+
+const { getUpdate } = useOrderLiveUpdates()
+
+const displayOrderShop = computed(() =>
+  mergeOrderShopWithLiveUpdate(
+    props.orderShop,
+    getUpdate(props.orderShop.id),
+  ),
+)
 </script>
 
 <template>
@@ -39,13 +52,13 @@ const orderedAt = computed(() => {
           </div>
           <div class="flex items-center gap-3">
             <div>
-              {{ convertCurrency(props.orderShop.total) }}
+              {{ convertCurrency(displayOrderShop.total) }}
             </div>
           </div>
         </div>
 
         <div
-          v-for="(product, idx) of props.orderShop.products"
+          v-for="(product, idx) of displayOrderShop.products"
           :key="idx"
         >
           <ShopProduct :product-order="product" />
@@ -54,16 +67,16 @@ const orderedAt = computed(() => {
         <UDivider
           class="mb-3 mt-6"
         />
-        <NoteAndPromoCoupons :order-shop="props.orderShop" />
-        <PaymentAndSummaryOrder :order-shop="props.orderShop" />
+        <NoteAndPromoCoupons :order-shop="displayOrderShop" />
+        <PaymentAndSummaryOrder :order-shop="displayOrderShop" />
       </UCard>
     </div>
 
     <div class="col-span-3 -mt-4 w-5/6">
-      <ShopShippingInfo :order-shop="props.orderShop" />
+      <ShopShippingInfo :order-shop="displayOrderShop" />
       <ShopActions
         v-if="props.allowPostPurchaseActions"
-        :order-shop="props.orderShop"
+        :order-shop="displayOrderShop"
         :show-view-order-link="props.showDetailLink"
       />
     </div>

@@ -3,6 +3,10 @@ import LoadingSvg from '~/shared/ui/loading-svg.vue'
 import ShopItem from '~/app/components/order/shop-item/shop-item.vue'
 import { routes } from '~/shared/navigation/routes'
 import { useGetOrderById } from '~/shared/server-state/me/orders/order-shops.query'
+import {
+  mergeOrderShopWithLiveUpdate,
+  useOrderLiveUpdates,
+} from '~/shared/realtime/order-live-updates'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 
@@ -14,8 +18,20 @@ const {
   isPending: isPendingOrder,
 } = useGetOrderById(orderId.value)
 
+const { getUpdate } = useOrderLiveUpdates()
+
+const displayOrderShop = computed(() => {
+  const orderShop = dataOrder.value?.order_shop
+
+  if (!orderShop) {
+    return undefined
+  }
+
+  return mergeOrderShopWithLiveUpdate(orderShop, getUpdate(orderShop.id))
+})
+
 const shippingAddressLines = computed(() => {
-  const shippingAddress = dataOrder.value?.order_shop.shipping_address
+  const shippingAddress = displayOrderShop.value?.shipping_address
 
   if (!shippingAddress) {
     return []
@@ -61,12 +77,12 @@ const shippingAddressLines = computed(() => {
     </div>
 
     <div
-      v-else-if="dataOrder?.order_shop"
+      v-else-if="displayOrderShop"
       class="grid grid-cols-12 gap-8"
     >
       <div class="col-span-9">
         <ShopItem
-          :order-shop="dataOrder.order_shop"
+          :order-shop="displayOrderShop"
           :show-detail-link="false"
         />
       </div>
@@ -98,22 +114,22 @@ const shippingAddressLines = computed(() => {
 
           <div class="space-y-2 text-sm text-zinc-600">
             <div class="capitalize">
-              Status: {{ dataOrder.order_shop.status.replaceAll('_', ' ') }}
+              Status: {{ displayOrderShop.status.replaceAll('_', ' ') }}
             </div>
-            <div v-if="dataOrder.order_shop.cancel_reason">
-              Cancel reason: {{ dataOrder.order_shop.cancel_reason }}
+            <div v-if="displayOrderShop.cancel_reason">
+              Cancel reason: {{ displayOrderShop.cancel_reason }}
             </div>
-            <div v-if="dataOrder.order_shop.customer_support_note">
-              Support request: {{ dataOrder.order_shop.customer_support_note }}
+            <div v-if="displayOrderShop.customer_support_note">
+              Support request: {{ displayOrderShop.customer_support_note }}
             </div>
-            <div v-if="dataOrder.order_shop.payment.refund_status">
-              Refund: {{ dataOrder.order_shop.payment.refund_status.replaceAll('_', ' ') }}
+            <div v-if="displayOrderShop.payment.refund_status">
+              Refund: {{ displayOrderShop.payment.refund_status.replaceAll('_', ' ') }}
             </div>
-            <div v-if="dataOrder.order_shop.payment.refund_failed_reason">
-              Refund issue: {{ dataOrder.order_shop.payment.refund_failed_reason }}
+            <div v-if="displayOrderShop.payment.refund_failed_reason">
+              Refund issue: {{ displayOrderShop.payment.refund_failed_reason }}
             </div>
             <div>
-              Contact: {{ dataOrder.order_shop.customer.email }}
+              Contact: {{ displayOrderShop.customer.email }}
             </div>
           </div>
         </UCard>
