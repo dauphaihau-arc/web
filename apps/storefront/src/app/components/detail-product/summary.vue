@@ -6,6 +6,7 @@ import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contra
 const props = defineProps<{
   product: GetDetailProductBySlugResponse
   inventorySelected: ElementType<GetDetailProductBySlugResponse['inventory']>
+  stockNotice?: string
 }>()
 
 const sortedInventory = computed(() => {
@@ -58,9 +59,12 @@ const originPrice = computed(() => {
 
 <template>
   <div class="space-y-4">
-    <!--            <div class="text-red-800 text-md font-semibold"> -->
-    <!--              Only 6 left and in 7 baskets -->
-    <!--            </div> -->
+    <div
+      v-if="props.stockNotice"
+      class="text-sm font-semibold text-red-700"
+    >
+      {{ props.stockNotice }}
+    </div>
 
     <!--    {{ data?.product.variant_type }} -->
 

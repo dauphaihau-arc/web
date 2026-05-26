@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PRODUCT_CONFIG } from '@arc/enums/product'
 import type { GetProductsResponseItem } from '~/shared/api/product/contracts/product.contract'
+import { getProductStockNotice } from '~/shared/utils/product-stock'
 import { routes } from '~/shared/navigation/routes'
 
 const props = defineProps<{
@@ -12,6 +12,14 @@ const router = useRouter()
 const imageUrl = computed(() => {
   return props.product.image?.variants?.card_1x1?.url
     ?? props.product.image?.url
+})
+
+const stockNotice = computed(() => {
+  if (!props.product.inventory) {
+    return ''
+  }
+
+  return getProductStockNotice(props.product.inventory.stock)
 })
 </script>
 
@@ -40,10 +48,10 @@ const imageUrl = computed(() => {
         {{ props.product?.shop.shop_name }}
       </p>
       <p
-        v-if="props.product.inventory && props.product.inventory.stock < PRODUCT_CONFIG.LOW_STOCK"
+        v-if="stockNotice"
         class="mt-auto text-[13px] text-red-600"
       >
-        Only {{ props.product.inventory.stock }} left - order soon
+        {{ stockNotice }}
       </p>
     </div>
     <slot name="content" />
