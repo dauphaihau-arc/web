@@ -19,7 +19,6 @@ type Inventory = GetDetailProductBySlugResponse['inventory'][number]
 const props = defineProps<{
   product: GetDetailProductBySlugResponse
 }>()
-const { product } = props
 
 const inventorySelectedModel = defineModel<Inventory>('inventorySelected')
 
@@ -46,23 +45,36 @@ const stateSubmit = reactive<StateSubmit>({
   variantSubOption: '',
 })
 
-const maxQuantity = computed(() => {
-  if (inventorySelectedModel.value) {
-    return inventorySelectedModel.value.stock
+const resolvedInventorySelected = computed(() => {
+  const selectedInventoryId = inventorySelectedModel.value?.id
+
+  if (!selectedInventoryId) {
+    return undefined
   }
-  return product.inventory.reduce((acc, inv) => acc + inv.stock, 0)
+
+  return props.product.inventory.find(inventory => inventory.id === selectedInventoryId)
+    ?? inventorySelectedModel.value
 })
+
+const maxQuantity = computed(() => {
+  if (resolvedInventorySelected.value) {
+    return resolvedInventorySelected.value.stock
+  }
+  return props.product.inventory.reduce((acc, inv) => acc + inv.stock, 0)
+})
+
+const isOutOfStock = computed(() => maxQuantity.value <= 0)
 
 const variantNameById = new Map<string, string>()
 const inventoriesMap = new Map<string, Inventory>()
 
 // ------------- Lifecycle Hooks
 onMounted(() => {
-  product.variants.forEach((variant) => {
+  props.product.variants.forEach((variant) => {
     variantNameById.set(variant.id, variant.name)
   })
 
-  switch (product.variant_type) {
+  switch (props.product.variant_type) {
     case ProductVariantTypes.NONE:
       inventorySelectedModel.value = props.product.inventory[0]
       break
@@ -100,14 +112,26 @@ onMounted(() => {
 
 // ------------- Features
 const decreaseQty = () => {
-  if (stateSubmit.quantity === 1) return
+  if (stateSubmit.quantity <= 1) {
+    stateSubmit.quantity = 1
+    return
+  }
+
   stateSubmit.quantity--
+}
+
+const increaseQty = () => {
+  if (maxQuantity.value <= 0 || stateSubmit.quantity >= maxQuantity.value) {
+    return
+  }
+
+  stateSubmit.quantity++
 }
 
 const validateForm = (stateValidate: StateSubmit): FormError[] => {
   const errors: FormError[] = []
 
-  if (product.variant_type !== ProductVariantTypes.NONE) {
+  if (props.product.variant_type !== ProductVariantTypes.NONE) {
     if (!stateValidate.variantOption) {
       errors.push({
         path: 'variantOption',
@@ -115,7 +139,7 @@ const validateForm = (stateValidate: StateSubmit): FormError[] => {
       })
     }
 
-    if (product.variant_type === ProductVariantTypes.COMBINE && !stateValidate.variantSubOption) {
+    if (props.product.variant_type === ProductVariantTypes.COMBINE && !stateValidate.variantSubOption) {
       errors.push({
         path: 'variantSubOption',
         message: 'Required',
@@ -130,13 +154,21 @@ async function onSubmit(event: FormSubmitEvent<StateSubmit>) {
   const isBuyNow = state.isBuyNow
   state.isBuyNow = false
 
-  if (!inventorySelectedModel.value?.id) {
+  if (!resolvedInventorySelected.value?.id) {
     consola.error('inventory_id be undefined')
     return
   }
 
+  if (resolvedInventorySelected.value.stock <= 0) {
+    toast.add({
+      ...toastCustom.error,
+      title: 'Out of stock',
+    })
+    return
+  }
+
   const body: AddProductToCartRequest = {
-    inventory_id: inventorySelectedModel.value.id,
+    inventory_id: resolvedInventorySelected.value.id,
     quantity: event.data.quantity,
   }
   if (isBuyNow) {
@@ -174,13 +206,13 @@ watch(
   () => [stateSubmit.variantOption, stateSubmit.variantSubOption],
   () => {
     stateSubmit.quantity = 1
-    if (product.variant_type === ProductVariantTypes.SINGLE) {
+    if (props.product.variant_type === ProductVariantTypes.SINGLE) {
       const foundInventory = inventoriesMap.get(stateSubmit.variantOption)
       if (foundInventory) {
         inventorySelectedModel.value = foundInventory
       }
     }
-    if (product.variant_type === ProductVariantTypes.COMBINE) {
+    if (props.product.variant_type === ProductVariantTypes.COMBINE) {
       const foundInventory = inventoriesMap.get(`${stateSubmit.variantOption} / ${stateSubmit.variantSubOption}`)
       if (foundInventory) {
         inventorySelectedModel.value = foundInventory
@@ -188,6 +220,44 @@ watch(
     }
   },
   { deep: true },
+)
+
+watch(
+  resolvedInventorySelected,
+  (inventory) => {
+    if (inventory) {
+      inventorySelectedModel.value = inventory
+    }
+  },
+)
+
+watch(
+  maxQuantity,
+  (nextMaxQuantity) => {
+    if (nextMaxQuantity <= 0) {
+      stateSubmit.quantity = 1
+      return
+    }
+
+    if (stateSubmit.quantity > nextMaxQuantity) {
+      stateSubmit.quantity = nextMaxQuantity
+    }
+  },
+  { immediate: true },
+)
+
+watch(
+  () => stateSubmit.quantity,
+  (nextQuantity) => {
+    if (!Number.isFinite(nextQuantity) || nextQuantity <= 1) {
+      stateSubmit.quantity = 1
+      return
+    }
+
+    if (maxQuantity.value > 0 && nextQuantity > maxQuantity.value) {
+      stateSubmit.quantity = maxQuantity.value
+    }
+  },
 )
 </script>
 
@@ -202,27 +272,27 @@ watch(
   >
     <div class="mb-6 flex w-1/3 flex-col gap-4">
       <UFormGroup
-        v-if="product.variant_type === ProductVariantTypes.SINGLE
-          || product.variant_type === ProductVariantTypes.COMBINE"
-        :label="product.variant_group_name"
+        v-if="props.product.variant_type === ProductVariantTypes.SINGLE
+          || props.product.variant_type === ProductVariantTypes.COMBINE"
+        :label="props.product.variant_group_name"
         name="variantOption"
       >
         <USelectMenu
           v-model="stateSubmit.variantOption"
-          :placeholder="`Select a ${product.variant_group_name}`"
+          :placeholder="`Select a ${props.product.variant_group_name}`"
           size="lg"
           :options="state.variantOpts"
         />
       </UFormGroup>
 
       <UFormGroup
-        v-if="product.variant_type === ProductVariantTypes.COMBINE"
-        :label="product.variant_sub_group_name"
+        v-if="props.product.variant_type === ProductVariantTypes.COMBINE"
+        :label="props.product.variant_sub_group_name"
         name="variantSubOption"
       >
         <USelectMenu
           v-model="stateSubmit.variantSubOption"
-          :placeholder="`Select a ${product.variant_sub_group_name}`"
+          :placeholder="`Select a ${props.product.variant_sub_group_name}`"
           size="lg"
           :options="state.subVariantOpts"
         />
@@ -254,7 +324,7 @@ watch(
             icon="i-heroicons-plus"
             color="white"
             class="rounded-l-none rounded-r-md"
-            @click="() => stateSubmit.quantity++"
+            @click="increaseQty"
           />
         </UButtonGroup>
       </div>
@@ -265,7 +335,7 @@ watch(
         size="xl"
         variant="outline"
         type="submit"
-        :disabled="isPendingAddProductToCart"
+        :disabled="isPendingAddProductToCart || isOutOfStock"
         @click="state.isBuyNow = false"
       >
         Add to cart
@@ -273,7 +343,7 @@ watch(
       <UButton
         size="xl"
         type="submit"
-        :disabled="isPendingAddProductToCart"
+        :disabled="isPendingAddProductToCart || isOutOfStock"
         @click="state.isBuyNow = true"
       >
         Buy it now
