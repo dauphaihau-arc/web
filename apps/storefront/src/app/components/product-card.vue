@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { formatMinorCurrency } from '@arc/utils'
 import type { GetProductsResponseItem } from '~/shared/api/product/contracts/product.contract'
 import { getProductStockNotice } from '~/shared/utils/product-stock'
 import { routes } from '~/shared/navigation/routes'
@@ -21,6 +22,15 @@ const stockNotice = computed(() => {
 
   return getProductStockNotice(props.product.inventory.stock)
 })
+
+const displayAmount = computed(() => {
+  const inventory = props.product.inventory
+  if (!inventory) {
+    return undefined
+  }
+
+  return formatMinorCurrency(inventory.amount_minor, inventory.currency)
+})
 </script>
 
 <template>
@@ -40,8 +50,11 @@ const stockNotice = computed(() => {
         {{ props.product?.title }}
       </h1>
       <div class="flex flex-wrap items-center gap-2">
-        <p class="text-base font-medium text-customGray-950">
-          {{ convertCurrency(props.product.inventory?.sale_price || props.product.inventory?.price) }}
+        <p
+          v-if="displayAmount !== undefined"
+          class="text-base font-medium text-customGray-950"
+        >
+          {{ displayAmount }}
         </p>
       </div>
       <p class="h-5 truncate text-sm text-customGray-800">

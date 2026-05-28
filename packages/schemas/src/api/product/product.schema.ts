@@ -26,8 +26,9 @@ export const publicProductImageSchema = z.object({
 })
 
 export const publicProductInventorySummarySchema = z.object({
-  price: z.number(),
-  sale_price: z.number().optional(),
+  amount_minor: z.number().int().nonnegative(),
+  original_amount_minor: z.number().int().nonnegative().optional(),
+  currency: z.string(),
   stock: z.number(),
   sku: z.string().optional(),
 })
@@ -94,8 +95,9 @@ export const publicProductDetailInventorySchema = z.object({
   product_variant_id: z.string().optional(),
   sku: z.string().optional(),
   stock: z.number(),
-  price: z.number(),
-  sale_price: z.number().optional(),
+  amount_minor: z.number().int().nonnegative(),
+  original_amount_minor: z.number().int().nonnegative().optional(),
+  currency: z.string(),
 })
 
 export const publicProductShippingDestinationSchema = z.object({

@@ -4,7 +4,7 @@ export const cartProductItemSchema = z.object({
   id: z.string(),
   quantity: z.number(),
   is_selected: z.boolean(),
-  unit_price: z.number(),
+  unit_price_minor: z.number(),
   product: z.object({
     id: z.string(),
     title: z.string(),
@@ -19,8 +19,9 @@ export const cartProductItemSchema = z.object({
   }),
   inventory: z.object({
     id: z.string(),
-    price: z.number(),
-    sale_price: z.number().optional(),
+    amount_minor: z.number(),
+    original_amount_minor: z.number().optional(),
+    currency: z.string(),
     stock: z.number(),
     sku: z.string().optional(),
     variant_name: z.string().optional(),
@@ -33,16 +34,18 @@ export const cartShopGroupSchema = z.object({
     name: z.string(),
   }),
   items: z.array(cartProductItemSchema),
-  total_price: z.number(),
-  total_shipping_fee: z.number(),
+  currency: z.string(),
+  total_minor: z.number(),
+  shipping_minor: z.number(),
 })
 
 export const cartSummarySchema = z.object({
-  subtotal_price: z.number(),
-  total_discount: z.number(),
-  subtotal_after_discount: z.number(),
-  total_shipping_fee: z.number(),
-  total_price: z.number(),
+  currency: z.string(),
+  subtotal_minor: z.number(),
+  discount_minor: z.number(),
+  subtotal_after_discount_minor: z.number(),
+  shipping_minor: z.number(),
+  total_minor: z.number(),
   total_selected_quantity: z.number(),
   total_quantity: z.number(),
 })

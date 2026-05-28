@@ -2,6 +2,7 @@
 /*
   use in cart page, cart/checkout page
  */
+import { formatMinorCurrency } from '@arc/utils'
 import type { CartShopGroup } from '~/shared/api/cart/cart.shared'
 
 const props = defineProps<{
@@ -30,18 +31,18 @@ const isSelectAnyProduct = computed(() => {
   <div class="flex gap-2 text-lg text-customGray-900">
     <p>Shipping fee:</p>
     <p
-      v-if="props.shopCart.total_shipping_fee === 0 && isSelectAnyProduct"
+      v-if="props.shopCart.shipping_minor === 0 && isSelectAnyProduct"
       class="text-right font-normal text-green-700"
     >
       FREE
     </p>
     <p
-      v-else-if="props.shopCart.total_shipping_fee > 0"
+      v-else-if="props.shopCart.shipping_minor > 0"
     >
-      {{ convertCurrency(props.shopCart.total_shipping_fee) }}
+      {{ formatMinorCurrency(props.shopCart.shipping_minor, props.shopCart.currency) }}
     </p>
     <p v-else>
-      {{ convertCurrency(0) }}
+      {{ formatMinorCurrency(0, props.shopCart.currency) }}
     </p>
   </div>
   <div class="hidden">

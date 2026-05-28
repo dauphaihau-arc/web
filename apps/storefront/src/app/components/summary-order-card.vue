@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { formatMinorCurrency } from '@arc/utils'
 import type { CartSummary } from '~/shared/api/cart/cart.shared'
 
 const props = defineProps<{
@@ -30,10 +31,10 @@ const props = defineProps<{
           </div>
           <div class="price">
             <div>
-              {{ convertCurrency(props.summaryOrder?.subtotal_price) }}
+              {{ formatMinorCurrency(props.summaryOrder?.subtotal_minor, props.summaryOrder?.currency) }}
             </div>
             <div class="text-right">
-              {{ convertCurrency(props?.summaryOrder?.total_discount) }}
+              {{ formatMinorCurrency(props?.summaryOrder?.discount_minor, props.summaryOrder?.currency) }}
             </div>
           </div>
         </div>
@@ -45,10 +46,10 @@ const props = defineProps<{
           </div>
           <div class="price">
             <div>
-              {{ convertCurrency(props?.summaryOrder?.subtotal_after_discount) }}
+              {{ formatMinorCurrency(props?.summaryOrder?.subtotal_after_discount_minor, props.summaryOrder?.currency) }}
             </div>
             <div
-              v-if="props.summaryOrder?.total_shipping_fee === 0
+              v-if="props.summaryOrder?.shipping_minor === 0
                 && props.summaryOrder.total_selected_quantity"
               class="text-right font-normal text-green-600"
             >
@@ -58,7 +59,7 @@ const props = defineProps<{
               v-else
               class="text-right"
             >
-              {{ convertCurrency(props?.summaryOrder?.total_shipping_fee) }}
+              {{ formatMinorCurrency(props?.summaryOrder?.shipping_minor, props.summaryOrder?.currency) }}
             </div>
           </div>
         </div>
@@ -67,8 +68,8 @@ const props = defineProps<{
           <div class="text-lg font-medium">
             Total ({{ props.summaryOrder?.total_selected_quantity }} {{ props.summaryOrder?.total_selected_quantity > 1 ? 'products' : 'product' }})
           </div>
-          <div :class="['price', props.summaryOrder?.total_price > 0 && 'text-red-500']">
-            {{ convertCurrency(props.summaryOrder?.total_price) }}
+          <div :class="['price', props.summaryOrder?.total_minor > 0 && 'text-red-500']">
+            {{ formatMinorCurrency(props.summaryOrder?.total_minor, props.summaryOrder?.currency) }}
           </div>
         </div>
       </div>

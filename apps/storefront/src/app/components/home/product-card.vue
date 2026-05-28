@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { formatMinorCurrency } from '@arc/utils'
 import type { GetProductsResponseItem } from '~/shared/api/product/contracts/product.contract'
 import { routes } from '~/shared/navigation/routes'
 
@@ -11,6 +12,15 @@ const props = defineProps<{
 const imageUrl = computed(() => {
   return props.product.image?.variants?.card_1x1?.url
     ?? props.product.image?.url
+})
+
+const displayAmount = computed(() => {
+  const inventory = props.product.inventory
+  if (!inventory) {
+    return undefined
+  }
+
+  return formatMinorCurrency(inventory.amount_minor, inventory.currency)
 })
 </script>
 
@@ -30,8 +40,11 @@ const imageUrl = computed(() => {
       ]"
     />
     <div class="absolute bottom-3 left-3 flex gap-1 space-y-0.5 rounded-lg bg-white px-2.5 py-1">
-      <p class="text-md font-medium text-customGray-950">
-        {{ convertCurrency(props.product.inventory?.sale_price || props.product.inventory?.price) }}
+      <p
+        v-if="displayAmount !== undefined"
+        class="text-md font-medium text-customGray-950"
+      >
+        {{ displayAmount }}
       </p>
     </div>
     <slot name="content" />

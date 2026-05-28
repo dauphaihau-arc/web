@@ -2,6 +2,7 @@
 import dayjs from 'dayjs'
 import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
 import { buildTrackingUrl } from '@arc/utils/build-tracking-url'
+import { formatMinorCurrency } from '@arc/utils'
 import LoadingSvg from '~/shared/ui/loading-svg.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import SellerCancelOrderDialog from '~/app/components/dialogs/seller-cancel-order-dialog.vue'
@@ -141,7 +142,7 @@ function openCancelDialog() {
                     {{ order.status.replaceAll('_', ' ') }}
                   </UBadge>
                   <div class="mt-2 text-xl font-semibold">
-                    {{ convertCurrency(order.total) }}
+                    {{ formatMinorCurrency(order.total_minor, order.currency) }}
                   </div>
                 </div>
               </div>
@@ -170,7 +171,7 @@ function openCancelDialog() {
                   </div>
                 </div>
                 <div class="font-medium">
-                  {{ convertCurrency(product.sale_price ?? product.price) }}
+                  {{ formatMinorCurrency(product.amount_minor, product.currency) }}
                 </div>
               </div>
             </div>
@@ -321,20 +322,20 @@ function openCancelDialog() {
               </div>
               <div class="flex justify-between">
                 <span>Subtotal</span>
-                <span>{{ convertCurrency(order.subtotal) }}</span>
+                <span>{{ formatMinorCurrency(order.subtotal_minor, order.currency) }}</span>
               </div>
               <div class="flex justify-between">
                 <span>Discount</span>
-                <span>{{ convertCurrency(order.total_discount) }}</span>
+                <span>{{ formatMinorCurrency(order.discount_minor, order.currency) }}</span>
               </div>
               <div class="flex justify-between">
                 <span>Shipping fee</span>
-                <span>{{ convertCurrency(order.total_shipping_fee) }}</span>
+                <span>{{ formatMinorCurrency(order.shipping_minor, order.currency) }}</span>
               </div>
               <UDivider />
               <div class="flex justify-between font-semibold text-zinc-900">
                 <span>Total</span>
-                <span>{{ convertCurrency(order.total) }}</span>
+                <span>{{ formatMinorCurrency(order.total_minor, order.currency) }}</span>
               </div>
               <div v-if="order.note">
                 <div class="mb-1 font-medium text-zinc-900">

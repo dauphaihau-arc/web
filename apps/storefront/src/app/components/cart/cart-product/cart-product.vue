@@ -2,6 +2,7 @@
 /*
   use in cart page, cart/checkout page
  */
+import { formatMinorCurrency } from '@arc/utils'
 import CartCheckboxOrderProduct from './checkbox-order-product.vue'
 import CartModifyQuantityProduct from './modify-quantity-product.vue'
 import CartVariantsProduct from './variants-product.vue'
@@ -40,7 +41,7 @@ const {
             return {
               ...sc,
               items: foundShopCart.items.filter(item => item.inventory.id !== props.productCart.inventory.id),
-              total_shipping_fee: foundShopCart.total_shipping_fee,
+              shipping_minor: foundShopCart.shipping_minor,
             }
           }
           return sc
@@ -75,6 +76,19 @@ const {
 const goToDetailProduct = () => {
   navigateTo(routes.productDetail(props.productCart.product.shop.slug, props.productCart.product.slug))
 }
+
+const displayAmount = computed(() => formatMinorCurrency(
+  props.productCart.inventory.amount_minor,
+  props.productCart.inventory.currency,
+))
+const compareAtAmount = computed(() =>
+  props.productCart.inventory.original_amount_minor
+    ? formatMinorCurrency(
+      props.productCart.inventory.original_amount_minor,
+      props.productCart.inventory.currency,
+    )
+    : undefined,
+)
 </script>
 
 <template>
@@ -140,13 +154,13 @@ const goToDetailProduct = () => {
       </div>
 
       <div class="space-y-2 text-right">
-        <div v-if="props.productCart.inventory.sale_price">
+        <div v-if="compareAtAmount">
           <div class="text-xl font-medium text-green-700">
-            {{ convertCurrency(props.productCart.inventory.sale_price) }}
+            {{ displayAmount }}
           </div>
           <div class="text-sm text-zinc-500">
             <span class="line-through">
-              {{ convertCurrency(props.productCart.inventory.price) }}
+              {{ compareAtAmount }}
             </span>
           </div>
         </div>
@@ -154,7 +168,7 @@ const goToDetailProduct = () => {
           v-else
           class="text-xl font-medium text-customGray-950"
         >
-          {{ convertCurrency(props.productCart.inventory.price) }}
+          {{ displayAmount }}
         </div>
       </div>
     </div>

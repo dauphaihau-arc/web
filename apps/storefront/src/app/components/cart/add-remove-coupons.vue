@@ -83,7 +83,7 @@ const addCoupon = async () => {
         if (sc.shop.id === shopId) {
           return {
             ...sc,
-            total_shipping_fee: foundShopCart.total_shipping_fee,
+            shipping_minor: foundShopCart.shipping_minor,
           }
         }
         return sc
@@ -158,7 +158,7 @@ const deleteCoupon = async (code: string) => {
         if (sc.shop.id === shopId) {
           return {
             ...sc,
-            total_shipping_fee: foundShopCart.total_shipping_fee,
+            shipping_minor: foundShopCart.shipping_minor,
           }
         }
         return sc
@@ -227,7 +227,7 @@ const toggleShowAddCouponInput = async () => {
           if (sc.shop.id === shopId) {
             return {
               ...sc,
-              total_shipping_fee: foundShopCart.total_shipping_fee,
+              shipping_minor: foundShopCart.shipping_minor,
             }
           }
           return sc

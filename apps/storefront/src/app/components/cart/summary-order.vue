@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ORDER_CONFIG } from '@arc/enums/order'
+import { toMinorUnits } from '@arc/utils'
 import { useGetCart } from '~/shared/server-state/cart/cart.query'
 import { routes } from '~/shared/navigation/routes'
 
@@ -11,7 +12,8 @@ const router = useRouter()
 
 const isTotalOrderInvalid = computed(() => {
   if (dataGetCart.value) {
-    return !(dataGetCart.value.summary.total_price < ORDER_CONFIG.MAX_ORDER_TOTAL)
+    const currency = dataGetCart.value.summary.currency
+    return !(dataGetCart.value.summary.total_minor < toMinorUnits(ORDER_CONFIG.MAX_ORDER_TOTAL, currency))
   }
   return true
 })

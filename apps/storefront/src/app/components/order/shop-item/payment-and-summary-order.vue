@@ -2,6 +2,7 @@
 import dayjs from 'dayjs'
 import type { ElementType } from '@arc/contracts/utils'
 import { PaymentTypes } from '@arc/enums/order'
+import { formatMinorCurrency } from '@arc/utils'
 import type { GetOrderShopsResponse } from '~/shared/api/me/order/contracts/order.contract'
 
 defineProps<{
@@ -70,10 +71,10 @@ const showMore = ref(false)
           </div>
           <div class="price">
             <div>
-              {{ convertCurrency(orderShop.subtotal) }}
+              {{ formatMinorCurrency(orderShop.subtotal_minor, orderShop.currency) }}
             </div>
             <div>
-              {{ convertCurrency(orderShop.total_discount) }}
+              {{ formatMinorCurrency(orderShop.discount_minor, orderShop.currency) }}
             </div>
           </div>
         </div>
@@ -85,16 +86,16 @@ const showMore = ref(false)
           </div>
           <div class="price">
             <div>
-              {{ convertCurrency(orderShop.subtotal - orderShop.total_discount) }}
+              {{ formatMinorCurrency(orderShop.subtotal_minor - orderShop.discount_minor, orderShop.currency) }}
             </div>
             <div
-              v-if="orderShop.total_shipping_fee === 0"
+              v-if="orderShop.shipping_minor === 0"
               class="text-right font-normal text-green-600"
             >
               FREE
             </div>
             <div v-else>
-              {{ convertCurrency(orderShop.total_shipping_fee) }}
+              {{ formatMinorCurrency(orderShop.shipping_minor, orderShop.currency) }}
             </div>
           </div>
         </div>
@@ -104,7 +105,7 @@ const showMore = ref(false)
             Total
           </div>
           <div class="font-semibold">
-            {{ convertCurrency(orderShop.total) }}
+            {{ formatMinorCurrency(orderShop.total_minor, orderShop.currency) }}
           </div>
         </div>
       </div>

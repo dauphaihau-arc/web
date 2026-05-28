@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import type { ElementType } from '@arc/contracts/utils'
+import { formatMinorCurrency } from '@arc/utils'
 import NoteAndPromoCoupons from './note-and-promo-coupons.vue'
 import PaymentAndSummaryOrder from './payment-and-summary-order.vue'
 import ShopActions from './shop-actions.vue'
@@ -52,7 +53,7 @@ const displayOrderShop = computed(() =>
           </div>
           <div class="flex items-center gap-3">
             <div>
-              {{ convertCurrency(displayOrderShop.total) }}
+              {{ formatMinorCurrency(displayOrderShop.total_minor, displayOrderShop.currency) }}
             </div>
           </div>
         </div>

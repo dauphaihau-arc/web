@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
+import { formatMinorCurrency } from '@arc/utils'
 import type { DropdownItem } from '#ui/types'
 import LoadingSvg from '~/shared/ui/loading-svg.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
@@ -59,7 +60,7 @@ const rows = computed<Row[]>(() => {
     order: order.status.replaceAll('_', ' '),
     customer: order.customer.full_name,
     shipping: order.shipping.shipping_status.replaceAll('_', ' '),
-    total: String(convertCurrency(order.total)),
+    total: formatMinorCurrency(order.total_minor, order.currency),
     created_at: dayjs(order.created_at).format('MMM DD, YYYY'),
     raw: order,
   })) ?? []

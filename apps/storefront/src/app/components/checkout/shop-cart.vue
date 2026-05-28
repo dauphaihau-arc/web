@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ORDER_CONFIG } from '@arc/enums/order'
 import { ProductVariantTypes } from '@arc/enums/product'
+import { formatMinorCurrency } from '@arc/utils'
 import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { useGetCart } from '~/shared/server-state/cart/cart.query'
 import { useUpdateCart } from '~/shared/server-state/cart/update-cart.mutation'
@@ -45,6 +46,26 @@ const variantNames = computed(() => {
   }
   return { primary: '', sub: '' }
 })
+
+const displayAmount = computed(() => {
+  if (!productCart.value) {
+    return formatMinorCurrency(undefined, undefined)
+  }
+
+  return formatMinorCurrency(
+    productCart.value.inventory.amount_minor,
+    productCart.value.inventory.currency,
+  )
+})
+
+const compareAtAmount = computed(() =>
+  productCart.value?.inventory.original_amount_minor
+    ? formatMinorCurrency(
+      productCart.value.inventory.original_amount_minor,
+      productCart.value.inventory.currency,
+    )
+    : undefined,
+)
 
 const decreaseQty = () => {
   if (tempProductQty.value === 1) return
@@ -148,13 +169,13 @@ watchDebounced(
           </div>
 
           <div class="space-y-2 text-right">
-            <div v-if="productCart.inventory.sale_price">
+            <div v-if="compareAtAmount">
               <div class="text-xl font-medium text-green-700">
-                {{ convertCurrency(productCart.inventory.sale_price) }}
+                {{ displayAmount }}
               </div>
               <div class="text-sm text-zinc-500">
                 <span class="line-through">
-                  {{ convertCurrency(productCart.inventory.price) }}
+                  {{ compareAtAmount }}
                 </span>
               </div>
             </div>
@@ -162,7 +183,7 @@ watchDebounced(
               v-else
               class="text-xl font-medium text-customGray-950"
             >
-              {{ convertCurrency(productCart.inventory.price) }}
+              {{ displayAmount }}
             </div>
           </div>
         </div>

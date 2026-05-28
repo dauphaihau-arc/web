@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ProductStates, ProductVariantTypes } from '@arc/enums/product'
+import { formatMinorCurrency } from '@arc/utils'
 import type { ElementType } from '@arc/contracts/utils'
 import type { DropdownItem } from '#ui/types'
 import LoadingSvg from '~/shared/ui/loading-svg.vue'
@@ -249,7 +250,7 @@ async function removeProduct(id: string) {
               v-for="(inv, idx) of row.inventory"
               :key="idx"
             >
-              {{ formatCurrency(inv.price) }}
+              {{ formatMinorCurrency(inv.amount_minor, inv.currency) }}
             </div>
           </div>
         </template>

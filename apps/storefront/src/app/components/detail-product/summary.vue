@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ProductVariantTypes } from '@arc/enums/product'
+import { formatMinorCurrency } from '@arc/utils'
 import type { ElementType } from '@arc/contracts/utils'
 import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contracts/product.contract'
 
@@ -13,8 +14,8 @@ const sortedInventory = computed(() => {
   return props.product.inventory
     .slice()
     .sort((left, right) => {
-      const leftPrice = left.sale_price ?? left.price
-      const rightPrice = right.sale_price ?? right.price
+      const leftPrice = left.amount_minor
+      const rightPrice = right.amount_minor
       return leftPrice - rightPrice
     })
 })
@@ -36,7 +37,7 @@ const highestPrice = computed(() => {
     && sortedInventory.value.length > 1
   ) {
     const highestInventory = sortedInventory.value[sortedInventory.value.length - 1]
-    return highestInventory.sale_price ?? highestInventory.price
+    return formatMinorCurrency(highestInventory.amount_minor, highestInventory.currency)
   }
   return ''
 })
@@ -45,13 +46,13 @@ const baseInventory = computed(() => sortedInventory.value[0])
 
 const lowestPrice = computed(() => {
   const inventory = props.inventorySelected ?? baseInventory.value
-  return inventory ? (inventory.sale_price ?? inventory.price) : ''
+  return inventory ? formatMinorCurrency(inventory.amount_minor, inventory.currency) : ''
 })
 
 const originPrice = computed(() => {
   const inventory = props.inventorySelected ?? baseInventory.value
-  if (inventory?.sale_price !== undefined) {
-    return inventory.price
+  if (inventory?.original_amount_minor !== undefined) {
+    return formatMinorCurrency(inventory.original_amount_minor, inventory.currency)
   }
   return ''
 })
@@ -75,14 +76,14 @@ const originPrice = computed(() => {
             class="price"
             :class="originPrice && 'text-green-700'"
           >
-            {{ convertCurrency(lowestPrice) }}{{ plusSign }}
-            <span v-if="highestPrice">- {{ convertCurrency(highestPrice) }}</span>
+            {{ lowestPrice }}{{ plusSign }}
+            <span v-if="highestPrice">- {{ highestPrice }}</span>
           </div>
           <div
             v-if="originPrice"
             class="origin-price"
           >
-            {{ convertCurrency(originPrice) }}
+            {{ originPrice }}
           </div>
         </div>
       </div>

@@ -41,7 +41,7 @@ const {
           return {
             ...sc,
             items: newItems,
-            total_shipping_fee: foundShopCart.total_shipping_fee,
+            shipping_minor: foundShopCart.shipping_minor,
           }
         }
         return sc

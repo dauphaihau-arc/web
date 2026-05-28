@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { formatMinorCurrency } from '@arc/utils'
 import VariantsProduct from './variants-product.vue'
 import type { ResponseGetOrderShopsProduct } from '~/shared/api/me/order/contracts/order.contract'
 import { routes } from '~/shared/navigation/routes'
@@ -6,6 +7,13 @@ import { routes } from '~/shared/navigation/routes'
 const { productOrder } = defineProps<{
   productOrder: ResponseGetOrderShopsProduct
 }>()
+
+const displayAmount = computed(() => formatMinorCurrency(productOrder.amount_minor, productOrder.currency))
+const compareAtAmount = computed(() =>
+  productOrder.original_amount_minor
+    ? formatMinorCurrency(productOrder.original_amount_minor, productOrder.currency)
+    : undefined,
+)
 </script>
 
 <template>
@@ -42,15 +50,15 @@ const { productOrder } = defineProps<{
       <div class="space-y-4">
         <div class="flex items-center gap-3">
           <div
-            v-if="productOrder.sale_price && productOrder.percent_coupon"
+            v-if="compareAtAmount && productOrder.percent_coupon"
             class="text-right"
           >
             <div class="text-xl font-medium text-customGray-950">
-              {{ convertCurrency(productOrder.sale_price) }}
+              {{ displayAmount }}
             </div>
             <div class="text-sm text-zinc-500">
               <span class="line-through">
-                {{ convertCurrency(productOrder.price) }}
+                {{ compareAtAmount }}
               </span>
               ({{ productOrder.percent_coupon.percent_off }}% off)
             </div>
@@ -59,7 +67,7 @@ const { productOrder } = defineProps<{
             v-else
             class="font-medium text-customGray-950"
           >
-            {{ convertCurrency(productOrder?.price) }}
+            {{ displayAmount }}
           </div>
         </div>
       </div>
