@@ -8,13 +8,13 @@ import type {
   StateSingleVariant,
 } from '~/shared/api/shop/product/contracts/form.contract'
 
-const props = defineProps<{ countValidate: number }>()
+const props = defineProps<{ countValidate: number, currency?: string }>()
 
 const generateRandomId = () => new Date().getTime()
 
 type VariantOption = { id: number, variant_name: string, errorMsg: string }
 type InventoryFields = {
-  price?: number
+  amount?: number
   stock?: number
   sku?: string
 }
@@ -38,7 +38,7 @@ type State = {
 type VariantTable = {
   id: number
   sub_variant_name?: string
-  errorPrice: string
+  errorAmount: string
   errorStock: string
 } & InventoryFields & VariantFields
 
@@ -71,10 +71,10 @@ const state = reactive<State>({
 const defaultVariantTable: VariantTable = {
   id: 1,
   variant_name: '',
-  price: undefined,
+  amount: undefined,
   stock: 0,
   sku: '',
-  errorPrice: '',
+  errorAmount: '',
   errorStock: '',
 }
 
@@ -94,10 +94,10 @@ function mixVariantsTable() {
         id,
         variant_name: stateVariant.variant_name || '',
         sub_variant_name: stateSubVariant.variant_name || '',
-        price: result?.price || undefined,
+        amount: result?.amount || undefined,
         stock: result?.stock || 0,
         sku: result?.sku || '',
-        errorPrice: '',
+        errorAmount: '',
         errorStock: '',
       })
     })
@@ -219,7 +219,7 @@ const columnsRef = ref([
     key: 'variant_name',
     label: state.variant_group_name || 'Group variant 1',
   }, {
-    key: 'price',
+    key: 'amount',
     label: 'Price',
   }, {
     key: 'stock',
@@ -317,16 +317,16 @@ watch(() => props.countValidate, () => {
   })
 
   // validate price, stock, sku in table
-  const variantsTableForParse: Pick<VariantTable, 'price' | 'stock' | 'sku'>[] = []
+  const variantsTableForParse: Pick<VariantTable, 'amount' | 'stock' | 'sku'>[] = []
   variantsTable.value.forEach((vb) => {
-    vb.errorPrice = ''
+    vb.errorAmount = ''
     vb.errorStock = ''
-    const { stock, price, sku } = vb
-    variantsTableForParse.push({ stock, price, sku })
+    const { stock, amount, sku } = vb
+    variantsTableForParse.push({ stock, amount, sku })
   })
 
   const parsedVariantsTable = productInventorySchema
-    .pick({ price: true, stock: true, sku: true })
+    .pick({ amount: true, stock: true, sku: true })
     .array()
     .safeParse(variantsTableForParse)
 
@@ -334,8 +334,8 @@ watch(() => props.countValidate, () => {
     parsedVariantsTable.error.issues.forEach((detail) => {
       const index = detail.path[0] as number
       const name = detail.path[1]
-      if (name === 'price') {
-        variantsTable.value[index].errorPrice = detail.message
+      if (name === 'amount') {
+        variantsTable.value[index].errorAmount = detail.message
       }
       if (name === 'stock') {
         variantsTable.value[index].errorStock = detail.message
@@ -361,19 +361,19 @@ function emitData() {
   if (state.isActiveSubVariant) {
     const variantsTableAsObj = variantsTable.value.reduce((acc, variant) => {
       const {
-        price, sku, stock, variant_name, sub_variant_name,
+        amount, sku, stock, variant_name, sub_variant_name,
       } = variant as NoUndefinedField<VariantTable>
       if (!acc[variant_name]) {
         acc[variant_name] = []
       }
       acc[variant_name].push({
-        price,
+        amount,
         sku,
         stock,
         variant_name: sub_variant_name,
       })
       return acc
-    }, {} as Record<NonNullable<ProductVariantOption['variant_name']>, Pick<NoUndefinedField<VariantTable>, 'price' | 'sku' | 'stock' | 'variant_name'>[]>)
+    }, {} as Record<NonNullable<ProductVariantOption['variant_name']>, Pick<NoUndefinedField<VariantTable>, 'amount' | 'sku' | 'stock' | 'variant_name'>[]>)
 
     const combineVariants = Object.entries(variantsTableAsObj).map(([variant_name, variant_options]) => ({
       variant_name,
@@ -387,10 +387,10 @@ function emitData() {
   else {
     const variantOptions = variantsTable.value.map((vb) => {
       const {
-        price, sku, stock, variant_name,
+        amount, sku, stock, variant_name,
       } = vb as NoUndefinedField<VariantTable>
       return {
-        price, sku, stock, variant_name,
+        amount, sku, stock, variant_name,
       }
     })
     singleVariantModel.value.variant_group_name = state.variant_group_name
@@ -652,20 +652,20 @@ watchDebounced(
         </div>
       </template>
 
-      <template #price-data="{ row }">
+      <template #amount-data="{ row }">
         <UFormGroup
           class="mt-6"
-          :error="row.errorPrice ?? ''"
+          :error="row.errorAmount ?? ''"
         >
           <UInput
-            v-model.number="row.price"
+            v-model.number="row.amount"
             v-max-number="PRODUCT_CONFIG.MAX_PRICE"
             v-numeric
             size="lg"
-            name="price"
+            name="amount"
           >
             <template #trailing>
-              <span class="text-xs text-gray-500 dark:text-gray-400">USD</span>
+              <span class="text-xs text-gray-500 dark:text-gray-400">{{ props.currency ?? 'USD' }}</span>
             </template>
           </UInput>
           <template #error="{ error }">

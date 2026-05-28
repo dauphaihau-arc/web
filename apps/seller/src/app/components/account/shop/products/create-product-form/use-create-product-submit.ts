@@ -25,6 +25,7 @@ import type {
 type UseCreateProductSubmitInput = {
   fileImages: Ref<File[]>
   shipping: Ref<CreateProductShipping | undefined>
+  shopCurrency: Ref<string> | { value: string } | string
   noneVariant: Ref<StateNoneVariant> | { value: StateNoneVariant } | StateNoneVariant
   singleVariant: Ref<StateSingleVariant> | { value: StateSingleVariant } | StateSingleVariant
   combineVariant: Ref<StateCombineVariant> | { value: StateCombineVariant } | StateCombineVariant
@@ -40,6 +41,7 @@ function unwrap<T>(value: Ref<T> | { value: T } | T): T {
 export function useCreateProductSubmit({
   fileImages,
   shipping,
+  shopCurrency,
   noneVariant,
   singleVariant,
   combineVariant,
@@ -141,7 +143,9 @@ export function useCreateProductSubmit({
     loadingSubmit.value = true
 
     try {
-      const productDraft = await createProduct(buildCreateProductPayload(bodyData))
+      const productDraft = await createProduct(
+        buildCreateProductPayload(bodyData, unwrap(shopCurrency) || 'USD'),
+      )
 
       if (fileImages.value.length > 0) {
         const storageKeys = await uploadImage(productDraft.id)

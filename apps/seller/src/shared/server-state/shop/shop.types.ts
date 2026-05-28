@@ -4,4 +4,5 @@ export type MyShop = {
   shop_name: string
   slug: string
   status: string
+  currency: string
 }

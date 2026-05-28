@@ -1,4 +1,5 @@
 import { ProductVariantTypes } from '@arc/enums/product'
+import { fromMinorUnits } from '@arc/utils'
 import type {
   DetailShopProductInventory,
   DetailShopProductResponse,
@@ -16,10 +17,13 @@ function normalizeInventory(
 
   return {
     id: inventory.id,
-    price: inventory.price,
+    amount: fromMinorUnits(inventory.amountMinor, inventory.currency),
+    original_price: inventory.originalAmountMinor != null
+      ? fromMinorUnits(inventory.originalAmountMinor, inventory.currency)
+      : undefined,
     stock: inventory.stock,
     sku: inventory.sku,
-    sale_price: inventory.salePrice,
+    currency: inventory.currency,
   }
 }
 

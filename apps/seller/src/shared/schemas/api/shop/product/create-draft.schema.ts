@@ -26,8 +26,13 @@ export const createDraftProductRequestInventorySchema = z.object({
   variant_client_key: z.string().optional(),
   sku: z.string().optional(),
   stock: z.number(),
-  price: z.number(),
-  sale_price: z.number().optional(),
+})
+
+export const createDraftProductRequestPricingSchema = z.object({
+  variant_client_key: z.string().optional(),
+  amount_minor: z.number().int().nonnegative(),
+  original_amount_minor: z.number().int().nonnegative().optional(),
+  currency: z.string(),
 })
 
 export const createDraftProductRequestShippingDestinationSchema = z.object({
@@ -58,6 +63,7 @@ export const createDraftProductRequestSchema = z.object({
   attributes: z.array(createDraftProductRequestAttributeSchema).optional(),
   variants: z.array(createDraftProductRequestVariantSchema).optional(),
   inventory: z.array(createDraftProductRequestInventorySchema),
+  pricing: z.array(createDraftProductRequestPricingSchema),
   shipping: createDraftProductRequestShippingSchema,
 })
 
@@ -96,8 +102,9 @@ export const createDraftProductResponseSchema = z.object({
     product_variant_id: z.string().optional(),
     sku: z.string().optional(),
     stock: z.number(),
-    price: z.number(),
-    sale_price: z.number().optional(),
+    amount_minor: z.number().int().nonnegative(),
+    original_amount_minor: z.number().int().nonnegative().optional(),
+    currency: z.string(),
   })),
   shipping: z.object({
     id: z.string(),

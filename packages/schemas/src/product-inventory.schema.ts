@@ -6,7 +6,7 @@ export const productInventorySchema = z.object({
   id: idSchema,
   shop: idSchema,
   product: idSchema,
-  price: z
+  amount: z
     .number()
     .min(PRODUCT_CONFIG.MIN_PRICE, `Price must at least ${PRODUCT_CONFIG.MIN_PRICE}$`)
     .max(PRODUCT_CONFIG.MAX_PRICE,

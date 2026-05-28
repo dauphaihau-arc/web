@@ -18,7 +18,7 @@ export type UpdateVariantOptions = z.infer<typeof updateVariantOptionsFormSchema
 export type ReqAttributeOption = ElementType<CreateProductBody['attributes']>
 
 export type VariantOption = {
-  price?: number
+  amount?: number
   stock?: number
   sku?: string
   variant_name?: string
@@ -45,7 +45,7 @@ export type CombineVariant = {
 }
 
 type TNoneVariant = Omit<NoneVariant, 'variant_type'>
-export type StateNoneVariant = PickPartial<TNoneVariant, 'price' | 'sku'>
+export type StateNoneVariant = PickPartial<TNoneVariant, 'amount' | 'sku'>
 export type StateSingleVariant = Partial<Omit<SingleVariant, 'variant_type'>>
 export type StateCombineVariant = Partial<Omit<CombineVariant, 'variant_type'>>
 

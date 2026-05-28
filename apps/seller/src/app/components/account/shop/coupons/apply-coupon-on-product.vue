@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { fromMinorUnits } from '@arc/utils'
 import { useShopGetProducts } from '~/shared/server-state/shop/product/list.query'
 import type {
   ListShopProductsItem,
@@ -68,12 +69,20 @@ const rowsDialog = computed<ProductCouponRow[]>(() => {
   }
 
   return dataShopGetProducts.value.items.map((prod) => {
-    const inventory = [...toRaw(prod.inventory)].sort((a, b) => a.price - b.price)
+    const inventory = [...toRaw(prod.inventory)]
+      .sort((a, b) => a.amount_minor - b.amount_minor)
 
     return {
       ...prod,
-      lowestPrice: inventory[0]?.price ?? 0,
-      highestPrice: inventory.length > 1 ? inventory[inventory.length - 1].price : 0,
+      lowestPrice: inventory[0]
+        ? fromMinorUnits(inventory[0].amount_minor, inventory[0].currency)
+        : 0,
+      highestPrice: inventory.length > 1
+        ? fromMinorUnits(
+          inventory[inventory.length - 1].amount_minor,
+          inventory[inventory.length - 1].currency,
+        )
+        : 0,
       stock: inventory.reduce((acc, next) => acc + next.stock, 0),
     }
   })

@@ -1,5 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
+import { MarketCurrencies } from '@arc/enums/market'
 import { ProductVariantTypes } from '@arc/enums/product'
 import type { PickPartial } from '@arc/contracts/utils'
 import type {
@@ -75,15 +76,20 @@ export function mapAttributes(
 
 export function mapInventoryAndVariants(
   bodyData: CreateProductSubmitBody,
-): Pick<RequestCreateProductDraftBody, 'inventory' | 'variants'> {
+  currency: string,
+): Pick<RequestCreateProductDraftBody, 'inventory' | 'pricing' | 'variants'> {
   if (bodyData.variant_type === ProductVariantTypes.NONE) {
     return {
       inventory: [
         {
-          price: bodyData.price!,
-          sale_price: undefined,
           sku: bodyData.sku,
           stock: bodyData.stock,
+        },
+      ],
+      pricing: [
+        {
+          amount_minor: toMinorUnits(bodyData.amount!, currency),
+          currency,
         },
       ],
     }
@@ -98,10 +104,13 @@ export function mapInventoryAndVariants(
         option_value_1: variant.variant_name,
         inventory: {
           variant_client_key: clientKey,
-          price: variant.price,
-          sale_price: undefined,
           sku: variant.sku,
           stock: variant.stock,
+        },
+        pricing: {
+          variant_client_key: clientKey,
+          amount_minor: toMinorUnits(variant.amount!, currency),
+          currency,
         },
       }
     })
@@ -112,6 +121,7 @@ export function mapInventoryAndVariants(
         option_value_1: variant.option_value_1,
       })),
       inventory: variants.map(variant => variant.inventory),
+      pricing: variants.map(variant => variant.pricing),
     }
   }
 
@@ -125,10 +135,13 @@ export function mapInventoryAndVariants(
         option_value_2: subVariant.variant_name,
         inventory: {
           variant_client_key: clientKey,
-          price: subVariant.price,
-          sale_price: undefined,
           sku: subVariant.sku,
           stock: subVariant.stock,
+        },
+        pricing: {
+          variant_client_key: clientKey,
+          amount_minor: toMinorUnits(subVariant.amount!, currency),
+          currency,
         },
       }
     })
@@ -141,6 +154,7 @@ export function mapInventoryAndVariants(
       option_value_2: variant.option_value_2,
     })),
     inventory: variants.map(variant => variant.inventory),
+    pricing: variants.map(variant => variant.pricing),
   }
 }
 
@@ -162,6 +176,7 @@ export function mapShipping(
 
 export function buildCreateProductPayload(
   bodyData: CreateProductSubmitBody,
+  currency: string,
 ): RequestCreateProductDraftBody {
   return {
     category_id: bodyData.category_id,
@@ -182,7 +197,7 @@ export function buildCreateProductPayload(
     attributes: bodyData.attributes?.length
       ? mapAttributes(bodyData.attributes)
       : undefined,
-    ...mapInventoryAndVariants(bodyData),
+    ...mapInventoryAndVariants(bodyData, currency),
     shipping: mapShipping(bodyData.shipping),
   }
 }
@@ -192,4 +207,43 @@ export function buildCreateProductImagesPayload(storageKeys: string[]) {
     storage_key: key,
     rank: index + 1,
   }))
+}
+
+const CURRENCY_DECIMALS: Record<string, number> = {
+  [MarketCurrencies.USD]: 2,
+  [MarketCurrencies.AUD]: 2,
+  [MarketCurrencies.BRL]: 2,
+  [MarketCurrencies.CHF]: 2,
+  [MarketCurrencies.CNY]: 2,
+  [MarketCurrencies.CZK]: 2,
+  [MarketCurrencies.DKK]: 2,
+  [MarketCurrencies.EUR]: 2,
+  [MarketCurrencies.GBP]: 2,
+  [MarketCurrencies.CAD]: 2,
+  [MarketCurrencies.HKD]: 2,
+  [MarketCurrencies.HUF]: 2,
+  [MarketCurrencies.IDR]: 2,
+  [MarketCurrencies.ILS]: 2,
+  [MarketCurrencies.INR]: 2,
+  [MarketCurrencies.JPY]: 0,
+  [MarketCurrencies.KRW]: 0,
+  [MarketCurrencies.MAD]: 2,
+  [MarketCurrencies.MXN]: 2,
+  [MarketCurrencies.MYR]: 2,
+  [MarketCurrencies.NOK]: 2,
+  [MarketCurrencies.NZD]: 2,
+  [MarketCurrencies.PHP]: 2,
+  [MarketCurrencies.PLN]: 2,
+  [MarketCurrencies.SEK]: 2,
+  [MarketCurrencies.SGD]: 2,
+  [MarketCurrencies.THB]: 2,
+  [MarketCurrencies.TRY]: 2,
+  [MarketCurrencies.TWD]: 2,
+  [MarketCurrencies.VND]: 0,
+  [MarketCurrencies.ZAR]: 2,
+}
+
+function toMinorUnits(amount: number, currency: string) {
+  const decimals = CURRENCY_DECIMALS[currency] ?? 2
+  return Math.round(amount * 10 ** decimals)
 }

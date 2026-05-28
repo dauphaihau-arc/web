@@ -32,7 +32,7 @@ export function applyDetailProductToFormState(
   stateSubmit.category_id = detailProduct.category.id
 
   if (detailProduct.variant_type === ProductVariantTypes.NONE) {
-    noneVariant.price = detailProduct.inventory.price
+    noneVariant.amount = detailProduct.inventory.amount
     noneVariant.stock = detailProduct.inventory.stock
     noneVariant.sku = detailProduct.inventory.sku
   }

@@ -34,10 +34,10 @@ type VariantTable = {
   inventoryId?: string | null
   subVariantId?: string | null
   sub_variant_name?: string
-  errorPrice: string
+  errorAmount: string
   errorStock: string
   isUpdated?: boolean
-  price?: number
+  amount?: number
   stock?: number
   sku?: string
   variant_name?: string
@@ -74,10 +74,10 @@ const state = reactive<State>({
 const defaultVariantTable: VariantTable = {
   id: 1,
   variant_name: '',
-  price: undefined,
+  amount: undefined,
   stock: 0,
   sku: '',
-  errorPrice: '',
+  errorAmount: '',
   errorStock: '',
   inventoryId: null,
   isUpdated: false,
@@ -106,11 +106,11 @@ onMounted(() => {
       id: index + 1,
       inventoryId: variant.inventory.id,
       variant_name: variant.variant_name || '',
-      price: variant.inventory.price,
+      amount: variant.inventory.amount,
       stock: variant.inventory.stock,
       sku: variant.inventory?.sku || '',
       isUpdated: false,
-      errorPrice: '',
+      errorAmount: '',
       errorStock: '',
     }))
   }
@@ -140,10 +140,10 @@ onMounted(() => {
           sub_variant_name: variantOpt.variant.variant_name || '',
           subVariantId: variantOpt.variant.id,
           inventoryId: variantOpt.inventory.id,
-          price: variantOpt.inventory.price,
+          amount: variantOpt.inventory.amount,
           stock: variantOpt.inventory.stock,
           sku: variantOpt.inventory?.sku || '',
-          errorPrice: '',
+          errorAmount: '',
           errorStock: '',
         })
       })
@@ -168,10 +168,10 @@ function mixVariantsTable() {
         sub_variant_name: stateSubVariant.variant_name || '',
         subVariantId: state.variantsCurrent.get(stateSubVariant.variant_name),
         inventoryId: result?.inventoryId || null,
-        price: result?.price || undefined,
+        amount: result?.amount || undefined,
         stock: result?.stock || 0,
         sku: result?.sku || '',
-        errorPrice: '',
+        errorAmount: '',
         errorStock: '',
       })
     })
@@ -295,7 +295,7 @@ const columnsRef = ref([
     key: 'variant_name',
     label: state.variant_group_name || 'Group variant 1',
   }, {
-    key: 'price',
+    key: 'amount',
     label: 'Price',
   }, {
     key: 'stock',
@@ -320,7 +320,7 @@ const onChangeInputTable = (event: Event, row: VariantTable) => {
   const name = target.name
   let value: string | number = target.value
 
-  if (name === 'price' || name === 'stock') {
+  if (name === 'amount' || name === 'stock') {
     value = Number(value)
   }
   if (row.id) {
@@ -408,17 +408,17 @@ watch(() => props.countValidate, () => {
     }
   })
 
-  // validate price, stock, sku in table
-  const variantsTableForParse: Pick<VariantTable, 'price' | 'stock' | 'sku'>[] = []
+  // validate amount, stock, sku in table
+  const variantsTableForParse: Pick<VariantTable, 'amount' | 'stock' | 'sku'>[] = []
   variantsTable.value.forEach((vb) => {
-    vb.errorPrice = ''
+    vb.errorAmount = ''
     vb.errorStock = ''
-    const { stock, price, sku } = vb
-    variantsTableForParse.push({ stock, price, sku })
+    const { stock, amount, sku } = vb
+    variantsTableForParse.push({ stock, amount, sku })
   })
 
   const parsedVariantsTable = productInventorySchema
-    .pick({ price: true, stock: true, sku: true })
+    .pick({ amount: true, stock: true, sku: true })
     .array()
     .safeParse(variantsTableForParse)
 
@@ -426,8 +426,8 @@ watch(() => props.countValidate, () => {
     parsedVariantsTable.error.issues.forEach((detail) => {
       const index = detail.path[0]
       const name = detail.path[1]
-      if (name === 'price') {
-        variantsTable.value[index].errorPrice = detail.message
+      if (name === 'amount') {
+        variantsTable.value[index].errorAmount = detail.message
       }
       if (name === 'stock') {
         variantsTable.value[index].errorStock = detail.message
@@ -468,14 +468,14 @@ function emitData() {
         .filter(variant => !variant.inventoryId)
         .reduce((acc, variant) => {
           const {
-            price, sku, stock, variant_name, sub_variant_name, subVariantId,
+            amount, sku, stock, variant_name, sub_variant_name, subVariantId,
           } = variant
 
           if (!acc[variant_name]) {
             acc[variant_name] = []
           }
           acc[variant_name].push({
-            price,
+            amount,
             sku,
             stock,
             variant: subVariantId,
@@ -492,17 +492,17 @@ function emitData() {
   // update inventory or add new variant ( single variant )
   variantsTable.value.forEach((variant) => {
     const {
-      isUpdated, inventoryId, price, stock, sku, variant_name,
+      isUpdated, inventoryId, amount, stock, sku, variant_name,
     } = variant
 
-    if (!price) {
+    if (!amount) {
       return
     }
 
     if (isUpdated && inventoryId) {
       variant_inventories.push({
         id: inventoryId,
-        price,
+        amount,
         stock,
         sku: sku || '',
       })
@@ -510,7 +510,7 @@ function emitData() {
     if (!state.isActiveSubVariant && !inventoryId) {
       new_single_variants.push({
         variant_name,
-        price,
+        amount,
         stock,
         sku: sku || '',
       })
@@ -839,17 +839,17 @@ watchDebounced(
         </div>
       </template>
 
-      <template #price-data="{ row }">
+      <template #amount-data="{ row }">
         <UFormGroup
           class="mt-6"
-          :error="row.errorPrice ?? ''"
+          :error="row.errorAmount ?? ''"
         >
           <UInput
-            v-model.number="row.price"
+            v-model.number="row.amount"
             v-max-number="PRODUCT_CONFIG.MAX_PRICE"
             v-numeric
             size="lg"
-            name="price"
+            name="amount"
             @input="(e: Event) => onChangeInputTable(e, row)"
           >
             <template #trailing>

@@ -8,7 +8,7 @@ import {
 } from '@arc/schemas/product.schema'
 
 const createProductInventorySchema = productInventorySchema.pick({
-  price: true,
+  amount: true,
   sku: true,
   stock: true,
 })
@@ -43,7 +43,7 @@ export const updateProductFormSchema = baseProductSchema
         .array(
           productInventorySchema
             .pick({
-              id: true, price: true, sku: true, stock: true,
+              id: true, amount: true, sku: true, stock: true,
             })
             .strict(),
         )

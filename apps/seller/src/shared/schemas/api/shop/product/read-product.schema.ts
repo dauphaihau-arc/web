@@ -38,8 +38,9 @@ export const listShopProductsItemSchema = z.object({
     product_variant_id: z.string().optional(),
     sku: z.string().optional(),
     stock: z.number(),
-    price: z.number(),
-    sale_price: z.number().optional(),
+    amount_minor: z.number().int().nonnegative(),
+    original_amount_minor: z.number().int().nonnegative().optional(),
+    currency: z.string(),
   })),
 })
 
@@ -89,17 +90,19 @@ export const shopProductDetailApiResponseSchema = z.object({
     productVariantId: z.string().optional(),
     sku: z.string().optional(),
     stock: z.number(),
-    price: z.number(),
-    salePrice: z.number().optional(),
+    amountMinor: z.number().int().nonnegative(),
+    originalAmountMinor: z.number().int().nonnegative().optional(),
+    currency: z.string(),
   })),
 })
 
 export const detailShopProductInventorySchema = z.object({
   id: z.string().optional(),
-  price: z.number().optional(),
+  amount: z.number().optional(),
   stock: z.number().optional(),
   sku: z.string().optional(),
-  sale_price: z.number().optional(),
+  original_price: z.number().optional(),
+  currency: z.string().optional(),
 })
 
 export const detailShopProductVariantOptionSchema = z.object({

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { MarketCurrencies } from '@arc/enums/market'
 import { shopSchema } from '@arc/schemas/shop.schema'
 import type { FormSubmitEvent } from '#ui/types'
 import type { CreateShopRequest } from '~/shared/api/shop/contracts/shop.contract'
@@ -13,6 +14,7 @@ const unknownErrorMsg = ref('')
 
 const stateSubmit = reactive({
   shop_name: '',
+  currency: MarketCurrencies.USD,
 })
 
 const {
@@ -73,7 +75,7 @@ async function onSubmit(event: FormSubmitEvent<CreateShopRequest>) {
     <UForm
       ref="formRef"
       :validate-on="['submit']"
-      :schema="shopSchema.pick({ shop_name: true })"
+      :schema="shopSchema.pick({ shop_name: true, currency: true })"
       :state="stateSubmit"
       @submit="onSubmit"
     >
@@ -88,8 +90,20 @@ async function onSubmit(event: FormSubmitEvent<CreateShopRequest>) {
         />
       </UFormGroup>
 
+      <UFormGroup
+        name="currency"
+        class="mb-4"
+      >
+        <USelectMenu
+          v-model="stateSubmit.currency"
+          :disabled="isPendingCreateShop"
+          :options="Object.values(MarketCurrencies)"
+          size="xl"
+        />
+      </UFormGroup>
+
       <UButton
-        :disabled="!stateSubmit.shop_name"
+        :disabled="!stateSubmit.shop_name || !stateSubmit.currency"
         :loading="isPendingCreateShop"
         size="xl"
         block

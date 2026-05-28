@@ -2,7 +2,7 @@
 import { PRODUCT_CONFIG } from '@arc/enums/product'
 import type { StateNoneVariant } from '~/shared/api/shop/product/contracts/form.contract'
 
-const props = defineProps<{ disabled?: boolean }>()
+const props = defineProps<{ disabled?: boolean, currency?: string }>()
 
 const noneVariantModel = defineModel<StateNoneVariant>('noneVariant', {
   default: {
@@ -16,11 +16,11 @@ const noneVariantModel = defineModel<StateNoneVariant>('noneVariant', {
     <UFormGroup
       class="mb-4"
       label="Price"
-      name="price"
+      name="amount"
       required
     >
       <UInput
-        v-model.number="noneVariantModel.price"
+        v-model.number="noneVariantModel.amount"
         v-max-number="PRODUCT_CONFIG.MAX_PRICE"
         v-numeric
         :disabled="props.disabled"
@@ -29,7 +29,7 @@ const noneVariantModel = defineModel<StateNoneVariant>('noneVariant', {
         class="w-1/2"
       >
         <template #trailing>
-          <span class="text-xs text-gray-500">USD</span>
+          <span class="text-xs text-gray-500">{{ props.currency ?? 'USD' }}</span>
         </template>
       </UInput>
     </UFormGroup>

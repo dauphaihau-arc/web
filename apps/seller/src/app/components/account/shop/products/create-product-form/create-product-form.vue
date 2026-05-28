@@ -21,6 +21,7 @@ import NoneVariantInput from '~/app/components/account/shop/products/none-varian
 import SearchCategoryInput from '~/app/components/account/shop/products/search-category-input.vue'
 import SelectAttributesInput from '~/app/components/account/shop/products/select-attributes-input.vue'
 import TagsInput from '~/app/components/account/shop/products/tags-input.vue'
+import { useGetMyShop } from '~/shared/server-state/shop/my-shop.query'
 import type {
   CreateProductBody,
   CreateProductShipping,
@@ -40,6 +41,8 @@ const btnSubmitRef = ref()
 const enabledButtonSubmit = ref(false)
 const countValidate = ref(0)
 const hasImages = computed(() => fileImages.value.length > 0)
+const { data: myShop } = useGetMyShop()
+const shopCurrency = computed(() => myShop.value?.currency ?? 'USD')
 
 const shipping = ref<CreateProductShipping | undefined>()
 
@@ -66,6 +69,7 @@ const {
 } = useCreateProductSubmit({
   fileImages,
   shipping,
+  shopCurrency,
   noneVariant,
   singleVariant,
   combineVariant,
@@ -130,7 +134,7 @@ watchDebounced(
 
 watch(isProductHaveVariants, () => {
   if (isProductHaveVariants.value) {
-    noneVariant.price = undefined
+    noneVariant.amount = undefined
     noneVariant.stock = 1
   }
   stateSubmit.variant_type = isProductHaveVariants.value
@@ -304,11 +308,13 @@ watch(isProductHaveVariants, () => {
             v-model:single-variant="singleVariant"
             v-model:combine-variant="combineVariant"
             v-model:variant-type="stateSubmit.variant_type"
+            :currency="shopCurrency"
             :count-validate="countValidate"
           />
           <NoneVariantInput
             v-else
             v-model:none-variant="noneVariant"
+            :currency="shopCurrency"
             :disabled="loadingSubmit"
             class="max-w-[40%]"
           />
