@@ -26,7 +26,7 @@ export type CreateApiClientConfig = {
   refreshSession?: RefreshSessionConfig
 }
 
-function getStatusCode(error: unknown) {
+export function getStatusCode(error: unknown) {
   const fetchError = error as {
     response?: { status?: number }
     statusCode?: number
@@ -34,6 +34,10 @@ function getStatusCode(error: unknown) {
   }
 
   return fetchError.response?.status ?? fetchError.statusCode ?? fetchError.status
+}
+
+export function isUnauthorizedError(error: unknown) {
+  return getStatusCode(error) === 401
 }
 
 export function createApiClient(config: CreateApiClientConfig) {
@@ -140,7 +144,7 @@ export function createApiClient(config: CreateApiClientConfig) {
       return await requestWithWakeUpRecovery(request, behavior)
     }
     catch (error) {
-      if (getStatusCode(error) !== 401 || behavior?.retryOnUnauthorized === false) {
+      if (!isUnauthorizedError(error) || behavior?.retryOnUnauthorized === false) {
         throw error
       }
 
