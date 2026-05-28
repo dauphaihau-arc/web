@@ -1,4 +1,4 @@
-import type { UserAuthenticated } from '~/shared/api/auth/contracts/auth-user.contract'
+import type { CurrentUserEnvelope } from '~/shared/api/auth/contracts/auth-user.contract'
 import { meApi } from '~/shared/api/me/me.api'
 import type { UpdateMeRequest as UpdateCurrentUserRequest } from '~/shared/api/auth/contracts/update-me.contract'
 import { toastCustom } from '~/shared/config/toast'
@@ -13,7 +13,7 @@ export function useUpdateCurrentUser() {
       return await meApi.updateCurrent(body)
     },
     onSuccess: (user) => {
-      queryClient.setQueryData<{ user: UserAuthenticated } | null>(['current-user'], (current) => {
+      queryClient.setQueryData<CurrentUserEnvelope | null>(['current-user'], (current) => {
         if (!current?.user) {
           return { user }
         }

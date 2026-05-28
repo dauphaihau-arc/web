@@ -1,12 +1,12 @@
 import { isUnauthorizedError } from '@arc/api-client'
-import type { AuthUser } from '~/shared/api/auth/contracts/auth-user.contract'
+import type { CurrentUser } from '~/shared/api/auth/contracts/auth-user.contract'
 import type { UpdateMeRequest, UpdateMeResponse } from '~/shared/api/auth/contracts/update-me.contract'
 import { apiClient } from '~/shared/lib/api-client'
 
 export const meApi = {
   async getCurrentOrGuest() {
     try {
-      return await apiClient.get<AuthUser>(
+      return await apiClient.get<CurrentUser>(
         '/auth/me',
         undefined,
         undefined,
@@ -22,7 +22,7 @@ export const meApi = {
     }
   },
   getCurrent() {
-    return apiClient.get<AuthUser>(
+    return apiClient.get<CurrentUser>(
       '/auth/me',
       undefined,
       undefined,

@@ -34,3 +34,20 @@ export const authUserSchema = z.object({
 export const authUserEnvelopeSchema = z.object({
   user: authUserSchema,
 })
+
+export const currentUserShopSchema = z.object({
+  shop_name: z.string(),
+})
+
+export const currentUserSchema = z.object({
+  id: z.string(),
+  email: z.string().email(),
+  display_name: z.string().optional(),
+  permissions: z.array(z.string()),
+  preferences: authPreferencesSchema.optional(),
+  shop: currentUserShopSchema.optional(),
+})
+
+export const currentUserEnvelopeSchema = z.object({
+  user: currentUserSchema,
+})

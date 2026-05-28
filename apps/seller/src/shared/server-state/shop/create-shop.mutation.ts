@@ -1,6 +1,6 @@
 import { shopApi } from '~/shared/api/shop/shop.api'
+import type { CurrentUserEnvelope } from '~/shared/api/auth/contracts/auth-user.contract'
 import type { CreateShopRequest } from '~/shared/api/shop/contracts/shop.contract'
-import type { UserAuthenticated } from '~/shared/api/auth/contracts/auth-user.contract'
 
 export function useCreateShop() {
   const queryClient = useQueryClient()
@@ -10,7 +10,7 @@ export function useCreateShop() {
       return shopApi.create(body)
     },
     onSuccess(data) {
-      const dataUserAuth = queryClient.getQueryData<{ user: UserAuthenticated }>(['current-user'])
+      const dataUserAuth = queryClient.getQueryData<CurrentUserEnvelope>(['current-user'])
 
       queryClient.setQueryData(['my-shop'], data)
 

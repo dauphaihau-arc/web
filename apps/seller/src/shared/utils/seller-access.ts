@@ -1,5 +1,3 @@
-import type { AuthUser } from '~/shared/api/auth/contracts/auth-user.contract'
-
 export const SELLER_PERMISSION = 'shops.manage'
 
 export class SellerAccessRequiredError extends Error {
@@ -9,6 +7,10 @@ export class SellerAccessRequiredError extends Error {
   }
 }
 
-export function hasSellerAccess(user?: AuthUser | null) {
+type SellerAccessUser = {
+  permissions?: string[]
+} | null | undefined
+
+export function hasSellerAccess(user?: SellerAccessUser) {
   return user?.permissions?.includes(SELLER_PERMISSION) ?? false
 }
