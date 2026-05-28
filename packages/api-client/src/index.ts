@@ -19,6 +19,7 @@ type RefreshSessionConfig = {
 
 export type CreateApiClientConfig = {
   getBaseURL: () => string
+  getDefaultHeaders?: () => Record<string, string | undefined>
   clearUnauthorizedState?: () => void
   isWakeUpError?: (error: unknown) => boolean
   lifecycle?: RequestLifecycle
@@ -36,6 +37,30 @@ function getStatusCode(error: unknown) {
 }
 
 export function createApiClient(config: CreateApiClientConfig) {
+  const resolveHeaders = (
+    options?: NitroFetchOptions<NitroFetchRequest>,
+  ) => {
+    if (options?.baseURL !== undefined) {
+      return options.headers
+    }
+
+    const defaultHeaders = config.getDefaultHeaders?.()
+
+    if (!defaultHeaders) {
+      return options?.headers
+    }
+
+    const headers = new Headers(options?.headers)
+
+    for (const [key, value] of Object.entries(defaultHeaders)) {
+      if (value !== undefined) {
+        headers.set(key, value)
+      }
+    }
+
+    return headers
+  }
+
   const baseCustomFetch = async <
     DefaultT = unknown,
     DefaultR extends NitroFetchRequest = NitroFetchRequest,
@@ -50,6 +75,7 @@ export function createApiClient(config: CreateApiClientConfig) {
       baseURL: config.getBaseURL(),
       credentials: 'include',
       ...options,
+      headers: resolveHeaders(options),
     })
   }
 

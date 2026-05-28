@@ -1,0 +1,211 @@
+<script setup lang="ts">
+import { MARKET_REGION_EMOJIS, MarketCurrencies } from '@arc/enums/market'
+import { useUserPreferenceForm } from './use-user-preference-form'
+import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
+import { useUpdateCurrentUser } from '~/shared/server-state/me/update-current-user.mutation'
+import { useGetMarketConfig } from '~/shared/server-state/market/config.query'
+import type { PreferenceState } from './preference-options'
+import type { FormSubmitEvent } from '#ui/types'
+import type { AuthPreferences } from '~/shared/api/auth/contracts/auth-user.contract'
+
+const marketSensitiveQueryKeys = new Set([
+  'get-products',
+  'get-detail-product-by-slug',
+  'get-categories',
+  'get-root-categories',
+  'get-attributes-by-category',
+  'get-cart',
+  'guest-checkout-session',
+])
+
+const marketStore = useMarketStore()
+const queryClient = useQueryClient()
+const isOpenDialog = ref(false)
+
+const { data: currentUserData } = useGetCurrentUser()
+
+const {
+  mutateAsync: updateUserPreferences,
+  isPending: isPendingUpdateUserPreferences,
+} = useUpdateCurrentUser()
+
+const {
+  data: marketConfig,
+  isPending: isPendingGetMarketConfig,
+} = useGetMarketConfig({
+  enabled: true,
+})
+
+const currentUserPreferences = computed(() => {
+  return marketStore.guestPreferences || currentUserData.value?.user?.preferences
+})
+
+const {
+  currencyOptions,
+  regionOptions,
+  selectedCurrencyOption,
+  state,
+} = useUserPreferenceForm({
+  currentUserPreferences,
+  marketConfig,
+})
+
+function buildPreferences({ currency, language, region }: PreferenceState): AuthPreferences {
+  return {
+    currency,
+    language,
+    region,
+  }
+}
+
+const onSubmit = async (event: FormSubmitEvent<PreferenceState>) => {
+  const preferences = buildPreferences(event.data)
+
+  if (currentUserData.value?.user) {
+    await updateUserPreferences({
+      preferences,
+    })
+  }
+
+  marketStore.guestPreferences = preferences
+
+  await queryClient.invalidateQueries({
+    predicate: query => marketSensitiveQueryKeys.has(String(query.queryKey[0])),
+    refetchType: 'active',
+  })
+
+  isOpenDialog.value = false
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+</script>
+
+<template>
+  <div>
+    <div
+      class="flex items-center gap-6"
+      @click="isOpenDialog = true"
+    >
+      <div class="flex items-center gap-5">
+        <div
+          class="flex cursor-pointer items-center gap-3 rounded-md
+             px-3 py-2 text-xs transition-all duration-200 hover:bg-customGray-200/50"
+        >
+          <div class="flex items-center gap-3 text-nowrap text-xs font-medium">
+            <span>{{ MARKET_REGION_EMOJIS[state.region] }}</span>
+            <span>{{ state.region }}</span>
+          </div>
+          <!-- <UDivider
+            orientation="vertical"
+            class="h-5 w-2"
+          />
+          <div class="flex items-center gap-2 text-nowrap font-medium">
+            <UIcon
+              name="i-heroicons-language"
+              class="h-4"
+            />
+            {{ state.language.label }}
+          </div> -->
+          <UDivider
+            orientation="vertical"
+            class="h-5 w-2"
+          />
+          <div class="text-nowrap font-medium">
+            {{ selectedCurrencyOption.symbol }}
+            ({{ MarketCurrencies[state.currency] }})
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <UModal
+      v-model="isOpenDialog"
+      :ui="{
+        margin: '!mb-72',
+      }"
+    >
+      <div class="space-y-6 p-8">
+        <div class="space-y-2">
+          <h1 class="text-3xl font-bold">
+            Update your settings
+          </h1>
+          <p class="text-base text-customGray-950">
+            Set where you live, what language you speak and the currency you use.
+          </p>
+        </div>
+
+        <UForm
+          :state="state"
+          @submit="onSubmit"
+        >
+          <div class="mb-8 space-y-5">
+            <UFormGroup
+              label="Region"
+              name="region"
+              required
+              class="mb-4"
+            >
+              <USelectMenu
+                v-model="state.region"
+                :disabled="isPendingUpdateUserPreferences || isPendingGetMarketConfig"
+                size="xl"
+                :options="regionOptions"
+              />
+            </UFormGroup>
+
+            <!-- <UFormGroup
+              label="Language"
+              name="language"
+              required
+              class="mb-4"
+            >
+              <USelectMenu
+                v-model="state.language"
+                disabled
+                size="xl"
+                :options="languageOptions"
+              />
+            </UFormGroup> -->
+
+            <UFormGroup
+              label="Currency"
+              name="currency"
+              required
+              class="mb-4"
+            >
+              <USelectMenu
+                v-model="state.currency"
+                size="xl"
+                :disabled="isPendingUpdateUserPreferences"
+                :options="currencyOptions"
+                value-attribute="id"
+                option-attribute="displayLabel"
+                :ui-menu="{
+                  select: '!normal-case',
+                  option: { base: '!normal-case' },
+                }"
+              />
+            </UFormGroup>
+          </div>
+
+          <div class="flex justify-end gap-3">
+            <UButton
+              :disabled="isPendingUpdateUserPreferences"
+              size="lg"
+              color="gray"
+              @click="isOpenDialog = false"
+            >
+              Cancel
+            </UButton>
+            <UButton
+              :loading="isPendingUpdateUserPreferences"
+              size="lg"
+              type="submit"
+            >
+              Save
+            </UButton>
+          </div>
+        </UForm>
+      </div>
+    </UModal>
+  </div>
+</template>

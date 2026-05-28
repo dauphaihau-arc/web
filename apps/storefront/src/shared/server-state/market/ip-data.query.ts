@@ -9,13 +9,34 @@ type QueryOptions<TData> = Omit<
   'queryKey' | 'queryFn'
 >;
 
+export const ipDataQueryOptions = {
+  queryKey: ['get-ip-data'],
+  queryFn: () => {
+    return getIpData();
+  },
+} as const;
+
+export function getIpData() {
+  return apiClient.get<IpDataResponse>(
+    '/api/ip-data',
+    undefined,
+    {
+      baseURL: '',
+      credentials: undefined,
+      onResponseError: () => {
+        consola.error('get data by IP failed');
+      },
+    }
+  );
+}
+
 export function useGetDataByIP(
   queryOptions?: QueryOptions<IpDataResponse>,
   nitroOptions?: NitroFetchOptions<NitroFetchRequest>
 ) {
   return useQuery<IpDataResponse>({
     ...queryOptions,
-    queryKey: ['get-ip-data'],
+    ...ipDataQueryOptions,
     queryFn: () => {
       return apiClient.get<IpDataResponse>(
         '/api/ip-data',

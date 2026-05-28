@@ -1,10 +1,4 @@
 import type { Category } from '@arc/models/category'
-import type { ExchangeRatesResponse } from '~/shared/api/market/contracts/market.contract'
-
-export type ExchangeRateStorage = {
-  rates: ExchangeRatesResponse['rates']
-  exp: number
-}
 
 export interface CategoriesBreadcrumbStorage extends Category {
   to: string

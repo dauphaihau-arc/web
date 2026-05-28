@@ -1,6 +1,7 @@
 import { createApiClient } from '@arc/api-client'
 import { RESOURCES } from '@arc/enums/resources'
 import { isBackendWakeUpError, useBackendStatus } from '~/shared/composables/use-backend-status'
+import { getRequestMarketHeaders } from '~/shared/lib/request-market-context'
 import { clearExpTokensInLS } from '~/shared/server-state/auth/token-storage'
 
 function getApiBaseURL() {
@@ -10,6 +11,7 @@ function getApiBaseURL() {
 
 export const apiClient = createApiClient({
   getBaseURL: getApiBaseURL,
+  getDefaultHeaders: getRequestMarketHeaders,
   clearUnauthorizedState: clearExpTokensInLS,
   isWakeUpError: isBackendWakeUpError,
   lifecycle: {
