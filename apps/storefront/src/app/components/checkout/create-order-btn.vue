@@ -7,13 +7,19 @@ import { ROUTES } from '~/shared/config/enums/routes'
 import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { routes } from '~/shared/navigation/routes'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
+import { useCreateGuestCheckoutQuoteForBuyNow } from '~/shared/server-state/checkout/create-checkout-quote-buy-now.mutation'
 import { useCreateGuestOrderForBuyNow } from '~/shared/server-state/checkout/create-order-buy-now.mutation'
+import { useCreateCheckoutQuoteForBuyNow } from '~/shared/server-state/me/orders/create-checkout-quote-buy-now.mutation'
 import { useCreateOrderForBuyNow } from '~/shared/server-state/me/orders/create-order-buy-now.mutation'
 import { CheckoutNowSteps } from '~/shared/stores/cart/cart.store.types'
-import { useGetExchangeRates } from '~/shared/server-state/market/exchange-rates.query'
-import type { CreateGuestOrderForBuyNowRequest } from '~/shared/api/checkout/contracts/checkout.contract'
-import type { CreateOrderForBuyNowRequest } from '~/shared/api/me/order/contracts/order.contract'
-import type { ExchangeRatesResponse as ResponseGetExchangeRates } from '~/shared/api/market/contracts/market.contract'
+import type {
+  CreateGuestCheckoutQuoteForBuyNowRequest,
+  CreateGuestOrderForBuyNowRequest,
+} from '~/shared/api/checkout/contracts/checkout.contract'
+import type {
+  CreateCheckoutQuoteForBuyNowRequest,
+  CreateOrderForBuyNowRequest,
+} from '~/shared/api/me/order/contracts/order.contract'
 
 const cartStore = useCartStore()
 const toast = useToast()
@@ -29,12 +35,12 @@ const {
 const {
   mutateAsync: createGuestOrder,
 } = useCreateGuestOrderForBuyNow()
-
 const {
-  refetch: refetchGetExchangeRates,
-} = useGetExchangeRates({
-  enabled: false,
-})
+  mutateAsync: createQuote,
+} = useCreateCheckoutQuoteForBuyNow()
+const {
+  mutateAsync: createGuestQuote,
+} = useCreateGuestCheckoutQuoteForBuyNow()
 
 const onCreateOrder = async () => {
   try {
@@ -48,18 +54,13 @@ const onCreateOrder = async () => {
     }
 
     const isAuthenticated = !!dataUserAuth.value?.user
-    const body: CreateOrderForBuyNowRequest | CreateGuestOrderForBuyNowRequest = isAuthenticated
+    const quoteBody: CreateCheckoutQuoteForBuyNowRequest | CreateGuestCheckoutQuoteForBuyNowRequest = isAuthenticated
       ? {
           cart_id: tempCartId,
-          payment_type: cartStore.stateCheckoutNow.paymentType,
           user_address_id: 'id' in address ? address.id : '',
         }
       : {
           cart_id: tempCartId,
-          payment_type: cartStore.stateCheckoutNow.paymentType,
-          guest: {
-            email: cartStore.stateCheckoutNow.guestEmail,
-          },
           shipping_address: {
             full_name: address.full_name,
             address_1: address.address_1,
@@ -73,45 +74,38 @@ const onCreateOrder = async () => {
         }
 
     if (cartStore.stateCheckoutNow.promoCodes.length > 0) {
-      body.promo_codes = cartStore.stateCheckoutNow.promoCodes
+      quoteBody.promo_codes = cartStore.stateCheckoutNow.promoCodes
     }
     if (cartStore.stateCheckoutNow.note) {
-      body.note = cartStore.stateCheckoutNow.note
+      quoteBody.note = cartStore.stateCheckoutNow.note
     }
 
-    // region validate currency
-    const currencySelected = marketStore.guestPreferences?.currency || MARKET_CONFIG.BASE_CURRENCY
-    if (!marketStore.exchangeRate?.rates) {
-      consola.error('currency or rates be undefined')
-      throw Error()
+    if (!isAuthenticated) {
+      const currencySelected = marketStore.guestPreferences?.currency || MARKET_CONFIG.BASE_CURRENCY
+      quoteBody.presentment_currency = currencySelected
     }
-    body.currency = currencySelected
 
-    const ratePrev = marketStore.exchangeRate.rates[currencySelected]
+    const { quote_id } = isAuthenticated
+      ? await createQuote(quoteBody as CreateCheckoutQuoteForBuyNowRequest)
+      : await createGuestQuote(quoteBody as CreateGuestCheckoutQuoteForBuyNowRequest)
 
-    const { data: exchangeRates }: { data: ResponseGetExchangeRates | undefined } = await refetchGetExchangeRates()
+    const orderBody: CreateOrderForBuyNowRequest | CreateGuestOrderForBuyNowRequest = isAuthenticated
+      ? {
+          payment_type: cartStore.stateCheckoutNow.paymentType,
+          quote_id,
+        }
+      : {
+          payment_type: cartStore.stateCheckoutNow.paymentType,
+          quote_id,
+          guest: {
+            email: cartStore.stateCheckoutNow.guestEmail,
+          },
+        }
 
-    if (!exchangeRates?.rates) {
-      consola.error('new rates be undefined')
-      throw Error()
-    }
-    const rateNew = exchangeRates.rates[currencySelected]
-
-    if (ratePrev !== rateNew) {
-      toast.add({
-        ...toastCustom.info,
-        title: 'Currency have a update, please recheck',
-      })
-      cartStore.stateCheckoutNow.isPendingCreateOrder = false
-      cartStore.stateCheckoutNow.countRefreshConvertCurrency++
-      return
-    }
-    // endregion validate currency
-
-    if (body.payment_type === PaymentTypes.CARD) {
+    if (orderBody.payment_type === PaymentTypes.CARD) {
       const { checkout_session_url } = isAuthenticated
-        ? await createOrder(body as CreateOrderForBuyNowRequest)
-        : await createGuestOrder(body as CreateGuestOrderForBuyNowRequest)
+        ? await createOrder(orderBody as CreateOrderForBuyNowRequest)
+        : await createGuestOrder(orderBody as CreateGuestOrderForBuyNowRequest)
       if (!checkout_session_url) {
         consola.error('checkout_session_url be undefined', checkout_session_url)
         throw new Error()
@@ -122,10 +116,13 @@ const onCreateOrder = async () => {
     }
     else {
       const { order_shops } = isAuthenticated
-        ? await createOrder(body as CreateOrderForBuyNowRequest)
-        : await createGuestOrder(body as CreateGuestOrderForBuyNowRequest)
+        ? await createOrder(orderBody as CreateOrderForBuyNowRequest)
+        : await createGuestOrder(orderBody as CreateGuestOrderForBuyNowRequest)
+
       cartStore.orderShops = order_shops
+
       const guestOrderIds = order_shops.map(orderShop => orderShop.id).join(',')
+
       navigateTo(isAuthenticated
         ? ROUTES.SUCCESS
         : routes.success({

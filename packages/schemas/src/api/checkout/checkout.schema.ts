@@ -1,8 +1,12 @@
 import { z } from 'zod'
-import { createOrderResponseSchema } from '@arc/schemas/api/me/order/order.schema'
+import {
+  checkoutQuoteResponseSchema,
+  createOrderResponseSchema,
+} from '@arc/schemas/api/me/order/order.schema'
 import { guestCheckoutAddressSchema, guestCheckoutContactSchema } from '@arc/schemas/guest-checkout.schema'
 
 export { createOrderResponseSchema }
+export { checkoutQuoteResponseSchema }
 
 const guestIdentitySchema = z.object({
   email: guestCheckoutContactSchema.shape.email,
@@ -15,18 +19,26 @@ const shopAdjustmentSchema = z.object({
 })
 
 export const createGuestOrderFromCartRequestSchema = z.object({
-  currency: z.string().optional(),
   payment_type: z.string(),
+  quote_id: z.string(),
   guest: guestIdentitySchema,
+})
+
+export const createGuestOrderForBuyNowRequestSchema = z.object({
+  payment_type: z.string(),
+  quote_id: z.string(),
+  guest: guestIdentitySchema,
+})
+
+export const createGuestCheckoutQuoteFromCartRequestSchema = z.object({
+  presentment_currency: z.string().optional(),
   shipping_address: guestCheckoutAddressSchema,
   addition_info_shop_carts: z.array(shopAdjustmentSchema).optional(),
 })
 
-export const createGuestOrderForBuyNowRequestSchema = z.object({
+export const createGuestCheckoutQuoteForBuyNowRequestSchema = z.object({
   cart_id: z.string(),
-  payment_type: z.string(),
-  currency: z.string().optional(),
-  guest: guestIdentitySchema,
+  presentment_currency: z.string().optional(),
   shipping_address: guestCheckoutAddressSchema,
   promo_codes: z.array(z.string()).optional(),
   note: z.string().optional(),

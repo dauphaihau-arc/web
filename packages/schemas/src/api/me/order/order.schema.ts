@@ -14,7 +14,7 @@ export const paymentSchema = z.object({
 })
 
 export const createOrderResponseSchema = z.object({
-  checkout_session_url: z.string(),
+  checkout_session_url: z.string().optional(),
   checkout_pending: z.boolean().optional(),
   order_shops: z.array(z.object({
     id: z.string(),
@@ -26,9 +26,42 @@ export const createOrderResponseSchema = z.object({
   })),
 })
 
-export const createOrderFromCartRequestSchema = z.object({
-  currency: z.string().optional(),
-  payment_type: z.string(),
+export const checkoutQuoteItemSchema = z.object({
+  inventory_id: z.string(),
+  title: z.string(),
+  image_url: z.string().optional(),
+  quantity: z.number(),
+  source_currency: z.string(),
+  unit_price_source_minor: z.number(),
+  line_total_source_minor: z.number(),
+  checkout_currency: z.string(),
+  unit_price_checkout_minor: z.number(),
+  line_total_checkout_minor: z.number(),
+  original_amount_minor: z.number().optional(),
+  currency: z.string(),
+  source_type: z.enum(['market_override', 'base_native', 'base_fx']).optional(),
+  fx_rate: z.string().optional(),
+  fx_source: z.string().optional(),
+  fx_effective_at: z.coerce.date().optional(),
+  variant_name: z.string().optional(),
+  variant_group_name: z.string().optional(),
+  variant_sub_group_name: z.string().optional(),
+})
+
+export const checkoutQuoteResponseSchema = z.object({
+  quote_id: z.string(),
+  presentment_currency: z.string().optional(),
+  checkout_currency: z.string(),
+  subtotal_minor: z.number(),
+  shipping_minor: z.number(),
+  discount_minor: z.number(),
+  total_minor: z.number(),
+  expires_at: z.coerce.date(),
+  items: z.array(checkoutQuoteItemSchema),
+})
+
+export const createCheckoutQuoteFromCartRequestSchema = z.object({
+  presentment_currency: z.string().optional(),
   user_address_id: z.string(),
   addition_info_shop_carts: z.array(z.object({
     shop_id: z.string(),
@@ -37,13 +70,22 @@ export const createOrderFromCartRequestSchema = z.object({
   })).optional(),
 })
 
-export const createOrderForBuyNowRequestSchema = z.object({
+export const createCheckoutQuoteForBuyNowRequestSchema = z.object({
   cart_id: z.string(),
-  payment_type: z.string(),
   user_address_id: z.string(),
-  currency: z.string().optional(),
+  presentment_currency: z.string().optional(),
   note: z.string().optional(),
   promo_codes: z.array(z.string()).optional(),
+})
+
+export const createOrderFromCartRequestSchema = z.object({
+  payment_type: z.string(),
+  quote_id: z.string(),
+})
+
+export const createOrderForBuyNowRequestSchema = z.object({
+  payment_type: z.string(),
+  quote_id: z.string(),
 })
 
 export const orderShopProductSchema = z.object({
@@ -67,8 +109,9 @@ export const orderShopProductSchema = z.object({
   title: z.string(),
   image_url: z.string().optional(),
   quantity: z.number(),
-  price: z.number(),
-  sale_price: z.number().optional(),
+  amount_minor: z.number(),
+  original_amount_minor: z.number().nullable().optional(),
+  currency: z.string(),
 })
 
 export const orderShopShippingSchema = z.object({
@@ -107,10 +150,11 @@ export const orderShopResourceSchema = z.object({
     code: z.string(),
   })),
   shipping: orderShopShippingSchema,
-  subtotal: z.number(),
-  total_shipping_fee: z.number(),
-  total_discount: z.number(),
-  total: z.number(),
+  currency: z.string(),
+  subtotal_minor: z.number(),
+  shipping_minor: z.number(),
+  discount_minor: z.number(),
+  total_minor: z.number(),
   note: z.string().optional(),
   canceled_at: z.coerce.date().optional(),
   cancel_reason: z.string().optional(),

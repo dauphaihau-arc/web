@@ -1,5 +1,8 @@
 import type { z } from 'zod'
 import type {
+  checkoutQuoteResponseSchema,
+  createCheckoutQuoteForBuyNowRequestSchema,
+  createCheckoutQuoteFromCartRequestSchema,
   createOrderForBuyNowRequestSchema,
   createOrderFromCartRequestSchema,
   createOrderResponseSchema,
@@ -18,6 +21,9 @@ import type { RequestGetListParams } from '@arc/contracts/common'
 
 export type Payment = z.infer<typeof paymentSchema>
 export type CreateOrderResponse = z.infer<typeof createOrderResponseSchema>
+export type CheckoutQuoteResponse = z.infer<typeof checkoutQuoteResponseSchema>
+export type CreateCheckoutQuoteFromCartRequest = z.infer<typeof createCheckoutQuoteFromCartRequestSchema>
+export type CreateCheckoutQuoteForBuyNowRequest = z.infer<typeof createCheckoutQuoteForBuyNowRequestSchema>
 export type CreateOrderFromCartRequest = z.infer<typeof createOrderFromCartRequestSchema>
 export type CreateOrderFromCartResponse = CreateOrderResponse
 export type CreateOrderForBuyNowRequest = z.infer<typeof createOrderForBuyNowRequestSchema>
