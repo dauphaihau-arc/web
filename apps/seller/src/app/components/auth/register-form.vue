@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { MarketCurrencies } from '@arc/enums/market'
 import { StatusCodes } from 'http-status-codes'
 import { FetchError } from 'ofetch'
+import { currencyOptions } from '@arc/utils'
 import type { FormError, FormSubmitEvent } from '#ui/types'
 import { useAuthClientConfig } from '~/shared/server-state/auth/client-config.query'
 import { useRegister } from '~/shared/server-state/auth/register.mutation'
@@ -11,7 +13,13 @@ import { appendPasswordError } from '~/shared/utils/password-policy'
 const invalidEmails: string[] = []
 const formRef = ref()
 const unknownErrorServerMsg = ref('')
-const stateSubmit: Partial<RegisterBody> = reactive({})
+const stateSubmit = reactive<RegisterBody>({
+  display_name: '',
+  email: '',
+  password: '',
+  shop_name: '',
+  currency: MarketCurrencies.USD,
+})
 
 const {
   mutateAsync: register,
@@ -19,7 +27,7 @@ const {
 } = useRegister()
 const { data: authClientConfig, isLoading: isLoadingAuthClientConfig } = useAuthClientConfig()
 
-const validateForm = (stateValidate: Partial<RegisterBody> & { display_name?: string }): FormError[] => {
+const validateForm = (stateValidate: RegisterBody): FormError[] => {
   const errors: FormError[] = []
 
   const parsed = registerFormSchema.safeParse(stateValidate)
@@ -143,6 +151,50 @@ async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
             :disabled="isPendingRegister"
             size="xl"
           />
+        </UFormGroup>
+
+        <UFormGroup
+          label="Currency"
+          name="currency"
+          class="mb-4"
+        >
+          <USelectMenu
+            v-model="stateSubmit.currency"
+            searchable
+            :disabled="isPendingRegister"
+            :options="currencyOptions"
+            value-attribute="id"
+            option-attribute="displayLabel"
+            size="xl"
+            :ui-menu="{
+              select: '!normal-case',
+              option: { base: '!normal-case', container: 'w-full' },
+            }"
+          >
+            <template #label="{ option }">
+              <div
+                v-if="option"
+                class="flex items-center gap-3"
+              >
+                <span class="min-w-10 text-sm font-semibold text-slate-950">
+                  {{ option.symbol }}
+                </span>
+                <span class="truncate text-sm text-slate-600">
+                  {{ option.label }}
+                </span>
+              </div>
+            </template>
+            <template #option="{ option }">
+              <div class="flex w-full items-center gap-1 py-1">
+                <span class="min-w-10 text-sm font-semibold text-slate-950">
+                  {{ option.symbol }}
+                </span>
+                <span class="truncate text-sm text-slate-600">
+                  {{ option.label }}
+                </span>
+              </div>
+            </template>
+          </USelectMenu>
         </UFormGroup>
 
         <UButton

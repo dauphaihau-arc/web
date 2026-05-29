@@ -1,4 +1,5 @@
 export * from './build-tracking-url'
+export * from './currency-options'
 export * from './format-currency'
 export * from './insert'
 export * from './key-press-is-number'
