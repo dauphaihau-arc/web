@@ -6,9 +6,11 @@ import type {
   createOrderForBuyNowRequestSchema,
   createOrderFromCartRequestSchema,
   createOrderResponseSchema,
+  getOrderShopsRequestSchema,
   getOrderShopsByCheckoutSessionRequestSchema,
   getOrderShopsByCheckoutSessionResponseSchema,
   getOrderShopsResponseSchema,
+  myOrderListStateSchema,
   myOrderDetailResponseSchema,
   orderCancelRequestSchema,
   orderShopProductSchema,
@@ -17,7 +19,6 @@ import type {
   orderSupportRequestSchema,
   paymentSchema,
 } from '@arc/schemas/api/me/order/order.schema'
-import type { RequestGetListParams } from '@arc/contracts/common'
 
 export type Payment = z.infer<typeof paymentSchema>
 export type CreateOrderResponse = z.infer<typeof createOrderResponseSchema>
@@ -34,8 +35,9 @@ export type RequestOrderSupportRequest = z.infer<typeof orderSupportRequestSchem
 export type ResponseGetOrderShopsProduct = z.infer<typeof orderShopProductSchema>
 export type OrderShopShipping = z.infer<typeof orderShopShippingSchema>
 export type OrderShopResource = z.infer<typeof orderShopResourceSchema>
+export type MyOrderListState = z.infer<typeof myOrderListStateSchema>
 
-export type GetOrderShopsRequest = RequestGetListParams
+export type GetOrderShopsRequest = z.infer<typeof getOrderShopsRequestSchema>
 export type GetOrderShopsResponse = z.infer<typeof getOrderShopsResponseSchema>
 export type GetMyOrderDetailResponse = z.infer<typeof myOrderDetailResponseSchema>
 

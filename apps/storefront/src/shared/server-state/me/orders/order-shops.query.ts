@@ -1,18 +1,18 @@
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack'
-import type { RequestGetListParams } from '@arc/contracts/common'
 import { meOrdersApi } from '~/shared/api/me/order/me-orders.api'
 import type {
+  GetOrderShopsRequest,
   GetMyOrderDetailResponse,
   GetOrderShopsByCheckoutSessionResponse,
 } from '~/shared/api/me/order/contracts/order.contract'
 
-export function useGetOrderShops(queryParams?: RequestGetListParams) {
+export function useGetOrderShops(queryParams?: MaybeRefOrGetter<GetOrderShopsRequest | undefined>) {
   return useQuery({
-    queryKey: ['get-order-shops', queryParams],
+    queryKey: computed(() => ['get-order-shops', toValue(queryParams)]),
     queryFn: () => {
-      return meOrdersApi.getShops(queryParams)
+      return meOrdersApi.getShops(toValue(queryParams))
     },
-    enabled: !!queryParams,
+    enabled: computed(() => !!toValue(queryParams)),
   })
 }
 

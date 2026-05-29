@@ -1,6 +1,15 @@
 import { z } from 'zod'
 import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
 
+export const myOrderListStateSchema = z.enum([
+  'awaiting_payment',
+  'processing',
+  'shipped',
+  'delivered',
+  'canceled',
+  'refunded',
+])
+
 export const paymentSchema = z.object({
   type: z.string(),
   card_funding: z.string().optional(),
@@ -161,6 +170,15 @@ export const orderShopResourceSchema = z.object({
   customer_support_note: z.string().optional(),
   cancel_requested_at: z.coerce.date().optional(),
   created_at: z.coerce.date(),
+})
+
+export const getOrderShopsRequestSchema = z.object({
+  page: z.number().optional(),
+  limit: z.number().optional(),
+  status: z.nativeEnum(OrderStatuses).optional(),
+  shipping_status: z.nativeEnum(OrderShippingStatuses).optional(),
+  search: z.string().optional(),
+  state: myOrderListStateSchema.optional(),
 })
 
 export const getOrderShopsResponseSchema = z.object({
