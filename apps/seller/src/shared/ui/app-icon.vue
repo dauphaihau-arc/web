@@ -30,7 +30,7 @@ const ICON_NAME_BY_ALIAS = {
   chevronRight: 'i-heroicons-chevron-right',
   chevronDown: 'i-heroicons-chevron-down-20-solid',
   language: 'i-heroicons-language',
-  shop: 'solar:shop-linear',
+  shop: 'mynaui:store',
   ticket: 'i-heroicons-ticket',
   camera: 'material-symbols:android-camera',
 } as const
@@ -88,6 +88,14 @@ const ariaHidden = computed(() => {
   return attrs['aria-label'] ? undefined : 'true'
 })
 
+const customizeByAlias = {
+  shop: (content: string) => content.replaceAll(/stroke-width="[^"]*"/g, 'stroke-width="2"'),
+} as const
+
+const customizeIcon = computed(() => {
+  return customizeByAlias[props.name as keyof typeof customizeByAlias]
+})
+
 if (import.meta.dev) {
   watchEffect(() => {
     const isAlias = props.name in ICON_NAME_BY_ALIAS
@@ -109,6 +117,7 @@ if (import.meta.dev) {
   <Icon
     :name="resolvedName"
     :mode="mode"
+    :customize="customizeIcon"
     v-bind="forwardedAttrs"
     :aria-hidden="ariaHidden"
     :class="[
