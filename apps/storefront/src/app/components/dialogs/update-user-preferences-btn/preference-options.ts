@@ -1,9 +1,5 @@
-import type {
-  MarketCurrencies,
-  MARKET_CONFIG,
-  MarketLanguages,
-  type MarketRegions,
-} from '@arc/enums/market'
+import { MARKET_CONFIG, MarketLanguages } from '@arc/enums/market'
+import type { MarketCurrencies, MarketRegions } from '@arc/enums/market'
 
 export type LanguageOption = {
   id: MarketLanguages
