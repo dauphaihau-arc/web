@@ -1,16 +1,18 @@
 import { MARKET_CONFIG } from '@arc/enums/market'
-import { computed, reactive, watch, type ComputedRef, type Ref } from 'vue'
-import type { AuthPreferences } from '~/shared/api/auth/contracts/auth-user.contract'
-import type { MarketConfigMarket } from '~/shared/api/market/contracts/market.contract'
 import {
   defaultCurrencyOption,
-  defaultLanguageOption,
-  localeToLanguageOption,
   toCurrencyOption,
   type CurrencyOption,
+} from '@arc/utils/currency-options'
+import { computed, reactive, watch, type ComputedRef, type Ref } from 'vue'
+import {
+  defaultLanguageOption,
+  localeToLanguageOption,
   type LanguageOption,
   type PreferenceState,
 } from './preference-options'
+import type { AuthPreferences } from '~/shared/api/auth/contracts/auth-user.contract'
+import type { MarketConfigMarket } from '~/shared/api/market/contracts/market.contract'
 
 type MarketConfigResponse = {
   markets: MarketConfigMarket[]
@@ -98,8 +100,8 @@ export function useUserPreferenceForm({
     const nextLanguage = languageOptions.value.find((option) => {
       return option.id === preferredLanguage || option.id === state.language
     })
-      ?? localeToLanguageOption(market.defaultLocale)
-      ?? defaultLanguageOption
+    ?? localeToLanguageOption(market.defaultLocale)
+    ?? defaultLanguageOption
 
     state.language = nextLanguage.id
   }
