@@ -85,7 +85,6 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    ipDataKey: process.env.IP_DATA_KEY,
     public: {
       apiBaseURL: process.env.API_BASE_URL,
       apiVersion: process.env.API_VERSION,
