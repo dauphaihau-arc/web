@@ -2,15 +2,13 @@
 import LayoutShopSidebarSubLinks from './sidebar-sub-links.vue'
 import type { LinkItem } from './sidebar.types'
 import type { DropdownItem } from '#ui/types'
-import avatarDefault from '~/app/assets/images/avatar-default.jpg'
 import { shopSidebarLinks } from '~/shared/navigation/menu'
-import { routes as appRoutes } from '~/shared/navigation/routes'
 import { useLogout } from '~/shared/server-state/auth/logout.mutation'
-import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
+import { useGetMyShop } from '~/shared/server-state/shop/my-shop.query'
 
 const route = useRoute()
 const config = useRuntimeConfig()
-const { data: dataUserAuth } = useGetCurrentUser()
+const { data: myShop } = useGetMyShop()
 const { mutate: logout } = useLogout()
 
 const itemsLinkSidebar: LinkItem[] = shopSidebarLinks
@@ -23,22 +21,6 @@ type ShopDropdownItem = Omit<DropdownItem, 'icon'> & {
 
 const itemsShopDropdown: ShopDropdownItem[][] = [
   [
-    {
-      label: 'Profile',
-      avatar: {
-        src: avatarDefault,
-      },
-      click: () => {
-        navigateTo(appRoutes.home())
-      },
-    },
-  ],
-  [
-    {
-      label: 'Archive',
-      icon: 'archive',
-      disabled: true,
-    },
     {
       label: 'Arc Marketplace',
       icon: 'marketplace',
@@ -95,7 +77,7 @@ const itemsShopDropdown: ShopDropdownItem[][] = [
           />
         </UButton>
         <div class="text-sm font-medium text-customGray-950">
-          {{ dataUserAuth?.user?.shop?.shop_name }}
+          {{ myShop?.shop_name }}
         </div>
       </div>
     </UDropdown>

@@ -43,24 +43,7 @@ async function onSubmit(event: FormSubmitEvent<CreateShopRequest>) {
 </script>
 
 <template>
-  <UCard
-    :ui="{
-      body: {
-        padding: 'md:px-14 md:py-12',
-      },
-    }"
-    class="mx-auto mt-12 max-w-[500px]"
-  >
-    <h1 class="mb-3 text-center text-2xl font-bold">
-      Name your shop
-    </h1>
-    <p class="mb-4">
-      Don’t sweat it! You can just draft a name now and change it later. We find
-      sellers often draw inspiration from
-      what
-      they sell, their style, pretty much anything goes.
-    </p>
-
+  <div class="space-y-5">
     <UAlert
       v-if="unknownErrorMsg"
       color="rose"
@@ -70,9 +53,10 @@ async function onSubmit(event: FormSubmitEvent<CreateShopRequest>) {
       }"
       title=""
       :description="unknownErrorMsg"
-      class="mb-4"
+      :ui="{ description: 'mt-[2px]' }"
       @close="unknownErrorMsg=''"
     />
+
     <UForm
       ref="formRef"
       :validate-on="['submit']"
@@ -81,6 +65,7 @@ async function onSubmit(event: FormSubmitEvent<CreateShopRequest>) {
       @submit="onSubmit"
     >
       <UFormGroup
+        label="Shop name"
         name="shop_name"
         class="mb-4"
       >
@@ -92,6 +77,7 @@ async function onSubmit(event: FormSubmitEvent<CreateShopRequest>) {
       </UFormGroup>
 
       <UFormGroup
+        label="Currency"
         name="currency"
         class="mb-4"
       >
@@ -144,5 +130,5 @@ async function onSubmit(event: FormSubmitEvent<CreateShopRequest>) {
         Continue
       </UButton>
     </UForm>
-  </UCard>
+  </div>
 </template>
