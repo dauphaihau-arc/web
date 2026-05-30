@@ -20,10 +20,10 @@ useSeoMeta({
             Arc Seller
           </p>
           <h1 class="max-w-md text-4xl font-bold leading-tight">
-            Create your seller account and start managing your catalog.
+            Create your account to start selling on Arc.
           </h1>
           <p class="max-w-md text-base leading-7 text-slate-300">
-            Register to publish products, launch promotions, and keep orders moving from one workspace.
+            Register first, then create your shop to start listing products and managing orders.
           </p>
         </div>
 
@@ -63,7 +63,7 @@ useSeoMeta({
             Register
           </h2>
           <p class="text-base text-slate-600">
-            Set up your seller account to access products, coupons, and orders.
+            Create your account first. You’ll set up your shop in the next step.
           </p>
         </div>
 

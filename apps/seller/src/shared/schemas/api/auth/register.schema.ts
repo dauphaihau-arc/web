@@ -5,8 +5,6 @@ import {
   USER_REG_PASSWORD,
 } from '@arc/enums/user'
 import { authUserEnvelopeSchema } from '@arc/schemas/api/auth/auth-user.schema'
-import { createShopRequestSchema } from '@arc/schemas/api/shop/shop.schema'
-import { shopSchema } from '@arc/schemas/shop.schema'
 
 export const registerFormSchema = z.object({
   display_name: z
@@ -32,8 +30,6 @@ export const registerFormSchema = z.object({
     .min(USER_CONFIG.MIN_CHAR_PASSWORD)
     .max(USER_CONFIG.MAX_CHAR_PASSWORD)
     .regex(USER_REG_PASSWORD),
-  shop_name: shopSchema.shape.shop_name,
-  currency: createShopRequestSchema.shape.currency,
 })
 
 export const registerRequestSchema = registerFormSchema

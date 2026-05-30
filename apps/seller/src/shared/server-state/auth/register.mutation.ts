@@ -15,13 +15,8 @@ export function useRegister() {
       if (data?.user) {
         queryClient.setQueryData(['current-user'], { user: data.user })
 
-        const redirectPath = consumePostAuthRedirect()
-        if (redirectPath) {
-          await navigateTo(redirectPath)
-          return
-        }
-
-        await navigateTo(routes.products())
+        consumePostAuthRedirect()
+        await navigateTo(routes.sell())
       }
     },
   })

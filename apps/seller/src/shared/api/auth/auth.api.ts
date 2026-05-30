@@ -59,7 +59,7 @@ export const authApi = {
 
   register(payload: RegisterRequest) {
     return apiClient.post<RegisterResponse>(
-      '/seller/auth/register',
+      '/auth/register',
       payload,
       undefined,
       { retryOnUnauthorized: false },

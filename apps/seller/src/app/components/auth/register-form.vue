@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { MarketCurrencies } from '@arc/enums/market'
 import { StatusCodes } from 'http-status-codes'
 import { FetchError } from 'ofetch'
-import { currencyOptions } from '@arc/utils'
 import type { FormError, FormSubmitEvent } from '#ui/types'
 import { useAuthClientConfig } from '~/shared/server-state/auth/client-config.query'
 import { useRegister } from '~/shared/server-state/auth/register.mutation'
@@ -17,8 +15,6 @@ const stateSubmit = reactive<RegisterBody>({
   display_name: '',
   email: '',
   password: '',
-  shop_name: '',
-  currency: MarketCurrencies.USD,
 })
 
 const {
@@ -64,11 +60,6 @@ async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
         if (errorMessage.toLowerCase().includes('email')) {
           formRef.value.setErrors([{ path: 'email', message: 'Email already taken' }])
           invalidEmails.push(event.data.email)
-          return
-        }
-
-        if (errorMessage.toLowerCase().includes('shop')) {
-          formRef.value.setErrors([{ path: 'shop_name', message: 'Shop name already taken' }])
           return
         }
 
@@ -139,62 +130,6 @@ async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
             size="xl"
             type="password"
           />
-        </UFormGroup>
-
-        <UFormGroup
-          label="Shop name"
-          name="shop_name"
-          class="mb-4"
-        >
-          <UInput
-            v-model="stateSubmit.shop_name"
-            :disabled="isPendingRegister"
-            size="xl"
-          />
-        </UFormGroup>
-
-        <UFormGroup
-          label="Currency"
-          name="currency"
-          class="mb-4"
-        >
-          <USelectMenu
-            v-model="stateSubmit.currency"
-            searchable
-            :disabled="isPendingRegister"
-            :options="currencyOptions"
-            value-attribute="id"
-            option-attribute="displayLabel"
-            size="xl"
-            :ui-menu="{
-              select: '!normal-case',
-              option: { base: '!normal-case', container: 'w-full' },
-            }"
-          >
-            <template #label="{ option }">
-              <div
-                v-if="option"
-                class="flex items-center gap-3"
-              >
-                <span class="min-w-10 text-sm font-semibold text-slate-950">
-                  {{ option.symbol }}
-                </span>
-                <span class="truncate text-sm text-slate-600">
-                  {{ option.label }}
-                </span>
-              </div>
-            </template>
-            <template #option="{ option }">
-              <div class="flex w-full items-center gap-1 py-1">
-                <span class="min-w-10 text-sm font-semibold text-slate-950">
-                  {{ option.symbol }}
-                </span>
-                <span class="truncate text-sm text-slate-600">
-                  {{ option.label }}
-                </span>
-              </div>
-            </template>
-          </USelectMenu>
         </UFormGroup>
 
         <UButton
