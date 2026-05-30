@@ -123,7 +123,7 @@ function getSellerRedirectURL() {
     return `${sellerAppURL}/dashboard`
   }
 
-  return `${sellerAppURL}/register`
+  return `${sellerAppURL}/sell`
 }
 
 function navigateToSellerApp() {

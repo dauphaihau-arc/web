@@ -14,6 +14,20 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   if (data.value?.user) {
+    try {
+      const response = await refetch({ throwOnError: true })
+
+      if (hasSellerAccess(response.data?.user)) {
+        return
+      }
+    }
+    catch (error) {
+      if (isBackendWakeUpError(error)) {
+        void refetch()
+        return
+      }
+    }
+
     queryClient.setQueryData(['current-user'], { user: null })
     clearExpTokensInLS()
     setPostAuthRedirect(to.fullPath)

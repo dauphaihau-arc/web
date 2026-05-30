@@ -1,9 +1,11 @@
 <script lang="ts" setup>
-import CreateShopForm from '~/app/components/account/shop/create-shop-form.vue'
+import { routes } from '~/shared/navigation/routes'
 
-definePageMeta({ middleware: ['auth', 'shop'] })
+definePageMeta({})
+
+await navigateTo(routes.sell(), { replace: true })
 </script>
 
 <template>
-  <CreateShopForm />
+  <div />
 </template>

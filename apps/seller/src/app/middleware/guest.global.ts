@@ -9,6 +9,11 @@ export default defineNuxtRouteMiddleware(async (to, _from) => {
     void refetch()
   }
 
+  if (data.value?.user && !hasSellerAccess(data.value.user)
+    && (to.path === routePaths.login || to.path === routePaths.register)) {
+    return navigateTo(routes.sell())
+  }
+
   if (hasSellerAccess(data.value?.user) && to.path === routePaths.reset) {
     return navigateTo(routes.home())
   }
@@ -18,6 +23,10 @@ export default defineNuxtRouteMiddleware(async (to, _from) => {
   }
 
   if (hasSellerAccess(data.value?.user) && to.path === routePaths.register) {
+    return navigateTo(routes.products())
+  }
+
+  if (hasSellerAccess(data.value?.user) && to.path === routePaths.sell) {
     return navigateTo(routes.products())
   }
 })
