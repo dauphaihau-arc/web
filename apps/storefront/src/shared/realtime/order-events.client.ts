@@ -7,9 +7,29 @@ type OrderEventsClient = {
   stop: () => void
 }
 
+type GlobalOrderEventsState = {
+  eventSource: EventSource | null
+  handleMessage: ((rawPayload: string) => Promise<void>) | null
+}
+
 function buildEventsUrl(): string {
   const config = useRuntimeConfig()
   return `${config.public.apiBaseURL}/v${config.public.apiVersion}/me/events`
+}
+
+function getGlobalOrderEventsState(): GlobalOrderEventsState {
+  const globalState = globalThis as typeof globalThis & {
+    __storefrontOrderEventsState__?: GlobalOrderEventsState
+  }
+
+  if (!globalState.__storefrontOrderEventsState__) {
+    globalState.__storefrontOrderEventsState__ = {
+      eventSource: null,
+      handleMessage: null,
+    }
+  }
+
+  return globalState.__storefrontOrderEventsState__
 }
 
 function isOrderUpdatedRealtimeEvent(value: unknown): value is OrderUpdatedRealtimeEvent {
@@ -124,25 +144,34 @@ async function handleIncomingMessage(
 }
 
 export function createOrderEventsClient(queryClient: QueryClient): OrderEventsClient {
-  let eventSource: EventSource | null = null
+  const state = getGlobalOrderEventsState()
 
   return {
     start() {
-      if (eventSource) {
+      state.handleMessage = (rawPayload: string) => handleIncomingMessage(queryClient, rawPayload)
+
+      if (state.eventSource) {
         return
       }
 
-      eventSource = new EventSource(buildEventsUrl(), { withCredentials: true })
+      const eventSource = new EventSource(buildEventsUrl(), { withCredentials: true })
+
       eventSource.addEventListener('order.updated', (event) => {
-        void handleIncomingMessage(queryClient, event.data)
+        void state.handleMessage?.(event.data)
       })
       eventSource.onmessage = (event) => {
-        void handleIncomingMessage(queryClient, event.data)
+        void state.handleMessage?.(event.data)
       }
+      eventSource.onerror = () => {
+        console.warn('Order events SSE connection disconnected')
+      }
+
+      state.eventSource = eventSource
     },
     stop() {
-      eventSource?.close()
-      eventSource = null
+      state.eventSource?.close()
+      state.eventSource = null
+      state.handleMessage = null
     },
   }
 }
