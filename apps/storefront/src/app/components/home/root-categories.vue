@@ -2,9 +2,17 @@
 import type { Category } from '@arc/models/category'
 import { getRoutePath, routes } from '~/shared/navigation/routes'
 import { useGetRootCategories } from '~/shared/server-state/category/categories.query'
+import { resolveStoragePublicUrl } from '~/shared/utils/storage-public-url'
 
 const { data } = useGetRootCategories()
 const marketStore = useMarketStore()
+const config = useRuntimeConfig()
+
+const categoryImageUrl = (category: Category) => resolveStoragePublicUrl({
+  url: category.imageUrl,
+  storageKey: category.imageStorageKey,
+  assetHost: config.public.assetHost,
+})
 
 const redirectByCategory = (category: Category) => {
   const to = getRoutePath(routes.category(category.name.replaceAll(' ', '-').toLowerCase()))
@@ -26,8 +34,8 @@ const redirectByCategory = (category: Category) => {
       >
         <div @click="() => redirectByCategory(cg)">
           <NuxtImg
-            v-if="cg?.imageUrl"
-            :src="cg.imageUrl"
+            v-if="categoryImageUrl(cg)"
+            :src="categoryImageUrl(cg)"
             class="h-[210px] w-[140px] cursor-pointer rounded object-cover"
           />
           <div

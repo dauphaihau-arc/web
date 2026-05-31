@@ -2,6 +2,7 @@
 import { formatMinorCurrency } from '@arc/utils'
 import type { GetProductsResponseItem } from '~/shared/api/product/contracts/product.contract'
 import { getProductStockNotice } from '~/shared/utils/product-stock'
+import { resolveProductImageUrl } from '~/shared/utils/storage-public-url'
 import { routes } from '~/shared/navigation/routes'
 
 const { product } = defineProps<{
@@ -9,10 +10,14 @@ const { product } = defineProps<{
 }>()
 
 const router = useRouter()
+const config = useRuntimeConfig()
 
 const imageUrl = computed(() => {
-  return product.image?.variants?.card_1x1?.url
-    ?? product.image?.url
+  return resolveProductImageUrl(
+    product.image,
+    config.public.assetHost,
+    'card_1x1',
+  )
 })
 
 const stockNotice = computed(() => {

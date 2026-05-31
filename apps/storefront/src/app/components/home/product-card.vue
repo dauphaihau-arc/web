@@ -2,6 +2,7 @@
 import { formatMinorCurrency } from '@arc/utils'
 import type { GetProductsResponseItem } from '~/shared/api/product/contracts/product.contract'
 import { routes } from '~/shared/navigation/routes'
+import { resolveProductImageUrl } from '~/shared/utils/storage-public-url'
 
 const props = defineProps<{
   product: GetProductsResponseItem
@@ -9,9 +10,14 @@ const props = defineProps<{
   fill?: boolean
 }>()
 
+const config = useRuntimeConfig()
+
 const imageUrl = computed(() => {
-  return props.product.image?.variants?.card_1x1?.url
-    ?? props.product.image?.url
+  return resolveProductImageUrl(
+    props.product.image,
+    config.public.assetHost,
+    'card_1x1',
+  )
 })
 
 const displayAmount = computed(() => {

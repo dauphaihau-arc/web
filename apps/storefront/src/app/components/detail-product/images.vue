@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contracts/product.contract'
+import { resolveProductImageUrl } from '~/shared/utils/storage-public-url'
 
 const { images } = defineProps<{
   images: GetDetailProductBySlugResponse['images']
 }>()
 
+const config = useRuntimeConfig()
 const selectedImg = ref(0)
 const previewImg = ref<number | null>(null)
 
@@ -13,13 +15,19 @@ const currentImg = computed(() => previewImg.value ?? selectedImg.value)
 const selectedImage = computed(() => images[currentImg.value])
 
 const imageUrlSelected = computed(() => {
-  return selectedImage.value?.variants?.detail_4x5?.url
-    ?? selectedImage.value?.url
+  return resolveProductImageUrl(
+    selectedImage.value,
+    config.public.assetHost,
+    'detail_4x5',
+  )
 })
 
 const imageThumbSelected = (index: number) => {
-  return images[index]?.variants?.thumb_1x1?.url
-    ?? images[index]?.url
+  return resolveProductImageUrl(
+    images[index],
+    config.public.assetHost,
+    'thumb_1x1',
+  )
 }
 
 const onPreviewImg = (index: number) => {

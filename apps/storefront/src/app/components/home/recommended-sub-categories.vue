@@ -2,8 +2,16 @@
 import type { Category } from '@arc/models/category'
 import { useGetCategories } from '~/shared/server-state/category/categories.query'
 import { getRoutePath, routes } from '~/shared/navigation/routes'
+import { resolveStoragePublicUrl } from '~/shared/utils/storage-public-url'
 
 const marketStore = useMarketStore()
+const config = useRuntimeConfig()
+
+const categoryImageUrl = (category: Category) => resolveStoragePublicUrl({
+  url: category.imageUrl,
+  storageKey: category.imageStorageKey,
+  assetHost: config.public.assetHost,
+})
 
 const params = computed(() => {
   if (marketStore.userActivities?.rootCategoryProductVisited?.id) {
@@ -81,9 +89,9 @@ const redirectPage = (subCategory: Category) => {
           :key="cg.id"
         >
           <div @click="() => redirectPage(cg)">
-            <div v-if="cg?.imageUrl">
+            <div v-if="categoryImageUrl(cg)">
               <NuxtImg
-                :src="cg.imageUrl"
+                :src="categoryImageUrl(cg)"
                 width="100"
                 height="100"
                 class="size-[100px] cursor-pointer rounded-full object-cover"
