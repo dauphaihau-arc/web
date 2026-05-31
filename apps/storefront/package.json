@@ -61,6 +61,7 @@
     "@arc/enums": "workspace:*",
     "@arc/models": "workspace:*",
     "@arc/schemas": "workspace:*",
+    "@arc/ui": "workspace:*",
     "@arc/utils": "workspace:*",
     "@formkit/auto-animate": "^0.8.1",
     "@hebilicious/vue-query-nuxt": "^0.3.0",

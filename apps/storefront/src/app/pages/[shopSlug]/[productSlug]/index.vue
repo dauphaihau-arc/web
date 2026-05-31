@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ProductVariantTypes } from '@arc/enums/product'
-import LoadingSvg from '~/shared/ui/loading-svg.vue'
+import LoadingSvg from '@arc/ui/loading-svg.vue'
 import AddToCartForm from '~/app/components/detail-product/add-to-cart-form.vue'
 import ProductImages from '~/app/components/detail-product/images.vue'
 import MoreInfo from '~/app/components/detail-product/more-info.vue'

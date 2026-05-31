@@ -5,7 +5,7 @@
     TOption extends TValue | Record<string, any>
 "
 >
-import RadioInput from '~/shared/ui/radio-input.vue'
+import RadioInput from './radio-input.vue'
 
 const props = defineProps<{
   options: TOption[]

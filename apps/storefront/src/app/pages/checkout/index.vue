@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import LoadingSvg from '@arc/ui/loading-svg.vue'
 import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { CheckoutNowSteps } from '~/shared/stores/cart/cart.store.types'
-import LoadingSvg from '~/shared/ui/loading-svg.vue'
 import CheckoutStepper from '~/app/components/checkout-stepper.vue'
 import SummaryOrderCard from '~/app/components/summary-order-card.vue'
 import CreateOrderBtn from '~/app/components/checkout/create-order-btn.vue'

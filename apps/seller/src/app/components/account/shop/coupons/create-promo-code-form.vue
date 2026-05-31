@@ -4,6 +4,7 @@ import {
 } from '@arc/enums/coupon'
 import type { RequiredFields } from '@arc/contracts/utils'
 import { PRODUCT_CONFIG } from '@arc/enums/product'
+import RadioGroupInput from '@arc/ui/radio-group-input.vue'
 import { createPromoCodeFormSchema } from '~/shared/schemas/forms/shop/coupon/create-promo-code-form.schema'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import { ROUTES } from '~/shared/config/enums/routes'
@@ -13,7 +14,6 @@ import SearchStartEndDateInput from '~/app/components/account/shop/coupons/searc
 import { toastCustom } from '~/shared/config/toast'
 import { useShopCreateCoupon } from '~/shared/server-state/shop/coupon/create-coupon.mutation'
 import type { CreatePromoCodeBody } from '~/shared/api/shop/coupon/contracts/coupon.contract'
-import RadioGroupInput from '~/shared/ui/radio-group-input.vue'
 
 type StateSubmit = RequiredFields<Partial<CreatePromoCodeBody>, 'type' | 'applies_to' | 'min_order_type'>
 

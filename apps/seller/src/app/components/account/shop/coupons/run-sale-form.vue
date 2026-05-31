@@ -3,6 +3,7 @@ import {
   CouponAppliesTo, COUPON_CONFIG, CouponMinOrderTypes, CouponTypes,
 } from '@arc/enums/coupon'
 import type { RequiredFields } from '@arc/contracts/utils'
+import RadioGroupInput from '@arc/ui/radio-group-input.vue'
 import { createSaleFormSchema } from '~/shared/schemas/forms/shop/coupon/create-sale-form.schema'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import { ROUTES } from '~/shared/config/enums/routes'
@@ -12,7 +13,6 @@ import SearchStartEndDateInput from '~/app/components/account/shop/coupons/searc
 import { useShopCreateCoupon } from '~/shared/server-state/shop/coupon/create-coupon.mutation'
 import { toastCustom } from '~/shared/config/toast'
 import type { CreateSaleBody } from '~/shared/api/shop/coupon/contracts/coupon.contract'
-import RadioGroupInput from '~/shared/ui/radio-group-input.vue'
 
 const router = useRouter()
 const toast = useToast()

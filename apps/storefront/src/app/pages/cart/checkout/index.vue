@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import LoadingSvg from '~/shared/ui/loading-svg.vue'
+import LoadingSvg from '@arc/ui/loading-svg.vue'
 import CheckoutStepper from '~/app/components/checkout-stepper.vue'
 import CreateOrderBtn from '~/app/components/cart/checkout/create-order-btn.vue'
 import PaymentOptions from '~/app/components/cart/checkout/payment-options.vue'

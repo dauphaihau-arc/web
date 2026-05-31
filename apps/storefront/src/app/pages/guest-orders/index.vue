@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import LoadingSvg from '@arc/ui/loading-svg.vue'
 import type { FormSubmitEvent } from '#ui/types'
-import LoadingSvg from '~/shared/ui/loading-svg.vue'
 import ShopItem from '~/app/components/order/shop-item/shop-item.vue'
 import { useLookupGuestOrders } from '~/shared/server-state/checkout/guest-orders.query'
 import { routes } from '~/shared/navigation/routes'

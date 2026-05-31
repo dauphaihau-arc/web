@@ -2,6 +2,7 @@ import { fileURLToPath } from 'node:url'
 import pkg from './package.json'
 
 const packagesDir = fileURLToPath(new URL('../../packages/', import.meta.url))
+const uiPackageDir = `${packagesDir}ui/src`
 
 const assetHost = process.env.ASSET_HOST || ''
 const awsHostBucketAlias = assetHost.replace(/\/+$/, '')
@@ -29,6 +30,7 @@ export default defineNuxtConfig({
   },
 
   alias: {
+    '@arc/ui': uiPackageDir,
     '@arc/contracts': `${packagesDir}contracts/src`,
     '@arc/models': `${packagesDir}models/src`,
     '@arc/enums': `${packagesDir}enums/src`,
@@ -120,6 +122,10 @@ export default defineNuxtConfig({
     },
     {
       path: 'shared/ui',
+      pathPrefix: false,
+    },
+    {
+      path: uiPackageDir,
       pathPrefix: false,
     },
   ],

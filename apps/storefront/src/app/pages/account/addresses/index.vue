@@ -1,10 +1,10 @@
 <script lang="ts" setup>
+import LoadingSvg from '@arc/ui/loading-svg.vue'
 import type { GetUserAddressesResponse } from '~/shared/api/me/address/contracts/address.contract'
 import { useDeleteUserAddress } from '~/shared/server-state/me/address/delete-address.mutation'
 import { useGetUserAddresses } from '~/shared/server-state/me/address/addresses.query'
 import UpdateUserAddressDialog from '~/app/components/dialogs/update-user-address-dialog.vue'
 import CreateUserAddressDialog from '~/app/components/dialogs/create-user-address-dialog.vue'
-import LoadingSvg from '~/shared/ui/loading-svg.vue'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 
