@@ -2,5 +2,5 @@ import { authClientConfigQueryOptions } from '~/shared/server-state/auth/client-
 
 export default defineNuxtPlugin(() => {
   const queryClient = useQueryClient()
-  queryClient.prefetchQuery(authClientConfigQueryOptions)
+  void queryClient.prefetchQuery(authClientConfigQueryOptions).catch(() => {})
 })

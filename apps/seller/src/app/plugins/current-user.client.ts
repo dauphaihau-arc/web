@@ -2,5 +2,5 @@ import { currentUserQueryOptions } from '~/shared/server-state/me/current-user.q
 
 export default defineNuxtPlugin(() => {
   const queryClient = useQueryClient()
-  queryClient.prefetchQuery(currentUserQueryOptions)
+  void queryClient.prefetchQuery(currentUserQueryOptions).catch(() => {})
 })

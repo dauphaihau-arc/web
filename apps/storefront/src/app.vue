@@ -6,6 +6,10 @@ const { status, waitForBackend } = useBackendStatus()
 const isBackendPending = computed(() => ['checking', 'waking'].includes(status.value))
 const isBackendError = computed(() => status.value === 'error')
 
+if (import.meta.client && status.value === 'unknown') {
+  void waitForBackend()
+}
+
 const retryBackend = () => {
   void waitForBackend()
 }

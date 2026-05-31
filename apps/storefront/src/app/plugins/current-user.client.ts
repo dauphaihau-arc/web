@@ -1,9 +1,9 @@
 import { currentUserQueryOptions } from '~/shared/server-state/me/current-user.query'
 
-export default defineNuxtPlugin(async () => {
+export default defineNuxtPlugin(() => {
   const queryClient = useQueryClient()
-  await queryClient.prefetchQuery(currentUserQueryOptions)
+  void queryClient.prefetchQuery(currentUserQueryOptions).catch(() => {})
 
   const marketStore = useMarketStore()
-  await marketStore.ensureMarketReady()
+  void marketStore.ensureMarketReady().catch(() => {})
 })

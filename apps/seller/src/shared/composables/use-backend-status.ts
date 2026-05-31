@@ -54,7 +54,7 @@ export function useBackendStatus() {
   }
 
   const pingBackend = async () => {
-    await $fetch('/health', {
+    await $fetch('/health/ready', {
       baseURL: getHealthBaseURL(),
       credentials: 'include',
       retry: 0,
