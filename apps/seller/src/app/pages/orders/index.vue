@@ -120,7 +120,7 @@ function shippingTone(status: OrderShippingStatuses) {
         :rows="rows"
         :columns="columns"
         :loading="isPending"
-        :empty-state="{ icon: 'i-heroicons-shopping-bag-20-solid', label: 'No orders yet.' }"
+        :empty-state="{ icon: 'i-heroicons-archive-box-20-solid', label: 'No orders yet.' }"
       >
         <template #order-data="{ row }">
           <div class="space-y-1">
