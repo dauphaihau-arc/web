@@ -18,7 +18,6 @@ const imageUrlSelected = computed(() => {
   return resolveProductImageUrl(
     selectedImage.value,
     config.public.assetHost,
-    'detail_4x5',
   )
 })
 
@@ -92,13 +91,12 @@ const onSelectNextImg = () => {
         </button>
       </div>
     </div>
-    <div class="relative h-fit bg-zinc-200 rounded">
+    <div class="relative w-[575px] max-w-full overflow-hidden rounded bg-zinc-100">
       <NuxtImg
         preload
         :src="imageUrlSelected"
         width="575"
-        height="575"
-        class="rounded"
+        class="h-auto w-full rounded"
       />
       <div
         class="arrow absolute bottom-3 right-16"
