@@ -150,7 +150,6 @@ watchDebounced(
       <UTabs
         :items="filters"
         :model-value="activeFilterIndex"
-        :ui="{ list: { base: 'w-full md:w-auto' } }"
         @change="handleFilterChange"
       />
 
