@@ -35,8 +35,13 @@ const statusTabs = [
   { label: 'Completed', value: OrderStatuses.COMPLETED },
 ] as const
 
+const activeStatusTabIndex = computed(() =>
+  Math.max(0, statusTabs.findIndex(tab => tab.value === statusFilter.value)),
+)
+
 const columns = [
   { key: 'order', label: 'Order' },
+  { key: 'status', label: 'Status' },
   { key: 'customer', label: 'Customer' },
   { key: 'shipping', label: 'Shipping' },
   { key: 'total', label: 'Total' },
@@ -47,6 +52,7 @@ const columns = [
 type Row = {
   id: string
   order: string
+  status: string
   customer: string
   shipping: string
   total: string
@@ -57,7 +63,8 @@ type Row = {
 const rows = computed<Row[]>(() => {
   return data.value?.results.map(order => ({
     id: order.id,
-    order: order.status.replaceAll('_', ' '),
+    order: `#${order.id.slice(0, 8)}`,
+    status: order.status.replaceAll('_', ' '),
     customer: order.customer.full_name,
     shipping: order.shipping.shipping_status.replaceAll('_', ' '),
     total: formatMinorCurrency(order.total_minor, order.currency),
@@ -68,6 +75,16 @@ const rows = computed<Row[]>(() => {
 
 function openDetail(row: Row) {
   navigateTo(routes.orderDetail(row.id))
+}
+
+function handleStatusTabChange(index: number) {
+  const tab = statusTabs[index]
+
+  if (!tab) {
+    return
+  }
+
+  statusFilter.value = tab.value
 }
 
 const itemsDropdownWithRow = (row: Row): DropdownItem[][] => [
@@ -103,16 +120,12 @@ function shippingTone(status: OrderShippingStatuses) {
       Review paid orders and keep shipment status up to date for buyers.
     </template>
     <template #content>
-      <div class="mb-6 flex gap-3">
-        <UButton
-          v-for="tab in statusTabs"
-          :key="tab.label"
-          :variant="statusFilter === tab.value ? 'solid' : 'ghost'"
-          color="gray"
-          @click="statusFilter = tab.value"
-        >
-          {{ tab.label }}
-        </UButton>
+      <div class="mb-6">
+        <UTabs
+          :items="statusTabs"
+          :model-value="activeStatusTabIndex"
+          @change="handleStatusTabChange"
+        />
       </div>
 
       <UTable
@@ -123,17 +136,17 @@ function shippingTone(status: OrderShippingStatuses) {
         :empty-state="{ icon: 'i-heroicons-archive-box-20-solid', label: 'No orders yet.' }"
       >
         <template #order-data="{ row }">
-          <div class="space-y-1">
-            <div class="font-medium">
-              #{{ row.id.slice(0, 8) }}
-            </div>
-            <UBadge
-              color="gray"
-              variant="subtle"
-            >
-              {{ row.raw.status.replaceAll('_', ' ') }}
-            </UBadge>
+          <div class="font-medium">
+            {{ row.order }}
           </div>
+        </template>
+
+        <template #status-data="{ row }">
+          <UBadge
+            color="gray"
+          >
+            {{ row.status }}
+          </UBadge>
         </template>
 
         <template #customer-data="{ row }">
@@ -149,7 +162,6 @@ function shippingTone(status: OrderShippingStatuses) {
           <div class="space-y-1">
             <UBadge
               :color="shippingTone(row.raw.shipping.shipping_status)"
-              variant="subtle"
             >
               {{ row.raw.shipping.shipping_status.replaceAll('_', ' ') }}
             </UBadge>
