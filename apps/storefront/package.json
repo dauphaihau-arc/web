@@ -2,11 +2,6 @@
   "name": "@arc/storefront",
   "private": true,
   "type": "module",
-  "author": {
-    "name": "Hau Tran",
-    "email": "hautran.job@outlook.com",
-    "url": "https://github.com/dauphaihau"
-  },
   "description": "Web app for arc app build with nuxt 3, typescripts, pinia, tailwind, nuxt/ui, zod",
   "scripts": {
     "generate": "nuxt generate",

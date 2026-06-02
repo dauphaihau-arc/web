@@ -33,5 +33,10 @@
     "packages/**/*.{js,ts,vue}": [
       "eslint --cache --fix --no-warn-ignored --config apps/storefront/eslint.config.js"
     ]
+  },
+  "author": {
+    "name": "Hau Tran",
+    "email": "contact@hautran.me",
+    "url": "https://github.com/dauphaihau"
   }
 }

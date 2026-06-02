@@ -2,11 +2,6 @@
   "name": "@arc/seller",
   "private": true,
   "type": "module",
-  "author": {
-    "name": "Hau Tran",
-    "email": "hautran.job@outlook.com",
-    "url": "https://github.com/dauphaihau"
-  },
   "description": "Seller app for arc built with Nuxt 3, TypeScript, Pinia, and Nuxt UI",
   "scripts": {
     "generate": "nuxt generate",

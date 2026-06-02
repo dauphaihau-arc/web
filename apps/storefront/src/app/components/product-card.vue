@@ -43,10 +43,10 @@ const displayAmount = computed(() => {
     class="group flex h-full w-full cursor-pointer flex-col gap-3"
     @click="() => router.push(routes.productDetail(props.product.shop.slug, props.product.slug))"
   >
-    <div class="flex h-[230px] w-full items-center justify-center overflow-hidden rounded-lg bg-zinc-200 ring-1 ring-customGray-200 p-3">
+    <div class="flex h-[230px] w-full items-center justify-center overflow-hidden rounded-lg bg-zinc-200 ring-1 ring-customGray-200">
       <NuxtImg
         :src="imageUrl"
-        class="size-full object-contain object-center transition-transform duration-300 group-hover:scale-[1.03]"
+        class="size-full object-cover object-center transition-transform duration-300 group-hover:scale-[1.03]"
       />
     </div>
 
