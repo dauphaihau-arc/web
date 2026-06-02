@@ -1,5 +1,7 @@
 import type { z } from 'zod'
 import type {
+  bulkDeleteShopCouponsRequestSchema,
+  bulkDeleteShopCouponsResponseSchema,
   createShopCouponRequestSchema,
   createShopCouponResponseSchema,
   listShopCouponsRequestSchema,
@@ -17,3 +19,5 @@ export type CreateShopCouponResponse = z.infer<typeof createShopCouponResponseSc
 export type ListShopCouponsRequest = z.infer<typeof listShopCouponsRequestSchema>
 export type ListShopCouponsResponse = z.infer<typeof listShopCouponsResponseSchema>
 export type DeleteShopCouponResponse = undefined
+export type BulkDeleteShopCouponsRequest = z.infer<typeof bulkDeleteShopCouponsRequestSchema>
+export type BulkDeleteShopCouponsResponse = z.infer<typeof bulkDeleteShopCouponsResponseSchema>

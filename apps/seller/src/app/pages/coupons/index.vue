@@ -8,6 +8,8 @@ import type { DropdownItem } from '#ui/types'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import FixedPagination from '~/app/components/account/shop/fixed-pagination.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
+import DataTable from '~/shared/ui/data-table/data-table.vue'
+import { useShopBulkDeleteCoupons } from '~/shared/server-state/shop/coupon/bulk-delete-coupons.mutation'
 import { useShopDeleteCoupon } from '~/shared/server-state/shop/coupon/delete-coupon.mutation'
 import { useShopGetCoupons } from '~/shared/server-state/shop/coupon/coupons.query'
 import type { ListShopCouponsResponse } from '~/shared/api/shop/coupon/contracts/coupon.contract'
@@ -16,7 +18,13 @@ dayjs.extend(localizedFormat)
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 
-const selected = ref([])
+type CouponRow = Omit<ListShopCouponsResponse['results'][number], 'start_date' | 'end_date'> & {
+  start_date: string
+  end_date: string
+  actions: { class: string }
+}
+
+const selected = ref<CouponRow[]>([])
 const pageCount = 10
 const page = ref(1)
 
@@ -31,6 +39,10 @@ const {
 } = useShopGetCoupons(params)
 
 const { mutateAsync: deleteCoupon } = useShopDeleteCoupon()
+const {
+  mutateAsync: bulkDeleteCoupons,
+  isPending: isBulkDeletingCoupons,
+} = useShopBulkDeleteCoupons()
 
 const columns = [
   {
@@ -62,7 +74,7 @@ const columns = [
   },
 ]
 
-const rows = computed(() => {
+const rows = computed<CouponRow[]>(() => {
   if (dataShopGetCoupons.value?.results && dataShopGetCoupons.value.results.length > 0) {
     return dataShopGetCoupons.value.results.map((coupon: ListShopCouponsResponse['results'][number]) => ({
       ...coupon,
@@ -74,6 +86,27 @@ const rows = computed(() => {
   return []
 })
 
+const selectedIds = computed(() => selected.value.map(row => row.id))
+const selectedCount = computed(() => selectedIds.value.length)
+const hasSelectedCoupons = computed(() => selectedCount.value > 0)
+
+watch(params, () => {
+  selected.value = []
+})
+
+async function runBulkDelete(
+  ids = selectedIds.value,
+  sourceRows = selected.value.filter(row => ids.includes(row.id)),
+) {
+  if (!ids.length) {
+    return
+  }
+
+  const result = await bulkDeleteCoupons({ ids })
+  const failedIds = new Set(result.failed.map(item => item.id))
+  selected.value = sourceRows.filter(row => failedIds.has(row.id))
+}
+
 const itemsDropdownWithRow = (row: { id: string }): DropdownItem[][] => [
   [
     {
@@ -83,23 +116,6 @@ const itemsDropdownWithRow = (row: { id: string }): DropdownItem[][] => [
       click: () => row,
       // click: () => console.log('Edit', row.id),
     },
-    {
-      label: 'Duplicate',
-      disabled: true,
-      icon: 'i-heroicons-document-duplicate-20-solid',
-    },
-  ],
-  [
-    {
-      label: 'Archive',
-      disabled: true,
-      icon: 'i-heroicons-archive-box-20-solid',
-    },
-    {
-      label: 'Preview',
-      icon: 'i-heroicons-arrow-right-circle-20-solid',
-      disabled: true,
-    },
   ],
   [
     {
@@ -107,6 +123,7 @@ const itemsDropdownWithRow = (row: { id: string }): DropdownItem[][] => [
       icon: 'i-heroicons-trash-20-solid',
       click: async () => {
         await deleteCoupon(row.id)
+        selected.value = selected.value.filter(item => item.id !== row.id)
         await refetchShopGetCoupons()
       },
     },
@@ -137,8 +154,38 @@ const itemsDropdownWithRow = (row: { id: string }): DropdownItem[][] => [
     </template>
 
     <template #content>
-      <UTable
+      <UCard
+        v-if="hasSelectedCoupons"
+        class="sticky top-4 z-[3] mb-4"
+      >
+        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div class="text-sm text-zinc-600">
+            {{ selectedCount }} coupon<span v-if="selectedCount > 1">s</span> selected
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <UButton
+              color="red"
+              variant="soft"
+              :loading="isBulkDeletingCoupons"
+              @click="runBulkDelete()"
+            >
+              Delete selected
+            </UButton>
+            <UButton
+              color="gray"
+              variant="ghost"
+              :disabled="isBulkDeletingCoupons"
+              @click="selected = []"
+            >
+              Clear
+            </UButton>
+          </div>
+        </div>
+      </UCard>
+
+      <DataTable
         v-model="selected"
+        by="id"
         :empty-state="{ icon: 'i-heroicons-archive-box-20-solid', label: 'No coupons.' }"
         :rows="rows"
         :columns="columns"
@@ -223,7 +270,7 @@ const itemsDropdownWithRow = (row: { id: string }): DropdownItem[][] => [
             <LoadingSvg :child-class="'!w-12 !h-12'" />
           </div>
         </template>
-      </UTable>
+      </DataTable>
 
       <FixedPagination
         :page="page"

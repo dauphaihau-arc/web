@@ -1,4 +1,6 @@
 import type {
+  BulkDeleteShopCouponsRequest,
+  BulkDeleteShopCouponsResponse,
   CreateShopCouponRequest,
   CreateShopCouponResponse
   ,
@@ -19,6 +21,13 @@ export const shopCouponApi = {
   delete(shopId: string, couponId: string) {
     return apiClient.delete<DeleteShopCouponResponse>(
       `/shops/${shopId}/coupons/${couponId}`,
+    )
+  },
+
+  bulkDelete(shopId: string, payload: BulkDeleteShopCouponsRequest) {
+    return apiClient.post<BulkDeleteShopCouponsResponse>(
+      `/shops/${shopId}/coupons/bulk-delete`,
+      payload,
     )
   },
 

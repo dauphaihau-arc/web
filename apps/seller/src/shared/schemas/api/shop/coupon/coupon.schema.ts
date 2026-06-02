@@ -28,3 +28,16 @@ export const listShopCouponsResponseSchema = z.object({
   total_pages: z.number(),
   total_results: z.number(),
 })
+
+export const bulkDeleteShopCouponsRequestSchema = z.object({
+  ids: z.array(z.string()).min(1),
+})
+
+export const bulkDeleteShopCouponsResponseSchema = z.object({
+  succeeded_ids: z.array(z.string()),
+  failed: z.array(z.object({
+    id: z.string(),
+    code: z.string(),
+    reason: z.string(),
+  })),
+})
