@@ -143,8 +143,8 @@ function shippingTone(status: OrderShippingStatuses) {
         :columns="columns"
         :loading="isPending"
         :empty-state="{ icon: 'i-heroicons-archive-box-20-solid', label: 'No orders yet.' }"
-        :floating-action-locked="slideoverOpen"
-        @floating-action="row => openDetailSlideover(row as Row)"
+        clickable-rows
+        @row-click="row => openDetailSlideover(row as Row)"
       >
         <template #order-data="{ row }">
           <div class="font-medium">
@@ -187,13 +187,15 @@ function shippingTone(status: OrderShippingStatuses) {
         </template>
 
         <template #actions-data="{ row }">
-          <UDropdown :items="itemsDropdownWithRow(row)">
-            <UButton
-              color="gray"
-              variant="ghost"
-              icon="i-heroicons-ellipsis-horizontal-20-solid"
-            />
-          </UDropdown>
+          <div class="flex w-full items-center justify-end gap-1">
+            <UDropdown :items="itemsDropdownWithRow(row)">
+              <UButton
+                color="gray"
+                variant="ghost"
+                icon="i-heroicons-ellipsis-horizontal-20-solid"
+              />
+            </UDropdown>
+          </div>
         </template>
 
         <template #loading-state>

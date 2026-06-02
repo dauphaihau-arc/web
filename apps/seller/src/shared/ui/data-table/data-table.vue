@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
-import { useRowFloatingAction } from '~/shared/ui/data-table/use-row-floating-action'
+import { useRowInteraction } from '~/shared/ui/data-table/use-row-interaction'
 
 type TableRow = { id: string, [key: string]: unknown }
 type TableColumn = { key: string, [key: string]: unknown }
 type TableEmptyState = { icon: string, label: string }
+type TableBy = string | ((row: TableRow) => unknown)
 
 const props = defineProps({
   modelValue: {
@@ -27,15 +28,15 @@ const props = defineProps({
     type: Object as PropType<TableEmptyState>,
     required: true,
   },
-  floatingActionLabel: {
-    type: String,
-    default: 'Detail',
+  by: {
+    type: [String, Function] as PropType<TableBy>,
+    default: undefined,
   },
-  floatingActionLocked: {
+  clickableRows: {
     type: Boolean,
     default: false,
   },
-  suppressFloatingActionColumns: {
+  suppressRowClickColumns: {
     type: Array as PropType<string[]>,
     default: () => ['actions'],
   },
@@ -43,38 +44,37 @@ const props = defineProps({
 
 const emit = defineEmits<{
   'update:modelValue': [value: unknown[]]
-  'floating-action': [row: TableRow]
+  'row-click': [row: TableRow]
 }>()
 
 const slots = useSlots()
-const floatingActionLockedRef = toRef(props, 'floatingActionLocked')
 
 const selected = computed({
   get: () => props.modelValue,
   set: value => emit('update:modelValue', value),
 })
 
-const rowsRef = computed(() => props.rows)
+const tableModelValue = computed({
+  get: (): unknown[] | undefined => (props.rows.length > 0 ? selected.value : undefined),
+  set: (value) => {
+    if (value) {
+      selected.value = value
+    }
+  },
+})
 
-const {
-  actionPosition,
-  actionVisible,
-  activeRow,
-  setActiveRow,
-  tableWrapper,
-} = useRowFloatingAction<TableRow>({
+const rowsRef = computed(() => props.rows)
+const clickableRowsRef = toRef(props, 'clickableRows')
+
+const { tableWrapper } = useRowInteraction<TableRow>({
   rows: rowsRef,
-  locked: floatingActionLockedRef,
+  enabled: clickableRowsRef,
+  onRowClick: row => emit('row-click', row),
 })
 
 const dataSlotColumns = computed(() =>
   props.columns.filter(column => !!slots[`${column.key}-data`]),
 )
-
-function triggerFloatingAction(row: TableRow) {
-  setActiveRow(row)
-  emit('floating-action', row)
-}
 </script>
 
 <template>
@@ -82,29 +82,9 @@ function triggerFloatingAction(row: TableRow) {
     ref="tableWrapper"
     class="relative"
   >
-    <div
-      v-if="actionVisible && activeRow"
-      data-table-floating-action
-      class="pointer-events-none absolute z-20 transition-transform duration-75"
-      :style="{
-        top: `${actionPosition.top}px`,
-        left: `${actionPosition.left}px`,
-        transform: 'translate(-50%, -50%)',
-      }"
-    >
-      <UButton
-        color="gray"
-        variant="solid"
-        size="xs"
-        class="pointer-events-auto min-w-[88px] shadow-lg"
-        @click="triggerFloatingAction(activeRow)"
-      >
-        {{ floatingActionLabel }}
-      </UButton>
-    </div>
-
     <UTable
-      v-model="selected"
+      v-model="tableModelValue"
+      :by="by"
       :rows="rows"
       :columns="columns"
       :loading="loading"
@@ -116,7 +96,7 @@ function triggerFloatingAction(row: TableRow) {
         #[`${column.key}-data`]="slotProps"
       >
         <div
-          v-if="suppressFloatingActionColumns.includes(column.key)"
+          v-if="suppressRowClickColumns.includes(column.key)"
           data-table-action-cell
           class="flex justify-end"
         >
@@ -150,7 +130,34 @@ function triggerFloatingAction(row: TableRow) {
 </template>
 
 <style scoped>
-:deep(tbody tr.data-table-row-hover-target) {
-  cursor: default;
+:deep(tbody tr.data-table-row-clickable) {
+  cursor: pointer;
+}
+
+:deep(tbody tr.data-table-row-clickable > td) {
+  transition: background-color 150ms ease;
+}
+
+:deep(tbody tr.data-table-row-clickable:hover > td) {
+  background-color: rgb(244 244 245);
+}
+
+:deep(tbody tr.data-table-row-clickable:focus-visible) {
+  outline: 2px solid rgb(161 161 170);
+  outline-offset: -2px;
+}
+
+:deep(tbody tr [data-row-hover-action]) {
+  opacity: 0;
+}
+
+:deep(tbody tr:hover [data-row-hover-action]),
+:deep(tbody tr.data-table-row-clickable:focus-visible [data-row-hover-action]) {
+  opacity: 1;
+}
+
+:deep(tbody tr:has([aria-expanded="true"]) [data-row-hover-action]),
+:deep(tbody tr:has([data-state="open"]) [data-row-hover-action]) {
+  opacity: 0;
 }
 </style>
