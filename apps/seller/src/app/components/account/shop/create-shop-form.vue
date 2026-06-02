@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { MarketCurrencies } from '@arc/enums/market'
-import { shopSchema } from '@arc/schemas/shop.schema'
 import { currencyOptions } from '@arc/utils'
+import { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
 import type { CreateShopRequest } from '~/shared/api/shop/contracts/shop.contract'
 import { ROUTES } from '~/shared/config/enums/routes'
@@ -9,6 +9,11 @@ import { toastCustom } from '~/shared/config/toast'
 import { useCreateShop } from '~/shared/server-state/shop/create-shop.mutation'
 
 const toast = useToast()
+
+const createShopFormSchema = z.object({
+  shop_name: z.string().trim().min(6).max(20),
+  currency: z.nativeEnum(MarketCurrencies),
+})
 
 const formRef = ref()
 const unknownErrorMsg = ref('')
@@ -60,7 +65,7 @@ async function onSubmit(event: FormSubmitEvent<CreateShopRequest>) {
     <UForm
       ref="formRef"
       :validate-on="['submit']"
-      :schema="shopSchema.pick({ shop_name: true, currency: true })"
+      :schema="createShopFormSchema"
       :state="stateSubmit"
       @submit="onSubmit"
     >
@@ -90,33 +95,9 @@ async function onSubmit(event: FormSubmitEvent<CreateShopRequest>) {
           size="xl"
           :ui-menu="{
             select: '!normal-case',
-            option: { base: '!normal-case', container: 'w-full' },
+            option: { base: '!normal-case' },
           }"
-        >
-          <template #label="{ option }">
-            <div
-              v-if="option"
-              class="flex items-center gap-3"
-            >
-              <span class="min-w-10 text-sm font-semibold text-slate-950">
-                {{ option.symbol }}
-              </span>
-              <span class="truncate text-sm text-slate-600">
-                {{ option.label }}
-              </span>
-            </div>
-          </template>
-          <template #option="{ option }">
-            <div class="flex w-full items-center gap-3 py-1">
-              <span class="min-w-10 text-sm font-semibold text-slate-950">
-                {{ option.symbol }}
-              </span>
-              <span class="truncate text-sm text-slate-600">
-                {{ option.label }}
-              </span>
-            </div>
-          </template>
-        </USelectMenu>
+        />
       </UFormGroup>
 
       <UButton
