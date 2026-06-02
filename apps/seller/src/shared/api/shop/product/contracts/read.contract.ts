@@ -10,6 +10,9 @@ import type {
   listShopProductsRequestSchema,
   listShopProductsResponseSchema,
   removeProductRequestSchema,
+  bulkMutateShopProductsActionSchema,
+  bulkMutateShopProductsRequestSchema,
+  bulkMutateShopProductsResponseSchema,
   shopProductDetailApiResponseSchema,
 } from '~/shared/schemas/api/shop/product/read-product.schema'
 
@@ -27,3 +30,6 @@ export type IssueProductImageUploadUrlRequest = z.infer<typeof issueProductImage
 export type IssueProductImageUploadUrlResponse = z.infer<typeof issueProductImageUploadUrlResponseSchema>
 export type RemoveProductRequest = z.infer<typeof removeProductRequestSchema>
 export type RemoveProductResponse = undefined
+export type BulkMutateShopProductsAction = z.infer<typeof bulkMutateShopProductsActionSchema>
+export type BulkMutateShopProductsRequest = z.infer<typeof bulkMutateShopProductsRequestSchema>
+export type BulkMutateShopProductsResponse = z.infer<typeof bulkMutateShopProductsResponseSchema>

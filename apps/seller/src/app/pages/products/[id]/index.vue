@@ -7,10 +7,11 @@ import { useShopGetDetailProduct } from '~/shared/server-state/shop/product/deta
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 
 const route = useRoute()
+const productId = route.params.id as string
 
 const {
   isPending,
-} = useShopGetDetailProduct(route.params.id as string, {
+} = useShopGetDetailProduct(productId, {
   onResponseError: () => {
     throw showError({
       statusCode: 404,

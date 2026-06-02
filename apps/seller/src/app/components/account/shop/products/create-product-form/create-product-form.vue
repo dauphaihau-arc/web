@@ -349,7 +349,7 @@ watch(isProductHaveVariants, () => {
         btnSubmitRef.click();
       }"
     >
-      Save
+      Save draft
     </UButton>
     <UButton
       :disabled="!enabledButtonSubmit || !hasImages || loadingSubmit"
@@ -358,7 +358,7 @@ watch(isProductHaveVariants, () => {
       type="submit"
       @click="() => btnSubmitRef.click()"
     >
-      Save & Display
+      Publish product
     </UButton>
   </div>
 </template>

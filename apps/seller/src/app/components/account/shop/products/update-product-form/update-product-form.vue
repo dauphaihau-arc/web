@@ -2,6 +2,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import {
+  ProductStates,
   ProductVariantTypes, PRODUCT_CONFIG,
   productWhoMadeOpts,
 } from '@arc/enums/product'
@@ -12,7 +13,10 @@ import {
   hasRemovedAllImages,
   pruneUnchangedUpdateFields,
 } from './update-product-form.mapper'
-import { useUpdateProductSubmit } from './use-update-product-submit'
+import {
+  useUpdateProductSubmit,
+  type UpdateProductAction,
+} from './use-update-product-submit'
 import { updateProductFormSchema } from '~/shared/schemas/forms/shop/product/update-product-form.schema'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import { ROUTES } from '~/shared/config/enums/routes'
@@ -62,6 +66,7 @@ const countValidateVariantsInputs = ref(0)
 
 const fileImages = ref<File[]>([])
 const idsImageForDelete = ref<Required<Pick<ProductImageReference, 'id'>>[]>([])
+const pendingAction = ref<UpdateProductAction>('save')
 
 const {
   loadingSubmit,
@@ -73,6 +78,56 @@ const {
   fileImages,
   idsImageForDelete,
 })
+
+const productState = computed(() => dataDetailProduct.value?.product.state)
+
+const currentImageCount = computed(() => {
+  const product = dataDetailProduct.value?.product
+
+  if (!product) {
+    return fileImages.value.length
+  }
+
+  const deletedImageIds = new Set(idsImageForDelete.value.map(image => image.id))
+
+  return product.images.filter(image => !deletedImageIds.has(image.id)).length
+    + fileImages.value.length
+})
+
+const canPublishFromDetail = computed(() =>
+  [ProductStates.DRAFT, ProductStates.INACTIVE].includes(productState.value as ProductStates),
+)
+
+const canDeactivateFromDetail = computed(() =>
+  productState.value === ProductStates.ACTIVE,
+)
+
+const publishImageError = computed(() =>
+  canPublishFromDetail.value && currentImageCount.value === 0
+    ? 'Add at least 1 image before publishing.'
+    : '',
+)
+
+function stateTone(state?: ProductStates) {
+  switch (state) {
+    case ProductStates.ACTIVE:
+      return 'emerald'
+    case ProductStates.INACTIVE:
+      return 'amber'
+    case ProductStates.DRAFT:
+      return 'gray'
+    default:
+      return 'gray'
+  }
+}
+
+function formatStateLabel(state?: ProductStates) {
+  if (!state) {
+    return 'Unknown'
+  }
+
+  return state.charAt(0).toUpperCase() + state.slice(1)
+}
 
 const onChangeVariants = (values: IOnChangeUpdateVariants) => {
   isVariantInputValid.value = Boolean(values)
@@ -120,7 +175,8 @@ async function onSubmit(event: FormSubmitEvent<UpdateProductBody>) {
     dataDetailProduct.value?.product,
   )
 
-  await submit(dataSubmit)
+  await submit(dataSubmit, pendingAction.value)
+  pendingAction.value = 'save'
 }
 
 function onError(event: FormErrorEvent) {
@@ -177,6 +233,15 @@ watchDebounced(
         Basic info
       </template>
       <template #content>
+        <div class="mb-4 flex items-center gap-3">
+          <span class="text-sm text-zinc-500">Status</span>
+          <UBadge
+            :color="stateTone(productState)"
+            variant="soft"
+          >
+            {{ formatStateLabel(productState) }}
+          </UBadge>
+        </div>
         <ImagesInput
           v-model:new-file-images="fileImages"
           v-model:ids-image-delete="idsImageForDelete"
@@ -310,13 +375,52 @@ watchDebounced(
     </UButton>
     <UButton
       :loading="loadingSubmit"
+      :disabled="disabledButtonSubmit"
       size="md"
       type="submit"
-      @click="() => btnSubmit.click()"
+      @click="() => {
+        pendingAction = 'save';
+        btnSubmit.click();
+      }"
     >
       Update
     </UButton>
+    <UButton
+      v-if="canPublishFromDetail"
+      :loading="loadingSubmit"
+      :disabled="disabledButtonSubmit || !!publishImageError"
+      size="md"
+      color="emerald"
+      type="submit"
+      @click="() => {
+        pendingAction = 'publish';
+        btnSubmit.click();
+      }"
+    >
+      Save & publish
+    </UButton>
+    <UButton
+      v-if="canDeactivateFromDetail"
+      :loading="loadingSubmit"
+      :disabled="disabledButtonSubmit"
+      size="md"
+      color="amber"
+      variant="soft"
+      type="submit"
+      @click="() => {
+        pendingAction = 'deactivate';
+        btnSubmit.click();
+      }"
+    >
+      Save & deactivate
+    </UButton>
   </div>
+  <p
+    v-if="publishImageError"
+    class="mt-3 text-sm text-red-600"
+  >
+    {{ publishImageError }}
+  </p>
 </template>
 
 <style scoped>

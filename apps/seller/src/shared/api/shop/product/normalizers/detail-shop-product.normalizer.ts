@@ -11,15 +11,15 @@ import type {
 function normalizeInventory(
   inventory?: ShopProductDetailApiResponse['inventory'][number],
 ): DetailShopProductInventory {
-  if (!inventory) {
+  if (!inventory || inventory.amount_minor == null || !inventory.currency) {
     return {}
   }
 
   return {
     id: inventory.id,
-    amount: fromMinorUnits(inventory.amountMinor, inventory.currency),
-    original_price: inventory.originalAmountMinor != null
-      ? fromMinorUnits(inventory.originalAmountMinor, inventory.currency)
+    amount: fromMinorUnits(inventory.amount_minor, inventory.currency),
+    original_price: inventory.original_amount_minor != null
+      ? fromMinorUnits(inventory.original_amount_minor, inventory.currency)
       : undefined,
     stock: inventory.stock,
     sku: inventory.sku,
@@ -30,39 +30,39 @@ function normalizeInventory(
 export function normalizeDetailShopProductResponse(
   response: ShopProductDetailApiResponse,
 ): DetailShopProductResponse {
-  const variantType = response.variantType ?? ProductVariantTypes.NONE
+  const variantType = response.variant_type ?? ProductVariantTypes.NONE
   const inventoryByVariantId = new Map(
     response.inventory
-      .filter(item => item.productVariantId)
-      .map(item => [item.productVariantId!, item]),
+      .filter(item => item.product_variant_id)
+      .map(item => [item.product_variant_id!, item]),
   )
 
   const baseProduct = {
     id: response.id,
+    state: response.state,
     title: response.title,
     description: response.description,
-    who_made: response.whoMade,
-    is_digital: response.isDigital,
+    who_made: response.who_made,
+    is_digital: response.is_digital,
     variant_type: variantType,
-    variant_group_name: response.variantGroupName,
-    variant_sub_group_name: response.variantSubGroupName,
+    variant_group_name: response.variant_group_name,
+    variant_sub_group_name: response.variant_sub_group_name,
     tags: [],
-    category: response.categoryId
+    category: response.category_id
       ? {
-          id: response.categoryId,
+          id: response.category_id,
           name: '',
         }
       : null,
     images: response.images.map(image => ({
       id: image.id,
-      relative_url: image.storageKey,
+      relative_url: image.storage_key,
       rank: image.rank,
-      url: image.url,
     })),
     attributes: response.attributes.map(attribute => ({
       id: attribute.id,
-      attribute: attribute.categoryAttributeId,
-      selected: attribute.selectedOptionId ?? attribute.selectedText ?? '',
+      attribute: attribute.category_attribute_id,
+      selected: attribute.selected_option_id ?? attribute.selected_text ?? '',
     })),
   }
 
@@ -83,7 +83,7 @@ export function normalizeDetailShopProductResponse(
         inventory: {},
         variants: response.variants.map(variant => ({
           id: variant.id,
-          variant_name: variant.optionValue1 ?? variant.name,
+          variant_name: variant.option_value_1 ?? variant.name,
           inventory: normalizeInventory(inventoryByVariantId.get(variant.id)),
         })),
       },
@@ -93,8 +93,8 @@ export function normalizeDetailShopProductResponse(
   const variantsByPrimaryOption = new Map<string, DetailShopProductVariant>()
 
   response.variants.forEach((variant) => {
-    const primaryOption = variant.optionValue1 ?? variant.name
-    const secondaryOption = variant.optionValue2 ?? variant.name
+    const primaryOption = variant.option_value_1 ?? variant.name
+    const secondaryOption = variant.option_value_2 ?? variant.name
     const existingGroup = variantsByPrimaryOption.get(primaryOption)
     const variantOption: DetailShopProductVariantOption = {
       id: variant.id,

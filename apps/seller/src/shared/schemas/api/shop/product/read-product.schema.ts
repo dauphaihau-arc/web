@@ -22,7 +22,6 @@ export const listShopProductsItemSchema = z.object({
   images: z.array(z.object({
     id: z.string(),
     storage_key: z.string(),
-    url: z.string().optional(),
     rank: z.number(),
   })),
   variants: z.array(z.object({
@@ -58,42 +57,76 @@ export const listShopProductsResponseSchema = z.object({
 
 export const shopProductDetailApiResponseSchema = z.object({
   id: z.string(),
-  categoryId: z.string().optional(),
+  public_id: z.string().optional(),
+  shop_id: z.string(),
+  shop_public_id: z.string().optional(),
+  state: z.nativeEnum(ProductStates),
+  category_id: z.string().optional(),
   title: z.string(),
+  slug: z.string(),
   description: z.string(),
-  whoMade: z.string(),
-  isDigital: z.boolean(),
-  variantType: z.string().optional(),
-  variantGroupName: z.string().optional(),
-  variantSubGroupName: z.string().optional(),
+  who_made: z.string(),
+  is_digital: z.boolean(),
+  non_taxable: z.boolean(),
+  variant_type: z.nativeEnum(ProductVariantTypes).optional(),
+  variant_group_name: z.string().optional(),
+  variant_sub_group_name: z.string().optional(),
   images: z.array(z.object({
     id: z.string(),
-    storageKey: z.string(),
+    storage_key: z.string(),
     rank: z.number(),
-    url: z.string().optional(),
+    variant_status: z.string(),
+    variant_error: z.string().optional(),
+    variants_generated_at: z.coerce.date().optional(),
+    variants: z.array(z.object({
+      id: z.string(),
+      variant: z.string(),
+      storage_key: z.string(),
+      width: z.number().optional(),
+      height: z.number().optional(),
+      format: z.string().optional(),
+    })).optional(),
   })),
   attributes: z.array(z.object({
     id: z.string(),
-    categoryAttributeId: z.string(),
-    selectedOptionId: z.string().optional(),
-    selectedText: z.string().optional(),
+    category_attribute_id: z.string(),
+    category_attribute_name: z.string(),
+    input_type: z.string(),
+    selected_option_id: z.string().optional(),
+    selected_option_value: z.string().optional(),
+    selected_text: z.string().optional(),
   })),
   variants: z.array(z.object({
     id: z.string(),
     name: z.string(),
-    optionValue1: z.string().optional(),
-    optionValue2: z.string().optional(),
+    option_value_1: z.string().optional(),
+    option_value_2: z.string().optional(),
+    image_storage_key: z.string().optional(),
     rank: z.number(),
   })),
   inventory: z.array(z.object({
     id: z.string(),
-    productVariantId: z.string().optional(),
+    product_variant_id: z.string().optional(),
     sku: z.string().optional(),
     stock: z.number(),
-    amountMinor: z.number().int().nonnegative(),
-    originalAmountMinor: z.number().int().nonnegative().optional(),
-    currency: z.string(),
+    amount_minor: z.number().int().nonnegative().optional(),
+    original_amount_minor: z.number().int().nonnegative().optional(),
+    currency: z.string().optional(),
   })),
+  shipping: z.object({
+    id: z.string(),
+    origin_country: z.string(),
+    origin_zip: z.string(),
+    process_time_label: z.string(),
+    destinations: z.array(z.object({
+      id: z.string(),
+      country_code: z.string(),
+      delivery_time_label: z.string(),
+      service: z.string(),
+      charge_type: z.string(),
+      rank: z.number(),
+    })),
+  }).optional(),
 })
 
 export const detailShopProductInventorySchema = z.object({
@@ -124,6 +157,7 @@ export const detailShopProductVariantSchema = z.object({
 export const detailShopProductResponseSchema = z.object({
   product: z.object({
     id: z.string(),
+    state: z.nativeEnum(ProductStates),
     title: z.string(),
     description: z.string(),
     who_made: z.string(),
@@ -166,4 +200,24 @@ export const issueProductImageUploadUrlResponseSchema = z.object({
 
 export const removeProductRequestSchema = z.object({
   id: z.string(),
+})
+
+export const bulkMutateShopProductsActionSchema = z.enum([
+  'publish',
+  'deactivate',
+  'remove',
+])
+
+export const bulkMutateShopProductsRequestSchema = z.object({
+  ids: z.array(z.string()).min(1),
+  action: bulkMutateShopProductsActionSchema,
+})
+
+export const bulkMutateShopProductsResponseSchema = z.object({
+  succeeded_ids: z.array(z.string()),
+  failed: z.array(z.object({
+    id: z.string(),
+    code: z.string(),
+    reason: z.string(),
+  })),
 })

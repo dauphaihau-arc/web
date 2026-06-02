@@ -4,6 +4,9 @@ import type { QueryClient } from '@tanstack/vue-query'
 import type { Ref } from 'vue'
 import pick from '@arc/utils/pick'
 import { toastCustom } from '~/shared/config/toast'
+import { shopProductApi } from '~/shared/api/shop/product/product.api'
+import { resolveMyShopId } from '~/shared/server-state/shop/resolve-my-shop-id'
+import { useShopPublishProduct } from '~/shared/server-state/shop/product/publish-product.mutation'
 import { useIssueProductImageUploadUrl } from '~/shared/server-state/upload/issue-product-image-upload-url.mutation'
 import { useShopSetProductAttributes } from '~/shared/server-state/shop/product/set-product-attributes.mutation'
 import { useShopSetProductImagesByKeys } from '~/shared/server-state/shop/product/set-product-images-by-keys.mutation'
@@ -21,6 +24,8 @@ type UseUpdateProductSubmitInput = {
   fileImages: Ref<File[]>
   idsImageForDelete: Ref<Required<Pick<ProductImageReference, 'id'>>[]>
 }
+
+export type UpdateProductAction = 'save' | 'publish' | 'deactivate'
 
 function buildDetailPayload(dataSubmit: UpdateProductBody) {
   return pick(dataSubmit, [
@@ -79,6 +84,10 @@ export function useUpdateProductSubmit({
   } = useShopUpdateProduct()
 
   const {
+    mutateAsync: publishProduct,
+  } = useShopPublishProduct()
+
+  const {
     mutateAsync: setProductImagesByKeys,
   } = useShopSetProductImagesByKeys()
 
@@ -125,7 +134,26 @@ export function useUpdateProductSubmit({
     return keys
   }
 
-  async function submit(dataSubmit: UpdateProductBody) {
+  function getNextImageCount() {
+    const currentImages = dataDetailProduct.value?.product.images ?? []
+    const deletedImageIds = new Set(idsImageForDelete.value.map(image => image.id))
+
+    return currentImages.filter(image => !deletedImageIds.has(image.id)).length
+      + fileImages.value.length
+  }
+
+  async function submit(
+    dataSubmit: UpdateProductBody,
+    action: UpdateProductAction = 'save',
+  ) {
+    if (action === 'publish' && getNextImageCount() === 0) {
+      toast.add({
+        ...toastCustom.error,
+        title: 'Add at least 1 image before publishing',
+      })
+      return
+    }
+
     loadingSubmit.value = true
 
     try {
@@ -161,9 +189,37 @@ export function useUpdateProductSubmit({
         queryKey: ['shop-get-detail-product', productId],
       })
 
+      await queryClient.invalidateQueries({
+        queryKey: ['shop-get-products'],
+      })
+
+      if (action === 'publish') {
+        await publishProduct(productId)
+      }
+
+      if (action === 'deactivate') {
+        const shopId = await resolveMyShopId(queryClient)
+        await shopProductApi.bulkMutate(shopId, {
+          ids: [productId],
+          action: 'deactivate',
+        })
+      }
+
+      await queryClient.invalidateQueries({
+        queryKey: ['shop-get-detail-product', productId],
+      })
+
+      await queryClient.invalidateQueries({
+        queryKey: ['shop-get-products'],
+      })
+
       toast.add({
         ...toastCustom.success,
-        title: 'Update product success',
+        title: action === 'publish'
+          ? 'Product published'
+          : action === 'deactivate'
+            ? 'Product deactivated'
+            : 'Update product success',
       })
     }
     catch (error) {

@@ -28,8 +28,8 @@ export enum ProductShippingOtherCountriesOptions {
 
 export enum ProductStates {
   ACTIVE = 'active', // currently for sale.
-  INACTIVE = 'inactive', // When updating a product
-  DRAFT = 'draft', //  if product in any other state cannot be moved to draft
+  INACTIVE = 'inactive', // Previously published, currently not live.
+  DRAFT = 'draft', // Never published yet.
   REMOVED = 'removed', // product has been removed by its owner.
   // SOLD_OUT = 'sold_out',
   // EXPIRED = 'expired',

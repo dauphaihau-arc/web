@@ -164,8 +164,8 @@ export function useCreateProductSubmit({
       toast.add({
         ...toastCustom.success,
         title: stateSubmit.state === ProductStates.ACTIVE
-          ? 'Create product success'
-          : 'Save draft success',
+          ? 'Product published'
+          : 'Draft saved',
       })
       await router.push(ROUTES.ACCOUNT + ROUTES.SHOP + ROUTES.PRODUCTS)
     }

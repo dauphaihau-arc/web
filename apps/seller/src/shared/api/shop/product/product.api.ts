@@ -4,6 +4,8 @@ import type {
   CreateDraftProductResponse,
 } from './contracts/create-draft.contract'
 import type {
+  BulkMutateShopProductsRequest,
+  BulkMutateShopProductsResponse,
   DetailShopProductResponse,
   IssueProductImageUploadUrlRequest,
   IssueProductImageUploadUrlResponse,
@@ -64,6 +66,13 @@ export const shopProductApi = {
   remove(shopId: string, productId: string) {
     return apiClient.delete<RemoveProductResponse>(
       `/shops/${shopId}/products/${productId}`,
+    )
+  },
+
+  bulkMutate(shopId: string, payload: BulkMutateShopProductsRequest) {
+    return apiClient.post<BulkMutateShopProductsResponse>(
+      `/shops/${shopId}/products/bulk-mutate`,
+      payload,
     )
   },
 
