@@ -111,7 +111,7 @@ const itemsShopDropdown: ShopDropdownItem[][] = [
             <NuxtLink
               :to="item?.disabled ? '' : item.to"
               prefetch
-              class="link-default link-theme ml-2 mr-4 w-full"
+              class="link-default link-theme ml-2 mr-4 !w-full"
               :class="[
                 'pl-5',
                 item.disabled

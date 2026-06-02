@@ -36,7 +36,7 @@ export const shopSidebarLinks: AppSidebarLink[] = [
     disabled: true,
   },
   {
-    title: 'Orders & Shipping',
+    title: 'Orders',
     to: routes.orders(),
     matchPath: routePaths.orders,
   },
