@@ -24,6 +24,7 @@ export const routes = {
   home: () => createRoute(routePaths.home),
   reset: (query?: { v?: string | number }) => createRoute(routePaths.reset, query),
   account: () => createRoute(routePaths.account),
+  accountNotifications: () => createRoute(routePaths.accountNotifications),
   accountAddresses: () => createRoute(routePaths.accountAddresses),
   orders: (query?: {
     search?: string

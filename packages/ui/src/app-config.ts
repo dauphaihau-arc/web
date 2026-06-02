@@ -24,6 +24,9 @@ export const sharedAppConfig = {
     card: {
       shadow: 'shadow-border',
     },
+    popover: {
+      shadow: 'shadow-[0_8px_30px_rgba(0,0,0,0.18)]',
+    },
     formGroup: {
       description: 'text-customGray-800',
     },

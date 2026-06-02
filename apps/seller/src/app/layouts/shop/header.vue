@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
 import type { DropdownItem } from '#ui/types'
+import HeaderNotificationPopover from '~/app/components/header-notification-popover.vue'
 import { shopHeaderCreateLinks } from '~/shared/navigation/menu'
 
 const itemsHeaderDropdown: DropdownItem[][] = [
@@ -55,40 +56,33 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
           </div>
 
           <div class="flex items-center gap-4">
-            <UTooltip text="Notifications">
+            <HeaderNotificationPopover />
+
+            <!-- <UTooltip text="Setting">
               <UButton
                 color="gray"
                 variant="ghost"
                 class="icon-button"
               >
-                <AppIcon
-                  name="bell"
-                  class="heroicon-sw-2"
-                />
+                <AppIcon name="settings" />
               </UButton>
-            </UTooltip>
-            <UTooltip text="Setting">
-              <UButton
-                color="gray"
-                variant="ghost"
-                class="icon-button"
-              >
-                <AppIcon
-                  name="settings"
-                  class="heroicon-sw-2"
-                />
-              </UButton>
-            </UTooltip>
+            </UTooltip> -->
+
             <UDropdown :items="itemsHeaderDropdown">
               <UTooltip text="Create">
                 <UButton
                   :ui="{ rounded: 'rounded-full' }"
-                  icon="pajamas:plus"
                   size="xs"
                   color="primary"
                   square
                   variant="solid"
-                />
+                  class="!p-[4px]"
+                >
+                  <AppIcon
+                    name="plus"
+                    class="!size-4"
+                  />
+                </UButton>
               </UTooltip>
             </UDropdown>
           </div>

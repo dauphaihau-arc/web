@@ -3,6 +3,7 @@ export const routePaths = {
   category: '/c',
   reset: '/reset',
   account: '/account',
+  accountNotifications: '/account/notifications',
   accountAddresses: '/account/addresses',
   orders: '/orders',
   search: '/search',

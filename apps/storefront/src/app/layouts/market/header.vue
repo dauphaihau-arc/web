@@ -3,6 +3,7 @@ import CartMegaMenu from './cart-mega-menu.vue'
 import HeaderCategories from './header-categories.vue'
 import SearchAllMegaMenu from './search-all-mega-menu.vue'
 import type { DropdownItem } from '#ui/types'
+import HeaderNotificationPopover from '~/app/components/header-notification-popover.vue'
 import RegisterLoginDialog from '~/app/components/dialogs/login-register/register-login-dialog.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { routes } from '~/shared/navigation/routes'
@@ -177,6 +178,8 @@ const showRegisterLoginDialog = () => {
           </UTooltip>
 
           <template v-if="dataUserAuth?.user">
+            <HeaderNotificationPopover />
+
             <UDropdown
               :items="itemsUserDropdown as DropdownItem[][]"
               :popper="{ placement: 'bottom' }"
