@@ -16,12 +16,13 @@ const items = [
     label: 'Shipping and return policies',
     defaultOpen: true,
     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed neque elit, tristique placerat feugiat ac, facilisis vitae arcu. Proin eget egestas augue. Praesent ut sem nec arcu pellentesque aliquet. Duis dapibus diam vel metus tempus vulputate.',
-  }, {
-    id: 'seller',
-    label: 'Meet your sellers',
-    disabled: true,
-    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed neque elit, tristique placerat feugiat ac, facilisis vitae arcu. Proin eget egestas augue. Praesent ut sem nec arcu pellentesque aliquet. Duis dapibus diam vel metus tempus vulputate.',
   },
+  // {
+  //   id: 'seller',
+  //   label: 'Meet your sellers',
+  //   disabled: true,
+  //   content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed neque elit, tristique placerat feugiat ac, facilisis vitae arcu. Proin eget egestas augue. Praesent ut sem nec arcu pellentesque aliquet. Duis dapibus diam vel metus tempus vulputate.',
+  // },
 ]
 
 const processTime = computed(() => {
