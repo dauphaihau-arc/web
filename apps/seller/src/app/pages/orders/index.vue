@@ -67,7 +67,7 @@ type Row = {
 const rows = computed<Row[]>(() => {
   return data.value?.results.map(order => ({
     id: order.id,
-    order: `#${order.id.slice(0, 8)}`,
+    order: order.order_number,
     status: order.status.replaceAll('_', ' '),
     customer: order.customer.full_name,
     shipping: order.shipping.shipping_status.replaceAll('_', ' '),

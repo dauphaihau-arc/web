@@ -46,6 +46,7 @@ export const createGuestCheckoutQuoteForBuyNowRequestSchema = z.object({
 
 export const getCheckoutOrderShopsBySessionResponseSchema = z.object({
   order_shops: z.array(z.object({
+    order_number: z.string(),
     shop: z.object({
       shop_name: z.string(),
       slug: z.string(),

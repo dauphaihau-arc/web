@@ -45,6 +45,9 @@ const displayOrderShop = computed(() =>
       <UCard class="relative">
         <div class="shadow-border absolute -left-1 -top-4 flex w-[101%] items-center justify-between rounded-md border border-zinc-200/50 bg-[#f5f5f5] px-4 py-3 text-zinc-500">
           <div>
+            <div class="text-xs font-medium uppercase tracking-[0.14em] text-zinc-400">
+              {{ displayOrderShop.order_number }}
+            </div>
             Ordered from
             <UTooltip text="redirect to homepage shop not available">
               <span class="text-customGray-900 underline underline-offset-2">{{ props.orderShop?.shop?.shop_name }}</span>

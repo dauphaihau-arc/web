@@ -53,7 +53,7 @@ const shippingAddressLines = computed(() => {
     <div class="flex items-center justify-between">
       <div>
         <h1 class="text-2xl">
-          Order details
+          {{ displayOrderShop ? `Order ${displayOrderShop.order_number}` : 'Order details' }}
         </h1>
         <div class="text-sm text-zinc-500">
           Review shipment status, address, and line items for this order.

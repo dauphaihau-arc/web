@@ -121,7 +121,7 @@ const onCreateOrder = async () => {
 
       cartStore.orderShops = order_shops
 
-      const guestOrderIds = order_shops.map(orderShop => orderShop.id).join(',')
+      const guestOrderIds = order_shops.map(orderShop => orderShop.order_number).join(',')
 
       navigateTo(isAuthenticated
         ? ROUTES.SUCCESS

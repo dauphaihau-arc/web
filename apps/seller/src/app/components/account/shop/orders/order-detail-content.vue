@@ -113,7 +113,7 @@ function openCancelDialog() {
           <div class="flex items-center justify-between gap-4">
             <div>
               <div class="text-lg font-semibold">
-                Order #{{ order.id.slice(0, 8) }}
+                Order {{ order.order_number }}
               </div>
               <div class="text-sm text-zinc-500">
                 {{ dayjs(order.created_at).format('MMM DD, YYYY HH:mm') }}

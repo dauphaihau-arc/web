@@ -47,7 +47,7 @@ const guestOrdersRoute = computed(() => {
   }
 
   const orderIds = (route.query.order_ids as string | undefined)
-    ?? cartStore.orderShops.map(orderShop => orderShop.id).join(',')
+    ?? cartStore.orderShops.map(orderShop => orderShop.order_number).join(',')
   const email = (route.query.guest_email as string | undefined)
     ?? cartStore.stateCheckoutCart.guestEmail
     ?? cartStore.stateCheckoutNow.guestEmail

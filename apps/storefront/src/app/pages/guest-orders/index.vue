@@ -90,7 +90,7 @@ async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zi
         Track your guest order
       </h1>
       <p class="text-zinc-600">
-        Enter the email, order ID, and shipping ZIP/postal code used at checkout.
+        Enter the email, order number, and shipping ZIP/postal code used at checkout.
       </p>
     </div>
 
@@ -116,7 +116,7 @@ async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zi
         </UFormGroup>
         <UFormGroup
           required
-          label="Order ID"
+          label="Order number"
           name="order_id"
         >
           <UInput

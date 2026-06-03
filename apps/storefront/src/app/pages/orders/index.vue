@@ -156,7 +156,7 @@ watchDebounced(
       <UInput
         v-model="state.search"
         icon="i-heroicons-magnifying-glass-20-solid"
-        placeholder="Search by order ID, product, or shop"
+        placeholder="Search by order number, product, or shop"
         class="w-full max-w-md"
         size="lg"
       />

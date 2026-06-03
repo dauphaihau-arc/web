@@ -17,7 +17,7 @@ const compareAtAmount = computed(() =>
 </script>
 
 <template>
-  <div class="mt-9 flex gap-5">
+  <div class="mt-10 flex gap-5">
     <NuxtImg
       :src="productOrder?.image_url"
       width="180"

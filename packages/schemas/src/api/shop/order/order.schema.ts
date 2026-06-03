@@ -48,6 +48,7 @@ export const shopOrderShippingSchema = z.object({
 
 export const shopOrderSummarySchema = z.object({
   id: z.string(),
+  order_number: z.string(),
   shop: z.object({
     id: z.string(),
     shop_name: z.string(),

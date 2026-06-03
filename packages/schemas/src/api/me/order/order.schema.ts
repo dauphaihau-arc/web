@@ -27,6 +27,7 @@ export const createOrderResponseSchema = z.object({
   checkout_pending: z.boolean().optional(),
   order_shops: z.array(z.object({
     id: z.string(),
+    order_number: z.string(),
     shop: z.object({
       id: z.string(),
       shop_name: z.string(),
@@ -146,6 +147,7 @@ export const orderSupportRequestSchema = z.object({
 
 export const orderShopResourceSchema = z.object({
   id: z.string(),
+  order_number: z.string(),
   shop: z.object({
     id: z.string(),
     shop_name: z.string(),
@@ -209,6 +211,7 @@ export const getOrderShopsByCheckoutSessionRequestSchema = z.object({
 
 export const getOrderShopsByCheckoutSessionResponseSchema = z.object({
   order_shops: z.array(z.object({
+    order_number: z.string(),
     shop: z.object({
       shop_name: z.string(),
       slug: z.string(),
