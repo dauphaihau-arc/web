@@ -51,9 +51,9 @@
     "vue-tsc": "^2.0.29"
   },
   "dependencies": {
-    "@arc/api-client": "workspace:*",
     "@arc/contracts": "workspace:*",
     "@arc/enums": "workspace:*",
+    "@arc/lib": "workspace:*",
     "@arc/models": "workspace:*",
     "@arc/schemas": "workspace:*",
     "@arc/ui": "workspace:*",

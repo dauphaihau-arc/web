@@ -1,4 +1,4 @@
-import { isUnauthorizedError } from '@arc/api-client'
+import { isUnauthorizedError } from '@arc/lib'
 import type { CurrentUser } from '~/shared/api/auth/contracts/auth-user.contract'
 import type { UpdateMeRequest, UpdateMeResponse } from '~/shared/api/auth/contracts/update-me.contract'
 import { apiClient } from '~/shared/lib/api-client'

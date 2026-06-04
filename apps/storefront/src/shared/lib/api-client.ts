@@ -1,4 +1,4 @@
-import { createApiClient } from '@arc/api-client'
+import { createApiClient } from '@arc/lib'
 import { RESOURCES } from '@arc/enums/resources'
 import { isBackendWakeUpError, useBackendStatus } from '~/shared/composables/use-backend-status'
 import { getRequestMarketHeaders } from '~/shared/lib/request-market-context'

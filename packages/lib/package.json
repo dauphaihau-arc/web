@@ -1,0 +1,15 @@
+{
+  "name": "@arc/lib",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.8.3"
+  },
+  "peerDependencies": {
+    "@tanstack/vue-query": "^5.45.0"
+  }
+}
