@@ -2,6 +2,7 @@
 import { ORDER_CONFIG } from '@arc/enums/order'
 import { ProductVariantTypes } from '@arc/enums/product'
 import { formatMinorCurrency } from '@arc/utils'
+import CheckoutAddRemovePromoCoupons from './add-remove-promo-coupons.vue'
 import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { useGetCart } from '~/shared/server-state/cart/cart.query'
 import { useUpdateCart } from '~/shared/server-state/cart/update-cart.mutation'

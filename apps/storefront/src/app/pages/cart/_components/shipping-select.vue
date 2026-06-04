@@ -1,7 +1,4 @@
 <script setup lang="ts">
-/*
-  use in cart page, cart/checkout page
- */
 import { formatMinorCurrency } from '@arc/utils'
 import type { CartShopGroup } from '~/shared/api/cart/cart.shared'
 

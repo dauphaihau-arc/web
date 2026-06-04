@@ -1,7 +1,4 @@
 <script setup lang="ts">
-/*
-  use in cart page, cart/checkout page
- */
 import { ORDER_CONFIG } from '@arc/enums/order'
 import type { CartShopGroup } from '~/shared/api/cart/cart.shared'
 

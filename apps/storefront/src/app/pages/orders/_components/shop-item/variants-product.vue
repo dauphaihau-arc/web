@@ -23,7 +23,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <!--  <div class="space-y-3 text-zinc-500"> -->
   <div
     v-if="productOrder.product.variant_group_name"
     class=""
@@ -36,5 +35,4 @@ onMounted(() => {
   >
     {{ productOrder.product.variant_sub_group_name }}: {{ state.v2 }}
   </div>
-<!--  </div> -->
 </template>

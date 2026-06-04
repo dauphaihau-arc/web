@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import LoadingSvg from '@arc/ui/loading-svg.vue'
-import { useCartStore } from '~/shared/stores/cart/cart.store'
-import { CheckoutNowSteps } from '~/shared/stores/cart/cart.store.types'
-import CheckoutStepper from '~/app/components/checkout-stepper.vue'
+import CreateOrderBtn from './_components/create-order-btn.vue'
+import PaymentOptions from './_components/payment-options.vue'
+import ReviewShippingAndPayment from './_components/review-shipping-and-payment.vue'
+import ShopCart from './_components/shop-cart.vue'
+import UserAddressShipping from './_components/user-address-shipping.vue'
 import SummaryOrderCard from '~/app/components/summary-order-card.vue'
-import CreateOrderBtn from '~/app/components/checkout/create-order-btn.vue'
-import PaymentOptions from '~/app/components/checkout/payment-options.vue'
-import ReviewShippingAndPayment from '~/app/components/checkout/review-shipping-and-payment.vue'
-import ShopCart from '~/app/components/checkout/shop-cart.vue'
-import UserAddressShipping from '~/app/components/checkout/user-address-shipping.vue'
+import CheckoutStepper from '~/app/components/checkout-stepper.vue'
+import { CheckoutNowSteps } from '~/shared/stores/cart/cart.store.types'
+import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { useGetCart } from '~/shared/server-state/cart/cart.query'
 
 definePageMeta({ layout: 'market', middleware: ['checkout'] })

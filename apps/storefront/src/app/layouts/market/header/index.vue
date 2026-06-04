@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import CartMegaMenu from './cart-mega-menu.vue'
-import HeaderCategories from './header-categories.vue'
+import Categories from './categories.vue'
 import SearchAllMegaMenu from './search-all-mega-menu.vue'
-import type { DropdownItem } from '#ui/types'
-import HeaderNotificationPopover from '~/app/components/header-notification-popover.vue'
+import AccountDropdown from './account-dropdown.vue'
+import NotificationPopover from './notification-popover.vue'
 import RegisterLoginDialog from '~/app/components/dialogs/login-register/register-login-dialog.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
-import { routes } from '~/shared/navigation/routes'
-import { useLogout } from '~/shared/server-state/auth/logout.mutation'
 import { useGetCart } from '~/shared/server-state/cart/cart.query'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 import { hasSellerAccess } from '~/shared/utils/seller-access'
@@ -21,10 +19,6 @@ const {
 } = useGetCart()
 
 const { data: dataUserAuth } = useGetCurrentUser()
-const {
-  mutate: logout,
-  isPending: isPendingLogout,
-} = useLogout()
 
 const isShowCart = ref(false)
 const isShowSearch = ref(false)
@@ -69,45 +63,6 @@ onMounted(async () => {
 
 const totalProductCarts = computed(() => {
   return dataGetCart.value?.cart?.total_quantity ?? 0
-})
-
-type UserDropdownItem = Omit<DropdownItem, 'icon'> & {
-  icon?: string
-}
-
-const itemsUserDropdown = computed<UserDropdownItem[][]>(() => [
-  [
-    {
-      label: 'Orders',
-      icon: 'orders',
-      click: () => navigateTo(routes.orders()),
-    },
-    {
-      label: 'Messages',
-      icon: 'message',
-      click: () => navigateTo(routes.accountMessages()),
-    },
-    {
-      label: 'Account',
-      icon: 'account',
-      click: () => navigateTo(routes.account()),
-    },
-  ],
-  [
-    {
-      label: 'Logout',
-      icon: 'logout',
-      disabled: isPendingLogout.value,
-      click: () => {
-        if (isPendingLogout.value) return
-        logout()
-      },
-    },
-  ],
-])
-
-const userInitial = computed(() => {
-  return dataUserAuth.value?.user?.display_name?.trim().charAt(0).toUpperCase() || 'U'
 })
 
 const sellerCtaLabel = computed(() => {
@@ -158,7 +113,7 @@ const showRegisterLoginDialog = () => {
         </NuxtLink>
 
         <div class="mt-1 justify-self-center">
-          <HeaderCategories class="mx-3" />
+          <Categories class="mx-3" />
           <CartMegaMenu
             :show="isShowCart"
             class="mt-8"
@@ -183,44 +138,10 @@ const showRegisterLoginDialog = () => {
           </UTooltip>
 
           <template v-if="dataUserAuth?.user">
-            <HeaderNotificationPopover />
-
-            <UDropdown
-              :items="itemsUserDropdown as DropdownItem[][]"
-              :popper="{ placement: 'bottom' }"
-              :ui="{ width: 'w-32' }"
-            >
-              <template #item="{ item }">
-                <div class="flex items-center gap-2">
-                  <AppIcon
-                    v-if="item.icon"
-                    :name="item.icon"
-                    size="xs"
-                    class="text-gray-500"
-                  />
-                  <span>{{ item.label }}</span>
-                </div>
-              </template>
-
-              <template #default="{ open: isAccountDropdownOpen }">
-                <UTooltip
-                  text="My account"
-                  :prevent="isAccountDropdownOpen"
-                >
-                  <UButton
-                    color="gray"
-                    variant="ghost"
-                    class="rounded-full p-1.5"
-                    @mouseover="isShowCart = false"
-                  >
-                    <div class="user-avatar">
-                      {{ userInitial }}
-                    </div>
-                  </UButton>
-                </UTooltip>
-              </template>
-            </UDropdown>
+            <NotificationPopover />
+            <AccountDropdown @hover-trigger="isShowCart = false" />
           </template>
+
           <template v-else>
             <UTooltip text="Sign in">
               <UButton
@@ -294,10 +215,6 @@ const showRegisterLoginDialog = () => {
 <style scoped>
 .icon-button {
   padding: 8px;
-}
-
-.user-avatar {
-  @apply flex size-6 items-center justify-center rounded-full bg-gray-200 text-sm font-semibold text-gray-700;
 }
 
 .overlay {

@@ -1,7 +1,4 @@
 <script setup lang="ts">
-/*
-  use in cart page, cart/checkout page
- */
 import type { CartProductItem } from '~/shared/api/cart/cart.shared'
 
 const props = defineProps<{ productCart: CartProductItem }>()

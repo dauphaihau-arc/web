@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import LoadingSvg from '@arc/ui/loading-svg.vue'
-import FilterProducts from '~/app/components/filter-products.vue'
-import ProductCard from '~/app/components/product-card.vue'
-import SortProductsBy from '~/app/components/sort-products-by.vue'
+import FilterProducts from '~/app/pages/_components/product-listing/filter-products.vue'
+import ProductCard from '~/app/pages/_components/product-listing/product-card.vue'
+import SortProductsBy from '~/app/pages/_components/product-listing/sort-products-by.vue'
 import { useGetProducts } from '~/shared/server-state/product/products.query'
 
 definePageMeta({ layout: 'market' })

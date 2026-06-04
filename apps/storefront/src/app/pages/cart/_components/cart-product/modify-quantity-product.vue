@@ -1,13 +1,8 @@
 <script setup lang="ts">
-/*
-  use in cart page, cart/checkout page
- */
 import { watchDebounced } from '@vueuse/core'
 import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { useUpdateCart } from '~/shared/server-state/cart/update-cart.mutation'
-import type {
-  CartProductItem,
-} from '~/shared/api/cart/cart.shared'
+import type { CartProductItem } from '~/shared/api/cart/cart.shared'
 import type { GetCartResponse, UpdateCartRequest } from '~/shared/api/cart/contracts/cart.contract'
 
 const props = defineProps<{

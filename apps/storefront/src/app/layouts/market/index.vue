@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { resolveAppIconName } from '@arc/ui/app-icon.constants'
 import LayoutMarketFooter from './footer.vue'
-import LayoutMarketHeader from './header.vue'
+import LayoutMarketHeader from './header/index.vue'
 import { accountSidebarLinks } from '~/shared/navigation/menu'
 import { routePaths } from '~/shared/navigation/routes'
 

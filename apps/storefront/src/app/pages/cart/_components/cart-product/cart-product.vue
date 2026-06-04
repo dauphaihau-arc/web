@@ -1,7 +1,4 @@
 <script setup lang="ts">
-/*
-  use in cart page, cart/checkout page
- */
 import { formatMinorCurrency } from '@arc/utils'
 import CartCheckboxOrderProduct from './checkbox-order-product.vue'
 import CartModifyQuantityProduct from './modify-quantity-product.vue'
@@ -31,7 +28,6 @@ const {
 
       let newShopGroups = oldData.cart.shop_groups
 
-      // items field be empty
       if (!foundShopCart) {
         newShopGroups = data.cart.shop_groups
       }
@@ -61,17 +57,6 @@ const {
     })
   },
 })
-
-// const percentCoupon = computed(() => {
-//   const coupon = props.productCart.percent_coupon;
-//   if (coupon) {
-//     return {
-//       ...coupon,
-//       endInDays: Math.abs(dayjs(coupon.start_date).diff(coupon?.end_date, 'day')),
-//     };
-//   }
-//   return undefined;
-// });
 
 const goToDetailProduct = () => {
   navigateTo(routes.productDetail(props.productCart.product.shop.slug, props.productCart.product.slug))

@@ -67,8 +67,6 @@ const originPrice = computed(() => {
       {{ props.stockNotice }}
     </div>
 
-    <!--    {{ data?.product.variant_type }} -->
-
     <div>
       <div class="flex items-center space-x-3">
         <div class="flex items-center space-x-3">
@@ -87,17 +85,7 @@ const originPrice = computed(() => {
           </div>
         </div>
       </div>
-      <!--      <div -->
-      <!--        v-if="percentCoupon && percentCoupon.endInDays <= COUPON_CONFIG.AMOUNT_DAYS_WARN_END_SALE" -->
-      <!--        class="mt-1 font-medium text-green-700" -->
-      <!--      > -->
-      <!--        Sale ends in {{ percentCoupon.endInDays }} days -->
-      <!--      </div> -->
     </div>
-
-    <!--    <div class="text-sm font-light text-zinc-500"> -->
-    <!--      Local taxes included (where applicable) -->
-    <!--    </div> -->
 
     <div class="text-base">
       {{ product.title }}

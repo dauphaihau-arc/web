@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import LoadingSvg from '@arc/ui/loading-svg.vue'
-import ShopCart from '~/app/components/cart/shop-cart.vue'
-import SummaryOrder from '~/app/components/cart/summary-order.vue'
+import ShopCart from './_components/shop-cart.vue'
+import SummaryOrder from './_components/summary-order.vue'
 import { useCartStore } from '~/shared/stores/cart/cart.store'
 import { useGetCart } from '~/shared/server-state/cart/cart.query'
 

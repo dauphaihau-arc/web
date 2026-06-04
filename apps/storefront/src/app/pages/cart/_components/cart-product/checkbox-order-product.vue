@@ -4,7 +4,6 @@ import type { GetCartResponse } from '~/shared/api/cart/contracts/cart.contract'
 
 const { checked, inventory_id, shopId } = defineProps<{
   checked: boolean
-  // eslint-disable-next-line vue/prop-name-casing
   inventory_id: string
   shopId: string
 }>()

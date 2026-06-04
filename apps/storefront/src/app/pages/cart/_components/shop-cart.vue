@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import AddRemoveCoupons from '~/app/components/cart/add-remove-coupons.vue'
-import AddRemoveNote from '~/app/components/cart/add-remove-note.vue'
-import Product from '~/app/components/cart/cart-product/cart-product.vue'
-import ShippingSelect from '~/app/components/cart/shipping-select.vue'
+import AddRemoveCoupons from './add-remove-coupons.vue'
+import AddRemoveNote from './add-remove-note.vue'
+import Product from './cart-product/cart-product.vue'
+import ShippingSelect from './shipping-select.vue'
 import type { CartShopGroup } from '~/shared/api/cart/cart.shared'
 
 const props = defineProps<{

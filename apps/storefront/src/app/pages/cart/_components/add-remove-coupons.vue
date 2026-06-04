@@ -1,12 +1,7 @@
 <script setup lang="ts">
-/*
-  use in cart, cart/checkout page
- */
-
 import { StatusCodes } from 'http-status-codes'
 import { FetchError } from 'ofetch'
 import { consola } from 'consola'
-import { COUPON_CONFIG } from '@arc/enums/coupon'
 import { type AdditionInfoShopCarts, useCartStore } from '~/shared/stores/cart/cart.store'
 import { useUpdateCart } from '~/shared/server-state/cart/update-cart.mutation'
 import { toastCustom } from '~/shared/config/toast'
@@ -49,7 +44,6 @@ const addCoupon = async () => {
     return
   }
 
-  // clone additionInfoShopCarts, if request 200 assign clone to additionInfoShopCarts
   const tempAdditionInfoShopCarts = new Map<AdditionInfoShopCarts['key'], AdditionInfoShopCarts['value']>(
     JSON.parse(JSON.stringify([...cartStore.additionInfoShopCarts])),
   )
@@ -147,7 +141,6 @@ const deleteCoupon = async (code: string) => {
       addition_info_shop_carts,
     })
 
-    // update cache get cart
     queryClient.setQueryData<GetCartResponse>(['get-cart', 'my-cart'], (oldData) => {
       if (!oldData || !oldData.cart) return oldData
       if (!data.cart) return { ...oldData, cart: data.cart }
@@ -216,7 +209,6 @@ const toggleShowAddCouponInput = async () => {
         addition_info_shop_carts,
       })
 
-      // update cache get cart
       queryClient.setQueryData<GetCartResponse>(['get-cart', 'my-cart'], (oldData) => {
         if (!oldData || !oldData.cart) return oldData
         if (!data.cart) return { ...oldData, cart: data.cart }
@@ -257,13 +249,6 @@ const toggleShowAddCouponInput = async () => {
     }
   }
 }
-
-const disabledAddBtn = computed(() => {
-  return isPendingUpdateCart.value
-    || state.codes.length === COUPON_CONFIG.MAX_USE_PER_ORDER
-    || state.codes.includes(state.code)
-    || !state.code
-})
 </script>
 
 <template>
@@ -273,68 +258,48 @@ const disabledAddBtn = computed(() => {
       icon="i-heroicons-ticket"
       color="gray"
       class="mb-1 w-fit"
-      :disabled="cartStore.stateCheckoutCart.isPendingCreateOrder"
+      :disabled="isPendingUpdateCart"
       @click="toggleShowAddCouponInput"
     >
-      Apply shop coupon codes
+      {{ state.showAddCouponCodeInput ? 'Remove promo code' : 'Add promo code' }}
     </UButton>
 
-    <div
-      v-if="state.showAddCouponCodeInput"
-      class="flex gap-3"
-    >
-      <UFormGroup
-        required
-        name="code"
-        :error="state.errorMsg"
-      >
-        <UButtonGroup
-          size="lg"
-          orientation="horizontal"
+    <div v-if="state.showAddCouponCodeInput">
+      <div class="mb-2 flex gap-3">
+        <UInput
+          v-model="state.code"
+          maxlength="30"
+          placeholder="Promo code"
+          :disabled="isPendingUpdateCart"
+        />
+        <UButton
+          :disabled="!state.code || isPendingUpdateCart"
+          @click="addCoupon"
         >
-          <UInput
-            v-model.trim="state.code"
-            v-uppercase
-            :disabled="state.codes.length === COUPON_CONFIG.MAX_USE_PER_ORDER"
-          />
-          <UButton
-            color="gray"
-            variant="solid"
-            :disabled="disabledAddBtn || cartStore.stateCheckoutCart.isPendingCreateOrder"
-            @click="addCoupon"
-          >
-            Add
-          </UButton>
-        </UButtonGroup>
-      </UFormGroup>
-
+          Apply
+        </UButton>
+      </div>
       <div
-        v-if="state.codes && state.codes.length > 0"
-        class="flex gap-3"
+        v-if="state.errorMsg"
+        class="text-sm text-red-500"
       >
-        <div
-          v-for="(code, index) of state.codes"
-          :key="index"
+        {{ state.errorMsg }}
+      </div>
+      <div
+        v-if="state.codes.length > 0"
+        class="mt-2 flex flex-wrap gap-3"
+      >
+        <UBadge
+          v-for="code in state.codes"
+          :key="code"
+          color="gray"
+          variant="subtle"
+          size="lg"
+          class="cursor-pointer"
+          @click="deleteCoupon(code)"
         >
-          <div class="relative">
-            <UButton
-              color="gray"
-              size="lg"
-            >
-              {{ code }}
-            </UButton>
-            <UButton
-              class="absolute -right-2 -top-3 z-[1]"
-              size="2xs"
-              color="gray"
-              variant="solid"
-              :disabled="isPendingUpdateCart || cartStore.stateCheckoutCart.isPendingCreateOrder"
-              icon="i-heroicons-x-mark-20-solid"
-              :ui="{ rounded: 'rounded-full' }"
-              @click="() => deleteCoupon(code)"
-            />
-          </div>
-        </div>
+          {{ code }}
+        </UBadge>
       </div>
     </div>
   </div>

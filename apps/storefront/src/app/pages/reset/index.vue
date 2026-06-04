@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { StatusCodes } from 'http-status-codes'
 import { ResetPasswordViews } from '@arc/enums/common'
-import ForgetPasswordForm from '~/app/components/reset/forget-password-form.vue'
-import ResetPasswordCard from '~/app/components/reset/reset-password-card.vue'
-import ResetPasswordForm from '~/app/components/reset/reset-password-form.vue'
-import SendEmailSuccess from '~/app/components/reset/send-email-success.vue'
+import ForgetPasswordForm from './_components/forget-password-form.vue'
+import ResetPasswordCard from './_components/reset-password-card.vue'
+import ResetPasswordForm from './_components/reset-password-form.vue'
+import SendEmailSuccess from './_components/send-email-success.vue'
 import { routes } from '~/shared/navigation/routes'
 import { useVerifyToken } from '~/shared/server-state/auth/verify-token.query'
 

@@ -30,7 +30,6 @@ const {
   isPending: isPendingAddProductToCart,
 } = useAddProductToCart()
 
-// ------------- States
 const formRef = ref()
 
 const state = reactive({
@@ -68,7 +67,6 @@ const isOutOfStock = computed(() => maxQuantity.value <= 0)
 const variantNameById = new Map<string, string>()
 const inventoriesMap = new Map<string, Inventory>()
 
-// ------------- Lifecycle Hooks
 onMounted(() => {
   props.product.variants.forEach((variant) => {
     variantNameById.set(variant.id, variant.name)
@@ -110,7 +108,6 @@ onMounted(() => {
   }
 })
 
-// ------------- Features
 const decreaseQty = () => {
   if (stateSubmit.quantity <= 1) {
     stateSubmit.quantity = 1
@@ -201,7 +198,6 @@ async function onSubmit(event: FormSubmitEvent<StateSubmit>) {
   })
 }
 
-// ------ Side effects
 watch(
   () => [stateSubmit.variantOption, stateSubmit.variantSubOption],
   () => {
@@ -265,9 +261,9 @@ watch(
   <UForm
     ref="formRef"
     :validate-on="['submit']"
-    :state="stateSubmit"
     class="space-y-4"
     :validate="validateForm"
+    :state="stateSubmit"
     @submit="onSubmit"
   >
     <div class="mb-6 flex w-1/3 flex-col gap-4">

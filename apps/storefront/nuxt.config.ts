@@ -1,4 +1,5 @@
 import { fileURLToPath } from 'node:url'
+import type { NuxtPage } from '@nuxt/schema'
 import pkg from './package.json'
 
 const packagesDir = fileURLToPath(new URL('../../packages/', import.meta.url))
@@ -6,6 +7,21 @@ const uiPackageDir = `${packagesDir}ui/src`
 
 const assetHost = process.env.ASSET_HOST || ''
 const awsHostBucketAlias = assetHost.replace(/\/+$/, '')
+
+function removePageComponents(pages: NuxtPage[]) {
+  for (let index = pages.length - 1; index >= 0; index -= 1) {
+    const page = pages[index]
+
+    if (page.file?.includes('/pages/') && page.file.includes('/_components/')) {
+      pages.splice(index, 1)
+      continue
+    }
+
+    if (page.children?.length) {
+      removePageComponents(page.children)
+    }
+  }
+}
 
 export default defineNuxtConfig({
   app: {
@@ -132,6 +148,12 @@ export default defineNuxtConfig({
 
   imports: {
     dirs: ['shared/composables', 'shared/utils', `${packagesDir}utils/src`],
+  },
+
+  hooks: {
+    'pages:extend'(pages) {
+      removePageComponents(pages)
+    },
   },
 
   i18n: {

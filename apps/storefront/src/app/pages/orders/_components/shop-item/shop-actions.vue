@@ -36,25 +36,6 @@ function openSupportDialog() {
 <template>
   <div>
     <div class="mt-4 flex flex-col gap-4">
-      <!-- <UTooltip :text="canTrackPackage ? props.orderShop.shipping.tracking_number : 'Tracking number not available yet'">
-        <UButton
-          block
-          size="md"
-          :disabled="!canTrackPackage"
-          @click="openTracking"
-        >
-          Track package
-        </UButton>
-      </UTooltip> -->
-      <!-- <UButton
-        v-if="props.showViewOrderLink"
-        block
-        size="md"
-        color="gray"
-        :to="routes.orderDetail(props.orderShop.id)"
-      >
-        View order
-      </UButton> -->
       <UButton
         block
         size="md"

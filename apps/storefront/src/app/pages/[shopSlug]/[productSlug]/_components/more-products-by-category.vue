@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import type { Category } from '@arc/models/category'
-import ProductCard from '~/app/components/detail-product/product-card.vue'
+import ProductCard from './product-card.vue'
 import { useGetProducts } from '~/shared/server-state/product/products.query'
 
 const limit = 12
 
 const { category_id } = defineProps<{
-  // eslint-disable-next-line vue/prop-name-casing
   category_id: Category['id']
 }>()
 

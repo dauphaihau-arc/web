@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { resetPasswordFormSchema } from '@arc/schemas/forms/auth/reset-password-form.schema'
+import ResetPasswordCard from './reset-password-card.vue'
 import type { FormError, FormSubmitEvent } from '#ui/types'
 import { useAuthClientConfig } from '~/shared/server-state/auth/client-config.query'
 import { useResetPassword } from '~/shared/server-state/auth/reset-password.mutation'

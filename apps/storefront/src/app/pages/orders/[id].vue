@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import LoadingSvg from '@arc/ui/loading-svg.vue'
-import ShopItem from '~/app/components/order/shop-item/shop-item.vue'
+import ShopItem from './_components/shop-item/shop-item.vue'
 import { routes } from '~/shared/navigation/routes'
 import { useGetOrderById } from '~/shared/server-state/me/orders/order-shops.query'
 import {
