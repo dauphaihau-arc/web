@@ -5,7 +5,7 @@ import {
 import type { RequiredFields } from '@arc/contracts/utils'
 import RadioGroupInput from '@arc/ui/radio-group-input.vue'
 import ApplyCouponOnProduct from './apply-coupon-on-product.vue'
-import SearchStartEndDateInput from './search-start-end-date-input.vue'
+import SearchStartEndDateInput from './search-start-end-date-input/search-start-end-date-input.vue'
 import { createSaleFormSchema } from '~/shared/schemas/forms/shop/coupon/create-sale-form.schema'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import { ROUTES } from '~/shared/config/enums/routes'
@@ -101,228 +101,230 @@ function onError(event: FormErrorEvent) {
 </script>
 
 <template>
-  <UForm
-    ref="formRef"
-    :validate-on="['submit']"
-    :validate="validate"
-    :state="state"
-    class="space-y-7"
-    @error="onError"
-    @submit="onSubmit"
-  >
-    <WrapperFormGroupCard>
-      <template #title>
-        Basic info
-      </template>
-      <template #content>
-        <div class="space-y-5">
-          <UFormGroup
-            label="Sale name"
-            name="code"
-            description="Buyers won’t see this - it’s just for you to track the sale’s performance.
-             Each name should be unique, and only use letters and numbers."
-            class="grid grid-cols-4 gap-10"
-            required
-          >
-            <UInput
-              v-model="state.code"
-              v-uppercase
-              placeholder="Ex. SALE11"
-              :disabled="isPendingRunSale"
-              :maxlength="COUPON_CONFIG.MAX_CHAR_CODE"
-              size="lg"
-              @keydown.space.prevent
-            />
-          </UFormGroup>
-
-          <UFormGroup
-            label="Sale duration"
-            name="duration"
-            class="grid grid-cols-4 gap-10"
-            required
-            description="Sales can be set to run up to 30 days."
-          >
-            <SearchStartEndDateInput
-              v-model:start-date="state.start_date"
-              v-model:end-date="state.end_date"
-            />
-          </UFormGroup>
-        </div>
-      </template>
-    </WrapperFormGroupCard>
-
-    <WrapperFormGroupCard>
-      <template #title>
-        Details
-      </template>
-      <template #content>
-        <div class="space-y-8">
-          <UFormGroup
-            label="Discount type"
-            name="type"
-            class="grid grid-cols-4 items-center gap-10"
-          >
-            <div class="flex space-x-5">
-              <USelectMenu
-                v-model="state.type"
-                size="lg"
-                :options="couponTypeOptions"
-                value-attribute="value"
-                name-attribute="label"
-              />
-              <UFormGroup
-                v-if="state.type === CouponTypes.PERCENTAGE"
-                name="percent_off"
-                class="w-1/2"
-              >
-                <UInput
-                  v-model.number="state.percent_off"
-                  v-numeric
-                  v-max-number="COUPON_CONFIG.MAX_PERCENTAGE_OFF"
-                  size="lg"
-                  class="w-20"
-                >
-                  <template #trailing>
-                    <span class="text-xs text-gray-500 dark:text-gray-400">%</span>
-                  </template>
-                </UInput>
-              </UFormGroup>
-            </div>
-          </UFormGroup>
-
-          <UFormGroup
-            label="Order minimum"
-            description="You can require a minimum spend or number of items for buyers to qualify for your offer."
-            name="min_order_type"
-            class="grid grid-cols-4 items-center gap-10"
-            :ui="{ container: 'col-span-2' }"
-          >
-            <div class="flex space-x-5">
-              <USelectMenu
-                v-model="state.min_order_type"
-                size="lg"
-                :options="couponMinOrderOptions"
-                class="w-[180px]"
-                value-attribute="value"
-                name-attribute="label"
-              />
-
-              <UFormGroup
-                v-if="state.min_order_type === CouponMinOrderTypes.NUMBER_OF_PRODUCTS"
-                name="min_products"
-                class="w-1/3"
-              >
-                <UInput
-                  v-model.number="state.min_products"
-                  v-numeric
-                  size="lg"
-                />
-              </UFormGroup>
-              <UFormGroup
-                v-if="state.min_order_type === CouponMinOrderTypes.ORDER_TOTAL"
-                name="min_order_value"
-                class="w-1/3"
-              >
-                <UInput
-                  v-model.number="state.min_order_value"
-                  v-numeric
-                  size="lg"
-                >
-                  <template #trailing>
-                    <span class="text-xs text-gray-500 dark:text-gray-400">USD</span>
-                  </template>
-                </UInput>
-              </UFormGroup>
-            </div>
-          </UFormGroup>
-
-          <UFormGroup
-            label="Maximum total usage"
-            name="max_uses"
-            class="grid grid-cols-4 items-center gap-10"
-          >
-            <UInput
-              v-model.number="state.max_uses"
-              v-max-number="COUPON_CONFIG.MAX_USES"
-              v-numeric
-              :disabled="isPendingRunSale"
-              size="lg"
-              class="w-1/2"
-              @keydown.space.prevent
-            />
-          </UFormGroup>
-
-          <UFormGroup
-            label="Maximum Usage/Buyer"
-            name="max_uses_per_user"
-            class="grid grid-cols-4 items-center gap-10"
-          >
-            <UInput
-              v-model.number="state.max_uses_per_user"
-              v-max-number="COUPON_CONFIG.MAX_USES_PER_USER"
-              v-numeric
-              type="number"
-              :disabled="isPendingRunSale"
-              size="lg"
-              class="w-1/2"
-              @keydown.space.prevent
-            />
-          </UFormGroup>
-
-          <UFormGroup
-            class="mb-4"
-            label="Which products are included in your sale?"
-            description="Your discount can apply shop-wide, or be limited to specific items."
-            name="applies_to"
-          >
-            <RadioGroupInput
-              v-model="state.applies_to"
-              :options="couponAppliesToOptions"
-              :disabled="isPendingRunSale"
-              row
-            />
-          </UFormGroup>
-
-          <div v-if="state.applies_to === CouponAppliesTo.SPECIFIC">
-            <ApplyCouponOnProduct v-model="state.applies_product_ids" />
-            <div
-              v-if="formRef.getErrors('applies_product_ids')[0]?.message"
-              class="mt-2 text-red-500"
+  <div>
+    <UForm
+      ref="formRef"
+      :validate-on="['submit']"
+      :validate="validate"
+      :state="state"
+      class="space-y-7"
+      @error="onError"
+      @submit="onSubmit"
+    >
+      <WrapperFormGroupCard>
+        <template #title>
+          Basic info
+        </template>
+        <template #content>
+          <div class="space-y-5">
+            <UFormGroup
+              label="Sale name"
+              name="code"
+              description="Buyers won’t see this - it’s just for you to track the sale’s performance.
+               Each name should be unique, and only use letters and numbers."
+              class="grid grid-cols-4 gap-10"
+              required
             >
-              {{ formRef.getErrors('applies_product_ids')[0].message }}
+              <UInput
+                v-model="state.code"
+                v-uppercase
+                placeholder="Ex. SALE11"
+                :disabled="isPendingRunSale"
+                :maxlength="COUPON_CONFIG.MAX_CHAR_CODE"
+                size="lg"
+                @keydown.space.prevent
+              />
+            </UFormGroup>
+
+            <UFormGroup
+              label="Sale duration"
+              name="duration"
+              class="grid grid-cols-4 gap-10"
+              required
+              description="Sales can be set to run up to 30 days."
+            >
+              <SearchStartEndDateInput
+                v-model:start-date="state.start_date"
+                v-model:end-date="state.end_date"
+              />
+            </UFormGroup>
+          </div>
+        </template>
+      </WrapperFormGroupCard>
+
+      <WrapperFormGroupCard>
+        <template #title>
+          Details
+        </template>
+        <template #content>
+          <div class="space-y-8">
+            <UFormGroup
+              label="Discount type"
+              name="type"
+              class="grid grid-cols-4 items-center gap-10"
+            >
+              <div class="flex space-x-5">
+                <USelectMenu
+                  v-model="state.type"
+                  size="lg"
+                  :options="couponTypeOptions"
+                  value-attribute="value"
+                  name-attribute="label"
+                />
+                <UFormGroup
+                  v-if="state.type === CouponTypes.PERCENTAGE"
+                  name="percent_off"
+                  class="w-1/2"
+                >
+                  <UInput
+                    v-model.number="state.percent_off"
+                    v-numeric
+                    v-max-number="COUPON_CONFIG.MAX_PERCENTAGE_OFF"
+                    size="lg"
+                    class="w-20"
+                  >
+                    <template #trailing>
+                      <span class="text-xs text-gray-500 dark:text-gray-400">%</span>
+                    </template>
+                  </UInput>
+                </UFormGroup>
+              </div>
+            </UFormGroup>
+
+            <UFormGroup
+              label="Order minimum"
+              description="You can require a minimum spend or number of items for buyers to qualify for your offer."
+              name="min_order_type"
+              class="grid grid-cols-4 items-center gap-10"
+              :ui="{ container: 'col-span-2' }"
+            >
+              <div class="flex space-x-5">
+                <USelectMenu
+                  v-model="state.min_order_type"
+                  size="lg"
+                  :options="couponMinOrderOptions"
+                  class="w-[180px]"
+                  value-attribute="value"
+                  name-attribute="label"
+                />
+
+                <UFormGroup
+                  v-if="state.min_order_type === CouponMinOrderTypes.NUMBER_OF_PRODUCTS"
+                  name="min_products"
+                  class="w-1/3"
+                >
+                  <UInput
+                    v-model.number="state.min_products"
+                    v-numeric
+                    size="lg"
+                  />
+                </UFormGroup>
+                <UFormGroup
+                  v-if="state.min_order_type === CouponMinOrderTypes.ORDER_TOTAL"
+                  name="min_order_value"
+                  class="w-1/3"
+                >
+                  <UInput
+                    v-model.number="state.min_order_value"
+                    v-numeric
+                    size="lg"
+                  >
+                    <template #trailing>
+                      <span class="text-xs text-gray-500 dark:text-gray-400">USD</span>
+                    </template>
+                  </UInput>
+                </UFormGroup>
+              </div>
+            </UFormGroup>
+
+            <UFormGroup
+              label="Maximum total usage"
+              name="max_uses"
+              class="grid grid-cols-4 items-center gap-10"
+            >
+              <UInput
+                v-model.number="state.max_uses"
+                v-max-number="COUPON_CONFIG.MAX_USES"
+                v-numeric
+                :disabled="isPendingRunSale"
+                size="lg"
+                class="w-1/2"
+                @keydown.space.prevent
+              />
+            </UFormGroup>
+
+            <UFormGroup
+              label="Maximum Usage/Buyer"
+              name="max_uses_per_user"
+              class="grid grid-cols-4 items-center gap-10"
+            >
+              <UInput
+                v-model.number="state.max_uses_per_user"
+                v-max-number="COUPON_CONFIG.MAX_USES_PER_USER"
+                v-numeric
+                type="number"
+                :disabled="isPendingRunSale"
+                size="lg"
+                class="w-1/2"
+                @keydown.space.prevent
+              />
+            </UFormGroup>
+
+            <UFormGroup
+              class="mb-4"
+              label="Which products are included in your sale?"
+              description="Your discount can apply shop-wide, or be limited to specific items."
+              name="applies_to"
+            >
+              <RadioGroupInput
+                v-model="state.applies_to"
+                :options="couponAppliesToOptions"
+                :disabled="isPendingRunSale"
+                row
+              />
+            </UFormGroup>
+
+            <div v-if="state.applies_to === CouponAppliesTo.SPECIFIC">
+              <ApplyCouponOnProduct v-model="state.applies_product_ids" />
+              <div
+                v-if="formRef.getErrors('applies_product_ids')[0]?.message"
+                class="mt-2 text-red-500"
+              >
+                {{ formRef.getErrors('applies_product_ids')[0].message }}
+              </div>
             </div>
           </div>
-        </div>
-      </template>
-    </WrapperFormGroupCard>
+        </template>
+      </WrapperFormGroupCard>
 
-    <button
-      ref="btnSubmit"
-      type="submit"
-      class="hidden"
-    />
-  </UForm>
+      <button
+        ref="btnSubmit"
+        type="submit"
+        class="hidden"
+      />
+    </UForm>
 
-  <div
-    class="fixed bottom-0 left-0 flex
-       w-full items-center justify-end gap-2 border-t bg-white py-2.5 pr-8"
-  >
-    <UButton
-      :disabled="isPendingRunSale"
-      size="sm"
-      type="submit"
-      color="gray"
-      @click="router.push(`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.COUPONS}`)"
+    <div
+      class="fixed bottom-0 left-0 flex
+         w-full items-center justify-end gap-2 border-t bg-white py-2.5 pr-8"
     >
-      Cancel
-    </UButton>
-    <UButton
-      :loading="isPendingRunSale"
-      size="sm"
-      type="submit"
-      @click="() => btnSubmit.click()"
-    >
-      Create
-    </UButton>
+      <UButton
+        :disabled="isPendingRunSale"
+        size="sm"
+        type="submit"
+        color="gray"
+        @click="router.push(`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.COUPONS}`)"
+      >
+        Cancel
+      </UButton>
+      <UButton
+        :loading="isPendingRunSale"
+        size="sm"
+        type="submit"
+        @click="() => btnSubmit.click()"
+      >
+        Create
+      </UButton>
+    </div>
   </div>
 </template>

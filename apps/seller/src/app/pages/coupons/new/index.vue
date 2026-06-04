@@ -24,9 +24,7 @@ if (!route.query?.type) {
       It can also be a great way to encourage purchases and build loyalty.
     </template>
     <template #content>
-      <div class="mb-20">
-        <CreatePromoCodeForm />
-      </div>
+      <CreatePromoCodeForm />
     </template>
   </LayoutShopWrapperContent>
   <LayoutShopWrapperContent v-else-if="route.query.type === CreateCouponPageTypes.SALE">
@@ -40,9 +38,7 @@ if (!route.query?.type) {
       The discount you offer is totally up to you.
     </template>
     <template #content>
-      <div class="mb-20">
-        <RunSaleForm />
-      </div>
+      <RunSaleForm />
     </template>
   </LayoutShopWrapperContent>
 </template>

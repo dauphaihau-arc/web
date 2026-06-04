@@ -19,7 +19,10 @@ const slots = useSlots()
       <slot name="actions" />
     </div>
     <div>
-      <slot name="content" />
+      <slot
+        name="content"
+        class="pb-32"
+      />
     </div>
   </div>
 </template>

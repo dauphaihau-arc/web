@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
+import SuggestDateInput from './suggest-date-input.vue'
 
 type State = {
   startDate: dayjs.Dayjs

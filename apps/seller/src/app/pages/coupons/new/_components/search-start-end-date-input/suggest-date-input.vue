@@ -224,7 +224,6 @@ async function search(q: string) {
     })
     dateOptions = [...dateOptions, ...optionsByFormats]
   }
-  // endregion
 
   return dateOptions
 }

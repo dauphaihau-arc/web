@@ -6,7 +6,7 @@ import type { RequiredFields } from '@arc/contracts/utils'
 import { PRODUCT_CONFIG } from '@arc/enums/product'
 import RadioGroupInput from '@arc/ui/radio-group-input.vue'
 import ApplyCouponOnProduct from './apply-coupon-on-product.vue'
-import SearchStartEndDateInput from './search-start-end-date-input.vue'
+import SearchStartEndDateInput from './search-start-end-date-input/search-start-end-date-input.vue'
 import { createPromoCodeFormSchema } from '~/shared/schemas/forms/shop/coupon/create-promo-code-form.schema'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import { ROUTES } from '~/shared/config/enums/routes'
@@ -103,245 +103,247 @@ function onError(event: FormErrorEvent) {
 </script>
 
 <template>
-  <UForm
-    ref="formRef"
-    :validate-on="['submit']"
-    :validate="validateForm"
-    :state="state"
-    class="space-y-7"
-    @error="onError"
-    @submit="onSubmit"
-  >
-    <WrapperFormGroupCard>
-      <template #title>
-        Basic info
-      </template>
-      <template #content>
-        <div class="space-y-5">
-          <UFormGroup
-            label="Code"
-            name="code"
-            description="This is what shoppers will enter at checkout to get a discount.
-            Each code should be unique, and only use letters and numbers."
-            class="grid grid-cols-4 gap-10"
-            required
-          >
-            <UInput
-              v-model="state.code"
-              v-uppercase
-              :maxlength="COUPON_CONFIG.MAX_CHAR_CODE"
-              :disabled="isPendingCreateCoupon"
-              placeholder="Ex. WINTERSALE"
-              size="lg"
-              class="w-full"
-              @keydown.space.prevent
-            />
-          </UFormGroup>
-
-          <UFormGroup
-            label="Duration"
-            name="duration"
-            class="grid grid-cols-4 gap-10"
-            required
-            description="You can set a date for your code to expire, or leave it open-ended."
-          >
-            <SearchStartEndDateInput
-              v-model:start-date="state.start_date"
-              v-model:end-date="state.end_date"
-            />
-          </UFormGroup>
-        </div>
-      </template>
-    </WrapperFormGroupCard>
-
-    <WrapperFormGroupCard>
-      <template #title>
-        Details
-      </template>
-      <template #content>
-        <div class="space-y-8">
-          <UFormGroup
-            label="Discount type"
-            name="type"
-            class="grid grid-cols-4 items-center gap-10"
-            :ui="{ container: 'col-span-2' }"
-          >
-            <div class="flex space-x-5">
-              <USelectMenu
-                v-model="state.type"
+  <div>
+    <UForm
+      ref="formRef"
+      :validate-on="['submit']"
+      :validate="validateForm"
+      :state="state"
+      class="space-y-7"
+      @error="onError"
+      @submit="onSubmit"
+    >
+      <WrapperFormGroupCard>
+        <template #title>
+          Basic info
+        </template>
+        <template #content>
+          <div class="space-y-5">
+            <UFormGroup
+              label="Code"
+              name="code"
+              description="This is what shoppers will enter at checkout to get a discount.
+              Each code should be unique, and only use letters and numbers."
+              class="grid grid-cols-4 gap-10"
+              required
+            >
+              <UInput
+                v-model="state.code"
+                v-uppercase
+                :maxlength="COUPON_CONFIG.MAX_CHAR_CODE"
+                :disabled="isPendingCreateCoupon"
+                placeholder="Ex. WINTERSALE"
                 size="lg"
-                :options="couponTypeOptions"
-                value-attribute="value"
-                name-attribute="label"
-                class="w-[220px]"
+                class="w-full"
+                @keydown.space.prevent
               />
-              <UFormGroup
-                v-if="state.type === CouponTypes.FIXED_AMOUNT"
-                name="amount_off"
-              >
-                <UInput
-                  v-model.number="state.amount_off"
-                  v-max-number="PRODUCT_CONFIG.MAX_PRICE - 1"
-                  v-numeric
+            </UFormGroup>
+
+            <UFormGroup
+              label="Duration"
+              name="duration"
+              class="grid grid-cols-4 gap-10"
+              required
+              description="You can set a date for your code to expire, or leave it open-ended."
+            >
+              <SearchStartEndDateInput
+                v-model:start-date="state.start_date"
+                v-model:end-date="state.end_date"
+              />
+            </UFormGroup>
+          </div>
+        </template>
+      </WrapperFormGroupCard>
+
+      <WrapperFormGroupCard>
+        <template #title>
+          Details
+        </template>
+        <template #content>
+          <div class="space-y-8">
+            <UFormGroup
+              label="Discount type"
+              name="type"
+              class="grid grid-cols-4 items-center gap-10"
+              :ui="{ container: 'col-span-2' }"
+            >
+              <div class="flex space-x-5">
+                <USelectMenu
+                  v-model="state.type"
                   size="lg"
-                  class="w-1/2"
+                  :options="couponTypeOptions"
+                  value-attribute="value"
+                  name-attribute="label"
+                  class="w-[220px]"
+                />
+                <UFormGroup
+                  v-if="state.type === CouponTypes.FIXED_AMOUNT"
+                  name="amount_off"
                 >
-                  <template #trailing>
-                    <span class="text-xs text-gray-500 dark:text-gray-400">USD</span>
-                  </template>
-                </UInput>
-              </UFormGroup>
-              <UFormGroup
-                v-if="state.type === CouponTypes.PERCENTAGE"
-                name="percent_off"
-                class="w-2/5"
-              >
-                <UInput
-                  v-model.number="state.percent_off"
-                  v-numeric
-                  v-max-number="COUPON_CONFIG.MAX_PERCENTAGE_OFF"
-                  size="lg"
+                  <UInput
+                    v-model.number="state.amount_off"
+                    v-max-number="PRODUCT_CONFIG.MAX_PRICE - 1"
+                    v-numeric
+                    size="lg"
+                    class="w-1/2"
+                  >
+                    <template #trailing>
+                      <span class="text-xs text-gray-500 dark:text-gray-400">USD</span>
+                    </template>
+                  </UInput>
+                </UFormGroup>
+                <UFormGroup
+                  v-if="state.type === CouponTypes.PERCENTAGE"
+                  name="percent_off"
                   class="w-2/5"
                 >
-                  <template #trailing>
-                    <span class="text-xs text-gray-500 dark:text-gray-400">%</span>
-                  </template>
-                </UInput>
-              </UFormGroup>
-            </div>
-          </UFormGroup>
+                  <UInput
+                    v-model.number="state.percent_off"
+                    v-numeric
+                    v-max-number="COUPON_CONFIG.MAX_PERCENTAGE_OFF"
+                    size="lg"
+                    class="w-2/5"
+                  >
+                    <template #trailing>
+                      <span class="text-xs text-gray-500 dark:text-gray-400">%</span>
+                    </template>
+                  </UInput>
+                </UFormGroup>
+              </div>
+            </UFormGroup>
 
-          <UFormGroup
-            label="Order minimum"
-            description="You can require a minimum spend or number of items for buyers to qualify for your offer."
-            name="min_order_type"
-            class="grid grid-cols-4 items-center gap-10"
-            :ui="{ container: 'col-span-2' }"
-          >
-            <div class="flex space-x-5">
-              <USelectMenu
-                v-model="state.min_order_type"
-                size="lg"
-                :options="couponMinOrderOptions"
-                class="w-[170px]"
-                value-attribute="value"
-                name-attribute="label"
-              />
-
-              <UFormGroup
-                v-if="state.min_order_type === CouponMinOrderTypes.NUMBER_OF_PRODUCTS"
-                name="min_products"
-                class="w-1/3"
-              >
-                <UInput
-                  v-model.number="state.min_products"
-                  v-numeric
-                  size="lg"
-                />
-              </UFormGroup>
-              <UFormGroup
-                v-if="state.min_order_type === CouponMinOrderTypes.ORDER_TOTAL"
-                name="min_order_value"
-                class="w-1/3"
-              >
-                <UInput
-                  v-model.number="state.min_order_value"
-                  size="lg"
-                >
-                  <template #trailing>
-                    <span class="text-xs text-gray-500 dark:text-gray-400">USD</span>
-                  </template>
-                </UInput>
-              </UFormGroup>
-            </div>
-          </UFormGroup>
-
-          <UFormGroup
-            label="Maximum total usage"
-            name="max_uses"
-            class="grid grid-cols-4 gap-10"
-          >
-            <UInput
-              v-model.number="state.max_uses"
-              v-max-number="COUPON_CONFIG.MAX_USES"
-              v-numeric
-              :disabled="isPendingCreateCoupon"
-              size="lg"
-              class="w-1/2"
-            />
-          </UFormGroup>
-
-          <UFormGroup
-            label="Maximum Usage/Buyer"
-            name="max_uses_per_user"
-            class="grid grid-cols-4 gap-10"
-          >
-            <UInput
-              v-model.number="state.max_uses_per_user"
-              v-max-number="COUPON_CONFIG.MAX_USES_PER_USER"
-              v-numeric
-              type="number"
-              :disabled="isPendingCreateCoupon"
-              size="lg"
-              class="w-1/2"
-            />
-          </UFormGroup>
-
-          <UFormGroup
-            class="grid grid-cols-4 gap-10"
-            description="Your discount can apply shop-wide, or be limited to specific items."
-            label="Which products can buyers use this promo code on?"
-            name="applies_to"
-            :ui="{ container: 'col-span-2' }"
-          >
-            <RadioGroupInput
-              v-model="state.applies_to"
-              :options="couponAppliesToOptions"
-              :disabled="isPendingCreateCoupon"
-              row
-            />
-          </UFormGroup>
-
-          <div v-if="state.applies_to === CouponAppliesTo.SPECIFIC">
-            <ApplyCouponOnProduct v-model="state.applies_product_ids" />
-            <div
-              v-if="formRef.getErrors('applies_product_ids')[0]?.message"
-              class="mt-2 text-red-500"
+            <UFormGroup
+              label="Order minimum"
+              description="You can require a minimum spend or number of items for buyers to qualify for your offer."
+              name="min_order_type"
+              class="grid grid-cols-4 items-center gap-10"
+              :ui="{ container: 'col-span-2' }"
             >
-              {{ formRef.getErrors('applies_product_ids')[0].message }}
+              <div class="flex space-x-5">
+                <USelectMenu
+                  v-model="state.min_order_type"
+                  size="lg"
+                  :options="couponMinOrderOptions"
+                  class="w-[170px]"
+                  value-attribute="value"
+                  name-attribute="label"
+                />
+
+                <UFormGroup
+                  v-if="state.min_order_type === CouponMinOrderTypes.NUMBER_OF_PRODUCTS"
+                  name="min_products"
+                  class="w-1/3"
+                >
+                  <UInput
+                    v-model.number="state.min_products"
+                    v-numeric
+                    size="lg"
+                  />
+                </UFormGroup>
+                <UFormGroup
+                  v-if="state.min_order_type === CouponMinOrderTypes.ORDER_TOTAL"
+                  name="min_order_value"
+                  class="w-1/3"
+                >
+                  <UInput
+                    v-model.number="state.min_order_value"
+                    size="lg"
+                  >
+                    <template #trailing>
+                      <span class="text-xs text-gray-500 dark:text-gray-400">USD</span>
+                    </template>
+                  </UInput>
+                </UFormGroup>
+              </div>
+            </UFormGroup>
+
+            <UFormGroup
+              label="Maximum total usage"
+              name="max_uses"
+              class="grid grid-cols-4 gap-10"
+            >
+              <UInput
+                v-model.number="state.max_uses"
+                v-max-number="COUPON_CONFIG.MAX_USES"
+                v-numeric
+                :disabled="isPendingCreateCoupon"
+                size="lg"
+                class="w-1/2"
+              />
+            </UFormGroup>
+
+            <UFormGroup
+              label="Maximum Usage/Buyer"
+              name="max_uses_per_user"
+              class="grid grid-cols-4 gap-10"
+            >
+              <UInput
+                v-model.number="state.max_uses_per_user"
+                v-max-number="COUPON_CONFIG.MAX_USES_PER_USER"
+                v-numeric
+                type="number"
+                :disabled="isPendingCreateCoupon"
+                size="lg"
+                class="w-1/2"
+              />
+            </UFormGroup>
+
+            <UFormGroup
+              class="grid grid-cols-4 gap-10"
+              description="Your discount can apply shop-wide, or be limited to specific items."
+              label="Which products can buyers use this promo code on?"
+              name="applies_to"
+              :ui="{ container: 'col-span-2' }"
+            >
+              <RadioGroupInput
+                v-model="state.applies_to"
+                :options="couponAppliesToOptions"
+                :disabled="isPendingCreateCoupon"
+                row
+              />
+            </UFormGroup>
+
+            <div v-if="state.applies_to === CouponAppliesTo.SPECIFIC">
+              <ApplyCouponOnProduct v-model="state.applies_product_ids" />
+              <div
+                v-if="formRef.getErrors('applies_product_ids')[0]?.message"
+                class="mt-2 text-red-500"
+              >
+                {{ formRef.getErrors('applies_product_ids')[0].message }}
+              </div>
             </div>
           </div>
-        </div>
-      </template>
-    </WrapperFormGroupCard>
+        </template>
+      </WrapperFormGroupCard>
 
-    <button
-      ref="btnSubmit"
-      type="submit"
-      class="hidden"
-    />
-  </UForm>
+      <button
+        ref="btnSubmit"
+        type="submit"
+        class="hidden"
+      />
+    </UForm>
 
-  <div
-    class="fixed bottom-0 left-0 flex
-       w-full items-center justify-end gap-2 border-t bg-white py-2.5 pr-8"
-  >
-    <UButton
-      :disabled="isPendingCreateCoupon"
-      size="sm"
-      type="submit"
-      color="gray"
-      @click="router.push(`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.COUPONS}`)"
+    <div
+      class="fixed bottom-0 left-0 flex
+         w-full items-center justify-end gap-2 border-t bg-white py-2.5 pr-8"
     >
-      Cancel
-    </UButton>
-    <UButton
-      :loading="isPendingCreateCoupon"
-      size="sm"
-      type="submit"
-      @click="() => btnSubmit.click()"
-    >
-      Create
-    </UButton>
+      <UButton
+        :disabled="isPendingCreateCoupon"
+        size="sm"
+        type="submit"
+        color="gray"
+        @click="router.push(`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.COUPONS}`)"
+      >
+        Cancel
+      </UButton>
+      <UButton
+        :loading="isPendingCreateCoupon"
+        size="sm"
+        type="submit"
+        @click="() => btnSubmit.click()"
+      >
+        Create
+      </UButton>
+    </div>
   </div>
 </template>
