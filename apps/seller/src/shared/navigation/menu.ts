@@ -11,6 +11,7 @@ export type AppNavigationItem = {
 
 export type AppSidebarLink = {
   title: string
+  icon?: string
   to?: RouteLocationRaw
   matchPath?: string
   disabled?: boolean
@@ -20,37 +21,43 @@ export type AppSidebarLink = {
 export const shopSidebarLinks: AppSidebarLink[] = [
   {
     title: 'Dashboard',
+    icon: 'dashboard',
     to: routes.dashboard(),
     matchPath: routePaths.dashboard,
     disabled: true,
   },
   {
     title: 'Products',
+    icon: 'product',
     to: routes.products(),
     matchPath: routePaths.products,
   },
   {
     title: 'Messages',
-    to: { path: '/messages' },
+    icon: 'message',
+    to: routes.messages(),
     matchPath: '/messages',
-    disabled: true,
   },
   {
     title: 'Orders',
+    icon: 'orders',
     to: routes.orders(),
     matchPath: routePaths.orders,
   },
   {
     title: 'Marketing',
+    icon: 'marketing',
     sub: [
-      {
-        title: 'Ads',
-        to: { path: '/ads' },
-        matchPath: '/ads',
-        disabled: true,
-      },
+      // {
+      //   title: 'Ads',
+      //   icon: 'i-heroicons-megaphone',
+      //   to: { path: '/ads' },
+      //   matchPath: '/ads',
+      //   disabled: true,
+      // },
       {
         title: 'Coupons',
+        icon: 'i-heroicons-ticket',
         to: routes.coupons(),
         matchPath: routePaths.coupons,
       },
@@ -58,6 +65,7 @@ export const shopSidebarLinks: AppSidebarLink[] = [
   },
   {
     title: 'Finances',
+    icon: 'i-heroicons-banknotes',
     to: { path: '/finances' },
     matchPath: '/finances',
     disabled: true,

@@ -2,7 +2,7 @@ import type { QueryClient } from '@tanstack/vue-query'
 import {
   createChatEventsClient,
   type ChatMessageCreatedRealtimeEvent,
-} from '@arc/utils'
+} from '@arc/lib'
 import type {
   ShopChatConversation,
   ShopChatMessage,

@@ -10,6 +10,14 @@ const route = useRoute()
 const config = useRuntimeConfig()
 const { data: myShop } = useGetMyShop()
 const { mutate: logout } = useLogout()
+const formattedShopName = computed(() => {
+  const shopName = myShop.value?.shop_name
+
+  if (!shopName) return ''
+
+  return shopName.charAt(0).toUpperCase() + shopName.slice(1)
+})
+const shopInitial = computed(() => formattedShopName.value.charAt(0))
 
 const itemsLinkSidebar: LinkItem[] = shopSidebarLinks
 
@@ -47,7 +55,7 @@ const itemsShopDropdown: ShopDropdownItem[][] = [
     <UDropdown
       :items="itemsShopDropdown as DropdownItem[][]"
       :popper="{ placement: 'bottom-start', offsetDistance: 20, offsetSkid: -8 }"
-      class="mx-4 mb-6 mt-3 rounded-md p-2 pr-3  duration-200 hover:bg-customGray-200/50"
+      class="mx-4 mb-6 mt-3 block w-auto rounded-md p-2 pr-3 duration-200 hover:bg-customGray-200/50"
     >
       <template #item="{ item }">
         <div class="flex items-center gap-2">
@@ -66,18 +74,17 @@ const itemsShopDropdown: ShopDropdownItem[][] = [
         </div>
       </template>
 
-      <div class="flex items-center gap-2">
+      <div class="flex w-full items-center gap-2">
         <UButton
           color="gray"
-          class="p-2"
+          size="sm"
         >
-          <AppIcon
-            name="shop"
-            size="xs"
-          />
+          <span class="text-xs font-semibold uppercase">
+            {{ shopInitial }}
+          </span>
         </UButton>
-        <div class="text-sm font-medium text-customGray-950">
-          {{ myShop?.shop_name }}
+        <div class="min-w-0 flex-1 text-sm font-medium text-customGray-950">
+          {{ formattedShopName }}
         </div>
       </div>
     </UDropdown>
@@ -94,7 +101,7 @@ const itemsShopDropdown: ShopDropdownItem[][] = [
 
         <div
           v-else
-          class="flex"
+          class="flex w-full"
         >
           <!--          :class="[item.disabled && 'opacity-50']" -->
           <UDivider
@@ -107,11 +114,12 @@ const itemsShopDropdown: ShopDropdownItem[][] = [
           <UTooltip
             text="Feature not available"
             :prevent="!item.disabled"
+            class="flex-1"
           >
             <NuxtLink
               :to="item?.disabled ? '' : item.to"
               prefetch
-              class="link-default link-theme ml-2 mr-4 !w-full"
+              class="link-default link-theme ml-2 mr-4 flex !w-full items-center gap-2"
               :class="[
                 'pl-5',
                 item.disabled
@@ -119,7 +127,13 @@ const itemsShopDropdown: ShopDropdownItem[][] = [
                   : item.matchPath && route.path.startsWith(item.matchPath) ? 'link-active' : 'link-inactive',
               ]"
             >
-              {{ item.title }}
+              <AppIcon
+                v-if="item.icon"
+                :name="item.icon"
+                size="xs"
+                class="shrink-0"
+              />
+              <span>{{ item.title }}</span>
             </NuxtLink>
           </UTooltip>
         </div>

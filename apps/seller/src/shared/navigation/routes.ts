@@ -21,6 +21,7 @@ export const routePaths = {
   products: '/products',
   coupons: '/coupons',
   orders: '/orders',
+  messages: '/messages',
   notifications: '/notifications',
 } as const
 
@@ -36,6 +37,11 @@ export const routes = {
   productDetail: (id: string) => createRoute(`${routePaths.products}/${id}`),
   coupons: () => createRoute(routePaths.coupons),
   orders: () => createRoute(routePaths.orders),
+  messages: (query?: { conversationId?: string }) =>
+    createRoute(
+      routePaths.messages,
+      query?.conversationId ? { conversation_id: query.conversationId } : undefined,
+    ),
   notifications: () => createRoute(routePaths.notifications),
   orderDetail: (id: string) => createRoute(`${routePaths.orders}/${id}`),
   couponsNew: (type: CreateCouponPageTypes) =>

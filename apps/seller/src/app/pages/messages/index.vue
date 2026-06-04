@@ -1,6 +1,5 @@
-import { useQueryClient } from '@tanstack/vue-query'
-
 <script lang="ts" setup>
+import { useQueryClient } from '@tanstack/vue-query'
 import dayjs from 'dayjs'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import { routes } from '~/shared/navigation/routes'
@@ -25,9 +24,11 @@ const router = useRouter()
 const queryClient = useQueryClient()
 const config = useRuntimeConfig()
 const storefrontAppURL = computed(() => config.public.storefrontAppURL.replace(/\/+$/, ''))
+
 const chatEventsClient = import.meta.client
   ? createSellerChatEventsClient(queryClient)
   : null
+
 const selectedConversationId = computed(() => {
   const value = route.query.conversation_id
   return typeof value === 'string' ? value : undefined
