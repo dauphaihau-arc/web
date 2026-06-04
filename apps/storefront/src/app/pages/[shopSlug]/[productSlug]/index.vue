@@ -175,7 +175,7 @@ watch(
       <div class="mb-20 grid grid-cols-10">
         <ProductImages
           :images="resolvedProduct.images"
-          class="col-span-6"
+          class="sticky top-24 col-span-6 self-start"
         />
         <div class="col-span-4 space-y-6">
           <ProductSummary

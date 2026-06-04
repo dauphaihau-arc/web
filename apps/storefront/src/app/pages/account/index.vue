@@ -86,23 +86,28 @@ onMounted(() => {
       Account
     </h3>
     <div class="mt-3 space-y-3">
-      <div>
-        <div class="font-medium">
-          Name
+      <UCard>
+        <div class="space-y-3">
+          <div>
+            <div class="font-medium">
+              Name
+            </div>
+            <div class="font-light text-zinc-600">
+              {{ currentUser?.user?.display_name }}
+            </div>
+          </div>
+          <div>
+            <div class="font-medium">
+              Email
+            </div>
+            <div class="font-light text-zinc-600">
+              {{ currentUser?.user?.email }}
+            </div>
+          </div>
         </div>
-        <div class="font-light text-zinc-600">
-          {{ currentUser?.user?.display_name }}
-        </div>
-      </div>
-      <div>
-        <div class="font-medium">
-          Email
-        </div>
-        <div class="font-light text-zinc-600">
-          {{ currentUser?.user?.email }}
-        </div>
-      </div>
-      <div class="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
+      </UCard>
+
+      <UCard>
         <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
           <div class="space-y-1">
             <div class="font-medium">
@@ -131,7 +136,7 @@ onMounted(() => {
             {{ isEnabled ? 'Disable' : 'Enable' }}
           </UButton>
         </div>
-      </div>
+      </UCard>
     </div>
   </div>
 </template>
