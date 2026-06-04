@@ -1,54 +1,13 @@
 <script setup lang="ts">
+import {
+  APPROVED_ICON_PREFIXES,
+  ICON_NAME_BY_ALIAS,
+  resolveAppIconName,
+} from './app-icon.constants'
+
 defineOptions({
   inheritAttrs: false,
 })
-
-const ICON_NAME_BY_ALIAS = {
-  search: 'i-uil:search',
-  user: 'majesticons:user-line',
-  cart: 'i-uil:cart',
-  bell: 'akar-icons:bell',
-  settings: 'i-heroicons-cog-8-tooth',
-  orders: 'lets-icons:order',
-  account: 'majesticons:user-line',
-  archive: 'i-heroicons-archive-box-20-solid',
-  marketplace: 'solar:shop-bold-duotone',
-  logout: 'i-heroicons-arrow-left-start-on-rectangle',
-  manageShop: 'solar:shop-linear',
-  warning: 'ph:warning-duotone',
-  plus: 'i-heroicons-plus',
-  minus: 'i-heroicons-minus',
-  edit: 'lucide:edit',
-  trash: 'i-heroicons-trash',
-  close: 'i-material-symbols:cancel-rounded',
-  check: 'i-material-symbols:check-circle-rounded',
-  calendar: 'i-material-symbols:calendar-month-rounded',
-  location: 'i-material-symbols:location-on-outline',
-  arrowRight: 'i-heroicons-arrow-right',
-  arrowLeft: 'i-material-symbols:arrow-back-ios-new-rounded',
-  arrowForward: 'i-material-symbols:arrow-forward-ios',
-  chevronRight: 'i-heroicons-chevron-right',
-  chevronDown: 'i-heroicons-chevron-down-20-solid',
-  language: 'i-heroicons-language',
-  shop: 'mynaui:store',
-  ticket: 'i-heroicons-ticket',
-  camera: 'material-symbols:android-camera',
-} as const
-
-const APPROVED_ICON_PREFIXES = [
-  'i-heroicons-',
-  'i-material-symbols:',
-  'material-symbols:',
-  'solar:',
-  'i-solar:',
-  'uil:',
-  'i-uil:',
-  'ph:',
-  'majesticons:',
-  'lucide:',
-  'i-simple-icons:',
-  'i-logos-',
-] as const
 
 const props = withDefaults(defineProps<{
   name: string
@@ -77,7 +36,7 @@ const forwardedAttrs = computed(() => {
 })
 
 const resolvedName = computed(() => {
-  return ICON_NAME_BY_ALIAS[props.name as keyof typeof ICON_NAME_BY_ALIAS] ?? props.name
+  return resolveAppIconName(props.name)
 })
 
 const ariaHidden = computed(() => {

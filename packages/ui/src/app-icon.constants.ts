@@ -1,0 +1,62 @@
+export const ICON_NAME_BY_ALIAS = {
+  search: 'i-uil:search',
+  user: 'majesticons:user-line',
+  cart: 'i-uil:cart',
+  bell: 'akar-icons:bell',
+  settings: 'i-heroicons-cog-8-tooth',
+  orders: 'lets-icons:order',
+  account: 'majesticons:user-line',
+  archive: 'i-heroicons-archive-box-20-solid',
+  marketplace: 'solar:shop-bold-duotone',
+  logout: 'i-heroicons-arrow-left-start-on-rectangle',
+  manageShop: 'solar:shop-linear',
+  warning: 'ph:warning-duotone',
+  plus: 'i-heroicons-plus',
+  minus: 'i-heroicons-minus',
+  edit: 'lucide:edit',
+  trash: 'i-heroicons-trash',
+  close: 'i-material-symbols:cancel-rounded',
+  check: 'i-material-symbols:check-circle-rounded',
+  calendar: 'i-material-symbols:calendar-month-rounded',
+  location: 'i-material-symbols:location-on-outline',
+  arrowRight: 'i-heroicons-arrow-right',
+  arrowLeft: 'i-material-symbols:arrow-back-ios-new-rounded',
+  arrowForward: 'i-material-symbols:arrow-forward-ios',
+  chevronRight: 'i-heroicons-chevron-right',
+  chevronUp: 'i-heroicons-chevron-up-20-solid',
+  chevronDown: 'i-heroicons-chevron-down-20-solid',
+  language: 'i-heroicons-language',
+  shop: 'mynaui:store',
+  ticket: 'i-heroicons-ticket',
+  camera: 'material-symbols:android-camera',
+  message: 'tabler:message',
+  shipping: 'la:shipping-fast',
+  product: 'tabler:cube',
+  dashboard: 'streamline-flex:dashboard-3',
+  marketing: 'nimbus:marketing',
+} as const
+
+export type AppIconAlias = keyof typeof ICON_NAME_BY_ALIAS
+
+export const APPROVED_ICON_PREFIXES = [
+  'i-heroicons-',
+  'i-material-symbols:',
+  'material-symbols:',
+  'solar:',
+  'i-solar:',
+  'uil:',
+  'i-uil:',
+  'ph:',
+  'majesticons:',
+  'lucide:',
+  'i-simple-icons:',
+  'i-logos-',
+] as const
+
+export function resolveAppIconName(name?: AppIconAlias | string | null): string | undefined {
+  if (!name) {
+    return undefined
+  }
+
+  return ICON_NAME_BY_ALIAS[name as AppIconAlias] ?? name
+}

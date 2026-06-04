@@ -28,19 +28,25 @@ function isActive(path?: string) {
       @click="isOpen = !isOpen"
     >
       <div
-        class="link-theme flex w-full justify-between"
+        class="link-theme flex w-full items-center justify-between gap-2"
         :class="[
           itemsLinkPaths.some(path => route.path.startsWith(path)) ? 'link-active' : 'link-inactive',
         ]"
       >
-        {{ data.title }}
+        <div class="flex items-center gap-2">
+          <AppIcon
+            v-if="data.icon"
+            :name="data.icon"
+            size="xs"
+            class="shrink-0"
+          />
+          <span>{{ data.title }}</span>
+        </div>
 
-        <UIcon
-          name="i-heroicons-plus-20-solid"
-          :class="[
-            'transition-all',
-            isOpen ? '-rotate-45' : 'rotate-90',
-          ]"
+        <AppIcon
+          :name="isOpen ? 'chevronUp' : 'chevronDown'"
+          size="xs"
+          class="shrink-0"
         />
       </div>
     </div>
