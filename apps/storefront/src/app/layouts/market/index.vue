@@ -50,7 +50,7 @@ watch(() => route.path, () => {
           </template>
           <template #icon="{ link }">
             <UIcon
-              :name="resolveAppIconName(link.icon)"
+              :name="resolveAppIconName(link.icon) ?? ''"
               :class="link.disabled && 'opacity-50'"
             />
           </template>

@@ -35,8 +35,8 @@ const forwardedAttrs = computed(() => {
   return restAttrs
 })
 
-const resolvedName = computed(() => {
-  return resolveAppIconName(props.name)
+const resolvedName = computed<string>(() => {
+  return resolveAppIconName(props.name) ?? ''
 })
 
 const ariaHidden = computed(() => {

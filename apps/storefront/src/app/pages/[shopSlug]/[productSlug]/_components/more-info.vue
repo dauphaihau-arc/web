@@ -45,7 +45,7 @@ const items = [
     defaultOpen: true,
     content: product.shop.shop_name,
   },
-] as const
+]
 
 const processTime = computed(() => {
   if (product?.shipping?.process_time_label) {

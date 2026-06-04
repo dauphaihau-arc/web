@@ -6,6 +6,10 @@ import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 import { useMarkAllMyNotificationsAsRead, useMarkMyNotificationAsRead } from '~/shared/server-state/me/notifications/notifications.mutation'
 import { useGetMyNotifications, useGetMyNotificationUnreadCount } from '~/shared/server-state/me/notifications/notifications.query'
 
+type NotificationPopoverClickItem = Pick<NotificationItem, 'id' | 'read_at'> & {
+  data?: NotificationItem['data']
+}
+
 const { data: currentUser } = useGetCurrentUser()
 const notificationsQuery = useGetMyNotifications({ page: 1, limit: 8 })
 const unreadCountQuery = useGetMyNotificationUnreadCount()
@@ -15,7 +19,7 @@ const { mutateAsync: markAllAsRead, isPending: isMarkingAll } = useMarkAllMyNoti
 const notifications = computed(() => notificationsQuery.data.value?.results ?? [])
 const unreadCount = computed(() => unreadCountQuery.data.value?.unread_count ?? 0)
 
-function getNotificationTarget(notification: NotificationItem) {
+function getNotificationTarget(notification: NotificationPopoverClickItem) {
   const orderId = typeof notification.data?.orderId === 'string'
     ? notification.data.orderId
     : null
@@ -27,7 +31,7 @@ function getNotificationTarget(notification: NotificationItem) {
   return routes.orders()
 }
 
-async function handleNotificationClick(notification: NotificationItem, close: () => void) {
+async function handleNotificationClick(notification: NotificationPopoverClickItem, close: () => void) {
   if (!notification.read_at) {
     await markAsRead(notification.id)
   }
