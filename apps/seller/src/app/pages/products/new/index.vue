@@ -1,6 +1,6 @@
 <script lang="ts" setup>
+import CreateProductForm from '../_components/create-product-form/create-product-form.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
-import CreateProductForm from '~/app/components/account/shop/products/create-product-form/create-product-form.vue'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 </script>

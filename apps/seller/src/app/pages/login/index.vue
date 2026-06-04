@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import LoginForm from '../components/auth/login-form.vue'
+import LoginForm from './_components/login-form.vue'
 import { routes } from '~/shared/navigation/routes'
 
 definePageMeta({

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import RegisterForm from '../components/auth/register-form.vue'
+import RegisterForm from './_components/register-form.vue'
 import { routes } from '~/shared/navigation/routes'
 
 definePageMeta({

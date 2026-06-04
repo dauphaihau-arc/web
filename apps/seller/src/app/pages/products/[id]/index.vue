@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import LoadingSvg from '@arc/ui/loading-svg.vue'
+import UpdateProductForm from '../_components/update-product-form/update-product-form.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
-import UpdateProductForm from '~/app/components/account/shop/products/update-product-form/update-product-form.vue'
 import { useShopGetDetailProduct } from '~/shared/server-state/shop/product/detail.query'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })

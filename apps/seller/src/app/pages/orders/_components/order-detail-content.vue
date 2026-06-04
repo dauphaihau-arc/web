@@ -4,7 +4,7 @@ import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
 import { buildTrackingUrl } from '@arc/utils/build-tracking-url'
 import { formatMinorCurrency } from '@arc/utils'
 import LoadingSvg from '@arc/ui/loading-svg.vue'
-import SellerCancelOrderDialog from '~/app/components/dialogs/seller-cancel-order-dialog.vue'
+import SellerCancelOrderDialog from './seller-cancel-order-dialog.vue'
 import { useShopGetOrderDetail } from '~/shared/server-state/shop/order/detail.query'
 import { useShopUpdateOrderShipment } from '~/shared/server-state/shop/order/update-shipment.mutation'
 

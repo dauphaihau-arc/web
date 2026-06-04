@@ -6,6 +6,10 @@ import {
   ProductVariantTypes, PRODUCT_CONFIG,
   productWhoMadeOpts,
 } from '@arc/enums/product'
+import NoneVariantInput from '../none-variant-input.vue'
+import SearchCategoryInput from '../search-category-input.vue'
+import SelectAttributesInput from '../select-attributes-input.vue'
+import TagsInput from '../tags-input.vue'
 import ImagesInput from './images-input.vue'
 import VariantInput from './variant-input.vue'
 import {
@@ -20,11 +24,7 @@ import {
 import { updateProductFormSchema } from '~/shared/schemas/forms/shop/product/update-product-form.schema'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import { ROUTES } from '~/shared/config/enums/routes'
-import FormGroupCard from '~/app/components/account/shop/wrapper-form-group-card.vue'
-import NoneVariantInput from '~/app/components/account/shop/products/none-variant-input.vue'
-import SearchCategoryInput from '~/app/components/account/shop/products/search-category-input.vue'
-import SelectAttributesInput from '~/app/components/account/shop/products/select-attributes-input.vue'
-import TagsInput from '~/app/components/account/shop/products/tags-input.vue'
+import FormGroupCard from '~/app/components/wrapper-form-group-card.vue'
 import { useShopGetDetailProduct } from '~/shared/server-state/shop/product/detail.query'
 import type {
   NoneVariant,

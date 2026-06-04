@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import SellerOrderDetailContent from '~/app/components/account/shop/orders/order-detail-content.vue'
+import SellerOrderDetailContent from '../_components/order-detail-content.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import { routes } from '~/shared/navigation/routes'
 

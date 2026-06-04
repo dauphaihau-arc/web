@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
-import type { DropdownItem } from '#ui/types'
-import HeaderNotificationPopover from '~/app/components/header-notification-popover.vue'
+import NotificationPopover from './notification-popover.vue'
 import { shopHeaderCreateLinks } from '~/shared/navigation/menu'
+import type { DropdownItem } from '#ui/types'
 
 const itemsHeaderDropdown: DropdownItem[][] = [
   shopHeaderCreateLinks.map(item => ({
@@ -56,7 +56,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
           </div>
 
           <div class="flex items-center gap-4">
-            <HeaderNotificationPopover />
+            <NotificationPopover />
 
             <!-- <UTooltip text="Setting">
               <UButton
