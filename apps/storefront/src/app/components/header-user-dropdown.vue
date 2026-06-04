@@ -45,6 +45,26 @@ const { data: dataUserAuth } = useGetCurrentUser()
               </div>
             </div>
           </UButton>
+          <UButton
+            color="gray"
+            variant="ghost"
+            :to="routes.accountMessages()"
+          >
+            <div class="flex items-center gap-3">
+              <AppIcon
+                name="i-heroicons-chat-bubble-left-right"
+                class="text-black"
+              />
+              <div class="text-left">
+                <div>
+                  Messages
+                </div>
+                <div class="text-xs text-zinc-500/70">
+                  View your seller conversations
+                </div>
+              </div>
+            </div>
+          </UButton>
           <!--          <UButton -->
           <!--            id="logout" -->
           <!--            color="gray" -->

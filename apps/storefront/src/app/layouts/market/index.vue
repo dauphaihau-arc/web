@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { resolveAppIconName } from '@arc/ui/app-icon.constants'
 import LayoutMarketFooter from './footer.vue'
 import LayoutMarketHeader from './header.vue'
 import { accountSidebarLinks } from '~/shared/navigation/menu'
@@ -49,7 +50,7 @@ watch(() => route.path, () => {
           </template>
           <template #icon="{ link }">
             <UIcon
-              :name="link.icon"
+              :name="resolveAppIconName(link.icon)"
               :class="link.disabled && 'opacity-50'"
             />
           </template>

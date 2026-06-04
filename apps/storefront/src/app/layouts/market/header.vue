@@ -83,6 +83,11 @@ const itemsUserDropdown = computed<UserDropdownItem[][]>(() => [
       click: () => navigateTo(routes.orders()),
     },
     {
+      label: 'Messages',
+      icon: 'message',
+      click: () => navigateTo(routes.accountMessages()),
+    },
+    {
       label: 'Account',
       icon: 'account',
       click: () => navigateTo(routes.account()),

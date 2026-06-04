@@ -26,6 +26,11 @@ export const routes = {
   account: () => createRoute(routePaths.account),
   accountNotifications: () => createRoute(routePaths.accountNotifications),
   accountAddresses: () => createRoute(routePaths.accountAddresses),
+  accountMessages: (query?: { conversationId?: string }) =>
+    createRoute(
+      routePaths.accountMessages,
+      query?.conversationId ? { conversation_id: query.conversationId } : undefined,
+    ),
   orders: (query?: {
     search?: string
     shipping_status?: OrderShippingStatuses

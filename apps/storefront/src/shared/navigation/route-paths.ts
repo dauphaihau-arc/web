@@ -5,6 +5,7 @@ export const routePaths = {
   account: '/account',
   accountNotifications: '/account/notifications',
   accountAddresses: '/account/addresses',
+  accountMessages: '/account/messages',
   orders: '/orders',
   search: '/search',
   cart: '/cart',

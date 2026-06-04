@@ -1,9 +1,10 @@
 import type { RouteLocationRaw } from 'vue-router'
+import type { AppIconAlias } from '@arc/ui/app-icon.constants'
 import { routes } from './routes'
 
 export type AppNavigationItem = {
   label: string
-  icon?: string
+  icon?: AppIconAlias | string
   to: RouteLocationRaw
   disabled?: boolean
 }
@@ -11,30 +12,35 @@ export type AppNavigationItem = {
 export const accountSidebarLinks: AppNavigationItem[] = [
   {
     label: 'Account',
-    icon: 'i-heroicons-user',
+    icon: 'account',
     to: routes.account(),
   },
   {
-    label: 'Shipping',
-    icon: 'i-heroicons-map-pin',
+    label: 'Messages',
+    icon: 'message',
+    to: routes.accountMessages(),
+  },
+  {
+    label: 'Addresses',
+    icon: 'location',
     to: routes.accountAddresses(),
   },
-  {
-    label: 'Payment',
-    disabled: true,
-    icon: 'i-heroicons-credit-card',
-    to: routes.home(),
-  },
-  {
-    label: 'Privacy',
-    disabled: true,
-    icon: 'i-heroicons-shield-check',
-    to: routes.home(),
-  },
-  {
-    label: 'Preferences',
-    disabled: true,
-    icon: 'i-heroicons-cog',
-    to: routes.home(),
-  },
+  // {
+  //   label: 'Payment',
+  //   disabled: true,
+  //   icon: 'i-heroicons-credit-card',
+  //   to: routes.home(),
+  // },
+  // {
+  //   label: 'Privacy',
+  //   disabled: true,
+  //   icon: 'i-heroicons-shield-check',
+  //   to: routes.home(),
+  // },
+  // {
+  //   label: 'Preferences',
+  //   disabled: true,
+  //   icon: 'i-heroicons-cog',
+  //   to: routes.home(),
+  // },
 ]
