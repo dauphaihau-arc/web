@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import CategoriesBreadcrumb from './_components/categories-breadcrumb.vue'
 import SubCategories from './_components/sub-categories.vue'
-import FilterProducts from '~/app/pages/_components/product-listing/filter-products.vue'
-import ProductCard from '~/app/pages/_components/product-listing/product-card.vue'
-import SortProductsBy from '~/app/pages/_components/product-listing/sort-products-by.vue'
+import FilterProducts from '~/app/components/product/filter-products.vue'
+import ProductCard from '~/app/components/product/product-card.vue'
+import SortProductsBy from '~/app/components/product/sort-products-by.vue'
 import { useGetProducts } from '~/shared/server-state/product/products.query'
 import type { GetProductsRequest } from '~/shared/api/product/contracts/product.contract'
 
