@@ -33,6 +33,12 @@ export const shopOrderProductSchema = z.object({
   }).nullable(),
 })
 
+export const shopOrderDetailProductSchema = shopOrderProductSchema.omit({
+  image_url: true,
+}).extend({
+  storage_key: z.string().optional(),
+})
+
 export const shopOrderShippingSchema = z.object({
   shipping_status: z.nativeEnum(OrderShippingStatuses),
   updated_at: z.coerce.date(),
@@ -94,6 +100,7 @@ export const listShopOrdersResponseSchema = z.object({
 
 export const shopOrderDetailResponseSchema = z.object({
   order: shopOrderSummarySchema.extend({
+    products: z.array(shopOrderDetailProductSchema),
     shipping_address: z.object({
       full_name: z.string(),
       address1: z.string(),

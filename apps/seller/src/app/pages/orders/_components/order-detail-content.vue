@@ -17,6 +17,8 @@ const {
   isPending,
 } = useShopGetOrderDetail(props.orderId)
 
+const config = useRuntimeConfig()
+const assetHost = computed(() => config.public.assetHost?.replace(/\/+$/, '') ?? '')
 const { mutateAsync: updateShipment, isPending: isUpdatingShipment } = useShopUpdateOrderShipment()
 const dialog = useModal()
 
@@ -74,6 +76,14 @@ const trackingUrl = computed(() =>
     order.value?.shipping.tracking_number,
   ),
 )
+
+function buildAssetUrl(storageKey?: string) {
+  if (!storageKey || !assetHost.value) {
+    return ''
+  }
+
+  return `${assetHost.value}/${storageKey.replace(/^\/+/, '')}`
+}
 
 function openTracking() {
   if (!trackingUrl.value) return
@@ -137,8 +147,8 @@ function openCancelDialog() {
             class="flex items-start gap-3 border-b border-zinc-100 pb-4 last:border-b-0"
           >
             <NuxtImg
-              v-if="product.image_url"
-              :src="product.image_url"
+              v-if="product.storage_key"
+              :src="buildAssetUrl(product.storage_key)"
               width="64"
               height="64"
               class="rounded"
