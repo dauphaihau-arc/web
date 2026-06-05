@@ -55,12 +55,14 @@ function getNotificationTarget(notification: NotificationItem) {
   const target = typeof notification.data?.target === 'string'
     ? notification.data.target
     : null
-  const orderId = typeof notification.data?.orderId === 'string'
-    ? notification.data.orderId
-    : null
+  const orderIdentifier = typeof notification.data?.order_number === 'string'
+    ? notification.data.order_number
+    : typeof notification.data?.order_id === 'string'
+      ? notification.data.order_id
+      : null
 
-  if (target === 'seller_order_detail' && orderId) {
-    return routes.orderDetail(orderId)
+  if (target === 'seller_order_detail' && orderIdentifier) {
+    return routes.orderDetail(orderIdentifier)
   }
 
   return routes.orders()
