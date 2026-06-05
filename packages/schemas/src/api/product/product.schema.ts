@@ -17,11 +17,9 @@ export const publicProductShopSchema = z.object({
 
 export const publicProductImageSchema = z.object({
   storage_key: z.string(),
-  url: z.string().optional(),
   variant: z.string().optional(),
   variants: z.record(z.string(), z.object({
     storage_key: z.string(),
-    url: z.string().optional(),
   })).optional(),
 })
 
