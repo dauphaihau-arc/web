@@ -24,7 +24,6 @@ const stockNotice = computed(() => {
   if (!props.product.inventory) {
     return ''
   }
-
   return getProductStockNotice(props.product.inventory.stock)
 })
 
@@ -33,7 +32,6 @@ const displayAmount = computed(() => {
   if (!inventory) {
     return undefined
   }
-
   return formatMinorCurrency(inventory.amount_minor, inventory.currency)
 })
 </script>
