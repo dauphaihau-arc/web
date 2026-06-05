@@ -37,6 +37,11 @@ export const sharedAppConfig = {
       default: {
         loadingIcon: 'i-eos-icons:loading',
       },
+      color: {
+        white: {
+          outline: 'shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 text-gray-900 dark:text-white bg-white dark:bg-gray-900 hover:bg-white dark:hover:bg-gray-900 focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400',
+        },
+      },
     },
     input: {
       default: {

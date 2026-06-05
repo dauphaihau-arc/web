@@ -12,6 +12,8 @@ export const ICON_NAME_BY_ALIAS = {
   manageShop: 'solar:shop-linear',
   warning: 'ph:warning-duotone',
   plus: 'i-heroicons-plus',
+  plusCircle: 'lucide:circle-plus',
+  xCircle: 'lucide:circle-x',
   minus: 'i-heroicons-minus',
   edit: 'lucide:edit',
   trash: 'i-heroicons-trash',

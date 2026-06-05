@@ -4,8 +4,15 @@ import { OrderShippingStatuses, OrderStatuses, PaymentTypes } from '@arc/enums/o
 export const listShopOrdersRequestSchema = z.object({
   page: z.number().optional(),
   limit: z.number().optional(),
-  status: z.nativeEnum(OrderStatuses).optional(),
-  shipping_status: z.nativeEnum(OrderShippingStatuses).optional(),
+  status: z.array(z.nativeEnum(OrderStatuses)).optional(),
+  shipping_status: z.array(z.nativeEnum(OrderShippingStatuses)).optional(),
+  created_from: z.string().optional(),
+  created_to: z.string().optional(),
+  amount_min: z.number().optional(),
+  amount_max: z.number().optional(),
+  currency: z.array(z.string()).optional(),
+  payment_type: z.array(z.nativeEnum(PaymentTypes)).optional(),
+  search: z.string().optional(),
 })
 
 export const shopOrderProductSchema = z.object({
