@@ -1,47 +1,37 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
-import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
+import { OrderShippingStatuses } from '@arc/enums/order'
 import { formatMinorCurrency } from '@arc/utils'
 import LoadingSvg from '@arc/ui/loading-svg.vue'
 import SellerOrderDetailContent from './_components/order-detail-content.vue'
+import OrdersFilterToolbar from './_components/orders-filter-toolbar/orders-filter-toolbar.vue'
 import type { DropdownItem } from '#ui/types'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import FixedPagination from '~/app/components/fixed-pagination.vue'
 import { routes } from '~/shared/navigation/routes'
 import { useShopGetOrders } from '~/shared/server-state/shop/order/list.query'
 import DataTable from '~/shared/ui/data-table/data-table.vue'
-import type { ShopOrderSummary } from '~/shared/api/shop/order/contracts/order.contract'
+import type { ListShopOrdersRequest, ShopOrderSummary } from '~/shared/api/shop/order/contracts/order.contract'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 
 const selected = ref([])
 const pageCount = 20
 const page = ref(1)
-const statusFilter = ref<OrderStatuses | undefined>()
 const slideoverOpen = ref(false)
 const selectedDetailRow = ref<Row | null>(null)
+const activeFilters = ref<Partial<ListShopOrdersRequest>>({})
 
 const params = computed(() => ({
   page: page.value,
   limit: pageCount,
-  ...(statusFilter.value ? { status: statusFilter.value } : {}),
+  ...activeFilters.value,
 }))
 
 const {
   isPending,
   data,
 } = useShopGetOrders(params)
-
-const statusTabs: Array<{ label: string, value: OrderStatuses | undefined }> = [
-  { label: 'All', value: undefined },
-  { label: 'Paid', value: OrderStatuses.PAID },
-  { label: 'Canceled', value: OrderStatuses.CANCELED },
-  { label: 'Completed', value: OrderStatuses.COMPLETED },
-]
-
-const activeStatusTabIndex = computed(() =>
-  Math.max(0, statusTabs.findIndex(tab => tab.value === statusFilter.value)),
-)
 
 const columns = [
   { key: 'order', label: 'Order' },
@@ -65,7 +55,7 @@ type Row = {
 }
 
 const rows = computed<Row[]>(() => {
-  return data.value?.results.map(order => ({
+  return (data.value?.results ?? []).map(order => ({
     id: order.id,
     order: order.order_number,
     status: order.status.replaceAll('_', ' '),
@@ -74,7 +64,7 @@ const rows = computed<Row[]>(() => {
     total: formatMinorCurrency(order.total_minor, order.currency),
     created_at: dayjs(order.created_at).format('MMM DD, YYYY'),
     raw: order,
-  })) ?? []
+  }))
 })
 
 function openDetail(row: Row) {
@@ -84,16 +74,6 @@ function openDetail(row: Row) {
 function openDetailSlideover(row: Row) {
   selectedDetailRow.value = row
   slideoverOpen.value = true
-}
-
-function handleStatusTabChange(index: number) {
-  const tab = statusTabs[index]
-
-  if (!tab) {
-    return
-  }
-
-  statusFilter.value = tab.value
 }
 
 const itemsDropdownWithRow = (row: Row): DropdownItem[][] => [
@@ -118,6 +98,10 @@ function shippingTone(status: OrderShippingStatuses) {
       return 'gray'
   }
 }
+
+function handleToolbarChange(payload: Partial<ListShopOrdersRequest>) {
+  activeFilters.value = payload
+}
 </script>
 
 <template>
@@ -129,13 +113,10 @@ function shippingTone(status: OrderShippingStatuses) {
       Review paid orders and keep shipment status up to date for buyers.
     </template>
     <template #content>
-      <div class="mb-6">
-        <UTabs
-          :items="statusTabs"
-          :model-value="activeStatusTabIndex"
-          @change="handleStatusTabChange"
-        />
-      </div>
+      <OrdersFilterToolbar
+        @change="handleToolbarChange"
+        @reset-page="page = 1"
+      />
 
       <DataTable
         v-model="selected"
@@ -208,7 +189,7 @@ function shippingTone(status: OrderShippingStatuses) {
       <FixedPagination
         :page="page"
         :page-count="pageCount"
-        :total="data?.total_results"
+        :total="data?.total_results ?? 0"
         @on-change-page="(val) => page = val"
       />
 
