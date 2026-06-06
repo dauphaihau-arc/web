@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
+import ShortcutHint from '@arc/ui/shortcut-hint.vue'
 import NotificationPopover from './notification-popover.vue'
 import { shopHeaderCreateLinks } from '~/shared/navigation/menu'
 import type { DropdownItem } from '#ui/types'
@@ -7,23 +8,95 @@ import type { DropdownItem } from '#ui/types'
 const itemsHeaderDropdown: DropdownItem[][] = [
   shopHeaderCreateLinks.map(item => ({
     ...item,
-    shortcuts: [...item.shortcuts],
     click: () => navigateTo(item.to),
   })),
 ]
 
 const scrolled = ref(false)
+const pendingShortcutPrefix = ref<string | null>(null)
+let shortcutResetTimeout: ReturnType<typeof window.setTimeout> | null = null
 
 function onScroll() {
   scrolled.value = window.scrollY > 10
 }
 
+function resetPendingShortcut() {
+  pendingShortcutPrefix.value = null
+
+  if (shortcutResetTimeout) {
+    window.clearTimeout(shortcutResetTimeout)
+    shortcutResetTimeout = null
+  }
+}
+
+function armPendingShortcut(prefix: string) {
+  pendingShortcutPrefix.value = prefix
+
+  if (shortcutResetTimeout) {
+    window.clearTimeout(shortcutResetTimeout)
+  }
+
+  shortcutResetTimeout = window.setTimeout(() => {
+    resetPendingShortcut()
+  }, 700)
+}
+
+function isTypingTarget(target: EventTarget | null) {
+  const element = target as HTMLElement | null
+
+  if (!element) {
+    return false
+  }
+
+  return element.isContentEditable || Boolean(
+    element.closest('input, textarea, select, [contenteditable="true"]'),
+  )
+}
+
+function onGlobalKeydown(event: KeyboardEvent) {
+  if (
+    event.isComposing
+    || event.repeat
+    || event.metaKey
+    || event.ctrlKey
+    || event.altKey
+    || isTypingTarget(event.target)
+  ) {
+    return
+  }
+
+  const key = event.key.toLowerCase()
+
+  if (!pendingShortcutPrefix.value) {
+    if (key === 'c') {
+      armPendingShortcut(key)
+    }
+
+    return
+  }
+
+  const matchedItem = shopHeaderCreateLinks.find(item =>
+    item.sequence[0] === pendingShortcutPrefix.value && item.sequence[1] === key,
+  )
+
+  resetPendingShortcut()
+
+  if (matchedItem) {
+    navigateTo(matchedItem.to)
+  }
+}
+
 onMounted(() => {
   onScroll()
   window.addEventListener('scroll', onScroll, { passive: true })
+  window.addEventListener('keydown', onGlobalKeydown)
 })
 
-onUnmounted(() => window.removeEventListener('scroll', onScroll))
+onUnmounted(() => {
+  window.removeEventListener('scroll', onScroll)
+  window.removeEventListener('keydown', onGlobalKeydown)
+  resetPendingShortcut()
+})
 </script>
 
 <template>
@@ -68,7 +141,28 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
               </UButton>
             </UTooltip> -->
 
-            <UDropdown :items="itemsHeaderDropdown">
+            <UDropdown
+              :items="itemsHeaderDropdown"
+              :ui="{ width: 'w-50' }"
+            >
+              <template #item="{ item }">
+                <div class="flex w-full items-center gap-3">
+                  <AppIcon
+                    v-if="item.icon"
+                    :name="item.icon"
+                    size="xs"
+                    class="shrink-0 text-text-muted"
+                  />
+                  <span class="flex-1 whitespace-nowrap">{{ item.label }}</span>
+                  <ShortcutHint
+                    v-if="item.shortcuts?.length"
+                    size="sm"
+                    :keys="item.shortcuts"
+                    separator="none"
+                  />
+                </div>
+              </template>
+
               <UTooltip text="Create">
                 <UButton
                   :ui="{ rounded: 'rounded-full' }"

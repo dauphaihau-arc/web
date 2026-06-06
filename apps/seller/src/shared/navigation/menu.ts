@@ -76,13 +76,15 @@ export const shopHeaderCreateLinks = [
   {
     label: 'Create Product',
     icon: 'i-heroicons-cube',
-    shortcuts: ['P'],
+    shortcuts: ['c p'],
+    sequence: ['c', 'p'],
     to: routes.productsNew(),
   },
   {
     label: 'Create Coupon',
     icon: 'i-heroicons-ticket',
-    shortcuts: ['C'],
+    shortcuts: ['c c'],
+    sequence: ['c', 'c'],
     to: routes.couponsNew(CreateCouponPageTypes.PROMO_CODE),
   },
   // {
