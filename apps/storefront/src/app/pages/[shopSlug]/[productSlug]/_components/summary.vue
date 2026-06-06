@@ -62,7 +62,7 @@ const originPrice = computed(() => {
   <div class="space-y-4">
     <div
       v-if="props.stockNotice"
-      class="text-sm font-semibold text-red-700"
+      class="text-sm font-semibold text-state-danger-text"
     >
       {{ props.stockNotice }}
     </div>
@@ -72,7 +72,7 @@ const originPrice = computed(() => {
         <div class="flex items-center space-x-3">
           <div
             class="price"
-            :class="originPrice && 'text-green-700'"
+            :class="originPrice && 'text-primary'"
           >
             {{ lowestPrice }}{{ plusSign }}
             <span v-if="highestPrice">- {{ highestPrice }}</span>
@@ -99,6 +99,6 @@ const originPrice = computed(() => {
 }
 
 .origin-price {
-  @apply text-sm text-zinc-500 line-through;
+  @apply text-sm text-text-muted line-through;
 }
 </style>

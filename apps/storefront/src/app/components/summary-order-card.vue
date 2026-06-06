@@ -11,7 +11,7 @@ const props = defineProps<{
 <template>
   <UCard v-if="props.summaryOrder">
     <div class="space-y-7">
-      <legend class="mb-1 text-xl font-bold text-gray-700 dark:text-gray-200">
+      <legend class="mb-1 text-xl font-bold text-text-subtle">
         Summary Order
       </legend>
       <div
@@ -51,7 +51,7 @@ const props = defineProps<{
             <div
               v-if="props.summaryOrder?.shipping_minor === 0
                 && props.summaryOrder.total_selected_quantity"
-              class="text-right font-normal text-green-600"
+              class="text-right font-normal text-primary"
             >
               FREE
             </div>
@@ -68,7 +68,7 @@ const props = defineProps<{
           <div class="text-lg font-medium">
             Total ({{ props.summaryOrder?.total_selected_quantity }} {{ props.summaryOrder?.total_selected_quantity > 1 ? 'products' : 'product' }})
           </div>
-          <div :class="['price', props.summaryOrder?.total_minor > 0 && 'text-red-500']">
+          <div :class="['price', props.summaryOrder?.total_minor > 0 && 'text-text-strong']">
             {{ formatMinorCurrency(props.summaryOrder?.total_minor, props.summaryOrder?.currency) }}
           </div>
         </div>

@@ -31,7 +31,7 @@ const compareAtAmount = computed(() =>
           <div class="text-xl font-normal">
             {{ productOrder?.title }}
           </div>
-          <div class="space-y-1.5 text-zinc-500">
+          <div class="space-y-1.5 text-text-muted">
             <VariantsProduct :product-order="productOrder" />
             <div class="">
               Quantity: {{ productOrder?.quantity }}
@@ -56,7 +56,7 @@ const compareAtAmount = computed(() =>
             <div class="text-xl font-medium text-customGray-950">
               {{ displayAmount }}
             </div>
-            <div class="text-sm text-zinc-500">
+            <div class="text-sm text-text-muted">
               <span class="line-through">
                 {{ compareAtAmount }}
               </span>

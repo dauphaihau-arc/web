@@ -25,18 +25,10 @@ async function onSubmit(event: FormSubmitEvent<RequestOrderCancelRequest>) {
 </script>
 
 <template>
-  <BaseDialog>
-    <template #header>
-      <div class="space-y-1">
-        <h1 class="text-2xl font-bold">
-          Cancel order
-        </h1>
-        <p class="text-sm text-zinc-500">
-          This is available before the order ships. Add an optional reason for the cancellation.
-        </p>
-      </div>
-    </template>
-
+  <BaseDialog
+    title="Cancel order"
+    description="This is available before the order ships. Add an optional reason for the cancellation."
+  >
     <UForm
       ref="formRef"
       :state="state"
@@ -55,7 +47,7 @@ async function onSubmit(event: FormSubmitEvent<RequestOrderCancelRequest>) {
     </UForm>
 
     <template #footer>
-      <div class="flex justify-end gap-3">
+      <DialogActions full-width>
         <UButton
           color="gray"
           :disabled="isPending"
@@ -70,7 +62,7 @@ async function onSubmit(event: FormSubmitEvent<RequestOrderCancelRequest>) {
         >
           Cancel order
         </UButton>
-      </div>
+      </DialogActions>
     </template>
   </BaseDialog>
 </template>

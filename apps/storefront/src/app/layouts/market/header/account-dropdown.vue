@@ -66,7 +66,7 @@ const userInitial = computed(() => {
           v-if="item.icon"
           :name="item.icon"
           size="xs"
-          class="text-gray-500"
+          class="text-text-muted"
         />
         <span>{{ item.label }}</span>
       </div>
@@ -94,6 +94,6 @@ const userInitial = computed(() => {
 
 <style scoped>
 .user-avatar {
-  @apply flex size-6 items-center justify-center rounded-full bg-gray-200 text-sm font-semibold text-gray-700;
+  @apply flex size-6 items-center justify-center rounded-full bg-surface-muted text-sm font-semibold text-text-subtle;
 }
 </style>

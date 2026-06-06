@@ -89,7 +89,7 @@ async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zi
       <h1 class="mb-2 text-3xl font-medium">
         Track your guest order
       </h1>
-      <p class="text-zinc-600">
+      <p class="text-text-subtle">
         Enter the email, order number, and shipping ZIP/postal code used at checkout.
       </p>
     </div>
@@ -151,7 +151,7 @@ async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zi
         <LoadingSvg :child-class="'!w-12 !h-12'" />
         <p
           v-if="hasDirectLookup"
-          class="text-sm text-zinc-600"
+          class="text-sm text-text-subtle"
         >
           Loading your order details.
         </p>
@@ -163,7 +163,7 @@ async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zi
     >
       <div class="space-y-3">
         <LoadingSvg :child-class="'!w-12 !h-12'" />
-        <p class="text-sm text-zinc-600">
+        <p class="text-sm text-text-subtle">
           The server is waking up. Please wait a moment.
         </p>
       </div>
@@ -182,7 +182,7 @@ async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zi
     </div>
     <div
       v-else-if="route.query.token || route.query.session_id || route.query.order_id || route.query.order_ids"
-      class="mx-auto max-w-2xl text-zinc-600"
+      class="mx-auto max-w-2xl text-text-subtle"
     >
       No guest orders matched that lookup.
     </div>

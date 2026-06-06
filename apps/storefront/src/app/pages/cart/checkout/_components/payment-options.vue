@@ -14,7 +14,7 @@ const paymentOptions = [
 <template>
   <UCard>
     <div class="flex flex-col gap-4">
-      <legend class="mb-1 text-xl font-bold text-gray-700 dark:text-gray-200">
+      <legend class="mb-1 text-xl font-bold text-text-subtle">
         Payment options
       </legend>
       <RadioGroupInput
@@ -26,7 +26,7 @@ const paymentOptions = [
             <div class="leading-0 font-semibold text-customGray-950">
               {{ option.label }}
             </div>
-            <div class="font-normal text-gray-500">
+            <div class="font-normal text-text-muted">
               {{ option.description }}
             </div>
           </div>

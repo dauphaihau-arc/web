@@ -74,7 +74,7 @@ function highlightText(text: string) {
             v-if="dataGetProducts?.items && dataGetProducts.items.length > 0"
             class="mt-8"
           >
-            <div class="mb-2 ml-4 text-[12px]  text-gray-500">
+            <div class="mb-2 ml-4 text-[12px] text-text-muted">
               Suggested Searches
             </div>
 
@@ -122,7 +122,7 @@ function highlightText(text: string) {
 }
 
 .product {
-  @apply flex items-center gap-1 text-gray-500 font-normal text-[12px]
-  hover:bg-gray-100 px-2 rounded cursor-pointer
+  @apply flex items-center gap-1 text-text-muted font-normal text-[12px]
+  hover:bg-surface-muted px-2 rounded cursor-pointer
 }
 </style>

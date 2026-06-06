@@ -68,7 +68,7 @@ const displayAmount = computed(() => {
       </div>
       <p
         v-if="stockNotice"
-        class="text-[13px] text-red-600"
+        class="text-[13px] text-state-danger-text"
       >
         {{ stockNotice }}
       </p>

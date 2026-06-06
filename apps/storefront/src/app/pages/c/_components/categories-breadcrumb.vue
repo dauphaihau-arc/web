@@ -41,7 +41,7 @@ watch(() => route.fullPath, () => {
       v-if="categoriesBreadcrumb && route.params.categories.length > 1"
       divider="i-heroicons-chevron-right-20-solid"
       :links="categoriesBreadcrumb"
-      :ui="{ active: 'text-gray-700' }"
+      :ui="{ active: 'text-text-subtle' }"
     />
     <div class="mb-2 text-2xl font-semibold capitalize">
       {{ currentNameCategory }} ( {{ totalProducts }} )

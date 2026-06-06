@@ -16,7 +16,7 @@ const changePayment = () => {
 <template>
   <UCard>
     <div class="flex flex-col gap-4">
-      <legend class="mb-1 text-xl font-bold text-gray-700 dark:text-gray-200">
+      <legend class="mb-1 text-xl font-bold text-text-subtle">
         Shipping & Payment
       </legend>
 

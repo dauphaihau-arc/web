@@ -140,10 +140,10 @@ const compareAtAmount = computed(() =>
 
       <div class="space-y-2 text-right">
         <div v-if="compareAtAmount">
-          <div class="text-xl font-medium text-green-700">
+          <div class="text-xl font-medium text-primary">
             {{ displayAmount }}
           </div>
-          <div class="text-sm text-zinc-500">
+          <div class="text-sm text-text-muted">
             <span class="line-through">
               {{ compareAtAmount }}
             </span>

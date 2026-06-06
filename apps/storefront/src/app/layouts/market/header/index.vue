@@ -219,11 +219,11 @@ const showRegisterLoginDialog = () => {
 
 .overlay {
   @apply fixed z-[1] inset-0 transition-opacity
-  bg-gray-200/75
+  bg-surface-muted/75
 }
 
 .header {
-  @apply fixed top-0 z-[3] bg-white w-screen border-b border-b-zinc-200;
+  @apply fixed top-0 z-[3] bg-surface w-screen border-b border-b-border-subtle;
   transform: translate3d(0, 0, 0);
   transition: 0.1s all ease-out;
 }

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
+import ConversationThreadPanel from '@arc/ui/conversation-thread-panel.vue'
 import type {
   MyChatConversation,
   MyChatMessage,
@@ -12,11 +13,9 @@ import { useMySendChatMessage } from '~/shared/server-state/me/chat/send-message
 const props = withDefaults(defineProps<{
   conversationId?: string
   initialConversation?: MyChatConversation | null
-  showProductLink?: boolean
   emptyStateText?: string
 }>(), {
   initialConversation: null,
-  showProductLink: true,
   emptyStateText: 'Select a conversation to read and reply.',
 })
 
@@ -144,90 +143,49 @@ async function handleSendMessage() {
 </script>
 
 <template>
-  <section class="flex h-full min-h-0 flex-1 flex-col">
-    <div
-      v-if="!conversationId || !selectedConversation"
-      class="grid flex-1 place-content-center px-6 text-center text-sm text-zinc-500"
-    >
-      {{ emptyStateText }}
-    </div>
-
-    <template v-else>
-      <!-- <div class="border-b border-zinc-200 px-6 py-4">
-        <div class="flex items-start justify-between gap-4">
-          <div>
-            <div class="text-lg font-semibold text-zinc-900">
-              {{ selectedConversation.product?.title || selectedConversation.shop.shop_name }}
-            </div>
-            <div class="text-sm text-zinc-500">
-              Seller: {{ selectedConversation.shop.shop_name }}
-            </div>
-          </div>
-
-          <UButton
-            v-if="showProductLink && selectedConversation.product?.slug"
-            color="gray"
-            variant="ghost"
-            :to="routes.productDetail(selectedConversation.shop.slug, selectedConversation.product.slug)"
-          >
-            Open product
-          </UButton>
-        </div>
-      </div> -->
-
+  <ConversationThreadPanel
+    :has-conversation="!!conversationId && !!selectedConversation"
+    :loading="isPendingMessages"
+    :empty="messages.length === 0"
+    :empty-state-text="emptyStateText"
+  >
+    <template #default>
       <div
         ref="messageListEl"
-        class="min-h-0 flex-1 space-y-4 overflow-y-auto bg-zinc-50 px-6 py-5"
+        class="contents"
+      />
+
+      <div
+        v-for="message in messages"
+        :key="message.id"
+        class="flex"
+        :class="isOwnMessage(message) ? 'justify-end' : 'justify-start'"
       >
-        <div
-          v-if="isPendingMessages"
-          class="grid h-full place-content-center text-sm text-zinc-500"
-        >
-          Loading messages...
-        </div>
-
-        <div
-          v-else-if="messages.length === 0"
-          class="grid h-full place-content-center text-sm text-zinc-500"
-        >
-          No messages yet.
-        </div>
-
-        <div
-          v-for="message in messages"
-          :key="message.id"
-          class="flex"
-          :class="isOwnMessage(message) ? 'justify-end' : 'justify-start'"
-        >
+        <div class="max-w-[75%]">
           <div
-            class="max-w-[75%]"
+            class="rounded-xl px-3 py-2 shadow-sm"
+            :class="isOwnMessage(message)
+              ? 'bg-text-strong text-surface'
+              : 'bg-surface text-text-strong'"
           >
-            <div
-              class="rounded-xl px-3 py-2 shadow-sm"
-              :class="isOwnMessage(message)
-                ? 'bg-zinc-900 text-white'
-                : 'bg-white text-zinc-900'"
-            >
-              <div class="whitespace-pre-wrap text-sm leading-6">
-                {{ message.body }}
-              </div>
+            <div class="whitespace-pre-wrap text-sm leading-6">
+              {{ message.body }}
             </div>
-            <div
-              class="mt-1 text-[11px]"
-              :class="[
-                isOwnMessage(message) ? 'text-right text-zinc-400' : 'text-left text-zinc-500',
-              ]"
-            >
-              {{ formatMessageTime(message) }}
-            </div>
+          </div>
+          <div
+            class="mt-1 text-[11px]"
+            :class="[
+              isOwnMessage(message) ? 'text-right text-text-muted' : 'text-left text-text-muted',
+            ]"
+          >
+            {{ formatMessageTime(message) }}
           </div>
         </div>
       </div>
+    </template>
 
-      <form
-        class="mt-auto shrink-0 bg-zinc-50 px-5 py-5"
-        @submit.prevent="handleSendMessage"
-      >
+    <template #composer>
+      <form @submit.prevent="handleSendMessage">
         <div class="relative">
           <UTextarea
             v-model="messageDraft"
@@ -236,7 +194,7 @@ async function handleSendMessage() {
             class="w-full"
             placeholder="Write your message..."
             :ui="{
-              base: 'min-h-32 resize-none rounded-[10px] bg-white px-8 py-6 !pr-12 text-lg leading-8 text-zinc-900 shadow-none placeholder:text-zinc-400 focus:ring-0',
+              base: 'min-h-32 resize-none rounded-[10px] bg-surface px-8 py-6 !pr-12 text-lg leading-8 text-text-strong shadow-none placeholder:text-text-muted focus:ring-0',
             }"
           />
           <UButton
@@ -250,5 +208,5 @@ async function handleSendMessage() {
         </div>
       </form>
     </template>
-  </section>
+  </ConversationThreadPanel>
 </template>

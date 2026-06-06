@@ -107,15 +107,8 @@ watch(() => stateSubmit.country, () => {
         inner: '-top-10',
       },
     }"
+    title="Update address"
   >
-    <template #header>
-      <div class="space-y-1.5">
-        <h1 class="text-3xl font-bold">
-          Update address
-        </h1>
-      </div>
-    </template>
-
     <UForm
       ref="formRef"
       :validate-on="['submit']"
@@ -239,7 +232,7 @@ watch(() => stateSubmit.country, () => {
     </UForm>
 
     <template #footer>
-      <div class="flex justify-end gap-3">
+      <DialogActions>
         <UButton
           size="md"
           color="gray"
@@ -254,7 +247,7 @@ watch(() => stateSubmit.country, () => {
         >
           Save
         </UButton>
-      </div>
+      </DialogActions>
     </template>
   </BaseDialog>
 </template>

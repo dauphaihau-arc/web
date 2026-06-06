@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import NotificationPopoverPanel from '@arc/ui/notification-popover-panel.vue'
+import NotificationPopover from '@arc/ui/notification-popover.vue'
 import { routes } from '~/shared/navigation/routes'
 import type { NotificationItem } from '~/shared/api/me/notifications/contracts/notification.contract'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
@@ -52,42 +52,19 @@ function handleViewAll(close: () => void) {
 </script>
 
 <template>
-  <UPopover
+  <NotificationPopover
     v-if="currentUser?.user"
-    :popper="{ placement: 'bottom-end' }"
-  >
-    <UChip
-      :text="unreadCount"
-      :show="unreadCount > 0"
-      size="md"
-      position="bottom-right"
-      :ui="{ position: { 'bottom-right': 'translate-y-[-4px] translate-x-[-4px]' } }"
-    >
-      <UTooltip text="Notifications">
-        <UButton
-          color="gray"
-          variant="ghost"
-          class="icon-button"
-        >
-          <AppIcon name="bell" />
-        </UButton>
-      </UTooltip>
-    </UChip>
-
-    <template #panel="{ close }">
-      <NotificationPopoverPanel
-        :notifications="notifications"
-        :unread-count="unreadCount"
-        :loading="notificationsQuery.isLoading.value"
-        :error="notificationsQuery.isError.value"
-        :is-marking-all="isMarkingAll"
-        :is-marking-one="isMarkingOne"
-        empty-text="No notifications yet."
-        view-all-label="View all"
-        @mark-all="handleMarkAll(close)"
-        @item-click="handleNotificationClick($event, close)"
-        @view-all="handleViewAll(close)"
-      />
-    </template>
-  </UPopover>
+    :notifications="notifications"
+    :unread-count="unreadCount"
+    :loading="notificationsQuery.isLoading.value"
+    :error="notificationsQuery.isError.value"
+    :is-marking-all="isMarkingAll"
+    :is-marking-one="isMarkingOne"
+    empty-text="No notifications yet."
+    view-all-label="View all"
+    tooltip-text="Notifications"
+    @mark-all="handleMarkAll"
+    @item-click="handleNotificationClick"
+    @view-all="handleViewAll"
+  />
 </template>

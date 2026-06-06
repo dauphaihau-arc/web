@@ -123,14 +123,14 @@ watchDebounced(
                   productCart.product.variant_type === ProductVariantTypes.SINGLE
                     || productCart.product.variant_type === ProductVariantTypes.COMBINE
                 "
-                class="text-lg text-zinc-500"
+                class="text-lg text-text-muted"
               >
                 {{ productCart?.product.variant_group_name }}:
                 {{ variantNames.primary }}
               </div>
               <div
                 v-if="productCart.product.variant_type === ProductVariantTypes.COMBINE"
-                class="text-lg text-zinc-500"
+                class="text-lg text-text-muted"
               >
                 {{ productCart?.product.variant_sub_group_name }}:
                 {{ variantNames.sub }}
@@ -171,10 +171,10 @@ watchDebounced(
 
           <div class="space-y-2 text-right">
             <div v-if="compareAtAmount">
-              <div class="text-xl font-medium text-green-700">
+              <div class="text-xl font-medium text-primary">
                 {{ displayAmount }}
               </div>
-              <div class="text-sm text-zinc-500">
+              <div class="text-sm text-text-muted">
                 <span class="line-through">
                   {{ compareAtAmount }}
                 </span>

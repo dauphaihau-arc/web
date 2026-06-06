@@ -72,28 +72,28 @@ async function handleNotificationClick(notification: NotificationItem) {
 
 <template>
   <div class="mt-8 space-y-6">
-    <div class="flex flex-col gap-4 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm md:flex-row md:items-center md:justify-between">
-      <div>
-        <h1 class="text-2xl font-medium">
-          Notifications
-        </h1>
-        <p class="text-sm text-zinc-500">
-          Order updates and account activity for your storefront account.
-        </p>
-      </div>
-
-      <UButton
-        v-if="unreadCount > 0"
-        color="gray"
-        variant="ghost"
-        :loading="isMarkingAll"
-        @click="markAllAsRead()"
+    <AppPanel>
+      <SectionHeader
+        title="Notifications"
+        description="Order updates and account activity for your storefront account."
       >
-        Mark all read
-      </UButton>
-    </div>
+        <template
+          v-if="unreadCount > 0"
+          #actions
+        >
+          <UButton
+            color="gray"
+            variant="ghost"
+            :loading="isMarkingAll"
+            @click="markAllAsRead()"
+          >
+            Mark all read
+          </UButton>
+        </template>
+      </SectionHeader>
+    </AppPanel>
 
-    <div class="text-sm text-zinc-500">
+    <div class="text-sm text-text-muted">
       {{ unreadCount }} unread · {{ totalResults }} total
     </div>
 
@@ -103,52 +103,51 @@ async function handleNotificationClick(notification: NotificationItem) {
       @change="handleFilterChange"
     />
 
-    <div
+    <AppStateBlock
       v-if="notificationsQuery.isLoading.value"
-      class="rounded-2xl border border-zinc-200 bg-white p-8 text-center text-sm text-zinc-500"
     >
       Loading notifications...
-    </div>
+    </AppStateBlock>
 
-    <div
+    <AppStateBlock
       v-else-if="notificationsQuery.isError.value"
-      class="rounded-2xl border border-red-200 bg-red-50 p-8 text-center text-sm text-red-500"
+      state="danger"
     >
       Failed to load notifications.
-    </div>
+    </AppStateBlock>
 
-    <div
+    <AppStateBlock
       v-else-if="notifications.length === 0"
-      class="rounded-2xl border border-zinc-200 bg-white p-8 text-center text-sm text-zinc-500"
     >
       {{ activeFilter === 'unread' ? 'No unread notifications.' : 'No notifications yet.' }}
-    </div>
+    </AppStateBlock>
 
     <div
       v-else
       class="space-y-3"
     >
-      <button
+      <AppPanel
         v-for="notification in notifications"
         :key="notification.id"
-        type="button"
-        class="w-full rounded-2xl border bg-white p-4 text-left shadow-sm transition hover:bg-zinc-50"
-        :class="notification.read_at ? 'border-zinc-200' : 'border-primary-200 bg-primary-50/40'"
+        as="button"
+        padding="sm"
+        class="w-full text-left transition hover:bg-surface-muted"
+        :class="notification.read_at ? 'border-border-subtle' : 'border-border-accent bg-surface-accent'"
         :disabled="isMarkingOne"
         @click="handleNotificationClick(notification)"
       >
         <div class="mb-2 flex items-start justify-between gap-3">
-          <div class="text-base font-medium text-zinc-900">
+          <div class="text-base font-medium text-text-strong">
             {{ notification.title }}
           </div>
-          <div class="shrink-0 text-xs text-zinc-500">
+          <div class="shrink-0 text-xs text-text-muted">
             {{ dayjs(notification.created_at).format('MMM DD, YYYY HH:mm') }}
           </div>
         </div>
-        <div class="text-sm text-zinc-600">
+        <div class="text-sm text-text-subtle">
           {{ notification.body }}
         </div>
-      </button>
+      </AppPanel>
     </div>
 
     <div

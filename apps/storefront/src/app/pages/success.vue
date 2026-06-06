@@ -97,7 +97,7 @@ onUnmounted(() => {
   >
     <div class="space-y-3">
       <LoadingSvg :child-class="'!w-12 !h-12'" />
-      <p class="text-sm text-zinc-600">
+      <p class="text-sm text-text-subtle">
         The server is waking up. Please wait a moment.
       </p>
     </div>
@@ -109,7 +109,7 @@ onUnmounted(() => {
     <div class="mb-4 text-center text-3xl font-medium">
       Your order is confirmed.
     </div>
-    <div class=" space-y-4 text-zinc-600">
+    <div class=" space-y-4 text-text-subtle">
       <div>
         <span
           v-for="(item, idx) of orderShops"

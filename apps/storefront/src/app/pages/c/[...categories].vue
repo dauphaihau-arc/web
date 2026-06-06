@@ -12,7 +12,7 @@ definePageMeta({ layout: 'market' })
 const route = useRoute()
 const marketStore = useMarketStore()
 
-const limit = 10
+const limit = 16
 const page = ref(1)
 
 const params = computed(() => {
@@ -107,10 +107,10 @@ watch(() => page.value, () => {
 <style scoped>
 .categories-toolbar-backdrop {
   backdrop-filter: blur(2px);
-  background: linear-gradient(to bottom, rgb(255 255 255 / 0.99) 35%, rgb(255 255 255 / 0.99) 18%, transparent 100%);
+  background: linear-gradient(to bottom, rgb(255 255 255 / 0.99) 35%, var(--surface-overlay) 18%, transparent 100%);
 }
 
 :global(.dark) .categories-toolbar-backdrop {
-  background: linear-gradient(to bottom, rgb(0 0 0 / 0.82) 0%, rgb(0 0 0 / 0.58) 48%, transparent 100%);
+  background: linear-gradient(to bottom, rgb(0 0 0 / 0.82) 0%, var(--surface-overlay-dark) 48%, transparent 100%);
 }
 </style>

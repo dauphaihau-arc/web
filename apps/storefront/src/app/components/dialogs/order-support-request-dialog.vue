@@ -26,18 +26,10 @@ async function onSubmit(event: FormSubmitEvent<RequestOrderSupportRequest>) {
 </script>
 
 <template>
-  <BaseDialog>
-    <template #header>
-      <div class="space-y-1">
-        <h1 class="text-2xl font-bold">
-          Help with order
-        </h1>
-        <p class="text-sm text-zinc-500">
-          Describe the issue or question for this order. Support can review it from the admin tools.
-        </p>
-      </div>
-    </template>
-
+  <BaseDialog
+    title="Help with order"
+    description="Describe the issue or question for this order. Support can review it from the admin tools."
+  >
     <UForm
       ref="formRef"
       :state="state"
@@ -57,7 +49,7 @@ async function onSubmit(event: FormSubmitEvent<RequestOrderSupportRequest>) {
     </UForm>
 
     <template #footer>
-      <div class="flex justify-end gap-3">
+      <DialogActions full-width>
         <UButton
           color="gray"
           :disabled="isPending"
@@ -71,7 +63,7 @@ async function onSubmit(event: FormSubmitEvent<RequestOrderSupportRequest>) {
         >
           Send request
         </UButton>
-      </div>
+      </DialogActions>
     </template>
   </BaseDialog>
 </template>

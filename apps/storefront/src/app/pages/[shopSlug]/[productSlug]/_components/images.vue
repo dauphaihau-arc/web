@@ -72,7 +72,7 @@ const onSelectNextImg = () => {
         <button
           type="button"
           :class="[
-            'block rounded  bg-zinc-200 ring-2 ring-transparent',
+            'block rounded bg-surface-muted ring-2 ring-transparent',
             {
               '!ring-primary': selectedImg === index,
             }]"
@@ -91,7 +91,7 @@ const onSelectNextImg = () => {
         </button>
       </div>
     </div>
-    <div class="relative w-[575px] max-w-full overflow-hidden rounded bg-zinc-100">
+    <div class="relative w-[575px] max-w-full overflow-hidden rounded bg-surface-muted">
       <NuxtImg
         preload
         :src="imageUrlSelected"
@@ -122,7 +122,7 @@ const onSelectNextImg = () => {
 
 <style scoped>
 .arrow {
-  @apply cursor-pointer bg-white rounded-full p-4
+  @apply cursor-pointer bg-surface rounded-full p-4
   h-10 w-10 grid place-content-center;
 }
 </style>

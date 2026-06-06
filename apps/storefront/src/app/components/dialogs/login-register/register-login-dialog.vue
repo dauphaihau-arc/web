@@ -30,40 +30,42 @@ watch(() => dataUserAuth.value?.user, () => {
 </script>
 
 <template>
-  <UModal
+  <BaseDialog
     v-model="isOpen"
+    body-class="space-y-5 p-12"
+    width="w-full sm:max-w-[450px]"
     :ui="{
-      margin: '!mb-72',
+      modal: {
+        margin: '!mb-72',
+      },
     }"
   >
-    <div class="space-y-5 p-12">
-      <div class="space-y-1.5">
-        <h1 class="text-3xl font-bold">
-          {{ isLoginForm ? 'Log in' : 'Create your account' }}
-        </h1>
-        <p class="text-base text-customGray-950">
-          {{
-            isLoginForm
-              ? 'Enter your credentials to access your account.' : 'Registration is easy.'
-          }}
-        </p>
-      </div>
-
-      <LoginForm v-if="isLoginForm" />
-      <RegisterForm v-else />
-
-      <div class="mt-3 flex items-center">
-        <p class="text-sm text-customGray-950">
-          {{ isLoginForm ? 'New to Arc?' : 'Already a Arc user?' }}
-        </p>
-        <UButton
-          variant="link"
-          class="pl-1"
-          @click="isLoginForm = !isLoginForm"
-        >
-          {{ isLoginForm ? 'Register' : 'Log in' }}
-        </UButton>
-      </div>
+    <div class="space-y-1.5">
+      <h1 class="text-3xl font-bold">
+        {{ isLoginForm ? 'Log in' : 'Create your account' }}
+      </h1>
+      <p class="text-base text-customGray-950">
+        {{
+          isLoginForm
+            ? 'Enter your credentials to access your account.' : 'Registration is easy.'
+        }}
+      </p>
     </div>
-  </UModal>
+
+    <LoginForm v-if="isLoginForm" />
+    <RegisterForm v-else />
+
+    <div class="mt-3 flex items-center">
+      <p class="text-sm text-customGray-950">
+        {{ isLoginForm ? 'New to Arc?' : 'Already a Arc user?' }}
+      </p>
+      <UButton
+        variant="link"
+        class="pl-1"
+        @click="isLoginForm = !isLoginForm"
+      >
+        {{ isLoginForm ? 'Register' : 'Log in' }}
+      </UButton>
+    </div>
+  </BaseDialog>
 </template>

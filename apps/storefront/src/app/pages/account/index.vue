@@ -92,7 +92,7 @@ onMounted(() => {
             <div class="font-medium">
               Name
             </div>
-            <div class="font-light text-zinc-600">
+            <div class="font-light text-text-subtle">
               {{ currentUser?.user?.display_name }}
             </div>
           </div>
@@ -100,7 +100,7 @@ onMounted(() => {
             <div class="font-medium">
               Email
             </div>
-            <div class="font-light text-zinc-600">
+            <div class="font-light text-text-subtle">
               {{ currentUser?.user?.email }}
             </div>
           </div>
@@ -113,15 +113,15 @@ onMounted(() => {
             <div class="font-medium">
               Browser notifications
             </div>
-            <div class="text-sm text-zinc-600">
+            <div class="text-sm text-text-subtle">
               Receive order updates as browser notifications when this device is subscribed.
             </div>
-            <div class="text-sm text-zinc-500">
+            <div class="text-sm text-text-muted">
               Status: {{ notificationStatusLabel }}
             </div>
             <div
               v-if="permission === 'denied'"
-              class="text-sm text-amber-600"
+              class="text-sm text-state-danger-text"
             >
               Browser permission is blocked. Re-enable notifications in your browser settings first.
             </div>

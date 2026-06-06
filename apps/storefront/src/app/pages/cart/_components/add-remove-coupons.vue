@@ -281,7 +281,7 @@ const toggleShowAddCouponInput = async () => {
       </div>
       <div
         v-if="state.errorMsg"
-        class="text-sm text-red-500"
+        class="text-sm text-state-danger-text"
       >
         {{ state.errorMsg }}
       </div>

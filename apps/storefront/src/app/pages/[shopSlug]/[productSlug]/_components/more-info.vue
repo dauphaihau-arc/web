@@ -117,7 +117,7 @@ watch(
     <template #item="{ item }">
       <div
         v-if="item.id === 'info'"
-        class="px-1 text-sm leading-6 whitespace-pre-line text-zinc-600"
+        class="px-1 text-sm leading-6 whitespace-pre-line text-text-subtle"
       >
         {{ item.content }}
       </div>
@@ -140,7 +140,7 @@ watch(
         v-else-if="item.id === 'seller'"
         class="space-y-3 px-1"
       >
-        <div class="text-sm text-zinc-600">
+        <div class="text-sm text-text-subtle">
           Questions about this item? Start a direct conversation with {{ product.shop.shop_name }}.
         </div>
         <UButton
@@ -154,7 +154,7 @@ watch(
 
       <div
         v-else
-        class="px-1 text-sm leading-6 whitespace-pre-line text-zinc-600"
+        class="px-1 text-sm leading-6 whitespace-pre-line text-text-subtle"
       >
         {{ item.content }}
       </div>
@@ -166,13 +166,13 @@ watch(
       v-if="isSellerChatOpen && activeConversation"
       class="fixed inset-x-3 bottom-3 z-50 sm:inset-x-auto sm:right-4 sm:w-[420px]"
     >
-      <div class="overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-2xl shadow-zinc-950/15">
-        <div class="flex items-center justify-between border-b border-zinc-200 px-5 py-3">
+      <div class="overflow-hidden rounded-3xl border border-border-subtle bg-surface shadow-overlay">
+        <div class="flex items-center justify-between border-b border-border-subtle px-5 py-3">
           <div>
-            <div class="text-sm font-semibold text-zinc-900">
+            <div class="text-sm font-semibold text-text-strong">
               Chat with {{ product.shop.shop_name }}
             </div>
-            <div class="text-xs text-zinc-500">
+            <div class="text-xs text-text-muted">
               Ask about this product directly from here.
             </div>
           </div>

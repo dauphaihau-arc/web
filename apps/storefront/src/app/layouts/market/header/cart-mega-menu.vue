@@ -59,10 +59,10 @@ const remainProductCart = computed(() => {
                     <div class="text-xl font-medium">
                       {{ productCart.product.title }}
                     </div>
-                    <div class="text-[15px] text-zinc-500">
+                    <div class="text-[15px] text-text-muted">
                       {{ productCart.inventory.variant_name }}
                     </div>
-                    <div class="text-[15px] tracking-wide text-zinc-500">
+                    <div class="text-[15px] tracking-wide text-text-muted">
                       x{{ productCart.quantity }}
                     </div>
                   </div>
@@ -108,6 +108,6 @@ const remainProductCart = computed(() => {
 
 .item-profile {
   @apply font-medium flex items-center gap-2 cursor-pointer opacity-70 hover:opacity-100
-  hover:bg-gray-100 px-2 py-1 rounded-md
+  hover:bg-surface-muted px-2 py-1 rounded-md
 }
 </style>

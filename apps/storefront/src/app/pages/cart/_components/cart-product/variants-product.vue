@@ -21,13 +21,13 @@ onMounted(() => {
   <div class="">
     <div
       v-if="props.productCart.product.variant_group_name"
-      class="text-lg text-zinc-500"
+      class="text-lg text-text-muted"
     >
       {{ props.productCart.product.variant_group_name }}: {{ state.v1 }}
     </div>
     <div
       v-if="props.productCart.product.variant_sub_group_name"
-      class="text-lg text-zinc-500"
+      class="text-lg text-text-muted"
     >
       {{ props.productCart.product.variant_sub_group_name }}: {{ state.v2 }}
     </div>

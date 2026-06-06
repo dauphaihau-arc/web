@@ -54,7 +54,7 @@ const deliveredAt = computed(() => {
     <div class="text-2xl font-medium">
       {{ shippingStatus[props.orderShop?.shipping?.shipping_status] }}
     </div>
-    <div class="mt-2 space-y-5 text-[15px] text-zinc-500">
+    <div class="mt-2 space-y-5 text-[15px] text-text-muted">
       <div class="space-y-1.5">
         <div>
           On {{ shippingStatusUpdatedAt }}

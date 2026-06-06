@@ -41,7 +41,7 @@ const clickStepDone = (index: number) => {
     <UProgress
       :ui="{
         progress: {
-          background: '!bg-[#d9dee3]',
+          background: '!bg-customGray-200',
         },
       }"
       :value="valueProgress"
@@ -121,6 +121,6 @@ const clickStepDone = (index: number) => {
 }
 
 .inactive {
- @apply base text-customGray-900 bg-[#d9dee3] ring-[#d9dee3];
+ @apply base text-text-strong bg-customGray-200 ring-customGray-200;
 }
 </style>

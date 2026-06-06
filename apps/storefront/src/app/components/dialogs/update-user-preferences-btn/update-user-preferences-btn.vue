@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { MARKET_REGION_EMOJIS, MarketCurrencies } from '@arc/enums/market'
+import BaseDialog from '@arc/ui/base-dialog.vue'
+import DialogActions from '@arc/ui/dialog-actions.vue'
 import { useUserPreferenceForm } from './use-user-preference-form'
+import type { PreferenceState } from './preference-options'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 import { useUpdateCurrentUser } from '~/shared/server-state/me/update-current-user.mutation'
 import { useGetMarketConfig } from '~/shared/server-state/market/config.query'
-import type { PreferenceState } from './preference-options'
 import type { FormSubmitEvent } from '#ui/types'
 import type { AuthPreferences } from '~/shared/api/auth/contracts/auth-user.contract'
 
@@ -21,6 +23,7 @@ const marketSensitiveQueryKeys = new Set([
 const marketStore = useMarketStore()
 const queryClient = useQueryClient()
 const isOpenDialog = ref(false)
+const formRef = ref()
 
 const { data: currentUserData } = useGetCurrentUser()
 
@@ -117,42 +120,38 @@ const onSubmit = async (event: FormSubmitEvent<PreferenceState>) => {
       </div>
     </div>
 
-    <UModal
+    <BaseDialog
       v-model="isOpenDialog"
+      body-class="space-y-6 p-8"
       :ui="{
-        margin: '!mb-72',
+        modal: {
+          margin: '!mb-72',
+        },
       }"
+      title="Update your settings"
+      description="Set where you live, what language you speak and the currency you use."
     >
-      <div class="space-y-6 p-8">
-        <div class="space-y-2">
-          <h1 class="text-3xl font-bold">
-            Update your settings
-          </h1>
-          <p class="text-base text-customGray-950">
-            Set where you live, what language you speak and the currency you use.
-          </p>
-        </div>
+      <UForm
+        ref="formRef"
+        :state="state"
+        @submit="onSubmit"
+      >
+        <div class="mb-8 space-y-5">
+          <UFormGroup
+            label="Region"
+            name="region"
+            required
+            class="mb-4"
+          >
+            <USelectMenu
+              v-model="state.region"
+              :disabled="isPendingUpdateUserPreferences || isPendingGetMarketConfig"
+              size="xl"
+              :options="regionOptions"
+            />
+          </UFormGroup>
 
-        <UForm
-          :state="state"
-          @submit="onSubmit"
-        >
-          <div class="mb-8 space-y-5">
-            <UFormGroup
-              label="Region"
-              name="region"
-              required
-              class="mb-4"
-            >
-              <USelectMenu
-                v-model="state.region"
-                :disabled="isPendingUpdateUserPreferences || isPendingGetMarketConfig"
-                size="xl"
-                :options="regionOptions"
-              />
-            </UFormGroup>
-
-            <!-- <UFormGroup
+          <!-- <UFormGroup
               label="Language"
               name="language"
               required
@@ -166,46 +165,47 @@ const onSubmit = async (event: FormSubmitEvent<PreferenceState>) => {
               />
             </UFormGroup> -->
 
-            <UFormGroup
-              label="Currency"
-              name="currency"
-              required
-              class="mb-4"
-            >
-              <USelectMenu
-                v-model="state.currency"
-                size="xl"
-                :disabled="isPendingUpdateUserPreferences"
-                :options="currencyOptions"
-                value-attribute="id"
-                option-attribute="displayLabel"
-                :ui-menu="{
-                  select: '!normal-case',
-                  option: { base: '!normal-case' },
-                }"
-              />
-            </UFormGroup>
-          </div>
-
-          <div class="flex justify-end gap-3">
-            <UButton
+          <UFormGroup
+            label="Currency"
+            name="currency"
+            required
+            class="mb-4"
+          >
+            <USelectMenu
+              v-model="state.currency"
+              size="xl"
               :disabled="isPendingUpdateUserPreferences"
-              size="lg"
-              color="gray"
-              @click="isOpenDialog = false"
-            >
-              Cancel
-            </UButton>
-            <UButton
-              :loading="isPendingUpdateUserPreferences"
-              size="lg"
-              type="submit"
-            >
-              Save
-            </UButton>
-          </div>
-        </UForm>
-      </div>
-    </UModal>
+              :options="currencyOptions"
+              value-attribute="id"
+              option-attribute="displayLabel"
+              :ui-menu="{
+                select: '!normal-case',
+                option: { base: '!normal-case' },
+              }"
+            />
+          </UFormGroup>
+        </div>
+      </UForm>
+
+      <template #footer>
+        <DialogActions>
+          <UButton
+            :disabled="isPendingUpdateUserPreferences"
+            size="lg"
+            color="gray"
+            @click="isOpenDialog = false"
+          >
+            Cancel
+          </UButton>
+          <UButton
+            :loading="isPendingUpdateUserPreferences"
+            size="lg"
+            @click="formRef?.submit"
+          >
+            Save
+          </UButton>
+        </DialogActions>
+      </template>
+    </BaseDialog>
   </div>
 </template>

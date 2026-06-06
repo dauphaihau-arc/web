@@ -55,7 +55,7 @@ const shippingAddressLines = computed(() => {
         <h1 class="text-2xl">
           {{ displayOrderShop ? `Order ${displayOrderShop.order_number}` : 'Order details' }}
         </h1>
-        <div class="text-sm text-zinc-500">
+        <div class="text-sm text-text-muted">
           Review shipment status, address, and line items for this order.
         </div>
       </div>
@@ -95,7 +95,7 @@ const shippingAddressLines = computed(() => {
             </div>
           </template>
 
-          <div class="space-y-1 text-sm text-zinc-600">
+          <div class="space-y-1 text-sm text-text-subtle">
             <div
               v-for="line in shippingAddressLines"
               :key="line"
@@ -112,7 +112,7 @@ const shippingAddressLines = computed(() => {
             </div>
           </template>
 
-          <div class="space-y-2 text-sm text-zinc-600">
+          <div class="space-y-2 text-sm text-text-subtle">
             <div class="capitalize">
               Status: {{ displayOrderShop.status.replaceAll('_', ' ') }}
             </div>
@@ -138,7 +138,7 @@ const shippingAddressLines = computed(() => {
 
     <div
       v-else
-      class="rounded-md border border-zinc-200 bg-white p-6 text-sm text-zinc-500"
+      class="rounded-md border border-border-subtle bg-surface p-6 text-sm text-text-muted"
     >
       Order not found.
     </div>

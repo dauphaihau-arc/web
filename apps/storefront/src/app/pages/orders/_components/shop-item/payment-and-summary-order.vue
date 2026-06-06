@@ -42,7 +42,7 @@ const showMore = ref(false)
           <div class="first-letter:capitalize">
             {{ orderShop?.payment?.card_brand }} ending in {{ orderShop?.payment?.card_last4 }}
           </div>
-          <div class="text-zinc-500/80">
+          <div class="text-text-muted">
             Your {{ orderShop.payment.card_funding ?? '' }} card information was not shared with this shop
           </div>
         </div>
@@ -51,7 +51,7 @@ const showMore = ref(false)
         </div>
         <div
           v-if="orderShop.payment.refund_status"
-          class="pt-2 text-sm text-zinc-600"
+          class="pt-2 text-sm text-text-subtle"
         >
           Refund: {{ orderShop.payment.refund_status.replaceAll('_', ' ') }}
           <span v-if="orderShop.payment.refunded_at">
@@ -90,7 +90,7 @@ const showMore = ref(false)
             </div>
             <div
               v-if="orderShop.shipping_minor === 0"
-              class="text-right font-normal text-green-600"
+              class="text-right font-normal text-primary"
             >
               FREE
             </div>

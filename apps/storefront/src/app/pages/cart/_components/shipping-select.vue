@@ -29,7 +29,7 @@ const isSelectAnyProduct = computed(() => {
     <p>Shipping fee:</p>
     <p
       v-if="props.shopCart.shipping_minor === 0 && isSelectAnyProduct"
-      class="text-right font-normal text-green-700"
+      class="text-right font-normal text-primary"
     >
       FREE
     </p>
@@ -49,7 +49,7 @@ const isSelectAnyProduct = computed(() => {
       size="xl"
     />
 
-    <div class="mt-3 text-right text-sm text-zinc-500">
+    <div class="mt-3 text-right text-sm text-text-muted">
       <p>
         Estimated delivery: Aug 7-21
       </p>

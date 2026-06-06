@@ -94,92 +94,69 @@ if (import.meta.client) {
 
 <template>
   <div class="">
-    <div class="mb-8 flex items-end justify-between gap-4">
-      <div>
-        <h1 class="text-3xl font-semibold text-zinc-950">
-          Messages
-        </h1>
-        <p class="mt-2 text-sm text-zinc-500">
-          Talk directly with sellers about products and orders.
-        </p>
-      </div>
-      <div class="rounded-full bg-zinc-100 px-3 py-1 text-sm text-zinc-700">
-        Unread: {{ unreadCount?.unread_count ?? 0 }}
-      </div>
+    <div class="mb-8">
+      <SectionHeader
+        title="Messages"
+        description="Talk directly with sellers about products and orders."
+        heading-class="text-3xl font-semibold text-text-strong"
+      >
+        <template #badge>
+          <div class="rounded-full border border-border-subtle bg-surface-muted px-3 py-1 text-sm text-text-subtle">
+            Unread: {{ unreadCount?.unread_count ?? 0 }}
+          </div>
+        </template>
+      </SectionHeader>
     </div>
 
-    <div class="grid min-h-[70vh] grid-cols-1 overflow-hidden rounded-3xl border border-zinc-200 bg-white lg:grid-cols-[340px_minmax(0,1fr)]">
-      <aside class="border-b border-zinc-200 lg:border-b-0 lg:border-r">
-        <div class="border-b border-zinc-200 px-5 py-4">
-          <div class="text-sm font-semibold text-zinc-900">
-            Conversations
-          </div>
-          <div class="text-sm text-zinc-500">
-            {{ conversationList?.total_results ?? 0 }} total threads
-          </div>
-        </div>
-
-        <div
-          v-if="isPendingConversations"
-          class="grid h-52 place-content-center text-sm text-zinc-500"
+    <ConversationInboxShell>
+      <ConversationListPanel
+        :total-results="conversationList?.total_results ?? 0"
+        :loading="isPendingConversations"
+        :empty="conversations.length === 0"
+        empty-text="No conversations yet."
+      >
+        <button
+          v-for="conversation in conversations"
+          :key="conversation.id"
+          type="button"
+          class="flex w-full flex-col gap-2 border-b border-border-subtle px-5 py-4 text-left transition hover:bg-surface-muted"
+          :class="selectedConversationId === conversation.id ? 'bg-surface-muted' : ''"
+          @click="selectConversation(conversation)"
         >
-          Loading conversations...
-        </div>
-
-        <div
-          v-else-if="conversations.length === 0"
-          class="grid h-52 place-content-center px-6 text-center text-sm text-zinc-500"
-        >
-          No conversations yet.
-        </div>
-
-        <div
-          v-else
-          class="max-h-[70vh] overflow-y-auto"
-        >
-          <button
-            v-for="conversation in conversations"
-            :key="conversation.id"
-            type="button"
-            class="flex w-full flex-col gap-2 border-b border-zinc-100 px-5 py-4 text-left transition hover:bg-zinc-50"
-            :class="selectedConversationId === conversation.id ? 'bg-zinc-50' : ''"
-            @click="selectConversation(conversation)"
-          >
-            <div class="flex items-start justify-between gap-3">
-              <div class="min-w-0">
-                <div class="truncate text-sm font-semibold text-zinc-900">
-                  {{ conversation.product?.title || conversation.shop.shop_name }}
-                </div>
-                <div class="truncate text-xs text-zinc-500">
-                  {{ conversation.shop.shop_name }}
-                </div>
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <div class="truncate text-sm font-semibold text-text-strong">
+                {{ conversation.product?.title || conversation.shop.shop_name }}
               </div>
-              <div class="shrink-0 text-xs text-zinc-400">
-                {{ formatConversationTime(conversation.last_message_at || conversation.created_at) }}
+              <div class="truncate text-xs text-text-muted">
+                {{ conversation.shop.shop_name }}
               </div>
             </div>
-
-            <div class="flex items-center justify-between gap-2">
-              <div class="truncate text-xs text-zinc-500">
-                {{ conversation.product?.slug || conversation.shop.slug }}
-              </div>
-              <UBadge
-                v-if="isConversationUnread(conversation)"
-                color="blue"
-                variant="subtle"
-                size="xs"
-              >
-                Unread
-              </UBadge>
+            <div class="shrink-0 text-xs text-text-muted">
+              {{ formatConversationTime(conversation.last_message_at || conversation.created_at) }}
             </div>
-          </button>
-        </div>
-      </aside>
+          </div>
+
+          <div class="flex items-center justify-between gap-2">
+            <div class="truncate text-xs text-text-muted">
+              {{ conversation.product?.slug || conversation.shop.slug }}
+            </div>
+            <UBadge
+              v-if="isConversationUnread(conversation)"
+              color="blue"
+              variant="subtle"
+              size="xs"
+            >
+              Unread
+            </UBadge>
+          </div>
+        </button>
+      </ConversationListPanel>
 
       <ChatConversationPanel
         :conversation-id="selectedConversationId"
         :initial-conversation="selectedConversation"
       />
-    </div>
+    </ConversationInboxShell>
   </div>
 </template>

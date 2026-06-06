@@ -295,7 +295,7 @@ watch(
       </UFormGroup>
 
       <div>
-        <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-200">
+        <label class="mb-1 block text-sm font-medium text-text-subtle">
           Quantity
         </label>
         <UButtonGroup

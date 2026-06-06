@@ -17,7 +17,7 @@ defineProps<{
       class="min-w-[15%] max-w-[50%]"
     >
       <div>Shop Note</div>
-      <div class="text-wrap text-zinc-500/80">
+      <div class="text-wrap text-text-muted">
         {{ orderShop.note }}
       </div>
     </div>

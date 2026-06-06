@@ -30,18 +30,18 @@ watch(() => route.path, () => {
           class="h-fit w-1/5 flex-none"
           :links="accountSidebarLinks"
           :ui="{
-            wrapper: 'border-s border-gray-200 dark:border-gray-800 space-y-2',
+            wrapper: 'border-s border-border-subtle space-y-2',
             base: 'group block border-s -ms-px leading-6 before:hidden py-2 flex items-center',
             padding: 'p-0 ps-4',
             rounded: '',
             font: '',
             ring: '',
             active: 'text-primary-500 dark:text-primary-400 border-current font-semibold',
-            inactive: 'border-transparent hover:border-gray-400 text-gray-700 hover:text-gray-900',
+            inactive: 'border-transparent hover:border-border-hover text-text-subtle hover:text-text-strong',
             icon: {
               base: 'text-primary-500',
               active: '!text-primary-500 dark:text-primary-400 border-current font-semibold',
-              inactive: 'border-transparent hover:border-gray-400 text-gray-700 hover:text-gray-900',
+              inactive: 'border-transparent hover:border-border-hover text-text-subtle hover:text-text-strong',
             },
           }"
         >

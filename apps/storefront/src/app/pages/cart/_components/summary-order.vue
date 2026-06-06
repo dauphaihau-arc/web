@@ -37,7 +37,7 @@ function proceedToCheckout() {
     />
     <div
       v-if="isTotalOrderInvalid"
-      class="text-red-500"
+      class="text-state-danger-text"
     >
       The total amount due must be no more than
       {{ formatCurrency(ORDER_CONFIG.MAX_ORDER_TOTAL) }}

@@ -122,7 +122,7 @@ const showCreateDialog = () => {
   <UCard>
     <div v-if="isAuthenticated">
       <div class="mb-2 flex items-center justify-between">
-        <legend class="mb-1 text-base font-bold text-gray-700">
+        <legend class="mb-1 text-base font-bold text-text-subtle">
           Shipping Address
         </legend>
         <UButton
@@ -152,11 +152,11 @@ const showCreateDialog = () => {
         >
           <template #label="{ option }">
             <div class="mb-6 flex w-full flex-col gap-1 text-customGray-950">
-              <div class="text-sm font-medium text-gray-700">
+              <div class="text-sm font-medium text-text-subtle">
                 {{ option.full_name }} |
                 <span class="font-normal">{{ option.phone }}</span>
               </div>
-              <div class="text-sm text-gray-500">
+              <div class="text-sm text-text-muted">
                 {{ option.address_1 }}, {{ option.city }}, {{ option.zip }}, {{ option.country }}
               </div>
             </div>
@@ -167,10 +167,10 @@ const showCreateDialog = () => {
 
     <div v-else>
       <div class="mb-6 space-y-1">
-        <legend class="text-base font-bold text-gray-700">
+        <legend class="text-base font-bold text-text-subtle">
           Contact & Shipping
         </legend>
-        <p class="text-sm text-gray-500">
+        <p class="text-sm text-text-muted">
           Enter your email and shipping address to check out as a guest.
         </p>
       </div>
