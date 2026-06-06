@@ -1,3 +1,5 @@
+import { designTokenClasses } from './design-tokens'
+
 export const sharedAppConfig = {
   ui: {
     primary: 'indigo',
@@ -22,16 +24,16 @@ export const sharedAppConfig = {
       select: 'capitalize',
     },
     card: {
-      shadow: 'shadow-border',
+      shadow: designTokenClasses.shadow.border,
     },
     popover: {
-      shadow: 'shadow-[0_8px_30px_rgba(0,0,0,0.18)]',
+      shadow: designTokenClasses.shadow.overlay,
     },
     formGroup: {
-      description: 'text-customGray-800',
+      description: 'text-text-muted',
     },
     radio: {
-      help: 'text-customGray-800',
+      help: 'text-text-muted',
     },
     button: {
       default: {
@@ -39,7 +41,7 @@ export const sharedAppConfig = {
       },
       color: {
         white: {
-          outline: 'shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 text-gray-900 dark:text-white bg-white dark:bg-gray-900 hover:bg-white dark:hover:bg-gray-900 focus-visible:ring-2 focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400',
+          outline: 'shadow-sm ring-1 ring-inset ring-border-muted text-text-strong bg-surface hover:bg-surface focus-visible:ring-2 focus-visible:ring-primary-500',
         },
       },
     },
@@ -50,7 +52,7 @@ export const sharedAppConfig = {
     },
     tabs: {
       list: {
-        background: 'bg-neutral-200/80',
+        background: 'bg-surface-muted/80',
         rounded: 'rounded-lg',
         padding: 'p-1',
         width: 'w-full md:w-auto',

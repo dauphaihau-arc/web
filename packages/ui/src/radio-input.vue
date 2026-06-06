@@ -55,12 +55,12 @@ const isChecked = computed(() => {
         name="label"
       />
       <div v-else>
-        <label class="text-sm font-medium text-gray-700">
+        <label class="text-sm font-medium text-text-subtle">
           {{ props.label }}
         </label>
         <div
           v-if="props.help"
-          class="text-sm text-gray-500"
+          class="text-sm text-text-muted"
         >
           {{ props.help }}
         </div>

@@ -12,8 +12,8 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="fixed inset-0 z-[100] grid place-content-center bg-white px-4">
-    <div class="flex items-center gap-3 rounded-full bg-white px-4 py-3 text-sm text-zinc-700 shadow-lg ring-1 ring-zinc-200">
+  <div class="fixed inset-0 z-[100] grid place-content-center bg-surface px-4">
+    <div class="flex items-center gap-3 rounded-full bg-surface px-4 py-3 text-sm text-text-subtle shadow-lg ring-1 ring-border-subtle">
       <LoadingSvg
         v-if="isBackendPending"
         :child-class="'!w-4 !h-4'"

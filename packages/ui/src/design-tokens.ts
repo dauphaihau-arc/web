@@ -1,0 +1,94 @@
+export const designColors = {
+  customGray: {
+    50: '#FFFFFF',
+    100: '#F7F8FA',
+    200: '#E5E9EA',
+    300: '#C3CED9',
+    400: '#AABAC9',
+    500: '#91A6B9',
+    600: '#7891A9',
+    700: '#617D98',
+    800: '#6A7283',
+    850: '#5B6070',
+    900: '#4D505B',
+    950: '#414551',
+  },
+  surface: {
+    DEFAULT: '#FFFFFF',
+    muted: '#F7F8FA',
+    subtle: '#FCFCFD',
+    accent: '#F6F8FA',
+    overlay: 'rgb(255 255 255 / 0.85)',
+    overlayDark: 'rgb(0 0 0 / 0.75)',
+  },
+  border: {
+    muted: '#D4D4D8',
+    subtle: '#E4E4E7',
+    accent: '#E0E7FF',
+    hover: '#AABAC9',
+  },
+  state: {
+    danger: {
+      surface: '#FEF2F2',
+      border: '#FECACA',
+      text: '#DC2626',
+    },
+  },
+  text: {
+    muted: '#71717A',
+    subtle: '#52525B',
+    strong: '#18181B',
+  },
+} as const
+
+export const designRadii = {
+  panel: '1rem',
+  dialog: '1.5rem',
+  chip: '9999px',
+  button: '0.75rem',
+} as const
+
+export const designShadows = {
+  border: '0 3px 10px rgb(0 0 0 / 0.2)',
+  overlay: '0 8px 30px rgba(0,0,0,0.18)',
+  hero: '0 25px 50px -12px rgb(0 0 0 / 0.25)',
+} as const
+
+export const designLayout = {
+  maxWidthHome: '1300px',
+  maxWidthShop: '1650px',
+  shopSidebarWidth: '220px',
+  shopContentMaxWidth: '1400px',
+  pageGutter: '2.5rem',
+  layoutShopBackground: 'linear-gradient(to top, #f6f8fa, #f6f8fa, #fcfcfd)',
+} as const
+
+export const designTokenClasses = {
+  shadow: {
+    border: 'shadow-border',
+    overlay: 'shadow-overlay',
+    hero: 'shadow-hero',
+  },
+} as const
+
+export const sharedTailwindTheme = {
+  extend: {
+    colors: designColors,
+    borderRadius: designRadii,
+    boxShadow: designShadows,
+    maxWidth: {
+      'home-layout': designLayout.maxWidthHome,
+      'shop-layout': designLayout.maxWidthShop,
+      'shop-layout-content': designLayout.shopContentMaxWidth,
+    },
+    width: {
+      'shop-layout-sidebar': designLayout.shopSidebarWidth,
+    },
+    spacing: {
+      'page-gutter': designLayout.pageGutter,
+    },
+    backgroundImage: {
+      'layout-shop': designLayout.layoutShopBackground,
+    },
+  },
+} as const

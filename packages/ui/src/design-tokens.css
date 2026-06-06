@@ -1,0 +1,69 @@
+:root {
+  --surface-default: #ffffff;
+  --surface-muted: #f7f8fa;
+  --surface-subtle: #fcfcfd;
+  --surface-accent: #f6f8fa;
+  --surface-overlay: rgb(255 255 255 / 0.85);
+  --surface-overlay-dark: rgb(0 0 0 / 0.75);
+  --border-muted: #d4d4d8;
+  --border-subtle: #e4e4e7;
+  --border-hover: #aabac9;
+  --text-muted: #71717a;
+  --text-subtle: #52525b;
+  --text-strong: #18181b;
+
+  --radius-panel: 1rem;
+  --radius-dialog: 1.5rem;
+  --radius-chip: 9999px;
+  --radius-button: 0.75rem;
+
+  --shadow-border: 0 3px 10px rgb(0 0 0 / 0.2);
+  --shadow-overlay: 0 8px 30px rgba(0, 0, 0, 0.18);
+  --shadow-hero: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+  --layout-max-width-home: 1300px;
+  --layout-max-width-shop: 1650px;
+  --layout-shop-sidebar-width: 220px;
+  --layout-shop-content-max-width: 1400px;
+  --layout-page-gutter: 2.5rem;
+  --layout-shop-background: linear-gradient(to top, #f6f8fa, #f6f8fa, #fcfcfd);
+}
+
+.max-w-home-layout {
+  max-width: var(--layout-max-width-home);
+}
+
+.max-w-shop-layout {
+  max-width: var(--layout-max-width-shop);
+}
+
+.w-shop-layout-sidebar {
+  width: var(--layout-shop-sidebar-width);
+}
+
+.w-shop-layout-content {
+  width: calc(100% - var(--layout-shop-sidebar-width));
+  max-width: var(--layout-shop-content-max-width);
+}
+
+.shop-layout-content-inner {
+  width: 100%;
+  padding-left: var(--layout-page-gutter);
+  padding-right: var(--layout-page-gutter);
+}
+
+.bg-layout-shop {
+  background-image: var(--layout-shop-background);
+}
+
+.shadow-border {
+  box-shadow: var(--shadow-border);
+}
+
+.shadow-overlay {
+  box-shadow: var(--shadow-overlay);
+}
+
+.shadow-hero {
+  box-shadow: var(--shadow-hero);
+}

@@ -22,7 +22,8 @@ const props = withDefaults(defineProps<{
 }>(), {
   width: 'w-full sm:max-w-xl',
   bodyClass: 'min-h-0 flex-1 overflow-y-auto py-8 px-6',
-  cardClass: 'flex max-h-[calc(100vh-4rem)] min-h-0 flex-col overflow-hidden',
+  cardClass:
+    'flex max-h-[calc(100vh-4rem)] min-h-0 flex-col overflow-hidden rounded-dialog border border-border-subtle bg-surface text-text-strong',
 })
 
 const attrs = useAttrs()
@@ -43,11 +44,11 @@ const cardUi = computed(() => ({
     ...props.ui?.card?.body,
   },
   header: {
-    padding: 'p-4',
+    padding: 'px-6 py-5',
     ...props.ui?.card?.header,
   },
   footer: {
-    padding: 'px-8 py-4',
+    padding: 'border-t border-border-subtle px-6 py-4',
     ...props.ui?.card?.footer,
   },
 }))
@@ -82,7 +83,7 @@ const hasFooter = computed(() => Boolean(slots.footer))
             </h1>
             <p
               v-if="description"
-              class="text-sm leading-6 text-gray-600"
+              class="text-sm leading-6 text-text-muted"
             >
               {{ description }}
             </p>

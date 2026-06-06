@@ -68,7 +68,7 @@ function handleFilterChange(index: number) {
         </div>
         <div
           v-if="showUnreadCount"
-          class="text-xs text-gray-500"
+          class="text-xs text-text-muted"
         >
           {{ unreadCount }} unread
         </div>
@@ -84,26 +84,27 @@ function handleFilterChange(index: number) {
       </UButton>
     </div>
 
-    <div
+    <AppStateBlock
       v-if="loading"
-      class="py-6 text-center text-sm text-gray-500"
+      class="border-0 bg-transparent px-0 py-6 text-text-muted shadow-none"
     >
       Loading notifications...
-    </div>
+    </AppStateBlock>
 
-    <div
+    <AppStateBlock
       v-else-if="error"
-      class="py-6 text-center text-sm text-red-500"
+      state="danger"
+      class="border-0 bg-transparent px-0 py-6 shadow-none"
     >
       Failed to load notifications.
-    </div>
+    </AppStateBlock>
 
-    <div
+    <AppStateBlock
       v-else-if="notifications.length === 0"
-      class="py-6 text-center text-sm text-gray-500"
+      class="border-0 bg-transparent px-0 py-6 text-text-muted shadow-none"
     >
       {{ emptyText }}
-    </div>
+    </AppStateBlock>
 
     <div
       v-else
@@ -129,20 +130,20 @@ function handleFilterChange(index: number) {
         v-for="notification in notifications"
         :key="notification.id"
         type="button"
-        class="w-full border-b py-3 text-left transition hover:bg-gray-50"
-        :class="notification.read_at ? 'border-gray-200' : 'border-[#edf1e6] bg-primary-50/40'"
+        class="w-full border-b py-3 text-left transition hover:bg-surface-muted"
+        :class="notification.read_at ? 'border-border-subtle' : 'border-border-accent bg-surface-accent'"
         :disabled="isMarkingOne"
         @click="emit('itemClick', notification)"
       >
         <div class="mb-1 flex items-start justify-between gap-3">
-          <div class="text-sm font-medium text-gray-900">
+          <div class="text-sm font-medium text-text-strong">
             {{ notification.title }}
           </div>
-          <div class="shrink-0 text-xs text-gray-500">
+          <div class="shrink-0 text-xs text-text-muted">
             {{ dayjs(notification.created_at).format('MMM DD, HH:mm') }}
           </div>
         </div>
-        <div class="text-sm text-gray-600">
+        <div class="text-sm text-text-subtle">
           {{ notification.body }}
         </div>
       </button>

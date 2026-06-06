@@ -4,7 +4,7 @@ const { childClass } = defineProps<{ childClass?: string }>()
 
 <template>
   <svg
-    :class="['size-5 animate-spin text-gray-500', childClass]"
+    :class="['size-5 animate-spin text-text-muted', childClass]"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"
