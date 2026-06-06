@@ -22,12 +22,35 @@ async function onSubmit(event: FormSubmitEvent<RequestOrderCancelRequest>) {
   })
   await dialog.close()
 }
+
+const actions = computed(() => [
+  {
+    id: 'keep-order',
+    label: 'Keep order',
+    variant: 'secondary' as const,
+    shortcut: 'escape' as const,
+    allowWhileInputFocused: true,
+    disabled: isPending,
+    run: () => dialog.close(),
+  },
+  {
+    id: 'cancel-order',
+    label: 'Cancel order',
+    variant: 'danger' as const,
+    shortcut: 'meta_enter' as const,
+    allowWhileInputFocused: true,
+    loading: isPending,
+    run: () => formRef.value?.submit(),
+  },
+])
 </script>
 
 <template>
   <BaseDialog
     title="Cancel order"
     description="This is available before the order ships. Add an optional reason for the cancellation."
+    :actions="actions"
+    actions-full-width
   >
     <UForm
       ref="formRef"
@@ -45,24 +68,5 @@ async function onSubmit(event: FormSubmitEvent<RequestOrderCancelRequest>) {
         />
       </UFormGroup>
     </UForm>
-
-    <template #footer>
-      <DialogActions full-width>
-        <UButton
-          color="gray"
-          :disabled="isPending"
-          @click="dialog.close"
-        >
-          Keep order
-        </UButton>
-        <UButton
-          color="red"
-          :loading="isPending"
-          @click="formRef?.submit"
-        >
-          Cancel order
-        </UButton>
-      </DialogActions>
-    </template>
   </BaseDialog>
 </template>

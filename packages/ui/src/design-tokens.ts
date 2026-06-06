@@ -17,6 +17,7 @@ export const designColors = {
     DEFAULT: '#FFFFFF',
     muted: '#F7F8FA',
     subtle: '#FCFCFD',
+    keycap: '#EAEAEA',
     accent: '#F6F8FA',
     overlay: 'rgb(255 255 255 / 0.85)',
     overlayDark: 'rgb(0 0 0 / 0.75)',

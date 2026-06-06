@@ -19,10 +19,33 @@ async function confirmCancel() {
   })
   await dialog.close()
 }
+
+const actions = computed(() => [
+  {
+    id: 'keep-order',
+    label: 'Keep order',
+    variant: 'secondary' as const,
+    shortcut: 'escape' as const,
+    allowWhileInputFocused: true,
+    disabled: isPending,
+    run: () => dialog.close(),
+  },
+  {
+    id: 'confirm-cancel',
+    label: 'Confirm cancel',
+    variant: 'danger' as const,
+    shortcut: 'meta_enter' as const,
+    allowWhileInputFocused: true,
+    loading: isPending,
+    run: confirmCancel,
+  },
+])
 </script>
 
 <template>
-  <BaseDialog>
+  <BaseDialog
+    :actions="actions"
+  >
     <div class="space-y-1">
       <h1 class="text-2xl font-bold">
         Cancel order
@@ -31,24 +54,5 @@ async function confirmCancel() {
         This will cancel the order for the buyer before shipment. Use this only when fulfillment cannot continue.
       </p>
     </div>
-
-    <template #footer>
-      <DialogActions>
-        <UButton
-          color="gray"
-          :disabled="isPending"
-          @click="dialog.close"
-        >
-          Keep order
-        </UButton>
-        <UButton
-          color="red"
-          :loading="isPending"
-          @click="confirmCancel"
-        >
-          Confirm cancel
-        </UButton>
-      </DialogActions>
-    </template>
   </BaseDialog>
 </template>
