@@ -110,7 +110,10 @@ watch(
     :ui="{
       wrapper: '-ml-2.5',
       item: {
-        padding: 'pl-1',
+        padding: 'pl-1 pb-8',
+      },
+      default: {
+        class: 'text-base font-semibold',
       },
     }"
   >
@@ -164,36 +167,47 @@ watch(
   <Teleport to="body">
     <div
       v-if="isSellerChatOpen && activeConversation"
-      class="fixed inset-x-3 bottom-3 z-50 sm:inset-x-auto sm:right-4 sm:w-[420px]"
+      class="fixed inset-0 z-50"
     >
-      <div class="overflow-hidden rounded-3xl border border-border-subtle bg-surface shadow-overlay">
-        <div class="flex items-center justify-between border-b border-border-subtle px-5 py-3">
-          <div>
-            <div class="text-sm font-semibold text-text-strong">
-              Chat with {{ product.shop.shop_name }}
+      <div
+        class="absolute inset-0"
+        aria-hidden="true"
+        @click="isSellerChatOpen = false"
+      />
+
+      <div class="absolute inset-x-3 bottom-3 sm:inset-x-auto sm:right-4 sm:w-[420px]">
+        <div
+          class="overflow-hidden rounded-3xl border border-border-subtle bg-surface shadow-overlay"
+          @click.stop
+        >
+          <div class="flex items-center justify-between border-b border-border-subtle px-5 py-3">
+            <div>
+              <div class="text-sm font-semibold text-text-strong">
+                Chat with {{ product.shop.shop_name }}
+              </div>
+              <div class="text-xs text-text-muted">
+                Ask about this product directly from here.
+              </div>
             </div>
-            <div class="text-xs text-text-muted">
-              Ask about this product directly from here.
-            </div>
+
+            <UButton
+              color="gray"
+              variant="ghost"
+              icon="i-lucide-x"
+              aria-label="Close seller chat"
+              class="-mr-2"
+              @click="isSellerChatOpen = false"
+            />
           </div>
 
-          <UButton
-            color="gray"
-            variant="ghost"
-            icon="i-lucide-x"
-            aria-label="Close seller chat"
-            class="-mr-2"
-            @click="isSellerChatOpen = false"
-          />
-        </div>
-
-        <div class="h-[min(70vh,640px)]">
-          <ChatConversationPanel
-            :conversation-id="activeConversation.id"
-            :initial-conversation="activeConversation"
-            :show-product-link="false"
-            empty-state-text="Loading conversation..."
-          />
+          <div class="h-[min(70vh,640px)]">
+            <ChatConversationPanel
+              :conversation-id="activeConversation.id"
+              :initial-conversation="activeConversation"
+              :show-product-link="false"
+              empty-state-text="Loading conversation..."
+            />
+          </div>
         </div>
       </div>
     </div>

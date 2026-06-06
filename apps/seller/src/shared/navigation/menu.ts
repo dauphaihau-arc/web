@@ -85,10 +85,10 @@ export const shopHeaderCreateLinks = [
     shortcuts: ['C'],
     to: routes.couponsNew(CreateCouponPageTypes.PROMO_CODE),
   },
-  {
-    label: 'Run Sale',
-    icon: 'i-hugeicons:sale-tag-01',
-    shortcuts: ['S'],
-    to: routes.couponsNew(CreateCouponPageTypes.SALE),
-  },
+  // {
+  //   label: 'Run Sale',
+  //   icon: 'i-hugeicons:sale-tag-01',
+  //   shortcuts: ['S'],
+  //   to: routes.couponsNew(CreateCouponPageTypes.SALE),
+  // },
 ] as const

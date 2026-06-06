@@ -2,7 +2,7 @@
 import { ProductVariantTypes } from '@arc/enums/product'
 import LoadingSvg from '@arc/ui/loading-svg.vue'
 import AddToCartForm from './_components/add-to-cart-form.vue'
-import ProductImages from './_components/images.vue'
+import ProductImages from './_components/product-images.vue'
 import MoreInfo from './_components/more-info.vue'
 import MoreProductsByCategory from './_components/more-products-by-category.vue'
 import ProductSummary from './_components/summary.vue'
