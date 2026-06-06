@@ -41,7 +41,7 @@ const displayAmount = computed(() => {
     class="group flex h-full w-full cursor-pointer flex-col gap-3"
     @click="() => router.push(routes.productDetail(props.product.shop.slug, props.product.slug))"
   >
-    <div class="flex h-[230px] w-full items-center justify-center overflow-hidden rounded-lg bg-surface-muted ring-1 ring-border-subtle">
+    <div class="flex h-[230px] w-full items-center justify-center overflow-hidden rounded-lg bg-customGray-200 ring-1 ring-border-subtle">
       <NuxtImg
         :src="imageUrl"
         class="size-full object-cover object-center transition-transform duration-300 group-hover:scale-[1.03]"
@@ -55,12 +55,12 @@ const displayAmount = computed(() => {
       <div class="flex flex-wrap items-center gap-2">
         <p
           v-if="displayAmount !== undefined"
-          class="text-base font-medium text-customGray-950"
+          class="text-base font-medium text-text-strong"
         >
           {{ displayAmount }}
         </p>
       </div>
-      <p class="h-5 truncate text-sm text-customGray-800">
+      <p class="h-5 truncate text-sm text-text-subtle">
         {{ props.product?.shop.shop_name }}
       </p>
       <p

@@ -54,7 +54,7 @@ defineEmits<{
         <AppIcon
           name="plusCircle"
           size="xs"
-          class="text-customGray-800"
+          class="text-text-subtle"
         />
       </template>
     </UButton>
@@ -78,7 +78,7 @@ defineEmits<{
     <AppIcon
       name="chevronDown"
       size="xs"
-      class="ml-1 shrink-0 text-customGray-800"
+      class="ml-1 shrink-0 text-text-subtle"
     />
   </div>
 </template>

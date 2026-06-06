@@ -72,7 +72,7 @@ const onSelectNextImg = () => {
         <button
           type="button"
           :class="[
-            'block rounded bg-surface-muted ring-2 ring-transparent',
+            'block rounded bg-customGray-200 ring-2 ring-transparent',
             {
               '!ring-primary': selectedImg === index,
             }]"

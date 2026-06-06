@@ -79,7 +79,7 @@ const props = defineProps<{
 
 <style scoped>
 .title {
-  @apply text-lg font-normal text-customGray-900
+  @apply text-lg font-normal text-text-strong
 }
 
 .price {

@@ -96,7 +96,7 @@ onBeforeUnmount(() => {
       v-else
       class="text-center"
     >
-      <h3 class="text-3xl text-customGray-950">
+      <h3 class="text-3xl text-text-strong">
         Your cart is empty.
       </h3>
     </div>

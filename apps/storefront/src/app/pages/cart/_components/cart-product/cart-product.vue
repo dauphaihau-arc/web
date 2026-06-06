@@ -151,7 +151,7 @@ const compareAtAmount = computed(() =>
         </div>
         <div
           v-else
-          class="text-xl font-medium text-customGray-950"
+          class="text-xl font-medium text-text-strong"
         >
           {{ displayAmount }}
         </div>

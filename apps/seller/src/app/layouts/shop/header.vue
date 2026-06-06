@@ -44,11 +44,11 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
               icon="i-heroicons-magnifying-glass-20-solid"
               placeholder="Search"
               variant="none"
-              class="w-full text-customGray-800"
+              class="w-full text-text-subtle"
               :ui="{
-                placeholder: 'placeholder-customGray-800',
+                placeholder: 'placeholder-text-subtle',
                 icon: {
-                  base: 'text-customGray-800',
+                  base: 'text-text-subtle',
                 },
               }"
               size="md"

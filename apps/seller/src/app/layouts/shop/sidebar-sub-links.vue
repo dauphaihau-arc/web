@@ -53,7 +53,7 @@ function isActive(path?: string) {
 
     <transition name="slide-down">
       <div v-if="isOpen">
-        <div class="ml-3 mt-3 pl-3 pr-7">
+        <div class="ml-3 pl-3 pr-7">
           <div
             v-for="(item, index) in data.sub"
             :key="index"
@@ -73,7 +73,7 @@ function isActive(path?: string) {
                 class="link-default link-theme w-full"
                 :class="[
                   item.disabled
-                    ? 'cursor-not-allowed text-customGray-900'
+                    ? 'cursor-not-allowed text-text-strong'
                     : isActive(item.matchPath) || isRouteActive(route.path, item.to || '')
                       ? 'link-active'
                       : 'link-inactive',

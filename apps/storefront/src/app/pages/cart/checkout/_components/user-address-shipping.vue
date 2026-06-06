@@ -151,7 +151,7 @@ const showCreateDialog = () => {
           value-attribute="id"
         >
           <template #label="{ option }">
-            <div class="mb-6 flex w-full flex-col gap-1 text-customGray-950">
+            <div class="mb-6 flex w-full flex-col gap-1 text-text-strong">
               <div class="text-sm font-medium text-text-subtle">
                 {{ option.full_name }} |
                 <span class="font-normal">{{ option.phone }}</span>

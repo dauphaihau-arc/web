@@ -54,14 +54,14 @@ const displayAmount = computed(() => {
       <h1 class="truncate text-[13px]">
         {{ product.title }}
       </h1>
-      <p class="truncate text-[13px] text-customGray-900">
+      <p class="truncate text-[13px] text-text-strong">
         {{ product.shop.shop_name }}
       </p>
 
       <div class="">
         <p
           v-if="displayAmount !== undefined"
-          class="text-base font-medium text-customGray-950"
+          class="text-base font-medium text-text-strong"
         >
           {{ displayAmount }}
         </p>

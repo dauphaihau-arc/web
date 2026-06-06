@@ -26,23 +26,23 @@ const currentTotal = computed(() => unref(props.total) ?? 0)
       <div class="flex w-full items-center justify-between border-t border-border-subtle pt-2">
         <div
           v-if="currentTotal > currentPageCount"
-          class="text-base text-customGray-850"
+          class="text-base text-text-subtle"
         >
           Viewing
-          <span class="font-medium text-customGray-950">
+          <span class="font-medium text-text-strong">
             {{ currentPageCount * (currentPage - 1) + 1 }} - {{ Math.min(currentPageCount * currentPage, currentTotal) }}
           </span>
           of
-          <span class="font-medium text-customGray-950">
+          <span class="font-medium text-text-strong">
             {{ currentTotal }}
           </span>
           results
         </div>
         <div
           v-else
-          class="text-md text-customGray-850"
+          class="text-md text-text-subtle"
         >
-          <span class="font-medium text-customGray-950">
+          <span class="font-medium text-text-strong">
             {{ currentTotal }}
           </span> results
         </div>

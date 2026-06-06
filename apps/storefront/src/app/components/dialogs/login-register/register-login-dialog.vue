@@ -44,7 +44,7 @@ watch(() => dataUserAuth.value?.user, () => {
       <h1 class="text-3xl font-bold">
         {{ isLoginForm ? 'Log in' : 'Create your account' }}
       </h1>
-      <p class="text-base text-customGray-950">
+      <p class="text-base text-text-strong">
         {{
           isLoginForm
             ? 'Enter your credentials to access your account.' : 'Registration is easy.'
@@ -56,7 +56,7 @@ watch(() => dataUserAuth.value?.user, () => {
     <RegisterForm v-else />
 
     <div class="mt-3 flex items-center">
-      <p class="text-sm text-customGray-950">
+      <p class="text-sm text-text-strong">
         {{ isLoginForm ? 'New to Arc?' : 'Already a Arc user?' }}
       </p>
       <UButton

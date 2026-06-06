@@ -52,7 +52,7 @@ export const sharedAppConfig = {
     },
     tabs: {
       list: {
-        background: 'bg-surface-muted/80',
+        background: 'bg-customGray-200/80',
         rounded: 'rounded-lg',
         padding: 'p-1',
         width: 'w-full md:w-auto',

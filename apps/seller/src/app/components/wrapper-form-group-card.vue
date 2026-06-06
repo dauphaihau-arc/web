@@ -21,7 +21,7 @@ const slots = useSlots()
         </h1>
         <p
           v-if="slots.subtitle"
-          class="text-sm text-customGray-800"
+          class="text-sm text-text-subtle"
         >
           <slot name="subtitle" />
         </p>

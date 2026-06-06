@@ -15,7 +15,10 @@ if (!route.query?.type) {
 </script>
 
 <template>
-  <LayoutShopWrapperContent v-if="route.query.type === CreateCouponPageTypes.PROMO_CODE">
+  <LayoutShopWrapperContent
+    v-if="route.query.type === CreateCouponPageTypes.PROMO_CODE"
+    content-class="pb-24"
+  >
     <template #title>
       Create a promo code
     </template>
@@ -27,7 +30,10 @@ if (!route.query?.type) {
       <CreatePromoCodeForm />
     </template>
   </LayoutShopWrapperContent>
-  <LayoutShopWrapperContent v-else-if="route.query.type === CreateCouponPageTypes.SALE">
+  <LayoutShopWrapperContent
+    v-else-if="route.query.type === CreateCouponPageTypes.SALE"
+    content-class="pb-24"
+  >
     <template #title>
       Set up a sale
     </template>

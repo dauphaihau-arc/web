@@ -50,7 +50,7 @@ const displayOrderShop = computed(() =>
             </div>
             Ordered from
             <UTooltip text="redirect to homepage shop not available">
-              <span class="text-customGray-900 underline underline-offset-2">{{ props.orderShop?.shop?.shop_name }}</span>
+              <span class="text-text-strong underline underline-offset-2">{{ props.orderShop?.shop?.shop_name }}</span>
             </UTooltip>
             on {{ orderedAt }}
           </div>

@@ -83,7 +83,7 @@ const itemsShopDropdown: ShopDropdownItem[][] = [
             {{ shopInitial }}
           </span>
         </UButton>
-        <div class="min-w-0 flex-1 text-sm font-medium text-customGray-950">
+        <div class="min-w-0 flex-1 text-sm font-medium text-text-strong">
           {{ formattedShopName }}
         </div>
       </div>
@@ -123,7 +123,7 @@ const itemsShopDropdown: ShopDropdownItem[][] = [
               :class="[
                 'pl-5',
                 item.disabled
-                  ? 'cursor-not-allowed opacity-50 text-customGray-900'
+                  ? 'cursor-not-allowed opacity-50 text-text-strong'
                   : item.matchPath && route.path.startsWith(item.matchPath) ? 'link-active' : 'link-inactive',
               ]"
             >

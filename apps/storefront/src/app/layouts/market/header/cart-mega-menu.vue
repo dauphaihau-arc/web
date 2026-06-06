@@ -71,14 +71,14 @@ const remainProductCart = computed(() => {
             </div>
             <div
               v-if="remainProductCart > 0"
-              class="text-customGray-950"
+              class="text-text-strong"
             >
               {{ remainProductCart }} more product in your Cart
             </div>
           </div>
           <div
             v-else
-            class="text-sm text-customGray-950"
+            class="text-sm text-text-strong"
           >
             Your cart is empty.
           </div>

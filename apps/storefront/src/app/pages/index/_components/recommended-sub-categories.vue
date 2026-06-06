@@ -79,7 +79,7 @@ const redirectPage = (subCategory: Category) => {
         <h3 class="text-lg font-medium">
           Recommended categories for you
         </h3>
-        <p class="text-md text-customGray-900">
+        <p class="text-md text-text-strong">
           Based on your activity
         </p>
       </div>

@@ -247,7 +247,7 @@ async function handleSendMessage() {
       Respond to buyer conversations and keep support requests moving.
     </template>
     <template #actions>
-      <div class="rounded-full border border-border-subtle bg-surface-muted px-3 py-1 text-sm text-text-subtle">
+      <div class="rounded-full  bg-surface-muted px-3 py-1 text-sm text-text-subtle">
         Unread: {{ unreadCount?.unread_count ?? 0 }}
       </div>
     </template>

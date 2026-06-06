@@ -94,6 +94,6 @@ const userInitial = computed(() => {
 
 <style scoped>
 .user-avatar {
-  @apply flex size-6 items-center justify-center rounded-full bg-surface-muted text-sm font-semibold text-text-subtle;
+  @apply flex size-6 items-center justify-center rounded-full bg-customGray-200 text-text-strong text-sm font-semibold;
 }
 </style>

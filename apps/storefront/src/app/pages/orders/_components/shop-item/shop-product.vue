@@ -53,7 +53,7 @@ const compareAtAmount = computed(() =>
             v-if="compareAtAmount && productOrder.percent_coupon"
             class="text-right"
           >
-            <div class="text-xl font-medium text-customGray-950">
+            <div class="text-xl font-medium text-text-strong">
               {{ displayAmount }}
             </div>
             <div class="text-sm text-text-muted">
@@ -65,7 +65,7 @@ const compareAtAmount = computed(() =>
           </div>
           <div
             v-else
-            class="font-medium text-customGray-950"
+            class="font-medium text-text-strong"
           >
             {{ displayAmount }}
           </div>

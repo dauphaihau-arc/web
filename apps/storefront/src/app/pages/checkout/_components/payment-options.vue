@@ -23,7 +23,7 @@ const paymentOptions = [
       >
         <template #label="{ option }">
           <div class="mb-6 flex w-full flex-col gap-1">
-            <div class="leading-0 font-semibold text-customGray-950">
+            <div class="leading-0 font-semibold text-text-strong">
               {{ option.label }}
             </div>
             <div class="font-normal text-text-muted">

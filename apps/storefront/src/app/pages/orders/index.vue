@@ -186,7 +186,7 @@ watchDebounced(
       v-else
       class="text-center"
     >
-      <h3 class="text-3xl text-customGray-950">
+      <h3 class="text-3xl text-text-strong">
         {{ state.search || activeFilterLabel !== 'All Orders' ? 'No orders match this filter.' : 'Your orders is empty.' }}
       </h3>
     </div>

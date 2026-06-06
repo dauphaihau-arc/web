@@ -48,7 +48,7 @@ const displayAmount = computed(() => {
     <div class="absolute bottom-3 left-3 flex gap-1 space-y-0.5 rounded-lg bg-white px-2.5 py-1">
       <p
         v-if="displayAmount !== undefined"
-        class="text-md font-medium text-customGray-950"
+        class="text-md font-medium text-text-strong"
       >
         {{ displayAmount }}
       </p>

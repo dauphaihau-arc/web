@@ -132,14 +132,14 @@ const secondaryLinks = [
   <footer class="footer">
     <div class="max-w-home-layout mx-auto">
       <div class="grid grid-cols-5 gap-32 py-8">
-        <div class="text-custom-Gray-950 text-xl font-semibold">
+        <div class="text-text-strong text-xl font-semibold">
           Arc
         </div>
         <div
           v-for="(item, idx) of primaryLinks"
           :key="idx"
         >
-          <div class="text-custom-Gray-950 mb-3 text-sm font-semibold">
+          <div class="text-text-strong mb-3 text-sm font-semibold">
             {{ item.title }}
           </div>
 
@@ -150,7 +150,7 @@ const secondaryLinks = [
             >
               <ULink
                 :to="linkItem.link"
-                class="text-sm text-customGray-950
+                class="text-sm text-text-strong
                  transition-all duration-200 hover:underline hover:opacity-90"
               >
                 {{ linkItem.title }}
@@ -172,7 +172,7 @@ const secondaryLinks = [
           >
             <ULink
               :to="item.link"
-              class="text-xs text-customGray-950
+              class="text-xs text-text-strong
               transition-all duration-200 hover:underline hover:opacity-90"
             >
               {{ item.title }}
@@ -186,6 +186,6 @@ const secondaryLinks = [
 
 <style scoped>
 .footer {
-  @apply absolute bottom-0 w-full bg-customGray-100
+  @apply absolute bottom-0 w-full bg-surface-muted
 }
 </style>

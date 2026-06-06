@@ -97,7 +97,7 @@ async function handleNotificationClick(notification: NotificationItem) {
       </UButton>
     </template>
     <template #content>
-      <div class="mb-4 text-sm text-customGray-800">
+      <div class="mb-4 text-sm text-text-subtle">
         {{ unreadCount }} unread · {{ totalResults }} total
       </div>
 

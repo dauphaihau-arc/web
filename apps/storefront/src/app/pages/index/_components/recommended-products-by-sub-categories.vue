@@ -93,7 +93,7 @@ const subCategories = computed(() => {
             <h3 class="text-lg font-medium">
               {{ cg.categoryName }}
             </h3>
-            <p class="text-md text-customGray-900">
+            <p class="text-md text-text-strong">
               Based on your activity
             </p>
           </div>

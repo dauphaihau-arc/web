@@ -25,7 +25,7 @@ const isSelectAnyProduct = computed(() => {
 </script>
 
 <template>
-  <div class="flex gap-2 text-lg text-customGray-900">
+  <div class="flex gap-2 text-lg text-text-strong">
     <p>Shipping fee:</p>
     <p
       v-if="props.shopCart.shipping_minor === 0 && isSelectAnyProduct"

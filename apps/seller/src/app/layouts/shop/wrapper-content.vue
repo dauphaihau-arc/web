@@ -1,4 +1,10 @@
 <script setup lang="ts">
+withDefaults(defineProps<{
+  contentClass?: string
+}>(), {
+  contentClass: '',
+})
+
 const slots = useSlots()
 </script>
 
@@ -6,23 +12,20 @@ const slots = useSlots()
   <div>
     <div class="mb-6 flex justify-between">
       <div>
-        <h1 class="text-2xl font-semibold text-customGray-950">
+        <h1 class="text-2xl font-semibold text-text-strong">
           <slot name="title" />
         </h1>
         <p
           v-if="slots.description"
-          class="text-sm text-customGray-800"
+          class="text-sm text-text-subtle"
         >
           <slot name="description" />
         </p>
       </div>
       <slot name="actions" />
     </div>
-    <div>
-      <slot
-        name="content"
-        class="pb-96"
-      />
+    <div :class="contentClass">
+      <slot name="content" />
     </div>
   </div>
 </template>
