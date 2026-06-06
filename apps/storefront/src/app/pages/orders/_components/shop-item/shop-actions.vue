@@ -53,15 +53,15 @@ function openSupportDialog() {
       >
         Cancel order
       </UButton>
-      <UTooltip text="Feature not available">
-        <UButton
-          block
-          size="md"
-          color="gray"
-        >
-          View receipt
-        </UButton>
-      </UTooltip>
+      <!--      <UTooltip text="Feature not available"> -->
+      <!--        <UButton -->
+      <!--          block -->
+      <!--          size="md" -->
+      <!--          color="gray" -->
+      <!--        > -->
+      <!--          View receipt -->
+      <!--        </UButton> -->
+      <!--      </UTooltip> -->
     </div>
   </div>
 </template>
