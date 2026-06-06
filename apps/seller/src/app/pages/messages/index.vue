@@ -247,97 +247,81 @@ async function handleSendMessage() {
       Respond to buyer conversations and keep support requests moving.
     </template>
     <template #actions>
-      <div class="rounded-full  px-3 py-1 text-sm text-zinc-700">
+      <div class="rounded-full border border-border-subtle bg-surface-muted px-3 py-1 text-sm text-text-subtle">
         Unread: {{ unreadCount?.unread_count ?? 0 }}
       </div>
     </template>
     <template #content>
-      <div class="grid min-h-[70vh] grid-cols-[360px_minmax(0,1fr)] overflow-hidden rounded-2xl border border-zinc-200 bg-white">
-        <aside class="border-r border-zinc-200">
-          <div class="border-b border-zinc-200 px-5 py-4">
-            <div class="text-sm font-semibold text-zinc-900">
-              Conversations
-            </div>
-            <div class="text-sm text-zinc-500">
-              {{ conversationList?.total_results ?? 0 }} total threads
-            </div>
-          </div>
-
-          <div
-            v-if="isPendingConversations"
-            class="grid h-[60vh] place-content-center text-sm text-zinc-500"
+      <ConversationInboxShell container-class="grid min-h-[70vh] grid-cols-[360px_minmax(0,1fr)] overflow-hidden">
+        <ConversationListPanel
+          :total-results="conversationList?.total_results ?? 0"
+          :loading="isPendingConversations"
+          :empty="conversations.length === 0"
+          empty-text="No buyer conversations yet."
+          min-height-class="h-[60vh]"
+          aside-class="border-r border-border-subtle"
+        >
+          <button
+            v-for="conversation in conversations"
+            :key="conversation.id"
+            type="button"
+            class="flex w-full flex-col gap-2 border-b border-border-subtle px-5 py-4 text-left transition hover:bg-surface-muted"
+            :class="[
+              selectedConversationId === conversation.id ? 'bg-surface-muted' : '',
+            ]"
+            @click="selectConversation(conversation)"
           >
-            Loading conversations...
-          </div>
-
-          <div
-            v-else-if="conversations.length === 0"
-            class="grid h-[60vh] place-content-center px-6 text-center text-sm text-zinc-500"
-          >
-            No buyer conversations yet.
-          </div>
-
-          <div
-            v-else
-            class="max-h-[70vh] overflow-y-auto"
-          >
-            <button
-              v-for="conversation in conversations"
-              :key="conversation.id"
-              type="button"
-              class="flex w-full flex-col gap-2 border-b border-zinc-100 px-5 py-4 text-left transition hover:bg-zinc-50"
-              :class="[
-                selectedConversationId === conversation.id ? 'bg-zinc-50' : '',
-              ]"
-              @click="selectConversation(conversation)"
-            >
-              <div class="flex items-start justify-between gap-3">
-                <div class="min-w-0">
-                  <div class="truncate text-sm font-semibold text-zinc-900">
-                    {{ conversation.product?.title || 'General inquiry' }}
-                  </div>
-                  <div class="truncate text-xs text-zinc-500">
-                    {{ conversation.product?.slug || conversation.shop.slug }}
-                  </div>
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0">
+                <div class="truncate text-sm font-semibold text-text-strong">
+                  {{ conversation.product?.title || 'General inquiry' }}
                 </div>
-                <div class="shrink-0 text-xs text-zinc-400">
-                  {{ formatConversationTime(conversation.last_message_at || conversation.created_at) }}
+                <div class="truncate text-xs text-text-muted">
+                  {{ conversation.product?.slug || conversation.shop.slug }}
                 </div>
               </div>
-
-              <div class="flex items-center justify-between gap-2">
-                <div class="truncate text-xs text-zinc-500">
-                  Buyer: {{ conversation.buyer_user_id }}
-                </div>
-                <UBadge
-                  v-if="isConversationUnread(conversation)"
-                  color="blue"
-                  variant="subtle"
-                  size="xs"
-                >
-                  Unread
-                </UBadge>
+              <div class="shrink-0 text-xs text-text-muted">
+                {{ formatConversationTime(conversation.last_message_at || conversation.created_at) }}
               </div>
-            </button>
-          </div>
-        </aside>
+            </div>
 
-        <section class="flex min-h-[70vh] flex-col">
-          <div
-            v-if="!selectedConversationResolved"
-            class="grid flex-1 place-content-center px-6 text-center text-sm text-zinc-500"
+            <div class="flex items-center justify-between gap-2">
+              <div class="truncate text-xs text-text-muted">
+                Buyer: {{ conversation.buyer_user_id }}
+              </div>
+              <UBadge
+                v-if="isConversationUnread(conversation)"
+                color="blue"
+                variant="subtle"
+                size="xs"
+              >
+                Unread
+              </UBadge>
+            </div>
+          </button>
+        </ConversationListPanel>
+
+        <ConversationThreadPanel
+          :has-conversation="!!selectedConversationResolved"
+          :loading="isPendingMessages"
+          :empty="messages.length === 0"
+          empty-state-text="Select a conversation to read and reply."
+          empty-messages-text="No messages yet."
+          list-class="flex-1 space-y-4 overflow-y-auto bg-surface-muted px-6 py-5"
+          composer-class="border-t border-border-subtle bg-surface px-6 py-4"
+          section-class="flex min-h-[70vh] flex-col"
+        >
+          <template
+            v-if="selectedConversationResolved"
+            #header
           >
-            Select a conversation to read and reply.
-          </div>
-
-          <template v-else>
-            <div class="border-b border-zinc-200 px-6 py-4">
+            <div class="border-b border-border-subtle px-6 py-4">
               <div class="flex items-start justify-between gap-4">
                 <div>
-                  <div class="text-lg font-semibold text-zinc-900">
+                  <div class="text-lg font-semibold text-text-strong">
                     {{ selectedConversationResolved.product?.title || 'General inquiry' }}
                   </div>
-                  <div class="text-sm text-zinc-500">
+                  <div class="text-sm text-text-muted">
                     Buyer {{ selectedConversationResolved.buyer_user_id }}
                   </div>
                 </div>
@@ -352,52 +336,41 @@ async function handleSendMessage() {
                 </UButton>
               </div>
             </div>
+          </template>
 
+          <template #default>
             <div
               ref="messageListEl"
-              class="flex-1 space-y-4 overflow-y-auto bg-zinc-50 px-6 py-5"
+              class="contents"
+            />
+
+            <div
+              v-for="message in messages"
+              :key="message.id"
+              class="flex"
+              :class="isOwnMessage(message) ? 'justify-end' : 'justify-start'"
             >
               <div
-                v-if="isPendingMessages"
-                class="grid h-full place-content-center text-sm text-zinc-500"
+                class="max-w-[75%] rounded-2xl px-4 py-3 shadow-sm"
+                :class="isOwnMessage(message)
+                  ? 'bg-text-strong text-surface'
+                  : 'bg-surface text-text-strong'"
               >
-                Loading messages...
-              </div>
-
-              <div
-                v-else-if="messages.length === 0"
-                class="grid h-full place-content-center text-sm text-zinc-500"
-              >
-                No messages yet.
-              </div>
-
-              <div
-                v-for="message in messages"
-                :key="message.id"
-                class="flex"
-                :class="isOwnMessage(message) ? 'justify-end' : 'justify-start'"
-              >
+                <div class="whitespace-pre-wrap text-sm leading-6">
+                  {{ message.body }}
+                </div>
                 <div
-                  class="max-w-[75%] rounded-2xl px-4 py-3 shadow-sm"
-                  :class="isOwnMessage(message)
-                    ? 'bg-zinc-900 text-white'
-                    : 'bg-white text-zinc-900'"
+                  class="mt-2 text-right text-[11px]"
+                  :class="isOwnMessage(message) ? 'text-customGray-300' : 'text-text-muted'"
                 >
-                  <div class="whitespace-pre-wrap text-sm leading-6">
-                    {{ message.body }}
-                  </div>
-                  <div
-                    class="mt-2 text-right text-[11px]"
-                    :class="isOwnMessage(message) ? 'text-zinc-300' : 'text-zinc-400'"
-                  >
-                    {{ formatMessageTime(message) }}
-                  </div>
+                  {{ formatMessageTime(message) }}
                 </div>
               </div>
             </div>
+          </template>
 
+          <template #composer>
             <form
-              class="border-t border-zinc-200 bg-white px-6 py-4"
               @submit.prevent="handleSendMessage"
             >
               <div class="flex items-end gap-3">
@@ -419,8 +392,8 @@ async function handleSendMessage() {
               </div>
             </form>
           </template>
-        </section>
-      </div>
+        </ConversationThreadPanel>
+      </ConversationInboxShell>
     </template>
   </LayoutShopWrapperContent>
 </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import NotificationPopoverPanel from '@arc/ui/notification-popover-panel.vue'
+import NotificationPopover from '@arc/ui/notification-popover.vue'
 import { routes } from '~/shared/navigation/routes'
 import type { NotificationItem } from '~/shared/api/me/notifications/contracts/notification.contract'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
@@ -12,7 +12,6 @@ const unreadCountQuery = useGetMyNotificationUnreadCount()
 const { mutateAsync: markAsRead, isPending: isMarkingOne } = useMarkMyNotificationAsRead()
 const { mutateAsync: markAllAsRead, isPending: isMarkingAll } = useMarkAllMyNotificationsAsRead()
 
-const isPopoverOpen = ref(false)
 const activeFilter = ref<'all' | 'unread'>('all')
 const filters: Array<{ label: string, value: 'all' | 'unread' }> = [
   { label: 'All', value: 'all' },
@@ -73,50 +72,24 @@ function handleViewAll(close: () => void) {
 </script>
 
 <template>
-  <UPopover
+  <NotificationPopover
     v-if="currentUser?.user"
-    v-model:open="isPopoverOpen"
-    :popper="{ placement: 'bottom-end' }"
-  >
-    <UChip
-      :text="unreadCount"
-      :show="unreadCount > 0"
-      size="md"
-      position="bottom-right"
-      :ui="{ position: { 'bottom-right': 'translate-y-[-4px] translate-x-[-4px]' } }"
-    >
-      <UTooltip
-        text="Notifications"
-        :prevent="isPopoverOpen"
-      >
-        <UButton
-          color="gray"
-          variant="ghost"
-          class="icon-button"
-        >
-          <AppIcon name="bell" />
-        </UButton>
-      </UTooltip>
-    </UChip>
-
-    <template #panel="{ close }">
-      <NotificationPopoverPanel
-        :notifications="notifications"
-        :unread-count="unreadCount"
-        :loading="notificationsQuery.isLoading.value"
-        :error="notificationsQuery.isError.value"
-        :is-marking-all="isMarkingAll"
-        :is-marking-one="isMarkingOne"
-        :filters="filters"
-        :active-filter="activeFilter"
-        :empty-text="activeFilter === 'unread' ? 'No unread notifications.' : 'No notifications yet.'"
-        :show-unread-count="unreadCount > 0"
-        view-all-label="View all"
-        @filter-change="handleFilterChange"
-        @mark-all="handleMarkAll(close)"
-        @item-click="handleNotificationClick($event, close)"
-        @view-all="handleViewAll(close)"
-      />
-    </template>
-  </UPopover>
+    :notifications="notifications"
+    :unread-count="unreadCount"
+    :loading="notificationsQuery.isLoading.value"
+    :error="notificationsQuery.isError.value"
+    :is-marking-all="isMarkingAll"
+    :is-marking-one="isMarkingOne"
+    :filters="filters"
+    :active-filter="activeFilter"
+    :empty-text="activeFilter === 'unread' ? 'No unread notifications.' : 'No notifications yet.'"
+    :show-unread-count="unreadCount > 0"
+    view-all-label="View all"
+    tooltip-text="Notifications"
+    prevent-tooltip-when-open
+    @filter-change="handleFilterChange"
+    @mark-all="handleMarkAll"
+    @item-click="handleNotificationClick"
+    @view-all="handleViewAll"
+  />
 </template>

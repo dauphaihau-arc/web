@@ -853,7 +853,7 @@ watchDebounced(
             @input="(e: Event) => onChangeInputTable(e, row)"
           >
             <template #trailing>
-              <span class="text-xs text-gray-500 dark:text-gray-400">USD</span>
+              <span class="text-xs text-text-muted">USD</span>
             </template>
           </UInput>
           <template #error="{ error }">
@@ -909,10 +909,10 @@ watchDebounced(
 
 <style scoped>
 .hint-text-input {
-  @apply text-gray-500 text-xs;
+  @apply text-text-muted text-xs;
 }
 
 .error-message {
-  @apply mt-2 text-red-500 dark:text-red-400 text-sm h-[18px];
+  @apply mt-2 text-state-danger-text text-sm h-[18px];
 }
 </style>

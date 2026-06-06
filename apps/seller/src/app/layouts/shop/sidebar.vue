@@ -49,7 +49,7 @@ const itemsShopDropdown: ShopDropdownItem[][] = [
 
 <template>
   <aside
-    class="w-shop-layout-sidebar fixed z-[3] h-full border-r border-gray-200"
+    class="w-shop-layout-sidebar fixed z-[3] h-full border-r border-border-subtle"
     :class="[{ 'bg-layout-shop': !isOpen }]"
   >
     <UDropdown
@@ -68,7 +68,7 @@ const itemsShopDropdown: ShopDropdownItem[][] = [
             v-else-if="item.icon"
             :name="item.icon"
             size="xs"
-            class="text-gray-500"
+            class="text-text-muted"
           />
           <span>{{ item.label }}</span>
         </div>

@@ -159,7 +159,7 @@ const itemsDropdownWithRow = (row: { id: string }): DropdownItem[][] => [
         class="sticky top-4 z-[3] mb-4"
       >
         <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div class="text-sm text-zinc-600">
+          <div class="text-sm text-text-subtle">
             {{ selectedCount }} coupon<span v-if="selectedCount > 1">s</span> selected
           </div>
           <div class="flex flex-wrap items-center gap-2">

@@ -110,102 +110,102 @@ const onSave = () => {
       </div>
     </div>
 
-    <UModal
+    <BaseDialog
       v-model="state.isOpen"
+      width="w-full sm:max-w-xl"
+      body-class="space-y-5 p-8"
       :ui="{
-        margin: '!mb-72',
-        width: 'w-full sm:max-w-xl',
+        modal: {
+          margin: '!mb-72',
+        },
+        card: {
+          footer: {
+            padding: 'px-8 py-4',
+          },
+        },
       }"
     >
-      <div class="space-y-5 p-8">
+      <template #header>
         <div class="space-y-1.5">
           <h1 class="text-2xl font-bold">
             Select Category
           </h1>
         </div>
+      </template>
 
-        <div class="rounded-lg bg-zinc-200/50 p-3">
-          <div class="mb-5">
-            <UInput
-              icon="i-heroicons-magnifying-glass-20-solid"
-              size="md"
-              class="w-1/2"
-              color="white"
-              :trailing="false"
-              placeholder="Search..."
-            />
-          </div>
+      <div class="rounded-lg bg-surface-muted p-3">
+        <div class="mb-5">
+          <UInput
+            icon="i-heroicons-magnifying-glass-20-solid"
+            size="md"
+            class="w-1/2"
+            color="white"
+            :trailing="false"
+            placeholder="Search..."
+          />
         </div>
+      </div>
 
-        <div class="rounded-lg bg-zinc-200/50 p-3">
-          <div
-            v-if="isPending && state.rootCategories.length === 0"
-            class="grid place-content-center p-5"
-          >
-            <UIcon
-              name="i-mingcute-loading-fill"
-              class="size-14 animate-spin"
-            />
-          </div>
-          <div v-else>
-            <div class="flex gap-3 bg-white">
+      <div class="rounded-lg bg-surface-muted p-3">
+        <div
+          v-if="isPending && state.rootCategories.length === 0"
+          class="grid place-content-center p-5"
+        >
+          <UIcon
+            name="i-mingcute-loading-fill"
+            class="size-14 animate-spin"
+          />
+        </div>
+        <div v-else>
+          <div class="flex gap-3 bg-surface">
+            <div
+              v-if="state.rootCategories"
+              class="py-2"
+            >
               <div
-                v-if="state.rootCategories"
-                class="py-2"
+                v-for="cate of state.rootCategories"
+                :key="cate.id"
               >
                 <div
-                  v-for="cate of state.rootCategories"
-                  :key="cate.id"
+                  class="item-category"
+                  @click="() => onSelectRootCategory(cate)"
                 >
                   <div
-                    class="item-category"
-                    @click="() => onSelectRootCategory(cate)"
+                    class="cursor-pointer"
+                    :class="subCategories[cate.id] && 'text-primary'"
                   >
-                    <div
-                      class="cursor-pointer"
-                      :class="subCategories[cate.id] && 'text-primary'"
-                    >
-                      {{ cate.name }}
-                    </div>
-                    <UIcon name="i-heroicons-chevron-right" />
+                    {{ cate.name }}
                   </div>
+                  <UIcon name="i-heroicons-chevron-right" />
                 </div>
               </div>
+            </div>
 
-              <UDivider
-                orientation="vertical"
-                class="h-72 w-2"
-              />
+            <UDivider
+              orientation="vertical"
+              class="h-72 w-2"
+            />
 
-              <div>
-                <div v-if="Object.values(subCategories).length > 0">
-                  <div class="flex gap-3">
+            <div>
+              <div v-if="Object.values(subCategories).length > 0">
+                <div class="flex gap-3">
+                  <div
+                    v-for="(item, key) of subCategories"
+                    :key="key"
+                  >
                     <div
-                      v-for="(item, key) of subCategories"
-                      :key="key"
+                      v-for="cate of item.categories"
+                      :key="cate.name"
                     >
-                      <div
-                        v-for="cate of item.categories"
-                        :key="cate.name"
-                      >
-                        <!--                        <div -->
-                        <!--                          class="cursor-pointer" -->
-                        <!--                          :class="subCategories[cate.id] && 'text-red-500'" -->
-                        <!--                          @click="() => onSelectSubCategory(cate)" -->
-                        <!--                        > -->
-                        <!--                          {{ cate.name }} -->
-                        <!--                        </div> -->
-
-                        <div class="item-category">
-                          <div
-                            class="cursor-pointer"
-                            :class="subCategories[cate.id] && 'text-red-500'"
-                            @click="() => onSelectSubCategory(cate)"
-                          >
-                            {{ cate.name }}
-                          </div>
-                          <UIcon name="i-heroicons-chevron-right" />
+                      <div class="item-category">
+                        <div
+                          class="cursor-pointer"
+                          :class="subCategories[cate.id] && 'text-state-danger-text'"
+                          @click="() => onSelectSubCategory(cate)"
+                        >
+                          {{ cate.name }}
                         </div>
+                        <UIcon name="i-heroicons-chevron-right" />
                       </div>
                     </div>
                   </div>
@@ -214,8 +214,10 @@ const onSave = () => {
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="flex items-center justify-end gap-2">
+      <template #footer>
+        <DialogActions>
           <UButton
             size="sm"
             color="gray"
@@ -230,9 +232,9 @@ const onSave = () => {
           >
             Save
           </UButton>
-        </div>
-      </div>
-    </UModal>
+        </DialogActions>
+      </template>
+    </BaseDialog>
   </div>
 </template>
 

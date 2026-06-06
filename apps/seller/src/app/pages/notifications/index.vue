@@ -111,21 +111,21 @@ async function handleNotificationClick(notification: NotificationItem) {
 
       <div
         v-if="notificationsQuery.isLoading.value"
-        class="rounded-2xl border border-zinc-200 bg-white p-8 text-center text-sm text-zinc-500"
+        class="rounded-2xl border border-border-subtle bg-surface p-8 text-center text-sm text-text-muted"
       >
         Loading notifications...
       </div>
 
       <div
         v-else-if="notificationsQuery.isError.value"
-        class="rounded-2xl border border-red-200 bg-red-50 p-8 text-center text-sm text-red-500"
+        class="rounded-2xl border border-state-danger-border bg-state-danger-surface p-8 text-center text-sm text-state-danger-text"
       >
         Failed to load notifications.
       </div>
 
       <div
         v-else-if="notifications.length === 0"
-        class="rounded-2xl border border-zinc-200 bg-white p-8 text-center text-sm text-zinc-500"
+        class="rounded-2xl border border-border-subtle bg-surface p-8 text-center text-sm text-text-muted"
       >
         {{ activeFilter === 'unread' ? 'No unread notifications.' : 'No notifications yet.' }}
       </div>
@@ -138,20 +138,20 @@ async function handleNotificationClick(notification: NotificationItem) {
           v-for="notification in notifications"
           :key="notification.id"
           type="button"
-          class="w-full rounded-2xl border bg-white p-4 text-left shadow-sm transition hover:bg-zinc-50"
-          :class="notification.read_at ? 'border-zinc-200' : 'border-primary-200 bg-primary-50/40'"
+          class="w-full rounded-2xl border bg-surface p-4 text-left shadow-sm transition hover:bg-surface-muted"
+          :class="notification.read_at ? 'border-border-subtle' : 'border-border-accent bg-surface-accent'"
           :disabled="isMarkingOne"
           @click="handleNotificationClick(notification)"
         >
           <div class="mb-2 flex items-start justify-between gap-3">
-            <div class="text-base font-medium text-zinc-900">
+            <div class="text-base font-medium text-text-strong">
               {{ notification.title }}
             </div>
-            <div class="shrink-0 text-xs text-zinc-500">
+            <div class="shrink-0 text-xs text-text-muted">
               {{ dayjs(notification.created_at).format('MMM DD, YYYY HH:mm') }}
             </div>
           </div>
-          <div class="text-sm text-zinc-600">
+          <div class="text-sm text-text-subtle">
             {{ notification.body }}
           </div>
         </button>

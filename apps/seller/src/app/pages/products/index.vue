@@ -308,8 +308,8 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
           @close="publishFeedback = null"
         />
 
-        <div class="rounded-lg border border-amber-300 bg-amber-50 p-4">
-          <div class="space-y-2 text-sm text-amber-950">
+        <div class="rounded-lg border border-state-danger-border bg-state-danger-surface p-4">
+          <div class="space-y-2 text-sm text-state-danger-text">
             <p
               v-for="reasonSummary in publishFeedback.reasonSummaries"
               :key="reasonSummary"
@@ -318,7 +318,7 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
             </p>
           </div>
 
-          <div class="mt-3 text-sm text-amber-900">
+          <div class="mt-3 text-sm text-state-danger-text">
             <span class="font-medium">Affected products:</span>
             {{ publishFeedback.failedProducts.map(product => product.title).join(', ') }}
           </div>
@@ -342,12 +342,12 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
         </div>
       </div>
 
-      <UCard
+      <AppPanel
         v-if="hasSelectedProducts"
         class="sticky top-4 z-[3] mb-4"
       >
         <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div class="text-sm text-zinc-600">
+          <div class="text-sm text-text-subtle">
             {{ selectedCount }} product<span v-if="selectedCount > 1">s</span> selected
           </div>
           <div class="flex flex-wrap items-center gap-2">
@@ -385,7 +385,7 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
             </UButton>
           </div>
         </div>
-      </UCard>
+      </AppPanel>
 
       <DataTable
         v-model="selected"

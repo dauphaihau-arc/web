@@ -12,11 +12,11 @@ defineEmits<{
 
 <template>
   <div
-    class="inline-flex min-h-[32px] cursor-pointer select-none items-center rounded-full border bg-white pr-1 transition-colors"
+    class="inline-flex min-h-[32px] cursor-pointer select-none items-center rounded-full border bg-surface pr-1 transition-colors"
     :class="
       props.active
-        ? 'border-slate-200 text-slate-900 shadow-sm'
-        : 'border-dashed border-slate-300 text-slate-700 hover:border-slate-400'
+        ? 'border-border-subtle text-text-strong shadow-sm'
+        : 'border-dashed border-border-muted text-text-strong hover:border-border-subtle hover:bg-surface-muted'
     "
   >
     <UButton
@@ -54,7 +54,7 @@ defineEmits<{
         <AppIcon
           name="plusCircle"
           size="xs"
-          class="text-slate-600"
+          class="text-customGray-800"
         />
       </template>
     </UButton>
@@ -65,7 +65,7 @@ defineEmits<{
 
     <span
       v-if="props.active && props.value"
-      class="mx-1.5 h-4 w-px bg-slate-200"
+      class="mx-1.5 h-4 w-px bg-border-subtle"
     />
 
     <span
@@ -78,7 +78,7 @@ defineEmits<{
     <AppIcon
       name="chevronDown"
       size="xs"
-      class="ml-1 shrink-0 text-slate-500"
+      class="ml-1 shrink-0 text-customGray-800"
     />
   </div>
 </template>

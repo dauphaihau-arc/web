@@ -125,7 +125,7 @@ function openCancelDialog() {
               <div class="text-lg font-semibold">
                 Order {{ order.order_number }}
               </div>
-              <div class="text-sm text-zinc-500">
+              <div class="text-sm text-text-muted">
                 {{ dayjs(order.created_at).format('MMM DD, YYYY HH:mm') }}
               </div>
             </div>
@@ -144,7 +144,7 @@ function openCancelDialog() {
           <div
             v-for="product in order.products"
             :key="product.id"
-            class="flex items-start gap-3 border-b border-zinc-100 pb-4 last:border-b-0"
+            class="flex items-start gap-3 border-b border-border-subtle pb-4 last:border-b-0"
           >
             <NuxtImg
               v-if="product.storage_key"
@@ -157,7 +157,7 @@ function openCancelDialog() {
               <div class="font-medium">
                 {{ product.title }}
               </div>
-              <div class="text-sm text-zinc-500">
+              <div class="text-sm text-text-muted">
                 Qty: {{ product.quantity }}
                 <span v-if="product.inventory.variant">, Variant: {{ product.inventory.variant }}</span>
               </div>
@@ -245,8 +245,8 @@ function openCancelDialog() {
           </div>
         </template>
 
-        <div class="space-y-1 text-sm text-zinc-600">
-          <div class="font-medium text-zinc-900">
+        <div class="space-y-1 text-sm text-text-subtle">
+          <div class="font-medium text-text-strong">
             {{ order.customer.full_name }}
           </div>
           <div>{{ order.customer.email }}</div>
@@ -260,7 +260,7 @@ function openCancelDialog() {
           </div>
         </template>
 
-        <div class="space-y-1 text-sm text-zinc-600">
+        <div class="space-y-1 text-sm text-text-subtle">
           <div
             v-for="line in addressLines"
             :key="line"
@@ -277,7 +277,7 @@ function openCancelDialog() {
           </div>
         </template>
 
-        <div class="space-y-2 text-sm text-zinc-600">
+        <div class="space-y-2 text-sm text-text-subtle">
           <div class="flex justify-between">
             <span>Payment</span>
             <span class="capitalize">{{ order.payment.type }}</span>
@@ -291,7 +291,7 @@ function openCancelDialog() {
           </div>
           <div
             v-if="order.payment.refund_failed_reason"
-            class="text-zinc-500"
+            class="text-text-muted"
           >
             {{ order.payment.refund_failed_reason }}
           </div>
@@ -325,24 +325,24 @@ function openCancelDialog() {
             <span>{{ formatMinorCurrency(order.shipping_minor, order.currency) }}</span>
           </div>
           <UDivider />
-          <div class="flex justify-between font-semibold text-zinc-900">
+          <div class="flex justify-between font-semibold text-text-strong">
             <span>Total</span>
             <span>{{ formatMinorCurrency(order.total_minor, order.currency) }}</span>
           </div>
           <div v-if="order.note">
-            <div class="mb-1 font-medium text-zinc-900">
+            <div class="mb-1 font-medium text-text-strong">
               Buyer note
             </div>
             <div>{{ order.note }}</div>
           </div>
           <div v-if="order.customer_support_note">
-            <div class="mb-1 font-medium text-zinc-900">
+            <div class="mb-1 font-medium text-text-strong">
               Buyer support request
             </div>
             <div>{{ order.customer_support_note }}</div>
           </div>
           <div v-if="order.cancel_requested_at">
-            <div class="mb-1 font-medium text-zinc-900">
+            <div class="mb-1 font-medium text-text-strong">
               Cancel requested
             </div>
             <div>{{ dayjs(order.cancel_requested_at).format('MMM DD, YYYY HH:mm') }}</div>
@@ -354,7 +354,7 @@ function openCancelDialog() {
 
   <div
     v-else
-    class="rounded-md border border-zinc-200 bg-white p-6 text-sm text-zinc-500"
+    class="rounded-md border border-border-subtle bg-surface p-6 text-sm text-text-muted"
   >
     Order not found.
   </div>

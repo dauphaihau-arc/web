@@ -75,6 +75,11 @@ const { tableWrapper } = useRowInteraction<TableRow>({
 const dataSlotColumns = computed(() =>
   props.columns.filter(column => !!slots[`${column.key}-data`]),
 )
+
+const tableUi = {
+  divide: 'divide-y divide-border-subtle',
+  tbody: 'divide-y divide-border-subtle',
+} as const
 </script>
 
 <template>
@@ -89,6 +94,7 @@ const dataSlotColumns = computed(() =>
       :columns="columns"
       :loading="loading"
       :empty-state="emptyState"
+      :ui="tableUi"
     >
       <template
         v-for="column in dataSlotColumns"
@@ -139,11 +145,11 @@ const dataSlotColumns = computed(() =>
 }
 
 :deep(tbody tr.data-table-row-clickable:hover > td) {
-  background-color: rgb(244 244 245);
+  background-color: var(--surface-muted);
 }
 
 :deep(tbody tr.data-table-row-clickable:focus-visible) {
-  outline: 2px solid rgb(161 161 170);
+  outline: 2px solid var(--border-hover);
   outline-offset: -2px;
 }
 

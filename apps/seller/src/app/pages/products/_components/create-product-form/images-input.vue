@@ -126,7 +126,7 @@ watch(state, () => {
 }
 
 .wrapper-input-file {
-  @apply size-image border-dashed border-4 border-zinc-300
+  @apply size-image border-dashed border-4 border-border-muted
   cursor-pointer grid place-content-center text-center;
 }
 .wrapper-close-icon {

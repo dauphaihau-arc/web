@@ -111,7 +111,7 @@ watch(querySuggestion, () => {
             </p>
           </div>
 
-          <div class="flex flex-wrap items-center gap-2 text-zinc-500">
+          <div class="flex flex-wrap items-center gap-2 text-text-muted">
             <div
               v-for="(nameCategory, idx) in categoryData.relatedCategories"
               :key="`${categoryData.id}-${nameCategory}-${idx}`"
@@ -130,7 +130,7 @@ watch(querySuggestion, () => {
         </div>
       </template>
       <template #option-empty="{ query }">
-        <div class="text-zinc-500">
+        <div class="text-text-muted">
           <div class="">
             <q>{{ query }}</q> not found
           </div>

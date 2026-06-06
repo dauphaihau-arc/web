@@ -105,14 +105,14 @@ watch(state, () => {
 
       <template #panel>
         <div class="flex gap-8 p-4">
-          <div class="w-32 space-y-2 rounded-md bg-zinc-100 p-1 py-2 text-zinc-600">
+          <div class="w-32 space-y-2 rounded-md bg-surface-muted p-1 py-2 text-text-subtle">
             <div
               v-for="(item, idx) of hintDurationOptions"
               :key="idx"
             >
               <div
-                class="mx-1 cursor-pointer rounded-md px-2 py-1.5 hover:bg-zinc-200/50"
-                :class="[selectedHintDuration === idx && 'bg-zinc-200/50']"
+                class="mx-1 cursor-pointer rounded-md px-2 py-1.5 hover:bg-customGray-200/50"
+                :class="[selectedHintDuration === idx && 'bg-customGray-200/50']"
                 @click="() => onChangeDuration(idx)"
               >
                 {{ item.title }}

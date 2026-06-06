@@ -20,10 +20,10 @@ const currentTotal = computed(() => unref(props.total) ?? 0)
 <template>
   <div
     v-if="currentTotal > 0"
-    class="sticky bottom-0 flex w-full justify-end bg-white pb-2"
+    class="sticky bottom-0 flex w-full justify-end bg-surface pb-2"
   >
     <div class="shop-layout-content-inner !px-0">
-      <div class="flex w-full items-center justify-between border-t border-gray-200 pt-2">
+      <div class="flex w-full items-center justify-between border-t border-border-subtle pt-2">
         <div
           v-if="currentTotal > currentPageCount"
           class="text-base text-customGray-850"

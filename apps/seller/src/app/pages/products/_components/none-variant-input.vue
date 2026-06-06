@@ -29,7 +29,7 @@ const noneVariantModel = defineModel<StateNoneVariant>('noneVariant', {
         class="w-1/2"
       >
         <template #trailing>
-          <span class="text-xs text-gray-500">{{ props.currency ?? 'USD' }}</span>
+          <span class="text-xs text-text-muted">{{ props.currency ?? 'USD' }}</span>
         </template>
       </UInput>
     </UFormGroup>

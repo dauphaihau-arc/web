@@ -194,7 +194,7 @@ const removeImageInDB = (id: string, index: number) => {
 }
 
 .wrapper-input-file {
-  @apply size-image border-dashed border-4 border-zinc-300
+  @apply size-image border-dashed border-4 border-border-muted
   grid place-content-center text-center;
 }
 

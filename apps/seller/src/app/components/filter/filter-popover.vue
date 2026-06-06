@@ -36,7 +36,7 @@ function handleTriggerClick() {
   <UPopover
     v-model:open="isOpen"
     :popper="{ placement: 'bottom-start' }"
-    :ui="{ base: 'overflow-visible rounded-[28px] border border-slate-200 shadow-[0_20px_60px_rgba(15,23,42,0.14)]' }"
+    :ui="{ base: 'overflow-visible rounded-dialog border border-border-subtle bg-surface shadow-overlay' }"
   >
     <div @click.stop.prevent="handleTriggerClick">
       <FilterChip
@@ -48,8 +48,8 @@ function handleTriggerClick() {
     </div>
 
     <template #panel="{ close }">
-      <div :class="['w-[min(92vw,360px)] rounded-[28px] bg-white', props.panelPaddingClass, props.panelClass]">
-        <div class="text-base font-semibold tracking-tight text-slate-900 sm:text-lg">
+      <div :class="['w-[min(92vw,360px)] rounded-dialog bg-surface', props.panelPaddingClass, props.panelClass]">
+        <div class="text-base font-semibold tracking-tight text-text-strong sm:text-lg">
           Filter by: {{ props.label.toLowerCase() }}
         </div>
 

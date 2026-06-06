@@ -91,7 +91,7 @@ watch(() => state, () => {
         >
           <UIcon
             name="i-material-symbols:cancel-rounded"
-            class="absolute right-9 top-3 size-4 cursor-pointer text-zinc-400"
+            class="absolute right-9 top-3 size-4 cursor-pointer text-text-muted"
             @click="() => state[attr.id] = ''"
           />
         </div>

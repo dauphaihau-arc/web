@@ -234,7 +234,7 @@ watchDebounced(
       </template>
       <template #content>
         <div class="mb-4 flex items-center gap-3">
-          <span class="text-sm text-zinc-500">Status</span>
+          <span class="text-sm text-text-muted">Status</span>
           <UBadge
             :color="stateTone(productState)"
             variant="soft"
@@ -364,7 +364,7 @@ watchDebounced(
     />
   </UForm>
 
-  <div class="fixed-actions-form">
+  <FixedFormActions>
     <UButton
       :disabled="loadingSubmit"
       size="md"
@@ -414,15 +414,11 @@ watchDebounced(
     >
       Save & deactivate
     </UButton>
-  </div>
+  </FixedFormActions>
   <p
     v-if="publishImageError"
-    class="mt-3 text-sm text-red-600"
+    class="mt-3 text-sm text-state-danger-text"
   >
     {{ publishImageError }}
   </p>
 </template>
-
-<style scoped>
-@import url("~/app/assets/css/layout-shop.css");
-</style>

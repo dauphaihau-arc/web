@@ -23,19 +23,17 @@ async function confirmCancel() {
 
 <template>
   <BaseDialog>
-    <template #header>
-      <div class="space-y-1">
-        <h1 class="text-2xl font-bold">
-          Cancel order
-        </h1>
-        <p class="text-sm text-zinc-500">
-          This will cancel the order for the buyer before shipment. Use this only when fulfillment cannot continue.
-        </p>
-      </div>
-    </template>
+    <div class="space-y-1">
+      <h1 class="text-2xl font-bold">
+        Cancel order
+      </h1>
+      <p class="text-sm text-text-muted">
+        This will cancel the order for the buyer before shipment. Use this only when fulfillment cannot continue.
+      </p>
+    </div>
 
     <template #footer>
-      <div class="flex justify-end gap-3">
+      <DialogActions>
         <UButton
           color="gray"
           :disabled="isPending"
@@ -50,7 +48,7 @@ async function confirmCancel() {
         >
           Confirm cancel
         </UButton>
-      </div>
+      </DialogActions>
     </template>
   </BaseDialog>
 </template>

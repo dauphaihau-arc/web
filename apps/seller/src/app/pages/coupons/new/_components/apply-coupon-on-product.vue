@@ -123,49 +123,47 @@ watchDebounced(
       Add product
     </UButton>
 
-    <UModal
+    <BaseDialog
       v-model="isOpen"
-      :ui="{ width: 'min-w-[800px]' }"
+      width="min-w-[800px]"
+      body-class="space-y-5 p-6"
+      title="Select Products"
     >
-      <div class="space-y-5 p-6">
-        <h1 class="text-xl font-medium">
-          Select Products
-        </h1>
+      <UInput
+        v-model="search"
+        icon="i-heroicons-magnifying-glass-20-solid"
+        placeholder="Title product..."
+        class="w-1/2"
+        size="lg"
+        :ui="{
+          size: {
+            xl: 'text-2xl',
+          },
+        }"
+      />
+      <UTable
+        v-model="selectedRows"
+        class="min-h-[315px]"
+        :rows="rowsDialog"
+        :columns="columnsDialog"
+        :loading="isPendingShopGetProducts"
+        :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"
+      >
+        <template #price-data="{ row }">
+          <div>
+            {{ formatCurrency(row.lowestPrice) }}
+            {{ row.highestPrice > 0 ? `- ${formatCurrency(row.highestPrice)}` : '' }}
+          </div>
+        </template>
+        <template #stock-data="{ row }">
+          <div class="text-center">
+            {{ row.stock }}
+          </div>
+        </template>
+      </UTable>
 
-        <UInput
-          v-model="search"
-          icon="i-heroicons-magnifying-glass-20-solid"
-          placeholder="Title product..."
-          class="w-1/2"
-          size="lg"
-          :ui="{
-            size: {
-              xl: 'text-2xl',
-            },
-          }"
-        />
-        <UTable
-          v-model="selectedRows"
-          class="min-h-[315px]"
-          :rows="rowsDialog"
-          :columns="columnsDialog"
-          :loading="isPendingShopGetProducts"
-          :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"
-        >
-          <template #price-data="{ row }">
-            <div>
-              {{ formatCurrency(row.lowestPrice) }}
-              {{ row.highestPrice > 0 ? `- ${formatCurrency(row.highestPrice)}` : '' }}
-            </div>
-          </template>
-          <template #stock-data="{ row }">
-            <div class="text-center">
-              {{ row.stock }}
-            </div>
-          </template>
-        </UTable>
-
-        <div class="flex items-center justify-end gap-2">
+      <template #footer>
+        <DialogActions>
           <UButton
             size="sm"
             color="gray"
@@ -179,9 +177,9 @@ watchDebounced(
           >
             Save
           </UButton>
-        </div>
-      </div>
-    </UModal>
+        </DialogActions>
+      </template>
+    </BaseDialog>
 
     <div v-if="selectedRows.length > 0">
       <UTable

@@ -112,7 +112,7 @@ function updateTimezone(value: OrderDateFilterDraft['timezone'], checked: boolea
       v-if="showsRelativeInputs"
       class="flex flex-col gap-3 sm:flex-row sm:items-center"
     >
-      <div class="hidden text-3xl text-indigo-500 sm:block">
+      <div class="hidden text-3xl text-primary sm:block">
         <UIcon
           name="i-heroicons-arrow-right-20-solid"
           class="size-8"
@@ -142,7 +142,7 @@ function updateTimezone(value: OrderDateFilterDraft['timezone'], checked: boolea
       class="space-y-4"
     >
       <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <div class="hidden text-3xl text-indigo-500 sm:block">
+        <div class="hidden text-3xl text-primary sm:block">
           <UIcon
             name="i-heroicons-arrow-right-20-solid"
             class="size-8"
@@ -184,7 +184,7 @@ function updateTimezone(value: OrderDateFilterDraft['timezone'], checked: boolea
 
       <label
         v-if="canIncludeTime"
-        class="flex items-center gap-3 text-base font-medium text-slate-700"
+        class="flex items-center gap-3 text-base font-medium text-text-subtle"
       >
         <UCheckbox
           v-model="model.includeTime"
@@ -229,7 +229,7 @@ function updateTimezone(value: OrderDateFilterDraft['timezone'], checked: boolea
           />
         </div>
 
-        <div class="hidden self-center px-2 text-base text-slate-700 sm:block">
+        <div class="hidden self-center px-2 text-base text-text-subtle sm:block">
           and
         </div>
 
@@ -264,7 +264,7 @@ function updateTimezone(value: OrderDateFilterDraft['timezone'], checked: boolea
         </div>
       </div>
 
-      <label class="flex items-center gap-3 text-base font-medium text-slate-700">
+      <label class="flex items-center gap-3 text-base font-medium text-text-subtle">
         <UCheckbox
           v-model="model.includeTime"
           :disabled="!canEnableIncludeTime"
@@ -273,7 +273,7 @@ function updateTimezone(value: OrderDateFilterDraft['timezone'], checked: boolea
       </label>
     </div>
 
-    <div class="flex flex-col gap-3 pt-1 text-slate-700 sm:flex-row sm:items-center">
+    <div class="flex flex-col gap-3 pt-1 text-text-subtle sm:flex-row sm:items-center">
       <div class="text-base">
         Time zone:
       </div>
@@ -282,7 +282,7 @@ function updateTimezone(value: OrderDateFilterDraft['timezone'], checked: boolea
         <label
           v-for="option in timezoneOptions"
           :key="option.value"
-          class="flex cursor-pointer items-center gap-2 py-1 text-sm font-medium text-slate-700 sm:text-base"
+          class="flex cursor-pointer items-center gap-2 py-1 text-sm font-medium text-text-subtle sm:text-base"
         >
           <UCheckbox
             :model-value="isChecked(option.value)"

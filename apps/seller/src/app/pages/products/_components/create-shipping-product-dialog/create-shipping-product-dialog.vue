@@ -217,7 +217,7 @@ async function onError(event: FormErrorEvent) {
     </UForm>
 
     <template #footer>
-      <div class="flex w-full items-center justify-end gap-2">
+      <DialogActions full-width>
         <UButton
           size="sm"
           color="gray"
@@ -232,7 +232,7 @@ async function onError(event: FormErrorEvent) {
         >
           Apply
         </UButton>
-      </div>
+      </DialogActions>
     </template>
   </BaseDialog>
 </template>

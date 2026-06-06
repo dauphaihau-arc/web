@@ -30,7 +30,7 @@ function toggleValue(value: string, checked: boolean | 'indeterminate') {
     <label
       v-for="option in props.options"
       :key="option.value"
-      class="flex cursor-pointer items-center gap-3 py-1 text-slate-700"
+      class="flex cursor-pointer items-center gap-3 py-1 text-text-subtle"
     >
       <UCheckbox
         :model-value="isChecked(option.value)"

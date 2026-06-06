@@ -184,7 +184,7 @@ function onError(event: FormErrorEvent) {
                     class="w-20"
                   >
                     <template #trailing>
-                      <span class="text-xs text-gray-500 dark:text-gray-400">%</span>
+                      <span class="text-xs text-text-muted">%</span>
                     </template>
                   </UInput>
                 </UFormGroup>
@@ -230,7 +230,7 @@ function onError(event: FormErrorEvent) {
                     size="lg"
                   >
                     <template #trailing>
-                      <span class="text-xs text-gray-500 dark:text-gray-400">USD</span>
+                      <span class="text-xs text-text-muted">USD</span>
                     </template>
                   </UInput>
                 </UFormGroup>
@@ -288,7 +288,7 @@ function onError(event: FormErrorEvent) {
               <ApplyCouponOnProduct v-model="state.applies_product_ids" />
               <div
                 v-if="formRef.getErrors('applies_product_ids')[0]?.message"
-                class="mt-2 text-red-500"
+                class="mt-2 text-state-danger-text"
               >
                 {{ formRef.getErrors('applies_product_ids')[0].message }}
               </div>
@@ -304,10 +304,7 @@ function onError(event: FormErrorEvent) {
       />
     </UForm>
 
-    <div
-      class="fixed bottom-0 left-0 flex
-         w-full items-center justify-end gap-2 border-t bg-white py-2.5 pr-8"
-    >
+    <FixedFormActions>
       <UButton
         :disabled="isPendingRunSale"
         size="sm"
@@ -325,6 +322,6 @@ function onError(event: FormErrorEvent) {
       >
         Create
       </UButton>
-    </div>
+    </FixedFormActions>
   </div>
 </template>

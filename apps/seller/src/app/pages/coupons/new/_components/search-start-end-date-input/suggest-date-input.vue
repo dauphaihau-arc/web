@@ -258,7 +258,7 @@ async function search(q: string) {
         <span class="grow truncate">
           {{ dateData.hintTitle }}
         </span>
-        <span class="truncate text-[11px] text-[#b3b3b7]">
+        <span class="truncate text-[11px] text-text-muted">
           {{ dateData.detailDateFormatted }}
         </span>
       </div>

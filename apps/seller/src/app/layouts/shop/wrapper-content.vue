@@ -21,7 +21,7 @@ const slots = useSlots()
     <div>
       <slot
         name="content"
-        class="pb-32"
+        class="pb-96"
       />
     </div>
   </div>

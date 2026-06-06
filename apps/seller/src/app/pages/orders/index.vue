@@ -142,7 +142,7 @@ function handleToolbarChange(payload: Partial<ListShopOrdersRequest>) {
         <template #customer-data="{ row }">
           <div class="space-y-1">
             <div>{{ row.raw.customer.full_name }}</div>
-            <div class="text-xs text-zinc-500">
+            <div class="text-xs text-text-muted">
               {{ row.raw.customer.email }}
             </div>
           </div>
@@ -155,7 +155,7 @@ function handleToolbarChange(payload: Partial<ListShopOrdersRequest>) {
             >
               {{ row.raw.shipping.shipping_status.replaceAll('_', ' ') }}
             </UBadge>
-            <div class="text-xs text-zinc-500">
+            <div class="text-xs text-text-muted">
               {{ row.raw.shipping.to_country }}
             </div>
           </div>
@@ -198,13 +198,13 @@ function handleToolbarChange(payload: Partial<ListShopOrdersRequest>) {
         side="right"
         :ui="{ width: 'max-w-[min(92vw,1080px)] sm:max-w-[min(92vw,1080px)]' }"
       >
-        <div class="flex h-full flex-col bg-white">
-          <div class="flex items-center justify-between border-b border-zinc-200 px-6 py-4">
+        <div class="flex h-full flex-col bg-surface">
+          <div class="flex items-center justify-between border-b border-border-subtle px-6 py-4">
             <div>
               <div class="text-lg font-semibold">
                 {{ selectedDetailRow?.order || 'Order detail' }}
               </div>
-              <div class="text-sm text-zinc-500">
+              <div class="text-sm text-text-muted">
                 Review and update shipment info without leaving the orders list.
               </div>
             </div>
