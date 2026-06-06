@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useQueryClient } from '@tanstack/vue-query'
 import dayjs from 'dayjs'
+import ChatThreadPanel from '@arc/ui/chat-thread-panel.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import { routes } from '~/shared/navigation/routes'
 import { createSellerChatEventsClient } from '~/shared/realtime/chat-events.client'
@@ -43,10 +44,7 @@ const messageParams = computed(() => ({
   page: 1,
   limit: 100,
 }))
-
 const messageDraft = ref('')
-const selectedConversation = ref<ShopChatConversation | null>(null)
-const messageListEl = ref<HTMLElement | null>(null)
 
 const { data: myShop } = useGetMyShop()
 const { data: unreadCount } = useShopChatUnreadCount()
@@ -66,6 +64,12 @@ const { mutate: markConversationRead } = useShopMarkChatRead()
 
 const conversations = computed<ShopChatConversation[]>(() => conversationList.value?.results ?? [])
 const messages = computed<ShopChatMessage[]>(() => messageList.value?.results ?? [])
+const threadMessages = computed(() => messages.value.map(message => ({
+  id: message.id,
+  body: message.body,
+  createdAtLabel: formatMessageTime(message),
+  isOwn: isOwnMessage(message),
+})))
 
 const selectedConversationResolved = computed<ShopChatConversation | null>(() => {
   return messageList.value?.conversation
@@ -114,8 +118,6 @@ watch(
 watch(
   selectedConversationResolved,
   (conversation: ShopChatConversation | null) => {
-    selectedConversation.value = conversation
-
     if (!conversation || !selectedConversationUnread.value) {
       return
     }
@@ -123,19 +125,6 @@ watch(
     markConversationRead(conversation.id)
   },
   { immediate: true },
-)
-
-watch(
-  messages,
-  async () => {
-    await nextTick()
-
-    if (!messageListEl.value) {
-      return
-    }
-
-    messageListEl.value.scrollTop = messageListEl.value.scrollHeight
-  },
 )
 
 if (import.meta.client) {
@@ -260,6 +249,7 @@ async function handleSendMessage() {
           empty-text="No buyer conversations yet."
           min-height-class="h-[60vh]"
           aside-class="border-r border-border-subtle"
+          header-class="flex min-h-[88px] flex-col justify-center border-b border-border-subtle px-5 py-4"
         >
           <button
             v-for="conversation in conversations"
@@ -301,22 +291,27 @@ async function handleSendMessage() {
           </button>
         </ConversationListPanel>
 
-        <ConversationThreadPanel
+        <ChatThreadPanel
           :has-conversation="!!selectedConversationResolved"
           :loading="isPendingMessages"
           :empty="messages.length === 0"
           empty-state-text="Select a conversation to read and reply."
           empty-messages-text="No messages yet."
+          :messages="threadMessages"
+          :model-value="messageDraft"
+          :sending="isSendingMessage"
           list-class="flex-1 space-y-4 overflow-y-auto bg-surface-muted px-6 py-5"
-          composer-class="border-t border-border-subtle bg-surface px-6 py-4"
+          composer-class="bg-surface-muted px-6 py-4"
           section-class="flex min-h-[70vh] flex-col"
+          @update:model-value="messageDraft = $event"
+          @send="handleSendMessage"
         >
           <template
             v-if="selectedConversationResolved"
             #header
           >
-            <div class="border-b border-border-subtle px-6 py-4">
-              <div class="flex items-start justify-between gap-4">
+            <div class="flex min-h-[88px] items-center border-b border-border-subtle px-6 py-4">
+              <div class="flex w-full items-start justify-between gap-4">
                 <div>
                   <div class="text-lg font-semibold text-text-strong">
                     {{ selectedConversationResolved.product?.title || 'General inquiry' }}
@@ -337,62 +332,7 @@ async function handleSendMessage() {
               </div>
             </div>
           </template>
-
-          <template #default>
-            <div
-              ref="messageListEl"
-              class="contents"
-            />
-
-            <div
-              v-for="message in messages"
-              :key="message.id"
-              class="flex"
-              :class="isOwnMessage(message) ? 'justify-end' : 'justify-start'"
-            >
-              <div
-                class="max-w-[75%] rounded-2xl px-4 py-3 shadow-sm"
-                :class="isOwnMessage(message)
-                  ? 'bg-text-strong text-surface'
-                  : 'bg-surface text-text-strong'"
-              >
-                <div class="whitespace-pre-wrap text-sm leading-6">
-                  {{ message.body }}
-                </div>
-                <div
-                  class="mt-2 text-right text-[11px]"
-                  :class="isOwnMessage(message) ? 'text-customGray-300' : 'text-text-muted'"
-                >
-                  {{ formatMessageTime(message) }}
-                </div>
-              </div>
-            </div>
-          </template>
-
-          <template #composer>
-            <form
-              @submit.prevent="handleSendMessage"
-            >
-              <div class="flex items-end gap-3">
-                <UTextarea
-                  v-model="messageDraft"
-                  :rows="3"
-                  autoresize
-                  class="flex-1"
-                  placeholder="Write your reply..."
-                />
-                <UButton
-                  type="submit"
-                  color="black"
-                  :loading="isSendingMessage"
-                  :disabled="!messageDraft.trim()"
-                >
-                  Send
-                </UButton>
-              </div>
-            </form>
-          </template>
-        </ConversationThreadPanel>
+        </ChatThreadPanel>
       </ConversationInboxShell>
     </template>
   </LayoutShopWrapperContent>

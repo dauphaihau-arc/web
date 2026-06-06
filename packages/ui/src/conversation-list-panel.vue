@@ -9,6 +9,7 @@ withDefaults(defineProps<{
   loadingText?: string
   minHeightClass?: string
   asideClass?: string
+  headerClass?: string
 }>(), {
   title: 'Conversations',
   totalResults: 0,
@@ -19,12 +20,13 @@ withDefaults(defineProps<{
   loadingText: 'Loading conversations...',
   minHeightClass: 'h-52',
   asideClass: 'border-b border-border-subtle lg:border-b-0 lg:border-r',
+  headerClass: 'border-b border-border-subtle px-5 py-4',
 })
 </script>
 
 <template>
   <aside :class="asideClass">
-    <div class="border-b border-border-subtle px-5 py-4">
+    <div :class="headerClass">
       <div class="text-sm font-semibold text-text-strong">
         {{ title }}
       </div>
