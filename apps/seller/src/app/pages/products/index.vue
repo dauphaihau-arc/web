@@ -466,34 +466,42 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
         <template #actions-data="{ row }">
           <div class="flex w-full items-center justify-end gap-1">
             <div class="flex items-center">
-              <UButton
-                color="gray"
-                variant="ghost"
-                data-row-hover-action
-                class="p-1.5 transition-opacity"
-                @click="editProduct(row)"
-              >
-                <AppIcon
-                  name="edit"
-                  class="cursor-pointer"
-                />
-              </UButton>
-              <UButton
+              <UTooltip text="Edit product">
+                <UButton
+                  color="gray"
+                  variant="ghost"
+                  data-row-hover-action
+                  class="p-1.5 transition-opacity"
+                  @click="editProduct(row)"
+                >
+                  <AppIcon
+                    name="edit"
+                    class="cursor-pointer"
+                  />
+                </UButton>
+              </UTooltip>
+              <UTooltip
                 v-if="shouldShowPreviewButton(row)"
-                color="gray"
-                variant="ghost"
-                data-row-hover-action
-                class="p-1.5 transition-opacity"
-                icon="i-heroicons-eye-20-solid"
-                @click="previewProduct(row)"
-              />
+                text="Preview product"
+              >
+                <UButton
+                  color="gray"
+                  variant="ghost"
+                  data-row-hover-action
+                  class="p-1.5 transition-opacity"
+                  icon="i-heroicons-eye-20-solid"
+                  @click="previewProduct(row)"
+                />
+              </UTooltip>
             </div>
             <UDropdown :items="itemsDropdownWithRow(row)">
-              <UButton
-                color="gray"
-                variant="ghost"
-                icon="i-heroicons-ellipsis-horizontal-20-solid"
-              />
+              <UTooltip text="More actions">
+                <UButton
+                  color="gray"
+                  variant="ghost"
+                  icon="i-heroicons-ellipsis-horizontal-20-solid"
+                />
+              </UTooltip>
             </UDropdown>
           </div>
         </template>

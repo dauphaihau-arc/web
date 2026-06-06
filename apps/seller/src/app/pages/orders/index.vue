@@ -169,12 +169,24 @@ function handleToolbarChange(payload: Partial<ListShopOrdersRequest>) {
 
         <template #actions-data="{ row }">
           <div class="flex w-full items-center justify-end gap-1">
-            <UDropdown :items="itemsDropdownWithRow(row)">
+            <UTooltip text="Open page">
               <UButton
                 color="gray"
                 variant="ghost"
-                icon="i-heroicons-ellipsis-horizontal-20-solid"
+                data-row-hover-action
+                class="p-1.5 transition-opacity"
+                icon="i-heroicons-eye-20-solid"
+                @click="openDetail(row)"
               />
+            </UTooltip>
+            <UDropdown :items="itemsDropdownWithRow(row)">
+              <UTooltip text="More actions">
+                <UButton
+                  color="gray"
+                  variant="ghost"
+                  icon="i-heroicons-ellipsis-horizontal-20-solid"
+                />
+              </UTooltip>
             </UDropdown>
           </div>
         </template>
