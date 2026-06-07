@@ -3,6 +3,7 @@ import type {
   listShopOrdersRequestSchema,
   listShopOrdersResponseSchema,
   shopOrderDetailResponseSchema,
+  updateShopOrderRefundRequestSchema,
   shopOrderSummarySchema,
   updateShopOrderShipmentRequestSchema,
   updateShopOrderStatusRequestSchema,
@@ -14,3 +15,4 @@ export type ListShopOrdersResponse = z.infer<typeof listShopOrdersResponseSchema
 export type ShopOrderDetailResponse = z.infer<typeof shopOrderDetailResponseSchema>
 export type UpdateShopOrderStatusRequest = z.infer<typeof updateShopOrderStatusRequestSchema>
 export type UpdateShopOrderShipmentRequest = z.infer<typeof updateShopOrderShipmentRequestSchema>
+export type UpdateShopOrderRefundRequest = z.infer<typeof updateShopOrderRefundRequestSchema>

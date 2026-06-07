@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import SellerOrderDetailContent from '../_components/order-detail-content.vue'
+import OrderDetailActions from './_components/order-detail-actions.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import { routes } from '~/shared/navigation/routes'
 
@@ -10,18 +11,15 @@ const orderId = computed(() => String(route.params.id ?? ''))
 </script>
 
 <template>
-  <LayoutShopWrapperContent>
+  <LayoutShopWrapperContent
+    back-label="Back to orders"
+    :back-to="routes.orders()"
+  >
     <template #title>
       Order details
     </template>
     <template #actions>
-      <UButton
-        :to="routes.orders()"
-        color="gray"
-        variant="ghost"
-      >
-        Back to orders
-      </UButton>
+      <OrderDetailActions :order-id="orderId" />
     </template>
     <template #content>
       <SellerOrderDetailContent

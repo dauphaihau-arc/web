@@ -2,6 +2,7 @@ import type {
   ListShopOrdersRequest,
   ListShopOrdersResponse,
   ShopOrderDetailResponse,
+  UpdateShopOrderRefundRequest,
   UpdateShopOrderShipmentRequest,
   UpdateShopOrderStatusRequest,
 } from './contracts/order.contract'
@@ -39,6 +40,17 @@ export const shopOrderApi = {
   ) {
     return apiClient.patch<ShopOrderDetailResponse>(
       `/shops/${shopId}/orders/${orderId}/shipment`,
+      payload,
+    )
+  },
+
+  updateRefund(
+    shopId: string,
+    orderId: string,
+    payload: UpdateShopOrderRefundRequest,
+  ) {
+    return apiClient.patch<ShopOrderDetailResponse>(
+      `/shops/${shopId}/orders/${orderId}/refund`,
       payload,
     )
   },

@@ -132,3 +132,7 @@ export const updateShopOrderShipmentRequestSchema = z.object({
   shipping_carrier: z.string().max(255).optional(),
   shipment_note: z.string().max(5000).optional(),
 })
+
+export const updateShopOrderRefundRequestSchema = z.object({
+  action: z.enum(['request', 'retry']),
+})

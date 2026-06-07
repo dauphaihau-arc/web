@@ -4,7 +4,6 @@ import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
 import { buildTrackingUrl } from '@arc/utils/build-tracking-url'
 import { formatMinorCurrency } from '@arc/utils'
 import LoadingSvg from '@arc/ui/loading-svg.vue'
-import SellerCancelOrderDialog from './seller-cancel-order-dialog.vue'
 import { useShopGetOrderDetail } from '~/shared/server-state/shop/order/detail.query'
 import { useShopUpdateOrderShipment } from '~/shared/server-state/shop/order/update-shipment.mutation'
 
@@ -20,8 +19,6 @@ const {
 const config = useRuntimeConfig()
 const assetHost = computed(() => config.public.assetHost?.replace(/\/+$/, '') ?? '')
 const { mutateAsync: updateShipment, isPending: isUpdatingShipment } = useShopUpdateOrderShipment()
-const dialog = useModal()
-
 const shipmentForm = reactive({
   tracking_number: '',
   shipping_carrier: '',
@@ -36,14 +33,43 @@ watch(() => data.value?.order, (order) => {
 
 const order = computed(() => data.value?.order)
 
-const canCancel = computed(() =>
+const shipmentUpdatesBlocked = computed(() =>
   !!order.value
-  && [OrderStatuses.PAID, OrderStatuses.PENDING].includes(order.value.status)
-  && order.value.shipping.shipping_status === OrderShippingStatuses.PRE_TRANSIT,
+  && [
+    OrderStatuses.CANCELED,
+    OrderStatuses.REFUNDED,
+    OrderStatuses.EXPIRED,
+    OrderStatuses.ARCHIVED,
+    OrderStatuses.AWAITING_PAYMENT,
+  ].includes(order.value.status),
 )
+
+const allowedShipmentTransitions = computed(() => {
+  if (!order.value || shipmentUpdatesBlocked.value) return []
+
+  switch (order.value.shipping.shipping_status) {
+    case OrderShippingStatuses.PRE_TRANSIT:
+      return [OrderShippingStatuses.IN_TRANSIT, OrderShippingStatuses.SHIPPED]
+    case OrderShippingStatuses.IN_TRANSIT:
+      return [OrderShippingStatuses.SHIPPED, OrderShippingStatuses.DELIVERED]
+    case OrderShippingStatuses.SHIPPED:
+      return [OrderShippingStatuses.DELIVERED]
+    case OrderShippingStatuses.DELIVERED:
+    default:
+      return []
+  }
+})
+
+const canEditShipmentInfo = computed(() => !shipmentUpdatesBlocked.value)
+
+function canTransitionTo(status: OrderShippingStatuses) {
+  return allowedShipmentTransitions.value.includes(status)
+}
 
 async function saveShipment(status?: OrderShippingStatuses) {
   if (!order.value) return
+  if (shipmentUpdatesBlocked.value) return
+  if (status && !canTransitionTo(status)) return
 
   await updateShipment({
     orderId: order.value.id,
@@ -93,14 +119,6 @@ function openTracking() {
     open: {
       target: '_blank',
     },
-  })
-}
-
-function openCancelDialog() {
-  if (!order.value) return
-
-  dialog.open(SellerCancelOrderDialog, {
-    orderId: order.value.id,
   })
 }
 </script>
@@ -179,10 +197,16 @@ function openCancelDialog() {
         <div class="space-y-4">
           <div class="grid gap-4 md:grid-cols-2">
             <UFormGroup label="Tracking number">
-              <UInput v-model="shipmentForm.tracking_number" />
+              <UInput
+                v-model="shipmentForm.tracking_number"
+                :disabled="!canEditShipmentInfo"
+              />
             </UFormGroup>
             <UFormGroup label="Carrier">
-              <UInput v-model="shipmentForm.shipping_carrier" />
+              <UInput
+                v-model="shipmentForm.shipping_carrier"
+                :disabled="!canEditShipmentInfo"
+              />
             </UFormGroup>
           </div>
 
@@ -190,48 +214,27 @@ function openCancelDialog() {
             <UTextarea
               v-model="shipmentForm.shipment_note"
               :rows="4"
+              :disabled="!canEditShipmentInfo"
             />
           </UFormGroup>
 
-          <div class="flex flex-wrap gap-3">
-            <UButton
-              :loading="isUpdatingShipment"
-              @click="saveShipment()"
-            >
-              Save shipment info
-            </UButton>
-            <UButton
-              color="gray"
-              variant="soft"
-              :loading="isUpdatingShipment"
-              @click="saveShipment(OrderShippingStatuses.IN_TRANSIT)"
-            >
-              Mark in transit
-            </UButton>
-            <UButton
-              color="gray"
-              variant="soft"
-              :loading="isUpdatingShipment"
-              @click="saveShipment(OrderShippingStatuses.SHIPPED)"
-            >
-              Mark shipped
-            </UButton>
-            <UButton
-              color="gray"
-              variant="soft"
-              :loading="isUpdatingShipment"
-              @click="saveShipment(OrderShippingStatuses.DELIVERED)"
-            >
-              Mark delivered
-            </UButton>
-            <UButton
-              v-if="canCancel"
-              color="red"
-              variant="soft"
-              @click="openCancelDialog"
-            >
-              Cancel order
-            </UButton>
+          <div
+            v-if="shipmentUpdatesBlocked"
+            class="rounded-md border border-border-subtle bg-surface-subtle p-3 text-sm text-text-muted"
+          >
+            Shipment updates are unavailable for this order state.
+          </div>
+
+          <div class="space-y-3">
+            <div class="flex flex-wrap gap-3">
+              <UButton
+                v-if="canEditShipmentInfo"
+                :loading="isUpdatingShipment"
+                @click="saveShipment()"
+              >
+                Save shipment info
+              </UButton>
+            </div>
           </div>
         </div>
       </UCard>
