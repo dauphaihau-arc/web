@@ -127,9 +127,9 @@ const showRegisterLoginDialog = () => {
         <div class="flex h-fit items-center justify-self-end gap-2">
           <UTooltip text="Search">
             <UButton
+              square
               color="gray"
               variant="ghost"
-              class="icon-button"
               @click="isShowSearch = !isShowSearch"
               @mouseover="isShowCart = false"
             >
@@ -145,9 +145,9 @@ const showRegisterLoginDialog = () => {
           <template v-else>
             <UTooltip text="Sign in">
               <UButton
+                square
                 color="gray"
                 variant="ghost"
-                class="icon-button"
                 @click="showRegisterLoginDialog"
                 @mouseover="isShowCart = false"
               >
@@ -158,9 +158,9 @@ const showRegisterLoginDialog = () => {
 
           <UTooltip :text="sellerCtaLabel">
             <UButton
+              square
               color="gray"
               variant="ghost"
-              class="icon-button"
               @click="navigateToSellerApp"
             >
               <AppIcon name="shop" />
@@ -172,19 +172,14 @@ const showRegisterLoginDialog = () => {
               :text="totalProductCarts"
               :show="totalProductCarts > 0"
               class="cursor-pointer"
-              size="xl"
+              size="lg"
               position="bottom-right"
-              :ui="{
-                position: {
-                  'bottom-right': 'translate-y-[-5px] translate-x-[-5px]',
-                },
-              }"
               @click="isShowCart = !isShowCart"
               @mouseover="isShowSearch = false"
             >
               <UButton
                 id="cart-btn"
-                class="icon-button"
+                square
                 variant="ghost"
                 color="gray"
               >
@@ -201,7 +196,7 @@ const showRegisterLoginDialog = () => {
       enter-to-class="opacity-100"
       enter-active-class="opacity-0"
       leave-class="ease-in duration-500"
-      leave-ative-class="opacity-100"
+      leave-active-class="opacity-100"
       leave-to-class="opacity-0"
     >
       <div

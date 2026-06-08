@@ -26,7 +26,7 @@ export const accountSidebarLinks: AppNavigationItem[] = [
     to: routes.accountAddresses(),
   },
   // {
-  //   label: 'Payment',
+  //   label: 'Summary',
   //   disabled: true,
   //   icon: 'i-heroicons-credit-card',
   //   to: routes.home(),

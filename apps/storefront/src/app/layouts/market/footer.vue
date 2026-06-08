@@ -97,7 +97,7 @@ const primaryLinks = [
         link: '/',
       },
       {
-        title: 'Payment options',
+        title: 'Summary options',
         link: '/',
       },
       {

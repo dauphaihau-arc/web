@@ -33,7 +33,7 @@ const filters = [
   },
   {
     slot: 'to-pay',
-    label: 'Awaiting Payment',
+    label: 'Awaiting Summary',
     state: 'awaiting_payment',
   },
   {

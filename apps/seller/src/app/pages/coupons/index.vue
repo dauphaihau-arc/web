@@ -50,8 +50,13 @@ const columns = [
     label: 'Code',
   },
   {
+    key: 'coupon-type',
+    label: 'Type',
+    class: 'text-center',
+  },
+  {
     key: 'applies-to',
-    label: 'Products apply',
+    label: 'Products Apply',
     class: 'text-center',
   },
   {
@@ -61,13 +66,12 @@ const columns = [
   },
   {
     key: 'max_uses',
-    label: 'Max total uses',
+    label: 'Max Total Uses',
     class: 'text-center',
   },
   {
     key: 'status',
-    label: 'Start - end date',
-    class: 'text-center',
+    label: 'Start - End Date',
   },
   {
     key: 'actions',
@@ -192,13 +196,14 @@ const itemsDropdownWithRow = (row: { id: string }): DropdownItem[][] => [
         :loading="isPendingShopGetCoupons"
       >
         <template #code-data="{ row }">
-          <div>
-            <div class="text-xs">
-              {{ row.is_auto_sale ? 'Sale' : 'Promo code' }}
-            </div>
-            <div class="text-xs">
-              {{ row.code }}
-            </div>
+          <div class="text-sm">
+            {{ row.code }}
+          </div>
+        </template>
+
+        <template #coupon-type-data="{ row }">
+          <div class="text-center text-sm">
+            {{ row.is_auto_sale ? 'Sale' : 'Promo code' }}
           </div>
         </template>
 
@@ -236,7 +241,7 @@ const itemsDropdownWithRow = (row: { id: string }): DropdownItem[][] => [
         </template>
 
         <template #status-data="{ row }">
-          <div class="text-center">
+          <div>
             {{ row.start_date }} - {{ row.end_date }}
           </div>
         </template>

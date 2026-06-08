@@ -84,7 +84,7 @@ function handleFilterChange(index: number) {
       </UButton>
     </div>
 
-    <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+    <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain pe-3">
       <UTabs
         v-if="filters.length > 0"
         class="mb-2 w-full"
@@ -131,8 +131,7 @@ function handleFilterChange(index: number) {
           v-for="notification in notifications"
           :key="notification.id"
           type="button"
-          class="w-full border-b py-3 text-left transition hover:bg-surface-muted"
-          :class="notification.read_at ? 'border-border-subtle' : 'border-border-accent bg-surface-accent'"
+          class="w-full border-b py-3 text-left"
           :disabled="isMarkingOne"
           @click="emit('itemClick', notification)"
         >

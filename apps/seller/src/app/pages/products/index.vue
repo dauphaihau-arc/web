@@ -489,9 +489,12 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
                   variant="ghost"
                   data-row-hover-action
                   class="p-1.5 transition-opacity"
-                  icon="i-heroicons-eye-20-solid"
                   @click="previewProduct(row)"
-                />
+                >
+                  <template #leading>
+                    <AppIcon name="i-heroicons-eye-20-solid" />
+                  </template>
+                </UButton>
               </UTooltip>
             </div>
             <UDropdown :items="itemsDropdownWithRow(row)">
@@ -499,8 +502,11 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
                 <UButton
                   color="gray"
                   variant="ghost"
-                  icon="i-heroicons-ellipsis-horizontal-20-solid"
-                />
+                >
+                  <template #leading>
+                    <AppIcon name="moreHorizontal" />
+                  </template>
+                </UButton>
               </UTooltip>
             </UDropdown>
           </div>
