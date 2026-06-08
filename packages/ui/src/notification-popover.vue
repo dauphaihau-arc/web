@@ -59,9 +59,8 @@ const isPopoverOpen = ref(false)
     <UChip
       :text="unreadCount"
       :show="unreadCount > 0"
-      size="md"
+      size="lg"
       position="bottom-right"
-      :ui="{ position: { 'bottom-right': 'translate-y-[-4px] translate-x-[-4px]' } }"
     >
       <UTooltip
         :text="tooltipText"
@@ -70,7 +69,7 @@ const isPopoverOpen = ref(false)
         <UButton
           color="gray"
           variant="ghost"
-          class="icon-button"
+          square
         >
           <AppIcon name="bell" />
         </UButton>

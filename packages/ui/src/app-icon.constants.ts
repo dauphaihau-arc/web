@@ -32,10 +32,17 @@ export const ICON_NAME_BY_ALIAS = {
   ticket: 'i-heroicons-ticket',
   camera: 'material-symbols:android-camera',
   message: 'tabler:message',
-  shipping: 'la:shipping-fast',
+  shipping: 'lucide:plane',
   product: 'tabler:cube',
   dashboard: 'streamline-flex:dashboard-3',
   marketing: 'nimbus:marketing',
+  refund: 'lets-icons:refund-forward',
+  expired: 'i-heroicons-clock-20-solid',
+  delivered: 'hugeicons:package-delivered',
+  transit: 'lucide:map',
+  payment: 'fluent:payment-28-regular',
+  orderCreated: 'i-heroicons-document-plus-20-solid',
+  moreHorizontal: 'i-heroicons-ellipsis-horizontal-20-solid',
 } as const
 
 export type AppIconAlias = keyof typeof ICON_NAME_BY_ALIAS

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import StatusBadge from './status-badge.vue'
+
 const props = withDefaults(defineProps<{
   title: string
   description?: string
@@ -30,12 +32,14 @@ const slots = useSlots()
       class="flex flex-wrap items-center gap-3"
     >
       <slot name="badge">
-        <div
+        <StatusBadge
           v-if="badge"
-          class="rounded-full border border-border-subtle bg-surface-muted px-3 py-1 text-sm text-text-subtle"
+          color="gray"
+          size="sm"
+          :label="badge"
         >
           {{ badge }}
-        </div>
+        </StatusBadge>
       </slot>
 
       <slot name="actions" />

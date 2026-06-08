@@ -29,10 +29,30 @@ export const designColors = {
     hover: '#AABAC9',
   },
   state: {
+    success: {
+      surface: '#F0FDF4',
+      border: '#84CC16',
+      text: '#15803D',
+    },
+    neutral: {
+      surface: '#F8FAFC',
+      border: '#CBD5E1',
+      text: '#64748B',
+    },
+    warning: {
+      surface: '#FEFCE8',
+      border: '#FACC15',
+      text: '#A16207',
+    },
     danger: {
       surface: '#FEF2F2',
       border: '#FECACA',
       text: '#DC2626',
+    },
+    info: {
+      surface: '#EFF6FF',
+      border: '#93C5FD',
+      text: '#2563EB',
     },
   },
   text: {

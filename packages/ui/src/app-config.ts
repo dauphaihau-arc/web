@@ -45,6 +45,11 @@ export const sharedAppConfig = {
         },
       },
     },
+    chip: {
+      translate: {
+        'bottom-right': 'translate-y-[-4px] translate-x-[-4px]',
+      },
+    },
     input: {
       default: {
         loadingIcon: 'i-eos-icons:loading',
