@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-import { OrderShippingStatuses, OrderStatuses, PaymentTypes } from '@arc/enums/order'
+import { OrderShippingStatuses } from '@arc/enums/order'
+import AppIcon from '@arc/ui/app-icon.vue'
 import SellerCancelOrderDialog from '../../_components/seller-cancel-order-dialog.vue'
 import SellerRefundOrderDialog from '../../_components/seller-refund-order-dialog.vue'
+import { useOrderActions } from '~/app/pages/orders/[id]/_components/order-detail-content/use-order-actions'
 import { useShopGetOrderDetail } from '~/shared/server-state/shop/order/detail.query'
 import { useShopUpdateOrderShipment } from '~/shared/server-state/shop/order/update-shipment.mutation'
 
@@ -15,60 +17,7 @@ const actionsMenuOpen = ref(false)
 const { data } = useShopGetOrderDetail(props.orderId)
 const { mutateAsync: updateShipment } = useShopUpdateOrderShipment()
 const order = computed(() => data.value?.order)
-
-const canRefund = computed(() =>
-  !!order.value
-  && order.value.payment.type === PaymentTypes.CARD
-  && [undefined, 'failed'].includes(order.value.payment.refund_status)
-  && (
-    (order.value.status === OrderStatuses.PAID && order.value.shipping.shipping_status !== OrderShippingStatuses.PRE_TRANSIT)
-    || order.value.status === OrderStatuses.COMPLETED
-  ),
-)
-
-const canCancel = computed(() =>
-  !!order.value
-  && [OrderStatuses.PAID, OrderStatuses.PENDING].includes(order.value.status)
-  && order.value.shipping.shipping_status === OrderShippingStatuses.PRE_TRANSIT,
-)
-
-const canRetryRefund = computed(() =>
-  !!order.value
-  && order.value.payment.type === PaymentTypes.CARD
-  && order.value.payment.refund_status === 'failed'
-  && [OrderStatuses.CANCELED, OrderStatuses.PAID, OrderStatuses.COMPLETED].includes(order.value.status),
-)
-
-const shipmentUpdatesBlocked = computed(() =>
-  !!order.value
-  && [
-    OrderStatuses.CANCELED,
-    OrderStatuses.REFUNDED,
-    OrderStatuses.EXPIRED,
-    OrderStatuses.ARCHIVED,
-    OrderStatuses.AWAITING_PAYMENT,
-  ].includes(order.value.status),
-)
-
-const allowedShipmentTransitions = computed(() => {
-  if (!order.value || shipmentUpdatesBlocked.value) return []
-
-  switch (order.value.shipping.shipping_status) {
-    case OrderShippingStatuses.PRE_TRANSIT:
-      return [OrderShippingStatuses.IN_TRANSIT, OrderShippingStatuses.SHIPPED]
-    case OrderShippingStatuses.IN_TRANSIT:
-      return [OrderShippingStatuses.SHIPPED, OrderShippingStatuses.DELIVERED]
-    case OrderShippingStatuses.SHIPPED:
-      return [OrderShippingStatuses.DELIVERED]
-    case OrderShippingStatuses.DELIVERED:
-    default:
-      return []
-  }
-})
-
-function canTransitionTo(status: OrderShippingStatuses) {
-  return allowedShipmentTransitions.value.includes(status)
-}
+const { canTransitionTo, canRefund, canCancel, canRetryRefund } = useOrderActions(order)
 
 function openRefundDialog(isRetry = false) {
   if (!order.value) return
@@ -183,7 +132,7 @@ const actionMenuGroups = computed<ActionMenuGroup[]>(() => {
 
   if (paymentActions.length) {
     groups.push({
-      label: 'Payment actions',
+      label: 'Summary actions',
       items: paymentActions,
     })
   }
@@ -197,7 +146,6 @@ const actionMenuGroups = computed<ActionMenuGroup[]>(() => {
     <UButton
       v-if="canRefund"
       color="red"
-      variant="soft"
       @click="openRefundDialog(false)"
     >
       Refund order
@@ -205,7 +153,6 @@ const actionMenuGroups = computed<ActionMenuGroup[]>(() => {
     <UButton
       v-else-if="canRetryRefund"
       color="red"
-      variant="soft"
       @click="openRefundDialog(true)"
     >
       Retry refund
@@ -236,9 +183,10 @@ const actionMenuGroups = computed<ActionMenuGroup[]>(() => {
               :class="{ 'text-red-600 hover:bg-surface-accent': item.tone === 'danger' }"
               @click="runMenuAction(item.onClick)"
             >
-              <UIcon
+              <AppIcon
                 :name="item.icon"
-                class="size-5 shrink-0"
+                size="sm"
+                class="shrink-0"
                 :class="item.tone === 'danger' ? 'text-red-500' : 'text-text-muted'"
               />
               <span
@@ -254,10 +202,15 @@ const actionMenuGroups = computed<ActionMenuGroup[]>(() => {
 
       <UButton
         color="gray"
-        variant="ghost"
-        icon="i-heroicons-ellipsis-horizontal-20-solid"
         aria-label="Order actions"
-      />
+      >
+        <template #leading>
+          <AppIcon
+            name="moreHorizontal"
+            size="sm"
+          />
+        </template>
+      </UButton>
     </UPopover>
   </div>
 </template>

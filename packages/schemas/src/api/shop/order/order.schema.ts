@@ -46,6 +46,16 @@ export const shopOrderDetailProductSchema = shopOrderProductSchema.omit({
   storage_key: z.string().optional(),
 })
 
+export const shopOrderTimelineEventSchema = z.object({
+  id: z.string(),
+  type: z.string(),
+  occurred_at: z.coerce.date(),
+  actor_type: z.string(),
+  actor_id: z.string().optional(),
+  source: z.string().optional(),
+  payload: z.record(z.string(), z.unknown()).optional(),
+})
+
 export const shopOrderShippingSchema = z.object({
   shipping_status: z.nativeEnum(OrderShippingStatuses),
   updated_at: z.coerce.date(),
@@ -119,6 +129,7 @@ export const shopOrderDetailResponseSchema = z.object({
       phone: z.string().optional(),
     }),
   }),
+  timeline: z.array(shopOrderTimelineEventSchema),
 })
 
 export const updateShopOrderStatusRequestSchema = z.object({

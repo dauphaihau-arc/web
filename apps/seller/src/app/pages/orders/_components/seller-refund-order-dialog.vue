@@ -18,40 +18,44 @@ async function confirmRefund() {
   })
   await dialog.close()
 }
+
+const actions = computed(() => [
+  {
+    id: 'keep-order',
+    label: 'Keep order',
+    variant: 'secondary' as const,
+    shortcut: 'escape' as const,
+    allowWhileInputFocused: true,
+    disabled: isPending,
+    run: () => dialog.close(),
+  },
+  {
+    id: 'confirm-refund',
+    label: props.isRetry ? 'Retry refund' : 'Confirm refund',
+    variant: 'danger' as const,
+    shortcut: 'meta_enter' as const,
+    allowWhileInputFocused: true,
+    loading: isPending,
+    run: confirmRefund,
+  },
+])
 </script>
 
 <template>
-  <BaseDialog>
+  <BaseDialog
+    :actions="actions"
+  >
     <div class="space-y-1">
       <h1 class="text-2xl font-bold">
-        {{ isRetry ? 'Retry refund' : 'Refund order' }}
+        {{ props.isRetry ? 'Retry refund' : 'Refund order' }}
       </h1>
       <p class="text-sm text-text-muted">
         {{
-          isRetry
+          props.isRetry
             ? 'This will re-submit the failed refund attempt for this order.'
             : 'This will start a refund for a paid order after fulfillment has already started or completed.'
         }}
       </p>
     </div>
-
-    <template #footer>
-      <DialogActions>
-        <UButton
-          color="gray"
-          :disabled="isPending"
-          @click="dialog.close"
-        >
-          Keep order
-        </UButton>
-        <UButton
-          color="red"
-          :loading="isPending"
-          @click="confirmRefund"
-        >
-          {{ isRetry ? 'Retry refund' : 'Confirm refund' }}
-        </UButton>
-      </DialogActions>
-    </template>
   </BaseDialog>
 </template>

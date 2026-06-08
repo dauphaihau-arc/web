@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import LoadingSvg from '@arc/ui/loading-svg.vue'
-import CustomerCard from './customer-card.vue'
-import OrderOverviewCard from './order-overview-card.vue'
-import OrderSummaryCard from './order-summary-card.vue'
-import ShipmentUpdateCard from './shipment-update-card.vue'
-import ShippingAddressCard from './shipping-address-card.vue'
+import Customer from './customer.vue'
+import OrderDetails from './order-details.vue'
+import OrderSummary from './order-summary.vue'
+import OrderTimeline from './order-timeline.vue'
+import ShippingAddress from './shipping-address.vue'
 import { useShopGetOrderDetail } from '~/shared/server-state/shop/order/detail.query'
 
 const props = defineProps<{
@@ -19,6 +19,7 @@ const {
 const config = useRuntimeConfig()
 const assetHost = computed(() => config.public.assetHost?.replace(/\/+$/, '') ?? '')
 const order = computed(() => data.value?.order)
+const timeline = computed(() => data.value?.timeline ?? [])
 </script>
 
 <template>
@@ -33,18 +34,22 @@ const order = computed(() => data.value?.order)
     v-else-if="order"
     class="grid grid-cols-12 gap-6"
   >
-    <div class="col-span-12 space-y-6 xl:col-span-7">
-      <OrderOverviewCard
+    <div class="col-span-12 space-y-6 xl:col-span-9">
+      <OrderSummary
         :order="order"
         :asset-host="assetHost"
       />
-      <ShipmentUpdateCard :order="order" />
+      <OrderTimeline
+        :order="order"
+        :timeline="timeline"
+      />
+      <!--      <ShipmentUpdate :order="order" /> -->
     </div>
 
-    <div class="col-span-12 space-y-6 xl:col-span-5">
-      <CustomerCard :order="order" />
-      <ShippingAddressCard :order="order" />
-      <OrderSummaryCard :order="order" />
+    <div class="col-span-12 space-y-6 xl:col-span-3">
+      <OrderDetails :order="order" />
+      <Customer :order="order" />
+      <ShippingAddress :order="order" />
     </div>
   </div>
 

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import DetailInfoCard from './detail-info-card.vue'
 import DetailInfoItem from './detail-info-item.vue'
 import type { ShopOrder } from './types'
@@ -9,16 +9,13 @@ defineProps<{
 </script>
 
 <template>
-  <DetailInfoCard title="Details">
+  <DetailInfoCard title="Customer">
     <div class="space-y-4 text-sm">
-      <DetailInfoItem label="Payment">
-        <span class="capitalize">{{ order.payment.type }}</span>
+      <DetailInfoItem label="Name">
+        {{ order.customer.full_name }}
       </DetailInfoItem>
-
-      <DetailInfoItem label="Shipping">
-        <div class="capitalize">
-          {{ order.shipping.shipping_status.replaceAll('_', ' ') }}
-        </div>
+      <DetailInfoItem label="Email">
+        {{ order.customer.email }}
       </DetailInfoItem>
     </div>
   </DetailInfoCard>
