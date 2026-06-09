@@ -104,9 +104,9 @@ watchDebounced(
   search,
   () => {
     if (!search.value) {
-      delete params.value.title
+      delete params.value.search
     }
-    else params.value.title = search.value
+    else params.value.search = search.value
     refetchShopGetProducts()
   },
   { debounce: 500, maxWait: 1000 },

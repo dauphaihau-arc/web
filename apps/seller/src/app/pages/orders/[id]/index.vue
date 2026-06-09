@@ -65,7 +65,7 @@ function shippingStatusTone(status?: ShopOrder['shipping']['shipping_status']) {
   >
     <template #title>
       <span class="inline-flex flex-wrap items-center gap-3">
-        <span>{{ order ? `Order ID: ${order.order_number}` : 'Order details' }}</span>
+        <span>{{ order ? `Order number: ${order.order_number}` : 'Order details' }}</span>
         <StatusBadge
           v-if="order"
           :color="orderStatusTone(order.status)"

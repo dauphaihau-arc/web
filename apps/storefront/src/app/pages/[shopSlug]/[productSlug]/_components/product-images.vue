@@ -103,7 +103,7 @@ const onSelectNextImg = () => {
         @click="onSelectPrevImg"
       >
         <AppIcon
-          name="arrowLeft"
+          name="chevronLeft"
           class="text-black"
         />
       </div>
@@ -112,7 +112,7 @@ const onSelectNextImg = () => {
         @click="onSelectNextImg"
       >
         <AppIcon
-          name="arrowForward"
+          name="chevronRight"
           class="text-black"
         />
       </div>

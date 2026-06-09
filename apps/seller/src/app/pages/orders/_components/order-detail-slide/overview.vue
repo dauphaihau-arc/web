@@ -56,7 +56,7 @@ function shippingStatusTone(status: ShopOrder['shipping']['shipping_status']) {
 
     <div class="space-y-2">
       <div class="text-sm text-text-muted">
-        Payment
+        Status
       </div>
       <div>
         <StatusBadge
