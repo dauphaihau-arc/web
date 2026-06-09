@@ -9,7 +9,7 @@ export type OrderDateFilterDraft = {
   time: string
   startTime: string
   endTime: string
-  timezone: 'gmt+8' | 'utc'
+  timezone: string
 }
 
 export type OrderAmountFilterDraft = {

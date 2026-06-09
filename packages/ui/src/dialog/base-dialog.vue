@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ComputedRef, Ref } from 'vue'
-import ShortcutHint from './shortcut-hint.vue'
+import ShortcutHint from '../shortcut-hint.vue'
 
 defineOptions({
   inheritAttrs: false,

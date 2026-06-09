@@ -1,37 +1,36 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
 import { MarketCurrencies } from '@arc/enums/market'
-import { OrderStatuses } from '@arc/enums/order'
+import type { OrderStatuses } from '@arc/enums/order'
 import { currencyOptions, toCurrencyOption, toMinorUnits } from '@arc/utils'
+import { orderStatusFilterOptions } from '../order-status-filter-options'
+import DateFilterPanel from '../../../../components/date-filter-panel/date-filter-panel.vue'
 import AmountFilterPanel from './amount-filter-panel.vue'
 import CurrencyFilterPanel from './currency-filter-panel.vue'
-import DateFilterPanel from './date-filter-panel.vue'
+import StatusFilterPanel from './status-filter-panel.vue'
+import {
+  getDefaultDateFilterTimezone,
+  getNowInTimezone,
+  toZonedDay,
+} from '~/app/components/date-filter-panel/date-filter-timezone'
 import type {
   OrderAmountFilterDraft,
   OrderCurrencyFilterDraft,
   OrderDateFilterDraft,
-} from './order-filter.types'
-import StatusFilterPanel from './status-filter-panel.vue'
+} from '~/app/components/date-filter-panel/order-filter.types'
 import FilterPopover from '~/app/components/filter/filter-popover.vue'
 import FilterToolbar from '~/app/components/filter/filter-toolbar.vue'
-import type { FilterOption } from '~/app/components/filter/types'
 import type { ListShopOrdersRequest } from '~/shared/api/shop/order/contracts/order.contract'
 import { useGetMarketplaceConfig } from '~/shared/server-state/market/config.query'
 import { useGetMyShop } from '~/shared/server-state/shop/my-shop.query'
-
-dayjs.extend(utc)
 
 const emit = defineEmits<{
   change: [payload: Partial<ListShopOrdersRequest>]
   resetPage: []
 }>()
 
-const statusOptions: FilterOption[] = [
-  { label: 'Paid', value: OrderStatuses.PAID },
-  { label: 'Canceled', value: OrderStatuses.CANCELED },
-  { label: 'Completed', value: OrderStatuses.COMPLETED },
-]
+const statusOptions = orderStatusFilterOptions
+const appliedStatusFilter = defineModel<OrderStatuses[]>('statusFilter', { default: () => [] })
 
 const { data: marketplaceConfig } = useGetMarketplaceConfig()
 const { data: myShop } = useGetMyShop()
@@ -66,25 +65,32 @@ const defaultAmountCurrency = computed(() =>
   ?? MarketCurrencies.USD,
 )
 
+const searchDraft = ref('')
+const appliedSearch = ref('')
 const dateFilterDraft = ref<OrderDateFilterDraft>(createDefaultDateFilter())
 const appliedDateFilter = ref<OrderDateFilterDraft | null>(null)
 const amountFilterDraft = ref<OrderAmountFilterDraft>(createDefaultAmountFilter())
 const appliedAmountFilter = ref<OrderAmountFilterDraft | null>(null)
 const currencyFilterDraft = ref<OrderCurrencyFilterDraft>(createDefaultCurrencyFilter(defaultAmountCurrency.value))
 const appliedCurrencyFilter = ref<OrderCurrencyFilterDraft | null>(null)
-const statusFilterDraft = ref<OrderStatuses[]>([])
-const appliedStatusFilter = ref<OrderStatuses[]>([])
-const openFilter = ref<'date' | 'amount' | 'currency' | 'status' | null>(null)
+const statusFilterDraft = ref<OrderStatuses[]>([...appliedStatusFilter.value])
+const openFilter = ref<'search' | 'date' | 'amount' | 'currency' | 'status' | null>(null)
 
+const hasActiveSearchFilter = computed(() => appliedSearch.value.length > 0)
 const hasActiveDateFilter = computed(() => appliedDateFilter.value !== null)
 const hasActiveAmountFilter = computed(() => appliedAmountFilter.value !== null)
 const hasActiveCurrencyFilter = computed(() => appliedCurrencyFilter.value !== null)
 const hasActiveStatusFilter = computed(() => appliedStatusFilter.value.length > 0)
 const hasActiveFilters = computed(() =>
-  hasActiveDateFilter.value
+  hasActiveSearchFilter.value
+  || hasActiveDateFilter.value
   || hasActiveAmountFilter.value
   || hasActiveCurrencyFilter.value
   || hasActiveStatusFilter.value,
+)
+
+const searchFilterSummary = computed(() =>
+  appliedSearch.value || undefined,
 )
 
 const dateFilterSummary = computed(() => {
@@ -98,16 +104,16 @@ const dateFilterSummary = computed(() => {
     case 'in_last':
       return `Last ${filter.amount} ${filter.unit}`
     case 'eq':
-      return formatAbsoluteDateSummary(filter.date, filter.includeTime, filter.time)
+      return formatAbsoluteDateSummary(filter.date, filter.includeTime, filter.time, filter.timezone)
     case 'between':
       if (!filter.startDate || !filter.endDate) {
         return undefined
       }
-      return `${formatAbsoluteDateSummary(filter.startDate, filter.includeTime, filter.startTime)} - ${formatAbsoluteDateSummary(filter.endDate, filter.includeTime, filter.endTime)}`
+      return `${formatAbsoluteDateSummary(filter.startDate, filter.includeTime, filter.startTime, filter.timezone)} - ${formatAbsoluteDateSummary(filter.endDate, filter.includeTime, filter.endTime, filter.timezone)}`
     case 'gte':
-      return `On or after ${formatAbsoluteDateSummary(filter.date, filter.includeTime, filter.time)}`
+      return `On or after ${formatAbsoluteDateSummary(filter.date, filter.includeTime, filter.time, filter.timezone)}`
     case 'lte':
-      return `Before or on ${formatAbsoluteDateSummary(filter.date, filter.includeTime, filter.time)}`
+      return `Before or on ${formatAbsoluteDateSummary(filter.date, filter.includeTime, filter.time, filter.timezone)}`
     default:
       return undefined
   }
@@ -150,6 +156,10 @@ const currencyFilterSummary = computed(() => {
 
 const query = computed<Partial<ListShopOrdersRequest>>(() => {
   const nextQuery: Partial<ListShopOrdersRequest> = {}
+
+  if (appliedSearch.value.trim()) {
+    nextQuery.search = appliedSearch.value.trim()
+  }
 
   if (appliedStatusFilter.value.length > 0) {
     nextQuery.status = [...appliedStatusFilter.value]
@@ -201,6 +211,10 @@ watch(query, () => {
   emit('change', query.value)
 }, { immediate: true })
 
+watch(appliedStatusFilter, (nextValue) => {
+  statusFilterDraft.value = [...nextValue]
+}, { deep: true })
+
 watch(defaultAmountCurrency, (currency) => {
   if (!appliedCurrencyFilter.value) {
     currencyFilterDraft.value = createDefaultCurrencyFilter(currency)
@@ -219,7 +233,7 @@ function createDefaultDateFilter(): OrderDateFilterDraft {
     time: '00:00',
     startTime: '00:00',
     endTime: '23:59',
-    timezone: 'gmt+8',
+    timezone: getDefaultDateFilterTimezone(),
   }
 }
 
@@ -234,6 +248,17 @@ function createDefaultCurrencyFilter(currency: string): OrderCurrencyFilterDraft
   return {
     currency,
   }
+}
+
+function applySearchFilter() {
+  appliedSearch.value = searchDraft.value.trim()
+  emit('resetPage')
+}
+
+function clearSearchFilter() {
+  searchDraft.value = ''
+  appliedSearch.value = ''
+  emit('resetPage')
 }
 
 function applyDateFilter() {
@@ -303,6 +328,8 @@ function clearStatusFilter() {
 
 function clearAllFilters() {
   openFilter.value = null
+  searchDraft.value = ''
+  appliedSearch.value = ''
   appliedDateFilter.value = null
   dateFilterDraft.value = createDefaultDateFilter()
   appliedAmountFilter.value = null
@@ -315,7 +342,7 @@ function clearAllFilters() {
 }
 
 function updateOpenFilter(
-  filter: 'date' | 'amount' | 'currency' | 'status',
+  filter: 'search' | 'date' | 'amount' | 'currency' | 'status',
   open: boolean,
 ) {
   if (open) {
@@ -329,9 +356,7 @@ function updateOpenFilter(
 }
 
 function buildCreatedAtRange(filter: OrderDateFilterDraft) {
-  const now = filter.timezone === 'utc'
-    ? dayjs.utc()
-    : dayjs().utcOffset(8 * 60)
+  const now = getNowInTimezone(filter.timezone)
 
   switch (filter.operator) {
     case 'in_last':
@@ -413,12 +438,6 @@ function buildCreatedAtRange(filter: OrderDateFilterDraft) {
   }
 }
 
-function toZonedDay(value: Date, timezone: OrderDateFilterDraft['timezone']) {
-  return timezone === 'utc'
-    ? dayjs.utc(value)
-    : dayjs(value).utcOffset(8 * 60)
-}
-
 function applyTimeToDay(value: dayjs.Dayjs, time: string) {
   const [hoursRaw = '0', minutesRaw = '0'] = time.split(':')
   const hours = Number(hoursRaw)
@@ -431,12 +450,17 @@ function applyTimeToDay(value: dayjs.Dayjs, time: string) {
     .millisecond(0)
 }
 
-function formatAbsoluteDateSummary(value: Date | null, includeTime: boolean, time: string) {
+function formatAbsoluteDateSummary(
+  value: Date | null,
+  includeTime: boolean,
+  time: string,
+  timezone: OrderDateFilterDraft['timezone'],
+) {
   if (!value) {
     return undefined
   }
 
-  const base = dayjs(value)
+  const base = toZonedDay(value, timezone)
 
   if (!includeTime) {
     return base.format('MMM D, YYYY')
@@ -489,6 +513,23 @@ function isValidTime(value: string) {
 <template>
   <FilterToolbar>
     <FilterPopover
+      :open="openFilter === 'search'"
+      label="Search"
+      :active="hasActiveSearchFilter"
+      :value="searchFilterSummary"
+      :apply-disabled="!searchDraft.trim()"
+      @update:open="updateOpenFilter('search', $event)"
+      @apply="applySearchFilter"
+      @clear="clearSearchFilter"
+    >
+      <UInput
+        v-model="searchDraft"
+        placeholder="Search order number or customer email"
+        autofocus
+      />
+    </FilterPopover>
+
+    <FilterPopover
       :open="openFilter === 'date'"
       label="Date and time"
       :active="hasActiveDateFilter"
@@ -507,6 +548,7 @@ function isValidTime(value: string) {
       :active="hasActiveAmountFilter"
       :value="amountFilterSummary"
       :apply-disabled="!amountFilterDraft.amount"
+      panel-class="w-[min(92vw,300px)]"
       @update:open="updateOpenFilter('amount', $event)"
       @apply="applyAmountFilter"
       @clear="clearAmountFilter"
@@ -519,6 +561,7 @@ function isValidTime(value: string) {
       label="Currency"
       :active="hasActiveCurrencyFilter"
       :value="currencyFilterSummary"
+      panel-class="w-[min(92vw,300px)]"
       @update:open="updateOpenFilter('currency', $event)"
       @apply="applyCurrencyFilter"
       @clear="clearCurrencyFilter"
@@ -534,6 +577,7 @@ function isValidTime(value: string) {
       label="Status"
       :active="hasActiveStatusFilter"
       :value="statusFilterSummary"
+      panel-class="w-[min(92vw,300px)]"
       @update:open="updateOpenFilter('status', $event)"
       @apply="applyStatusFilter"
       @clear="clearStatusFilter"

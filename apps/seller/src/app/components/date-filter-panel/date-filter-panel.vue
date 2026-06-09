@@ -1,16 +1,22 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/app-icon.constants'
 import type { OrderDateFilterDraft } from './order-filter.types'
+import {
+  formatTimezoneOptionLabel,
+  getDefaultDateFilterTimezone,
+  UTC_TIMEZONE,
+} from './date-filter-timezone'
 
 const model = defineModel<OrderDateFilterDraft>({ required: true })
 
-const operatorOptions = [
+const operatorOptions: Array<{ label: string, value: OrderDateFilterDraft['operator'] }> = [
   { label: 'is in the last', value: 'in_last' },
   { label: 'is equal to', value: 'eq' },
   { label: 'is between', value: 'between' },
   { label: 'is on or after', value: 'gte' },
   { label: 'is before or on', value: 'lte' },
-] as const
+]
 
 const unitOptions = [
   { label: 'days', value: 'days' },
@@ -18,10 +24,11 @@ const unitOptions = [
   { label: 'months', value: 'months' },
 ]
 
-const timezoneOptions = [
-  { label: 'GMT+8', value: 'gmt+8' },
-  { label: 'UTC', value: 'utc' },
-] as Array<{ label: string, value: OrderDateFilterDraft['timezone'] }>
+const localTimezone = ref(getDefaultDateFilterTimezone())
+const timezoneOptions = computed<Array<{ label: string, value: OrderDateFilterDraft['timezone'] }>>(() => [
+  { label: formatTimezoneOptionLabel(localTimezone.value), value: localTimezone.value },
+  { label: UTC_TIMEZONE, value: UTC_TIMEZONE },
+])
 
 const showsRelativeInputs = computed(() => model.value.operator === 'in_last')
 const showsSingleDate = computed(() => ['eq', 'gte', 'lte'].includes(model.value.operator))
@@ -42,6 +49,24 @@ const canEnableIncludeTime = computed(() => {
 const singleDateLabel = computed(() => formatDateLabel(model.value.date))
 const startDateLabel = computed(() => formatDateLabel(model.value.startDate))
 const endDateLabel = computed(() => formatDateLabel(model.value.endDate))
+const datePickerPopoverUi = {
+  container: 'z-[60] fixed',
+}
+
+const startDateDisabledDates = computed(() => {
+  if (!model.value.endDate) {
+    return undefined
+  }
+
+  return [{ start: dayjs(model.value.endDate).add(1, 'day').toDate() }]
+})
+const endDateDisabledDates = computed(() => {
+  if (!model.value.startDate) {
+    return undefined
+  }
+
+  return [{ end: dayjs(model.value.startDate).subtract(1, 'day').toDate() }]
+})
 
 watch(() => model.value.operator, (operator) => {
   if (operator === 'in_last') {
@@ -74,6 +99,25 @@ watch(canEnableIncludeTime, (enabled) => {
   }
 })
 
+watch(() => model.value.startDate, (startDate) => {
+  if (!startDate || !model.value.endDate) {
+    return
+  }
+
+  if (dayjs(model.value.endDate).isBefore(startDate, 'day')) {
+    model.value.endDate = startDate
+  }
+})
+
+onMounted(() => {
+  const detectedTimezone = getDefaultDateFilterTimezone()
+  localTimezone.value = detectedTimezone
+
+  if (!model.value.timezone) {
+    model.value.timezone = detectedTimezone
+  }
+})
+
 function formatDateLabel(value: Date | null) {
   if (!value) {
     return 'Select date'
@@ -82,30 +126,61 @@ function formatDateLabel(value: Date | null) {
   return dayjs(value).format('MMM D, YYYY')
 }
 
-function isChecked(value: OrderDateFilterDraft['timezone']) {
-  return model.value.timezone === value
+function setOperator(value: OrderDateFilterDraft['operator']) {
+  model.value.operator = value
 }
 
-function updateTimezone(value: OrderDateFilterDraft['timezone'], checked: boolean | 'indeterminate') {
-  if (checked === 'indeterminate') {
+function setAmount(value: string | number) {
+  model.value.amount = String(value ?? '')
+}
+
+function setUnit(value: OrderDateFilterDraft['unit']) {
+  model.value.unit = value
+}
+
+function setDate(value: Date | null) {
+  model.value.date = value
+}
+
+function setIncludeTime(value: boolean | 'indeterminate') {
+  if (value === 'indeterminate') {
     return
   }
 
-  if (checked) {
-    model.value.timezone = value
-  }
+  model.value.includeTime = value
+}
+
+function setTime(value: string | number) {
+  model.value.time = String(value ?? '')
+}
+
+function setStartDate(value: Date | null) {
+  model.value.startDate = value
+}
+
+function setEndDate(value: Date | null) {
+  model.value.endDate = value
+}
+
+function setStartTime(value: string | number) {
+  model.value.startTime = String(value ?? '')
+}
+
+function setEndTime(value: string | number) {
+  model.value.endTime = String(value ?? '')
 }
 </script>
 
 <template>
-  <div class="space-y-4">
+  <div class="space-y-3">
     <USelectMenu
-      v-model="model.operator"
+      :model-value="model.operator"
       :options="operatorOptions"
       value-attribute="value"
       option-attribute="label"
       size="lg"
       class="w-full"
+      @update:model-value="setOperator"
     />
 
     <div
@@ -120,26 +195,28 @@ function updateTimezone(value: OrderDateFilterDraft['timezone'], checked: boolea
       </div>
 
       <UInput
-        v-model="model.amount"
+        :model-value="model.amount"
         type="number"
         min="1"
         size="lg"
         placeholder="7"
+        @update:model-value="setAmount"
       />
 
       <USelectMenu
-        v-model="model.unit"
+        :model-value="model.unit"
         :options="unitOptions"
         value-attribute="value"
         option-attribute="label"
         size="lg"
         class="sm:w-36"
+        @update:model-value="setUnit"
       />
     </div>
 
     <div
       v-else-if="showsSingleDate"
-      class="space-y-4"
+      class="space-y-3"
     >
       <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div class="hidden text-3xl text-primary sm:block">
@@ -149,7 +226,10 @@ function updateTimezone(value: OrderDateFilterDraft['timezone'], checked: boolea
           />
         </div>
 
-        <UPopover :popper="{ placement: 'bottom-start' }">
+        <UPopover
+          :popper="{ placement: 'bottom-start' }"
+          :ui="datePickerPopoverUi"
+        >
           <UButton
             size="lg"
             color="white"
@@ -159,10 +239,11 @@ function updateTimezone(value: OrderDateFilterDraft['timezone'], checked: boolea
 
           <template #panel="{ close }">
             <VDatePicker
-              v-model="model.date"
+              :model-value="model.date"
               color="indigo"
               mode="date"
               hide-time-header
+              @update:model-value="setDate"
               @close="close"
             />
           </template>
@@ -174,11 +255,12 @@ function updateTimezone(value: OrderDateFilterDraft['timezone'], checked: boolea
         class="flex flex-col gap-3 sm:flex-row sm:items-center sm:pl-12"
       >
         <UInput
-          v-model="model.time"
+          :model-value="model.time"
           type="time"
           step="60"
           size="lg"
           class="sm:w-56"
+          @update:model-value="setTime"
         />
       </div>
 
@@ -187,8 +269,9 @@ function updateTimezone(value: OrderDateFilterDraft['timezone'], checked: boolea
         class="flex items-center gap-3 text-base font-medium text-text-subtle"
       >
         <UCheckbox
-          v-model="model.includeTime"
+          :model-value="model.includeTime"
           :disabled="!canEnableIncludeTime"
+          @update:model-value="setIncludeTime"
         />
         <span>Include time</span>
       </label>
@@ -198,10 +281,14 @@ function updateTimezone(value: OrderDateFilterDraft['timezone'], checked: boolea
       v-else-if="showsRangeDates"
       class="space-y-4"
     >
-      <div class="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:items-start">
-        <div class="space-y-3">
-          <UPopover :popper="{ placement: 'bottom-start' }">
+      <div class="grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:items-start">
+        <div>
+          <UPopover
+            :popper="{ placement: 'bottom-start' }"
+            :ui="datePickerPopoverUi"
+          >
             <UButton
+              :icon="ICON_NAME_BY_ALIAS['calendar']"
               size="lg"
               color="white"
               variant="outline"
@@ -211,31 +298,29 @@ function updateTimezone(value: OrderDateFilterDraft['timezone'], checked: boolea
 
             <template #panel="{ close }">
               <VDatePicker
-                v-model="model.startDate"
+                :model-value="model.startDate"
                 color="indigo"
+                :disabled-dates="startDateDisabledDates"
                 mode="date"
                 hide-time-header
+                @update:model-value="setStartDate"
                 @close="close"
               />
             </template>
           </UPopover>
-
-          <UInput
-            v-if="model.includeTime"
-            v-model="model.startTime"
-            type="time"
-            step="60"
-            size="lg"
-          />
         </div>
 
         <div class="hidden self-center px-2 text-base text-text-subtle sm:block">
-          and
+          to
         </div>
 
-        <div class="space-y-3">
-          <UPopover :popper="{ placement: 'bottom-start' }">
+        <div>
+          <UPopover
+            :popper="{ placement: 'bottom-start' }"
+            :ui="datePickerPopoverUi"
+          >
             <UButton
+              :icon="ICON_NAME_BY_ALIAS['calendar']"
               size="lg"
               color="white"
               variant="outline"
@@ -245,52 +330,73 @@ function updateTimezone(value: OrderDateFilterDraft['timezone'], checked: boolea
 
             <template #panel="{ close }">
               <VDatePicker
-                v-model="model.endDate"
+                :model-value="model.endDate"
                 color="indigo"
+                :disabled-dates="endDateDisabledDates"
                 mode="date"
                 hide-time-header
+                @update:model-value="setEndDate"
                 @close="close"
               />
             </template>
           </UPopover>
-
-          <UInput
-            v-if="model.includeTime"
-            v-model="model.endTime"
-            type="time"
-            step="60"
-            size="lg"
-          />
         </div>
+
+        <UInput
+          v-if="model.includeTime"
+          :model-value="model.startTime"
+          type="time"
+          step="60"
+          size="lg"
+          class="sm:col-start-1"
+          @update:model-value="setStartTime"
+        />
+
+        <div
+          v-if="model.includeTime"
+          class="hidden sm:block"
+        />
+
+        <UInput
+          v-if="model.includeTime"
+          :model-value="model.endTime"
+          type="time"
+          step="60"
+          size="lg"
+          class="sm:col-start-3"
+          @update:model-value="setEndTime"
+        />
       </div>
 
-      <label class="flex items-center gap-3 text-base font-medium text-text-subtle">
+      <label class="flex items-center gap-2 text-base font-medium text-text-subtle">
         <UCheckbox
-          v-model="model.includeTime"
+          :model-value="model.includeTime"
           :disabled="!canEnableIncludeTime"
+          @update:model-value="setIncludeTime"
         />
         <span>Include time</span>
       </label>
     </div>
 
-    <div class="flex flex-col gap-3 pt-1 text-text-subtle sm:flex-row sm:items-center">
-      <div class="text-base">
+    <div class="flex items-center gap-3 pt-1 text-text-subtle">
+      <div class="shrink-0 whitespace-nowrap text-base">
         Time zone:
       </div>
 
-      <div class="grid gap-4 sm:grid-cols-2">
-        <label
-          v-for="option in timezoneOptions"
-          :key="option.value"
-          class="flex cursor-pointer items-center gap-2 py-1 text-sm font-medium text-text-subtle sm:text-base"
-        >
-          <UCheckbox
-            :model-value="isChecked(option.value)"
-            @update:model-value="updateTimezone(option.value, $event)"
-          />
-          <span>{{ option.label }}</span>
-        </label>
-      </div>
+      <RadioGroup
+        v-model="model.timezone"
+        :options="timezoneOptions"
+        direction="horizontal"
+        value-attribute="value"
+        option-attribute="label"
+        :ui="{
+          fieldset: 'min-w-0 flex-1',
+        }"
+        :ui-radio="{
+          wrapper: 'mb-0',
+          label: 'text-sm font-medium text-text-subtle sm:text-base',
+        }"
+      />
     </div>
   </div>
 </template>
