@@ -2,17 +2,17 @@
 import type { Category } from '@arc/models/category'
 import { getRoutePath, routes } from '~/shared/navigation/routes'
 import { useGetRootCategories } from '~/shared/server-state/category/categories.query'
-import { resolveStoragePublicUrl } from '~/shared/utils/storage-public-url'
+import { CATEGORY_IMAGE_VARIANTS, resolveCategoryImageUrl } from '~/shared/utils/category-image'
 
 const { data } = useGetRootCategories()
 const marketStore = useMarketStore()
 const config = useRuntimeConfig()
 
-const categoryImageUrl = (category: Category) => resolveStoragePublicUrl({
-  url: category.imageUrl,
-  storageKey: category.imageStorageKey,
-  assetHost: config.public.assetHost,
-})
+const categoryImageUrl = (category: Category) => resolveCategoryImageUrl(
+  category,
+  config.public.assetHost,
+  CATEGORY_IMAGE_VARIANTS.ROOT_2X3,
+)
 
 const redirectByCategory = (category: Category) => {
   const to = getRoutePath(routes.category(category.name.replaceAll(' ', '-').toLowerCase()))

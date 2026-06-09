@@ -2,16 +2,16 @@
 import type { Category } from '@arc/models/category'
 import { useGetCategories } from '~/shared/server-state/category/categories.query'
 import { getRoutePath, routes } from '~/shared/navigation/routes'
-import { resolveStoragePublicUrl } from '~/shared/utils/storage-public-url'
+import { CATEGORY_IMAGE_VARIANTS, resolveCategoryImageUrl } from '~/shared/utils/category-image'
 
 const marketStore = useMarketStore()
 const config = useRuntimeConfig()
 
-const categoryImageUrl = (category: Category) => resolveStoragePublicUrl({
-  url: category.imageUrl,
-  storageKey: category.imageStorageKey,
-  assetHost: config.public.assetHost,
-})
+const categoryImageUrl = (category: Category) => resolveCategoryImageUrl(
+  category,
+  config.public.assetHost,
+  CATEGORY_IMAGE_VARIANTS.RECOMMENDED_1X1,
+)
 
 const params = computed(() => {
   if (marketStore.userActivities?.rootCategoryProductVisited?.id) {
