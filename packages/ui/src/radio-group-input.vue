@@ -11,7 +11,18 @@ const props = defineProps<{
   options: TOption[]
   disabled?: boolean
   valueAttribute?: keyof TOption
+  optionAttribute?: keyof TOption
   row?: boolean
+  direction?: 'horizontal' | 'vertical'
+  name?: string
+  ui?: {
+    fieldset?: string
+    container?: string
+  }
+  uiRadio?: {
+    wrapper?: string
+    label?: string
+  }
 }>()
 
 const radioSelectedModel = defineModel<TValue>({
@@ -19,6 +30,7 @@ const radioSelectedModel = defineModel<TValue>({
 })
 
 const slots = useSlots()
+const generatedName = `radio-group-${useId()}`
 
 function optionToValue(opt: TOption) {
   if (typeof opt === 'object') {
@@ -34,36 +46,68 @@ function optionToValue(opt: TOption) {
 }
 
 function optionToLabel(opt: TOption) {
-  if (typeof opt === 'object' && opt.label) {
-    return opt.label
+  if (typeof opt === 'object') {
+    if (props.optionAttribute) {
+      return opt[props.optionAttribute] as TValue
+    }
+    if (Object.hasOwn(opt, 'label')) {
+      return opt.label as TValue
+    }
   }
   return optionToValue(opt) as TValue
 }
+
+function optionToHelp(opt: TOption) {
+  if (typeof opt === 'object' && Object.hasOwn(opt, 'help')) {
+    return String(opt.help ?? '')
+  }
+  return ''
+}
+
+const direction = computed(() => {
+  if (props.direction) {
+    return props.direction
+  }
+  return props.row ? 'horizontal' : 'vertical'
+})
 </script>
 
 <template>
-  <div :class="props.row ? 'flex items-center space-x-10' : 'space-y-1'">
+  <fieldset :class="props.ui?.fieldset">
     <div
-      v-for="(opt, idx) in props.options"
-      :key="idx"
+      :class="[
+        direction === 'horizontal'
+          ? 'flex flex-row flex-wrap gap-x-4 gap-y-3'
+          : 'flex flex-col gap-3',
+        props.ui?.container,
+      ]"
     >
-      <RadioInput
-        v-model="radioSelectedModel"
-        :value="optionToValue(opt)"
-        :label="optionToLabel(opt)"
-        :help="typeof opt === 'object' ? opt?.help : ''"
-        :disabled="props.disabled"
+      <div
+        v-for="(opt, idx) in props.options"
+        :key="`${String(optionToValue(opt))}-${idx}`"
       >
-        <template
-          v-if="slots.label"
-          #label
+        <RadioInput
+          v-model="radioSelectedModel"
+          :value="optionToValue(opt)"
+          :label="optionToLabel(opt)"
+          :help="optionToHelp(opt)"
+          :disabled="props.disabled"
+          :name="props.name ?? generatedName"
+          :wrapper-class="props.uiRadio?.wrapper"
+          :label-class="props.uiRadio?.label"
+          :radio-class="direction === 'horizontal' ? 'mb-0' : undefined"
         >
-          <slot
-            name="label"
-            :option="opt"
-          />
-        </template>
-      </RadioInput>
+          <template
+            v-if="slots.label"
+            #label
+          >
+            <slot
+              name="label"
+              :option="opt"
+            />
+          </template>
+        </RadioInput>
+      </div>
     </div>
-  </div>
+  </fieldset>
 </template>

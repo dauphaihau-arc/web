@@ -10,6 +10,10 @@ const props = defineProps<{
   help?: string
   value: TModel
   disabled?: boolean
+  name?: string
+  wrapperClass?: string
+  labelClass?: string
+  radioClass?: string
 }>()
 
 const model = defineModel<TModel>({
@@ -30,32 +34,38 @@ const isChecked = computed(() => {
 
 <template>
   <div
-    class="flex items-start"
+    :class="['flex items-start', props.wrapperClass]"
     @click="clickRadio"
   >
     <div class="grid h-6 place-items-center">
       <input
+        :checked="isChecked"
         :disabled="disabled"
+        :name="props.name"
+        :value="props.value"
         type="radio"
         class="
         col-start-1
         row-start-1 size-4
         shrink-0 appearance-none rounded-full border
       "
-        :class="isChecked && 'border-primary bg-primary'"
+        :class="[
+          isChecked && 'border-primary bg-primary',
+          props.radioClass,
+        ]"
       >
       <div
         v-if="isChecked"
         class="col-start-1 row-start-1 size-1.5 rounded-full bg-white"
       />
     </div>
-    <div class="ms-3 flex flex-col">
+    <div class="ms-1.5 flex flex-col">
       <slot
         v-if="slots.label"
         name="label"
       />
       <div v-else>
-        <label class="text-sm font-medium text-text-subtle">
+        <label :class="['text-sm font-medium text-text-subtle', props.labelClass]">
           {{ props.label }}
         </label>
         <div

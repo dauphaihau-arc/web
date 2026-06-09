@@ -48,7 +48,10 @@ function handleTriggerClick() {
     </div>
 
     <template #panel="{ close }">
-      <div :class="['w-[min(92vw,360px)] rounded-dialog bg-surface', props.panelPaddingClass, props.panelClass]">
+      <form
+        :class="[props.panelClass || 'w-[min(92vw,360px)]', 'rounded-dialog bg-surface', props.panelPaddingClass]"
+        @submit.prevent="handleApply(close)"
+      >
         <div class="text-base font-semibold tracking-tight text-text-strong sm:text-lg">
           Filter by: {{ props.label.toLowerCase() }}
         </div>
@@ -58,15 +61,14 @@ function handleTriggerClick() {
         </div>
 
         <UButton
+          type="submit"
           block
-          size="md"
           :disabled="props.applyDisabled"
           class="mt-4 text-sm"
-          @click="handleApply(close)"
         >
           Apply
         </UButton>
-      </div>
+      </form>
     </template>
   </UPopover>
 </template>
