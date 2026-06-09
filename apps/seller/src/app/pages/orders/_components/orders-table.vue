@@ -57,12 +57,12 @@ const rows = computed<OrderTableRow[]>(() => {
 })
 
 const columns = [
-  { key: 'order', label: 'Order ID' },
+  { key: 'order', label: 'Order number' },
   { key: 'customer', label: 'Customer' },
   { key: 'total', label: 'Total' },
   { key: 'items', label: 'Items' },
   { key: 'created_at', label: 'Order Date' },
-  { key: 'status', label: 'Payment' },
+  { key: 'status', label: 'Status' },
   { key: 'shipping', label: 'Fulfillment' },
   { key: 'actions' },
 ]

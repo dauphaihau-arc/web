@@ -1,9 +1,12 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 import { MarketCurrencies } from '@arc/enums/market'
-import type { OrderStatuses } from '@arc/enums/order'
+import type { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
 import { currencyOptions, toCurrencyOption, toMinorUnits } from '@arc/utils'
-import { orderStatusFilterOptions } from '../order-status-filter-options'
+import {
+  orderFulfillmentFilterOptions,
+  orderStatusFilterOptions,
+} from '../order-status-filter-options'
 import DateFilterPanel from '../../../../components/date-filter-panel/date-filter-panel.vue'
 import AmountFilterPanel from './amount-filter-panel.vue'
 import CurrencyFilterPanel from './currency-filter-panel.vue'
@@ -29,6 +32,7 @@ const emit = defineEmits<{
   resetPage: []
 }>()
 
+const fulfillmentOptions = orderFulfillmentFilterOptions
 const statusOptions = orderStatusFilterOptions
 const appliedStatusFilter = defineModel<OrderStatuses[]>('statusFilter', { default: () => [] })
 
@@ -73,19 +77,23 @@ const amountFilterDraft = ref<OrderAmountFilterDraft>(createDefaultAmountFilter(
 const appliedAmountFilter = ref<OrderAmountFilterDraft | null>(null)
 const currencyFilterDraft = ref<OrderCurrencyFilterDraft>(createDefaultCurrencyFilter(defaultAmountCurrency.value))
 const appliedCurrencyFilter = ref<OrderCurrencyFilterDraft | null>(null)
+const fulfillmentFilterDraft = ref<OrderShippingStatuses[]>([])
+const appliedFulfillmentFilter = ref<OrderShippingStatuses[]>([])
 const statusFilterDraft = ref<OrderStatuses[]>([...appliedStatusFilter.value])
-const openFilter = ref<'search' | 'date' | 'amount' | 'currency' | 'status' | null>(null)
+const openFilter = ref<'search' | 'date' | 'amount' | 'currency' | 'fulfillment' | 'status' | null>(null)
 
 const hasActiveSearchFilter = computed(() => appliedSearch.value.length > 0)
 const hasActiveDateFilter = computed(() => appliedDateFilter.value !== null)
 const hasActiveAmountFilter = computed(() => appliedAmountFilter.value !== null)
 const hasActiveCurrencyFilter = computed(() => appliedCurrencyFilter.value !== null)
+const hasActiveFulfillmentFilter = computed(() => appliedFulfillmentFilter.value.length > 0)
 const hasActiveStatusFilter = computed(() => appliedStatusFilter.value.length > 0)
 const hasActiveFilters = computed(() =>
   hasActiveSearchFilter.value
   || hasActiveDateFilter.value
   || hasActiveAmountFilter.value
   || hasActiveCurrencyFilter.value
+  || hasActiveFulfillmentFilter.value
   || hasActiveStatusFilter.value,
 )
 
@@ -135,6 +143,17 @@ const amountFilterSummary = computed(() => {
   return `${operatorLabel} ${filter.amount}`
 })
 
+const fulfillmentFilterSummary = computed(() => {
+  if (appliedFulfillmentFilter.value.length === 0) {
+    return undefined
+  }
+
+  return fulfillmentOptions
+    .filter(option => appliedFulfillmentFilter.value.includes(option.value as OrderShippingStatuses))
+    .map(option => option.label)
+    .join(', ')
+})
+
 const statusFilterSummary = computed(() => {
   if (appliedStatusFilter.value.length === 0) {
     return undefined
@@ -163,6 +182,10 @@ const query = computed<Partial<ListShopOrdersRequest>>(() => {
 
   if (appliedStatusFilter.value.length > 0) {
     nextQuery.status = [...appliedStatusFilter.value]
+  }
+
+  if (appliedFulfillmentFilter.value.length > 0) {
+    nextQuery.shipping_status = [...appliedFulfillmentFilter.value]
   }
 
   if (appliedAmountFilter.value) {
@@ -315,6 +338,17 @@ function clearCurrencyFilter() {
   emit('resetPage')
 }
 
+function applyFulfillmentFilter() {
+  appliedFulfillmentFilter.value = [...fulfillmentFilterDraft.value]
+  emit('resetPage')
+}
+
+function clearFulfillmentFilter() {
+  appliedFulfillmentFilter.value = []
+  fulfillmentFilterDraft.value = []
+  emit('resetPage')
+}
+
 function applyStatusFilter() {
   appliedStatusFilter.value = [...statusFilterDraft.value]
   emit('resetPage')
@@ -336,13 +370,15 @@ function clearAllFilters() {
   amountFilterDraft.value = createDefaultAmountFilter()
   appliedCurrencyFilter.value = null
   currencyFilterDraft.value = createDefaultCurrencyFilter(defaultAmountCurrency.value)
+  appliedFulfillmentFilter.value = []
+  fulfillmentFilterDraft.value = []
   appliedStatusFilter.value = []
   statusFilterDraft.value = []
   emit('resetPage')
 }
 
 function updateOpenFilter(
-  filter: 'search' | 'date' | 'amount' | 'currency' | 'status',
+  filter: 'search' | 'date' | 'amount' | 'currency' | 'fulfillment' | 'status',
   open: boolean,
 ) {
   if (open) {
@@ -573,11 +609,27 @@ function isValidTime(value: string) {
     </FilterPopover>
 
     <FilterPopover
+      :open="openFilter === 'fulfillment'"
+      label="Fulfillment"
+      :active="hasActiveFulfillmentFilter"
+      :value="fulfillmentFilterSummary"
+      panel-class="w-[min(92vw,190px)]"
+      @update:open="updateOpenFilter('fulfillment', $event)"
+      @apply="applyFulfillmentFilter"
+      @clear="clearFulfillmentFilter"
+    >
+      <StatusFilterPanel
+        v-model="fulfillmentFilterDraft"
+        :options="fulfillmentOptions"
+      />
+    </FilterPopover>
+
+    <FilterPopover
       :open="openFilter === 'status'"
       label="Status"
       :active="hasActiveStatusFilter"
       :value="statusFilterSummary"
-      panel-class="w-[min(92vw,300px)]"
+      panel-class="w-[min(92vw,220px)]"
       @update:open="updateOpenFilter('status', $event)"
       @apply="applyStatusFilter"
       @clear="clearStatusFilter"

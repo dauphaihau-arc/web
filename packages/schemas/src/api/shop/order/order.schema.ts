@@ -107,12 +107,25 @@ export const shopOrderSummarySchema = z.object({
   created_at: z.coerce.date(),
 })
 
+export const shopOrderStatusCountsSchema = z.object({
+  all: z.number(),
+  awaiting_payment: z.number(),
+  pending: z.number(),
+  paid: z.number(),
+  refunded: z.number(),
+  completed: z.number(),
+  canceled: z.number(),
+  expired: z.number(),
+  archived: z.number(),
+})
+
 export const listShopOrdersResponseSchema = z.object({
   results: z.array(shopOrderSummarySchema),
   page: z.number(),
   limit: z.number(),
   total_pages: z.number(),
   total_results: z.number(),
+  status_counts: shopOrderStatusCountsSchema,
 })
 
 export const shopOrderDetailResponseSchema = z.object({

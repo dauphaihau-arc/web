@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import OrdersFilterToolbar from './_components/orders-filter-toolbar/orders-filter-toolbar.vue'
+import type { OrderStatuses } from '@arc/enums/order'
+import OrdersStatusTabs from './_components/orders-status-tabs.vue'
 import OrdersTable from './_components/orders-table.vue'
+import OrderFilterToolbar from '~/app/pages/orders/_components/order-filter-toolbar/order-filter-toolbar.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import { useShopGetOrders } from '~/shared/server-state/shop/order/list.query'
 import type { ListShopOrdersRequest } from '~/shared/api/shop/order/contracts/order.contract'
@@ -10,6 +12,7 @@ definePageMeta({ layout: 'shop', middleware: ['auth'] })
 const pageCount = 20
 const page = ref(1)
 const activeFilters = ref<Partial<ListShopOrdersRequest>>({})
+const statusFilter = ref<OrderStatuses[]>([])
 
 const params = computed(() => ({
   page: page.value,
@@ -17,26 +20,41 @@ const params = computed(() => ({
   ...activeFilters.value,
 }))
 
+const orderCountBaseParams = computed<ListShopOrdersRequest>(() => ({
+  ...activeFilters.value,
+  page: 1,
+  limit: 1,
+  status: undefined,
+}))
+
 const {
   isPending,
   data,
 } = useShopGetOrders(params)
 
+const orderCountsQuery = useShopGetOrders(orderCountBaseParams)
+
 function handleToolbarChange(payload: Partial<ListShopOrdersRequest>) {
   activeFilters.value = payload
 }
+
+watch(statusFilter, () => {
+  page.value = 1
+}, { deep: true })
 </script>
 
 <template>
   <LayoutShopWrapperContent>
     <template #title>
-      Orders & Shipping
-    </template>
-    <template #description>
-      Review paid orders and keep shipment status up to date for buyers.
+      Orders
     </template>
     <template #content>
-      <OrdersFilterToolbar
+      <OrdersStatusTabs
+        v-model="statusFilter"
+        :counts="orderCountsQuery.data.value?.status_counts ?? data?.status_counts"
+      />
+      <OrderFilterToolbar
+        v-model:status-filter="statusFilter"
         @change="handleToolbarChange"
         @reset-page="page = 1"
       />
