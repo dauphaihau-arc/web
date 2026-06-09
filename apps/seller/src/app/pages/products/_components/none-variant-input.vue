@@ -9,6 +9,18 @@ const noneVariantModel = defineModel<StateNoneVariant>('noneVariant', {
     stock: 1,
   },
 })
+
+function setAmount(value: string | number) {
+  noneVariantModel.value.amount = Number(value)
+}
+
+function setStock(value: string | number) {
+  noneVariantModel.value.stock = Number(value)
+}
+
+function setSku(value: string | number) {
+  noneVariantModel.value.sku = String(value ?? '')
+}
 </script>
 
 <template>
@@ -20,13 +32,14 @@ const noneVariantModel = defineModel<StateNoneVariant>('noneVariant', {
       required
     >
       <UInput
-        v-model.number="noneVariantModel.amount"
         v-max-number="PRODUCT_CONFIG.MAX_PRICE"
         v-numeric
+        :model-value="noneVariantModel.amount"
         :disabled="props.disabled"
         size="lg"
         type="number"
         class="w-1/2"
+        @update:model-value="setAmount"
       >
         <template #trailing>
           <span class="text-xs text-text-muted">{{ props.currency ?? 'USD' }}</span>
@@ -40,13 +53,14 @@ const noneVariantModel = defineModel<StateNoneVariant>('noneVariant', {
       required
     >
       <UInput
-        v-model.number="noneVariantModel.stock"
         v-max-number="PRODUCT_CONFIG.MAX_STOCK"
         v-numeric
+        :model-value="noneVariantModel.stock"
         :disabled="props.disabled"
         size="lg"
         type="number"
         class="w-1/2"
+        @update:model-value="setStock"
       />
     </UFormGroup>
     <UFormGroup
@@ -56,14 +70,15 @@ const noneVariantModel = defineModel<StateNoneVariant>('noneVariant', {
       name="sku"
     >
       <UInput
-        v-model="noneVariantModel.sku"
         v-uppercase
         v-alphanumeric
+        :model-value="noneVariantModel.sku"
         :maxlength="PRODUCT_CONFIG.MAX_CHAR_SKU"
         :disabled="props.disabled"
         size="lg"
         :ui="{ base: 'uppercase' }"
         class="w-1/2"
+        @update:model-value="setSku"
       />
     </UFormGroup>
   </div>

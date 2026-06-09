@@ -10,7 +10,9 @@ const requestGetListParamsSchema = z.object({
 })
 
 export const listShopProductsRequestSchema = requestGetListParamsSchema.extend({
-  title: z.string().optional(),
+  search: z.string().optional(),
+  state: z.nativeEnum(ProductStates).optional(),
+  category_id: z.string().uuid().optional(),
 })
 
 export const listShopProductsItemSchema = z.object({
@@ -43,6 +45,13 @@ export const listShopProductsItemSchema = z.object({
   })),
 })
 
+export const productStateCountsSchema = z.object({
+  all: z.number(),
+  active: z.number(),
+  inactive: z.number(),
+  draft: z.number(),
+})
+
 export const listShopProductsResponseSchema = z.object({
   items: z.array(listShopProductsItemSchema),
   meta: z.object({
@@ -53,6 +62,7 @@ export const listShopProductsResponseSchema = z.object({
     has_next_page: z.boolean(),
     has_previous_page: z.boolean(),
   }),
+  state_counts: productStateCountsSchema,
 })
 
 export const shopProductDetailApiResponseSchema = z.object({

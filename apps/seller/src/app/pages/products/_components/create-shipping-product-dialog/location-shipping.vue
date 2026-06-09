@@ -107,6 +107,14 @@ watch(stateDeliveryTime, () => {
     stateDeliveryTime.to = 0
   }
 })
+
+function setCountry(value: Partial<ShippingLocation>['country']) {
+  model.value.country = value
+}
+
+function setService(value: Partial<ShippingLocation>['service']) {
+  model.value.service = value
+}
 </script>
 
 <template>
@@ -131,12 +139,13 @@ watch(stateDeliveryTime, () => {
       class="mb-4"
     >
       <USelectMenu
-        v-model="model.country"
+        :model-value="model.country"
         searchable
         :options="countriesOptions"
         option-attribute="label"
         value-attribute="value"
         size="xl"
+        @update:model-value="setCountry"
       />
     </UFormGroup>
 
@@ -147,9 +156,10 @@ watch(stateDeliveryTime, () => {
       class="mb-4"
     >
       <USelectMenu
-        v-model="model.service"
+        :model-value="model.service"
         :options="shippingServiceOptions"
         size="xl"
+        @update:model-value="setService"
       />
     </UFormGroup>
     <UFormGroup
