@@ -19,6 +19,8 @@ export const listShopCouponsRequestSchema = z.custom<Partial<RequestGetListParam
   code: string
   // API query params use snake_case.
   is_auto_sale: boolean
+  active_from: string
+  active_to: string
 }>>()
 
 export const listShopCouponsResponseSchema = z.object({
@@ -27,6 +29,11 @@ export const listShopCouponsResponseSchema = z.object({
   limit: z.number(),
   total_pages: z.number(),
   total_results: z.number(),
+  type_counts: z.object({
+    all: z.number(),
+    promo_code: z.number(),
+    sale: z.number(),
+  }),
 })
 
 export const bulkDeleteShopCouponsRequestSchema = z.object({
