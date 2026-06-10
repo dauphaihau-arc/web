@@ -1,0 +1,142 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+      - production
+  workflow_dispatch:
+
+concurrency:
+  group: web-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      storefront: ${{ steps.filter.outputs.storefront }}
+      seller: ${{ steps.filter.outputs.seller }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed app scopes
+        id: filter
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            base_ref="origin/${{ github.base_ref }}"
+            git fetch origin "${{ github.base_ref }}" --depth=1
+          else
+            if [[ "${{ github.event.before }}" == "0000000000000000000000000000000000000000" ]]; then
+              base_ref="$(git rev-list --max-parents=0 HEAD)"
+            else
+              base_ref="${{ github.event.before }}"
+            fi
+          fi
+
+          changed_files="$(git diff --name-only "$base_ref" HEAD)"
+
+          storefront=false
+          seller=false
+
+          while IFS= read -r file; do
+            [[ -z "$file" ]] && continue
+
+            case "$file" in
+              apps/storefront/*|packages/*|pnpm-workspace.yaml|package.json|pnpm-lock.yaml)
+                storefront=true
+                ;;
+            esac
+
+            case "$file" in
+              apps/seller/*|packages/*|pnpm-workspace.yaml|package.json|pnpm-lock.yaml)
+                seller=true
+                ;;
+            esac
+          done <<< "$changed_files"
+
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            storefront=true
+            seller=true
+          fi
+
+          echo "storefront=$storefront" >> "$GITHUB_OUTPUT"
+          echo "seller=$seller" >> "$GITHUB_OUTPUT"
+
+  storefront:
+    needs: changes
+    if: needs.changes.outputs.storefront == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8.13.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.20.2
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint storefront
+        run: pnpm lint:storefront
+
+      - name: Typecheck storefront
+        run: pnpm typecheck:storefront
+
+      - name: Test storefront
+        run: pnpm --filter @arc/storefront test
+
+      - name: Build storefront
+        run: pnpm build:storefront
+
+  seller:
+    needs: changes
+    if: needs.changes.outputs.seller == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8.13.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.20.2
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint seller
+        run: pnpm lint:seller
+
+      - name: Typecheck seller
+        run: pnpm typecheck:seller
+
+      - name: Test seller
+        run: pnpm --filter @arc/seller test
+
+      - name: Build seller
+        run: pnpm build:seller
