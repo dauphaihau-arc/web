@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { useGetProducts } from '~/shared/server-state/product/products.query'
+import type { ProductSuggestion } from '~/shared/api/product/contracts/product.contract'
+import { useGetProductSuggestions } from '~/shared/server-state/product/products.query'
 import { routes } from '~/shared/navigation/routes'
 
 const props = defineProps<{ show: boolean }>()
@@ -7,44 +8,105 @@ const props = defineProps<{ show: boolean }>()
 const route = useRoute()
 const router = useRouter()
 const limit = 5
+const MIN_SEARCH_LENGTH = 2
 
 const state = reactive({
   search: '',
 })
 
 watch(() => [route.query.search, props.show], () => {
-  if (!route.query?.search || !props.show) {
+  if (!props.show) {
     state.search = ''
+    return
   }
+
+  state.search = typeof route.query.search === 'string' ? route.query.search : ''
 })
 
-const params = computed(() => ({
-  limit,
-  search: state.search,
-}))
+const trimmedSearch = computed(() => state.search.trim())
+const canFetchSuggestions = computed(() => trimmedSearch.value.length >= MIN_SEARCH_LENGTH)
+const params = computed(() => canFetchSuggestions.value
+  ? {
+      limit,
+      search: trimmedSearch.value,
+    }
+  : undefined)
 
 const {
-  data: dataGetProducts,
-  refetch: refetchGetProducts,
-} = useGetProducts(params, {
+  data: dataGetSuggestions,
+  refetch: refetchGetSuggestions,
+  isFetching: isFetchingGetSuggestions,
+  isFetched: isFetchedGetSuggestions,
+} = useGetProductSuggestions(params, {
   enabled: false,
 })
 
 const redirectSearch = () => {
-  router.push(routes.search({ search: state.search }))
+  if (!trimmedSearch.value) {
+    return
+  }
+
+  router.push(routes.search({ search: trimmedSearch.value }))
 }
 
 watchDebounced(
   () => state.search,
   () => {
-    refetchGetProducts()
+    if (!props.show || !canFetchSuggestions.value) {
+      return
+    }
+
+    refetchGetSuggestions()
   },
   { debounce: 500, maxWait: 1000 },
 )
 
-function highlightText(text: string) {
-  const re = new RegExp(state.search, 'gi')
-  return text.replace(re, match => `<span class="font-bold">${match}</span>`)
+const suggestedProducts = computed(() => canFetchSuggestions.value
+  ? dataGetSuggestions.value?.items ?? []
+  : [])
+
+const shouldShowNoResults = computed(() =>
+  canFetchSuggestions.value
+  && isFetchedGetSuggestions.value
+  && !isFetchingGetSuggestions.value
+  && suggestedProducts.value.length === 0,
+)
+
+function getHighlightedParts(text: string) {
+  const query = trimmedSearch.value.toLocaleLowerCase()
+
+  if (!query) {
+    return [{ text, isMatch: false }]
+  }
+
+  const lowerText = text.toLocaleLowerCase()
+  const parts: Array<{ text: string, isMatch: boolean }> = []
+  let startIndex = 0
+
+  while (startIndex < text.length) {
+    const matchIndex = lowerText.indexOf(query, startIndex)
+
+    if (matchIndex === -1) {
+      parts.push({ text: text.slice(startIndex), isMatch: false })
+      break
+    }
+
+    if (matchIndex > startIndex) {
+      parts.push({ text: text.slice(startIndex, matchIndex), isMatch: false })
+    }
+
+    parts.push({
+      text: text.slice(matchIndex, matchIndex + query.length),
+      isMatch: true,
+    })
+    startIndex = matchIndex + query.length
+  }
+
+  return parts
+}
+
+function openSuggestedProduct(product: ProductSuggestion) {
+  router.push(routes.productDetail(product.shop.slug, product.slug))
 }
 </script>
 
@@ -71,33 +133,59 @@ function highlightText(text: string) {
 
         <transition name="slide-down">
           <div
-            v-if="dataGetProducts?.items && dataGetProducts.items.length > 0"
+            v-if="suggestedProducts.length > 0"
             class="mt-8"
           >
             <div class="mb-2 ml-4 text-[12px] text-text-muted">
-              Suggested Searches
+              Suggested Products
             </div>
 
             <div class="ml-2 flex flex-col gap-1">
-              <div
-                v-for="prod of dataGetProducts.items"
+              <button
+                v-for="prod of suggestedProducts"
                 :key="prod.id"
+                type="button"
+                class="product"
+                @click="openSuggestedProduct(prod)"
               >
-                <div
-                  class="product"
-                  @click="redirectSearch"
-                >
-                  <AppIcon
-                    name="search"
-                    class="w-3"
-                  />
-                  <!-- eslint-disable-next-line vue/no-v-html -->
-                  <div v-html="highlightText(prod.title)" />
+                <AppIcon
+                  name="search"
+                  class="w-3 shrink-0"
+                />
+                <div class="truncate text-left">
+                  <span
+                    v-for="(part, index) of getHighlightedParts(prod.title)"
+                    :key="`${prod.id}-${index}`"
+                    :class="part.isMatch ? 'font-bold text-text-strong' : undefined"
+                  >
+                    {{ part.text }}
+                  </span>
                 </div>
-              </div>
+              </button>
             </div>
           </div>
         </transition>
+
+        <div
+          v-if="props.show && state.search.trim().length > 0 && state.search.trim().length < MIN_SEARCH_LENGTH"
+          class="mt-6 ml-4 text-[12px] text-text-muted"
+        >
+          Type at least {{ MIN_SEARCH_LENGTH }} characters to search.
+        </div>
+
+        <div
+          v-else-if="shouldShowNoResults"
+          class="mt-6 ml-4 text-[12px] text-text-muted"
+        >
+          No matching products.
+        </div>
+
+        <div
+          v-else-if="trimmedSearch && suggestedProducts.length === 0 && !isFetchingGetSuggestions"
+          class="mt-6 ml-4 text-[12px] text-text-muted"
+        >
+          Press Enter to search for "{{ trimmedSearch }}".
+        </div>
       </div>
     </div>
   </transition>
@@ -122,7 +210,7 @@ function highlightText(text: string) {
 }
 
 .product {
-  @apply flex items-center gap-1 text-text-muted font-normal text-[12px]
-  hover:bg-surface-muted px-2 rounded cursor-pointer
+  @apply flex w-full items-center gap-2 rounded px-2 py-1 text-[12px]
+  font-normal text-text-muted hover:bg-surface-muted
 }
 </style>
