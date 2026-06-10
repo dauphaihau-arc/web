@@ -1,61 +1,37 @@
-ARG BUILD_IMAGE=node:20-alpine
-ARG PNPM_VERSION=9.3.0
+ARG NODE_IMAGE=node:20-alpine
+ARG PNPM_VERSION=8.13.1
 
-FROM $BUILD_IMAGE AS base
+FROM ${NODE_IMAGE} AS base
 
-# update and install the latest dependencies for the alpine version
-RUN apk update && apk upgrade
+RUN apk add --no-cache libc6-compat
+RUN npm install --global pnpm@${PNPM_VERSION}
 
-RUN npm --global install pnpm@${PNPM_VERSION}
+WORKDIR /repo
 
-WORKDIR /app
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY apps ./apps
+COPY packages ./packages
 
-COPY .npmrc package*.json pnpm-lock.yaml ./
-
-RUN pnpm install
-
-COPY . .
-
-EXPOSE 4000
-
-CMD ["pnpm", "dev"]
-
+RUN pnpm install --frozen-lockfile
 
 FROM base AS build
 
-WORKDIR /app
+WORKDIR /repo/apps/storefront
 
-COPY . .
-
-# build the nuxt project to generate the artifacts in .output directory
 RUN pnpm build
 
+FROM ${NODE_IMAGE} AS production
 
-FROM $BUILD_IMAGE AS production-deps
-
-ARG PNPM_VERSION=9.3.0
-
-WORKDIR /app
-
-COPY .npmrc package*.json pnpm-lock.yaml ./
-
-RUN npm --global install pnpm@${PNPM_VERSION}
-
-RUN pnpm install --prod --ignore-scripts
-
-
-FROM $BUILD_IMAGE as production
+RUN apk add --no-cache libc6-compat
 
 ENV NODE_ENV=production
+ENV HOST=0.0.0.0
+ENV PORT=4000
 
 WORKDIR /app
 
-COPY --from=production-deps /app/node_modules ./node_modules
-COPY --from=build /app/.output ./.output
-COPY package.json ./
+COPY --from=build /repo/apps/storefront/.output ./.output
 
 EXPOSE 4000
-
-ENV HOST=0.0.0.0 PORT=4000
 
 CMD ["node", ".output/server/index.mjs"]
