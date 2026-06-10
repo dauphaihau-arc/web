@@ -53,6 +53,13 @@ export const getProductsResponseItemSchema = z.object({
   created_at: z.union([z.string(), z.date()]),
 })
 
+export const productSuggestionSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  slug: z.string(),
+  shop: publicProductShopSchema,
+})
+
 export const getProductsResponseSchema = z.object({
   items: z.array(getProductsResponseItemSchema),
   meta: z.object({
@@ -63,6 +70,10 @@ export const getProductsResponseSchema = z.object({
     has_next_page: z.boolean(),
     has_previous_page: z.boolean(),
   }),
+})
+
+export const getProductSuggestionsResponseSchema = z.object({
+  items: z.array(productSuggestionSchema),
 })
 
 export const publicProductDetailImageSchema = z.object({
