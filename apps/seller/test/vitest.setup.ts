@@ -12,4 +12,8 @@ beforeAll(() => {
       },
     }),
   }
+  config.global.stubs = {
+    ...config.global.stubs,
+    NuxtIcon: true,
+  }
 })

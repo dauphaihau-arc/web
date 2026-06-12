@@ -1,10 +1,18 @@
 <script setup lang="ts">
 import NotificationPopover from '@arc/ui/notification-popover/notification-popover.vue'
 import { routes } from '~/shared/navigation/routes'
-import type { NotificationItem } from '~/shared/api/me/notifications/contracts/notification.contract'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 import { useMarkAllMyNotificationsAsRead, useMarkMyNotificationAsRead } from '~/shared/server-state/me/notifications/notifications.mutation'
 import { useGetMyNotifications, useGetMyNotificationUnreadCount } from '~/shared/server-state/me/notifications/notifications.query'
+
+type NotificationPopoverItem = {
+  id: string
+  title: string
+  body: string
+  data?: Record<string, unknown> | null
+  read_at: string | null
+  created_at: string
+}
 
 const { data: currentUser } = useGetCurrentUser()
 const notificationsQuery = useGetMyNotifications({ page: 1, limit: 8 })
@@ -34,7 +42,7 @@ function handleFilterChange(value: string) {
   }
 }
 
-function getNotificationTarget(notification: NotificationItem) {
+function getNotificationTarget(notification: NotificationPopoverItem) {
   const target = typeof notification.data?.target === 'string'
     ? notification.data.target
     : null
@@ -51,7 +59,7 @@ function getNotificationTarget(notification: NotificationItem) {
   return routes.orders()
 }
 
-async function handleNotificationClick(notification: NotificationItem, close: () => void) {
+async function handleNotificationClick(notification: NotificationPopoverItem, close: () => void) {
   if (!notification.read_at) {
     await markAsRead(notification.id)
   }

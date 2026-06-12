@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
-import { formatMinorCurrency, fromMinorUnits, toCurrencyOption } from '@arc/utils'
+import { formatMinorCurrency } from '@arc/utils'
 import AppIcon from '@arc/ui/app-icon.vue'
 import LoadingSvg from '@arc/ui/loading-svg.vue'
 import StatusBadge from '@arc/ui/status-badge.vue'
@@ -122,10 +122,7 @@ function formatItems(quantity: number) {
 }
 
 function formatAmountWithShortLabel(amountMinor: number, currency: string) {
-  const amount = fromMinorUnits(amountMinor, currency)
-  const currencyLabel = toCurrencyOption(currency).shortLabel
-
-  return `${amount.toFixed(2)} ${currencyLabel}`
+  return formatMinorCurrency(amountMinor, currency)
 }
 </script>
 

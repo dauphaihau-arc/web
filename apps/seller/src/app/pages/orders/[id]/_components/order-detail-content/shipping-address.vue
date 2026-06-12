@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import DetailInfoCard from './detail-info-card.vue'
 import DetailInfoItem from './detail-info-item.vue'
-import type { ShopOrder } from './types'
+import type { ShopOrder } from '~/shared/types/shop-order-detail'
 
 const props = defineProps<{
   order: ShopOrder

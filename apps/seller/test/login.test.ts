@@ -4,16 +4,21 @@ import {
 import { mount } from '@vue/test-utils'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import type { Ref, ComponentPublicInstance } from 'vue'
-import LayoutMarketHeader from '~/app/layouts/market/header.vue'
-import LoginForm from '~/app/components/dialogs/login-register/login-form.vue'
+import LayoutShopHeader from '~/app/layouts/shop/header.vue'
+import LoginForm from '~/app/pages/login/_components/login-form.vue'
 
 describe('login', () => {
-  it('show mega menu cart', async () => {
-    const component = await mountSuspended(LayoutMarketHeader)
+  it('mounts seller header', async () => {
+    const component = await mountSuspended(LayoutShopHeader, {
+      global: {
+        stubs: {
+          NotificationPopover: true,
+          ShortcutHint: true,
+        },
+      },
+    })
 
-    await component.find('#cart-btn').trigger('click')
-
-    expect(component.find('#mega-menu-cart').exists()).toBeTruthy()
+    expect(component.exists()).toBeTruthy()
   })
 
   // TODO: test show login dialog

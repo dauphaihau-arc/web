@@ -1,7 +1,7 @@
 import { computed, type MaybeRefOrGetter, toValue } from 'vue'
 import { OrderShippingStatuses, OrderStatuses, PaymentTypes } from '@arc/enums/order'
-import type { ShopOrder } from './types'
 import { useOrderShipmentState } from './use-order-shipment-state'
+import type { ShopOrder } from '~/shared/types/shop-order-detail'
 
 export function useOrderActions(orderSource: MaybeRefOrGetter<ShopOrder | undefined>) {
   const order = computed(() => toValue(orderSource))

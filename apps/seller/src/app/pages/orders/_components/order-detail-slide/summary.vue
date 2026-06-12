@@ -1,16 +1,13 @@
 <script lang="ts" setup>
-import { fromMinorUnits, toCurrencyOption } from '@arc/utils'
-import type { ShopOrder } from '~/app/pages/orders/[id]/_components/order-detail-content/types'
+import { formatMinorCurrency } from '@arc/utils'
+import type { ShopOrder } from '~/shared/types/shop-order-detail'
 
 const props = defineProps<{
   order: ShopOrder
 }>()
 
 function formatAmountWithShortLabel(amountMinor: number) {
-  const amount = fromMinorUnits(amountMinor, props.order.currency)
-  const currency = toCurrencyOption(props.order.currency).shortLabel
-
-  return `${amount.toFixed(2)} ${currency}`
+  return formatMinorCurrency(amountMinor, props.order.currency)
 }
 </script>
 

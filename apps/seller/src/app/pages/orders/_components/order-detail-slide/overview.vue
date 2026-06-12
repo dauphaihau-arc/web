@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
-import type { ShopOrder } from '~/app/pages/orders/[id]/_components/order-detail-content/types'
+import type { ShopOrder } from '~/shared/types/shop-order-detail'
 
 const props = defineProps<{
   order: ShopOrder

@@ -1,6 +1,6 @@
 import { computed, type MaybeRefOrGetter, toValue } from 'vue'
 import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
-import type { ShopOrder } from './types'
+import type { ShopOrder } from '~/shared/types/shop-order-detail'
 
 const SHIPMENT_BLOCKED_ORDER_STATUSES = [
   OrderStatuses.CANCELED,

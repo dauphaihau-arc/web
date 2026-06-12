@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import { OrderShippingStatuses, OrderStatuses, PaymentTypes } from '@arc/enums/order'
 import type { AppIconAlias } from '@arc/ui/app-icon.constants'
 import type { TimelineItem } from '@arc/ui/timeline.vue'
-import type { ShopOrder, ShopOrderTimelineEvent } from '../[id]/_components/order-detail-content/types'
+import type { ShopOrder, ShopOrderTimelineEvent } from '~/shared/types/shop-order-detail'
 
 type OrderTimelineMilestone = TimelineItem & {
   occurredAt?: Date

@@ -17,11 +17,7 @@ export const createShopCouponResponseSchema = z.object({
 
 export const listShopCouponsRequestSchema = z.custom<Partial<RequestGetListParams & {
   code: string
-  // API query params use snake_case.
-  is_auto_sale: boolean
-  active_from: string
-  active_to: string
-}>>()
+}> & Partial<Record<'is_auto_sale', boolean> & Record<'active_from' | 'active_to', string>>>()
 
 export const listShopCouponsResponseSchema = z.object({
   results: z.array(shopCouponSchema),

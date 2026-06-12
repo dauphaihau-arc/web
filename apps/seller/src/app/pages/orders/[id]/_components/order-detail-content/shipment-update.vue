@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { ShopOrder } from './types'
 import { useOrderShipmentState } from './use-order-shipment-state'
+import type { ShopOrder } from '~/shared/types/shop-order-detail'
 import { useShopUpdateOrderShipment } from '~/shared/server-state/shop/order/update-shipment.mutation'
 
 const props = defineProps<{

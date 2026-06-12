@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
-import { fromMinorUnits, toCurrencyOption } from '@arc/utils'
-import type { ShopOrder } from './types'
+import { formatMinorCurrency } from '@arc/utils'
+import type { ShopOrder } from '~/shared/types/shop-order-detail'
 
 const props = defineProps<{
   assetHost: string
@@ -17,10 +17,7 @@ function buildAssetUrl(assetHost: string, storageKey?: string) {
 }
 
 function formatAmountWithShortLabel(amountMinor: number) {
-  const amount = fromMinorUnits(amountMinor, props.order.currency)
-  const currency = toCurrencyOption(props.order.currency).shortLabel
-
-  return `${amount.toFixed(2)} ${currency}`
+  return formatMinorCurrency(amountMinor, props.order.currency)
 }
 </script>
 

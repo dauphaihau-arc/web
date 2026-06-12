@@ -5,16 +5,22 @@ import NotificationPopover from './notification-popover.vue'
 import { shopHeaderCreateLinks } from '~/shared/navigation/menu'
 import type { DropdownItem } from '#ui/types'
 
-const itemsHeaderDropdown: DropdownItem[][] = [
+type HeaderDropdownItem = Omit<DropdownItem, 'icon' | 'shortcuts'> & {
+  icon?: string
+  shortcuts?: string[]
+}
+
+const itemsHeaderDropdown: HeaderDropdownItem[][] = [
   shopHeaderCreateLinks.map(item => ({
     ...item,
+    shortcuts: item.shortcuts ? [...item.shortcuts] : undefined,
     click: () => navigateTo(item.to),
   })),
 ]
 
 const scrolled = ref(false)
 const pendingShortcutPrefix = ref<string | null>(null)
-let shortcutResetTimeout: ReturnType<typeof window.setTimeout> | null = null
+let shortcutResetTimeout: number | null = null
 
 function onScroll() {
   scrolled.value = window.scrollY > 10
@@ -142,7 +148,7 @@ onUnmounted(() => {
             </UTooltip> -->
 
             <UDropdown
-              :items="itemsHeaderDropdown"
+              :items="itemsHeaderDropdown as DropdownItem[][]"
               :ui="{ width: 'w-50' }"
             >
               <template #item="{ item }">
