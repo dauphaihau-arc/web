@@ -51,13 +51,13 @@ jobs:
             [[ -z "$file" ]] && continue
 
             case "$file" in
-              apps/storefront/*|packages/*|pnpm-workspace.yaml|package.json|pnpm-lock.yaml)
+              .github/workflows/*|apps/storefront/*|packages/*|pnpm-workspace.yaml|package.json|pnpm-lock.yaml)
                 storefront=true
                 ;;
             esac
 
             case "$file" in
-              apps/seller/*|packages/*|pnpm-workspace.yaml|package.json|pnpm-lock.yaml)
+              .github/workflows/*|apps/seller/*|packages/*|pnpm-workspace.yaml|package.json|pnpm-lock.yaml)
                 seller=true
                 ;;
             esac
