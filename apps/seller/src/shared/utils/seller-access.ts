@@ -1,16 +1,16 @@
-export const SELLER_PERMISSION = 'shops.manage'
+export const SELLER_PERMISSION = 'shops.manage';
 
 export class SellerAccessRequiredError extends Error {
   constructor() {
-    super('Seller access is required')
-    this.name = 'SellerAccessRequiredError'
+    super('Seller access is required');
+    this.name = 'SellerAccessRequiredError';
   }
 }
 
 type SellerAccessUser = {
   permissions?: string[]
-} | null | undefined
+} | null | undefined;
 
 export function hasSellerAccess(user?: SellerAccessUser) {
-  return user?.permissions?.includes(SELLER_PERMISSION) ?? false
+  return user?.permissions?.includes(SELLER_PERMISSION) ?? false;
 }

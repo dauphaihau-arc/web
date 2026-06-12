@@ -6,4 +6,4 @@ export type MyShop = {
   slug: string
   status: string
   currency: string
-}
+};

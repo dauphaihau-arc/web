@@ -1,14 +1,14 @@
-import type { LocationQueryRaw, RouteLocationRaw } from 'vue-router'
-import type { CreateCouponPageTypes } from '@arc/enums/shop'
+import type { LocationQueryRaw, RouteLocationRaw } from 'vue-router';
+import type { CreateCouponPageTypes } from '@arc/enums/shop';
 
 function createRoute(
   path: string,
-  query?: LocationQueryRaw,
+  query?: LocationQueryRaw
 ): RouteLocationRaw {
   if (!query) {
-    return { path }
+    return { path };
   }
-  return { path, query }
+  return { path, query };
 }
 
 export const routePaths = {
@@ -23,7 +23,7 @@ export const routePaths = {
   orders: '/orders',
   messages: '/messages',
   notifications: '/notifications',
-} as const
+} as const;
 
 export const routes = {
   home: () => createRoute(routePaths.home),
@@ -40,7 +40,7 @@ export const routes = {
   messages: (query?: { conversationId?: string }) =>
     createRoute(
       routePaths.messages,
-      query?.conversationId ? { conversation_id: query.conversationId } : undefined,
+      query?.conversationId ? { conversation_id: query.conversationId } : undefined
     ),
   notifications: () => createRoute(routePaths.notifications),
   orderDetail: (id: string) => createRoute(`${routePaths.orders}/${id}`),
@@ -48,22 +48,22 @@ export const routes = {
     createRoute(`${routePaths.coupons}/new`, { type }),
   storefrontProductDetail: (shopSlug: string, productSlug: string) =>
     createRoute(`/${shopSlug}/${productSlug}`),
-} as const
+} as const;
 
 export function getRoutePath(to: RouteLocationRaw): string {
   if (typeof to === 'string') {
-    return to
+    return to;
   }
 
   if ('path' in to && typeof to.path === 'string') {
-    return to.path
+    return to.path;
   }
 
-  return ''
+  return '';
 }
 
 export function isRouteActive(currentPath: string, target: RouteLocationRaw): boolean {
-  const targetPath = getRoutePath(target)
+  const targetPath = getRoutePath(target);
 
-  return targetPath.length > 0 && currentPath.startsWith(targetPath)
+  return targetPath.length > 0 && currentPath.startsWith(targetPath);
 }

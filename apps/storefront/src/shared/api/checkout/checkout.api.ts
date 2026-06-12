@@ -1,4 +1,4 @@
-import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack'
+import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import type {
   CheckoutQuoteResponse,
   CreateGuestCheckoutQuoteForBuyNowRequest,
@@ -6,64 +6,64 @@ import type {
   CreateGuestOrderForBuyNowRequest,
   CreateGuestOrderFromCartRequest,
   CreateGuestOrderResponse,
-  GetCheckoutOrderShopsBySessionResponse,
-} from './contracts/checkout.contract'
+  GetCheckoutOrderShopsBySessionResponse
+} from './contracts/checkout.contract';
 import type {
   GetGuestOrderLookupRequest,
-  GetGuestOrderLookupResponse,
-} from './contracts/guest-orders.contract'
-import { apiClient } from '~/shared/lib/api-client'
+  GetGuestOrderLookupResponse
+} from './contracts/guest-orders.contract';
+import { apiClient } from '~/shared/lib/api-client';
 
 export const checkoutApi = {
   createQuoteFromCart(payload: CreateGuestCheckoutQuoteFromCartRequest) {
     return apiClient.post<CheckoutQuoteResponse>(
       '/checkout/cart/quote',
-      payload,
-    )
+      payload
+    );
   },
 
   createQuoteForBuyNow(payload: CreateGuestCheckoutQuoteForBuyNowRequest) {
     return apiClient.post<CheckoutQuoteResponse>(
       '/checkout/buy-now/quote',
-      payload,
-    )
+      payload
+    );
   },
 
   createFromCart(payload: CreateGuestOrderFromCartRequest) {
     return apiClient.post<CreateGuestOrderResponse>(
       '/checkout/cart',
-      payload,
-    )
+      payload
+    );
   },
 
   createForBuyNow(payload: CreateGuestOrderForBuyNowRequest) {
     return apiClient.post<CreateGuestOrderResponse>(
       '/checkout/buy-now',
-      payload,
-    )
+      payload
+    );
   },
 
   getShopsByCheckoutSession(
     sessionId: string,
-    options?: NitroFetchOptions<NitroFetchRequest>,
+    options?: NitroFetchOptions<NitroFetchRequest>
   ) {
     return apiClient.get<GetCheckoutOrderShopsBySessionResponse>(
       `/checkout/session/${sessionId}`,
       undefined,
       options,
-      { retryOnWakeUp: true },
-    )
+      { retryOnWakeUp: true }
+    );
   },
 
   lookupGuestOrders(
     params: GetGuestOrderLookupRequest,
-    options?: NitroFetchOptions<NitroFetchRequest>,
+    options?: NitroFetchOptions<NitroFetchRequest>
   ) {
     return apiClient.get<GetGuestOrderLookupResponse>(
       '/checkout/guest-orders',
       params,
       options,
-      { retryOnWakeUp: true },
-    )
+      { retryOnWakeUp: true }
+    );
   },
-}
+};

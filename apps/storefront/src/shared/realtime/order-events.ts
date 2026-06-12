@@ -4,4 +4,4 @@ export type OrderUpdatedRealtimeEvent = {
   status?: string
   shippingStatus?: string
   occurredAt: string
-}
+};

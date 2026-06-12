@@ -1,19 +1,19 @@
-import type { ComputedRef } from 'vue'
-import type { UseQueryOptions } from '@tanstack/vue-query'
-import { locationApi } from '~/shared/api/location/location.api'
+import type { ComputedRef } from 'vue';
+import type { UseQueryOptions } from '@tanstack/vue-query';
+import { locationApi } from '~/shared/api/location/location.api';
 import type {
   GetCountriesResponse,
-  GetStatesByCountryResponse,
-} from '~/shared/api/location/contracts/location.contract'
+  GetStatesByCountryResponse
+} from '~/shared/api/location/contracts/location.contract';
 
 export function useGetCountries(options?: Partial<UseQueryOptions<GetCountriesResponse>>) {
   return useQuery<GetCountriesResponse>({
     ...options,
     queryKey: ['get-countries'],
     queryFn: () => {
-      return locationApi.getCountries()
+      return locationApi.getCountries();
     },
-  })
+  });
 }
 
 export function useGetStatesByCountry(country: ComputedRef<string | undefined>) {
@@ -23,7 +23,7 @@ export function useGetStatesByCountry(country: ComputedRef<string | undefined>) 
     queryFn: () => {
       return locationApi.getStatesByCountry({
         country: country.value,
-      }) as Promise<GetStatesByCountryResponse>
+      }) as Promise<GetStatesByCountryResponse>;
     },
-  })
+  });
 }

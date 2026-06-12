@@ -15,4 +15,4 @@ export const ROUTES = {
   CHECKOUT: '/checkout',
   SUCCESS: '/success',
   NEW: '/new',
-} as const
+} as const;

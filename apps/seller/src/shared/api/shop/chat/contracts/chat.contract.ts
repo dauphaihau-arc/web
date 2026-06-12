@@ -19,7 +19,7 @@ export type ShopChatConversation = {
   seller_last_read_at: string | null
   created_at: string
   updated_at: string
-}
+};
 
 export type ShopChatMessage = {
   id: string
@@ -31,12 +31,12 @@ export type ShopChatMessage = {
   edited_at: string | null
   created_at: string
   updated_at: string
-}
+};
 
 export type ListShopChatConversationsRequest = {
   page?: number
   limit?: number
-}
+};
 
 export type ListShopChatConversationsResponse = {
   results: ShopChatConversation[]
@@ -44,12 +44,12 @@ export type ListShopChatConversationsResponse = {
   limit: number
   total_pages: number
   total_results: number
-}
+};
 
 export type ListShopChatMessagesRequest = {
   page?: number
   limit?: number
-}
+};
 
 export type ListShopChatMessagesResponse = {
   conversation: ShopChatConversation
@@ -58,21 +58,21 @@ export type ListShopChatMessagesResponse = {
   limit: number
   total_pages: number
   total_results: number
-}
+};
 
 export type SendShopChatMessageRequest = {
   body: string
   metadata?: Record<string, unknown>
-}
+};
 
 export type SendShopChatMessageResponse = {
   message: ShopChatMessage
-}
+};
 
 export type MarkShopChatConversationReadResponse = {
   conversation: ShopChatConversation
-}
+};
 
 export type ShopChatUnreadCountResponse = {
   unread_count: number
-}
+};

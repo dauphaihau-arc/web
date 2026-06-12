@@ -1,30 +1,30 @@
-import { consumePostAuthRedirect } from './post-auth-redirect'
-import type { ResetPasswordRequest } from '~/shared/api/auth/contracts/reset-password.contract'
-import { authApi } from '~/shared/api/auth/auth.api'
-import { routes } from '~/shared/navigation/routes'
+import { consumePostAuthRedirect } from './post-auth-redirect';
+import type { ResetPasswordRequest } from '~/shared/api/auth/contracts/reset-password.contract';
+import { authApi } from '~/shared/api/auth/auth.api';
+import { routes } from '~/shared/navigation/routes';
 
 export function useResetPassword(token: string) {
-  const authStore = useAuthStore()
-  const queryClient = useQueryClient()
+  const authStore = useAuthStore();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: ['reset-password'],
     mutationFn: (password: ResetPasswordRequest['password']) => {
-      return authApi.resetPassword(token, password)
+      return authApi.resetPassword(token, password);
     },
     onSuccess: async (data) => {
       if (data?.user) {
-        queryClient.setQueryData(['current-user'], { user: data.user })
-        authStore.tokenResetPassword = ''
+        queryClient.setQueryData(['current-user'], { user: data.user });
+        authStore.tokenResetPassword = '';
 
-        const redirectPath = consumePostAuthRedirect()
+        const redirectPath = consumePostAuthRedirect();
         if (redirectPath) {
-          await navigateTo(redirectPath)
-          return
+          await navigateTo(redirectPath);
+          return;
         }
 
-        await navigateTo(routes.products())
+        await navigateTo(routes.products());
       }
     },
-  })
+  });
 }

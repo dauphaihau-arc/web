@@ -1,6 +1,6 @@
 import {
-  baseCouponSchema, conditionApplyToTypeSchema, conditionMinOrderTypeSchema, conditionTypeCouponSchema,
-} from '@arc/schemas/coupon.schema'
+  baseCouponSchema, conditionApplyToTypeSchema, conditionMinOrderTypeSchema, conditionTypeCouponSchema
+} from '@arc/schemas/coupon.schema';
 
 const baseCreateCouponBodySchema = baseCouponSchema.pick({
   code: true,
@@ -12,9 +12,9 @@ const baseCreateCouponBodySchema = baseCouponSchema.pick({
   type: true,
   min_order_type: true,
   applies_to: true,
-})
+});
 
 export const createPromoCodeFormSchema = baseCreateCouponBodySchema
   .and(conditionApplyToTypeSchema)
   .and(conditionMinOrderTypeSchema)
-  .and(conditionTypeCouponSchema)
+  .and(conditionTypeCouponSchema);

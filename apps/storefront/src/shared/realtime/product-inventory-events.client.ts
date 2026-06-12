@@ -1,64 +1,64 @@
-import type { ProductInventoryUpdatedRealtimeEvent } from './product-inventory-events'
+import type { ProductInventoryUpdatedRealtimeEvent } from './product-inventory-events';
 
 type ProductInventoryEventsClient = {
   start: (productId: string) => void
   stop: () => void
-}
+};
 
 function buildEventsUrl(productId: string): string {
-  const config = useRuntimeConfig()
-  return `${config.public.apiBaseURL}/v${config.public.apiVersion}/products/${productId}/inventory/events`
+  const config = useRuntimeConfig();
+  return `${config.public.apiBaseURL}/v${config.public.apiVersion}/products/${productId}/inventory/events`;
 }
 
 function isProductInventoryUpdatedRealtimeEvent(
-  value: unknown,
+  value: unknown
 ): value is ProductInventoryUpdatedRealtimeEvent {
   if (!value || typeof value !== 'object') {
-    return false
+    return false;
   }
 
-  return Reflect.get(value, 'eventType') === 'product.inventory.updated'
-    && typeof Reflect.get(value, 'productId') === 'string'
-    && typeof Reflect.get(value, 'inventoryId') === 'string'
-    && typeof Reflect.get(value, 'stock') === 'number'
+  return Reflect.get(value, 'eventType') === 'product.inventory.updated' &&
+    typeof Reflect.get(value, 'productId') === 'string' &&
+    typeof Reflect.get(value, 'inventoryId') === 'string' &&
+    typeof Reflect.get(value, 'stock') === 'number';
 }
 
 async function handleIncomingMessage(
   onInventoryUpdated: (payload: ProductInventoryUpdatedRealtimeEvent) => void | Promise<void>,
-  rawPayload: string,
+  rawPayload: string
 ): Promise<void> {
-  const payload = JSON.parse(rawPayload) as unknown
+  const payload = JSON.parse(rawPayload) as unknown;
 
   if (!isProductInventoryUpdatedRealtimeEvent(payload)) {
-    return
+    return;
   }
 
-  await onInventoryUpdated(payload)
+  await onInventoryUpdated(payload);
 }
 
 export function createProductInventoryEventsClient(
-  onInventoryUpdated: (payload: ProductInventoryUpdatedRealtimeEvent) => void | Promise<void>,
+  onInventoryUpdated: (payload: ProductInventoryUpdatedRealtimeEvent) => void | Promise<void>
 ): ProductInventoryEventsClient {
-  let eventSource: EventSource | null = null
-  let currentProductId: string | null = null
+  let eventSource: EventSource | null = null;
+  let currentProductId: string | null = null;
 
   return {
     start(productId: string) {
       if (eventSource && currentProductId === productId) {
-        return
+        return;
       }
 
-      eventSource?.close()
-      currentProductId = productId
-      eventSource = new EventSource(buildEventsUrl(productId))
+      eventSource?.close();
+      currentProductId = productId;
+      eventSource = new EventSource(buildEventsUrl(productId));
       eventSource.onmessage = (event) => {
-        void handleIncomingMessage(onInventoryUpdated, event.data)
-      }
+        void handleIncomingMessage(onInventoryUpdated, event.data);
+      };
     },
     stop() {
-      eventSource?.close()
-      eventSource = null
-      currentProductId = null
+      eventSource?.close();
+      eventSource = null;
+      currentProductId = null;
     },
-  }
+  };
 }

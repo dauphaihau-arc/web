@@ -1,5 +1,5 @@
-import { MARKET_CONFIG } from '@arc/enums/market'
-import formatCurrency from '@arc/utils/format-currency'
+import { MARKET_CONFIG } from '@arc/enums/market';
+import formatCurrency from '@arc/utils/format-currency';
 
 const tempRates = {
   AUD: 1.534853,
@@ -12,24 +12,24 @@ const tempRates = {
   KRW: 1349,
   GBP: 0.7919,
   VND: 24803,
-}
+};
 
 export default function (amount: number | unknown) {
   if (typeof amount !== 'number') {
-    return amount
+    return amount;
   }
 
-  const marketStore = useMarketStore()
+  const marketStore = useMarketStore();
 
-  const rates = marketStore.exchangeRate?.rates || tempRates
+  const rates = marketStore.exchangeRate?.rates || tempRates;
 
-  const currency = marketStore.guestPreferences?.currency
-    || MARKET_CONFIG.BASE_CURRENCY
+  const currency = marketStore.guestPreferences?.currency ||
+    MARKET_CONFIG.BASE_CURRENCY;
 
   if (currency === MARKET_CONFIG.BASE_CURRENCY) {
-    return formatCurrency(amount)
+    return formatCurrency(amount);
   }
-  const rate = rates[currency]
-  const convertedAmount = rate * amount
-  return formatCurrency(convertedAmount, currency)
+  const rate = rates[currency];
+  const convertedAmount = rate * amount;
+  return formatCurrency(convertedAmount, currency);
 }

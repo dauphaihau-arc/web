@@ -10,13 +10,13 @@ export type OrderDateFilterDraft = {
   startTime: string
   endTime: string
   timezone: string
-}
+};
 
 export type OrderAmountFilterDraft = {
   operator: 'eq' | 'gte' | 'lte'
   amount: string
-}
+};
 
 export type OrderCurrencyFilterDraft = {
   currency: string
-}
+};

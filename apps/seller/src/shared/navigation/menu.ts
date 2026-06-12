@@ -1,13 +1,13 @@
-import type { RouteLocationRaw } from 'vue-router'
-import { CreateCouponPageTypes } from '@arc/enums/shop'
-import { routePaths, routes } from './routes'
+import type { RouteLocationRaw } from 'vue-router';
+import { CreateCouponPageTypes } from '@arc/enums/shop';
+import { routePaths, routes } from './routes';
 
 export type AppNavigationItem = {
   label: string
   icon?: string
   to: RouteLocationRaw
   disabled?: boolean
-}
+};
 
 export type AppSidebarLink = {
   title: string
@@ -16,7 +16,7 @@ export type AppSidebarLink = {
   matchPath?: string
   disabled?: boolean
   sub?: AppSidebarLink[]
-}
+};
 
 export const shopSidebarLinks: AppSidebarLink[] = [
   {
@@ -70,7 +70,7 @@ export const shopSidebarLinks: AppSidebarLink[] = [
     matchPath: '/finances',
     disabled: true,
   },
-]
+];
 
 export const shopHeaderCreateLinks = [
   {
@@ -93,4 +93,4 @@ export const shopHeaderCreateLinks = [
   //   shortcuts: ['S'],
   //   to: routes.couponsNew(CreateCouponPageTypes.SALE),
   // },
-] as const
+] as const;

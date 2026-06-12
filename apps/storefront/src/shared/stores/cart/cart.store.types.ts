@@ -1,17 +1,17 @@
-import type { PaymentTypes } from '@arc/enums/order'
-import type { GuestCheckoutAddress } from '@arc/schemas/guest-checkout.schema'
-import type { GetUserAddressesResponse } from '~/shared/api/me/address/contracts/address.contract'
+import type { PaymentTypes } from '@arc/enums/order';
+import type { GuestCheckoutAddress } from '@arc/schemas/guest-checkout.schema';
+import type { GetUserAddressesResponse } from '~/shared/api/me/address/contracts/address.contract';
 
-type UserAddress = GetUserAddressesResponse['results'][number]
-type CouponCode = string
-type CartId = string
-export type CheckoutAddress = UserAddress | GuestCheckoutAddress
+type UserAddress = GetUserAddressesResponse['results'][number];
+type CouponCode = string;
+type CartId = string;
+export type CheckoutAddress = UserAddress | GuestCheckoutAddress;
 
 export enum CheckoutNowSteps {
   ADDRESS_SHIPPING,
   PAYMENT,
   REVIEW_CONFIRMATION,
-  ORDER,
+  ORDER
 }
 
 export type StateCheckoutNow = {
@@ -25,13 +25,13 @@ export type StateCheckoutNow = {
   address: CheckoutAddress | null
   guestEmail: string
   isPendingCreateOrder: boolean
-}
+};
 
 export enum CheckoutCartSteps {
   ADDRESS_SHIPPING,
   PAYMENT,
   REVIEW_CONFIRMATION,
-  ORDER,
+  ORDER
 }
 
 export type StateCheckoutCart = {
@@ -42,4 +42,4 @@ export type StateCheckoutCart = {
   address: CheckoutAddress | null
   guestEmail: string
   isPendingCreateOrder: boolean
-}
+};

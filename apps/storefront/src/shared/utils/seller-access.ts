@@ -1,9 +1,9 @@
-const SELLER_PERMISSION = 'shops.manage'
+const SELLER_PERMISSION = 'shops.manage';
 
 type SellerAccessUser = {
   permissions?: string[]
-} | null | undefined
+} | null | undefined;
 
 export function hasSellerAccess(user?: SellerAccessUser) {
-  return user?.permissions?.includes(SELLER_PERMISSION) ?? false
+  return user?.permissions?.includes(SELLER_PERMISSION) ?? false;
 }

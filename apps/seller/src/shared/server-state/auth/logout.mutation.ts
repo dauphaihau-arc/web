@@ -1,7 +1,7 @@
-import { clearExpTokensInLS } from './token-storage'
-import { routes } from '~/shared/navigation/routes'
-import { toastCustom } from '~/shared/config/toast'
-import { authApi } from '~/shared/api/auth/auth.api'
+import { clearExpTokensInLS } from './token-storage';
+import { routes } from '~/shared/navigation/routes';
+import { toastCustom } from '~/shared/config/toast';
+import { authApi } from '~/shared/api/auth/auth.api';
 
 const sellerUserScopedQueryKeys = [
   ['my-shop'],
@@ -15,31 +15,31 @@ const sellerUserScopedQueryKeys = [
   ['shop-get-products'],
   ['shop-get-detail-product'],
   ['shop-get-coupons'],
-] as const
+] as const;
 
 export function useLogout() {
-  const toast = useToast()
-  const queryClient = useQueryClient()
+  const toast = useToast();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: ['logout'],
     mutationFn: () => {
-      return authApi.logout()
+      return authApi.logout();
     },
     onSuccess() {
       for (const queryKey of sellerUserScopedQueryKeys) {
-        queryClient.removeQueries({ queryKey })
+        queryClient.removeQueries({ queryKey });
       }
 
-      queryClient.setQueryData(['current-user'], { user: null })
-      clearExpTokensInLS()
-      navigateTo(routes.login())
+      queryClient.setQueryData(['current-user'], { user: null });
+      clearExpTokensInLS();
+      navigateTo(routes.login());
     },
     onError() {
       toast.add({
         ...toastCustom.error,
         title: 'An unknown error occurred. Please try again',
-      })
+      });
     },
-  })
+  });
 }

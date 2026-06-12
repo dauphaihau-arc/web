@@ -1,23 +1,23 @@
-import type { LocationQueryRaw, RouteLocationRaw } from 'vue-router'
-import type { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
+import type { LocationQueryRaw, RouteLocationRaw } from 'vue-router';
+import type { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order';
 import {
   buildCategoryPath,
   buildOrderDetailPath,
   buildProductDetailPath,
-  routePaths,
-} from './route-paths'
-import type { MyOrderListState } from '~/shared/api/me/order/contracts/order.contract'
+  routePaths
+} from './route-paths';
+import type { MyOrderListState } from '~/shared/api/me/order/contracts/order.contract';
 
-export { routePaths } from './route-paths'
+export { routePaths } from './route-paths';
 
 function createRoute(
   path: string,
-  query?: LocationQueryRaw,
+  query?: LocationQueryRaw
 ): RouteLocationRaw {
   if (!query) {
-    return { path }
+    return { path };
   }
-  return { path, query }
+  return { path, query };
 }
 
 export const routes = {
@@ -29,7 +29,7 @@ export const routes = {
   accountMessages: (query?: { conversationId?: string }) =>
     createRoute(
       routePaths.accountMessages,
-      query?.conversationId ? { conversation_id: query.conversationId } : undefined,
+      query?.conversationId ? { conversation_id: query.conversationId } : undefined
     ),
   orders: (query?: {
     search?: string
@@ -38,14 +38,14 @@ export const routes = {
     state?: MyOrderListState
   }) => createRoute(
     routePaths.orders,
-    query
-      ? {
-          ...(query.search ? { search: query.search } : {}),
-          ...(query.shippingStatus ? { shipping_status: query.shippingStatus } : {}),
-          ...(query.status ? { status: query.status } : {}),
-          ...(query.state ? { state: query.state } : {}),
-        }
-      : undefined,
+    query ?
+      {
+        ...(query.search ? { search: query.search } : {}),
+        ...(query.shippingStatus ? { shipping_status: query.shippingStatus } : {}),
+        ...(query.status ? { status: query.status } : {}),
+        ...(query.state ? { state: query.state } : {}),
+      } :
+      undefined
   ),
   orderDetail: (id: string) => createRoute(buildOrderDetailPath(id)),
   search: (query?: { search?: string }) => createRoute(routePaths.search, query),
@@ -60,50 +60,50 @@ export const routes = {
     token?: string
     zip?: string
   }) =>
-    createRoute(routePaths.guestOrders, query
-      ? {
-          ...(query.email ? { email: query.email } : {}),
-          ...(query.orderId ? { order_id: query.orderId } : {}),
-          ...(query.orderIds ? { order_ids: query.orderIds } : {}),
-          ...(query.sessionId ? { session_id: query.sessionId } : {}),
-          ...(query.token ? { token: query.token } : {}),
-          ...(query.zip ? { zip: query.zip } : {}),
-        }
-      : undefined),
+    createRoute(routePaths.guestOrders, query ?
+      {
+        ...(query.email ? { email: query.email } : {}),
+        ...(query.orderId ? { order_id: query.orderId } : {}),
+        ...(query.orderIds ? { order_ids: query.orderIds } : {}),
+        ...(query.sessionId ? { session_id: query.sessionId } : {}),
+        ...(query.token ? { token: query.token } : {}),
+        ...(query.zip ? { zip: query.zip } : {}),
+      } :
+      undefined),
   success: (query?: {
     guestEmail?: string
     guestZip?: string
     orderIds?: string
     sessionId?: string
   }) =>
-    createRoute(routePaths.success, query
-      ? {
-          ...(query.guestEmail ? { guest_email: query.guestEmail } : {}),
-          ...(query.guestZip ? { guest_zip: query.guestZip } : {}),
-          ...(query.orderIds ? { order_ids: query.orderIds } : {}),
-          ...(query.sessionId ? { session_id: query.sessionId } : {}),
-        }
-      : undefined),
+    createRoute(routePaths.success, query ?
+      {
+        ...(query.guestEmail ? { guest_email: query.guestEmail } : {}),
+        ...(query.guestZip ? { guest_zip: query.guestZip } : {}),
+        ...(query.orderIds ? { order_ids: query.orderIds } : {}),
+        ...(query.sessionId ? { session_id: query.sessionId } : {}),
+      } :
+      undefined),
   category: (categories: string | string[]) =>
     createRoute(buildCategoryPath(categories)),
   productDetail: (shopSlug: string, productSlug: string) =>
     createRoute(buildProductDetailPath(shopSlug, productSlug)),
-} as const
+} as const;
 
 export function getRoutePath(to: RouteLocationRaw): string {
   if (typeof to === 'string') {
-    return to
+    return to;
   }
 
   if ('path' in to && typeof to.path === 'string') {
-    return to.path
+    return to.path;
   }
 
-  return ''
+  return '';
 }
 
 export function isRouteActive(currentPath: string, target: RouteLocationRaw): boolean {
-  const targetPath = getRoutePath(target)
+  const targetPath = getRoutePath(target);
 
-  return targetPath.length > 0 && currentPath.startsWith(targetPath)
+  return targetPath.length > 0 && currentPath.startsWith(targetPath);
 }

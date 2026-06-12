@@ -1,24 +1,24 @@
-import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
-import { useWebPushNotifications } from '~/shared/composables/use-web-push-notifications'
+import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query';
+import { useWebPushNotifications } from '~/shared/composables/use-web-push-notifications';
 
 export default defineNuxtPlugin(() => {
-  const currentUserQuery = useGetCurrentUser()
+  const currentUserQuery = useGetCurrentUser();
   const {
     syncStatusFromBrowser,
     syncSubscriptionWithServer,
-  } = useWebPushNotifications()
+  } = useWebPushNotifications();
 
-  void syncStatusFromBrowser()
+  void syncStatusFromBrowser();
 
   watch(
     () => currentUserQuery.data.value?.user?.id,
     async (userId) => {
       if (!userId || Notification.permission !== 'granted') {
-        return
+        return;
       }
 
-      await syncSubscriptionWithServer()
+      await syncSubscriptionWithServer();
     },
-    { immediate: true },
-  )
-})
+    { immediate: true }
+  );
+});

@@ -1,7 +1,7 @@
-import { isUnauthorizedError } from '@arc/lib'
-import type { CurrentUser } from '~/shared/api/auth/contracts/auth-user.contract'
-import type { UpdateMeRequest, UpdateMeResponse } from '~/shared/api/auth/contracts/update-me.contract'
-import { apiClient } from '~/shared/lib/api-client'
+import { isUnauthorizedError } from '@arc/lib';
+import type { CurrentUser } from '~/shared/api/auth/contracts/auth-user.contract';
+import type { UpdateMeRequest, UpdateMeResponse } from '~/shared/api/auth/contracts/update-me.contract';
+import { apiClient } from '~/shared/lib/api-client';
 
 export const meApi = {
   async getCurrentOrGuest() {
@@ -10,15 +10,15 @@ export const meApi = {
         '/auth/me',
         undefined,
         undefined,
-        { retryOnUnauthorized: false },
-      )
+        { retryOnUnauthorized: false }
+      );
     }
     catch (error) {
       if (isUnauthorizedError(error)) {
-        return null
+        return null;
       }
 
-      throw error
+      throw error;
     }
   },
   getCurrent() {
@@ -26,13 +26,13 @@ export const meApi = {
       '/auth/me',
       undefined,
       undefined,
-      { retryOnUnauthorized: false },
-    )
+      { retryOnUnauthorized: false }
+    );
   },
   updateCurrent(payload: UpdateMeRequest) {
     return apiClient.patch<UpdateMeResponse>(
       '/me',
-      payload,
-    )
+      payload
+    );
   },
-}
+};

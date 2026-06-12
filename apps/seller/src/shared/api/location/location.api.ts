@@ -1,9 +1,9 @@
 import type {
   GetCountriesResponse,
   GetStatesByCountryRequest,
-  GetStatesByCountryResponse,
-} from './contracts/location.contract'
-import { apiClient } from '~/shared/lib/api-client'
+  GetStatesByCountryResponse
+} from './contracts/location.contract';
+import { apiClient } from '~/shared/lib/api-client';
 
 export const locationApi = {
   getCountries() {
@@ -13,8 +13,8 @@ export const locationApi = {
       {
         baseURL: '',
         credentials: undefined,
-      },
-    )
+      }
+    );
   },
 
   getStatesByCountry(payload: GetStatesByCountryRequest) {
@@ -24,7 +24,7 @@ export const locationApi = {
       {
         baseURL: '',
         credentials: undefined,
-      },
-    )
+      }
+    );
   },
-}
+};

@@ -1,10 +1,10 @@
-import { z } from 'zod'
+import { z } from 'zod';
 import {
   USER_CONFIG,
   USER_REG_NAME,
-  USER_REG_PASSWORD,
-} from '@arc/enums/user'
-import { authPreferencesSchema, authUserEnvelopeSchema } from '@arc/schemas/api/auth/auth-user.schema'
+  USER_REG_PASSWORD
+} from '@arc/enums/user';
+import { authPreferencesSchema, authUserEnvelopeSchema } from '@arc/schemas/api/auth/auth-user.schema';
 
 export const registerFormSchema = z.object({
   display_name: z
@@ -30,10 +30,10 @@ export const registerFormSchema = z.object({
     .min(USER_CONFIG.MIN_CHAR_PASSWORD)
     .max(USER_CONFIG.MAX_CHAR_PASSWORD)
     .regex(USER_REG_PASSWORD),
-})
+});
 
 export const registerRequestSchema = registerFormSchema.extend({
   preferences: authPreferencesSchema.partial().optional(),
-})
+});
 
-export const registerResponseSchema = authUserEnvelopeSchema
+export const registerResponseSchema = authUserEnvelopeSchema;

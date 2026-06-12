@@ -1,11 +1,11 @@
-import type { z } from 'zod'
+import type { z } from 'zod';
 import type {
   ipDataResponseSchema,
-  marketConfigResponseSchema,
-} from '@arc/schemas/api/market/market.schema'
+  marketConfigResponseSchema
+} from '@arc/schemas/api/market/market.schema';
 
-export type IpDataResponse = z.infer<typeof ipDataResponseSchema>
-export type MarketConfigResponse = z.infer<typeof marketConfigResponseSchema>
+export type IpDataResponse = z.infer<typeof ipDataResponseSchema>;
+export type MarketConfigResponse = z.infer<typeof marketConfigResponseSchema>;
 
 export interface ExchangeRatesResponse {
   result: string

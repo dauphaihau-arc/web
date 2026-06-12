@@ -1,20 +1,20 @@
-import type { QueryClient } from '@tanstack/vue-query'
+import type { QueryClient } from '@tanstack/vue-query';
 import {
   createChatEventsClient,
-  type ChatMessageCreatedRealtimeEvent,
-} from '@arc/lib'
+  type ChatMessageCreatedRealtimeEvent
+} from '@arc/lib';
 import type {
   ShopChatConversation,
-  ShopChatMessage,
-} from '~/shared/api/shop/chat/contracts/chat.contract'
+  ShopChatMessage
+} from '~/shared/api/shop/chat/contracts/chat.contract';
 
 function buildChatSocketUrl(): string {
-  const config = useRuntimeConfig()
-  return `${config.public.apiBaseURL.replace(/\/+$/, '')}/ws`
+  const config = useRuntimeConfig();
+  return `${config.public.apiBaseURL.replace(/\/+$/, '')}/ws`;
 }
 
 function createRealtimeChatMessage(
-  payload: ChatMessageCreatedRealtimeEvent,
+  payload: ChatMessageCreatedRealtimeEvent
 ): ShopChatMessage {
   return {
     id: payload.message.id,
@@ -26,19 +26,19 @@ function createRealtimeChatMessage(
     edited_at: null,
     created_at: payload.message.occurred_at,
     updated_at: payload.message.occurred_at,
-  }
+  };
 }
 
 function isConversationUnread(conversation: ShopChatConversation): boolean {
-  return conversation.last_message_sender_user_id !== null
-    && conversation.last_message_sender_user_id !== conversation.shop.owner_user_id
-    && (
-      !conversation.seller_last_read_at
-      || (
-        !!conversation.last_message_at
-        && conversation.seller_last_read_at < conversation.last_message_at
+  return conversation.last_message_sender_user_id !== null &&
+    conversation.last_message_sender_user_id !== conversation.shop.owner_user_id &&
+    (
+      !conversation.seller_last_read_at ||
+      (
+        !!conversation.last_message_at &&
+        conversation.seller_last_read_at < conversation.last_message_at
       )
-    )
+    );
 }
 
 export function createSellerChatEventsClient(queryClient: QueryClient) {
@@ -51,5 +51,5 @@ export function createSellerChatEventsClient(queryClient: QueryClient) {
     messageQueryKey: 'shop-chat-messages',
     createMessage: createRealtimeChatMessage,
     isConversationUnread,
-  })
+  });
 }

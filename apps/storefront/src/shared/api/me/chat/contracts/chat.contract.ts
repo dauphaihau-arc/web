@@ -19,7 +19,7 @@ export type MyChatConversation = {
   seller_last_read_at: string | null
   created_at: string
   updated_at: string
-}
+};
 
 export type MyChatMessage = {
   id: string
@@ -31,17 +31,17 @@ export type MyChatMessage = {
   edited_at: string | null
   created_at: string
   updated_at: string
-}
+};
 
 export type CreateMyChatConversationRequest = {
   shop_id: string
   product_id?: string
-}
+};
 
 export type ListMyChatConversationsRequest = {
   page?: number
   limit?: number
-}
+};
 
 export type ListMyChatConversationsResponse = {
   results: MyChatConversation[]
@@ -49,12 +49,12 @@ export type ListMyChatConversationsResponse = {
   limit: number
   total_pages: number
   total_results: number
-}
+};
 
 export type ListMyChatMessagesRequest = {
   page?: number
   limit?: number
-}
+};
 
 export type ListMyChatMessagesResponse = {
   conversation: MyChatConversation
@@ -63,21 +63,21 @@ export type ListMyChatMessagesResponse = {
   limit: number
   total_pages: number
   total_results: number
-}
+};
 
 export type SendMyChatMessageRequest = {
   body: string
   metadata?: Record<string, unknown>
-}
+};
 
 export type SendMyChatMessageResponse = {
   message: MyChatMessage
-}
+};
 
 export type MarkMyChatConversationReadResponse = {
   conversation: MyChatConversation
-}
+};
 
 export type MyChatUnreadCountResponse = {
   unread_count: number
-}
+};

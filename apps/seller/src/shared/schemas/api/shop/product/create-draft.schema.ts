@@ -1,53 +1,53 @@
-import { z } from 'zod'
+import { z } from 'zod';
 import {
   ProductShippingCharge,
   ProductVariantTypes,
-  ProductWhoMade,
-} from '@arc/enums/product'
+  ProductWhoMade
+} from '@arc/enums/product';
 
 export const createDraftProductRequestImageSchema = z.object({
   storage_key: z.string(),
   rank: z.number(),
-})
+});
 
 export const createDraftProductRequestAttributeSchema = z.object({
   category_attribute_id: z.string(),
   selected_option_id: z.string().optional(),
   selected_text: z.string().optional(),
-})
+});
 
 export const createDraftProductRequestVariantSchema = z.object({
   client_key: z.string(),
   option_value_1: z.string(),
   option_value_2: z.string().optional(),
-})
+});
 
 export const createDraftProductRequestInventorySchema = z.object({
   variant_client_key: z.string().optional(),
   sku: z.string().optional(),
   stock: z.number(),
-})
+});
 
 export const createDraftProductRequestPricingSchema = z.object({
   variant_client_key: z.string().optional(),
   amount_minor: z.number().int().nonnegative(),
   original_amount_minor: z.number().int().nonnegative().optional(),
   currency: z.string(),
-})
+});
 
 export const createDraftProductRequestShippingDestinationSchema = z.object({
   country_code: z.string(),
   delivery_time_label: z.string(),
   service: z.string(),
   charge_type: z.nativeEnum(ProductShippingCharge),
-})
+});
 
 export const createDraftProductRequestShippingSchema = z.object({
   origin_country: z.string(),
   origin_zip: z.string(),
   process_time_label: z.string(),
   destinations: z.array(createDraftProductRequestShippingDestinationSchema),
-})
+});
 
 export const createDraftProductRequestSchema = z.object({
   category_id: z.string(),
@@ -65,7 +65,7 @@ export const createDraftProductRequestSchema = z.object({
   inventory: z.array(createDraftProductRequestInventorySchema),
   pricing: z.array(createDraftProductRequestPricingSchema),
   shipping: createDraftProductRequestShippingSchema,
-})
+});
 
 export const createDraftProductResponseSchema = z.object({
   id: z.string(),
@@ -120,4 +120,4 @@ export const createDraftProductResponseSchema = z.object({
       rank: z.number(),
     })),
   }).optional(),
-})
+});

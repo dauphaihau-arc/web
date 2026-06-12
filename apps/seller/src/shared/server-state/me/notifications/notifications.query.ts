@@ -1,9 +1,9 @@
 import type {
   ListNotificationsRequest,
   ListNotificationsResponse,
-  UnreadCountResponse,
-} from '~/shared/api/me/notifications/contracts/notification.contract'
-import { meNotificationApi } from '~/shared/api/me/notifications/notification.api'
+  UnreadCountResponse
+} from '~/shared/api/me/notifications/contracts/notification.contract';
+import { meNotificationApi } from '~/shared/api/me/notifications/notification.api';
 
 export function useGetMyNotifications(queryParams?: MaybeRefOrGetter<ListNotificationsRequest | undefined>) {
   return useQuery<ListNotificationsResponse>({
@@ -12,7 +12,7 @@ export function useGetMyNotifications(queryParams?: MaybeRefOrGetter<ListNotific
     staleTime: 30_000,
     refetchInterval: 30_000,
     refetchOnWindowFocus: true,
-  })
+  });
 }
 
 export function useGetMyNotificationUnreadCount() {
@@ -22,5 +22,5 @@ export function useGetMyNotificationUnreadCount() {
     staleTime: 30_000,
     refetchInterval: 30_000,
     refetchOnWindowFocus: true,
-  })
+  });
 }

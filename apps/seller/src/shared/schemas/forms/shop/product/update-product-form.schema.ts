@@ -1,23 +1,23 @@
-import { z } from 'zod'
-import { idSchema } from '@arc/schemas/primitives/id.schema'
-import { productInventorySchema } from '@arc/schemas/product-inventory.schema'
-import { productVariantOptSchema, productVariantSchema } from '@arc/schemas/product-variant.schema'
+import { z } from 'zod';
+import { idSchema } from '@arc/schemas/primitives/id.schema';
+import { productInventorySchema } from '@arc/schemas/product-inventory.schema';
+import { productVariantOptSchema, productVariantSchema } from '@arc/schemas/product-variant.schema';
 import {
   baseProductSchema,
-  productStateUserCanModify,
-} from '@arc/schemas/product.schema'
+  productStateUserCanModify
+} from '@arc/schemas/product.schema';
 
 const createProductInventorySchema = productInventorySchema.pick({
   amount: true,
   sku: true,
   stock: true,
-})
+});
 
 const updateVariantOptionsSchema = createProductInventorySchema.merge(
   productVariantSchema.pick({ variant_name: true }).merge(
-    productVariantOptSchema.pick({ variant: true }),
-  ),
-)
+    productVariantOptSchema.pick({ variant: true })
+  )
+);
 
 export const updateProductFormSchema = baseProductSchema
   .pick({
@@ -36,7 +36,7 @@ export const updateProductFormSchema = baseProductSchema
         z.object({
           attribute_id: idSchema,
           selected: z.string(),
-        }),
+        })
       ).optional(),
       update_variants: z.array(productVariantSchema.pick({ id: true, variant_name: true }).partial()).optional(),
       variant_inventories: z
@@ -45,13 +45,13 @@ export const updateProductFormSchema = baseProductSchema
             .pick({
               id: true, amount: true, sku: true, stock: true,
             })
-            .strict(),
+            .strict()
         )
         .optional(),
       new_single_variants: z.array(
         createProductInventorySchema.merge(
-          productVariantSchema.pick({ variant_name: true }),
-        ),
+          productVariantSchema.pick({ variant_name: true })
+        )
       ),
       new_combine_variants: z.array(
         productVariantSchema
@@ -59,9 +59,9 @@ export const updateProductFormSchema = baseProductSchema
           .merge(
             z.object({
               variant_options: z.array(updateVariantOptionsSchema),
-            }),
-          ),
+            })
+          )
       ),
-    }),
+    })
   )
-  .partial()
+  .partial();

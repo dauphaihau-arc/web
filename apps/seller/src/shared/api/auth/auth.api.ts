@@ -1,24 +1,24 @@
-import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack'
-import type { AuthClientConfigResponse } from './contracts/client-config.contract'
+import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
+import type { AuthClientConfigResponse } from './contracts/client-config.contract';
 import type {
   ForgotPasswordRequest,
-  ForgotPasswordResponse,
-} from './contracts/forgot-password.contract'
+  ForgotPasswordResponse
+} from './contracts/forgot-password.contract';
 import type {
   LoginRequest,
-  LoginResponse,
-} from './contracts/login.contract'
+  LoginResponse
+} from './contracts/login.contract';
 import type {
   RegisterRequest,
-  RegisterResponse,
-} from './contracts/register.contract'
+  RegisterResponse
+} from './contracts/register.contract';
 import type {
-  ResetPasswordResponse,
-} from './contracts/reset-password.contract'
+  ResetPasswordResponse
+} from './contracts/reset-password.contract';
 import type {
-  VerifyTokenResponse,
-} from './contracts/verify-token.contract'
-import { apiClient } from '~/shared/lib/api-client'
+  VerifyTokenResponse
+} from './contracts/verify-token.contract';
+import { apiClient } from '~/shared/lib/api-client';
 
 export const authApi = {
   getClientConfig() {
@@ -26,8 +26,8 @@ export const authApi = {
       '/auth/client-config',
       undefined,
       undefined,
-      { retryOnWakeUp: true, retryOnUnauthorized: false },
-    )
+      { retryOnWakeUp: true, retryOnUnauthorized: false }
+    );
   },
 
   forgotPassword(payload: ForgotPasswordRequest) {
@@ -35,8 +35,8 @@ export const authApi = {
       '/auth/forgot-password',
       payload,
       undefined,
-      { retryOnUnauthorized: false },
-    )
+      { retryOnUnauthorized: false }
+    );
   },
 
   login(payload: LoginRequest) {
@@ -44,8 +44,8 @@ export const authApi = {
       '/auth/login',
       payload,
       undefined,
-      { retryOnUnauthorized: false },
-    )
+      { retryOnUnauthorized: false }
+    );
   },
 
   logout() {
@@ -53,8 +53,8 @@ export const authApi = {
       '/auth/logout',
       null,
       undefined,
-      { retryOnUnauthorized: false },
-    )
+      { retryOnUnauthorized: false }
+    );
   },
 
   register(payload: RegisterRequest) {
@@ -62,8 +62,8 @@ export const authApi = {
       '/auth/register',
       payload,
       undefined,
-      { retryOnUnauthorized: false },
-    )
+      { retryOnUnauthorized: false }
+    );
   },
 
   resetPassword(token: string, password: string) {
@@ -71,20 +71,20 @@ export const authApi = {
       `/auth/reset-password?token=${token}`,
       { password },
       undefined,
-      { retryOnUnauthorized: false },
-    )
+      { retryOnUnauthorized: false }
+    );
   },
 
   verifyToken(
     token: string,
     type: string,
-    options?: NitroFetchOptions<NitroFetchRequest>,
+    options?: NitroFetchOptions<NitroFetchRequest>
   ) {
     return apiClient.get<VerifyTokenResponse>(
       `/auth/verify-token?token=${token}&type=${type}`,
       undefined,
       options,
-      { retryOnUnauthorized: false },
-    )
+      { retryOnUnauthorized: false }
+    );
   },
-}
+};

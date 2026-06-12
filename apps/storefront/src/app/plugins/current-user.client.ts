@@ -1,9 +1,9 @@
-import { currentUserQueryOptions } from '~/shared/server-state/me/current-user.query'
+import { currentUserQueryOptions } from '~/shared/server-state/me/current-user.query';
 
 export default defineNuxtPlugin(() => {
-  const queryClient = useQueryClient()
-  void queryClient.prefetchQuery(currentUserQueryOptions).catch(() => {})
+  const queryClient = useQueryClient();
+  void queryClient.prefetchQuery(currentUserQueryOptions).catch(() => {});
 
-  const marketStore = useMarketStore()
-  void marketStore.ensureMarketReady().catch(() => {})
-})
+  const marketStore = useMarketStore();
+  void marketStore.ensureMarketReady().catch(() => {});
+});

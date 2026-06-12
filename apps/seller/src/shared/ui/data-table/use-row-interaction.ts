@@ -1,151 +1,151 @@
-import type { Ref } from 'vue'
+import type { Ref } from 'vue';
 
 type RowInteractionOptions<Row extends { id: string }> = {
   actionCellSelector?: string
   enabled?: Ref<boolean>
   rows: Ref<Row[]>
   onRowClick?: (row: Row) => void
-}
+};
 
 export function useRowInteraction<Row extends { id: string }>(
-  options: RowInteractionOptions<Row>,
+  options: RowInteractionOptions<Row>
 ) {
-  const tableWrapper = ref<HTMLElement | null>(null)
-  let rowObserver: MutationObserver | null = null
-  let cleanupRowListeners: Array<() => void> = []
+  const tableWrapper = ref<HTMLElement | null>(null);
+  let rowObserver: MutationObserver | null = null;
+  let cleanupRowListeners: Array<() => void> = [];
 
-  const actionCellSelector = computed(() => options.actionCellSelector ?? '[data-table-action-cell]')
-  const isEnabled = computed(() => options.enabled?.value ?? true)
+  const actionCellSelector = computed(() => options.actionCellSelector ?? '[data-table-action-cell]');
+  const isEnabled = computed(() => options.enabled?.value ?? true);
 
   function isActionCellTarget(target: EventTarget | null) {
-    return target instanceof Element && !!target.closest(actionCellSelector.value)
+    return target instanceof Element && !!target.closest(actionCellSelector.value);
   }
 
   function isInteractiveTarget(target: EventTarget | null) {
     return target instanceof Element && !!target.closest(
-      'button, a, input, select, textarea, summary, [role="button"], [role="link"], [role="menuitem"], [data-row-click-ignore]',
-    )
+      'button, a, input, select, textarea, summary, [role="button"], [role="link"], [role="menuitem"], [data-row-click-ignore]'
+    );
   }
 
   function activateRow(row: Row, eventTarget: EventTarget | null) {
     if (!isEnabled.value || isActionCellTarget(eventTarget) || isInteractiveTarget(eventTarget)) {
-      return
+      return;
     }
 
-    options.onRowClick?.(row)
+    options.onRowClick?.(row);
   }
 
   function cleanupBoundRowEvents() {
-    cleanupRowListeners.forEach(cleanup => cleanup())
-    cleanupRowListeners = []
+    cleanupRowListeners.forEach(cleanup => cleanup());
+    cleanupRowListeners = [];
   }
 
   function bindRowEvents() {
-    cleanupBoundRowEvents()
+    cleanupBoundRowEvents();
 
-    const tbodyRows = tableWrapper.value?.querySelectorAll<HTMLTableRowElement>('tbody > tr')
+    const tbodyRows = tableWrapper.value?.querySelectorAll<HTMLTableRowElement>('tbody > tr');
 
     if (!tbodyRows?.length || options.rows.value.length === 0) {
-      return
+      return;
     }
 
     options.rows.value.forEach((row, index) => {
-      const rowElement = tbodyRows[index]
+      const rowElement = tbodyRows[index];
 
       if (!rowElement) {
-        return
+        return;
       }
 
       if (!isEnabled.value) {
-        rowElement.classList.remove('data-table-row-clickable')
-        rowElement.removeAttribute('tabindex')
-        return
+        rowElement.classList.remove('data-table-row-clickable');
+        rowElement.removeAttribute('tabindex');
+        return;
       }
 
-      rowElement.classList.add('data-table-row-clickable')
-      rowElement.setAttribute('tabindex', '0')
+      rowElement.classList.add('data-table-row-clickable');
+      rowElement.setAttribute('tabindex', '0');
 
       const handleClick = (event: Event) => {
-        activateRow(row, event.target)
-      }
+        activateRow(row, event.target);
+      };
 
       const handleKeydown = (event: KeyboardEvent) => {
         if (event.key !== 'Enter' && event.key !== ' ') {
-          return
+          return;
         }
 
-        event.preventDefault()
-        activateRow(row, event.target)
-      }
+        event.preventDefault();
+        activateRow(row, event.target);
+      };
 
-      rowElement.addEventListener('click', handleClick)
-      rowElement.addEventListener('keydown', handleKeydown)
+      rowElement.addEventListener('click', handleClick);
+      rowElement.addEventListener('keydown', handleKeydown);
 
       cleanupRowListeners.push(() => {
-        rowElement.classList.remove('data-table-row-clickable')
-        rowElement.removeAttribute('tabindex')
-        rowElement.removeEventListener('click', handleClick)
-        rowElement.removeEventListener('keydown', handleKeydown)
-      })
-    })
+        rowElement.classList.remove('data-table-row-clickable');
+        rowElement.removeAttribute('tabindex');
+        rowElement.removeEventListener('click', handleClick);
+        rowElement.removeEventListener('keydown', handleKeydown);
+      });
+    });
   }
 
   function stopObservingRows() {
-    rowObserver?.disconnect()
-    rowObserver = null
+    rowObserver?.disconnect();
+    rowObserver = null;
   }
 
   function observeRowDom() {
-    stopObservingRows()
+    stopObservingRows();
 
     if (!tableWrapper.value) {
-      return
+      return;
     }
 
     rowObserver = new MutationObserver(() => {
-      bindRowEvents()
-    })
+      bindRowEvents();
+    });
 
     rowObserver.observe(tableWrapper.value, {
       childList: true,
       subtree: true,
-    })
+    });
   }
 
   watch([options.rows, isEnabled], async () => {
-    await nextTick()
-    bindRowEvents()
-  }, { immediate: true, flush: 'post' })
+    await nextTick();
+    bindRowEvents();
+  }, { immediate: true, flush: 'post' });
 
   watch(tableWrapper, async (wrapper) => {
     if (!wrapper) {
-      stopObservingRows()
-      cleanupBoundRowEvents()
-      return
+      stopObservingRows();
+      cleanupBoundRowEvents();
+      return;
     }
 
-    await nextTick()
-    observeRowDom()
-    bindRowEvents()
-  }, { flush: 'post' })
+    await nextTick();
+    observeRowDom();
+    bindRowEvents();
+  }, { flush: 'post' });
 
   onActivated(async () => {
-    await nextTick()
-    observeRowDom()
-    bindRowEvents()
-  })
+    await nextTick();
+    observeRowDom();
+    bindRowEvents();
+  });
 
   onDeactivated(() => {
-    stopObservingRows()
-    cleanupBoundRowEvents()
-  })
+    stopObservingRows();
+    cleanupBoundRowEvents();
+  });
 
   onBeforeUnmount(() => {
-    stopObservingRows()
-    cleanupBoundRowEvents()
-  })
+    stopObservingRows();
+    cleanupBoundRowEvents();
+  });
 
   return {
     tableWrapper,
-  }
+  };
 }

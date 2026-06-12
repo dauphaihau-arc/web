@@ -1,16 +1,16 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-import { MarketCurrencies } from '@arc/enums/market'
-import { ProductVariantTypes } from '@arc/enums/product'
-import type { PickPartial } from '@arc/contracts/utils'
+import { MarketCurrencies } from '@arc/enums/market';
+import { ProductVariantTypes } from '@arc/enums/product';
+import type { PickPartial } from '@arc/contracts/utils';
 import type {
   CreateProductBody,
   CreateProductShipping,
   StateCombineVariant,
   StateNoneVariant,
-  StateSingleVariant,
-} from '~/shared/api/shop/product/contracts/form.contract'
-import type { CreateDraftProductRequest as RequestCreateProductDraftBody } from '~/shared/api/shop/product/contracts/create-draft.contract'
+  StateSingleVariant
+} from '~/shared/api/shop/product/contracts/form.contract';
+import type { CreateDraftProductRequest as RequestCreateProductDraftBody } from '~/shared/api/shop/product/contracts/create-draft.contract';
 
 export type CreateProductSubmitBody = {
   shipping: CreateProductShipping
@@ -18,22 +18,22 @@ export type CreateProductSubmitBody = {
   NoneVariant |
   SingleVariant |
   CombineVariant
-)
+);
 
 export function pruneEmptyCreateProductFields(
-  dataSubmit: PickPartial<CreateProductBody, 'attributes' | 'tags'>,
+  dataSubmit: PickPartial<CreateProductBody, 'attributes' | 'tags'>
 ) {
-  const nextDataSubmit = { ...dataSubmit }
+  const nextDataSubmit = { ...dataSubmit };
 
   if (nextDataSubmit.tags && nextDataSubmit.tags.length === 0) {
-    delete nextDataSubmit.tags
+    delete nextDataSubmit.tags;
   }
 
   if (nextDataSubmit.attributes && nextDataSubmit.attributes.length === 0) {
-    delete nextDataSubmit.attributes
+    delete nextDataSubmit.attributes;
   }
 
-  return nextDataSubmit
+  return nextDataSubmit;
 }
 
 export function buildCreateProductSubmitBody(
@@ -41,42 +41,42 @@ export function buildCreateProductSubmitBody(
   shipping: CreateProductShipping,
   noneVariant: StateNoneVariant,
   singleVariant: StateSingleVariant,
-  combineVariant: StateCombineVariant,
+  combineVariant: StateCombineVariant
 ): CreateProductSubmitBody | null {
   let bodyData: CreateProductSubmitBody = {
     ...dataSubmit,
     shipping,
-  } as CreateProductSubmitBody
+  } as CreateProductSubmitBody;
 
   switch (bodyData.variant_type) {
     case ProductVariantTypes.NONE:
-      bodyData = { ...bodyData, ...noneVariant }
-      break
+      bodyData = { ...bodyData, ...noneVariant };
+      break;
     case ProductVariantTypes.SINGLE:
-      if (!singleVariant.variant_options) return null
-      bodyData = { ...bodyData, ...singleVariant }
-      break
+      if (!singleVariant.variant_options) return null;
+      bodyData = { ...bodyData, ...singleVariant };
+      break;
     case ProductVariantTypes.COMBINE:
-      if (!combineVariant.variant_options) return null
-      bodyData = { ...bodyData, ...combineVariant }
-      break
+      if (!combineVariant.variant_options) return null;
+      bodyData = { ...bodyData, ...combineVariant };
+      break;
   }
 
-  return bodyData
+  return bodyData;
 }
 
 export function mapAttributes(
-  attributes: NonNullable<CreateProductBody['attributes']>,
+  attributes: NonNullable<CreateProductBody['attributes']>
 ): RequestCreateProductDraftBody['attributes'] {
   return attributes.map(attribute => ({
     category_attribute_id: attribute.attribute_id,
     selected_option_id: attribute.selected,
-  }))
+  }));
 }
 
 export function mapInventoryAndVariants(
   bodyData: CreateProductSubmitBody,
-  currency: string,
+  currency: string
 ): Pick<RequestCreateProductDraftBody, 'inventory' | 'pricing' | 'variants'> {
   if (bodyData.variant_type === ProductVariantTypes.NONE) {
     return {
@@ -92,12 +92,12 @@ export function mapInventoryAndVariants(
           currency,
         },
       ],
-    }
+    };
   }
 
   if (bodyData.variant_type === ProductVariantTypes.SINGLE) {
     const variants = bodyData.variant_options.map((variant, index) => {
-      const clientKey = `variant-${index + 1}`
+      const clientKey = `variant-${index + 1}`;
 
       return {
         client_key: clientKey,
@@ -112,8 +112,8 @@ export function mapInventoryAndVariants(
           amount_minor: toMinorUnits(variant.amount!, currency),
           currency,
         },
-      }
-    })
+      };
+    });
 
     return {
       variants: variants.map(variant => ({
@@ -122,12 +122,12 @@ export function mapInventoryAndVariants(
       })),
       inventory: variants.map(variant => variant.inventory),
       pricing: variants.map(variant => variant.pricing),
-    }
+    };
   }
 
   const variants = bodyData.variant_options.flatMap((variant, parentIndex) => {
     return variant.variant_options.map((subVariant, childIndex) => {
-      const clientKey = `variant-${parentIndex + 1}-${childIndex + 1}`
+      const clientKey = `variant-${parentIndex + 1}-${childIndex + 1}`;
 
       return {
         client_key: clientKey,
@@ -143,9 +143,9 @@ export function mapInventoryAndVariants(
           amount_minor: toMinorUnits(subVariant.amount!, currency),
           currency,
         },
-      }
-    })
-  })
+      };
+    });
+  });
 
   return {
     variants: variants.map(variant => ({
@@ -155,11 +155,11 @@ export function mapInventoryAndVariants(
     })),
     inventory: variants.map(variant => variant.inventory),
     pricing: variants.map(variant => variant.pricing),
-  }
+  };
 }
 
 export function mapShipping(
-  data: CreateProductShipping,
+  data: CreateProductShipping
 ): RequestCreateProductDraftBody['shipping'] {
   return {
     origin_country: data.country,
@@ -171,12 +171,12 @@ export function mapShipping(
       service: destination.service,
       charge_type: destination.charge,
     })),
-  }
+  };
 }
 
 export function buildCreateProductPayload(
   bodyData: CreateProductSubmitBody,
-  currency: string,
+  currency: string
 ): RequestCreateProductDraftBody {
   return {
     category_id: bodyData.category_id,
@@ -187,26 +187,26 @@ export function buildCreateProductPayload(
     non_taxable: false,
     variant_type: bodyData.variant_type,
     variant_group_name:
-      bodyData.variant_type === ProductVariantTypes.NONE
-        ? undefined
-        : bodyData.variant_group_name,
+      bodyData.variant_type === ProductVariantTypes.NONE ?
+        undefined :
+        bodyData.variant_group_name,
     variant_sub_group_name:
-      bodyData.variant_type === ProductVariantTypes.COMBINE
-        ? bodyData.variant_sub_group_name
-        : undefined,
-    attributes: bodyData.attributes?.length
-      ? mapAttributes(bodyData.attributes)
-      : undefined,
+      bodyData.variant_type === ProductVariantTypes.COMBINE ?
+        bodyData.variant_sub_group_name :
+        undefined,
+    attributes: bodyData.attributes?.length ?
+      mapAttributes(bodyData.attributes) :
+      undefined,
     ...mapInventoryAndVariants(bodyData, currency),
     shipping: mapShipping(bodyData.shipping),
-  }
+  };
 }
 
 export function buildCreateProductImagesPayload(storageKeys: string[]) {
   return storageKeys.map((key, index) => ({
     storage_key: key,
     rank: index + 1,
-  }))
+  }));
 }
 
 const CURRENCY_DECIMALS: Record<string, number> = {
@@ -241,9 +241,9 @@ const CURRENCY_DECIMALS: Record<string, number> = {
   [MarketCurrencies.TWD]: 2,
   [MarketCurrencies.VND]: 0,
   [MarketCurrencies.ZAR]: 2,
-}
+};
 
 function toMinorUnits(amount: number, currency: string) {
-  const decimals = CURRENCY_DECIMALS[currency] ?? 2
-  return Math.round(amount * 10 ** decimals)
+  const decimals = CURRENCY_DECIMALS[currency] ?? 2;
+  return Math.round(amount * 10 ** decimals);
 }

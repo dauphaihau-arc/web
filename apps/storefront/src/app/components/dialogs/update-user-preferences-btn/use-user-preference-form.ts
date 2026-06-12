@@ -1,29 +1,29 @@
-import { MARKET_CONFIG } from '@arc/enums/market'
+import { MARKET_CONFIG } from '@arc/enums/market';
 import {
   defaultCurrencyOption,
   toCurrencyOption,
-  type CurrencyOption,
-} from '@arc/utils/currency-options'
+  type CurrencyOption
+} from '@arc/utils/currency-options';
 import {
-  computed, reactive, watch, type ComputedRef, type Ref,
-} from 'vue'
+  computed, reactive, watch, type ComputedRef, type Ref
+} from 'vue';
 import {
   defaultLanguageOption,
   localeToLanguageOption,
   type LanguageOption,
-  type PreferenceState,
-} from './preference-options'
-import type { AuthPreferences } from '~/shared/api/auth/contracts/auth-user.contract'
-import type { MarketConfigMarket } from '~/shared/api/market/contracts/market.contract'
+  type PreferenceState
+} from './preference-options';
+import type { AuthPreferences } from '~/shared/api/auth/contracts/auth-user.contract';
+import type { MarketConfigMarket } from '~/shared/api/market/contracts/market.contract';
 
 type MarketConfigResponse = {
   markets: MarketConfigMarket[]
-}
+};
 
 type UseUserPreferenceFormParams = {
   currentUserPreferences: ComputedRef<AuthPreferences | undefined>
   marketConfig: Ref<MarketConfigResponse | undefined>
-}
+};
 
 export function useUserPreferenceForm({
   currentUserPreferences,
@@ -33,88 +33,88 @@ export function useUserPreferenceForm({
     region: MARKET_CONFIG.BASE_REGION,
     language: defaultLanguageOption.id,
     currency: defaultCurrencyOption.id,
-  })
+  });
 
   const enabledMarkets = computed<MarketConfigMarket[]>(() => {
-    return marketConfig.value?.markets.filter(market => market.enabled) ?? []
-  })
+    return marketConfig.value?.markets.filter(market => market.enabled) ?? [];
+  });
 
   const selectedMarket = computed(() => {
-    return enabledMarkets.value.find(market => market.name === state.region)
-  })
+    return enabledMarkets.value.find(market => market.name === state.region);
+  });
 
   const currencyOptions = computed<CurrencyOption[]>(() => {
     if (!selectedMarket.value) {
-      return [defaultCurrencyOption]
+      return [defaultCurrencyOption];
     }
 
-    return selectedMarket.value.supportedCurrencies.map(toCurrencyOption)
-  })
+    return selectedMarket.value.supportedCurrencies.map(toCurrencyOption);
+  });
 
   const languageOptions = computed<LanguageOption[]>(() => {
     if (!selectedMarket.value) {
-      return [defaultLanguageOption]
+      return [defaultLanguageOption];
     }
 
     const options = selectedMarket.value.supportedLocales
       .map(localeToLanguageOption)
-      .filter((option): option is LanguageOption => !!option)
+      .filter((option): option is LanguageOption => !!option);
 
     if (options.length === 0) {
-      return [defaultLanguageOption]
+      return [defaultLanguageOption];
     }
 
-    return Array.from(new Map(options.map(option => [option.id, option])).values())
-  })
+    return Array.from(new Map(options.map(option => [option.id, option])).values());
+  });
 
   const regionOptions = computed(() => {
-    return enabledMarkets.value.map(market => market.name)
-  })
+    return enabledMarkets.value.map(market => market.name);
+  });
 
   const selectedCurrencyOption = computed(() => {
-    return currencyOptions.value.find(option => option.id === state.currency) ?? defaultCurrencyOption
-  })
+    return currencyOptions.value.find(option => option.id === state.currency) ?? defaultCurrencyOption;
+  });
 
   function hydrateForm(preferences?: AuthPreferences) {
     if (!preferences) {
-      return
+      return;
     }
 
-    state.region = preferences.region
-    state.language = preferences.language
-    state.currency = preferences.currency
+    state.region = preferences.region;
+    state.language = preferences.language;
+    state.currency = preferences.currency;
   }
 
   function normalizeForSelectedMarket() {
-    const market = selectedMarket.value
+    const market = selectedMarket.value;
 
     if (!market) {
-      return
+      return;
     }
 
-    const preferredCurrency = currentUserPreferences.value?.currency
+    const preferredCurrency = currentUserPreferences.value?.currency;
     const nextCurrency = currencyOptions.value.find((option) => {
-      return option.id === preferredCurrency || option.id === state.currency
-    })
-    state.currency = nextCurrency?.id ?? market.defaultCurrency
+      return option.id === preferredCurrency || option.id === state.currency;
+    });
+    state.currency = nextCurrency?.id ?? market.defaultCurrency;
 
-    const preferredLanguage = currentUserPreferences.value?.language
+    const preferredLanguage = currentUserPreferences.value?.language;
     const nextLanguage = languageOptions.value.find((option) => {
-      return option.id === preferredLanguage || option.id === state.language
-    })
-    ?? localeToLanguageOption(market.defaultLocale)
-    ?? defaultLanguageOption
+      return option.id === preferredLanguage || option.id === state.language;
+    }) ??
+    localeToLanguageOption(market.defaultLocale) ??
+    defaultLanguageOption;
 
-    state.language = nextLanguage.id
+    state.language = nextLanguage.id;
   }
 
   watch(currentUserPreferences, (preferences) => {
-    hydrateForm(preferences)
-  }, { immediate: true })
+    hydrateForm(preferences);
+  }, { immediate: true });
 
   watch(() => state.region, () => {
-    normalizeForSelectedMarket()
-  }, { immediate: true })
+    normalizeForSelectedMarket();
+  }, { immediate: true });
 
   return {
     currencyOptions,
@@ -122,5 +122,5 @@ export function useUserPreferenceForm({
     regionOptions,
     selectedCurrencyOption,
     state,
-  }
+  };
 }

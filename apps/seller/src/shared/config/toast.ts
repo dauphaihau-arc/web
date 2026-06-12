@@ -1,4 +1,4 @@
-import type { Notification } from '#ui/types'
+import type { Notification } from '#ui/types';
 
 interface ToastCustom {
   [key: string]: Partial<Notification>
@@ -21,4 +21,4 @@ export const toastCustom: ToastCustom = {
     color: 'yellow',
     icon: 'i-ph:warning-fill',
   },
-}
+};

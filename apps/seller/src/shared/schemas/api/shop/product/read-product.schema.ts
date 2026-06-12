@@ -1,5 +1,5 @@
-import { z } from 'zod'
-import { ProductStates, ProductVariantTypes } from '@arc/enums/product'
+import { z } from 'zod';
+import { ProductStates, ProductVariantTypes } from '@arc/enums/product';
 
 const requestGetListParamsSchema = z.object({
   page: z.union([z.number(), z.any()]).optional(),
@@ -7,13 +7,13 @@ const requestGetListParamsSchema = z.object({
   populate: z.string().optional(),
   select: z.string().optional(),
   sortBy: z.string().optional(),
-})
+});
 
 export const listShopProductsRequestSchema = requestGetListParamsSchema.extend({
   search: z.string().optional(),
   state: z.nativeEnum(ProductStates).optional(),
   category_id: z.string().uuid().optional(),
-})
+});
 
 export const listShopProductsItemSchema = z.object({
   id: z.string(),
@@ -43,14 +43,14 @@ export const listShopProductsItemSchema = z.object({
     original_amount_minor: z.number().int().nonnegative().optional(),
     currency: z.string(),
   })),
-})
+});
 
 export const productStateCountsSchema = z.object({
   all: z.number(),
   active: z.number(),
   inactive: z.number(),
   draft: z.number(),
-})
+});
 
 export const listShopProductsResponseSchema = z.object({
   items: z.array(listShopProductsItemSchema),
@@ -63,7 +63,7 @@ export const listShopProductsResponseSchema = z.object({
     has_previous_page: z.boolean(),
   }),
   state_counts: productStateCountsSchema,
-})
+});
 
 export const shopProductDetailApiResponseSchema = z.object({
   id: z.string(),
@@ -137,7 +137,7 @@ export const shopProductDetailApiResponseSchema = z.object({
       rank: z.number(),
     })),
   }).optional(),
-})
+});
 
 export const detailShopProductInventorySchema = z.object({
   id: z.string().optional(),
@@ -146,7 +146,7 @@ export const detailShopProductInventorySchema = z.object({
   sku: z.string().optional(),
   original_price: z.number().optional(),
   currency: z.string().optional(),
-})
+});
 
 export const detailShopProductVariantOptionSchema = z.object({
   id: z.string(),
@@ -155,14 +155,14 @@ export const detailShopProductVariantOptionSchema = z.object({
     variant_name: z.string(),
   }),
   inventory: detailShopProductInventorySchema,
-})
+});
 
 export const detailShopProductVariantSchema = z.object({
   id: z.string(),
   variant_name: z.string(),
   inventory: detailShopProductInventorySchema.optional(),
   variant_options: z.array(detailShopProductVariantOptionSchema).optional(),
-})
+});
 
 export const detailShopProductResponseSchema = z.object({
   product: z.object({
@@ -194,34 +194,34 @@ export const detailShopProductResponseSchema = z.object({
     inventory: detailShopProductInventorySchema,
     variants: z.array(detailShopProductVariantSchema),
   }),
-})
+});
 
 export const issueProductImageUploadUrlRequestSchema = z.object({
   productId: z.string(),
   content_type: z.string(),
   asset_type: z.literal('original').optional(),
-})
+});
 
 export const issueProductImageUploadUrlResponseSchema = z.object({
   key: z.string(),
   presigned_url: z.string(),
   method: z.literal('PUT').optional(),
-})
+});
 
 export const removeProductRequestSchema = z.object({
   id: z.string(),
-})
+});
 
 export const bulkMutateShopProductsActionSchema = z.enum([
   'publish',
   'deactivate',
   'remove',
-])
+]);
 
 export const bulkMutateShopProductsRequestSchema = z.object({
   ids: z.array(z.string()).min(1),
   action: bulkMutateShopProductsActionSchema,
-})
+});
 
 export const bulkMutateShopProductsResponseSchema = z.object({
   succeeded_ids: z.array(z.string()),
@@ -230,4 +230,4 @@ export const bulkMutateShopProductsResponseSchema = z.object({
     code: z.string(),
     reason: z.string(),
   })),
-})
+});

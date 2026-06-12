@@ -1,4 +1,4 @@
-import { meApi } from '~/shared/api/me/me.api'
+import { meApi } from '~/shared/api/me/me.api';
 
 export const currentUserQueryOptions = {
   queryKey: ['current-user'],
@@ -6,13 +6,13 @@ export const currentUserQueryOptions = {
   staleTime: 60_000,
   refetchOnMount: false,
   queryFn: async () => {
-    const user = await meApi.getCurrentOrGuest()
-    return { user }
+    const user = await meApi.getCurrentOrGuest();
+    return { user };
   },
-} as const
+} as const;
 
 export function useGetCurrentUser() {
   return useQuery({
     ...currentUserQueryOptions,
-  })
+  });
 }
