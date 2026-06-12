@@ -12,7 +12,7 @@ Each site should:
 - keep the repository root as the base directory
 - set its package directory to the app folder
 - use the app-local `netlify.toml`
-- publish `dist`, because Netlify monorepo packaging rewrites the generated static output there for deployment
+- publish the app-qualified Netlify output path, for example `apps/storefront/dist`
 
 Because both apps have `ssr: false` in their Nuxt config, static generation is the correct Netlify target.
 
