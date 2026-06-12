@@ -13,12 +13,12 @@ const REQUEST_MARKET_HEADER_NAMES = {
 
 const REGION_TO_MARKET_CODE: Record<MarketRegions, string> = {
   'United States': 'US',
-  Vietnam: 'VN',
+  'Vietnam': 'VN',
 }
 
 const REGION_TO_LOCALE_REGION: Record<MarketRegions, string> = {
   'United States': 'US',
-  Vietnam: 'VN',
+  'Vietnam': 'VN',
 }
 
 function resolveLocaleLanguage(): string {

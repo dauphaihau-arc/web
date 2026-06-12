@@ -4,7 +4,9 @@ import {
   toCurrencyOption,
   type CurrencyOption,
 } from '@arc/utils/currency-options'
-import { computed, reactive, watch, type ComputedRef, type Ref } from 'vue'
+import {
+  computed, reactive, watch, type ComputedRef, type Ref,
+} from 'vue'
 import {
   defaultLanguageOption,
   localeToLanguageOption,
