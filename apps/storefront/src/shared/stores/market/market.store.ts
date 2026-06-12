@@ -1,11 +1,11 @@
 import { StorageSerializers, useStorage } from '@vueuse/core'
 import { LocalStorageKeys } from '@arc/enums/local-storage-keys'
-import { MARKET_CONFIG, MarketCurrencies, MarketLanguages } from '@arc/enums/market'
+import type { MarketCurrencies, MarketLanguages } from '@arc/enums/market'
+import { MARKET_CONFIG } from '@arc/enums/market'
 import { SessionStorageKeys } from '@arc/enums/session-storage-keys'
 import type { AuthPreferences } from '~/shared/api/auth/contracts/auth-user.contract'
-import type { MarketConfigMarket } from '~/shared/api/market/contracts/market.contract'
+import type { MarketConfigMarket, IpDataResponse } from '~/shared/api/market/contracts/market.contract'
 import { currentUserQueryOptions, useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
-import type { IpDataResponse } from '~/shared/api/market/contracts/market.contract'
 import { marketConfigQueryOptions } from '~/shared/server-state/market/config.query'
 import { getIpData } from '~/shared/server-state/market/ip-data.query'
 import type {
@@ -15,9 +15,9 @@ import type {
 
 const COUNTRY_TO_MARKET_MAP: Record<string, string> = {
   'United States of America': 'United States',
-  USA: 'United States',
-  US: 'United States',
-  VN: 'Vietnam',
+  'USA': 'United States',
+  'US': 'United States',
+  'VN': 'Vietnam',
 }
 
 function getBrowserLocale() {
@@ -162,8 +162,6 @@ export const useMarketStore = defineStore('market', () => {
         getIpData().catch(() => undefined),
         queryClient.fetchQuery(marketConfigQueryOptions).catch(() => undefined),
       ])
-      console.log('currentUser', currentUser, 'ipData', ipData, 'marketConfig', marketConfig)
-
       const userPreferences = currentUser?.user?.preferences
 
       if (userPreferences) {
@@ -191,7 +189,7 @@ export const useMarketStore = defineStore('market', () => {
         getBrowserLocale(),
         market.supportedLocales,
       ) ?? localeToMarketLanguage(market.defaultLocale, market.supportedLocales)
-        ?? MARKET_CONFIG.BASE_LANGUAGE
+      ?? MARKET_CONFIG.BASE_LANGUAGE
 
       markMarketReady({
         currency: resolveMarketCurrency((ipData as IpDataResponse).currency?.code, market),

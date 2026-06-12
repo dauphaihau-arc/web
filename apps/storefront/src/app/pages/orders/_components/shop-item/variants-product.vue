@@ -23,16 +23,18 @@ onMounted(() => {
 </script>
 
 <template>
-  <div
-    v-if="productOrder.product.variant_group_name"
-    class=""
-  >
-    {{ productOrder.product.variant_group_name }}: {{ state.v1 }}
-  </div>
-  <div
-    v-if="productOrder.product.variant_sub_group_name"
-    class=""
-  >
-    {{ productOrder.product.variant_sub_group_name }}: {{ state.v2 }}
+  <div>
+    <div
+      v-if="productOrder.product.variant_group_name"
+      class=""
+    >
+      {{ productOrder.product.variant_group_name }}: {{ state.v1 }}
+    </div>
+    <div
+      v-if="productOrder.product.variant_sub_group_name"
+      class=""
+    >
+      {{ productOrder.product.variant_sub_group_name }}: {{ state.v2 }}
+    </div>
   </div>
 </template>

@@ -1,6 +1,7 @@
 import type { QueryClient } from '@tanstack/vue-query'
 import type { OrderUpdatedRealtimeEvent } from './order-events'
-import { useOrderLiveUpdates } from './order-live-updates'
+import { mergeOrderShopWithLiveUpdate, useOrderLiveUpdates } from './order-live-updates'
+import type { GetMyOrderDetailResponse, GetOrderShopsResponse } from '~/shared/api/me/order/contracts/order.contract'
 
 type OrderEventsClient = {
   start: () => void
@@ -12,24 +13,24 @@ type GlobalOrderEventsState = {
   handleMessage: ((rawPayload: string) => Promise<void>) | null
 }
 
+const ORDER_EVENTS_STATE_KEY = '__storefrontOrderEventsState__'
+
 function buildEventsUrl(): string {
   const config = useRuntimeConfig()
   return `${config.public.apiBaseURL}/v${config.public.apiVersion}/me/events`
 }
 
 function getGlobalOrderEventsState(): GlobalOrderEventsState {
-  const globalState = globalThis as typeof globalThis & {
-    __storefrontOrderEventsState__?: GlobalOrderEventsState
-  }
+  const globalState = globalThis as typeof globalThis & Record<string, GlobalOrderEventsState | undefined>
 
-  if (!globalState.__storefrontOrderEventsState__) {
-    globalState.__storefrontOrderEventsState__ = {
+  if (!globalState[ORDER_EVENTS_STATE_KEY]) {
+    globalState[ORDER_EVENTS_STATE_KEY] = {
       eventSource: null,
       handleMessage: null,
     }
   }
 
-  return globalState.__storefrontOrderEventsState__
+  return globalState[ORDER_EVENTS_STATE_KEY]!
 }
 
 function isOrderUpdatedRealtimeEvent(value: unknown): value is OrderUpdatedRealtimeEvent {
@@ -44,7 +45,7 @@ function patchOrderShopsCache(
   queryClient: QueryClient,
   payload: OrderUpdatedRealtimeEvent,
 ): void {
-  const cacheEntries = queryClient.getQueriesData<{ order_shops?: Array<Record<string, unknown>> }>({
+  const cacheEntries = queryClient.getQueriesData<Pick<GetOrderShopsResponse, 'order_shops'>>({
     queryKey: ['get-order-shops'],
   })
 
@@ -55,25 +56,11 @@ function patchOrderShopsCache(
 
     queryClient.setQueryData(queryKey, {
       ...queryData,
-      order_shops: queryData.order_shops.map((orderShop) => {
-        if (orderShop.id !== payload.orderId) {
-          return orderShop
-        }
-
-        const shipping = (orderShop.shipping ?? {}) as Record<string, unknown>
-
-        return {
-          ...orderShop,
-          ...(payload.status ? { status: payload.status } : {}),
-          shipping: {
-            ...shipping,
-            ...(payload.shippingStatus
-              ? { shipping_status: payload.shippingStatus }
-              : {}),
-            updated_at: payload.occurredAt,
-          },
-        }
-      }),
+      order_shops: queryData.order_shops.map(orderShop =>
+        orderShop.id === payload.orderId
+          ? mergeOrderShopWithLiveUpdate(orderShop, payload)
+          : orderShop,
+      ),
     })
   }
 }
@@ -82,28 +69,14 @@ function patchOrderDetailCache(
   queryClient: QueryClient,
   payload: OrderUpdatedRealtimeEvent,
 ): void {
-  queryClient.setQueryData<{
-    order_shop?: Record<string, unknown>
-  }>(['get-order-by-id', payload.orderId], (current) => {
+  queryClient.setQueryData<Pick<GetMyOrderDetailResponse, 'order_shop'>>(['get-order-by-id', payload.orderId], (current) => {
     if (!current?.order_shop) {
       return current
     }
 
-    const shipping = (current.order_shop.shipping ?? {}) as Record<string, unknown>
-
     return {
       ...current,
-      order_shop: {
-        ...current.order_shop,
-        ...(payload.status ? { status: payload.status } : {}),
-        shipping: {
-          ...shipping,
-          ...(payload.shippingStatus
-            ? { shipping_status: payload.shippingStatus }
-            : {}),
-          updated_at: payload.occurredAt,
-        },
-      },
+      order_shop: mergeOrderShopWithLiveUpdate(current.order_shop, payload),
     }
   })
 }

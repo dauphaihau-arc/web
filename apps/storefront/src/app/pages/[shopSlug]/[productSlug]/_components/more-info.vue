@@ -101,115 +101,117 @@ watch(
 </script>
 
 <template>
-  <UAccordion
-    color="gray"
-    variant="ghost"
-    size="sm"
-    multiple
-    :items="items"
-    :ui="{
-      wrapper: '-ml-2.5',
-      item: {
-        padding: 'pl-1 pb-8',
-      },
-      default: {
-        class: 'text-base font-semibold',
-      },
-    }"
-  >
-    <template #item="{ item }">
-      <div
-        v-if="item.id === 'info'"
-        class="px-1 text-sm leading-6 whitespace-pre-line text-text-subtle"
-      >
-        {{ item.content }}
-      </div>
-
-      <div
-        v-else-if="item.id === 'shipping'"
-        class="space-y-2.5 px-1"
-      >
-        <div class="flex gap-2">
-          <UIcon name="i-material-symbols:calendar-month-rounded" />
-          Ships out within {{ processTime }} business days
-        </div>
-        <div class="flex gap-2">
-          <UIcon name="i-material-symbols:location-on-outline" />
-          Ship from {{ product?.shipping?.origin_country }}
-        </div>
-      </div>
-
-      <div
-        v-else-if="item.id === 'seller'"
-        class="space-y-3 px-1"
-      >
-        <div class="text-sm text-text-subtle">
-          Questions about this item? Start a direct conversation with {{ product.shop.shop_name }}.
-        </div>
-        <UButton
-          color="gray"
-          :loading="isOpeningChat"
-          @click="openSellerChat"
-        >
-          Message {{ product.shop.shop_name }}
-        </UButton>
-      </div>
-
-      <div
-        v-else
-        class="px-1 text-sm leading-6 whitespace-pre-line text-text-subtle"
-      >
-        {{ item.content }}
-      </div>
-    </template>
-  </UAccordion>
-
-  <Teleport to="body">
-    <div
-      v-if="isSellerChatOpen && activeConversation"
-      class="fixed inset-0 z-50"
+  <div>
+    <UAccordion
+      color="gray"
+      variant="ghost"
+      size="sm"
+      multiple
+      :items="items"
+      :ui="{
+        wrapper: '-ml-2.5',
+        item: {
+          padding: 'pl-1 pb-8',
+        },
+        default: {
+          class: 'text-base font-semibold',
+        },
+      }"
     >
-      <div
-        class="absolute inset-0"
-        aria-hidden="true"
-        @click="isSellerChatOpen = false"
-      />
-
-      <div class="absolute inset-x-3 bottom-3 sm:inset-x-auto sm:right-4 sm:w-[420px]">
+      <template #item="{ item }">
         <div
-          class="overflow-hidden rounded-3xl border border-border-subtle bg-surface shadow-overlay"
-          @click.stop
+          v-if="item.id === 'info'"
+          class="px-1 text-sm leading-6 whitespace-pre-line text-text-subtle"
         >
-          <div class="flex items-center justify-between border-b border-border-subtle px-5 py-3">
-            <div>
-              <div class="text-sm font-semibold text-text-strong">
-                Chat with {{ product.shop.shop_name }}
+          {{ item.content }}
+        </div>
+
+        <div
+          v-else-if="item.id === 'shipping'"
+          class="space-y-2.5 px-1"
+        >
+          <div class="flex gap-2">
+            <UIcon name="i-material-symbols:calendar-month-rounded" />
+            Ships out within {{ processTime }} business days
+          </div>
+          <div class="flex gap-2">
+            <UIcon name="i-material-symbols:location-on-outline" />
+            Ship from {{ product?.shipping?.origin_country }}
+          </div>
+        </div>
+
+        <div
+          v-else-if="item.id === 'seller'"
+          class="space-y-3 px-1"
+        >
+          <div class="text-sm text-text-subtle">
+            Questions about this item? Start a direct conversation with {{ product.shop.shop_name }}.
+          </div>
+          <UButton
+            color="gray"
+            :loading="isOpeningChat"
+            @click="openSellerChat"
+          >
+            Message {{ product.shop.shop_name }}
+          </UButton>
+        </div>
+
+        <div
+          v-else
+          class="px-1 text-sm leading-6 whitespace-pre-line text-text-subtle"
+        >
+          {{ item.content }}
+        </div>
+      </template>
+    </UAccordion>
+
+    <Teleport to="body">
+      <div
+        v-if="isSellerChatOpen && activeConversation"
+        class="fixed inset-0 z-50"
+      >
+        <div
+          class="absolute inset-0"
+          aria-hidden="true"
+          @click="isSellerChatOpen = false"
+        />
+
+        <div class="absolute inset-x-3 bottom-3 sm:inset-x-auto sm:right-4 sm:w-[420px]">
+          <div
+            class="overflow-hidden rounded-3xl border border-border-subtle bg-surface shadow-overlay"
+            @click.stop
+          >
+            <div class="flex items-center justify-between border-b border-border-subtle px-5 py-3">
+              <div>
+                <div class="text-sm font-semibold text-text-strong">
+                  Chat with {{ product.shop.shop_name }}
+                </div>
+                <div class="text-xs text-text-muted">
+                  Ask about this product directly from here.
+                </div>
               </div>
-              <div class="text-xs text-text-muted">
-                Ask about this product directly from here.
-              </div>
+
+              <UButton
+                color="gray"
+                variant="ghost"
+                icon="i-lucide-x"
+                aria-label="Close seller chat"
+                class="-mr-2"
+                @click="isSellerChatOpen = false"
+              />
             </div>
 
-            <UButton
-              color="gray"
-              variant="ghost"
-              icon="i-lucide-x"
-              aria-label="Close seller chat"
-              class="-mr-2"
-              @click="isSellerChatOpen = false"
-            />
-          </div>
-
-          <div class="h-[min(70vh,640px)]">
-            <ChatConversationPanel
-              :conversation-id="activeConversation.id"
-              :initial-conversation="activeConversation"
-              :show-product-link="false"
-              empty-state-text="Loading conversation..."
-            />
+            <div class="h-[min(70vh,640px)]">
+              <ChatConversationPanel
+                :conversation-id="activeConversation.id"
+                :initial-conversation="activeConversation"
+                :show-product-link="false"
+                empty-state-text="Loading conversation..."
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </Teleport>
+    </Teleport>
+  </div>
 </template>

@@ -136,71 +136,73 @@ const disabledInput = computed(() => {
 </script>
 
 <template>
-  <UButton
-    variant="ghost"
-    icon="i-heroicons-ticket"
-    color="gray"
-    class="w-fit"
-    :disabled="cartStore.stateCheckoutNow.isPendingCreateOrder"
-    @click="toggleShowAddCouponInput"
-  >
-    Apply shop coupon codes
-  </UButton>
-
-  <div
-    v-if="state.showAddCouponInput"
-    class="mb-4 flex gap-3"
-  >
-    <UFormGroup
-      required
-      name="code"
-      :error="state.errorMsg"
+  <div>
+    <UButton
+      variant="ghost"
+      icon="i-heroicons-ticket"
+      color="gray"
+      class="w-fit"
+      :disabled="cartStore.stateCheckoutNow.isPendingCreateOrder"
+      @click="toggleShowAddCouponInput"
     >
-      <UButtonGroup
-        size="lg"
-        orientation="horizontal"
-      >
-        <UInput
-          v-model="state.code"
-          v-uppercase
-          :disabled="disabledInput || cartStore.stateCheckoutNow.isPendingCreateOrder"
-        />
-        <UButton
-          color="gray"
-          variant="solid"
-          :disabled="disabledAddBtn || cartStore.stateCheckoutNow.isPendingCreateOrder"
-          @click="addCoupon"
-        >
-          Add
-        </UButton>
-      </UButtonGroup>
-    </UFormGroup>
+      Apply shop coupon codes
+    </UButton>
 
     <div
-      v-if="cartStore.stateCheckoutNow.promoCodes.length > 0"
-      class="flex gap-3"
+      v-if="state.showAddCouponInput"
+      class="mb-4 flex gap-3"
     >
-      <div
-        v-for="(code, index) of cartStore.stateCheckoutNow.promoCodes"
-        :key="index"
+      <UFormGroup
+        required
+        name="code"
+        :error="state.errorMsg"
       >
-        <div class="relative">
+        <UButtonGroup
+          size="lg"
+          orientation="horizontal"
+        >
+          <UInput
+            v-model="state.code"
+            v-uppercase
+            :disabled="disabledInput || cartStore.stateCheckoutNow.isPendingCreateOrder"
+          />
           <UButton
-            color="gray"
-            size="lg"
-          >
-            {{ code }}
-          </UButton>
-          <UButton
-            class="absolute -right-2 -top-3 z-[1]"
-            size="2xs"
             color="gray"
             variant="solid"
-            :disabled="isPendingUpdateCart || cartStore.stateCheckoutNow.isPendingCreateOrder"
-            icon="i-heroicons-x-mark-20-solid"
-            :ui="{ rounded: 'rounded-full' }"
-            @click="() => deleteCoupon(code)"
-          />
+            :disabled="disabledAddBtn || cartStore.stateCheckoutNow.isPendingCreateOrder"
+            @click="addCoupon"
+          >
+            Add
+          </UButton>
+        </UButtonGroup>
+      </UFormGroup>
+
+      <div
+        v-if="cartStore.stateCheckoutNow.promoCodes.length > 0"
+        class="flex gap-3"
+      >
+        <div
+          v-for="(code, index) of cartStore.stateCheckoutNow.promoCodes"
+          :key="index"
+        >
+          <div class="relative">
+            <UButton
+              color="gray"
+              size="lg"
+            >
+              {{ code }}
+            </UButton>
+            <UButton
+              class="absolute -right-2 -top-3 z-[1]"
+              size="2xs"
+              color="gray"
+              variant="solid"
+              :disabled="isPendingUpdateCart || cartStore.stateCheckoutNow.isPendingCreateOrder"
+              icon="i-heroicons-x-mark-20-solid"
+              :ui="{ rounded: 'rounded-full' }"
+              @click="() => deleteCoupon(code)"
+            />
+          </div>
         </div>
       </div>
     </div>

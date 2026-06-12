@@ -194,7 +194,7 @@ watch(
       </div>
       <MoreProductsByCategory
         v-if="resolvedProduct.category_id"
-        :category_id="resolvedProduct.category_id"
+        :category-id="resolvedProduct.category_id"
       />
     </div>
   </div>

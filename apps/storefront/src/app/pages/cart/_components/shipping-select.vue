@@ -25,37 +25,39 @@ const isSelectAnyProduct = computed(() => {
 </script>
 
 <template>
-  <div class="flex gap-2 text-lg text-text-strong">
-    <p>Shipping fee:</p>
-    <p
-      v-if="props.shopCart.shipping_minor === 0 && isSelectAnyProduct"
-      class="text-right font-normal text-primary"
-    >
-      FREE
-    </p>
-    <p
-      v-else-if="props.shopCart.shipping_minor > 0"
-    >
-      {{ formatMinorCurrency(props.shopCart.shipping_minor, props.shopCart.currency) }}
-    </p>
-    <p v-else>
-      {{ formatMinorCurrency(0, props.shopCart.currency) }}
-    </p>
-  </div>
-  <div class="hidden">
-    <USelectMenu
-      v-model="selected"
-      :options="options"
-      size="xl"
-    />
+  <div>
+    <div class="flex gap-2 text-lg text-text-strong">
+      <p>Shipping fee:</p>
+      <p
+        v-if="props.shopCart.shipping_minor === 0 && isSelectAnyProduct"
+        class="text-right font-normal text-primary"
+      >
+        FREE
+      </p>
+      <p
+        v-else-if="props.shopCart.shipping_minor > 0"
+      >
+        {{ formatMinorCurrency(props.shopCart.shipping_minor, props.shopCart.currency) }}
+      </p>
+      <p v-else>
+        {{ formatMinorCurrency(0, props.shopCart.currency) }}
+      </p>
+    </div>
+    <div class="hidden">
+      <USelectMenu
+        v-model="selected"
+        :options="options"
+        size="xl"
+      />
 
-    <div class="mt-3 text-right text-sm text-text-muted">
-      <p>
-        Estimated delivery: Aug 7-21
-      </p>
-      <p>
-        from Slovenia
-      </p>
+      <div class="mt-3 text-right text-sm text-text-muted">
+        <p>
+          Estimated delivery: Aug 7-21
+        </p>
+        <p>
+          from Slovenia
+        </p>
+      </div>
     </div>
   </div>
 </template>

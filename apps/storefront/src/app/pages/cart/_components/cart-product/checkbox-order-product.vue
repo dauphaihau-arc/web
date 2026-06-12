@@ -2,9 +2,9 @@
 import { useUpdateCart } from '~/shared/server-state/cart/update-cart.mutation'
 import type { GetCartResponse } from '~/shared/api/cart/contracts/cart.contract'
 
-const { checked, inventory_id, shopId } = defineProps<{
+const { checked, inventoryId, shopId } = defineProps<{
   checked: boolean
-  inventory_id: string
+  inventoryId: string
   shopId: string
 }>()
 
@@ -26,7 +26,7 @@ const {
       const newShopGroups = oldData.cart.shop_groups.map((sc) => {
         if (sc.shop.id === shopId) {
           const newItems = sc.items.map((prod) => {
-            if (prod.inventory.id === inventory_id) {
+            if (prod.inventory.id === inventoryId) {
               return { ...prod, is_selected: selectedCheckbox.value }
             }
             return prod
@@ -54,7 +54,7 @@ const {
 
 watch(() => selectedCheckbox.value, async () => {
   updateProductCart({
-    inventory_id,
+    inventory_id: inventoryId,
     is_select_order: selectedCheckbox.value,
   })
 })

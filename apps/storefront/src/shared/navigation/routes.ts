@@ -33,10 +33,20 @@ export const routes = {
     ),
   orders: (query?: {
     search?: string
-    shipping_status?: OrderShippingStatuses
+    shippingStatus?: OrderShippingStatuses
     status?: OrderStatuses
     state?: MyOrderListState
-  }) => createRoute(routePaths.orders, query),
+  }) => createRoute(
+    routePaths.orders,
+    query
+      ? {
+          ...(query.search ? { search: query.search } : {}),
+          ...(query.shippingStatus ? { shipping_status: query.shippingStatus } : {}),
+          ...(query.status ? { status: query.status } : {}),
+          ...(query.state ? { state: query.state } : {}),
+        }
+      : undefined,
+  ),
   orderDetail: (id: string) => createRoute(buildOrderDetailPath(id)),
   search: (query?: { search?: string }) => createRoute(routePaths.search, query),
   cart: () => createRoute(routePaths.cart),
