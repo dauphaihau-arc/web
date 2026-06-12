@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { Category } from '@arc/models/category'
-import ProductCard from './product-card.vue'
+import ProductCard from '~/app/components/product/product-card.vue'
 import { useGetProducts } from '~/shared/server-state/product/products.query'
 
 const limit = 12

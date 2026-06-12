@@ -21,6 +21,9 @@ export function useGetProducts(
 
   return useQuery<GetProductsResponse>({
     enabled: computed(() => !!params.value && marketStore.isMarketReady),
+    staleTime: 0,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
     ...options,
     queryKey: computed(() => ['get-products', params.value, marketContext.value]),
     queryFn: () => {
