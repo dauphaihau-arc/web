@@ -82,7 +82,7 @@ watch(querySuggestion, () => {
   <UFormGroup
     label="Category"
     name="category"
-    class="mb-4"
+    class="mb-4 form-field-constrained"
     required
     description="Type a two- or three-word description of your product
              to get category suggestions that will help more shoppers find it."

@@ -166,7 +166,7 @@ watch(isProductHaveVariants, () => {
           <UFormGroup
             label="Title"
             name="title"
-            class="mb-4"
+            class="mb-4 form-field-constrained"
             description="Include keywords that buyers would use to search for your product."
             required
           >
@@ -179,6 +179,7 @@ watch(isProductHaveVariants, () => {
           <UFormGroup
             label="Description"
             name="description"
+            class="form-field-constrained"
             :help="stateSubmit.description
               && `${stateSubmit.description.length}/${PRODUCT_CONFIG.MAX_CHAR_DESCRIPTION}`
             "

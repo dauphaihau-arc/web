@@ -73,3 +73,7 @@ input[type=number] {
 
 
 /** ================== Others ================== **/
+
+.form-field-constrained {
+  @apply w-full max-w-[640px];
+}
