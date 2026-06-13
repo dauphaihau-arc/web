@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import LoadingSvg from '@arc/ui/loading-svg.vue'
-import FilterProducts from '~/app/components/product/filter-products.vue'
+import Filters from '~/app/components/product/filters/filters.vue'
 import ProductCard from '~/app/components/product/product-card.vue'
 import SortProductsBy from '~/app/components/product/sort-products-by.vue'
 import { useGetProducts } from '~/shared/server-state/product/products.query'
@@ -8,6 +8,27 @@ import { useGetProducts } from '~/shared/server-state/product/products.query'
 definePageMeta({ layout: 'market' })
 
 const route = useRoute()
+
+function normalizeRouteQuery(query: typeof route.query): Record<string, string | string[]> {
+  const normalized: Record<string, string | string[]> = {}
+
+  Object.entries(query).forEach(([key, value]) => {
+    if (typeof value === 'string') {
+      normalized[key] = value
+      return
+    }
+
+    if (Array.isArray(value)) {
+      const entries = value.filter((entry): entry is string => typeof entry === 'string')
+
+      if (entries.length > 0) {
+        normalized[key] = entries
+      }
+    }
+  })
+
+  return normalized
+}
 
 if (!route.query?.search) {
   throw showError({
@@ -39,7 +60,7 @@ const queryParams = computed(() => {
     search: searchQuery.value,
   }
   if (route.query) {
-    defaultParams = { ...defaultParams, ...route.query }
+    defaultParams = { ...defaultParams, ...normalizeRouteQuery(route.query) }
   }
   return defaultParams
 })
@@ -71,7 +92,7 @@ watch(() => route.query.search, () => {
     </div>
     <div class="flex gap-12">
       <div class="min-w-[200px] max-w-[200px]">
-        <FilterProducts />
+        <Filters />
       </div>
 
       <div

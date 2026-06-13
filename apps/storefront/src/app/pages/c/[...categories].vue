@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import CategoriesBreadcrumb from './_components/categories-breadcrumb.vue'
+import ProductResults from './_components/product-results.vue'
 import SubCategories from './_components/sub-categories.vue'
-import FilterProducts from '~/app/components/product/filter-products.vue'
-import ProductCard from '~/app/components/product/product-card.vue'
+import Filters from '~/app/components/product/filters/filters.vue'
 import SortProductsBy from '~/app/components/product/sort-products-by.vue'
 import { useGetProducts } from '~/shared/server-state/product/products.query'
 import type { GetProductsRequest } from '~/shared/api/product/contracts/product.contract'
@@ -15,6 +15,27 @@ const marketStore = useMarketStore()
 const limit = 16
 const page = ref(1)
 
+function normalizeRouteQuery(query: typeof route.query): Record<string, string | string[]> {
+  const normalized: Record<string, string | string[]> = {}
+
+  Object.entries(query).forEach(([key, value]) => {
+    if (typeof value === 'string') {
+      normalized[key] = value
+      return
+    }
+
+    if (Array.isArray(value)) {
+      const entries = value.filter((entry): entry is string => typeof entry === 'string')
+
+      if (entries.length > 0) {
+        normalized[key] = entries
+      }
+    }
+  })
+
+  return normalized
+}
+
 const params = computed(() => {
   const category = marketStore.categoriesBreadcrumb.find(c => c.to === route.path)
   if (!category) {
@@ -26,7 +47,7 @@ const params = computed(() => {
     limit,
   }
   if (route.query) {
-    defaultParams = { ...defaultParams, ...route.query }
+    defaultParams = { ...defaultParams, ...normalizeRouteQuery(route.query) }
   }
   return defaultParams
 })
@@ -50,56 +71,18 @@ watch(() => page.value, () => {
     </div>
 
     <div class="flex items-start gap-12">
-      <div class="sticky top-16 min-w-[200px] max-w-[200px]">
+      <div class="sticky top-16 flex max-h-[calc(100vh-4rem)] min-w-[200px] max-w-[200px] flex-col overflow-y-auto pb-8">
         <SubCategories />
-        <FilterProducts />
+        <Filters :category-id="params?.category_id" />
       </div>
 
-      <div v-if="isPendingGetProducts">
-        <div class="mb-16 grid grid-cols-4 gap-x-3 gap-y-8">
-          <div
-            v-for="i in limit"
-            :key="i"
-          >
-            <div>
-              <USkeleton class="size-[254px]" />
-              <div class="mt-3 space-y-3">
-                <USkeleton class="h-5 w-[190px] " />
-                <USkeleton class="h-5 w-[150px] " />
-                <USkeleton class="h-5 w-[120px] " />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        v-else
-        class="w-full"
-      >
-        <div
-          v-if="dataGetProducts?.items"
-          class="mb-16 grid grid-cols-4 gap-8"
-        >
-          <div
-            v-for="product of dataGetProducts.items"
-            :key="product.id"
-          >
-            <ProductCard :product="product" />
-          </div>
-        </div>
-        <div
-          v-if="dataGetProducts?.meta.total && dataGetProducts.meta.total > limit"
-          class="flex justify-center"
-        >
-          <UPagination
-            v-model="page"
-            size="xl"
-            :page-count="limit"
-            :total="dataGetProducts?.meta.total ?? 0"
-            :inactive-button="{ color: 'gray' }"
-          />
-        </div>
-      </div>
+      <ProductResults
+        v-model:page="page"
+        :items="dataGetProducts?.items"
+        :total="dataGetProducts?.meta.total"
+        :limit="limit"
+        :loading="isPendingGetProducts"
+      />
     </div>
   </div>
 </template>

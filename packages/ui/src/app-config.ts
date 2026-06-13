@@ -50,6 +50,9 @@ export const sharedAppConfig = {
         'bottom-right': 'translate-y-[-4px] translate-x-[-4px]',
       },
     },
+    checkbox: {
+      inner: 'ms-1.5',
+    },
     input: {
       default: {
         loadingIcon: 'i-eos-icons:loading',

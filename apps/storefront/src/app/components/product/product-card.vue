@@ -48,7 +48,7 @@ const displayAmount = computed(() => {
       />
     </div>
 
-    <div class="flex min-h-[104px] flex-col gap-1">
+    <div class="flex min-h-[104px] flex-col">
       <h1 class="line-clamp-2 overflow-hidden text-base font-semibold leading-6">
         {{ props.product?.title }}
       </h1>
@@ -65,7 +65,7 @@ const displayAmount = computed(() => {
       </p>
       <p
         v-if="stockNotice"
-        class="mt-auto text-[13px] text-state-danger-text"
+        class="mt-1 text-[13px] text-state-danger-text"
       >
         {{ stockNotice }}
       </p>
