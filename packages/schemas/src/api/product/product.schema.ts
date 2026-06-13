@@ -39,7 +39,14 @@ export const getProductsRequestSchema = requestGetListParamsSchema.extend({
   is_digital: z.boolean().optional(),
   who_made: z.string().optional(),
   order: z.string().optional(),
-})
+}).catchall(z.union([
+  z.string(),
+  z.number(),
+  z.boolean(),
+  z.null(),
+  z.array(z.string()),
+  z.undefined(),
+]))
 
 export const getProductsResponseItemSchema = z.object({
   id: z.string(),
@@ -70,6 +77,21 @@ export const getProductsResponseSchema = z.object({
     has_next_page: z.boolean(),
     has_previous_page: z.boolean(),
   }),
+})
+
+export const publicProductFacetOptionSchema = z.object({
+  option_key: z.string(),
+  value: z.string(),
+})
+
+export const publicProductFacetSchema = z.object({
+  facet_key: z.string(),
+  attribute_name: z.string(),
+  options: z.array(publicProductFacetOptionSchema),
+})
+
+export const getProductFacetsResponseSchema = z.object({
+  facets: z.array(publicProductFacetSchema),
 })
 
 export const getProductSuggestionsResponseSchema = z.object({

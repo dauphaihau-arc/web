@@ -8,6 +8,7 @@ export const categoryAttributeOptionResponseSchema = z.object({
 
 export const categoryAttributeResponseSchema = z.object({
   id: z.string(),
+  key: z.string(),
   name: z.string(),
   input_type: z.string(),
   is_required: z.boolean(),
@@ -22,6 +23,7 @@ export const categoryResponseSchema = z.object({
   rank: z.number(),
   image_storage_key: z.string().optional(),
   image_url: z.string().optional(),
+  featured_facet_keys: z.array(z.string()).optional(),
   attributes: z.array(categoryAttributeResponseSchema),
 })
 
@@ -33,6 +35,7 @@ export const getCategoriesResponseSchema = z.array(categoryResponseSchema)
 
 export const categoryAttributeSelectSchema = z.object({
   id: z.string(),
+  key: z.string().optional(),
   name: z.string(),
   options: z.array(z.object({
     id: z.string(),
@@ -42,6 +45,7 @@ export const categoryAttributeSelectSchema = z.object({
 
 export const nestedCategoryAttributeSchema = z.object({
   id: z.string(),
+  key: z.string(),
   name: z.string(),
   options: z.array(categoryAttributeOptionResponseSchema),
 })

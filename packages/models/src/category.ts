@@ -5,8 +5,10 @@ export type Category = {
   rank: number
   imageStorageKey?: string
   imageUrl?: string
+  featuredFacetKeys?: string[]
   attributes: {
     id: string
+    key?: string
     name: string
     inputType: string
     isRequired: boolean
