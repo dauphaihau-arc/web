@@ -2,6 +2,7 @@
 import { FetchError } from 'ofetch'
 import { StatusCodes } from 'http-status-codes'
 import { LocalStorageKeys } from '@arc/enums/local-storage-keys'
+import { MarketCurrencies, MarketRegions } from '@arc/enums/market'
 import type { FormError, FormSubmitEvent } from '#ui/types'
 import { useAuthClientConfig } from '~/shared/server-state/auth/client-config.query'
 import type { AuthPreferences } from '~/shared/api/auth/contracts/auth-user.contract'
@@ -21,6 +22,24 @@ const {
   isPending: isPendingRegister,
 } = useRegister()
 const { data: authClientConfig, isLoading: isLoadingAuthClientConfig } = useAuthClientConfig()
+
+function sanitizeRegisterPreferences(preferences?: AuthPreferences | null): Partial<AuthPreferences> | undefined {
+  if (!preferences) {
+    return undefined
+  }
+
+  const sanitizedPreferences: Partial<AuthPreferences> = {}
+
+  if (Object.values(MarketCurrencies).includes(preferences.currency)) {
+    sanitizedPreferences.currency = preferences.currency
+  }
+
+  if (Object.values(MarketRegions).includes(preferences.region)) {
+    sanitizedPreferences.region = preferences.region
+  }
+
+  return Object.keys(sanitizedPreferences).length > 0 ? sanitizedPreferences : undefined
+}
 
 const validateForm = (stateValidate: Partial<RegisterBody> & { display_name?: string }): FormError[] => {
   const errors: FormError[] = []
@@ -52,7 +71,7 @@ async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
   try {
     await register({
       ...event.data,
-      preferences: userPreferences,
+      preferences: sanitizeRegisterPreferences(userPreferences),
     })
   }
   catch (error) {

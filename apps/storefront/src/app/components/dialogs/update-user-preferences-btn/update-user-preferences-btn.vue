@@ -43,6 +43,16 @@ const currentUserPreferences = computed(() => {
   return marketStore.guestPreferences || currentUserData.value?.user?.preferences
 })
 
+const selectMenuUi = {
+  container: 'z-[60]',
+}
+
+const currencySelectMenuUi = {
+  ...selectMenuUi,
+  select: '!normal-case',
+  option: { base: '!normal-case' },
+}
+
 const {
   currencyOptions,
   regionOptions,
@@ -123,9 +133,15 @@ const onSubmit = async (event: FormSubmitEvent<PreferenceState>) => {
     <BaseDialog
       v-model="isOpenDialog"
       body-class="space-y-6 p-8"
+      card-class="overflow-visible"
       :ui="{
         modal: {
           margin: '!mb-72',
+        },
+        card: {
+          body: {
+            base: 'flex min-h-0 flex-1 flex-col overflow-visible',
+          },
         },
       }"
       title="Update your settings"
@@ -148,6 +164,7 @@ const onSubmit = async (event: FormSubmitEvent<PreferenceState>) => {
               :disabled="isPendingUpdateUserPreferences || isPendingGetMarketConfig"
               size="xl"
               :options="regionOptions"
+              :ui-menu="selectMenuUi"
             />
           </UFormGroup>
 
@@ -173,15 +190,13 @@ const onSubmit = async (event: FormSubmitEvent<PreferenceState>) => {
           >
             <USelectMenu
               v-model="state.currency"
+              searchable
               size="xl"
               :disabled="isPendingUpdateUserPreferences"
               :options="currencyOptions"
               value-attribute="id"
               option-attribute="displayLabel"
-              :ui-menu="{
-                select: '!normal-case',
-                option: { base: '!normal-case' },
-              }"
+              :ui-menu="currencySelectMenuUi"
             />
           </UFormGroup>
         </div>
