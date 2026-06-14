@@ -11,13 +11,13 @@ const debugEntry = require.resolve('debug/src/index.js')
 const assetHost = process.env.ASSET_HOST || ''
 const awsHostBucketAlias = assetHost.replace(/\/+$/, '')
 
-function manualChunks(id: string) {
+function manualChunks(id: string): string | undefined {
   if (id.includes('/packages/ui/src/')) {
     return 'arc-ui'
   }
 
   if (!id.includes('node_modules')) {
-    return
+    return undefined
   }
 
   if (
@@ -39,6 +39,8 @@ function manualChunks(id: string) {
   if (id.includes('/dayjs/')) {
     return 'dayjs'
   }
+
+  return undefined
 }
 
 function removePageComponents(pages: NuxtPage[]) {

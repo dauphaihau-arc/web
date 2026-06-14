@@ -1,5 +1,7 @@
 import type { ComputedRef, Ref } from 'vue'
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import {
+  computed, onBeforeUnmount, ref, watch,
+} from 'vue'
 import { ProductVariantTypes } from '@arc/enums/product'
 import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contracts/product.contract'
 import type { ProductInventoryUpdatedRealtimeEvent } from '~/shared/realtime/product-inventory-events'
