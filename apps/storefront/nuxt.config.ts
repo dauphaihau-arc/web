@@ -1,9 +1,12 @@
+import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import type { NuxtPage } from '@nuxt/schema'
 import pkg from './package.json'
 
 const packagesDir = fileURLToPath(new URL('../../packages/', import.meta.url))
 const uiPackageDir = `${packagesDir}ui/src`
+const require = createRequire(import.meta.url)
+const debugEntry = require.resolve('debug/src/index.js')
 
 const assetHost = process.env.ASSET_HOST || ''
 const awsHostBucketAlias = assetHost.replace(/\/+$/, '')
@@ -52,6 +55,7 @@ export default defineNuxtConfig({
     '@arc/enums': `${packagesDir}enums/src`,
     '@arc/schemas': `${packagesDir}schemas/src`,
     '@arc/utils': `${packagesDir}utils/src`,
+    debug: debugEntry,
   },
 
   devServer: {
@@ -67,7 +71,7 @@ export default defineNuxtConfig({
     pages: 'app/pages',
     plugins: 'app/plugins',
   },
-  ssr: false,
+  ssr: true,
   devtools: { enabled: true },
 
   modules: [
@@ -138,6 +142,20 @@ export default defineNuxtConfig({
     'pages:extend'(pages) {
       removePageComponents(pages)
     },
+  },
+
+  routeRules: {
+    '/': { isr: 3600 },
+    '/c/**': { ssr: false },
+    '/search': { ssr: true },
+    '/success': { ssr: false },
+    '/guest-orders/**': { ssr: false },
+    '/cart/**': { ssr: false },
+    '/checkout/**': { ssr: false },
+    '/account/**': { ssr: false },
+    '/orders/**': { ssr: false },
+    '/reset/**': { ssr: false },
+    '/**': { isr: 300 },
   },
 
   i18n: {
