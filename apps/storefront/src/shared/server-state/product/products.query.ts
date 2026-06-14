@@ -53,6 +53,11 @@ export function useGetProductFacets(
   options?: Partial<UseQueryOptions<GetProductFacetsResponse>>,
 ) {
   const marketStore = useMarketStore()
+  const marketContext = computed(() => ({
+    currency: marketStore.guestPreferences?.currency ?? MARKET_CONFIG.BASE_CURRENCY,
+    language: marketStore.guestPreferences?.language ?? MARKET_CONFIG.BASE_LANGUAGE,
+    region: marketStore.guestPreferences?.region ?? MARKET_CONFIG.BASE_REGION,
+  }))
 
   return useQuery<GetProductFacetsResponse>({
     enabled: computed(() => !!params.value && marketStore.isMarketReady),
@@ -60,15 +65,22 @@ export function useGetProductFacets(
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
     ...options,
-    queryKey: computed(() => ['get-product-facets', params.value]),
+    queryKey: computed(() => ['get-product-facets', params.value, marketContext.value]),
     queryFn: () => productApi.getFacets(params.value) as Promise<GetProductFacetsResponse>,
   })
 }
 
 export function useGetProductsByMultiQueries(queries?: GetProductsRequest[]) {
+  const marketStore = useMarketStore()
+  const marketContext = computed(() => ({
+    currency: marketStore.guestPreferences?.currency ?? MARKET_CONFIG.BASE_CURRENCY,
+    language: marketStore.guestPreferences?.language ?? MARKET_CONFIG.BASE_LANGUAGE,
+    region: marketStore.guestPreferences?.region ?? MARKET_CONFIG.BASE_REGION,
+  }))
+
   return useQueries({
     queries: queries?.map(qp => ({
-      queryKey: [qp.category_id],
+      queryKey: ['get-products', qp, marketContext.value],
       queryFn: async () => {
         const res = await productApi.getList(qp) as GetProductsResponse
         return {
