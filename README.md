@@ -19,6 +19,36 @@ packages/
 - `apps/admin` is reserved for a future app.
 - `packages/` contains shared frontend code used by multiple apps.
 
+## Implemented Patterns and Capabilities
+
+### Architecture
+
+- **Multi-app Nuxt monorepo** - buyer-facing storefront and seller-facing dashboard live as separate Nuxt applications in one workspace, with `admin` reserved for a future internal app
+- **Shared package boundaries** - reusable frontend contracts, schemas, models, enums, utilities, API client code, and UI primitives are extracted into `packages/*` so apps can share low-level code without sharing page-level features
+- **App-local plus shared structure** - each app keeps its own `app/*` surface for pages, layouts, middleware, and plugins while reusing common code from `shared/*` and workspace packages
+- **Alias-based workspace imports** - apps consume shared packages through stable `@arc/*` aliases rather than deep relative imports, which keeps package boundaries explicit
+- **Thin-page direction** - the codebase favors keeping Vue page and component files focused on rendering and user actions while reusable state and orchestration move into composables, stores, and shared modules
+
+### Frontend Platform
+
+- **Nuxt 3 application model** - both apps use Nuxt 3 with a consistent app directory layout, plugin registration, middleware loading, and auto-imported composables
+- **SSR and static rendering split by app** - storefront is optimized for mixed rendering with SSR and route-level ISR, while seller runs as a client-rendered operational app
+- **Route-level rendering rules** - storefront uses Nuxt route rules to mix ISR, SSR, and client-only flows depending on the route
+- **Shared state management** - Pinia stores are registered from shared store directories so state patterns stay consistent across apps
+- **Server-state fetching** - Vue Query integration supports async server-state caching and request lifecycle handling in both apps
+- **Internationalization** - both apps support localized content through Nuxt i18n with lazy-loaded locale files and shared locale structure
+- **Shared UI foundation** - `@nuxt/ui`, workspace UI packages, and app-local components provide a common component base across apps
+- **Image and asset host configuration** - apps support environment-driven asset hosting and consistent image resolution behavior
+
+### Security and Operations
+
+- **Runtime configuration by environment** - API base URLs, app-to-app links, asset hosts, and other public runtime settings are injected per environment rather than hardcoded
+- **Security middleware baseline** - both apps include `nuxt-security` so headers and related protections are managed consistently from the framework layer
+- **Type-safe frontend baseline** - strict TypeScript, shared schemas, and shared contracts reduce drift between apps and backend integrations
+- **App-aware CI validation** - GitHub Actions run lint, typecheck, test, and build only for the affected apps or shared packages
+- **Independent Netlify deployment targets** - storefront and seller deploy as separate Netlify sites, each with app-local configuration and ignore rules to avoid unnecessary builds
+- **Local quality gates** - Husky and lint-staged enforce lightweight local checks before changes are committed
+
 ## Requirements
 
 - Node.js `20.20.2`
@@ -26,44 +56,31 @@ packages/
 
 ## Common commands
 
-Run these from the repository root.
+Run these from `apps/web`.
 
-### Storefront
+- Start storefront: `pnpm dev:storefront`
+- Start seller: `pnpm dev:seller`
+- Build an app: `pnpm build:<app>`
+- Generate static output: `pnpm generate:<app>`
+- Preview a built app: `pnpm preview:<app>`
+- Typecheck an app: `pnpm typecheck:<app>`
+- Test an app: `pnpm test:<app>`
+- Lint an app: `pnpm lint:<app>`
+- Auto-fix lint issues: `pnpm lint:fix:<app>`
 
-```bash
-pnpm dev:storefront
-pnpm build:storefront
-pnpm generate:storefront
-pnpm preview:storefront
-pnpm typecheck:storefront
-pnpm test:storefront
-pnpm lint:storefront
-pnpm lint:fix:storefront
-```
+Available app names:
 
-### Seller
+- `storefront`
+- `seller`
 
-```bash
-pnpm dev:seller
-pnpm build:seller
-pnpm generate:seller
-pnpm preview:seller
-pnpm typecheck:seller
-pnpm test:seller
-pnpm lint:seller
-pnpm lint:fix:seller
-```
-
-### Shared packages
+Shared package commands:
 
 ```bash
 pnpm lint:packages
 pnpm lint:packages:fix
 ```
 
-### Legacy root aliases
-
-These remain available for convenience and currently point to `storefront`:
+Legacy root aliases remain available for convenience and currently point to `storefront`:
 
 ```bash
 pnpm build
