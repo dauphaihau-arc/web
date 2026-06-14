@@ -116,7 +116,7 @@ useProductFilterQuerySync(state, currency)
           class="px-1"
         >
           <RadioGroupInput
-            v-model="state.is_digital"
+            v-model="state.isDigital"
             :options="isDigitalOpts"
           />
         </div>
@@ -127,12 +127,12 @@ useProductFilterQuerySync(state, currency)
         >
           <MinMaxPrice
             :price="state.price"
-            :min-price="state.min_price"
-            :max-price="state.max_price"
+            :min-price="state.minPrice"
+            :max-price="state.maxPrice"
             :options="pricePresetOpts"
             @update:price="state.price = $event as PricePresetId"
-            @update:min-price="state.min_price = $event"
-            @update:max-price="state.max_price = $event"
+            @update:min-price="state.minPrice = $event"
+            @update:max-price="state.maxPrice = $event"
           />
         </div>
 
@@ -141,7 +141,7 @@ useProductFilterQuerySync(state, currency)
           class="px-1"
         >
           <RadioGroupInput
-            v-model="state.who_made"
+            v-model="state.whoMade"
             :options="productWhoMadeOpts"
           />
         </div>
@@ -151,7 +151,7 @@ useProductFilterQuerySync(state, currency)
           class="px-1"
         >
           <AttributeFacets
-            v-model="state.attribute_filters"
+            v-model="state.attributeFilters"
             :category-id="props.categoryId"
             :featured-facet-keys="currentCategory?.featuredFacetKeys"
           />

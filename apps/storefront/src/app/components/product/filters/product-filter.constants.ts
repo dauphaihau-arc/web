@@ -12,19 +12,19 @@ export type PricePresetId =
 // These keys intentionally mirror existing route/query parameter names.
 
 export type AttributeFilter = {
-  facet_key: string
-  attribute_name: string
-  selected_option_keys: string[]
-  selected_option_values: string[]
+  facetKey: string
+  attributeName: string
+  selectedOptionKeys: string[]
+  selectedOptionValues: string[]
 }
 
 export type ProductFilterState = {
-  is_digital: string
+  isDigital: string
   price: PricePresetId
-  min_price: string
-  max_price: string
-  who_made: string
-  attribute_filters: AttributeFilter[]
+  minPrice: string
+  maxPrice: string
+  whoMade: string
+  attributeFilters: AttributeFilter[]
 }
 
 export const isDigitalOpts = [

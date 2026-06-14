@@ -1,15 +1,9 @@
 <script setup lang="ts">
 import type { Category } from '@arc/models/category'
+import type { AttributeFilter } from '~/app/components/product/filters/product-filter.constants'
 import { categoryApi } from '~/shared/api/category/category.api'
 import { normalizeCategory } from '~/shared/server-state/category/category.types'
 import { useGetProductFacets } from '~/shared/server-state/product/products.query'
-
-type AttributeFilter = {
-  facet_key: string
-  attribute_name: string
-  selected_option_keys: string[]
-  selected_option_values: string[]
-}
 
 const props = defineProps<{
   categoryId?: Category['id']
@@ -86,8 +80,8 @@ watch(
   (value) => {
     state.value = value.map(filter => ({
       ...filter,
-      selected_option_keys: [...filter.selected_option_keys],
-      selected_option_values: [...filter.selected_option_values],
+      selectedOptionKeys: [...filter.selectedOptionKeys],
+      selectedOptionValues: [...filter.selectedOptionValues],
     }))
   },
   { immediate: true },
@@ -101,16 +95,16 @@ function toggleAttributeOption(
   checked: boolean,
 ) {
   const filters = [...state.value]
-  const existing = filters.find(filter => filter.facet_key === facetKey)
+  const existing = filters.find(filter => filter.facetKey === facetKey)
 
   if (!existing && checked) {
     state.value = [
       ...filters,
       {
-        facet_key: facetKey,
-        attribute_name: attributeName,
-        selected_option_keys: [optionKey],
-        selected_option_values: [optionValue],
+        facetKey,
+        attributeName,
+        selectedOptionKeys: [optionKey],
+        selectedOptionValues: [optionValue],
       },
     ]
     emit('update:modelValue', state.value)
@@ -122,32 +116,32 @@ function toggleAttributeOption(
   }
 
   const selectedOptionKeys = checked
-    ? Array.from(new Set([...existing.selected_option_keys, optionKey]))
-    : existing.selected_option_keys.filter(value => value !== optionKey)
+    ? Array.from(new Set([...existing.selectedOptionKeys, optionKey]))
+    : existing.selectedOptionKeys.filter(value => value !== optionKey)
   const selectedOptionValues = checked
-    ? Array.from(new Set([...existing.selected_option_values, optionValue]))
-    : existing.selected_option_values.filter(value => value !== optionValue)
+    ? Array.from(new Set([...existing.selectedOptionValues, optionValue]))
+    : existing.selectedOptionValues.filter(value => value !== optionValue)
 
   state.value = selectedOptionKeys.length > 0
     ? filters.map(filter =>
-      filter.facet_key === facetKey
+      filter.facetKey === facetKey
         ? {
             ...filter,
-            attribute_name: attributeName,
-            selected_option_keys: selectedOptionKeys,
-            selected_option_values: selectedOptionValues,
+            attributeName,
+            selectedOptionKeys,
+            selectedOptionValues,
           }
         : filter,
     )
-    : filters.filter(filter => filter.facet_key !== facetKey)
+    : filters.filter(filter => filter.facetKey !== facetKey)
 
   emit('update:modelValue', state.value)
 }
 
 function isAttributeOptionSelected(facetKey: string, optionKey: string) {
   return state.value.some(filter =>
-    filter.facet_key === facetKey
-    && filter.selected_option_keys.includes(optionKey),
+    filter.facetKey === facetKey
+    && filter.selectedOptionKeys.includes(optionKey),
   )
 }
 
