@@ -40,14 +40,6 @@ const showNoteInput = ref(!!cartStore.stateCheckoutNow.note)
 
 const tempProductQty = ref(productCart.value?.quantity || 0)
 
-const variantNames = computed(() => {
-  if (productCart.value && productCart.value.inventory.variant_name) {
-    const [primary, sub] = productCart.value.inventory.variant_name.split('-')
-    return { primary, sub }
-  }
-  return { primary: '', sub: '' }
-})
-
 const displayAmount = computed(() => {
   if (!productCart.value) {
     return formatMinorCurrency(undefined, undefined)
@@ -117,24 +109,15 @@ watchDebounced(
               {{ productCart?.product.title }}
             </h1>
 
-            <div class="flex flex-col gap-1">
-              <div
-                v-if="
-                  productCart.product.variant_type === ProductVariantTypes.SINGLE
-                    || productCart.product.variant_type === ProductVariantTypes.COMBINE
-                "
-                class="text-lg text-text-muted"
-              >
-                {{ productCart?.product.variant_group_name }}:
-                {{ variantNames.primary }}
-              </div>
-              <div
-                v-if="productCart.product.variant_type === ProductVariantTypes.COMBINE"
-                class="text-lg text-text-muted"
-              >
-                {{ productCart?.product.variant_sub_group_name }}:
-                {{ variantNames.sub }}
-              </div>
+            <div
+              v-if="
+                (productCart.product.variant_type === ProductVariantTypes.SINGLE
+                  || productCart.product.variant_type === ProductVariantTypes.COMBINE)
+                  && productCart.inventory.variant_name
+              "
+              class="text-lg text-text-muted"
+            >
+              {{ productCart.inventory.variant_name }}
             </div>
 
             <div class="w-1/2">

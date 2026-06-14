@@ -38,7 +38,7 @@ const displayAmount = computed(() => {
 
 <template>
   <div
-    class="group flex h-full w-full cursor-pointer flex-col gap-3"
+    class="group flex h-full w-full cursor-pointer flex-col gap-1.5"
     @click="() => router.push(routes.productDetail(props.product.shop.slug, props.product.slug))"
   >
     <div class="flex h-[230px] w-full items-center justify-center overflow-hidden rounded-lg bg-customGray-200 ring-1 ring-border-subtle">
@@ -48,8 +48,8 @@ const displayAmount = computed(() => {
       />
     </div>
 
-    <div class="flex min-h-[104px] flex-col">
-      <h1 class="line-clamp-2 overflow-hidden text-base font-semibold leading-6">
+    <div class="flex min-h-[104px] flex-col gap-1">
+      <h1 class="line-clamp-2 overflow-hidden text-sm font-semibold">
         {{ props.product?.title }}
       </h1>
       <div class="flex flex-wrap items-center gap-2">
@@ -60,12 +60,18 @@ const displayAmount = computed(() => {
           {{ displayAmount }}
         </p>
       </div>
-      <p class="h-5 truncate text-sm text-text-subtle">
-        {{ props.product?.shop.shop_name }}
-      </p>
+      <div class="flex h-5 items-center gap-1 text-sm text-text-subtle">
+        <AppIcon
+          name="shop"
+          size="xs"
+        />
+        <p class="truncate">
+          {{ props.product?.shop.shop_name }}
+        </p>
+      </div>
       <p
         v-if="stockNotice"
-        class="mt-1 text-[13px] text-state-danger-text"
+        class="text-[13px] text-state-danger-text"
       >
         {{ stockNotice }}
       </p>
