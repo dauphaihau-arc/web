@@ -18,8 +18,8 @@ const props = defineProps<{
   >
     <div class="flex flex-col">
       <div class="-ml-1 mb-4 flex items-center gap-3">
-        <UIcon
-          name="i-solar:shop-bold-duotone"
+        <AppIcon
+          name="shop"
           class="size-8"
         />
         <h3 class="text-lg font-medium">
@@ -41,7 +41,7 @@ const props = defineProps<{
       <UDivider />
 
       <div class="mt-6 flex justify-between">
-        <div class="flex w-fit flex-col gap-4">
+        <div class="flex w-fit flex-col gap-1">
           <AddRemoveCoupons :shop-id="props.shopCart.shop?.id" />
           <AddRemoveNote :shop-cart="props.shopCart" />
         </div>

@@ -26,7 +26,11 @@ const highestPrice = computed(() => {
     && props.product.variant_type !== ProductVariantTypes.NONE
     && sortedInventory.value.length > 1
   ) {
+    const lowestInventory = sortedInventory.value[0]
     const highestInventory = sortedInventory.value[sortedInventory.value.length - 1]
+    if (highestInventory.amount_minor === lowestInventory.amount_minor) {
+      return ''
+    }
     return formatMinorCurrency(highestInventory.amount_minor, highestInventory.currency)
   }
   return ''
