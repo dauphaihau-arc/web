@@ -26,11 +26,11 @@ const attrs = useAttrs()
 const slots = useSlots()
 
 const colorClassByVariant = {
-  green: 'border-state-success-border bg-state-success-surface text-state-success-text',
-  gray: 'border-state-neutral-border bg-state-neutral-surface text-state-neutral-text',
-  yellow: 'border-state-warning-border bg-state-warning-surface text-state-warning-text',
-  red: 'border-state-danger-border bg-state-danger-surface text-state-danger-text',
-  blue: 'border-state-info-border bg-state-info-surface text-state-info-text',
+  green: 'border-[var(--state-success-border)] bg-[var(--state-success-surface)] text-[var(--state-success-text)]',
+  gray: 'border-[var(--state-neutral-border)] bg-[var(--state-neutral-surface)] text-[var(--state-neutral-text)]',
+  yellow: 'border-[var(--state-warning-border)] bg-[var(--state-warning-surface)] text-[var(--state-warning-text)]',
+  red: 'border-[var(--state-danger-border)] bg-[var(--state-danger-surface)] text-[var(--state-danger-text)]',
+  blue: 'border-[var(--state-info-border)] bg-[var(--state-info-surface)] text-[var(--state-info-text)]',
 } as const satisfies Record<StatusBadgeColor, string>
 
 const sizeClassByVariant = {
@@ -54,7 +54,7 @@ const forwardedAttrs = computed(() => {
   <span
     v-bind="forwardedAttrs"
     :class="[
-      'inline-flex items-center rounded-md border font-medium leading-none',
+      'inline-flex items-center rounded-md border  leading-none',
       colorClassByVariant[props.color],
       sizeClassByVariant[props.size].badge,
       attrs.class,

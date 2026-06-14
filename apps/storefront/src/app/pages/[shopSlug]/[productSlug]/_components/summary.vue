@@ -45,11 +45,31 @@ const lowestPrice = computed(() => {
 
 const originPrice = computed(() => {
   const inventory = props.inventorySelected ?? baseInventory.value
-  if (inventory?.original_amount_minor !== undefined) {
+  if (
+    inventory?.original_amount_minor !== undefined
+    && inventory.original_amount_minor > inventory.amount_minor
+  ) {
     return formatMinorCurrency(inventory.original_amount_minor, inventory.currency)
   }
   return ''
 })
+
+const salePercent = computed(() => {
+  const inventory = props.inventorySelected ?? baseInventory.value
+  if (
+    !inventory
+    || inventory.original_amount_minor == null
+    || inventory.original_amount_minor <= inventory.amount_minor
+  ) {
+    return ''
+  }
+
+  return Math.round(
+    ((inventory.original_amount_minor - inventory.amount_minor) / inventory.original_amount_minor) * 100,
+  )
+})
+
+const hasDiscount = computed(() => originPrice.value !== '')
 </script>
 
 <template>
@@ -66,16 +86,24 @@ const originPrice = computed(() => {
         <div class="flex items-center space-x-3">
           <div
             class="price"
-            :class="originPrice && 'text-primary'"
+            :class="hasDiscount && 'text-[var(--state-success-text)]'"
           >
             {{ lowestPrice }}
             <span v-if="highestPrice">- {{ highestPrice }}</span>
           </div>
           <div
             v-if="originPrice"
-            class="origin-price"
+            class="flex items-center gap-2"
           >
-            {{ originPrice }}
+            <div class="origin-price">
+              {{ originPrice }}
+            </div>
+            <div
+              v-if="salePercent"
+              class="text-base text-text-muted"
+            >
+              ({{ salePercent }}% off)
+            </div>
           </div>
         </div>
       </div>
@@ -93,6 +121,6 @@ const originPrice = computed(() => {
 }
 
 .origin-price {
-  @apply text-sm text-text-muted line-through;
+  @apply text-base text-text-muted line-through;
 }
 </style>

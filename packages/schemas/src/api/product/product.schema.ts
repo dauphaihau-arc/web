@@ -59,6 +59,7 @@ export const getProductsResponseItemSchema = z.object({
   image: publicProductImageSchema.optional(),
   variant_type: z.string().optional(),
   inventory: publicProductInventorySummarySchema.optional(),
+  has_free_shipping: z.boolean().optional(),
   created_at: z.union([z.string(), z.date()]),
 })
 

@@ -34,6 +34,38 @@ const displayAmount = computed(() => {
   }
   return formatMinorCurrency(inventory.amount_minor, inventory.currency)
 })
+
+const compareAtAmount = computed(() => {
+  const inventory = props.product.inventory
+  if (
+    !inventory
+    || inventory.original_amount_minor == null
+    || inventory.original_amount_minor <= inventory.amount_minor
+  ) {
+    return undefined
+  }
+
+  return formatMinorCurrency(inventory.original_amount_minor, inventory.currency)
+})
+
+const salePercent = computed(() => {
+  const inventory = props.product.inventory
+  if (
+    !inventory
+    || inventory.original_amount_minor == null
+    || inventory.original_amount_minor <= inventory.amount_minor
+  ) {
+    return undefined
+  }
+
+  return Math.round(
+    ((inventory.original_amount_minor - inventory.amount_minor) / inventory.original_amount_minor) * 100,
+  )
+})
+
+const hasDiscount = computed(() => {
+  return compareAtAmount.value !== undefined && salePercent.value !== undefined
+})
 </script>
 
 <template>
@@ -49,16 +81,24 @@ const displayAmount = computed(() => {
     </div>
 
     <div class="flex min-h-[104px] flex-col gap-1">
-      <h1 class="line-clamp-2 overflow-hidden text-sm font-semibold">
+      <h1 class="truncate whitespace-nowrap text-sm font-semibold">
         {{ props.product?.title }}
       </h1>
       <div class="flex flex-wrap items-center gap-2">
         <p
           v-if="displayAmount !== undefined"
-          class="text-base font-medium text-text-strong"
+          :class="hasDiscount ? 'text-base font-semibold text-[var(--state-success-text)]' : 'text-base font-medium text-text-strong'"
         >
           {{ displayAmount }}
         </p>
+        <template v-if="hasDiscount">
+          <p class="text-sm text-text-muted line-through">
+            {{ compareAtAmount }}
+          </p>
+          <p class="text-sm text-text-muted">
+            ({{ salePercent }}% off)
+          </p>
+        </template>
       </div>
       <div class="flex h-5 items-center gap-1 text-sm text-text-subtle">
         <AppIcon
@@ -68,6 +108,15 @@ const displayAmount = computed(() => {
         <p class="truncate">
           {{ props.product?.shop.shop_name }}
         </p>
+      </div>
+      <div v-if="props.product.has_free_shipping">
+        <UBadge
+          color="green"
+          variant="solid"
+          size="xs"
+        >
+          FREE ship
+        </UBadge>
       </div>
       <p
         v-if="stockNotice"
