@@ -6,10 +6,27 @@ import { useGetCart } from '~/shared/server-state/cart/cart.query'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 import { hasSellerAccess } from '~/shared/utils/seller-access'
 
-const CartMegaMenu = defineAsyncComponent(() => import('./cart-mega-menu.vue'))
-const SearchAllMegaMenu = defineAsyncComponent(() => import('./search-all-mega-menu.vue'))
-const AccountDropdown = defineAsyncComponent(() => import('./account-dropdown.vue'))
-const NotificationPopover = defineAsyncComponent(() => import('./notification-popover.vue'))
+const loadCartMegaMenu = () => import('./cart-mega-menu.vue')
+const loadSearchAllMegaMenu = () => import('./search-all-mega-menu.vue')
+const loadAccountDropdown = () => import('./account-dropdown.vue')
+const loadNotificationPopover = () => import('./notification-popover.vue')
+
+const CartMegaMenu = defineAsyncComponent({
+  loader: loadCartMegaMenu,
+  suspensible: false,
+})
+const SearchAllMegaMenu = defineAsyncComponent({
+  loader: loadSearchAllMegaMenu,
+  suspensible: false,
+})
+const AccountDropdown = defineAsyncComponent({
+  loader: loadAccountDropdown,
+  suspensible: false,
+})
+const NotificationPopover = defineAsyncComponent({
+  loader: loadNotificationPopover,
+  suspensible: false,
+})
 
 const route = useRoute()
 const modal = useModal()
@@ -23,6 +40,23 @@ const { data: dataUserAuth } = useGetCurrentUser()
 
 const isShowCart = ref(false)
 const isShowSearch = ref(false)
+const hasLoadedCartMegaMenu = ref(false)
+const hasLoadedSearchAllMegaMenu = ref(false)
+
+async function preloadCartMegaMenu() {
+  hasLoadedCartMegaMenu.value = true
+  await loadCartMegaMenu()
+}
+
+async function preloadSearchAllMegaMenu() {
+  hasLoadedSearchAllMegaMenu.value = true
+  await loadSearchAllMegaMenu()
+}
+
+function preloadAuthMenu() {
+  void loadNotificationPopover()
+  void loadAccountDropdown()
+}
 
 watch(() => [route.path, route.query], () => {
   isShowSearch.value = false
@@ -92,6 +126,34 @@ function navigateToSellerApp() {
   return navigateTo(getSellerRedirectURL(), { external: true })
 }
 
+async function toggleSearchMenu() {
+  if (!isShowSearch.value) {
+    void preloadSearchAllMegaMenu()
+  }
+
+  isShowSearch.value = !isShowSearch.value
+  isShowCart.value = false
+}
+
+async function toggleCartMenu() {
+  if (!isShowCart.value) {
+    void preloadCartMegaMenu()
+  }
+
+  isShowCart.value = !isShowCart.value
+  isShowSearch.value = false
+}
+
+function handleSearchTriggerHover() {
+  void preloadSearchAllMegaMenu()
+  isShowCart.value = false
+}
+
+function handleCartTriggerHover() {
+  void preloadCartMegaMenu()
+  isShowSearch.value = false
+}
+
 const showRegisterLoginDialog = async () => {
   const dialog = await import('~/app/components/dialogs/login-register/register-login-dialog.vue')
   modal.open(dialog.default)
@@ -117,12 +179,12 @@ const showRegisterLoginDialog = async () => {
         <div class="mt-1 justify-self-center">
           <Categories class="mx-3" />
           <CartMegaMenu
-            v-if="isShowCart"
+            v-if="hasLoadedCartMegaMenu"
             :show="isShowCart"
             class="mt-8"
           />
           <SearchAllMegaMenu
-            v-if="isShowSearch"
+            v-if="hasLoadedSearchAllMegaMenu"
             :show="isShowSearch"
             class="mt-8"
           />
@@ -134,16 +196,20 @@ const showRegisterLoginDialog = async () => {
               square
               color="gray"
               variant="ghost"
-              @click="isShowSearch = !isShowSearch"
-              @mouseover="isShowCart = false"
+              @click="toggleSearchMenu"
+              @mouseover="handleSearchTriggerHover"
+              @focus="preloadSearchAllMegaMenu"
             >
               <AppIcon name="search" />
             </UButton>
           </UTooltip>
 
           <template v-if="dataUserAuth?.user">
-            <NotificationPopover />
-            <AccountDropdown @hover-trigger="isShowCart = false" />
+            <NotificationPopover @mouseenter="preloadAuthMenu" />
+            <AccountDropdown
+              @hover-trigger="isShowCart = false"
+              @mouseenter="preloadAuthMenu"
+            />
           </template>
 
           <template v-else>
@@ -178,14 +244,17 @@ const showRegisterLoginDialog = async () => {
               class="cursor-pointer"
               size="lg"
               position="bottom-right"
-              @click="isShowCart = !isShowCart"
-              @mouseover="isShowSearch = false"
+              @click="toggleCartMenu"
+              @mouseover="handleCartTriggerHover"
             >
               <UButton
                 id="cart-btn"
                 square
                 variant="ghost"
                 color="gray"
+                @click.stop="toggleCartMenu"
+                @mouseover="handleCartTriggerHover"
+                @focus="preloadCartMegaMenu"
               >
                 <AppIcon name="cart" />
               </UButton>
