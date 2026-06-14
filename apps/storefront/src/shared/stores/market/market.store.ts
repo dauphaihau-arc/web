@@ -5,6 +5,11 @@ import { MARKET_CONFIG } from '@arc/enums/market'
 import { SessionStorageKeys } from '@arc/enums/session-storage-keys'
 import type { AuthPreferences } from '~/shared/api/auth/contracts/auth-user.contract'
 import type { MarketConfigMarket, IpDataResponse } from '~/shared/api/market/contracts/market.contract'
+import {
+  GUEST_PREFERENCES_COOKIE_KEY,
+  getFallbackMarketPreferences,
+  sanitizeMarketPreferences,
+} from '~/shared/stores/market/market-preferences'
 import { currentUserQueryOptions, useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 import { marketConfigQueryOptions } from '~/shared/server-state/market/config.query'
 import { getIpData } from '~/shared/server-state/market/ip-data.query'
@@ -144,12 +149,26 @@ export const useMarketStore = defineStore('market', () => {
     sessionStorageRef,
   )
 
+  const guestPreferencesCookie = useCookie<AuthPreferences | null>(
+    GUEST_PREFERENCES_COOKIE_KEY,
+    {
+      default: () => null,
+      sameSite: 'lax',
+    },
+  )
+
+  const persistedGuestPreferences = sanitizeMarketPreferences(
+    import.meta.client
+      ? readStoredObject<AuthPreferences>(
+        localStorageRef,
+        LocalStorageKeys.GUEST_PREFERENCES,
+      ) ?? guestPreferencesCookie.value
+      : guestPreferencesCookie.value,
+  )
+
   const guestPreferences = useStorage<AuthPreferences | null>(
     LocalStorageKeys.GUEST_PREFERENCES,
-    readStoredObject<AuthPreferences>(
-      localStorageRef,
-      LocalStorageKeys.GUEST_PREFERENCES,
-    ),
+    persistedGuestPreferences,
     localStorageRef,
     {
       serializer: StorageSerializers.object,
@@ -165,15 +184,10 @@ export const useMarketStore = defineStore('market', () => {
     source: MarketPreferenceSource,
   ) => {
     guestPreferences.value = preferences
+    guestPreferencesCookie.value = preferences
     marketPreferenceSource.value = source
     isMarketReady.value = true
   }
-
-  const resolveFallbackPreferences = (): AuthPreferences => ({
-    currency: MARKET_CONFIG.BASE_CURRENCY,
-    language: MARKET_CONFIG.BASE_LANGUAGE,
-    region: MARKET_CONFIG.BASE_REGION,
-  })
 
   // sync with LS
   watch(() => dataUserAuth.value?.user, () => {
@@ -225,7 +239,7 @@ export const useMarketStore = defineStore('market', () => {
       }
 
       if (!ipData) {
-        markMarketReady(resolveFallbackPreferences(), 'fallback')
+        markMarketReady(getFallbackMarketPreferences(), 'fallback')
         return
       }
 
@@ -259,6 +273,10 @@ export const useMarketStore = defineStore('market', () => {
     marketPreferenceSource.value = 'guest_preferences'
     isMarketReady.value = true
   }
+
+  watch(guestPreferences, (preferences) => {
+    guestPreferencesCookie.value = sanitizeMarketPreferences(preferences)
+  }, { deep: true })
 
   const clearCategoryRecommendationState = () => {
     userActivities.value = {
