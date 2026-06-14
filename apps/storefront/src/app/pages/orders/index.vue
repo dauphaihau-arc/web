@@ -66,6 +66,8 @@ const filters = [
 const state = reactive({
   search: typeof route.query.search === 'string' ? route.query.search : '',
 })
+const search = toRef(state, 'search')
+const debouncedSearch = refDebounced(search, 400, { maxWait: 800 })
 
 const stateFilter = computed(() =>
   typeof route.query.state === 'string' && orderStateValues.includes(route.query.state as MyOrderListState)
@@ -83,7 +85,7 @@ const activeFilterIndex = computed(() =>
 
 const queryParams = computed(() => ({
   ...(stateFilter.value ? { state: stateFilter.value } : {}),
-  ...(state.search.trim() ? { search: state.search.trim() } : {}),
+  ...(debouncedSearch.value.trim() ? { search: debouncedSearch.value.trim() } : {}),
 }))
 
 const {
@@ -132,15 +134,14 @@ watch(() => route.query.search, (search) => {
   state.search = typeof search === 'string' ? search : ''
 })
 
-watchDebounced(
-  () => state.search,
+watch(
+  debouncedSearch,
   (search) => {
     syncQuery({
       search: search.trim() || undefined,
       state: stateFilter.value,
     })
   },
-  { debounce: 400, maxWait: 800 },
 )
 </script>
 
