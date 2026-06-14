@@ -72,8 +72,37 @@ Guidelines:
 - prefer one explicit normalization path over multiple watchers that mutate the same state indirectly
 - keep dead commented code only when it is intentionally preserved for upcoming work; otherwise remove it
 
+Performance and delivery:
+- splitting logic out of a component improves readability, but it does not reduce client bundle cost by itself
+- use lazy loading when a component or feature is not needed for initial render, especially dialogs, drawers, popovers, chat panels, heavy forms, and admin-only tools
+- prefer async components or dynamic `import()` at interaction boundaries, such as opening a modal, expanding a secondary panel, or entering a large management route
+- keep route-level code splitting intact by avoiding unnecessary eager imports from global layouts, headers, and always-mounted shells
+- group large shared dependencies into stable chunks only when the default bundler output is producing oversized common bundles; use manual chunking for large shared UI or vendor libraries, not for every small helper
+- do not confuse composable extraction with bundle optimization: moving code from `.vue` to `.ts` still ships eagerly if the module is imported eagerly
+
+Examples:
+
+```ts
+// Good: load only when the dialog is opened
+const showPreferencesDialog = async () => {
+  const dialog = await import('./preferences-dialog.vue')
+  modal.open(dialog.default)
+}
+```
+
+```ts
+// Good: split a heavy route surface behind an async boundary
+const ProductEditor = defineAsyncComponent(() => import('./product-editor.vue'))
+```
+
+```ts
+// Not enough: cleaner structure, but still eager in the initial bundle
+import { useProductEditorForm } from './use-product-editor-form'
+```
+
 Reason:
 - keeps components easier to scan
 - reduces watcher-driven state coupling
 - makes domain rules testable outside the template
 - keeps refactors local by default without over-promoting feature-specific logic
+- makes it explicit when a refactor is only about code shape versus when it also improves shipped bundle behavior

@@ -39,6 +39,8 @@ packages/
 - **Internationalization** - both apps support localized content through Nuxt i18n with lazy-loaded locale files and shared locale structure
 - **Shared UI foundation** - `@nuxt/ui`, workspace UI packages, and app-local components provide a common component base across apps
 - **Image and asset host configuration** - apps support environment-driven asset hosting and consistent image resolution behavior
+- **Code splitting and lazy loading** - Nuxt route-based chunking is supplemented with lazy-loaded interaction-heavy UI and large product-management surfaces so non-critical code is fetched on demand
+- **Bundle chunk optimization** - Vite/Rollup manual chunk rules split large shared dependencies such as workspace UI, Nuxt UI, Vue Query, and `dayjs` into more stable, cacheable bundles
 
 ### Security and Operations
 
