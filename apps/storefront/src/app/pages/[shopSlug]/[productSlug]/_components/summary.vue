@@ -6,7 +6,7 @@ import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contra
 
 const props = defineProps<{
   product: GetDetailProductBySlugResponse
-  inventorySelected: ElementType<GetDetailProductBySlugResponse['inventory']>
+  inventorySelected?: ElementType<GetDetailProductBySlugResponse['inventory']>
   stockNotice?: string
 }>()
 
@@ -18,16 +18,6 @@ const sortedInventory = computed(() => {
       const rightPrice = right.amount_minor
       return leftPrice - rightPrice
     })
-})
-
-const plusSign = computed(() => {
-  if (
-    !props.inventorySelected
-    && props.product.variant_type !== ProductVariantTypes.NONE
-  ) {
-    return '+'
-  }
-  return ''
 })
 
 const highestPrice = computed(() => {
@@ -74,7 +64,7 @@ const originPrice = computed(() => {
             class="price"
             :class="originPrice && 'text-primary'"
           >
-            {{ lowestPrice }}{{ plusSign }}
+            {{ lowestPrice }}
             <span v-if="highestPrice">- {{ highestPrice }}</span>
           </div>
           <div
