@@ -38,7 +38,7 @@ const redirectPage = (category: Category) => {
 <template>
   <div
     v-if="isLoadingGetCategories || dataCategories?.length"
-    class="mb-8 flex gap-3"
+    class="flex gap-3"
   >
     <div
       v-if="isLoadingGetCategories"

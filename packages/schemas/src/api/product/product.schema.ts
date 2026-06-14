@@ -38,6 +38,8 @@ export const getProductsRequestSchema = requestGetListParamsSchema.extend({
   title: z.string().optional(),
   is_digital: z.boolean().optional(),
   who_made: z.string().optional(),
+  min_price: z.union([z.string(), z.number()]).optional(),
+  max_price: z.union([z.string(), z.number()]).optional(),
   order: z.string().optional(),
 }).catchall(z.union([
   z.string(),

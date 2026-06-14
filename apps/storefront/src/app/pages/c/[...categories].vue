@@ -71,8 +71,9 @@ watch(() => page.value, () => {
     </div>
 
     <div class="flex items-start gap-12">
-      <div class="sticky top-16 flex max-h-[calc(100vh-4rem)] min-w-[200px] max-w-[200px] flex-col overflow-y-auto pb-8">
+      <div class="sticky top-16 flex max-h-[calc(100vh-4rem)] min-w-[200px] max-w-[200px] flex-col overflow-y-auto pb-8 space-y-4 pr-2">
         <SubCategories />
+        <UDivider />
         <Filters :category-id="params?.category_id" />
       </div>
 
