@@ -1,30 +1,30 @@
-import type { QueryClient } from '@tanstack/vue-query'
-import dayjs from 'dayjs'
-import { LocalStorageKeys } from '@arc/enums/local-storage-keys'
-import type { AuthClientConfigResponse } from '~/shared/api/auth/contracts/client-config.contract'
-import { DEFAULT_AUTH_CLIENT_CONFIG } from '~/shared/utils/password-policy'
+import type { QueryClient } from '@tanstack/vue-query';
+import dayjs from 'dayjs';
+import { LocalStorageKeys } from '@arc/enums/local-storage-keys';
+import type { AuthClientConfigResponse } from '~/shared/api/auth/contracts/client-config.contract';
+import { DEFAULT_AUTH_CLIENT_CONFIG } from '~/shared/utils/password-policy';
 
 export const setExpTokensToLS = (queryClient?: Pick<QueryClient, 'getQueryData'>) => {
   if (!import.meta.client) {
-    return
+    return;
   }
 
-  const authClientConfig = queryClient?.getQueryData<AuthClientConfigResponse>(['auth', 'client-config'])
-    ?? DEFAULT_AUTH_CLIENT_CONFIG
+  const authClientConfig = queryClient?.getQueryData<AuthClientConfigResponse>(['auth', 'client-config']) ??
+    DEFAULT_AUTH_CLIENT_CONFIG;
 
   localStorage[LocalStorageKeys.ACCESS_TOKEN_EXP] = dayjs()
     .add(authClientConfig.session.access_token_ttl_seconds, 'seconds')
-    .toISOString()
+    .toISOString();
   localStorage[LocalStorageKeys.REFRESH_TOKEN_EXP] = dayjs()
     .add(authClientConfig.session.refresh_token_ttl_seconds, 'seconds')
-    .toISOString()
-}
+    .toISOString();
+};
 
 export const clearExpTokensInLS = () => {
   if (!import.meta.client) {
-    return
+    return;
   }
 
-  localStorage.removeItem(LocalStorageKeys.REFRESH_TOKEN_EXP)
-  localStorage.removeItem(LocalStorageKeys.ACCESS_TOKEN_EXP)
-}
+  localStorage.removeItem(LocalStorageKeys.REFRESH_TOKEN_EXP);
+  localStorage.removeItem(LocalStorageKeys.ACCESS_TOKEN_EXP);
+};

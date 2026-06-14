@@ -1,22 +1,22 @@
 import {
-  describe, it, expect,
-} from 'vitest'
-import { flushPromises, mount } from '@vue/test-utils'
-import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { nextTick, type Ref, type ComponentPublicInstance } from 'vue'
-import LayoutMarketHeader from '~/app/layouts/market/header/index.vue'
-import LoginForm from '~/app/components/dialogs/login-register/login-form.vue'
+  describe, it, expect
+} from 'vitest';
+import { flushPromises, mount } from '@vue/test-utils';
+import { mountSuspended } from '@nuxt/test-utils/runtime';
+import { nextTick, type Ref, type ComponentPublicInstance } from 'vue';
+import LayoutMarketHeader from '~/app/layouts/market/header/index.vue';
+import LoginForm from '~/app/components/dialogs/login-register/login-form.vue';
 
 describe('login', () => {
   it('show mega menu cart', async () => {
-    const component = await mountSuspended(LayoutMarketHeader)
+    const component = await mountSuspended(LayoutMarketHeader);
 
-    await component.find('#cart-btn').trigger('click')
-    await nextTick()
-    await flushPromises()
+    await component.find('#cart-btn').trigger('click');
+    await nextTick();
+    await flushPromises();
 
-    expect(component.find('.overlay').exists()).toBeTruthy()
-  })
+    expect(component.find('.overlay').exists()).toBeTruthy();
+  });
 
   // TODO: test show login dialog
 
@@ -27,20 +27,20 @@ describe('login', () => {
           NuxtLink: true,
         },
       },
-    })
+    });
 
-    const email = 'maimai@gmail.com'
-    const password = '123456789'
+    const email = 'maimai@gmail.com';
+    const password = '123456789';
 
-    const emailInput = component.find('[name="email"]')
-    const passwordInput = component.find('[name="password"]')
+    const emailInput = component.find('[name="email"]');
+    const passwordInput = component.find('[name="password"]');
 
-    await emailInput.setValue(email)
-    await passwordInput.setValue(password)
+    await emailInput.setValue(email);
+    await passwordInput.setValue(password);
 
-    expect((emailInput.element as HTMLInputElement).value).toBe(email)
-    expect((passwordInput.element as HTMLInputElement).value).toBe(password)
-  })
+    expect((emailInput.element as HTMLInputElement).value).toBe(email);
+    expect((passwordInput.element as HTMLInputElement).value).toBe(password);
+  });
 
   it('alert user input incorrect password', async () => {
     const component = await mountSuspended(LoginForm, {
@@ -50,21 +50,21 @@ describe('login', () => {
           UAlert: true, // Stub UAlert to ensure it renders even with v-if
         },
       },
-    })
+    });
 
     // Define the type for the component instance
     const vm = component.vm as ComponentPublicInstance & {
       unknownErrorServerMsg: Ref<string>
-    }
+    };
 
     // Access the internal ref and set its value
-    vm.unknownErrorServerMsg.value = 'Incorrect email or password'
+    vm.unknownErrorServerMsg.value = 'Incorrect email or password';
 
     // Wait for the next tick to allow the component to update
-    await component.vm.$nextTick()
+    await component.vm.$nextTick();
 
-    expect(component.html()).toContain('Incorrect email or password')
-  })
+    expect(component.html()).toContain('Incorrect email or password');
+  });
 
   // TODO: test login success
-})
+});
