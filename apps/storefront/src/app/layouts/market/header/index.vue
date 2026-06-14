@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import CartMegaMenu from './cart-mega-menu.vue'
+import { defineAsyncComponent } from 'vue'
 import Categories from './categories.vue'
-import SearchAllMegaMenu from './search-all-mega-menu.vue'
-import AccountDropdown from './account-dropdown.vue'
-import NotificationPopover from './notification-popover.vue'
-import RegisterLoginDialog from '~/app/components/dialogs/login-register/register-login-dialog.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { useGetCart } from '~/shared/server-state/cart/cart.query'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 import { hasSellerAccess } from '~/shared/utils/seller-access'
+
+const CartMegaMenu = defineAsyncComponent(() => import('./cart-mega-menu.vue'))
+const SearchAllMegaMenu = defineAsyncComponent(() => import('./search-all-mega-menu.vue'))
+const AccountDropdown = defineAsyncComponent(() => import('./account-dropdown.vue'))
+const NotificationPopover = defineAsyncComponent(() => import('./notification-popover.vue'))
 
 const route = useRoute()
 const modal = useModal()
@@ -91,8 +92,9 @@ function navigateToSellerApp() {
   return navigateTo(getSellerRedirectURL(), { external: true })
 }
 
-const showRegisterLoginDialog = () => {
-  modal.open(RegisterLoginDialog)
+const showRegisterLoginDialog = async () => {
+  const dialog = await import('~/app/components/dialogs/login-register/register-login-dialog.vue')
+  modal.open(dialog.default)
 }
 </script>
 
@@ -115,10 +117,12 @@ const showRegisterLoginDialog = () => {
         <div class="mt-1 justify-self-center">
           <Categories class="mx-3" />
           <CartMegaMenu
+            v-if="isShowCart"
             :show="isShowCart"
             class="mt-8"
           />
           <SearchAllMegaMenu
+            v-if="isShowSearch"
             :show="isShowSearch"
             class="mt-8"
           />

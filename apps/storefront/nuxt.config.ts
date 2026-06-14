@@ -11,6 +11,36 @@ const debugEntry = require.resolve('debug/src/index.js')
 const assetHost = process.env.ASSET_HOST || ''
 const awsHostBucketAlias = assetHost.replace(/\/+$/, '')
 
+function manualChunks(id: string) {
+  if (id.includes('/packages/ui/src/')) {
+    return 'arc-ui'
+  }
+
+  if (!id.includes('node_modules')) {
+    return
+  }
+
+  if (
+    id.includes('/@nuxt/ui/')
+    || id.includes('/@headlessui/')
+    || id.includes('/@floating-ui/')
+    || id.includes('/@heroicons/')
+  ) {
+    return 'nuxt-ui'
+  }
+
+  if (
+    id.includes('/@tanstack/')
+    || id.includes('/@hebilicious/vue-query-nuxt/')
+  ) {
+    return 'vue-query'
+  }
+
+  if (id.includes('/dayjs/')) {
+    return 'dayjs'
+  }
+}
+
 function removePageComponents(pages: NuxtPage[]) {
   for (let index = pages.length - 1; index >= 0; index -= 1) {
     const page = pages[index]
@@ -189,6 +219,16 @@ export default defineNuxtConfig({
     alias: {
       assetHost: awsHostBucketAlias
     }
+  },
+
+  vite: {
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks,
+        },
+      },
+    },
   },
 
   compatibilityDate: '2024-08-21',

@@ -7,6 +7,36 @@ const uiPackageDir = `${packagesDir}ui/src`
 const assetHost = process.env.ASSET_HOST || ''
 const awsHostBucketAlias = assetHost.replace(/\/+$/, '')
 
+function manualChunks(id: string) {
+  if (id.includes('/packages/ui/src/')) {
+    return 'arc-ui'
+  }
+
+  if (!id.includes('node_modules')) {
+    return
+  }
+
+  if (
+    id.includes('/@nuxt/ui/')
+    || id.includes('/@headlessui/')
+    || id.includes('/@floating-ui/')
+    || id.includes('/@heroicons/')
+  ) {
+    return 'nuxt-ui'
+  }
+
+  if (
+    id.includes('/@tanstack/')
+    || id.includes('/@hebilicious/vue-query-nuxt/')
+  ) {
+    return 'vue-query'
+  }
+
+  if (id.includes('/dayjs/')) {
+    return 'dayjs'
+  }
+}
+
 export default defineNuxtConfig({
   app: {
     head: {
@@ -146,6 +176,16 @@ export default defineNuxtConfig({
     alias: {
       assetHost: awsHostBucketAlias
     }
+  },
+
+  vite: {
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks,
+        },
+      },
+    },
   },
 
   compatibilityDate: '2024-08-21',

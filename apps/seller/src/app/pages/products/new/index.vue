@@ -1,8 +1,14 @@
 <script lang="ts" setup>
-import CreateProductForm from '../_components/create-product-form/create-product-form.vue'
+import { defineAsyncComponent } from 'vue'
+import LoadingSvg from '@arc/ui/loading-svg.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
+
+const CreateProductForm = defineAsyncComponent({
+  loader: () => import('../_components/create-product-form/create-product-form.vue'),
+  loadingComponent: LoadingSvg,
+})
 </script>
 
 <template>

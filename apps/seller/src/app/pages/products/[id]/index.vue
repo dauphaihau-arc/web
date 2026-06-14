@@ -1,10 +1,15 @@
 <script lang="ts" setup>
+import { defineAsyncComponent } from 'vue'
 import LoadingSvg from '@arc/ui/loading-svg.vue'
-import UpdateProductForm from '../_components/update-product-form/update-product-form.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import { useShopGetDetailProduct } from '~/shared/server-state/shop/product/detail.query'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
+
+const UpdateProductForm = defineAsyncComponent({
+  loader: () => import('../_components/update-product-form/update-product-form.vue'),
+  loadingComponent: LoadingSvg,
+})
 
 const route = useRoute()
 const productId = route.params.id as string
