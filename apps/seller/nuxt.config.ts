@@ -1,4 +1,5 @@
 import { fileURLToPath } from 'node:url'
+import { manualChunks } from '../../packages/utils/src/manual-chunks'
 import pkg from './package.json'
 
 const packagesDir = fileURLToPath(new URL('../../packages/', import.meta.url))
@@ -6,38 +7,6 @@ const uiPackageDir = `${packagesDir}ui/src`
 
 const assetHost = process.env.ASSET_HOST || ''
 const awsHostBucketAlias = assetHost.replace(/\/+$/, '')
-
-function manualChunks(id: string): string | undefined {
-  if (id.includes('/packages/ui/src/')) {
-    return 'arc-ui'
-  }
-
-  if (!id.includes('node_modules')) {
-    return undefined
-  }
-
-  if (
-    id.includes('/@nuxt/ui/')
-    || id.includes('/@headlessui/')
-    || id.includes('/@floating-ui/')
-    || id.includes('/@heroicons/')
-  ) {
-    return 'nuxt-ui'
-  }
-
-  if (
-    id.includes('/@tanstack/')
-    || id.includes('/@hebilicious/vue-query-nuxt/')
-  ) {
-    return 'vue-query'
-  }
-
-  if (id.includes('/dayjs/')) {
-    return 'dayjs'
-  }
-
-  return undefined
-}
 
 export default defineNuxtConfig({
   app: {

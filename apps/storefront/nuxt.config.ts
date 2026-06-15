@@ -1,6 +1,7 @@
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import type { NuxtPage } from '@nuxt/schema'
+import { manualChunks } from '../../packages/utils/src/manual-chunks'
 import pkg from './package.json'
 
 const packagesDir = fileURLToPath(new URL('../../packages/', import.meta.url))
@@ -10,38 +11,6 @@ const debugEntry = require.resolve('debug/src/index.js')
 
 const assetHost = process.env.ASSET_HOST || ''
 const awsHostBucketAlias = assetHost.replace(/\/+$/, '')
-
-function manualChunks(id: string): string | undefined {
-  if (id.includes('/packages/ui/src/')) {
-    return 'arc-ui'
-  }
-
-  if (!id.includes('node_modules')) {
-    return undefined
-  }
-
-  if (
-    id.includes('/@nuxt/ui/')
-    || id.includes('/@headlessui/')
-    || id.includes('/@floating-ui/')
-    || id.includes('/@heroicons/')
-  ) {
-    return 'nuxt-ui'
-  }
-
-  if (
-    id.includes('/@tanstack/')
-    || id.includes('/@hebilicious/vue-query-nuxt/')
-  ) {
-    return 'vue-query'
-  }
-
-  if (id.includes('/dayjs/')) {
-    return 'dayjs'
-  }
-
-  return undefined
-}
 
 function removePageComponents(pages: NuxtPage[]) {
   for (let index = pages.length - 1; index >= 0; index -= 1) {
