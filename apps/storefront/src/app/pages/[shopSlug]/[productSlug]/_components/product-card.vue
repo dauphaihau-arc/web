@@ -21,20 +21,25 @@ const imageUrl = computed(() => {
 })
 
 const stockNotice = computed(() => {
-  if (!product.inventory) {
-    return ''
+  if (!product.availability.in_stock) {
+    return getProductStockNotice(0)
   }
 
-  return getProductStockNotice(product.inventory.stock)
+  return product.availability.low_stock ? 'Low stock' : ''
 })
 
 const displayAmount = computed(() => {
-  const inventory = product.inventory
-  if (!inventory) {
+  const pricing = product.pricing
+  if (!pricing?.currency || pricing.min_amount_minor == null) {
     return undefined
   }
 
-  return formatMinorCurrency(inventory.amount_minor, inventory.currency)
+  const minAmount = formatMinorCurrency(pricing.min_amount_minor, pricing.currency)
+  if (pricing.max_amount_minor != null && pricing.max_amount_minor > pricing.min_amount_minor) {
+    return `From ${minAmount}`
+  }
+
+  return minAmount
 })
 </script>
 

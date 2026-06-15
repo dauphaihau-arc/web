@@ -21,12 +21,17 @@ const imageUrl = computed(() => {
 })
 
 const displayAmount = computed(() => {
-  const inventory = props.product.inventory
-  if (!inventory) {
+  const pricing = props.product.pricing
+  if (!pricing?.currency || pricing.min_amount_minor == null) {
     return undefined
   }
 
-  return formatMinorCurrency(inventory.amount_minor, inventory.currency)
+  const minAmount = formatMinorCurrency(pricing.min_amount_minor, pricing.currency)
+  if (pricing.max_amount_minor != null && pricing.max_amount_minor > pricing.min_amount_minor) {
+    return `From ${minAmount}`
+  }
+
+  return minAmount
 })
 </script>
 

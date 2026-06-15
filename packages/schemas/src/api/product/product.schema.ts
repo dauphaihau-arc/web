@@ -23,12 +23,18 @@ export const publicProductImageSchema = z.object({
   })).optional(),
 })
 
-export const publicProductInventorySummarySchema = z.object({
-  amount_minor: z.number().int().nonnegative(),
-  original_amount_minor: z.number().int().nonnegative().optional(),
+export const publicProductListPricingSchema = z.object({
+  min_amount_minor: z.number().int().nonnegative().optional(),
+  max_amount_minor: z.number().int().nonnegative().optional(),
+  original_min_amount_minor: z.number().int().nonnegative().optional(),
+  original_max_amount_minor: z.number().int().nonnegative().optional(),
   currency: z.string(),
-  stock: z.number(),
-  sku: z.string().optional(),
+})
+
+export const publicProductListAvailabilitySchema = z.object({
+  in_stock: z.boolean(),
+  low_stock: z.boolean(),
+  stock_total: z.number().int().nonnegative(),
 })
 
 export const getProductsRequestSchema = requestGetListParamsSchema.extend({
@@ -58,7 +64,9 @@ export const getProductsResponseItemSchema = z.object({
   slug: z.string(),
   image: publicProductImageSchema.optional(),
   variant_type: z.string().optional(),
-  inventory: publicProductInventorySummarySchema.optional(),
+  pricing: publicProductListPricingSchema.optional(),
+  availability: publicProductListAvailabilitySchema,
+  variant_count: z.number().int().nonnegative(),
   has_free_shipping: z.boolean().optional(),
   created_at: z.union([z.string(), z.date()]),
 })
@@ -161,6 +169,7 @@ export const getDetailProductBySlugResponseSchema = z.object({
   variant_type: z.string().optional(),
   variant_group_name: z.string().optional(),
   variant_sub_group_name: z.string().optional(),
+  stock_notice_threshold: z.number().int().nonnegative(),
   images: z.array(publicProductDetailImageSchema),
   variants: z.array(publicProductDetailVariantSchema),
   inventory: z.array(publicProductDetailInventorySchema),

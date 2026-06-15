@@ -21,45 +21,56 @@ const imageUrl = computed(() => {
 })
 
 const stockNotice = computed(() => {
-  if (!props.product.inventory) {
-    return ''
+  if (!props.product.availability.in_stock) {
+    return getProductStockNotice(0)
   }
-  return getProductStockNotice(props.product.inventory.stock)
+
+  return props.product.availability.low_stock ? 'Low stock' : ''
 })
 
 const displayAmount = computed(() => {
-  const inventory = props.product.inventory
-  if (!inventory) {
+  const pricing = props.product.pricing
+  if (!pricing?.currency || pricing.min_amount_minor == null) {
     return undefined
   }
-  return formatMinorCurrency(inventory.amount_minor, inventory.currency)
+
+  const minAmount = formatMinorCurrency(pricing.min_amount_minor, pricing.currency)
+  if (pricing.max_amount_minor != null && pricing.max_amount_minor > pricing.min_amount_minor) {
+    return `From ${minAmount}`
+  }
+
+  return minAmount
 })
 
 const compareAtAmount = computed(() => {
-  const inventory = props.product.inventory
+  const pricing = props.product.pricing
   if (
-    !inventory
-    || inventory.original_amount_minor == null
-    || inventory.original_amount_minor <= inventory.amount_minor
+    !pricing?.currency
+    || pricing.min_amount_minor == null
+    || (pricing.max_amount_minor != null && pricing.max_amount_minor > pricing.min_amount_minor)
+    || pricing.original_min_amount_minor == null
+    || pricing.original_min_amount_minor <= pricing.min_amount_minor
   ) {
     return undefined
   }
 
-  return formatMinorCurrency(inventory.original_amount_minor, inventory.currency)
+  return formatMinorCurrency(pricing.original_min_amount_minor, pricing.currency)
 })
 
 const salePercent = computed(() => {
-  const inventory = props.product.inventory
+  const pricing = props.product.pricing
   if (
-    !inventory
-    || inventory.original_amount_minor == null
-    || inventory.original_amount_minor <= inventory.amount_minor
+    !pricing
+    || pricing.min_amount_minor == null
+    || (pricing.max_amount_minor != null && pricing.max_amount_minor > pricing.min_amount_minor)
+    || pricing.original_min_amount_minor == null
+    || pricing.original_min_amount_minor <= pricing.min_amount_minor
   ) {
     return undefined
   }
 
   return Math.round(
-    ((inventory.original_amount_minor - inventory.amount_minor) / inventory.original_amount_minor) * 100,
+    ((pricing.original_min_amount_minor - pricing.min_amount_minor) / pricing.original_min_amount_minor) * 100,
   )
 })
 
