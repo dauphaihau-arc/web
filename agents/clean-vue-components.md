@@ -66,6 +66,13 @@ Preferred split:
 - local constants/module: static labels, option catalogs, formatter helpers
 - shared module: only promote logic upward when more than one feature uses it
 
+Local file structure:
+- if a component needs feature-private support files such as a local composable, helper, constants module, or subcomponent, convert the component from a single file into a folder
+- keep the main entry component as `component-name/component-name.vue`
+- place feature-private files beside it, such as `component-name/use-component-name.ts`, `component-name/component-name.constants.ts`, or `component-name/_components/...`
+- do not create a folder when the component is still a single standalone `.vue` file with no local support files
+- do not promote feature-private files into shared directories just to avoid creating a local component folder
+
 Guidelines:
 - if a `<script setup>` block starts carrying catalogs, mappers, multiple watchers, and submit side effects together, split it
 - avoid parsing display values from labels in the template; store explicit fields like `symbol`, `label`, `id`
@@ -105,4 +112,5 @@ Reason:
 - reduces watcher-driven state coupling
 - makes domain rules testable outside the template
 - keeps refactors local by default without over-promoting feature-specific logic
+- makes component-private files easier to discover by keeping them under one local boundary
 - makes it explicit when a refactor is only about code shape versus when it also improves shipped bundle behavior
