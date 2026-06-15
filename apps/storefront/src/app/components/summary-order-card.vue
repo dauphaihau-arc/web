@@ -51,7 +51,7 @@ const props = defineProps<{
             <div
               v-if="props.summaryOrder?.shipping_minor === 0
                 && props.summaryOrder.total_selected_quantity"
-              class="text-right font-normal text-primary"
+              class="text-right font-normal text-[var(--state-success-text)]"
             >
               FREE
             </div>

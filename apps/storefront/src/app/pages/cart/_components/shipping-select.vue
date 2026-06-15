@@ -30,7 +30,7 @@ const isSelectAnyProduct = computed(() => {
       <p>Shipping fee:</p>
       <p
         v-if="props.shopCart.shipping_minor === 0 && isSelectAnyProduct"
-        class="text-right font-normal text-primary"
+        class="text-right font-normal text-[var(--state-success-text)]"
       >
         FREE
       </p>
