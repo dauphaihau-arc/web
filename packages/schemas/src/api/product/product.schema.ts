@@ -135,6 +135,8 @@ export const publicProductDetailVariantSchema = z.object({
 export const publicProductDetailInventorySchema = z.object({
   id: z.string(),
   product_variant_id: z.string().optional(),
+  option_value_1: z.string().optional(),
+  option_value_2: z.string().optional(),
   sku: z.string().optional(),
   stock: z.number(),
   amount_minor: z.number().int().nonnegative(),
