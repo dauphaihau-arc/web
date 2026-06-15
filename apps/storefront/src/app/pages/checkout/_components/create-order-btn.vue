@@ -2,6 +2,7 @@
 import { consola } from 'consola'
 import { PaymentTypes } from '@arc/enums/order'
 import { MARKET_CONFIG } from '@arc/enums/market'
+import { FetchError } from 'ofetch'
 import { toastCustom } from '~/shared/config/toast'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { useCartStore } from '~/shared/stores/cart/cart.store'
@@ -20,6 +21,7 @@ import type {
   CreateCheckoutQuoteForBuyNowRequest,
   CreateOrderForBuyNowRequest,
 } from '~/shared/api/me/order/contracts/order.contract'
+import { getBackendErrorMessage } from '~/shared/utils/backend-error'
 
 const cartStore = useCartStore()
 const toast = useToast()
@@ -134,9 +136,14 @@ const onCreateOrder = async () => {
   }
   catch (error) {
     cartStore.stateCheckoutNow.isPendingCreateOrder = false
+    const backendMessage = getBackendErrorMessage(error)
+
     toast.add({
       ...toastCustom.error,
-      title: 'Create order failed',
+      title: backendMessage ?? 'Create order failed',
+      ...(error instanceof FetchError && !backendMessage
+        ? { description: `Request failed with status ${error.status ?? 'unknown'}` }
+        : {}),
     })
   }
 }

@@ -62,6 +62,9 @@ export const checkoutQuoteResponseSchema = z.object({
   quote_id: z.string(),
   presentment_currency: z.string().optional(),
   checkout_currency: z.string(),
+  checkout_policy: z.object({
+    max_order_total_minor: z.number().optional(),
+  }).optional(),
   subtotal_minor: z.number(),
   shipping_minor: z.number(),
   discount_minor: z.number(),

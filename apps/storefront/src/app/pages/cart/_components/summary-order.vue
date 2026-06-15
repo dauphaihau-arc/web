@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ORDER_CONFIG } from '@arc/enums/order'
-import { toMinorUnits } from '@arc/utils'
+import { formatMinorCurrency } from '@arc/utils'
 import { useGetCart } from '~/shared/server-state/cart/cart.query'
 import { routes } from '~/shared/navigation/routes'
 
@@ -11,11 +10,14 @@ const {
 const router = useRouter()
 
 const isTotalOrderInvalid = computed(() => {
-  if (dataGetCart.value) {
-    const currency = dataGetCart.value.summary.currency
-    return !(dataGetCart.value.summary.total_minor < toMinorUnits(ORDER_CONFIG.MAX_ORDER_TOTAL, currency))
+  const totalMinor = dataGetCart.value?.summary.total_minor
+  const maxOrderTotalMinor = dataGetCart.value?.checkout_policy?.max_order_total_minor
+
+  if (typeof totalMinor !== 'number' || typeof maxOrderTotalMinor !== 'number') {
+    return false
   }
-  return true
+
+  return totalMinor > maxOrderTotalMinor
 })
 
 const proceedLabel = computed(() => {
@@ -40,7 +42,7 @@ function proceedToCheckout() {
       class="text-state-danger-text"
     >
       The total amount due must be no more than
-      {{ formatCurrency(ORDER_CONFIG.MAX_ORDER_TOTAL) }}
+      {{ formatMinorCurrency(dataGetCart?.checkout_policy?.max_order_total_minor, dataGetCart?.summary.currency) }}
     </div>
 
     <UButton

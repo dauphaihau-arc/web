@@ -50,6 +50,10 @@ export const cartSummarySchema = z.object({
   total_quantity: z.number(),
 })
 
+export const cartCheckoutPolicySchema = z.object({
+  max_order_total_minor: z.number(),
+})
+
 export const cartRecentItemSchema = z.object({
   item_id: z.string(),
   product: z.object({
@@ -80,6 +84,7 @@ export const cartResponseSchema = z.object({
   cart: cartResourceSchema.nullable(),
   summary: cartSummarySchema,
   requires_sign_in_for_checkout: z.boolean().optional(),
+  checkout_policy: cartCheckoutPolicySchema.optional(),
 })
 
 export const getCartRequestSchema = z.object({

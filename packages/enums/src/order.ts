@@ -16,7 +16,6 @@ export enum PaymentTypes {
 
 export const ORDER_CONFIG = {
   MAX_CHAR_NOTE: 10000,
-  MAX_ORDER_TOTAL: 999999.99, // USD
   MAX_PROMO_COUPONS: 2,
 }
 
