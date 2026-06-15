@@ -92,13 +92,17 @@ const compareAtAmount = computed(() =>
       />
     </div>
 
-    <NuxtImg
-      :src="props.productCart?.product?.image_url"
-      width="180"
-      height="180"
-      class="max-h-[180px] max-w-[180px] cursor-pointer rounded"
+    <div
+      class="size-[180px] shrink-0 cursor-pointer overflow-hidden rounded-lg bg-customGray-200 ring-1 ring-border-subtle"
       @click="goToDetailProduct"
-    />
+    >
+      <NuxtImg
+        :src="props.productCart?.product?.image_url"
+        width="180"
+        height="180"
+        class="size-full object-cover object-center"
+      />
+    </div>
 
     <div class="flex w-full justify-between">
       <div class="w-3/5 space-y-3">

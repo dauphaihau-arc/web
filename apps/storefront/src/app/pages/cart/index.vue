@@ -9,9 +9,6 @@ definePageMeta({ layout: 'market' })
 
 const cartStore = useCartStore()
 
-const wrapperSummaryOrderRef = ref<HTMLDivElement | null>(null)
-const contentSummaryOrderRef = ref<HTMLDivElement | null>(null)
-
 const {
   isPending: isPendingGetCart,
   data: dataGetCart,
@@ -27,35 +24,6 @@ watch(dataGetCart, () => {
     })
   }
 }, { immediate: true })
-
-function onScroll() {
-  const scrollTop = window.scrollY
-  const viewportHeight = window.innerHeight
-
-  if (!wrapperSummaryOrderRef.value || !contentSummaryOrderRef.value) {
-    return
-  }
-
-  const wrapperContentTop = wrapperSummaryOrderRef.value?.getBoundingClientRect()?.top + window.pageYOffset
-  const contentHeight = contentSummaryOrderRef.value?.getBoundingClientRect().height
-
-  if (contentHeight && scrollTop >= contentHeight - viewportHeight + wrapperContentTop) {
-    contentSummaryOrderRef.value.style.transform = `translateY(-${(contentHeight - viewportHeight + wrapperContentTop)}px)`
-    contentSummaryOrderRef.value.style.position = 'fixed'
-  }
-  else {
-    contentSummaryOrderRef.value.style.transform = ''
-    contentSummaryOrderRef.value.style.position = ''
-  }
-}
-
-onMounted(() => {
-  window.addEventListener('scroll', onScroll)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('scroll', onScroll)
-})
 </script>
 
 <template>
@@ -81,11 +49,8 @@ onBeforeUnmount(() => {
             />
           </div>
 
-          <div ref="wrapperSummaryOrderRef">
-            <div
-              ref="contentSummaryOrderRef"
-              class="w-[400px]"
-            >
+          <div class="col-span-4">
+            <div class="sticky top-24 w-[400px]">
               <SummaryOrder />
             </div>
           </div>
