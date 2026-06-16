@@ -60,6 +60,13 @@ export const productApi = {
     )
   },
 
+  getBestSellers(limit?: number) {
+    return apiClient.get<GetProductRecommendationsResponse>(
+      '/products/best-sellers',
+      limit ? { limit } : undefined,
+    )
+  },
+
   recordView(shopSlug: string, productSlug: string) {
     return apiClient.post<RecordProductViewResponse>(
       `/products/by-slug/${shopSlug}/${productSlug}/views`,

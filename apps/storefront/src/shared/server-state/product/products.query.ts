@@ -155,6 +155,28 @@ export function useGetTrendingProducts(
   })
 }
 
+export function useGetBestSellerProducts(
+  params: ComputedRef<{ limit?: number } | undefined>,
+  options?: Partial<UseQueryOptions<GetProductRecommendationsResponse>>,
+) {
+  const marketStore = useMarketStore()
+  const marketContext = computed(() => ({
+    currency: marketStore.guestPreferences?.currency ?? MARKET_CONFIG.BASE_CURRENCY,
+    language: marketStore.guestPreferences?.language ?? MARKET_CONFIG.BASE_LANGUAGE,
+    region: marketStore.guestPreferences?.region ?? MARKET_CONFIG.BASE_REGION,
+  }))
+
+  return useQuery<GetProductRecommendationsResponse>({
+    enabled: computed(() => marketStore.isMarketReady),
+    staleTime: 0,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
+    ...options,
+    queryKey: computed(() => ['get-best-seller-products', params.value, marketContext.value]),
+    queryFn: () => productApi.getBestSellers(params.value?.limit) as Promise<GetProductRecommendationsResponse>,
+  })
+}
+
 export function useRecordProductView() {
   const queryClient = useQueryClient()
 
