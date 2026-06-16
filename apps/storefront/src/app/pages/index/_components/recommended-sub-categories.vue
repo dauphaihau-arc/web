@@ -77,10 +77,10 @@ const redirectPage = (subCategory: Category) => {
     <div v-else-if="dataGetCategories && dataGetCategories.length > 0">
       <div class="mb-6">
         <h3 class="text-lg font-medium">
-          Recommended categories for you
+          Explore more in this category
         </h3>
         <p class="text-md text-text-strong">
-          Based on your activity
+          Jump back into subcategories related to your last browse
         </p>
       </div>
       <div class="flex gap-16">
