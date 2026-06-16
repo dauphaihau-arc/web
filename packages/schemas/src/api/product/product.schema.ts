@@ -109,6 +109,29 @@ export const getProductSuggestionsResponseSchema = z.object({
   items: z.array(productSuggestionSchema),
 })
 
+export const getProductRecommendationsResponseSchema = z.object({
+  items: z.array(getProductsResponseItemSchema),
+})
+
+export const productRecommendationSectionSchema = z.object({
+  type: z.enum([
+    'similar_products',
+    'from_same_seller',
+    'customers_also_viewed',
+    'frequently_bought_together',
+  ]),
+  title: z.string(),
+  items: z.array(getProductsResponseItemSchema),
+})
+
+export const getProductRecommendationSectionsResponseSchema = z.object({
+  sections: z.array(productRecommendationSectionSchema),
+})
+
+export const recordProductViewResponseSchema = z.object({
+  ok: z.literal(true),
+})
+
 export const publicProductDetailImageSchema = z.object({
   id: z.string(),
   storage_key: z.string(),

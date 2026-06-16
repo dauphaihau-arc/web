@@ -91,10 +91,10 @@ const subCategories = computed(() => {
         <div v-if="cg.items && cg.items.length > 0">
           <div class="mb-3">
             <h3 class="text-lg font-medium">
-              {{ cg.categoryName }}
+              Continue exploring {{ cg.categoryName }}
             </h3>
             <p class="text-md text-text-strong">
-              Based on your activity
+              Popular picks from a category you visited
             </p>
           </div>
 
