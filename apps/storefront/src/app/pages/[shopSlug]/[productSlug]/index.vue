@@ -3,15 +3,18 @@ import LoadingSvg from '@arc/ui/loading-svg.vue'
 import AddToCartForm from './_components/add-to-cart-form/add-to-cart-form.vue'
 import ProductImages from './_components/product-images.vue'
 import MoreInfo from './_components/more-info.vue'
-import MoreProductsByCategory from './_components/more-products-by-category.vue'
 import ProductSummary from './_components/summary.vue'
 import { useLiveProductInventory } from './_composables/use-live-product-inventory'
+import SimilarProducts from './_components/similar-products.vue'
+import type { GetProductsResponseItem } from '~/shared/api/product/contracts/product.contract'
 import { useGetDetailProductBySlug } from '~/shared/server-state/product/detail-by-slug.query'
+import { useRecordProductView } from '~/shared/server-state/product/products.query'
 
 definePageMeta({ layout: 'market' })
 
 const route = useRoute()
 const marketStore = useMarketStore()
+const { mutate: recordProductView } = useRecordProductView()
 
 const shopSlug = route.params.shopSlug as string
 const productSlug = route.params.productSlug as string
@@ -40,6 +43,78 @@ const {
   selectedInventory,
   stockNotice,
 } = useLiveProductInventory(productData)
+
+function toRecentProductView(input: NonNullable<typeof productData.value>): GetProductsResponseItem {
+  const amountValues = input.inventory
+    .map(inventory => inventory.amount_minor)
+    .filter((value): value is number => value != null)
+  const originalAmountValues = input.inventory
+    .map(inventory => inventory.original_amount_minor)
+    .filter((value): value is number => value != null)
+  const totalStock = input.inventory.reduce((sum, inventory) => sum + inventory.stock, 0)
+  const primaryImage = input.images
+    .slice()
+    .sort((left, right) => left.rank - right.rank)[0]
+
+  return {
+    id: input.id,
+    shop: input.shop,
+    category_id: input.category_id,
+    title: input.title,
+    slug: input.slug,
+    image: primaryImage
+      ? {
+          storage_key: primaryImage.storage_key,
+          variant: 'original',
+          variants: primaryImage.variants
+            ? Object.fromEntries(
+              Object.entries(primaryImage.variants).map(([variant, image]) => [
+                variant,
+                { storage_key: image.storage_key },
+              ]),
+            )
+            : undefined,
+        }
+      : undefined,
+    variant_type: input.variant_type,
+    pricing: amountValues.length > 0
+      ? {
+          min_amount_minor: Math.min(...amountValues),
+          max_amount_minor: Math.max(...amountValues),
+          ...(originalAmountValues.length > 0
+            ? { original_min_amount_minor: Math.min(...originalAmountValues) }
+            : {}),
+          ...(originalAmountValues.length > 0
+            ? { original_max_amount_minor: Math.max(...originalAmountValues) }
+            : {}),
+          currency: input.inventory.find(inventory => inventory.currency)?.currency ?? '',
+        }
+      : undefined,
+    availability: {
+      in_stock: totalStock > 0,
+      low_stock: totalStock > 0 && totalStock <= input.stock_notice_threshold,
+      stock_total: totalStock,
+    },
+    variant_count: input.variants.length,
+    has_free_shipping: input.shipping?.destinations.some(
+      destination => destination.charge_type === 'free_shipping',
+    ),
+    created_at: new Date().toISOString(),
+  }
+}
+
+watch(productData, (value) => {
+  if (!import.meta.client || !value?.id) {
+    return
+  }
+
+  recordProductView({
+    shopSlug,
+    productSlug,
+  })
+
+  marketStore.recordRecentProductView(toRecentProductView(value))
+}, { immediate: true })
 </script>
 
 <template>
@@ -74,9 +149,9 @@ const {
           />
         </div>
       </div>
-      <MoreProductsByCategory
-        v-if="product.category_id"
-        :category-id="product.category_id"
+      <SimilarProducts
+        :product-slug="product.slug"
+        :shop-slug="product.shop.slug"
       />
     </div>
   </div>
