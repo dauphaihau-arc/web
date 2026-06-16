@@ -35,7 +35,10 @@ const { data } = useGetProductRecommendationSections(queryParams)
           v-for="(product, i) of section.items"
           :key="`${section.type}-${i}`"
         >
-          <ProductCard :product="product" />
+          <ProductCard
+            :product="product"
+            :show-sale-percent="false"
+          />
         </div>
       </div>
     </section>

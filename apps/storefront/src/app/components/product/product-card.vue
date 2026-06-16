@@ -5,9 +5,12 @@ import { getProductStockNotice } from '~/shared/utils/product-stock'
 import { resolveProductImageUrl } from '~/shared/utils/storage-public-url'
 import { routes } from '~/shared/navigation/routes'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   product: GetProductsResponseItem
-}>()
+  showSalePercent?: boolean
+}>(), {
+  showSalePercent: true,
+})
 
 const router = useRouter()
 const config = useRuntimeConfig()
@@ -75,7 +78,7 @@ const salePercent = computed(() => {
 })
 
 const hasDiscount = computed(() => {
-  return compareAtAmount.value !== undefined && salePercent.value !== undefined
+  return compareAtAmount.value !== undefined
 })
 </script>
 
@@ -106,7 +109,10 @@ const hasDiscount = computed(() => {
           <p class="text-sm text-text-muted line-through">
             {{ compareAtAmount }}
           </p>
-          <p class="text-sm text-text-muted">
+          <p
+            v-if="props.showSalePercent"
+            class="text-sm text-text-muted"
+          >
             ({{ salePercent }}% off)
           </p>
         </template>

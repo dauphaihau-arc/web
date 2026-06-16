@@ -5,7 +5,7 @@ import ProductImages from './_components/product-images.vue'
 import MoreInfo from './_components/more-info.vue'
 import ProductSummary from './_components/summary.vue'
 import { useLiveProductInventory } from './_composables/use-live-product-inventory'
-import SimilarProducts from './_components/similar-products.vue'
+import RecommendationSections from './_components/recommendation-sections.vue'
 import type { GetProductsResponseItem } from '~/shared/api/product/contracts/product.contract'
 import { useGetDetailProductBySlug } from '~/shared/server-state/product/detail-by-slug.query'
 import { useRecordProductView } from '~/shared/server-state/product/products.query'
@@ -149,7 +149,7 @@ watch(productData, (value) => {
           />
         </div>
       </div>
-      <SimilarProducts
+      <RecommendationSections
         :product-slug="product.slug"
         :shop-slug="product.shop.slug"
       />
