@@ -9,7 +9,11 @@ import SendEmailSuccess from './_components/send-email-success.vue'
 import { routes } from '~/shared/navigation/routes'
 import { useVerifyToken } from '~/shared/server-state/auth/verify-token.query'
 
-definePageMeta({ layout: 'market' })
+definePageMeta({ layout: 'auth' })
+
+useSeoMeta({
+  title: 'Seller Reset Password',
+})
 
 const route = useRoute()
 const authStore = useAuthStore()
@@ -28,7 +32,7 @@ useVerifyToken(token, {
   },
 })
 
-const currentView = ref(token ? '' : ResetPasswordViews.SEND_EMAIL)
+const currentView = ref<ResetPasswordViews | ''>(token ? '' : ResetPasswordViews.SEND_EMAIL)
 
 const changeView = (step: ResetPasswordViews) => {
   currentView.value = step
@@ -42,22 +46,19 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="mx-auto mt-12 max-w-lg">
-    <!--    Send email -->
+  <div class="mx-auto w-full max-w-lg">
     <ResetPasswordShell v-if="currentView === ResetPasswordViews.SEND_EMAIL">
       <template #title>
         Reset your password
       </template>
       <template #subtitle>
-        Enter the email address associated with
-        your account and we'll send you a link to reset your password.
+        Enter the email address associated with your account and we'll send you a link to reset your password.
       </template>
       <template #content>
         <ForgetPasswordForm @change-view="changeView" />
       </template>
     </ResetPasswordShell>
 
-    <!--  Send email success -->
     <ResetPasswordShell v-if="currentView === ResetPasswordViews.SEND_EMAIL_SUCCESS">
       <template #title>
         Check your email
@@ -67,7 +68,6 @@ onMounted(() => {
       </template>
     </ResetPasswordShell>
 
-    <!--  Token invalid -->
     <ResetPasswordShell v-if="currentView === ResetPasswordViews.TOKEN_INVALID">
       <template #content>
         <div class="flex flex-col items-center justify-center">
@@ -89,5 +89,15 @@ onMounted(() => {
     </ResetPasswordShell>
 
     <ResetPasswordForm v-if="currentView === ResetPasswordViews.RESET_PASSWORD" />
+
+    <p class="mt-6 text-center text-sm text-text-subtle">
+      Remembered your password?
+      <NuxtLink
+        :to="routes.login()"
+        class="font-semibold text-text-strong underline decoration-border-muted underline-offset-4"
+      >
+        Log in
+      </NuxtLink>
+    </p>
   </div>
 </template>

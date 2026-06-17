@@ -2,10 +2,10 @@
 import { resetPasswordFormSchema } from '@arc/schemas/forms/auth/reset-password-form.schema'
 import ResetPasswordShell from '@arc/ui/shells/auth/reset-password-shell.vue'
 import type { FormError, FormSubmitEvent } from '#ui/types'
+import type { ResetPasswordForm as ResetPasswordBody } from '~/shared/api/auth/contracts/reset-password.contract'
+import { routes } from '~/shared/navigation/routes'
 import { useAuthClientConfig } from '~/shared/server-state/auth/client-config.query'
 import { useResetPassword } from '~/shared/server-state/auth/reset-password.mutation'
-import { ROUTES } from '~/shared/config/enums/routes'
-import type { ResetPasswordForm as ResetPasswordBody } from '~/shared/api/auth/contracts/reset-password.contract'
 import { appendPasswordError } from '~/shared/utils/password-policy'
 
 const authStore = useAuthStore()
@@ -20,6 +20,7 @@ const {
   mutateAsync: resetPassword,
   isPending: isPendingResetPassword,
 } = useResetPassword(authStore.tokenResetPassword)
+
 const { data: authClientConfig, isLoading: isLoadingAuthClientConfig } = useAuthClientConfig()
 
 const validateForm = (stateValidate: Partial<ResetPasswordBody>): FormError[] => {
@@ -52,7 +53,7 @@ async function onSubmit(event: FormSubmitEvent<ResetPasswordBody>) {
     await resetPassword(password)
     resetPasswordSuccess.value = true
   }
-  catch (error) {
+  catch {
     unknownErrorServerMsg.value = 'An unknown error occurred. Please try again'
   }
 }
@@ -131,12 +132,12 @@ async function onSubmit(event: FormSubmitEvent<ResetPasswordBody>) {
         You've successfully changed your password
       </template>
       <template #content>
-        <NuxtLink :to="ROUTES.HOME">
+        <NuxtLink :to="routes.products()">
           <UButton
             size="xl"
             block
           >
-            Continue to shopping
+            Go to dashboard
           </UButton>
         </NuxtLink>
       </template>

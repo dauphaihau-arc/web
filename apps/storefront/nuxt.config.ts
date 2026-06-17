@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import type { NuxtPage } from '@nuxt/schema'
@@ -6,6 +7,7 @@ import pkg from './package.json'
 
 const packagesDir = fileURLToPath(new URL('../../packages/', import.meta.url))
 const uiPackageDir = `${packagesDir}ui/src`
+const sharedUiDir = fileURLToPath(new URL('./src/shared/ui', import.meta.url))
 const require = createRequire(import.meta.url)
 const debugEntry = require.resolve('debug/src/index.js')
 
@@ -125,10 +127,12 @@ export default defineNuxtConfig({
       path: 'app/components',
       pathPrefix: false,
     },
-    {
-      path: 'shared/ui',
-      pathPrefix: false,
-    },
+    ...(existsSync(sharedUiDir)
+      ? [{
+          path: 'shared/ui',
+          pathPrefix: false,
+        }]
+      : []),
     {
       path: uiPackageDir,
       pathPrefix: false,
