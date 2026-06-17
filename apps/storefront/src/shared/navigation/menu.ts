@@ -1,13 +1,13 @@
-import type { RouteLocationRaw } from 'vue-router'
-import type { AppIconAlias } from '@arc/ui/foundation/app-icon.constants'
-import { routes } from './routes'
+import type { RouteLocationRaw } from 'vue-router';
+import type { AppIconAlias } from '@arc/ui/foundation/app-icon.constants';
+import { routes } from './routes';
 
 export type AppNavigationItem = {
   label: string
   icon?: AppIconAlias | string
   to: RouteLocationRaw
   disabled?: boolean
-}
+};
 
 export const accountSidebarLinks: AppNavigationItem[] = [
   {
@@ -43,4 +43,4 @@ export const accountSidebarLinks: AppNavigationItem[] = [
   //   icon: 'i-heroicons-cog',
   //   to: routes.home(),
   // },
-]
+];
