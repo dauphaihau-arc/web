@@ -7,6 +7,7 @@ import {
   productWhoMadeOpts,
 } from '@arc/enums/product'
 import NoneVariantInput from '../none-variant-input.vue'
+import ProductFormSectionNav from '../product-form-section-nav.vue'
 import SearchCategoryInput from '../search-category-input.vue'
 import SelectAttributesInput from '../select-attributes-input.vue'
 import TagsInput from '../tags-input.vue'
@@ -63,6 +64,12 @@ const isVariantInputValid = ref(true)
 const countValidate = ref(0)
 const countValidateInputs = ref(0)
 const countValidateVariantsInputs = ref(0)
+
+const sections = [
+  { id: 'product-basic-info', label: 'Basic info' },
+  { id: 'product-details', label: 'Details' },
+  { id: 'product-inventory', label: 'Inventory' },
+]
 
 const fileImages = ref<File[]>([])
 const idsImageForDelete = ref<Required<Pick<ProductImageReference, 'id'>>[]>([])
@@ -220,6 +227,8 @@ watchDebounced(
 
 <template>
   <div>
+    <ProductFormSectionNav :sections="sections" />
+
     <UForm
       ref="formRef"
       :validate-on="['submit']"
@@ -229,135 +238,150 @@ watchDebounced(
       @error="onError"
       @submit="onSubmit"
     >
-      <FormGroupCard>
-        <template #title>
-          Basic info
-        </template>
-        <template #content>
-          <div class="mb-4 flex items-center gap-3">
-            <span class="text-sm text-text-muted">Status</span>
-            <UBadge
-              :color="stateTone(productState)"
-              variant="soft"
-            >
-              {{ formatStateLabel(productState) }}
-            </UBadge>
-          </div>
-          <ImagesInput
-            v-model:new-file-images="fileImages"
-            v-model:ids-image-delete="idsImageForDelete"
-            class="mb-4"
-            :images="dataDetailProduct?.product.images"
-            :loading="loadingSubmit"
-            :count-validate="countValidate"
-          />
-          <UFormGroup
-            label="Title"
-            name="title"
-            class="mb-4 form-field-constrained"
-            description="Include keywords that buyers would use to search for your product."
-            required
-          >
-            <UInput
-              v-model="stateSubmit.title"
-              :disabled="loadingSubmit"
-              size="lg"
-            />
-          </UFormGroup>
-          <UFormGroup
-            label="Description"
-            name="description"
-            class="form-field-constrained"
-            :help="stateSubmit.description
-              && `${stateSubmit.description.length}/${PRODUCT_CONFIG.MAX_CHAR_DESCRIPTION}`
-            "
-            required
-          >
-            <UTextarea
-              v-model="stateSubmit.description"
-              autoresize
-              :maxlength="PRODUCT_CONFIG.MAX_CHAR_DESCRIPTION"
-              :rows="5"
-              :disabled="loadingSubmit"
-              size="lg"
-            />
-          </UFormGroup>
-        </template>
-      </FormGroupCard>
-
-      <FormGroupCard>
-        <template #title>
-          Details
-        </template>
-        <template #subtitle>
-          Share a few more specifics about your product to make
-          it easier to find in search, and to help buyers know what
-          to expect.
-        </template>
-        <template #content>
-          <div class="grid grid-cols-4 gap-4">
-            <UFormGroup
-              label="Who made it?"
-              name="who_made"
+      <section
+        id="product-basic-info"
+        class="scroll-mt-24"
+      >
+        <FormGroupCard>
+          <template #title>
+            Basic info
+          </template>
+          <template #content>
+            <div class="mb-4 flex items-center gap-3">
+              <span class="text-sm text-text-muted">Status</span>
+              <UBadge
+                :color="stateTone(productState)"
+                variant="soft"
+              >
+                {{ formatStateLabel(productState) }}
+              </UBadge>
+            </div>
+            <ImagesInput
+              v-model:new-file-images="fileImages"
+              v-model:ids-image-delete="idsImageForDelete"
               class="mb-4"
+              :images="dataDetailProduct?.product.images"
+              :loading="loadingSubmit"
+              :count-validate="countValidate"
+            />
+            <UFormGroup
+              label="Title"
+              name="title"
+              class="mb-4 form-field-constrained"
+              description="Include keywords that buyers would use to search for your product."
               required
             >
-              <USelectMenu
-                v-model="stateSubmit.who_made"
+              <UInput
+                v-model="stateSubmit.title"
+                :disabled="loadingSubmit"
                 size="lg"
-                :options="productWhoMadeOpts"
-                value-attribute="id"
               />
             </UFormGroup>
-          </div>
-
-          <SearchCategoryInput
-            v-model="stateSubmit.category_id"
-            :category="dataDetailProduct?.product.category"
-            :title="stateSubmit.title"
-          />
-
-          <SelectAttributesInput
-            :key="stateSubmit.category_id"
-            v-model="stateSubmit.attributes"
-            :category_id="stateSubmit.category_id || dataDetailProduct?.product.category.id"
-            :attributes-selected="dataDetailProduct?.product.attributes"
-          />
-
-          <TagsInput v-model="stateSubmit.tags" />
-        </template>
-      </FormGroupCard>
-
-      <FormGroupCard>
-        <template #title>
-          Inventory and pricing
-        </template>
-        <template #content>
-          <div class="">
-            <UButton
-              class="mb-4"
-              color="gray"
-              variant="solid"
-              @click="onChangeVariantType"
+            <UFormGroup
+              label="Description"
+              name="description"
+              class="form-field-constrained"
+              :help="stateSubmit.description
+                && `${stateSubmit.description.length}/${PRODUCT_CONFIG.MAX_CHAR_DESCRIPTION}`
+              "
+              required
             >
-              {{ !isVariantProduct ? 'Add variations' : 'Remove variations' }}
-            </UButton>
+              <UTextarea
+                v-model="stateSubmit.description"
+                autoresize
+                :maxlength="PRODUCT_CONFIG.MAX_CHAR_DESCRIPTION"
+                :rows="5"
+                :disabled="loadingSubmit"
+                size="lg"
+              />
+            </UFormGroup>
+          </template>
+        </FormGroupCard>
+      </section>
 
-            <VariantInput
-              v-if="isVariantProduct && dataDetailProduct"
-              :product="dataDetailProduct.product"
-              :count-validate="countValidate"
-              @on-change="onChangeVariants"
-              @is-variants-updated="(count) => countValidateVariantsInputs = count"
+      <section
+        id="product-details"
+        class="scroll-mt-24"
+      >
+        <FormGroupCard>
+          <template #title>
+            Details
+          </template>
+          <template #subtitle>
+            Share a few more specifics about your product to make
+            it easier to find in search, and to help buyers know what
+            to expect.
+          </template>
+          <template #content>
+            <div class="grid grid-cols-4 gap-4">
+              <UFormGroup
+                label="Who made it?"
+                name="who_made"
+                class="mb-4"
+                required
+              >
+                <USelectMenu
+                  v-model="stateSubmit.who_made"
+                  size="lg"
+                  :options="productWhoMadeOpts"
+                  value-attribute="id"
+                />
+              </UFormGroup>
+            </div>
+
+            <SearchCategoryInput
+              v-model="stateSubmit.category_id"
+              :category="dataDetailProduct?.product.category"
+              :title="stateSubmit.title"
             />
-            <NoneVariantInput
-              v-else
-              v-model:none-variant="noneVariant"
-              class="max-w-[40%]"
+
+            <SelectAttributesInput
+              :key="stateSubmit.category_id"
+              v-model="stateSubmit.attributes"
+              :category_id="stateSubmit.category_id || dataDetailProduct?.product.category.id"
+              :attributes-selected="dataDetailProduct?.product.attributes"
             />
-          </div>
-        </template>
-      </FormGroupCard>
+
+            <TagsInput v-model="stateSubmit.tags" />
+          </template>
+        </FormGroupCard>
+      </section>
+
+      <section
+        id="product-inventory"
+        class="scroll-mt-24"
+      >
+        <FormGroupCard>
+          <template #title>
+            Inventory and pricing
+          </template>
+          <template #content>
+            <div class="">
+              <UButton
+                class="mb-4"
+                color="gray"
+                variant="solid"
+                @click="onChangeVariantType"
+              >
+                {{ !isVariantProduct ? 'Add variations' : 'Remove variations' }}
+              </UButton>
+
+              <VariantInput
+                v-if="isVariantProduct && dataDetailProduct"
+                :product="dataDetailProduct.product"
+                :count-validate="countValidate"
+                @on-change="onChangeVariants"
+                @is-variants-updated="(count) => countValidateVariantsInputs = count"
+              />
+              <NoneVariantInput
+                v-else
+                v-model:none-variant="noneVariant"
+                class="max-w-[40%]"
+              />
+            </div>
+          </template>
+        </FormGroupCard>
+      </section>
 
       <button
         ref="btnSubmit"

@@ -11,6 +11,7 @@ import NoneVariantInput from '../none-variant-input.vue'
 import SearchCategoryInput from '../search-category-input.vue'
 import SelectAttributesInput from '../select-attributes-input.vue'
 import TagsInput from '../tags-input.vue'
+import ProductFormSectionNav from '../product-form-section-nav.vue'
 import ImagesInput from './images-input.vue'
 import VariantInput from './variant-input.vue'
 import { useCreateProductSubmit } from './use-create-product-submit'
@@ -45,6 +46,13 @@ const { data: myShop } = useGetMyShop()
 const shopCurrency = computed(() => myShop.value?.currency ?? 'USD')
 
 const shipping = ref<CreateProductShipping | undefined>()
+
+const sections = [
+  { id: 'product-basic-info', label: 'Basic info' },
+  { id: 'product-details', label: 'Details' },
+  { id: 'product-shipping', label: 'Shipping' },
+  { id: 'product-inventory', label: 'Inventory' },
+]
 
 const noneVariant = reactive<StateNoneVariant>({
   stock: 1,
@@ -145,6 +153,8 @@ watch(isProductHaveVariants, () => {
 
 <template>
   <div>
+    <ProductFormSectionNav :sections="sections" />
+
     <UForm
       ref="formRef"
       :validate-on="['submit']"
@@ -154,175 +164,195 @@ watch(isProductHaveVariants, () => {
       @error="onErrorFrom"
       @submit="onSubmit"
     >
-      <FormGroupCard>
-        <template #title>
-          Basic info
-        </template>
-        <template #content>
-          <ImagesInput
-            v-model="fileImages"
-            class="mb-4"
-          />
-          <UFormGroup
-            label="Title"
-            name="title"
-            class="mb-4 form-field-constrained"
-            description="Include keywords that buyers would use to search for your product."
-            required
-          >
-            <UInput
-              v-model.trim="stateSubmit.title"
-              :disabled="loadingSubmit"
-              size="lg"
-            />
-          </UFormGroup>
-          <UFormGroup
-            label="Description"
-            name="description"
-            class="form-field-constrained"
-            :help="stateSubmit.description
-              && `${stateSubmit.description.length}/${PRODUCT_CONFIG.MAX_CHAR_DESCRIPTION}`
-            "
-            required
-          >
-            <UTextarea
-              v-model="stateSubmit.description"
-              autoresize
-              :maxlength="PRODUCT_CONFIG.MAX_CHAR_DESCRIPTION"
-              :rows="5"
-              :disabled="loadingSubmit"
-              size="lg"
-            />
-          </UFormGroup>
-        </template>
-      </FormGroupCard>
-
-      <FormGroupCard>
-        <template #title>
-          Details
-        </template>
-        <template #subtitle>
-          Share a few more specifics about your product to make
-          it easier to find in search, and to help buyers know what
-          to expect.
-        </template>
-        <template #content>
-          <div>
-            <UFormGroup
-              label="Type"
-              name="is_digital"
+      <section
+        id="product-basic-info"
+        class="scroll-mt-24"
+      >
+        <FormGroupCard>
+          <template #title>
+            Basic info
+          </template>
+          <template #content>
+            <ImagesInput
+              v-model="fileImages"
               class="mb-4"
-            >
-              <RadioGroupInput
-                v-model="stateSubmit.is_digital"
-                :options="isDigitalOpts"
-                :disabled="loadingSubmit"
-                row
-              />
-            </UFormGroup>
-
-            <div class="grid grid-cols-4">
-              <UFormGroup
-                label="Who made it?"
-                name="who_made"
-                required
-                class="mb-4 max-w-[218px]"
-              >
-                <USelectMenu
-                  v-model="stateSubmit.who_made"
-                  size="lg"
-                  :disabled="loadingSubmit"
-                  :options="productWhoMadeOpts"
-                  value-attribute="id"
-                />
-              </UFormGroup>
-            </div>
-
-            <SearchCategoryInput
-              v-model="stateSubmit.category_id"
-              :title="stateSubmit.title"
             />
-
-            <SelectAttributesInput
-              v-if="stateSubmit.category_id"
-              :key="stateSubmit.category_id"
-              v-model="stateSubmit.attributes"
-              :category_id="stateSubmit.category_id"
-            />
-            <TagsInput v-model="stateSubmit.tags" />
-          </div>
-        </template>
-      </FormGroupCard>
-
-      <FormGroupCard>
-        <template #title>
-          Shipping
-        </template>
-        <template #subtitle>
-          Give shoppers clear expectations about delivery time and cost by
-          making sure your shipping info is accurate,
-          including the shipping profile and your order processing schedule.
-        </template>
-        <template #content>
-          <div>
             <UFormGroup
-              class="mb-4"
-              label="Shipping option"
-              name="shipping"
+              label="Title"
+              name="title"
+              class="mb-4 form-field-constrained"
+              description="Include keywords that buyers would use to search for your product."
               required
             >
-              <div class="flex items-center gap-3">
-                <div
-                  v-if="shipping"
-                  class="text-text-subtle"
-                >
-                  {{ shipping.process_time }} processing time, from {{ shipping.zip }}
-                </div>
-                <UButton
-                  color="gray"
-                  variant="solid"
-                  @click="showCreateShippingProductDialog"
-                >
-                  {{ shipping ? 'Edit' : 'Add' }} shipping
-                </UButton>
-              </div>
+              <UInput
+                v-model.trim="stateSubmit.title"
+                :disabled="loadingSubmit"
+                size="lg"
+              />
             </UFormGroup>
-          </div>
-        </template>
-      </FormGroupCard>
-
-      <FormGroupCard>
-        <template #title>
-          Inventory and pricing
-        </template>
-        <template #content>
-          <div>
-            <UButton
-              class="mb-4"
-              color="gray"
-              variant="solid"
-              @click="() => isProductHaveVariants = !isProductHaveVariants"
+            <UFormGroup
+              label="Description"
+              name="description"
+              class="form-field-constrained"
+              :help="stateSubmit.description
+                && `${stateSubmit.description.length}/${PRODUCT_CONFIG.MAX_CHAR_DESCRIPTION}`
+              "
+              required
             >
-              {{ !isProductHaveVariants ? 'Add variantions' : 'Remove variantions' }}
-            </UButton>
-            <VariantInput
-              v-if="isProductHaveVariants"
-              v-model:single-variant="singleVariant"
-              v-model:combine-variant="combineVariant"
-              v-model:variant-type="stateSubmit.variant_type"
-              :currency="shopCurrency"
-              :count-validate="countValidate"
-            />
-            <NoneVariantInput
-              v-else
-              v-model:none-variant="noneVariant"
-              :currency="shopCurrency"
-              :disabled="loadingSubmit"
-              class="max-w-[40%]"
-            />
-          </div>
-        </template>
-      </FormGroupCard>
+              <UTextarea
+                v-model="stateSubmit.description"
+                autoresize
+                :maxlength="PRODUCT_CONFIG.MAX_CHAR_DESCRIPTION"
+                :rows="5"
+                :disabled="loadingSubmit"
+                size="lg"
+              />
+            </UFormGroup>
+          </template>
+        </FormGroupCard>
+      </section>
+
+      <section
+        id="product-details"
+        class="scroll-mt-24"
+      >
+        <FormGroupCard>
+          <template #title>
+            Details
+          </template>
+          <template #subtitle>
+            Share a few more specifics about your product to make
+            it easier to find in search, and to help buyers know what
+            to expect.
+          </template>
+          <template #content>
+            <div>
+              <UFormGroup
+                label="Type"
+                name="is_digital"
+                class="mb-4"
+              >
+                <RadioGroupInput
+                  v-model="stateSubmit.is_digital"
+                  :options="isDigitalOpts"
+                  :disabled="loadingSubmit"
+                  row
+                />
+              </UFormGroup>
+
+              <div class="grid grid-cols-4">
+                <UFormGroup
+                  label="Who made it?"
+                  name="who_made"
+                  required
+                  class="mb-4 max-w-[218px]"
+                >
+                  <USelectMenu
+                    v-model="stateSubmit.who_made"
+                    size="lg"
+                    :disabled="loadingSubmit"
+                    :options="productWhoMadeOpts"
+                    value-attribute="id"
+                  />
+                </UFormGroup>
+              </div>
+
+              <SearchCategoryInput
+                v-model="stateSubmit.category_id"
+                :title="stateSubmit.title"
+              />
+
+              <SelectAttributesInput
+                v-if="stateSubmit.category_id"
+                :key="stateSubmit.category_id"
+                v-model="stateSubmit.attributes"
+                :category_id="stateSubmit.category_id"
+              />
+              <TagsInput v-model="stateSubmit.tags" />
+            </div>
+          </template>
+        </FormGroupCard>
+      </section>
+
+      <section
+        id="product-shipping"
+        class="scroll-mt-24"
+      >
+        <FormGroupCard>
+          <template #title>
+            Shipping
+          </template>
+          <template #subtitle>
+            Give shoppers clear expectations about delivery time and cost by
+            making sure your shipping info is accurate,
+            including the shipping profile and your order processing schedule.
+          </template>
+          <template #content>
+            <div>
+              <UFormGroup
+                class="mb-4"
+                label="Shipping option"
+                name="shipping"
+                required
+              >
+                <div class="flex items-center gap-3">
+                  <div
+                    v-if="shipping"
+                    class="text-text-subtle"
+                  >
+                    {{ shipping.process_time }} processing time, from {{ shipping.zip }}
+                  </div>
+                  <UButton
+                    color="gray"
+                    variant="solid"
+                    @click="showCreateShippingProductDialog"
+                  >
+                    {{ shipping ? 'Edit' : 'Add' }} shipping
+                  </UButton>
+                </div>
+              </UFormGroup>
+            </div>
+          </template>
+        </FormGroupCard>
+      </section>
+
+      <section
+        id="product-inventory"
+        class="scroll-mt-24"
+      >
+        <FormGroupCard>
+          <template #title>
+            Inventory and pricing
+          </template>
+          <template #content>
+            <div>
+              <UButton
+                class="mb-4"
+                color="gray"
+                variant="solid"
+                @click="() => isProductHaveVariants = !isProductHaveVariants"
+              >
+                {{ !isProductHaveVariants ? 'Add variantions' : 'Remove variantions' }}
+              </UButton>
+              <VariantInput
+                v-if="isProductHaveVariants"
+                v-model:single-variant="singleVariant"
+                v-model:combine-variant="combineVariant"
+                v-model:variant-type="stateSubmit.variant_type"
+                :currency="shopCurrency"
+                :count-validate="countValidate"
+              />
+              <NoneVariantInput
+                v-else
+                v-model:none-variant="noneVariant"
+                :currency="shopCurrency"
+                :disabled="loadingSubmit"
+                class="max-w-[40%]"
+              />
+            </div>
+          </template>
+        </FormGroupCard>
+      </section>
 
       <button
         ref="btnSubmitRef"
