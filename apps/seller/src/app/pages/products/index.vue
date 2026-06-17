@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ProductStates } from '@arc/enums/product'
+import ShortcutHint from '@arc/ui/shortcut-hint.vue'
 import ProductsFilterToolbar from './_components/products-filter-toolbar.vue'
 import ProductsStateTabs from './_components/products-state-tabs.vue'
 import ProductsTable from './_components/products-table.vue'
@@ -110,8 +111,16 @@ watch(stateFilter, () => {
       <UButton
         :to="`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.PRODUCTS}${ROUTES.NEW}`"
         size="sm"
+        class="gap-2"
       >
-        + Create product
+        <span>+ Create product</span>
+        <ShortcutHint
+          size="sm"
+          :keys="['c p']"
+          tone="overlay"
+          separator="none"
+          class="-mr-0.5"
+        />
       </UButton>
     </template>
     <template #content>

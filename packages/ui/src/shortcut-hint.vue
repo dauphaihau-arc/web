@@ -3,7 +3,7 @@ const { metaSymbol } = useShortcuts()
 
 const props = withDefaults(defineProps<{
   keys: string[]
-  tone?: 'neutral' | 'inverted'
+  tone?: 'neutral' | 'inverted' | 'overlay'
   separator?: 'plus' | 'none'
   size?: 'xs' | 'sm' | 'md'
 }>(), {
@@ -20,11 +20,29 @@ const normalizedKeys = computed(() => props.keys.flatMap((key) => {
   return [metaSymbol.value, 'Enter']
 }))
 
-const baseClass = computed(() =>
-  props.tone === 'inverted'
-    ? 'border-white/15 bg-white/20 text-white'
-    : 'border-transparent bg-surface-keycap text-text-subtle',
-)
+const baseClass = computed(() => {
+  if (props.tone === 'inverted') {
+    return 'border-white/15 bg-white/20 text-white'
+  }
+
+  if (props.tone === 'overlay') {
+    return 'border-transparent bg-white/20 text-inherit'
+  }
+
+  return 'border-transparent bg-surface-keycap text-text-subtle'
+})
+
+const separatorToneClass = computed(() => {
+  if (props.tone === 'inverted') {
+    return 'text-white/80'
+  }
+
+  if (props.tone === 'overlay') {
+    return 'text-inherit opacity-80'
+  }
+
+  return 'text-text-muted'
+})
 
 const containerClass = computed(() =>
   props.size === 'md' ? 'gap-2' : props.size === 'xs' ? 'gap-1' : 'gap-1.5',
@@ -35,7 +53,7 @@ const keyClass = computed(() =>
     ? 'rounded-md border px-2.5 py-1 text-sm font-medium'
     : props.size === 'xs'
       ? 'rounded-sm border px-1.5 py-px text-[10px] font-medium'
-      : 'rounded-md border px-2 py-0.5 text-xs font-medium',
+      : 'rounded-md border px-1.5 py-0.5 text-xs font-medium',
 )
 
 const separatorClass = computed(() =>
@@ -63,7 +81,7 @@ const separatorClass = computed(() =>
       </span>
       <span
         v-if="props.separator === 'plus' && index < normalizedKeys.length - 1"
-        :class="[props.tone === 'inverted' ? 'text-white/80' : 'text-text-muted', separatorClass]"
+        :class="[separatorToneClass, separatorClass]"
       >
         +
       </span>

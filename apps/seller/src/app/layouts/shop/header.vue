@@ -20,6 +20,7 @@ const itemsHeaderDropdown: HeaderDropdownItem[][] = [
 
 const scrolled = ref(false)
 const pendingShortcutPrefix = ref<string | null>(null)
+const shortcutSequenceTimeoutMs = 1500
 let shortcutResetTimeout: number | null = null
 
 function onScroll() {
@@ -44,18 +45,16 @@ function armPendingShortcut(prefix: string) {
 
   shortcutResetTimeout = window.setTimeout(() => {
     resetPendingShortcut()
-  }, 700)
+  }, shortcutSequenceTimeoutMs)
 }
 
 function isTypingTarget(target: EventTarget | null) {
-  const element = target as HTMLElement | null
-
-  if (!element) {
+  if (!(target instanceof HTMLElement)) {
     return false
   }
 
-  return element.isContentEditable || Boolean(
-    element.closest('input, textarea, select, [contenteditable="true"]'),
+  return target.isContentEditable || Boolean(
+    target.closest('input, textarea, select, [contenteditable="true"]'),
   )
 }
 
@@ -72,9 +71,13 @@ function onGlobalKeydown(event: KeyboardEvent) {
   }
 
   const key = event.key.toLowerCase()
+  const matchingPrefix = shopHeaderCreateLinks.some(item =>
+    item.sequence[0].toLowerCase() === key,
+  )
 
   if (!pendingShortcutPrefix.value) {
-    if (key === 'c') {
+    if (matchingPrefix) {
+      event.preventDefault()
       armPendingShortcut(key)
     }
 
@@ -82,25 +85,40 @@ function onGlobalKeydown(event: KeyboardEvent) {
   }
 
   const matchedItem = shopHeaderCreateLinks.find(item =>
-    item.sequence[0] === pendingShortcutPrefix.value && item.sequence[1] === key,
+    item.sequence[0].toLowerCase() === pendingShortcutPrefix.value
+    && item.sequence[1].toLowerCase() === key,
   )
 
   resetPendingShortcut()
 
   if (matchedItem) {
+    event.preventDefault()
     navigateTo(matchedItem.to)
+    return
+  }
+
+  if (matchingPrefix) {
+    event.preventDefault()
+    armPendingShortcut(key)
   }
 }
+
+onKeyStroke(
+  true,
+  event => onGlobalKeydown(event),
+  {
+    target: document,
+    dedupe: true,
+  },
+)
 
 onMounted(() => {
   onScroll()
   window.addEventListener('scroll', onScroll, { passive: true })
-  window.addEventListener('keydown', onGlobalKeydown)
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
-  window.removeEventListener('keydown', onGlobalKeydown)
   resetPendingShortcut()
 })
 </script>
