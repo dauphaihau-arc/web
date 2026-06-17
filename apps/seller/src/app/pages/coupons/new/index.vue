@@ -3,20 +3,22 @@ import { CreateCouponPageTypes } from '@arc/enums/shop'
 import CreatePromoCodeForm from './_components/create-promo-code-form.vue'
 import RunSaleForm from './_components/run-sale-form.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
-import { ROUTES } from '~/shared/config/enums/routes'
+import { routes } from '~/shared/navigation/routes'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 
 const route = useRoute()
 
 if (!route.query?.type) {
-  navigateTo(`${ROUTES.ACCOUNT}${ROUTES.SHOP}`)
+  navigateTo(routes.coupons())
 }
 </script>
 
 <template>
   <LayoutShopWrapperContent
     v-if="route.query.type === CreateCouponPageTypes.PROMO_CODE"
+    back-label="Coupons"
+    :back-to="routes.coupons()"
     content-class="pb-24"
   >
     <template #title>
@@ -32,6 +34,8 @@ if (!route.query?.type) {
   </LayoutShopWrapperContent>
   <LayoutShopWrapperContent
     v-else-if="route.query.type === CreateCouponPageTypes.SALE"
+    back-label="Coupons"
+    :back-to="routes.coupons()"
     content-class="pb-24"
   >
     <template #title>

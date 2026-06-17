@@ -59,7 +59,7 @@ function shippingStatusTone(status?: ShopOrder['shipping']['shipping_status']) {
 
 <template>
   <LayoutShopWrapperContent
-    back-label="Back to orders"
+    back-label="Orders"
     :back-to="routes.orders()"
     content-class="pb-12"
   >
@@ -69,7 +69,6 @@ function shippingStatusTone(status?: ShopOrder['shipping']['shipping_status']) {
         <StatusBadge
           v-if="order"
           :color="orderStatusTone(order.status)"
-          size="sm"
           class="capitalize"
         >
           {{ orderStatusLabel }}
@@ -77,7 +76,6 @@ function shippingStatusTone(status?: ShopOrder['shipping']['shipping_status']) {
         <StatusBadge
           v-if="order"
           :color="shippingStatusTone(order.shipping.shipping_status)"
-          size="sm"
           class="capitalize"
         >
           {{ shippingStatusLabel }}

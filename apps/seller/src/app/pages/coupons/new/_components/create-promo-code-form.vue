@@ -9,8 +9,8 @@ import ApplyCouponOnProduct from './apply-coupon-on-product.vue'
 import SearchStartEndDateInput from './search-start-end-date-input/search-start-end-date-input.vue'
 import { createPromoCodeFormSchema } from '~/shared/schemas/forms/shop/coupon/create-promo-code-form.schema'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
-import { ROUTES } from '~/shared/config/enums/routes'
 import WrapperFormGroupCard from '~/app/components/wrapper-form-group-card.vue'
+import { routes } from '~/shared/navigation/routes'
 import { toastCustom } from '~/shared/config/toast'
 import { useShopCreateCoupon } from '~/shared/server-state/shop/coupon/create-coupon.mutation'
 import type { CreatePromoCodeBody } from '~/shared/api/shop/coupon/contracts/coupon.contract'
@@ -81,7 +81,7 @@ async function onSubmit(event: FormSubmitEvent<CreatePromoCodeBody>) {
 
   try {
     await createCoupon(event.data)
-    await router.push(`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.COUPONS}`)
+    await router.push(routes.coupons())
     toast.add({
       ...toastCustom.success,
       title: 'Create promo code success',
@@ -329,7 +329,7 @@ function onError(event: FormErrorEvent) {
         size="sm"
         type="submit"
         color="gray"
-        @click="router.push(`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.COUPONS}`)"
+        @click="router.push(routes.coupons())"
       >
         Cancel
       </UButton>

@@ -5,7 +5,7 @@ import CouponsFilterToolbar from './_components/coupons-filter-toolbar.vue'
 import CouponsTable from './_components/coupons-table.vue'
 import CouponsTypeTabs from './_components/coupons-type-tabs.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
-import { ROUTES } from '~/shared/config/enums/routes'
+import { routes } from '~/shared/navigation/routes'
 import { useShopGetCoupons } from '~/shared/server-state/shop/coupon/coupons.query'
 import type {
   ListShopCouponsRequest,
@@ -76,13 +76,13 @@ watch(typeFilter, () => {
     <template #actions>
       <div class="space-x-3">
         <UButton
-          :to="`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.COUPONS}${ROUTES.NEW}?type=${CreateCouponPageTypes.PROMO_CODE}`"
+          :to="routes.couponsNew(CreateCouponPageTypes.PROMO_CODE)"
           size="sm"
         >
           + Create a promo code
         </UButton>
         <UButton
-          :to="`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.COUPONS}${ROUTES.NEW}?type=${CreateCouponPageTypes.SALE}`"
+          :to="routes.couponsNew(CreateCouponPageTypes.SALE)"
           size="sm"
         >
           + Run sale

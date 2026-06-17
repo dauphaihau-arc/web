@@ -5,7 +5,7 @@ import ProductsFilterToolbar from './_components/products-filter-toolbar.vue'
 import ProductsStateTabs from './_components/products-state-tabs.vue'
 import ProductsTable from './_components/products-table.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
-import { ROUTES } from '~/shared/config/enums/routes'
+import { routes } from '~/shared/navigation/routes'
 import type {
   ListShopProductsRequest,
 } from '~/shared/api/shop/product/contracts/read.contract'
@@ -109,7 +109,7 @@ watch(stateFilter, () => {
     </template>
     <template #actions>
       <UButton
-        :to="`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.PRODUCTS}${ROUTES.NEW}`"
+        :to="routes.productsNew()"
         size="sm"
         class="gap-2"
       >

@@ -25,12 +25,11 @@ const slots = useSlots()
           <UButton
             v-if="backLabel && backTo"
             :to="backTo"
-            color="gray"
             variant="ghost"
-            class="-ml-3"
+            class="-ml-3 hover:bg-transparent"
           >
             <AppIcon
-              name="arrowLeft"
+              name="chevronLeft"
               size="xs"
             />
             {{ backLabel }}

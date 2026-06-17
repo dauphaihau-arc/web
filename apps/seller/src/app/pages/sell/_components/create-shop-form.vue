@@ -4,7 +4,7 @@ import { currencyOptions } from '@arc/utils'
 import { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
 import type { CreateShopRequest } from '~/shared/api/shop/contracts/shop.contract'
-import { ROUTES } from '~/shared/config/enums/routes'
+import { routes } from '~/shared/navigation/routes'
 import { toastCustom } from '~/shared/config/toast'
 import { useCreateShop } from '~/shared/server-state/shop/create-shop.mutation'
 
@@ -36,7 +36,7 @@ async function onSubmit(event: FormSubmitEvent<CreateShopRequest>) {
       ...toastCustom.success,
       title: 'Create shop success',
     })
-    navigateTo(`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.DASHBOARD}`)
+    navigateTo(routes.dashboard())
   }
   catch (error) {
     toast.add({

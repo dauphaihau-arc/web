@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes'
 import { FetchError } from 'ofetch'
 import { loginFormSchema } from '@arc/schemas/forms/auth/login-form.schema'
 import type { FormError, FormSubmitEvent } from '#ui/types'
-import { ROUTES } from '~/shared/config/enums/routes'
+import { routes } from '~/shared/navigation/routes'
 import { useAuthClientConfig } from '~/shared/server-state/auth/client-config.query'
 import { useLogin } from '~/shared/server-state/auth/login.mutation'
 import type { LoginRequest as LoginBody } from '~/shared/api/auth/contracts/login.contract'
@@ -114,7 +114,7 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
           />
         </UFormGroup>
 
-        <NuxtLink :to="ROUTES.RESET">
+        <NuxtLink :to="routes.reset()">
           <UButton
             variant="link"
             class="mb-4 pl-0"

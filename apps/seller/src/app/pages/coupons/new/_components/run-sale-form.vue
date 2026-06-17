@@ -8,8 +8,8 @@ import ApplyCouponOnProduct from './apply-coupon-on-product.vue'
 import SearchStartEndDateInput from './search-start-end-date-input/search-start-end-date-input.vue'
 import { createSaleFormSchema } from '~/shared/schemas/forms/shop/coupon/create-sale-form.schema'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
-import { ROUTES } from '~/shared/config/enums/routes'
 import WrapperFormGroupCard from '~/app/components/wrapper-form-group-card.vue'
+import { routes } from '~/shared/navigation/routes'
 import { useShopCreateCoupon } from '~/shared/server-state/shop/coupon/create-coupon.mutation'
 import { toastCustom } from '~/shared/config/toast'
 import type { CreateSaleBody } from '~/shared/api/shop/coupon/contracts/coupon.contract'
@@ -79,7 +79,7 @@ async function onSubmit(event: FormSubmitEvent<CreateSaleBody>) {
 
   try {
     await runSale(event.data)
-    await router.push(`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.COUPONS}`)
+    await router.push(routes.coupons())
     toast.add({
       ...toastCustom.success,
       title: 'Run sale success',
@@ -162,6 +162,7 @@ function onError(event: FormErrorEvent) {
               label="Discount type"
               name="type"
               class="grid grid-cols-4 items-center gap-10"
+              :ui="{ container: 'col-span-2' }"
             >
               <div class="flex space-x-5">
                 <USelectMenu
@@ -170,6 +171,7 @@ function onError(event: FormErrorEvent) {
                   :options="couponTypeOptions"
                   value-attribute="value"
                   name-attribute="label"
+                  class="w-[220px]"
                 />
                 <UFormGroup
                   v-if="state.type === CouponTypes.PERCENTAGE"
@@ -310,7 +312,7 @@ function onError(event: FormErrorEvent) {
         size="sm"
         type="submit"
         color="gray"
-        @click="router.push(`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.COUPONS}`)"
+        @click="router.push(routes.coupons())"
       >
         Cancel
       </UButton>
