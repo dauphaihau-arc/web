@@ -29,10 +29,10 @@
   },
   "lint-staged": {
     "apps/storefront/**/*.{js,ts,vue}": [
-      "eslint --cache --fix --no-warn-ignored --config apps/storefront/eslint.config.js"
+      "eslint --fix --no-warn-ignored --config apps/storefront/eslint.config.js"
     ],
     "apps/seller/**/*.{js,ts,vue}": [
-      "eslint --cache --fix --no-warn-ignored --config apps/seller/eslint.config.js"
+      "eslint --fix --no-warn-ignored --config apps/seller/eslint.config.js"
     ],
     "packages/**/*.{js,ts,vue}": [
       "pnpm lint:packages:fix"
