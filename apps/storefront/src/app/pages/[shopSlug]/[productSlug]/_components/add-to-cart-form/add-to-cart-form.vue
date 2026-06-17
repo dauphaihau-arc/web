@@ -174,7 +174,7 @@ async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
     <div class="flex gap-4">
       <UButton
         size="xl"
-        variant="outline"
+        variant="subtle"
         type="submit"
         :disabled="isPendingAddProductToCart || isOutOfStock"
         @click="state.isBuyNow = false"

@@ -24,7 +24,7 @@ const redirectByCategory = (category: Category) => {
 
 <template>
   <div v-if="data && data.length > 0">
-    <h3 class="mb-6 text-center text-3xl font-normal">
+    <h3 class="mb-6 text-center text-2xl font-normal">
       Shop by category
     </h3>
     <div class="flex justify-center gap-8">

@@ -207,10 +207,7 @@ onUnmounted(() => {
         #header
       >
         <slot name="header">
-          <div
-            v-if="title || description"
-            class="space-y-1.5"
-          >
+          <div v-if="title || description">
             <h1
               v-if="title"
               class="text-2xl font-bold"
