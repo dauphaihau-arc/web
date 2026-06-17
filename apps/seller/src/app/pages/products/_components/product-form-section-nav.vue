@@ -15,6 +15,7 @@ const activeSectionId = ref(props.sections[0]?.id ?? '')
 const sectionElements = shallowRef<HTMLElement[]>([])
 const { y } = useWindowScroll()
 const pendingSectionId = ref<string | null>(null)
+const pendingScrollTop = ref<number | null>(null)
 
 const tabs = computed(() =>
   props.sections.map(section => ({
@@ -37,9 +38,10 @@ function scrollToSection(sectionId: string) {
   activeSectionId.value = sectionId
 
   const nextTop = window.scrollY + target.getBoundingClientRect().top - SECTION_STICKY_OFFSET
+  pendingScrollTop.value = Math.max(nextTop, 0)
 
   window.scrollTo({
-    top: Math.max(nextTop, 0),
+    top: pendingScrollTop.value,
     behavior: 'smooth',
   })
 }
@@ -65,6 +67,44 @@ function collectSections() {
     .filter((element): element is HTMLElement => Boolean(element))
 }
 
+function resolveActiveSection() {
+  const targets = sectionElements.value
+
+  if (targets.length === 0) {
+    return
+  }
+
+  const scrollTop = window.scrollY
+  const viewportHeight = window.innerHeight
+  const documentHeight = document.documentElement.scrollHeight
+
+  if (scrollTop <= SECTION_REACHED_TOLERANCE) {
+    activeSectionId.value = targets[0].id
+    return
+  }
+
+  if (scrollTop + viewportHeight >= documentHeight - SECTION_REACHED_TOLERANCE) {
+    activeSectionId.value = targets.at(-1)?.id ?? targets[0].id
+    return
+  }
+
+  const thresholdTop = scrollTop + SECTION_STICKY_OFFSET
+
+  const currentSection = targets.reduce((activeTarget, target) => {
+    return target.offsetTop <= thresholdTop
+      ? target
+      : activeTarget
+  }, targets[0])
+
+  activeSectionId.value = currentSection.id
+}
+
+const finishPendingScroll = useDebounceFn(() => {
+  pendingSectionId.value = null
+  pendingScrollTop.value = null
+  resolveActiveSection()
+}, 120)
+
 const syncActiveSection = useThrottleFn(() => {
   const targets = sectionElements.value
 
@@ -75,28 +115,28 @@ const syncActiveSection = useThrottleFn(() => {
   if (pendingSectionId.value) {
     const pendingTarget = targets.find(target => target.id === pendingSectionId.value)
 
-    if (pendingTarget) {
-      const pendingTop = pendingTarget.getBoundingClientRect().top
-
-      activeSectionId.value = pendingTarget.id
-
-      if (Math.abs(pendingTop - SECTION_STICKY_OFFSET) <= SECTION_REACHED_TOLERANCE) {
-        pendingSectionId.value = null
-      }
-
+    if (!pendingTarget) {
+      pendingSectionId.value = null
+      pendingScrollTop.value = null
+      resolveActiveSection()
       return
     }
 
-    pendingSectionId.value = null
+    activeSectionId.value = pendingTarget.id
+
+    if (
+      pendingScrollTop.value !== null
+      && Math.abs(window.scrollY - pendingScrollTop.value) <= SECTION_REACHED_TOLERANCE
+    ) {
+      finishPendingScroll()
+      return
+    }
+
+    finishPendingScroll()
+    return
   }
 
-  const currentSection = targets.reduce((activeTarget, target) => {
-    return target.getBoundingClientRect().top <= SECTION_STICKY_OFFSET
-      ? target
-      : activeTarget
-  }, targets[0])
-
-  activeSectionId.value = currentSection.id
+  resolveActiveSection()
 }, 16)
 
 watch(

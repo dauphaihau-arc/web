@@ -6,11 +6,12 @@ import {
   ProductVariantTypes, PRODUCT_CONFIG,
   productWhoMadeOpts,
 } from '@arc/enums/product'
-import NoneVariantInput from '../none-variant-input.vue'
-import ProductFormSectionNav from '../product-form-section-nav.vue'
-import SearchCategoryInput from '../search-category-input.vue'
-import SelectAttributesInput from '../select-attributes-input.vue'
-import TagsInput from '../tags-input.vue'
+import StatusBadge from '@arc/ui/status-badge.vue'
+import NoneVariantInput from '../../_components/none-variant-input.vue'
+import ProductFormSectionNav from '../../_components/product-form-section-nav.vue'
+import SearchCategoryInput from '../../_components/search-category-input.vue'
+import SelectAttributesInput from '../../_components/select-attributes-input.vue'
+import TagsInput from '../../_components/tags-input.vue'
 import ImagesInput from './images-input.vue'
 import VariantInput from './variant-input.vue'
 import {
@@ -24,8 +25,8 @@ import {
 } from './use-update-product-submit'
 import { updateProductFormSchema } from '~/shared/schemas/forms/shop/product/update-product-form.schema'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
-import { ROUTES } from '~/shared/config/enums/routes'
 import FormGroupCard from '~/app/components/wrapper-form-group-card.vue'
+import { routes } from '~/shared/navigation/routes'
 import { useShopGetDetailProduct } from '~/shared/server-state/shop/product/detail.query'
 import type {
   NoneVariant,
@@ -118,9 +119,9 @@ const publishImageError = computed(() =>
 function stateTone(state?: ProductStates) {
   switch (state) {
     case ProductStates.ACTIVE:
-      return 'emerald'
+      return 'green'
     case ProductStates.INACTIVE:
-      return 'amber'
+      return 'yellow'
     case ProductStates.DRAFT:
       return 'gray'
     default:
@@ -249,12 +250,12 @@ watchDebounced(
           <template #content>
             <div class="mb-4 flex items-center gap-3">
               <span class="text-sm text-text-muted">Status</span>
-              <UBadge
+              <StatusBadge
                 :color="stateTone(productState)"
-                variant="soft"
+                size="sm"
               >
                 {{ formatStateLabel(productState) }}
-              </UBadge>
+              </StatusBadge>
             </div>
             <ImagesInput
               v-model:new-file-images="fileImages"
@@ -295,6 +296,42 @@ watchDebounced(
                 size="lg"
               />
             </UFormGroup>
+          </template>
+        </FormGroupCard>
+      </section>
+
+      <section
+        id="product-inventory"
+        class="scroll-mt-24"
+      >
+        <FormGroupCard>
+          <template #title>
+            Inventory and pricing
+          </template>
+          <template #content>
+            <div class="">
+              <UButton
+                class="mb-4"
+                color="gray"
+                variant="solid"
+                @click="onChangeVariantType"
+              >
+                {{ !isVariantProduct ? 'Add variations' : 'Remove variations' }}
+              </UButton>
+
+              <VariantInput
+                v-if="isVariantProduct && dataDetailProduct"
+                :product="dataDetailProduct.product"
+                :count-validate="countValidate"
+                @on-change="onChangeVariants"
+                @is-variants-updated="(count) => countValidateVariantsInputs = count"
+              />
+              <NoneVariantInput
+                v-else
+                v-model:none-variant="noneVariant"
+                class="max-w-[40%]"
+              />
+            </div>
           </template>
         </FormGroupCard>
       </section>
@@ -347,42 +384,6 @@ watchDebounced(
         </FormGroupCard>
       </section>
 
-      <section
-        id="product-inventory"
-        class="scroll-mt-24"
-      >
-        <FormGroupCard>
-          <template #title>
-            Inventory and pricing
-          </template>
-          <template #content>
-            <div class="">
-              <UButton
-                class="mb-4"
-                color="gray"
-                variant="solid"
-                @click="onChangeVariantType"
-              >
-                {{ !isVariantProduct ? 'Add variations' : 'Remove variations' }}
-              </UButton>
-
-              <VariantInput
-                v-if="isVariantProduct && dataDetailProduct"
-                :product="dataDetailProduct.product"
-                :count-validate="countValidate"
-                @on-change="onChangeVariants"
-                @is-variants-updated="(count) => countValidateVariantsInputs = count"
-              />
-              <NoneVariantInput
-                v-else
-                v-model:none-variant="noneVariant"
-                class="max-w-[40%]"
-              />
-            </div>
-          </template>
-        </FormGroupCard>
-      </section>
-
       <button
         ref="btnSubmit"
         type="submit"
@@ -395,7 +396,7 @@ watchDebounced(
         :disabled="loadingSubmit"
         size="md"
         color="gray"
-        :to="`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.PRODUCTS}`"
+        :to="routes.products()"
       >
         Cancel
       </UButton>

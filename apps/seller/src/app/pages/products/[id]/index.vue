@@ -2,12 +2,13 @@
 import { defineAsyncComponent } from 'vue'
 import LoadingSvg from '@arc/ui/loading-svg.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
+import { routes } from '~/shared/navigation/routes'
 import { useShopGetDetailProduct } from '~/shared/server-state/shop/product/detail.query'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 
 const UpdateProductForm = defineAsyncComponent({
-  loader: () => import('../_components/update-product-form/update-product-form.vue'),
+  loader: () => import('./_components/update-product-form.vue'),
   loadingComponent: LoadingSvg,
 })
 
@@ -28,7 +29,10 @@ const {
 </script>
 
 <template>
-  <LayoutShopWrapperContent>
+  <LayoutShopWrapperContent
+    back-label="Products"
+    :back-to="routes.products()"
+  >
     <template #title>
       Update product
     </template>

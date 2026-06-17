@@ -1,4 +1,5 @@
 export const ICON_NAME_BY_ALIAS = {
+  ai: 'tabler:ai',
   search: 'i-uil:search',
   user: 'majesticons:user-line',
   cart: 'i-uil:cart',
@@ -21,8 +22,8 @@ export const ICON_NAME_BY_ALIAS = {
   check: 'i-material-symbols:check-circle-rounded',
   calendar: 'i-material-symbols:calendar-month-rounded',
   location: 'i-material-symbols:location-on-outline',
-  arrowRight: 'i-heroicons-arrow-right',
-  arrowLeft: 'i-material-symbols:arrow-back-ios-new-rounded',
+  arrowRight: 'lucide:arrow-right',
+  arrowLeft: 'lucide:arrow-left',
   arrowForward: 'tabler:arrow-forward',
   chevronLeft: 'lucide:chevron-left',
   chevronRight: 'lucide:chevron-right',

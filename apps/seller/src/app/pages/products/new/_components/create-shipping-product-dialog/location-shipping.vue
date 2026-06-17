@@ -40,8 +40,8 @@ const deliveryTimeOptions = new Array(PRODUCT_SHIPPING_CONFIG.MAX_DAYS_DELIVERY)
 
 // ------------------ Models
 const stateDeliveryTime = reactive({
-  from: 0,
-  to: 0,
+  from: '',
+  to: '',
 })
 
 // ------------------ Computed ref
@@ -75,7 +75,7 @@ const countryLabel = computed(() => {
 
 const deliveryTimeToOptions = computed(() => {
   if (stateDeliveryTime.from) {
-    return deliveryTimeOptions.slice(stateDeliveryTime.from)
+    return deliveryTimeOptions.slice(Number(stateDeliveryTime.from))
   }
   return deliveryTimeOptions.slice(1)
 })
@@ -92,19 +92,25 @@ const charge = computed({
 // ----------------- Lifecycle Hooks
 onMounted(() => {
   if (model.value.delivery_time) {
-    const [from, to] = model.value.delivery_time.split('-')
-    stateDeliveryTime.from = Number(from)
-    stateDeliveryTime.to = Number(to)
+    const matched = model.value.delivery_time.match(/^(\d+)-(\d+)d$/)
+
+    if (matched) {
+      stateDeliveryTime.from = matched[1]
+      stateDeliveryTime.to = matched[2]
+    }
   }
 })
 
 // ----------------- Side effects
 watch(stateDeliveryTime, () => {
-  if (stateDeliveryTime.from && stateDeliveryTime.to && stateDeliveryTime.from < stateDeliveryTime.to) {
+  const from = Number(stateDeliveryTime.from)
+  const to = Number(stateDeliveryTime.to)
+
+  if (from && to && from < to) {
     model.value.delivery_time = `${stateDeliveryTime.from}-${stateDeliveryTime.to}d`
   }
-  else if (stateDeliveryTime.from >= stateDeliveryTime.to) {
-    stateDeliveryTime.to = 0
+  else if (from && to && from >= to) {
+    stateDeliveryTime.to = ''
   }
 })
 

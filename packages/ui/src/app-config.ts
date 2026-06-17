@@ -39,6 +39,9 @@ export const sharedAppConfig = {
       default: {
         loadingIcon: 'i-eos-icons:loading',
       },
+      variant: {
+        subtle: 'ring-1 ring-inset ring-{color}-200 text-{color}-500 bg-{color}-50 hover:bg-{color}-100 disabled:bg-{color}-50 aria-disabled:bg-{color}-50 dark:ring-{color}-800 dark:text-{color}-400 dark:bg-{color}-950 dark:hover:bg-{color}-900 dark:disabled:bg-{color}-950 dark:aria-disabled:bg-{color}-950 focus-visible:ring-2 focus-visible:ring-{color}-500 dark:focus-visible:ring-{color}-400',
+      },
       color: {
         white: {
           outline: 'shadow-sm ring-1 ring-inset ring-border-muted text-text-strong bg-surface hover:bg-surface focus-visible:ring-2 focus-visible:ring-primary-500',

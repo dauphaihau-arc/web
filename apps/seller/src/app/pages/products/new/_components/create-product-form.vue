@@ -6,12 +6,12 @@ import {
   ProductVariantTypes,
   productWhoMadeOpts,
 } from '@arc/enums/product'
-import CreateShippingProductDialog from '../create-shipping-product-dialog/create-shipping-product-dialog.vue'
-import NoneVariantInput from '../none-variant-input.vue'
-import SearchCategoryInput from '../search-category-input.vue'
-import SelectAttributesInput from '../select-attributes-input.vue'
-import TagsInput from '../tags-input.vue'
-import ProductFormSectionNav from '../product-form-section-nav.vue'
+import NoneVariantInput from '../../_components/none-variant-input.vue'
+import SearchCategoryInput from '../../_components/search-category-input.vue'
+import SelectAttributesInput from '../../_components/select-attributes-input.vue'
+import TagsInput from '../../_components/tags-input.vue'
+import ProductFormSectionNav from '../../_components/product-form-section-nav.vue'
+import CreateShippingProductDialog from './create-shipping-product-dialog/create-shipping-product-dialog.vue'
 import ImagesInput from './images-input.vue'
 import VariantInput from './variant-input.vue'
 import { useCreateProductSubmit } from './use-create-product-submit'
@@ -19,10 +19,13 @@ import {
   createProductFormSchema,
   createProductInventoryFormSchema,
 } from '~/shared/schemas/forms/shop/product/create-product-form.schema'
+import { toastCustom } from '~/shared/config/toast'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
-import { ROUTES } from '~/shared/config/enums/routes'
 import FormGroupCard from '~/app/components/wrapper-form-group-card.vue'
+import { routes } from '~/shared/navigation/routes'
+import { useAuthClientConfig } from '~/shared/server-state/auth/client-config.query'
 import { useGetMyShop } from '~/shared/server-state/shop/my-shop.query'
+import { useGenerateProductDescription } from '~/shared/server-state/shop/product/generate-product-description.mutation'
 import type {
   CreateProductBody,
   CreateProductShipping,
@@ -34,9 +37,12 @@ import type {
 
 const router = useRouter()
 const modal = useModal()
+const toast = useToast()
+const { data: authClientConfig } = useAuthClientConfig()
 
 const fileImages = ref<File[]>([])
 const formRef = ref()
+const titleInputRef = ref()
 const isProductHaveVariants = ref(false)
 const btnSubmitRef = ref()
 const enabledButtonSubmit = ref(false)
@@ -44,14 +50,20 @@ const countValidate = ref(0)
 const hasImages = computed(() => fileImages.value.length > 0)
 const { data: myShop } = useGetMyShop()
 const shopCurrency = computed(() => myShop.value?.currency ?? 'USD')
+const isAiDescriptionEnabled = computed(() =>
+  authClientConfig.value?.ai.product_description_enabled ?? false,
+)
+const canGenerateDescription = computed(() =>
+  isAiDescriptionEnabled.value && Boolean(stateSubmit.title?.trim()),
+)
 
 const shipping = ref<CreateProductShipping | undefined>()
 
 const sections = [
   { id: 'product-basic-info', label: 'Basic info' },
   { id: 'product-details', label: 'Details' },
-  { id: 'product-shipping', label: 'Shipping' },
   { id: 'product-inventory', label: 'Inventory' },
+  { id: 'product-shipping', label: 'Shipping' },
 ]
 
 const noneVariant = reactive<StateNoneVariant>({
@@ -84,6 +96,11 @@ const {
   stateSubmit,
 })
 
+const {
+  mutateAsync: generateProductDescription,
+  isPending: generatingDescription,
+} = useGenerateProductDescription()
+
 const showCreateShippingProductDialog = () => {
   modal.open(CreateShippingProductDialog, {
     initData: shipping.value,
@@ -112,6 +129,41 @@ const validateForm = (values: CreateProductBody): FormError[] => {
 
 async function onSubmit(event: FormSubmitEvent<CreateProductBody>) {
   await submit(event.data)
+}
+
+async function onGenerateDescription() {
+  if (!canGenerateDescription.value) {
+    titleInputRef.value?.input?.focus()
+    titleInputRef.value?.input?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    toast.add({
+      ...toastCustom.error,
+      title: 'Add a product title first',
+    })
+    return
+  }
+
+  try {
+    const response = await generateProductDescription({
+      title: stateSubmit.title?.trim() ?? '',
+      category_id: stateSubmit.category_id,
+      who_made: stateSubmit.who_made,
+      is_digital: stateSubmit.is_digital,
+      variant_type: stateSubmit.variant_type,
+      tags: stateSubmit.tags?.filter(Boolean),
+      attributes: stateSubmit.attributes?.map(attribute => ({
+        category_attribute_id: attribute.attribute_id,
+        selected_option_id: attribute.selected,
+      })),
+    })
+
+    stateSubmit.description = response.description
+  }
+  catch {
+    toast.add({
+      ...toastCustom.error,
+      title: 'Generate description failed',
+    })
+  }
 }
 
 function onErrorFrom(event: FormErrorEvent) {
@@ -185,6 +237,7 @@ watch(isProductHaveVariants, () => {
               required
             >
               <UInput
+                ref="titleInputRef"
                 v-model.trim="stateSubmit.title"
                 :disabled="loadingSubmit"
                 size="lg"
@@ -194,19 +247,50 @@ watch(isProductHaveVariants, () => {
               label="Description"
               name="description"
               class="form-field-constrained"
+              :description="isAiDescriptionEnabled
+                ? 'Generate a starting draft, then edit it to match your product.'
+                : undefined"
               :help="stateSubmit.description
                 && `${stateSubmit.description.length}/${PRODUCT_CONFIG.MAX_CHAR_DESCRIPTION}`
               "
               required
             >
-              <UTextarea
-                v-model="stateSubmit.description"
-                autoresize
-                :maxlength="PRODUCT_CONFIG.MAX_CHAR_DESCRIPTION"
-                :rows="5"
-                :disabled="loadingSubmit"
-                size="lg"
-              />
+              <div class="relative">
+                <div
+                  v-if="isAiDescriptionEnabled"
+                  class="absolute top-3 right-3 z-10"
+                >
+                  <UTooltip :text="canGenerateDescription ? 'Generate with AI' : 'Add a title first to generate with AI'">
+                    <UButton
+                      type="button"
+                      color="gray"
+                      variant="soft"
+                      square
+                      :disabled="loadingSubmit"
+                      :loading="generatingDescription"
+                      :aria-label="generatingDescription ? 'Generating description' : 'Generate description with AI'"
+                      @click="onGenerateDescription"
+                    >
+                      <template #leading="{ loading }">
+                        <AppIcon
+                          v-if="!loading"
+                          name="ai"
+                          size="lg"
+                        />
+                      </template>
+                    </UButton>
+                  </UTooltip>
+                </div>
+                <UTextarea
+                  v-model="stateSubmit.description"
+                  autoresize
+                  :maxlength="PRODUCT_CONFIG.MAX_CHAR_DESCRIPTION"
+                  :rows="5"
+                  :disabled="loadingSubmit || generatingDescription"
+                  size="lg"
+                  textarea-class="!pr-14"
+                />
+              </div>
             </UFormGroup>
           </template>
         </FormGroupCard>
@@ -275,6 +359,44 @@ watch(isProductHaveVariants, () => {
       </section>
 
       <section
+        id="product-inventory"
+        class="scroll-mt-24"
+      >
+        <FormGroupCard>
+          <template #title>
+            Inventory and pricing
+          </template>
+          <template #content>
+            <div>
+              <UButton
+                class="mb-4"
+                color="gray"
+                variant="solid"
+                @click="() => isProductHaveVariants = !isProductHaveVariants"
+              >
+                {{ !isProductHaveVariants ? 'Add variantions' : 'Remove variantions' }}
+              </UButton>
+              <VariantInput
+                v-if="isProductHaveVariants"
+                v-model:single-variant="singleVariant"
+                v-model:combine-variant="combineVariant"
+                v-model:variant-type="stateSubmit.variant_type"
+                :currency="shopCurrency"
+                :count-validate="countValidate"
+              />
+              <NoneVariantInput
+                v-else
+                v-model:none-variant="noneVariant"
+                :currency="shopCurrency"
+                :disabled="loadingSubmit"
+                class="max-w-[40%]"
+              />
+            </div>
+          </template>
+        </FormGroupCard>
+      </section>
+
+      <section
         id="product-shipping"
         class="scroll-mt-24"
       >
@@ -316,44 +438,6 @@ watch(isProductHaveVariants, () => {
         </FormGroupCard>
       </section>
 
-      <section
-        id="product-inventory"
-        class="scroll-mt-24"
-      >
-        <FormGroupCard>
-          <template #title>
-            Inventory and pricing
-          </template>
-          <template #content>
-            <div>
-              <UButton
-                class="mb-4"
-                color="gray"
-                variant="solid"
-                @click="() => isProductHaveVariants = !isProductHaveVariants"
-              >
-                {{ !isProductHaveVariants ? 'Add variantions' : 'Remove variantions' }}
-              </UButton>
-              <VariantInput
-                v-if="isProductHaveVariants"
-                v-model:single-variant="singleVariant"
-                v-model:combine-variant="combineVariant"
-                v-model:variant-type="stateSubmit.variant_type"
-                :currency="shopCurrency"
-                :count-validate="countValidate"
-              />
-              <NoneVariantInput
-                v-else
-                v-model:none-variant="noneVariant"
-                :currency="shopCurrency"
-                :disabled="loadingSubmit"
-                class="max-w-[40%]"
-              />
-            </div>
-          </template>
-        </FormGroupCard>
-      </section>
-
       <button
         ref="btnSubmitRef"
         type="submit"
@@ -366,7 +450,7 @@ watch(isProductHaveVariants, () => {
         :disabled="loadingSubmit"
         size="md"
         color="gray"
-        @click="router.push(`${ROUTES.ACCOUNT}${ROUTES.SHOP}${ROUTES.PRODUCTS}`)"
+        @click="router.push(routes.products())"
       >
         Cancel
       </UButton>
@@ -375,7 +459,7 @@ watch(isProductHaveVariants, () => {
         :loading="loadingSubmit && stateSubmit.state === ProductStates.DRAFT"
         size="md"
         type="submit"
-        variant="outline"
+        variant="subtle"
         @click="() => {
           stateSubmit.state = ProductStates.DRAFT;
           btnSubmitRef.click();

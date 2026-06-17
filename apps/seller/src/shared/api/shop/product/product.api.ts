@@ -1,8 +1,12 @@
-import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
+import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack'
 import type {
   CreateDraftProductRequest,
-  CreateDraftProductResponse
-} from './contracts/create-draft.contract';
+  CreateDraftProductResponse,
+} from './contracts/create-draft.contract'
+import type {
+  GenerateProductDescriptionRequest,
+  GenerateProductDescriptionResponse,
+} from './contracts/generate-description.contract'
 import type {
   BulkMutateShopProductsRequest,
   BulkMutateShopProductsResponse,
@@ -12,78 +16,88 @@ import type {
   ListShopProductsRequest,
   ListShopProductsResponse,
   RemoveProductResponse,
-  ShopProductDetailApiResponse
-} from './contracts/read.contract';
-import { normalizeDetailShopProductResponse } from './normalizers/detail-shop-product.normalizer';
+  ShopProductDetailApiResponse,
+} from './contracts/read.contract'
+import { normalizeDetailShopProductResponse } from './normalizers/detail-shop-product.normalizer'
 import type {
   UpdateProductRequestBody,
-  UpdateProductResponse
-} from './contracts/update-product.contract';
-import { apiClient } from '~/shared/lib/api-client';
+  UpdateProductResponse,
+} from './contracts/update-product.contract'
+import { apiClient } from '~/shared/lib/api-client'
 
 export const shopProductApi = {
   createDraft(shopId: string, payload: CreateDraftProductRequest) {
     return apiClient.post<CreateDraftProductResponse>(
       `/shops/${shopId}/products/drafts`,
-      payload
-    );
+      payload,
+    )
+  },
+
+  generateDescription(
+    shopId: string,
+    payload: GenerateProductDescriptionRequest,
+  ) {
+    return apiClient.post<GenerateProductDescriptionResponse>(
+      `/shops/${shopId}/products/ai/generate-description`,
+      payload,
+    )
   },
 
   detail(
     shopId: string,
     productId: string,
-    options?: NitroFetchOptions<NitroFetchRequest>
+    options?: NitroFetchOptions<NitroFetchRequest>,
   ): Promise<DetailShopProductResponse> {
     return apiClient.get(
       `/shops/${shopId}/products/${productId}`,
       undefined,
-      options
+      options,
     ).then(response =>
-      normalizeDetailShopProductResponse(response as ShopProductDetailApiResponse)
-    );
+      normalizeDetailShopProductResponse(response as ShopProductDetailApiResponse),
+    )
   },
 
   list(shopId: string, query?: ListShopProductsRequest) {
     return apiClient.get<ListShopProductsResponse>(
       `/shops/${shopId}/products`,
-      query
-    );
+      query,
+    )
   },
 
   issueImageUploadUrl(
     shopId: string,
-    payload: IssueProductImageUploadUrlRequest
+    payload: IssueProductImageUploadUrlRequest,
   ) {
     return apiClient.post<IssueProductImageUploadUrlResponse>(
       `/shops/${shopId}/products/${payload.productId}/image-uploads`,
       {
         content_type: payload.content_type,
         asset_type: payload.asset_type ?? 'original',
-      }
-    );
+      },
+    )
   },
 
   remove(shopId: string, productId: string) {
     return apiClient.delete<RemoveProductResponse>(
-      `/shops/${shopId}/products/${productId}`
-    );
+      `/shops/${shopId}/products/${productId}`,
+    )
   },
 
   bulkMutate(shopId: string, payload: BulkMutateShopProductsRequest) {
     return apiClient.post<BulkMutateShopProductsResponse>(
       `/shops/${shopId}/products/bulk-mutate`,
-      payload
-    );
+      payload,
+    )
   },
 
   update(
     shopId: string,
     productId: string,
-    payload: UpdateProductRequestBody
+    payload: UpdateProductRequestBody,
   ) {
     return apiClient.patch<UpdateProductResponse>(
       `/shops/${shopId}/products/${productId}`,
-      payload
-    );
+      payload,
+    )
   },
-};
+}

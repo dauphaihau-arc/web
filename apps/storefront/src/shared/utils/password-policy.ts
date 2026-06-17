@@ -1,5 +1,5 @@
-import type { FormError } from '#ui/types';
-import type { AuthClientConfigResponse as AuthClientConfig } from '~/shared/api/auth/contracts/client-config.contract';
+import type { FormError } from '#ui/types'
+import type { AuthClientConfigResponse as AuthClientConfig } from '~/shared/api/auth/contracts/client-config.contract'
 
 export const DEFAULT_AUTH_CLIENT_CONFIG: AuthClientConfig = {
   version: 'bootstrap-fallback-v1',
@@ -19,42 +19,45 @@ export const DEFAULT_AUTH_CLIENT_CONFIG: AuthClientConfig = {
     access_token_ttl_seconds: 15 * 60,
     refresh_token_ttl_seconds: 7 * 24 * 60 * 60,
   },
-};
+  ai: {
+    product_description_enabled: false,
+  },
+}
 
 export function validatePasswordByPolicy(
   password: string | undefined,
-  policy: AuthClientConfig = DEFAULT_AUTH_CLIENT_CONFIG
+  policy: AuthClientConfig = DEFAULT_AUTH_CLIENT_CONFIG,
 ): string | undefined {
   if (!password) {
-    return 'Password is required';
+    return 'Password is required'
   }
 
   if (password.length < policy.password.min_length) {
-    return `Password must be at least ${policy.password.min_length} characters`;
+    return `Password must be at least ${policy.password.min_length} characters`
   }
 
   if (password.length > policy.password.max_length) {
-    return `Password must be no longer than ${policy.password.max_length} characters`;
+    return `Password must be no longer than ${policy.password.max_length} characters`
   }
 
-  const pattern = new RegExp(policy.password.pattern);
+  const pattern = new RegExp(policy.password.pattern)
 
   if (!pattern.test(password)) {
-    return policy.password.message;
+    return policy.password.message
   }
 
-  return undefined;
+  return undefined
 }
 
 export function appendPasswordError(
   errors: FormError[],
   path: string,
   password: string | undefined,
-  policy: AuthClientConfig = DEFAULT_AUTH_CLIENT_CONFIG
+  policy: AuthClientConfig = DEFAULT_AUTH_CLIENT_CONFIG,
 ) {
-  const message = validatePasswordByPolicy(password, policy);
+  const message = validatePasswordByPolicy(password, policy)
 
   if (message) {
-    errors.push({ path, message });
+    errors.push({ path, message })
   }
 }

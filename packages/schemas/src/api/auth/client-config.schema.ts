@@ -18,4 +18,7 @@ export const authClientConfigSchema = z.object({
     access_token_ttl_seconds: z.number(),
     refresh_token_ttl_seconds: z.number(),
   }),
+  ai: z.object({
+    product_description_enabled: z.boolean(),
+  }),
 })
