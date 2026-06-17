@@ -1,152 +1,152 @@
-import { useQueryClient } from '@tanstack/vue-query'
+import { useQueryClient } from '@tanstack/vue-query';
 import {
   formatConversationTime,
   isConversationUnread,
-  toThreadMessages,
-} from './messages-page-content.helpers'
-import { routes } from '~/shared/navigation/routes'
+  toThreadMessages
+} from './messages-page-content.helpers';
+import { routes } from '~/shared/navigation/routes';
 import type {
   ShopChatConversation,
-  ShopChatMessage,
-} from '~/shared/api/shop/chat/contracts/chat.contract'
-import { createSellerChatEventsClient } from '~/shared/realtime/chat-events.client'
-import { useGetMyShop } from '~/shared/server-state/shop/my-shop.query'
-import { useShopMarkChatRead } from '~/shared/server-state/shop/chat/mark-read.mutation'
-import { useShopChatMessages } from '~/shared/server-state/shop/chat/messages.query'
-import { useShopSendChatMessage } from '~/shared/server-state/shop/chat/send-message.mutation'
-import { useShopChatConversations } from '~/shared/server-state/shop/chat/conversations.query'
+  ShopChatMessage
+} from '~/shared/api/shop/chat/contracts/chat.contract';
+import { createSellerChatEventsClient } from '~/shared/realtime/chat-events.client';
+import { useGetMyShop } from '~/shared/server-state/shop/my-shop.query';
+import { useShopMarkChatRead } from '~/shared/server-state/shop/chat/mark-read.mutation';
+import { useShopChatMessages } from '~/shared/server-state/shop/chat/messages.query';
+import { useShopSendChatMessage } from '~/shared/server-state/shop/chat/send-message.mutation';
+import { useShopChatConversations } from '~/shared/server-state/shop/chat/conversations.query';
 
 export function useMessagesPage(selectedConversationId: Ref<string | undefined>) {
-  const router = useRouter()
-  const queryClient = useQueryClient()
-  const config = useRuntimeConfig()
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const config = useRuntimeConfig();
 
-  const storefrontAppURL = computed(() => config.public.storefrontAppURL.replace(/\/+$/, ''))
-  const chatEventsClient = import.meta.client
-    ? createSellerChatEventsClient(queryClient)
-    : null
+  const storefrontAppURL = computed(() => config.public.storefrontAppURL.replace(/\/+$/, ''));
+  const chatEventsClient = import.meta.client ?
+    createSellerChatEventsClient(queryClient) :
+    null;
 
   const conversationParams = computed(() => ({
     page: 1,
     limit: 50,
-  }))
+  }));
 
   const messageParams = computed(() => ({
     page: 1,
     limit: 100,
-  }))
+  }));
 
-  const messageDraft = ref('')
+  const messageDraft = ref('');
 
-  const { data: myShop } = useGetMyShop()
+  const { data: myShop } = useGetMyShop();
   const {
     data: conversationList,
     isPending: isPendingConversations,
-  } = useShopChatConversations(conversationParams)
+  } = useShopChatConversations(conversationParams);
   const {
     data: messageList,
     isPending: isPendingMessages,
-  } = useShopChatMessages(selectedConversationId, messageParams)
+  } = useShopChatMessages(selectedConversationId, messageParams);
   const {
     mutateAsync: sendMessage,
     isPending: isSendingMessage,
-  } = useShopSendChatMessage()
-  const { mutate: markConversationRead } = useShopMarkChatRead()
+  } = useShopSendChatMessage();
+  const { mutate: markConversationRead } = useShopMarkChatRead();
 
-  const conversations = computed<ShopChatConversation[]>(() => conversationList.value?.results ?? [])
-  const messages = computed<ShopChatMessage[]>(() => messageList.value?.results ?? [])
-  const shopOwnerUserId = computed(() => myShop.value?.owner_user_id)
+  const conversations = computed<ShopChatConversation[]>(() => conversationList.value?.results ?? []);
+  const messages = computed<ShopChatMessage[]>(() => messageList.value?.results ?? []);
+  const shopOwnerUserId = computed(() => myShop.value?.owner_user_id);
 
   const selectedConversationResolved = computed<ShopChatConversation | null>(() => {
-    return messageList.value?.conversation
-      ?? conversations.value.find(conversation => conversation.id === selectedConversationId.value)
-      ?? null
-  })
+    return messageList.value?.conversation ??
+      conversations.value.find(conversation => conversation.id === selectedConversationId.value) ??
+      null;
+  });
 
   const selectedConversationUnread = computed(() => {
-    const conversation = selectedConversationResolved.value
+    const conversation = selectedConversationResolved.value;
 
-    return conversation
-      ? isConversationUnread(conversation, shopOwnerUserId.value)
-      : false
-  })
+    return conversation ?
+      isConversationUnread(conversation, shopOwnerUserId.value) :
+      false;
+  });
 
-  const threadMessages = computed(() => toThreadMessages(messages.value, shopOwnerUserId.value))
+  const threadMessages = computed(() => toThreadMessages(messages.value, shopOwnerUserId.value));
 
   watch(
     conversations,
     (nextConversations: ShopChatConversation[]) => {
       if (selectedConversationId.value) {
-        return
+        return;
       }
 
-      const firstConversation = nextConversations[0]
+      const firstConversation = nextConversations[0];
 
       if (!firstConversation) {
-        return
+        return;
       }
 
-      router.replace(routes.messages({ conversationId: firstConversation.id }))
+      router.replace(routes.messages({ conversationId: firstConversation.id }));
     },
-    { immediate: true },
-  )
+    { immediate: true }
+  );
 
   watch(
     selectedConversationResolved,
     (conversation: ShopChatConversation | null) => {
       if (!conversation || !selectedConversationUnread.value) {
-        return
+        return;
       }
 
-      markConversationRead(conversation.id)
+      markConversationRead(conversation.id);
     },
-    { immediate: true },
-  )
+    { immediate: true }
+  );
 
   if (import.meta.client) {
     onMounted(() => {
-      chatEventsClient?.start()
-    })
+      chatEventsClient?.start();
+    });
 
     watch(
       selectedConversationId,
       (conversationId: string | undefined, previousConversationId: string | undefined) => {
         if (previousConversationId) {
-          chatEventsClient?.unsubscribeConversation(previousConversationId)
+          chatEventsClient?.unsubscribeConversation(previousConversationId);
         }
 
         if (!conversationId) {
-          return
+          return;
         }
 
-        chatEventsClient?.subscribeConversation(conversationId)
+        chatEventsClient?.subscribeConversation(conversationId);
       },
-      { immediate: true },
-    )
+      { immediate: true }
+    );
 
     onBeforeUnmount(() => {
       if (selectedConversationId.value) {
-        chatEventsClient?.unsubscribeConversation(selectedConversationId.value)
+        chatEventsClient?.unsubscribeConversation(selectedConversationId.value);
       }
 
-      chatEventsClient?.stop()
-    })
+      chatEventsClient?.stop();
+    });
   }
 
   function selectConversation(conversation: ShopChatConversation) {
-    router.push(routes.messages({ conversationId: conversation.id }))
+    router.push(routes.messages({ conversationId: conversation.id }));
   }
 
   function conversationTimeLabel(conversation: ShopChatConversation) {
-    return formatConversationTime(conversation.last_message_at || conversation.created_at)
+    return formatConversationTime(conversation.last_message_at || conversation.created_at);
   }
 
   function openProductPreview() {
-    const conversation = selectedConversationResolved.value
-    const productSlug = conversation?.product?.slug
+    const conversation = selectedConversationResolved.value;
+    const productSlug = conversation?.product?.slug;
 
     if (!conversation || !productSlug) {
-      return
+      return;
     }
 
     navigateTo(
@@ -154,24 +154,24 @@ export function useMessagesPage(selectedConversationId: Ref<string | undefined>)
       {
         external: true,
         open: { target: '_blank' },
-      },
-    )
+      }
+    );
   }
 
   async function handleSendMessage() {
-    const conversationId = selectedConversationId.value
-    const body = messageDraft.value.trim()
+    const conversationId = selectedConversationId.value;
+    const body = messageDraft.value.trim();
 
     if (!conversationId || !body || isSendingMessage.value) {
-      return
+      return;
     }
 
     await sendMessage({
       conversationId,
       body: { body },
-    })
+    });
 
-    messageDraft.value = ''
+    messageDraft.value = '';
   }
 
   return {
@@ -190,5 +190,5 @@ export function useMessagesPage(selectedConversationId: Ref<string | undefined>)
     selectConversation,
     selectedConversationResolved,
     threadMessages,
-  }
+  };
 }
