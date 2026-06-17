@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import LoadingSvg from '@arc/ui/loading-svg.vue'
+import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import type { GetUserAddressesResponse } from '~/shared/api/me/address/contracts/address.contract'
 import { useDeleteUserAddress } from '~/shared/server-state/me/address/delete-address.mutation'
 import { useGetUserAddresses } from '~/shared/server-state/me/address/addresses.query'

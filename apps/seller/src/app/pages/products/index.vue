@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ProductStates } from '@arc/enums/product'
-import ShortcutHint from '@arc/ui/shortcut-hint.vue'
+import ShortcutHint from '@arc/ui/primitives/shortcut-hint.vue'
 import ProductsFilterToolbar from './_components/products-filter-toolbar.vue'
 import ProductsStateTabs from './_components/products-state-tabs.vue'
 import ProductsTable from './_components/products-table.vue'

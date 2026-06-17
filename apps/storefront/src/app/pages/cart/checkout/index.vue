@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import LoadingSvg from '@arc/ui/loading-svg.vue'
+import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import CreateOrderBtn from './_components/create-order-btn.vue'
 import PaymentOptions from './_components/payment-options.vue'
 import ReviewShippingAndPayment from './_components/review-shipping-and-payment.vue'

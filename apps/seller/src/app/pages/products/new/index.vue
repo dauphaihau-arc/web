@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue'
-import LoadingSvg from '@arc/ui/loading-svg.vue'
+import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import { routes } from '~/shared/navigation/routes'
 

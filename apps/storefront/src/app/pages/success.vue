@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import LoadingSvg from '@arc/ui/loading-svg.vue'
+import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { isBackendWakeUpError } from '~/shared/composables/use-backend-status'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'

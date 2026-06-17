@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
-import StatusBadge from '@arc/ui/status-badge.vue'
+import StatusBadge from '@arc/ui/primitives/status-badge.vue'
 import OrderDetailActions from './_components/order-detail-actions.vue'
 import SellerOrderDetailContent from '~/app/pages/orders/[id]/_components/order-detail-content/order-detail-content.vue'
 import type { ShopOrder } from '~/shared/types/shop-order-detail'

@@ -2,8 +2,8 @@
 import { ProductStates, ProductVariantTypes } from '@arc/enums/product'
 import { formatMinorCurrency } from '@arc/utils'
 import type { ElementType } from '@arc/contracts/utils'
-import AppIcon from '@arc/ui/app-icon.vue'
-import LoadingSvg from '@arc/ui/loading-svg.vue'
+import AppIcon from '@arc/ui/primitives/app-icon.vue'
+import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import type { DropdownItem } from '#ui/types'
 import type {
   BulkMutateShopProductsAction,

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
-import ChatThreadPanel from '@arc/ui/chat-thread-panel.vue'
+import ChatThreadPanel from '@arc/ui/shells/chat-thread-panel.vue'
 import type {
   MyChatConversation,
   MyChatMessage,

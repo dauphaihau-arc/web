@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { MARKET_REGION_EMOJIS, MarketCurrencies } from '@arc/enums/market'
-import BaseDialog from '@arc/ui/dialog/base-dialog.vue'
-import DialogActions from '@arc/ui/dialog/dialog-actions.vue'
+import BaseDialog from '@arc/ui/primitives/dialog/base-dialog.vue'
+import DialogActions from '@arc/ui/primitives/dialog/dialog-actions.vue'
 import { useUserPreferenceForm } from './use-user-preference-form'
 import type { PreferenceState } from './preference-options'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'

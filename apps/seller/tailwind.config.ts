@@ -1,6 +1,6 @@
 import type { Config } from 'tailwindcss';
 import tailwindTypography from '@tailwindcss/typography';
-import { sharedTailwindTheme } from '../../packages/ui/src/design-tokens';
+import { sharedTailwindTheme } from '../../packages/ui/src/foundation/design-tokens';
 
 export default <Partial<Config>>{
   content: [

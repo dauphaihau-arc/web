@@ -2,7 +2,7 @@
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import { CouponAppliesTo, CouponTypes } from '@arc/enums/coupon'
-import LoadingSvg from '@arc/ui/loading-svg.vue'
+import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import type { DropdownItem } from '#ui/types'
 import type { ListShopCouponsResponse } from '~/shared/api/shop/coupon/contracts/coupon.contract'
 import DataTable from '~/shared/ui/data-table/data-table.vue'

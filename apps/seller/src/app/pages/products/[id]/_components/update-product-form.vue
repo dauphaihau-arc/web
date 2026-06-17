@@ -6,7 +6,7 @@ import {
   ProductVariantTypes, PRODUCT_CONFIG,
   productWhoMadeOpts,
 } from '@arc/enums/product'
-import StatusBadge from '@arc/ui/status-badge.vue'
+import StatusBadge from '@arc/ui/primitives/status-badge.vue'
 import NoneVariantInput from '../../_components/none-variant-input.vue'
 import ProductFormSectionNav from '../../_components/product-form-section-nav.vue'
 import SearchCategoryInput from '../../_components/search-category-input.vue'

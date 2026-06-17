@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import LoadingSvg from '@arc/ui/loading-svg.vue'
+import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import Actions from './actions.vue'
 import Customer from './customer.vue'
 import Overview from './overview.vue'

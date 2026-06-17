@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ChatThreadPanel from '@arc/ui/chat-thread-panel.vue'
+import ChatThreadPanel from '@arc/ui/shells/chat-thread-panel.vue'
 import { useMessagesPage } from './use-messages-page'
 
 const props = defineProps<{

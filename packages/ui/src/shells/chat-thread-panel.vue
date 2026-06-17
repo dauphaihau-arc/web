@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ConversationThreadPanel from './conversation-thread-panel.vue'
+import ConversationThreadPanel from './conversation/conversation-thread-panel.vue'
 
 type ChatThreadMessage = {
   id: string

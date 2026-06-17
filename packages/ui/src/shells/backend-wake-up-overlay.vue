@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import LoadingSvg from './loading-svg.vue'
+import LoadingSvg from '../primitives/loading-svg.vue'
 
 defineProps<{
   isBackendPending: boolean

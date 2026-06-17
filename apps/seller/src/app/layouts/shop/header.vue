@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
-import ShortcutHint from '@arc/ui/shortcut-hint.vue'
+import ShortcutHint from '@arc/ui/primitives/shortcut-hint.vue'
 import NotificationPopover from './notification-popover.vue'
 import { shopHeaderCreateLinks } from '~/shared/navigation/menu'
 import type { DropdownItem } from '#ui/types'

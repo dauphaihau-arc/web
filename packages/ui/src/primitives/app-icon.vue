@@ -3,7 +3,7 @@ import {
   APPROVED_ICON_PREFIXES,
   ICON_NAME_BY_ALIAS,
   resolveAppIconName,
-} from './app-icon.constants'
+} from '../foundation/app-icon.constants'
 
 defineOptions({
   inheritAttrs: false,

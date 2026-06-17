@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import NotificationPopover from '@arc/ui/notification-popover/notification-popover.vue'
+import NotificationPopover from '@arc/ui/shells/notification-popover/notification-popover.vue'
 import { routes } from '~/shared/navigation/routes'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 import { useMarkAllMyNotificationsAsRead, useMarkMyNotificationAsRead } from '~/shared/server-state/me/notifications/notifications.mutation'

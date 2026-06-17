@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { OrderShippingStatuses } from '@arc/enums/order'
-import AppIcon from '@arc/ui/app-icon.vue'
+import AppIcon from '@arc/ui/primitives/app-icon.vue'
 import SellerCancelOrderDialog from '../../_components/seller-cancel-order-dialog.vue'
 import SellerRefundOrderDialog from '../../_components/seller-refund-order-dialog.vue'
 import { useOrderActions } from '~/app/pages/orders/[id]/_components/order-detail-content/use-order-actions'

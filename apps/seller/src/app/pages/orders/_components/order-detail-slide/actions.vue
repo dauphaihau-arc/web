@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import AppIcon from '@arc/ui/app-icon.vue'
+import AppIcon from '@arc/ui/primitives/app-icon.vue'
 import SellerCancelOrderDialog from '../seller-cancel-order-dialog.vue'
 import SellerRefundOrderDialog from '../seller-refund-order-dialog.vue'
 import type { ShopOrder } from '~/shared/types/shop-order-detail'

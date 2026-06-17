@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
-import { ICON_NAME_BY_ALIAS } from '@arc/ui/app-icon.constants'
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import type { OrderDateFilterDraft } from './order-filter.types'
 
 const model = defineModel<OrderDateFilterDraft>({ required: true })

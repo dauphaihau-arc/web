@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import LoadingSvg from '@arc/ui/loading-svg.vue'
+import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import Filters from '~/app/components/product/filters/filters.vue'
 import ProductCard from '~/app/components/product/product-card.vue'
 import SortProductsBy from '~/app/components/product/sort-products-by.vue'

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import RadioGroupInput from '@arc/ui/radio-group-input.vue'
+import RadioGroupInput from '@arc/ui/primitives/radio-group-input.vue'
 import dayjs from 'dayjs'
 import type { OrderDateFilterDraft } from './order-filter.types'
 import RangeDates from './range-dates.vue'

@@ -4,7 +4,7 @@ import {
 } from '@arc/enums/coupon'
 import type { RequiredFields } from '@arc/contracts/utils'
 import { PRODUCT_CONFIG } from '@arc/enums/product'
-import RadioGroupInput from '@arc/ui/radio-group-input.vue'
+import RadioGroupInput from '@arc/ui/primitives/radio-group-input.vue'
 import ApplyCouponOnProduct from './apply-coupon-on-product.vue'
 import SearchStartEndDateInput from './search-start-end-date-input/search-start-end-date-input.vue'
 import { createPromoCodeFormSchema } from '~/shared/schemas/forms/shop/coupon/create-promo-code-form.schema'
