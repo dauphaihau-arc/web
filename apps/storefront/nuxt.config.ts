@@ -147,6 +147,27 @@ export default defineNuxtConfig({
     'pages:extend'(pages) {
       removePageComponents(pages)
     },
+    'vite:extendConfig'(config, { isServer }) {
+      if (isServer) {
+        return
+      }
+
+      config.build ??= {}
+      config.build.rollupOptions ??= {}
+      config.build.rollupOptions.output ??= {}
+
+      const output = config.build.rollupOptions.output
+
+      if (Array.isArray(output)) {
+        for (const item of output) {
+          item.manualChunks = manualChunks
+        }
+
+        return
+      }
+
+      output.manualChunks = manualChunks
+    },
   },
 
   routeRules: {
@@ -195,16 +216,5 @@ export default defineNuxtConfig({
       assetHost: awsHostBucketAlias
     }
   },
-
-  vite: {
-    build: {
-      rollupOptions: {
-        output: {
-          manualChunks,
-        },
-      },
-    },
-  },
-
   compatibilityDate: '2024-08-21',
 })
