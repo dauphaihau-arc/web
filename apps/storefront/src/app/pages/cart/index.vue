@@ -14,16 +14,18 @@ const {
   data: dataGetCart,
 } = useGetCart()
 
-watch(dataGetCart, () => {
-  if (cartStore.additionInfoShopCarts.size === 0 && dataGetCart.value?.cart?.shop_groups) {
-    dataGetCart.value.cart.shop_groups.forEach((item) => {
-      cartStore.additionInfoShopCarts.set(item.shop.id, {
-        promoCodes: [],
-        note: '',
+if (import.meta.client) {
+  watch(dataGetCart, () => {
+    if (cartStore.additionInfoShopCarts.size === 0 && dataGetCart.value?.cart?.shop_groups) {
+      dataGetCart.value.cart.shop_groups.forEach((item) => {
+        cartStore.additionInfoShopCarts.set(item.shop.id, {
+          promoCodes: [],
+          note: '',
+        })
       })
-    })
-  }
-}, { immediate: true })
+    }
+  }, { immediate: true })
+}
 </script>
 
 <template>
