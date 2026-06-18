@@ -181,14 +181,6 @@ export default defineNuxtConfig({
         code: 'en',
         file: 'en-us.js',
       },
-      {
-        code: 'fr',
-        file: 'fr-fr.js',
-      },
-      {
-        code: 'la',
-        file: 'la-la.js',
-      },
     ],
     lazy: true,
     langDir: 'app/locales',
