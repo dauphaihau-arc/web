@@ -2,7 +2,6 @@ import { existsSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import type { NuxtPage } from '@nuxt/schema'
-import { manualChunks } from '../../packages/utils/src/manual-chunks'
 import pkg from './package.json'
 
 const packagesDir = fileURLToPath(new URL('../../packages/', import.meta.url))
@@ -146,27 +145,6 @@ export default defineNuxtConfig({
   hooks: {
     'pages:extend'(pages) {
       removePageComponents(pages)
-    },
-    'vite:extendConfig'(config, { isServer }) {
-      if (isServer) {
-        return
-      }
-
-      config.build ??= {}
-      config.build.rollupOptions ??= {}
-      config.build.rollupOptions.output ??= {}
-
-      const output = config.build.rollupOptions.output
-
-      if (Array.isArray(output)) {
-        for (const item of output) {
-          item.manualChunks = manualChunks
-        }
-
-        return
-      }
-
-      output.manualChunks = manualChunks
     },
   },
 
