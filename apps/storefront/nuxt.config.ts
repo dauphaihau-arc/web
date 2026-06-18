@@ -184,6 +184,19 @@ export default defineNuxtConfig({
     '/**': { isr: 300 },
   },
 
+  nitro: {
+    prerender: {
+      ignore: [
+        '/search',
+        '/fr/search',
+        '/la/search',
+        '/success',
+        '/fr/success',
+        '/la/success',
+      ],
+    },
+  },
+
   i18n: {
     locales: [
       {
