@@ -1,5 +1,4 @@
 import { fileURLToPath } from 'node:url'
-import { manualChunks } from '../../packages/utils/src/manual-chunks'
 import pkg from './package.json'
 
 const packagesDir = fileURLToPath(new URL('../../packages/', import.meta.url))
@@ -147,16 +146,6 @@ export default defineNuxtConfig({
     alias: {
       assetHost: awsHostBucketAlias
     }
-  },
-
-  vite: {
-    build: {
-      rollupOptions: {
-        output: {
-          manualChunks,
-        },
-      },
-    },
   },
 
   compatibilityDate: '2024-08-21',
