@@ -7,8 +7,9 @@ import { setPostAuthRedirect } from '~/shared/server-state/auth/post-auth-redire
 import { useCreateOrGetMyChatConversation } from '~/shared/server-state/me/chat/create-conversation.mutation'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 
-const { product } = defineProps<{
-  product: GetDetailProductBySlugResponse
+const props = defineProps<{
+  product?: GetDetailProductBySlugResponse
+  isLoading?: boolean
 }>()
 
 const modal = useModal()
@@ -26,12 +27,12 @@ const isSellerChatOpen = ref(false)
 const activeConversation = ref<MyChatConversation | null>(null)
 const hasAttemptedAutoOpenChat = ref(false)
 
-const items = [
+const items = computed(() => [
   {
     id: 'info',
     label: 'Product details',
     defaultOpen: true,
-    content: product.description ?? '',
+    content: props.product?.description ?? '',
   },
   {
     id: 'shipping',
@@ -43,13 +44,13 @@ const items = [
     id: 'seller',
     label: 'Meet your sellers',
     defaultOpen: true,
-    content: product.shop.shop_name,
+    content: props.product?.shop.shop_name ?? '',
   },
-]
+])
 
 const processTime = computed(() => {
-  if (product?.shipping?.process_time_label) {
-    return product.shipping.process_time_label
+  if (props.product?.shipping?.process_time_label) {
+    return props.product.shipping.process_time_label
   }
   return ''
 })
@@ -67,9 +68,13 @@ const productChatRedirectPath = computed(() => {
 })
 
 async function showSellerChat() {
+  if (!props.product) {
+    return
+  }
+
   const conversation = await createOrGetConversation({
-    shop_id: product.shop.id,
-    product_id: product.id,
+    shop_id: props.product.shop.id,
+    product_id: props.product.id,
   })
 
   activeConversation.value = conversation
@@ -77,6 +82,10 @@ async function showSellerChat() {
 }
 
 async function openSellerChat() {
+  if (!props.product) {
+    return
+  }
+
   if (!currentUser.value?.user) {
     setPostAuthRedirect(productChatRedirectPath.value)
     modal.open(RegisterLoginDialog)
@@ -101,7 +110,27 @@ watch(
 </script>
 
 <template>
-  <div>
+  <div
+    v-if="props.isLoading"
+    class="space-y-4"
+    aria-busy="true"
+    aria-live="polite"
+  >
+    <div
+      v-for="index in 3"
+      :key="index"
+      class="space-y-3 border-b border-border-subtle pb-6"
+    >
+      <div class="flex items-center justify-between">
+        <USkeleton class="h-5 w-40 !bg-customGray-300/85" />
+        <USkeleton class="size-5 rounded !bg-customGray-300/85" />
+      </div>
+      <USkeleton class="h-4 w-full !bg-customGray-300/85" />
+      <USkeleton class="h-4 w-5/6 !bg-customGray-300/85" />
+    </div>
+  </div>
+
+  <div v-else>
     <UAccordion
       color="gray"
       variant="ghost"
@@ -136,7 +165,7 @@ watch(
           </div>
           <div class="flex gap-2">
             <UIcon name="i-material-symbols:location-on-outline" />
-            Ship from {{ product?.shipping?.origin_country }}
+            Ship from {{ props.product?.shipping?.origin_country }}
           </div>
         </div>
 
@@ -145,14 +174,14 @@ watch(
           class="space-y-3 px-1"
         >
           <div class="text-sm text-text-subtle">
-            Questions about this item? Start a direct conversation with {{ product.shop.shop_name }}.
+            Questions about this item? Start a direct conversation with {{ props.product?.shop.shop_name }}.
           </div>
           <UButton
             color="gray"
             :loading="isOpeningChat"
             @click="openSellerChat"
           >
-            Message {{ product.shop.shop_name }}
+            Message {{ props.product?.shop.shop_name }}
           </UButton>
         </div>
 
@@ -184,7 +213,7 @@ watch(
             <div class="flex items-center justify-between border-b border-border-subtle px-5 py-3">
               <div>
                 <div class="text-sm font-semibold text-text-strong">
-                  Chat with {{ product.shop.shop_name }}
+                  Chat with {{ props.product?.shop.shop_name }}
                 </div>
                 <div class="text-xs text-text-muted">
                   Ask about this product directly from here.

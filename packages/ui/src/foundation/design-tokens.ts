@@ -60,6 +60,9 @@ export const designColors = {
     subtle: '#52525B',
     strong: '#18181B',
   },
+  rating: {
+    star: '#FFB100',
+  },
 } as const
 
 export const designRadii = {

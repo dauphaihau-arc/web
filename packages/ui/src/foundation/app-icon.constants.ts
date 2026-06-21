@@ -10,6 +10,7 @@ export const ICON_NAME_BY_ALIAS = {
   archive: 'i-heroicons-archive-box-20-solid',
   marketplace: 'solar:shop-bold-duotone',
   logout: 'i-heroicons-arrow-left-start-on-rectangle',
+  star: 'solar:star-bold',
   manageShop: 'solar:shop-linear',
   warning: 'ph:warning-duotone',
   plus: 'i-heroicons-plus',

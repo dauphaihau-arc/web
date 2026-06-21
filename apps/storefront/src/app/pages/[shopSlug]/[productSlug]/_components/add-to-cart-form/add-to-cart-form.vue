@@ -9,9 +9,14 @@ import { toastCustom } from '~/shared/config/toast'
 import { useAddProductToCart } from '~/shared/server-state/cart/add-product.mutation'
 
 type Inventory = GetDetailProductBySlugResponse['inventory'][number]
+type AddToCartProduct = Pick<
+  GetDetailProductBySlugResponse,
+  'inventory' | 'variant_type' | 'variant_group_name' | 'variant_sub_group_name'
+>
 
 const props = defineProps<{
-  product: GetDetailProductBySlugResponse
+  product?: GetDetailProductBySlugResponse
+  isLoading?: boolean
 }>()
 
 const inventorySelectedModel = defineModel<Inventory>('inventorySelected')
@@ -30,6 +35,15 @@ const state = reactive({
   isBuyNow: false,
 })
 
+const fallbackProduct: AddToCartProduct = {
+  inventory: [],
+  variant_type: ProductVariantTypes.NONE,
+  variant_group_name: '',
+  variant_sub_group_name: '',
+}
+
+const product = computed<AddToCartProduct>(() => props.product ?? fallbackProduct)
+
 const {
   decreaseQty,
   increaseQty,
@@ -41,7 +55,7 @@ const {
   validateForm,
   variantOptions,
 } = useAddToCartForm({
-  product: toRef(props, 'product'),
+  product,
   inventorySelectedModel,
 })
 
@@ -50,7 +64,7 @@ async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
   const isBuyNow = state.isBuyNow
   state.isBuyNow = false
 
-  if (!resolvedInventorySelected.value?.id) {
+  if (!props.product || !resolvedInventorySelected.value?.id) {
     return
   }
 
@@ -103,7 +117,28 @@ async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
 </script>
 
 <template>
+  <div
+    v-if="props.isLoading"
+    class="space-y-4"
+    aria-busy="true"
+    aria-live="polite"
+  >
+    <div class="mb-6 flex w-1/3 min-w-[220px] flex-col gap-4">
+      <USkeleton class="h-5 w-24 !bg-customGray-300/85" />
+      <USkeleton class="h-11 w-full rounded-xl !bg-customGray-300/85" />
+      <USkeleton class="h-5 w-20 !bg-customGray-300/85" />
+      <USkeleton class="h-11 w-full rounded-xl !bg-customGray-300/85" />
+      <USkeleton class="h-11 w-full rounded-xl !bg-customGray-300/85" />
+    </div>
+
+    <div class="flex gap-4">
+      <USkeleton class="h-12 w-32 rounded-xl !bg-customGray-300/85" />
+      <USkeleton class="h-12 w-32 rounded-xl !bg-customGray-300/85" />
+    </div>
+  </div>
+
   <UForm
+    v-else
     ref="formRef"
     :validate-on="['submit']"
     class="space-y-4"
@@ -113,27 +148,27 @@ async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
   >
     <div class="mb-6 flex w-1/3 flex-col gap-4">
       <UFormGroup
-        v-if="props.product.variant_type === ProductVariantTypes.SINGLE
-          || props.product.variant_type === ProductVariantTypes.COMBINE"
-        :label="props.product.variant_group_name"
+        v-if="product.variant_type === ProductVariantTypes.SINGLE
+          || product.variant_type === ProductVariantTypes.COMBINE"
+        :label="product.variant_group_name"
         name="variantOption"
       >
         <USelectMenu
           v-model="stateSubmit.variantOption"
-          :placeholder="`Select a ${props.product.variant_group_name}`"
+          :placeholder="`Select a ${product.variant_group_name}`"
           size="lg"
           :options="variantOptions"
         />
       </UFormGroup>
 
       <UFormGroup
-        v-if="props.product.variant_type === ProductVariantTypes.COMBINE"
-        :label="props.product.variant_sub_group_name"
+        v-if="product.variant_type === ProductVariantTypes.COMBINE"
+        :label="product.variant_sub_group_name"
         name="variantSubOption"
       >
         <USelectMenu
           v-model="stateSubmit.variantSubOption"
-          :placeholder="`Select a ${props.product.variant_sub_group_name}`"
+          :placeholder="`Select a ${product.variant_sub_group_name}`"
           size="lg"
           :options="subVariantOptions"
         />

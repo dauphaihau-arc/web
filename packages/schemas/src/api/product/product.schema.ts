@@ -182,6 +182,91 @@ export const publicProductShippingSchema = z.object({
   destinations: z.array(publicProductShippingDestinationSchema),
 })
 
+export const publicProductReviewSummarySchema = z.object({
+  average: z.coerce.number().min(0).max(5),
+  count: z.coerce.number().int().nonnegative(),
+  breakdown: z.object({
+    1: z.coerce.number().int().nonnegative(),
+    2: z.coerce.number().int().nonnegative(),
+    3: z.coerce.number().int().nonnegative(),
+    4: z.coerce.number().int().nonnegative(),
+    5: z.coerce.number().int().nonnegative(),
+  }),
+  filters: z.object({
+    has_images: z.coerce.number().int().nonnegative(),
+    has_comment: z.coerce.number().int().nonnegative(),
+  }),
+})
+
+export const publicProductReviewImageSchema = z.object({
+  id: z.string(),
+  storage_key: z.string(),
+  url: z.string().optional(),
+  rank: z.coerce.number().int().nonnegative(),
+  variants: z.record(z.string(), z.object({
+    storage_key: z.string(),
+    url: z.string().optional(),
+    width: z.coerce.number().int().positive().optional(),
+    height: z.coerce.number().int().positive().optional(),
+    format: z.string().optional(),
+  })).optional(),
+})
+
+export const publicProductReviewGalleryItemSchema = z.object({
+  id: z.string(),
+  storage_key: z.string(),
+  url: z.string().optional(),
+  rank: z.coerce.number().int().nonnegative(),
+  review_id: z.string(),
+  review_title: z.string().optional(),
+  created_at: z.union([z.string(), z.date()]),
+  variants: z.record(z.string(), z.object({
+    storage_key: z.string(),
+    url: z.string().optional(),
+    width: z.coerce.number().int().positive().optional(),
+    height: z.coerce.number().int().positive().optional(),
+    format: z.string().optional(),
+  })).optional(),
+  author: z.object({
+    display_name: z.string(),
+  }),
+})
+
+export const publicProductReviewItemSchema = z.object({
+  id: z.string(),
+  rating: z.coerce.number().min(1).max(5),
+  title: z.string().optional(),
+  body: z.string().optional(),
+  image: publicProductReviewImageSchema.optional(),
+  created_at: z.union([z.string(), z.date()]),
+  updated_at: z.union([z.string(), z.date()]),
+  verified_purchase: z.boolean(),
+  author: z.object({
+    display_name: z.string(),
+  }),
+})
+
+export const getPublicProductReviewsResponseSchema = z.object({
+  summary: publicProductReviewSummarySchema,
+  items: z.array(publicProductReviewItemSchema),
+  meta: z.object({
+    page: z.coerce.number(),
+    limit: z.coerce.number(),
+    total: z.coerce.number(),
+    total_pages: z.coerce.number(),
+    has_next_page: z.boolean(),
+    has_previous_page: z.boolean(),
+  }),
+})
+
+export const getPublicProductReviewImagesResponseSchema = z.object({
+  items: z.array(publicProductReviewGalleryItemSchema),
+  meta: z.object({
+    next_cursor: z.string().optional(),
+    has_more: z.boolean(),
+  }),
+})
+
 export const getDetailProductBySlugResponseSchema = z.object({
   id: z.string(),
   shop: publicProductShopSchema,
@@ -194,7 +279,11 @@ export const getDetailProductBySlugResponseSchema = z.object({
   variant_type: z.string().optional(),
   variant_group_name: z.string().optional(),
   variant_sub_group_name: z.string().optional(),
-  stock_notice_threshold: z.number().int().nonnegative(),
+  stock_notice_threshold: z.coerce.number().int().nonnegative(),
+  review_summary: z.object({
+    average: z.coerce.number().min(0).max(5),
+    count: z.coerce.number().int().nonnegative(),
+  }),
   images: z.array(publicProductDetailImageSchema),
   variants: z.array(publicProductDetailVariantSchema),
   inventory: z.array(publicProductDetailInventorySchema),

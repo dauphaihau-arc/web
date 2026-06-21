@@ -2,9 +2,13 @@
 import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contracts/product.contract'
 import { resolveProductImageUrl } from '~/shared/utils/storage-public-url'
 
-const { images } = defineProps<{
-  images: GetDetailProductBySlugResponse['images']
-}>()
+const props = withDefaults(defineProps<{
+  images?: GetDetailProductBySlugResponse['images']
+  isLoading?: boolean
+}>(), {
+  images: () => [],
+  isLoading: false,
+})
 
 const config = useRuntimeConfig()
 const selectedImg = ref(0)
@@ -12,9 +16,13 @@ const previewImg = ref<number | null>(null)
 
 const currentImg = computed(() => previewImg.value ?? selectedImg.value)
 
-const selectedImage = computed(() => images[currentImg.value])
+const selectedImage = computed(() => props.images[currentImg.value])
 
 const imageUrlSelected = computed(() => {
+  if (!selectedImage.value) {
+    return ''
+  }
+
   return resolveProductImageUrl(
     selectedImage.value,
     config.public.assetHost,
@@ -23,7 +31,7 @@ const imageUrlSelected = computed(() => {
 
 const imageThumbSelected = (index: number) => {
   return resolveProductImageUrl(
-    images[index],
+    props.images[index],
     config.public.assetHost,
     'thumb_1x1',
   )
@@ -51,7 +59,7 @@ const onSelectPrevImg = () => {
 }
 
 const onSelectNextImg = () => {
-  if (selectedImg.value === images.length - 1) {
+  if (selectedImg.value === props.images.length - 1) {
     return
   }
   selectedImg.value++
@@ -60,13 +68,32 @@ const onSelectNextImg = () => {
 </script>
 
 <template>
-  <div class="flex gap-6">
+  <div
+    v-if="props.isLoading"
+    class="flex gap-6"
+    aria-busy="true"
+    aria-live="polite"
+  >
+    <div class="flex w-fit flex-col gap-3">
+      <USkeleton
+        v-for="index in 4"
+        :key="index"
+        class="size-[100px] rounded !bg-customGray-300/85"
+      />
+    </div>
+    <USkeleton class="aspect-square w-[575px] max-w-full rounded !bg-customGray-300/85" />
+  </div>
+
+  <div
+    v-else
+    class="flex gap-6"
+  >
     <div
       class="flex w-fit flex-col gap-3"
       @mouseleave="onResetPreviewImg"
     >
       <div
-        v-for="(image, index) of images"
+        v-for="(image, index) of props.images"
         :key="image.id"
       >
         <button
@@ -91,31 +118,34 @@ const onSelectNextImg = () => {
         </button>
       </div>
     </div>
-    <div class="relative w-[575px] max-w-full overflow-hidden rounded bg-surface-muted">
+    <div class="relative h-[575px] w-[575px] max-w-full overflow-hidden rounded bg-surface-muted">
       <NuxtImg
         preload
         :src="imageUrlSelected"
         width="575"
-        class="h-auto w-full rounded"
+        height="575"
+        class="absolute inset-0 h-full w-full rounded object-contain"
       />
-      <div
-        class="arrow absolute bottom-3 right-16"
-        @click="onSelectPrevImg"
-      >
-        <AppIcon
-          name="chevronLeft"
-          class="text-black"
-        />
-      </div>
-      <div
-        class="arrow absolute bottom-3 right-3"
-        @click="onSelectNextImg"
-      >
-        <AppIcon
-          name="chevronRight"
-          class="text-black"
-        />
-      </div>
+      <template v-if="props.images.length > 1">
+        <div
+          class="arrow absolute bottom-3 right-16"
+          @click="onSelectPrevImg"
+        >
+          <AppIcon
+            name="chevronLeft"
+            class="text-black"
+          />
+        </div>
+        <div
+          class="arrow absolute bottom-3 right-3"
+          @click="onSelectNextImg"
+        >
+          <AppIcon
+            name="chevronRight"
+            class="text-black"
+          />
+        </div>
+      </template>
     </div>
   </div>
 </template>

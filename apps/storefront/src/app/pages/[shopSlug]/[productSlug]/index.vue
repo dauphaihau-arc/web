@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import AddToCartForm from './_components/add-to-cart-form/add-to-cart-form.vue'
 import ProductImages from './_components/product-images.vue'
 import MoreInfo from './_components/more-info.vue'
+import ProductReviews from './_components/product-reviews/product-reviews.vue'
 import ProductSummary from './_components/summary.vue'
 import { useLiveProductInventory } from './_composables/use-live-product-inventory'
 import RecommendationSections from './_components/recommendation-sections.vue'
@@ -120,38 +120,42 @@ watch(productData, (value) => {
 <template>
   <div class="mt-24">
     <div
-      v-if="isPendingProduct"
-      class="grid h-[80vh] w-full place-content-center"
-    >
-      <LoadingSvg :child-class="'!w-12 !h-12'" />
-    </div>
-    <div
-      v-else-if="product"
+      v-if="isPendingProduct || product"
       class="space-y-20"
     >
-      <div class="mb-20 grid grid-cols-10">
-        <ProductImages
-          :images="product.images"
-          class="sticky top-24 col-span-6 self-start"
-        />
+      <div class="mb-20 grid grid-cols-10 gap-16">
+        <div class="sticky top-24 col-span-6 self-start">
+          <ProductImages
+            :images="product?.images"
+            :is-loading="isPendingProduct"
+          />
+          <ProductReviews
+            :shop-slug="shopSlug"
+            :product-slug="productSlug"
+            :is-loading="isPendingProduct && !product"
+          />
+        </div>
         <div class="col-span-4 space-y-6">
           <ProductSummary
             :product="product"
             :inventory-selected="selectedInventory"
             :stock-notice="stockNotice"
+            :is-loading="isPendingProduct"
           />
           <AddToCartForm
             v-model:inventory-selected="inventorySelected"
             :product="product"
+            :is-loading="isPendingProduct"
           />
           <MoreInfo
             :product="product"
+            :is-loading="isPendingProduct"
           />
         </div>
       </div>
       <RecommendationSections
-        :product-slug="product.slug"
-        :shop-slug="product.shop.slug"
+        :product-slug="productSlug"
+        :shop-slug="shopSlug"
       />
     </div>
   </div>

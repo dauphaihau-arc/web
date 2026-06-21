@@ -32,6 +32,9 @@ export const sharedAppConfig = {
     formGroup: {
       description: 'text-text-muted',
     },
+    skeleton: {
+      base: 'animate-pulse rounded-md bg-customGray-300/85 dark:bg-customGray-800/80',
+    },
     radio: {
       help: 'text-text-muted',
     },
