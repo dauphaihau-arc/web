@@ -264,7 +264,7 @@ watch(isProductHaveVariants, () => {
                     <UButton
                       type="button"
                       color="gray"
-                      variant="soft"
+                      variant="ghost"
                       square
                       :disabled="loadingSubmit"
                       :loading="generatingDescription"
