@@ -46,6 +46,12 @@ export const ICON_NAME_BY_ALIAS = {
   payment: 'fluent:payment-28-regular',
   orderCreated: 'i-heroicons-document-plus-20-solid',
   moreHorizontal: 'i-heroicons-ellipsis-horizontal-20-solid',
+  uploadCloud: 'lucide:cloud-upload',
+  ratingVeryBad: 'lucide:frown',
+  ratingBad: 'lucide:annoyed',
+  ratingNeutral: 'lucide:meh',
+  ratingGood: 'lucide:smile',
+  ratingExcellent: 'lucide:laugh',
 } as const
 
 export type AppIconAlias = keyof typeof ICON_NAME_BY_ALIAS

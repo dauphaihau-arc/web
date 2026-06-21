@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
 import type { ElementType } from '@arc/contracts/utils'
+import WriteProductReviewDialog from './write-product-review-dialog/write-product-review-dialog.vue'
 import OrderCancelRequestDialog from '~/app/components/dialogs/order-cancel-request-dialog.vue'
 import OrderSupportRequestDialog from '~/app/components/dialogs/order-support-request-dialog.vue'
-import WriteProductReviewDialog from '~/app/components/dialogs/write-product-review-dialog.vue'
 import type { GetOrderShopsResponse } from '~/shared/api/me/order/contracts/order.contract'
 
 const props = withDefaults(defineProps<{
@@ -31,6 +31,13 @@ const canWriteReview = computed(() =>
     props.orderShop.status === OrderStatuses.COMPLETED
     || props.orderShop.shipping.shipping_status === OrderShippingStatuses.DELIVERED
   ),
+)
+const hasReviewedAllProducts = computed(() =>
+  props.orderShop.products.length > 0
+  && props.orderShop.products.every(product => Boolean(product.my_review)),
+)
+const reviewButtonLabel = computed(() =>
+  hasReviewedAllProducts.value ? 'Edit review' : 'Write review',
 )
 
 function openCancelDialog() {
@@ -62,7 +69,7 @@ function openReviewDialog() {
         size="md"
         @click="openReviewDialog"
       >
-        Write review
+        {{ reviewButtonLabel }}
       </UButton>
       <UButton
         block

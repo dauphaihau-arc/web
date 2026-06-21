@@ -63,25 +63,27 @@ const deliveredAt = computed(() => {
           From {{ fromCountries }} to {{ props.orderShop?.shipping?.to_country }}
         </div>
       </div>
-      <div>
-        Estimated delivery: {{ estimatedDelivery }}
-      </div>
-      <div v-if="props.orderShop.shipping.tracking_number || props.orderShop.shipping.shipping_carrier">
-        <div v-if="props.orderShop.shipping.shipping_carrier">
-          Carrier: {{ props.orderShop.shipping.shipping_carrier }}
+      <div class="space-y-1">
+        <div>
+          Estimated delivery: {{ estimatedDelivery }}
         </div>
-        <div v-if="props.orderShop.shipping.tracking_number">
-          Tracking: {{ props.orderShop.shipping.tracking_number }}
+        <div v-if="props.orderShop.shipping.tracking_number || props.orderShop.shipping.shipping_carrier">
+          <div v-if="props.orderShop.shipping.shipping_carrier">
+            Carrier: {{ props.orderShop.shipping.shipping_carrier }}
+          </div>
+          <div v-if="props.orderShop.shipping.tracking_number">
+            Tracking: {{ props.orderShop.shipping.tracking_number }}
+          </div>
         </div>
-      </div>
-      <div v-if="props.orderShop.shipping.shipment_note">
-        Shipment note: {{ props.orderShop.shipping.shipment_note }}
-      </div>
-      <div v-if="shippedAt">
-        Shipped on {{ shippedAt }}
-      </div>
-      <div v-if="deliveredAt">
-        Delivered on {{ deliveredAt }}
+        <div v-if="props.orderShop.shipping.shipment_note">
+          Shipment note: {{ props.orderShop.shipping.shipment_note }}
+        </div>
+        <div v-if="shippedAt">
+          Shipped on {{ shippedAt }}
+        </div>
+        <div v-if="deliveredAt">
+          Delivered on {{ deliveredAt }}
+        </div>
       </div>
     </div>
   </div>

@@ -4,7 +4,7 @@ import type { ElementType } from '@arc/contracts/utils'
 import { formatMinorCurrency } from '@arc/utils'
 import NoteAndPromoCoupons from './note-and-promo-coupons.vue'
 import PaymentAndSummaryOrder from './payment-and-summary-order.vue'
-import ShopActions from './shop-actions.vue'
+import ShopActions from './shop-actions/shop-actions.vue'
 import ShopProduct from './shop-product.vue'
 import ShopShippingInfo from './shop-shipping-info.vue'
 import type { GetOrderShopsResponse } from '~/shared/api/me/order/contracts/order.contract'
@@ -17,9 +17,11 @@ const props = withDefaults(defineProps<{
   orderShop: ElementType<GetOrderShopsResponse['order_shops']>
   allowPostPurchaseActions?: boolean
   showDetailLink?: boolean
+  showReviewCta?: boolean
 }>(), {
   allowPostPurchaseActions: true,
   showDetailLink: true,
+  showReviewCta: true,
 })
 
 const orderedAt = computed(() => {
@@ -82,6 +84,7 @@ const displayOrderShop = computed(() =>
         v-if="props.allowPostPurchaseActions"
         :order-shop="displayOrderShop"
         :show-view-order-link="props.showDetailLink"
+        :show-review-cta="props.showReviewCta"
       />
     </div>
   </div>
