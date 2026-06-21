@@ -1,7 +1,7 @@
-import { computed, reactive, watch } from 'vue'
-import { ProductVariantTypes } from '@arc/enums/product'
-import type { FormError } from '#ui/types'
-import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contracts/product.contract'
+import { computed, reactive, watch } from 'vue';
+import { ProductVariantTypes } from '@arc/enums/product';
+import type { FormError } from '#ui/types';
+import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contracts/product.contract';
 
 interface StateSubmit {
   quantity: number
@@ -9,11 +9,11 @@ interface StateSubmit {
   variantSubOption: string
 }
 
-type Inventory = GetDetailProductBySlugResponse['inventory'][number]
+type Inventory = GetDetailProductBySlugResponse['inventory'][number];
 type AddToCartProduct = Pick<
   GetDetailProductBySlugResponse,
   'inventory' | 'variant_type' | 'variant_group_name' | 'variant_sub_group_name'
->
+>;
 
 interface UseAddToCartFormOptions {
   product: Ref<AddToCartProduct>
@@ -28,21 +28,21 @@ export function useAddToCartForm({
     quantity: 1,
     variantOption: '',
     variantSubOption: '',
-  })
+  });
 
   const variantOptions = computed(() => {
     return Array.from(
       new Set(
         product.value.inventory
           .map(inventory => inventory.option_value_1)
-          .filter((value): value is string => Boolean(value)),
-      ),
-    )
-  })
+          .filter((value): value is string => Boolean(value))
+      )
+    );
+  });
 
   const subVariantOptions = computed(() => {
     if (product.value.variant_type !== ProductVariantTypes.COMBINE || !stateSubmit.variantOption) {
-      return []
+      return [];
     }
 
     return Array.from(
@@ -50,161 +50,161 @@ export function useAddToCartForm({
         product.value.inventory
           .filter(inventory => inventory.option_value_1 === stateSubmit.variantOption)
           .map(inventory => inventory.option_value_2)
-          .filter((value): value is string => Boolean(value)),
-      ),
-    )
-  })
+          .filter((value): value is string => Boolean(value))
+      )
+    );
+  });
 
   const resolvedInventorySelected = computed(() => {
-    const selectedInventoryId = inventorySelectedModel.value?.id
+    const selectedInventoryId = inventorySelectedModel.value?.id;
 
     if (selectedInventoryId) {
-      return product.value.inventory.find(inventory => inventory.id === selectedInventoryId)
-        ?? inventorySelectedModel.value
+      return product.value.inventory.find(inventory => inventory.id === selectedInventoryId) ??
+        inventorySelectedModel.value;
     }
 
     if (product.value.variant_type === ProductVariantTypes.NONE) {
-      return product.value.inventory[0]
+      return product.value.inventory[0];
     }
 
     if (product.value.variant_type === ProductVariantTypes.SINGLE) {
       return product.value.inventory.find(
-        inventory => inventory.option_value_1 === stateSubmit.variantOption,
-      )
+        inventory => inventory.option_value_1 === stateSubmit.variantOption
+      );
     }
 
     if (product.value.variant_type === ProductVariantTypes.COMBINE) {
       return product.value.inventory.find(
         inventory =>
-          inventory.option_value_1 === stateSubmit.variantOption
-          && inventory.option_value_2 === stateSubmit.variantSubOption,
-      )
+          inventory.option_value_1 === stateSubmit.variantOption &&
+          inventory.option_value_2 === stateSubmit.variantSubOption
+      );
     }
 
-    return undefined
-  })
+    return undefined;
+  });
 
   const maxQuantity = computed(() => {
     if (resolvedInventorySelected.value) {
-      return resolvedInventorySelected.value.stock
+      return resolvedInventorySelected.value.stock;
     }
 
-    return product.value.inventory.reduce((acc, inventory) => acc + inventory.stock, 0)
-  })
+    return product.value.inventory.reduce((acc, inventory) => acc + inventory.stock, 0);
+  });
 
-  const isOutOfStock = computed(() => maxQuantity.value <= 0)
+  const isOutOfStock = computed(() => maxQuantity.value <= 0);
 
   const decreaseQty = () => {
     if (stateSubmit.quantity <= 1) {
-      stateSubmit.quantity = 1
-      return
+      stateSubmit.quantity = 1;
+      return;
     }
 
-    stateSubmit.quantity--
-  }
+    stateSubmit.quantity--;
+  };
 
   const increaseQty = () => {
     if (maxQuantity.value <= 0 || stateSubmit.quantity >= maxQuantity.value) {
-      return
+      return;
     }
 
-    stateSubmit.quantity++
-  }
+    stateSubmit.quantity++;
+  };
 
   const validateForm = (stateValidate: StateSubmit): FormError[] => {
-    const errors: FormError[] = []
+    const errors: FormError[] = [];
 
     if (product.value.variant_type !== ProductVariantTypes.NONE) {
       if (!stateValidate.variantOption) {
         errors.push({
           path: 'variantOption',
           message: 'Required',
-        })
+        });
       }
 
       if (product.value.variant_type === ProductVariantTypes.COMBINE && !stateValidate.variantSubOption) {
         errors.push({
           path: 'variantSubOption',
           message: 'Required',
-        })
+        });
       }
     }
 
-    return errors
-  }
+    return errors;
+  };
 
   watch(
     () => stateSubmit.variantOption,
     () => {
-      stateSubmit.quantity = 1
-      inventorySelectedModel.value = undefined
+      stateSubmit.quantity = 1;
+      inventorySelectedModel.value = undefined;
 
       if (
-        product.value.variant_type === ProductVariantTypes.COMBINE
-        && stateSubmit.variantSubOption
-        && !subVariantOptions.value.includes(stateSubmit.variantSubOption)
+        product.value.variant_type === ProductVariantTypes.COMBINE &&
+        stateSubmit.variantSubOption &&
+        !subVariantOptions.value.includes(stateSubmit.variantSubOption)
       ) {
-        stateSubmit.variantSubOption = ''
+        stateSubmit.variantSubOption = '';
       }
-    },
-  )
+    }
+  );
 
   watch(
     () => stateSubmit.variantSubOption,
     () => {
-      stateSubmit.quantity = 1
-      inventorySelectedModel.value = undefined
-    },
-  )
+      stateSubmit.quantity = 1;
+      inventorySelectedModel.value = undefined;
+    }
+  );
 
   watch(
     resolvedInventorySelected,
     (inventory) => {
       if (inventory) {
-        inventorySelectedModel.value = inventory
+        inventorySelectedModel.value = inventory;
       }
     },
-    { immediate: true },
-  )
+    { immediate: true }
+  );
 
   watch(
     () => product.value.variant_type,
     (variantType) => {
       if (variantType === ProductVariantTypes.NONE) {
-        inventorySelectedModel.value = product.value.inventory[0]
+        inventorySelectedModel.value = product.value.inventory[0];
       }
     },
-    { immediate: true },
-  )
+    { immediate: true }
+  );
 
   watch(
     maxQuantity,
     (nextMaxQuantity) => {
       if (nextMaxQuantity <= 0) {
-        stateSubmit.quantity = 1
-        return
+        stateSubmit.quantity = 1;
+        return;
       }
 
       if (stateSubmit.quantity > nextMaxQuantity) {
-        stateSubmit.quantity = nextMaxQuantity
+        stateSubmit.quantity = nextMaxQuantity;
       }
     },
-    { immediate: true },
-  )
+    { immediate: true }
+  );
 
   watch(
     () => stateSubmit.quantity,
     (nextQuantity) => {
       if (!Number.isFinite(nextQuantity) || nextQuantity <= 1) {
-        stateSubmit.quantity = 1
-        return
+        stateSubmit.quantity = 1;
+        return;
       }
 
       if (maxQuantity.value > 0 && nextQuantity > maxQuantity.value) {
-        stateSubmit.quantity = maxQuantity.value
+        stateSubmit.quantity = maxQuantity.value;
       }
-    },
-  )
+    }
+  );
 
   return {
     decreaseQty,
@@ -216,5 +216,5 @@ export function useAddToCartForm({
     subVariantOptions,
     validateForm,
     variantOptions,
-  }
+  };
 }

@@ -1,6 +1,6 @@
-import { keepPreviousData } from '@tanstack/vue-query'
-import { productApi } from '~/shared/api/product/product.api'
-import type { GetPublicProductReviewsResponse } from '~/shared/api/product/contracts/product.contract'
+import { keepPreviousData } from '@tanstack/vue-query';
+import { productApi } from '~/shared/api/product/product.api';
+import type { GetPublicProductReviewsResponse } from '~/shared/api/product/contracts/product.contract';
 
 export function useGetPublicProductReviews(
   shopSlug: string,
@@ -12,14 +12,14 @@ export function useGetPublicProductReviews(
     rating?: 1 | 2 | 3 | 4 | 5
     has_images?: boolean
     has_comment?: boolean
-  } | undefined>,
+  } | undefined>
 ) {
   return useQuery({
     enabled: !!shopSlug && !!productSlug,
     placeholderData: keepPreviousData,
     queryKey: computed(() => ['get-public-product-reviews', shopSlug, productSlug, toValue(params)]),
     queryFn: () => {
-      return productApi.getReviews(shopSlug, productSlug, toValue(params)) as Promise<GetPublicProductReviewsResponse>
+      return productApi.getReviews(shopSlug, productSlug, toValue(params)) as Promise<GetPublicProductReviewsResponse>;
     },
-  })
+  });
 }
