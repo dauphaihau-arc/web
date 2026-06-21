@@ -17,12 +17,15 @@ export type TimelineItem = {
   state: TimelineItemState
 }
 
-const props = withDefaults(defineProps<{
-  items: TimelineItem[]
-  size?: 'md' | 'sm'
-}>(), {
-  size: 'md',
-})
+const props = withDefaults(
+  defineProps<{
+    items: TimelineItem[]
+    size?: 'md' | 'sm'
+  }>(),
+  {
+    size: 'md',
+  },
+)
 
 function stateClasses(state: TimelineItemState) {
   switch (state) {
@@ -136,8 +139,13 @@ const sizeClasses = computed(() => {
 
       <div
         v-if="item.meta"
-        class="pt-1 text-right"
-        :class="[sizeClasses.meta, item.state === 'upcoming' ? 'text-text-muted' : 'text-text-subtle']"
+        class="pt-1 text-right text-sm"
+        :class="[
+          sizeClasses.meta,
+          item.state === 'upcoming'
+            ? 'text-text-muted'
+            : 'text-text-subtle',
+        ]"
       >
         {{ item.meta }}
       </div>
