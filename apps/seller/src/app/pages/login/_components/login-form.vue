@@ -98,6 +98,7 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
         >
           <UInput
             v-model="stateSubmit.email"
+            :disabled="isPendingLogin"
             size="xl"
           />
         </UFormGroup>
@@ -109,6 +110,7 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
         >
           <UInput
             v-model="stateSubmit.password"
+            :disabled="isPendingLogin"
             size="xl"
             type="password"
           />
