@@ -907,7 +907,7 @@ watchDebounced(
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 .hint-text-input {
   @apply text-text-muted text-xs;
 }

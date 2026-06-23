@@ -116,7 +116,7 @@ watch(state, () => {
   </UFormGroup>
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 .rounded-shape {
   @apply rounded-xl;
 }

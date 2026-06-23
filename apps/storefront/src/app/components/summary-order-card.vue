@@ -77,7 +77,7 @@ const props = defineProps<{
   </UCard>
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 .title {
   @apply text-lg font-normal text-text-strong
 }

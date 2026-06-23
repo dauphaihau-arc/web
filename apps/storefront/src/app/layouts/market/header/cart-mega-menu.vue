@@ -4,13 +4,14 @@ import { useGetCart } from '~/shared/server-state/cart/cart.query'
 
 const props = defineProps<{ show: boolean }>()
 
-const {
-  data: dataGetCart,
-} = useGetCart()
+const { data: dataGetCart } = useGetCart()
 
 const remainProductCart = computed(() => {
   if (dataGetCart.value?.cart) {
-    return dataGetCart.value.cart.total_quantity - dataGetCart.value.cart.recent_items.length
+    return (
+      dataGetCart.value.cart.total_quantity
+      - dataGetCart.value.cart.recent_items.length
+    )
   }
   return 0
 })
@@ -39,15 +40,26 @@ const remainProductCart = computed(() => {
         </div>
 
         <div class="mb-10">
-          <div v-if="dataGetCart?.cart && dataGetCart?.cart.recent_items.length > 0">
+          <div
+            v-if="
+              dataGetCart?.cart
+                && dataGetCart?.cart.recent_items.length > 0
+            "
+          >
             <div class="mb-6 space-y-8">
               <div
-                v-for="(productCart, index) in dataGetCart.cart.recent_items"
+                v-for="(productCart, index) in dataGetCart.cart
+                  .recent_items"
                 :key="index"
               >
                 <NuxtLink
                   class="flex items-center gap-6"
-                  :to="routes.productDetail(productCart.product.shop.slug, productCart.product.slug)"
+                  :to="
+                    routes.productDetail(
+                      productCart.product.shop.slug,
+                      productCart.product.slug,
+                    )
+                  "
                 >
                   <NuxtImg
                     :src="productCart.product.image_url"
@@ -59,10 +71,17 @@ const remainProductCart = computed(() => {
                     <div class="text-xl font-medium">
                       {{ productCart.product.title }}
                     </div>
-                    <div class="text-[15px] text-text-muted">
-                      {{ productCart.inventory.variant_name }}
+                    <div
+                      class="text-[15px] text-text-muted"
+                    >
+                      {{
+                        productCart.inventory
+                          .variant_name
+                      }}
                     </div>
-                    <div class="text-[15px] tracking-wide text-text-muted">
+                    <div
+                      class="text-[15px] tracking-wide text-text-muted"
+                    >
                       x{{ productCart.quantity }}
                     </div>
                   </div>
@@ -88,26 +107,26 @@ const remainProductCart = computed(() => {
   </transition>
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 .slide-down-enter-active,
 .slide-down-leave-active {
-  transition: max-height 0.3s ease-in-out;
+    transition: max-height 0.3s ease-in-out;
 }
 
 .slide-down-enter-to,
 .slide-down-leave-from {
-  overflow: hidden;
-  max-height: 500px;
+    overflow: hidden;
+    max-height: 500px;
 }
 
 .slide-down-enter-from,
 .slide-down-leave-to {
-  overflow: hidden;
-  max-height: 0;
+    overflow: hidden;
+    max-height: 0;
 }
 
 .item-profile {
-  @apply font-medium flex items-center gap-2 cursor-pointer opacity-70 hover:opacity-100
-  hover:bg-surface-muted px-2 py-1 rounded-md
+    @apply font-medium flex items-center gap-2 cursor-pointer opacity-70 hover:opacity-100
+  hover:bg-surface-muted px-2 py-1 rounded-md;
 }
 </style>

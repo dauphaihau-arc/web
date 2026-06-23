@@ -99,7 +99,7 @@ const clickStepDone = (index: number) => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 .center-title {
   position: absolute;
   top: 180%;

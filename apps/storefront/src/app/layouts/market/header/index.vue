@@ -293,14 +293,13 @@ const showRegisterLoginDialog = async () => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 .icon-button {
   padding: 8px;
 }
 
 .overlay {
-  @apply fixed z-[1] inset-0 transition-opacity
-  bg-surface-muted/75
+  @apply fixed inset-0 z-[1] bg-surface-muted/75 transition-opacity;
 }
 
 .header {

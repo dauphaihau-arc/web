@@ -150,7 +150,7 @@ const onSelectNextImg = () => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 .arrow {
   @apply cursor-pointer bg-surface rounded-full p-4
   h-10 w-10 grid place-content-center;

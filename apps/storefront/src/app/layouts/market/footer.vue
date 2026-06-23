@@ -184,7 +184,7 @@ const secondaryLinks = [
   </footer>
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 .footer {
   @apply absolute bottom-0 w-full bg-surface-muted
 }

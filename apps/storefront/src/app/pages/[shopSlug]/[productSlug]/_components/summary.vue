@@ -173,7 +173,7 @@ const filledStars = computed(() => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 .price {
   @apply text-3xl font-medium;
 }

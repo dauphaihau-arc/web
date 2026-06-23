@@ -238,7 +238,7 @@ const onSave = () => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 .item-category {
  @apply flex justify-between items-center hover:text-primary cursor-pointer gap-2 px-3 py-2;
 }

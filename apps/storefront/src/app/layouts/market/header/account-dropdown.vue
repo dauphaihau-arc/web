@@ -92,7 +92,7 @@ const userInitial = computed(() => {
   </UDropdown>
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 .user-avatar {
   @apply flex size-6 items-center justify-center rounded-full bg-customGray-200 text-text-strong text-sm font-semibold;
 }

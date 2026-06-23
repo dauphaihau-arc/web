@@ -113,7 +113,7 @@ const showMore = ref(false)
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 .title {
   @apply font-normal
 }
