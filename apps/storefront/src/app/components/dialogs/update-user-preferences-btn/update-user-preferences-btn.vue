@@ -24,6 +24,7 @@ const marketStore = useMarketStore()
 const queryClient = useQueryClient()
 const isOpenDialog = ref(false)
 const formRef = ref()
+const isSubmittingPreferences = ref(false)
 
 const { data: currentUserData } = useGetCurrentUser()
 
@@ -31,6 +32,10 @@ const {
   mutateAsync: updateUserPreferences,
   isPending: isPendingUpdateUserPreferences,
 } = useUpdateCurrentUser()
+
+const isDialogLocked = computed(() => {
+  return isPendingUpdateUserPreferences.value || isSubmittingPreferences.value
+})
 
 const {
   data: marketConfig,
@@ -40,7 +45,7 @@ const {
 })
 
 const currentUserPreferences = computed(() => {
-  return marketStore.guestPreferences || currentUserData.value?.user?.preferences
+  return currentUserData.value?.user?.preferences || marketStore.guestPreferences || undefined
 })
 
 const selectMenuUi = {
@@ -72,29 +77,40 @@ function buildPreferences({ currency, language, region }: PreferenceState): Auth
 }
 
 const onSubmit = async (event: FormSubmitEvent<PreferenceState>) => {
-  const preferences = buildPreferences(event.data)
-
-  if (currentUserData.value?.user) {
-    await updateUserPreferences({
-      preferences,
-    })
+  if (isSubmittingPreferences.value) {
+    return
   }
 
-  marketStore.guestPreferences = preferences
+  isSubmittingPreferences.value = true
+  const preferences = buildPreferences(event.data)
 
-  await queryClient.invalidateQueries({
-    predicate: query => marketSensitiveQueryKeys.has(String(query.queryKey[0])),
-    refetchType: 'active',
-  })
+  try {
+    if (currentUserData.value?.user) {
+      await updateUserPreferences({
+        preferences,
+      })
+    }
 
-  isOpenDialog.value = false
-  window.scrollTo({ top: 0, behavior: 'smooth' })
+    marketStore.guestPreferences = preferences
+
+    isOpenDialog.value = false
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+
+    await queryClient.invalidateQueries({
+      predicate: query => marketSensitiveQueryKeys.has(String(query.queryKey[0])),
+      refetchType: 'active',
+    })
+  }
+  finally {
+    isSubmittingPreferences.value = false
+  }
 }
 </script>
 
 <template>
   <div>
     <div
+      data-testid="market-preferences-trigger"
       class="flex items-center gap-6"
       @click="isOpenDialog = true"
     >
@@ -132,6 +148,8 @@ const onSubmit = async (event: FormSubmitEvent<PreferenceState>) => {
 
     <BaseDialog
       v-model="isOpenDialog"
+      data-testid="market-preferences-dialog"
+      :prevent-close="isDialogLocked"
       body-class="space-y-6 p-8"
       card-class="overflow-visible"
       :ui="{
@@ -161,7 +179,7 @@ const onSubmit = async (event: FormSubmitEvent<PreferenceState>) => {
           >
             <USelectMenu
               v-model="state.region"
-              :disabled="isPendingUpdateUserPreferences || isPendingGetMarketConfig"
+              :disabled="isDialogLocked || isPendingGetMarketConfig"
               size="xl"
               :options="regionOptions"
               :ui-menu="selectMenuUi"
@@ -190,9 +208,10 @@ const onSubmit = async (event: FormSubmitEvent<PreferenceState>) => {
           >
             <USelectMenu
               v-model="state.currency"
+              data-testid="market-preferences-currency"
               searchable
               size="xl"
-              :disabled="isPendingUpdateUserPreferences"
+              :disabled="isDialogLocked"
               :options="currencyOptions"
               value-attribute="id"
               option-attribute="displayLabel"
@@ -205,16 +224,18 @@ const onSubmit = async (event: FormSubmitEvent<PreferenceState>) => {
       <template #footer>
         <DialogActions>
           <UButton
-            :disabled="isPendingUpdateUserPreferences"
-            size="lg"
+            :disabled="isDialogLocked"
+            size="md"
             color="gray"
             @click="isOpenDialog = false"
           >
             Cancel
           </UButton>
           <UButton
-            :loading="isPendingUpdateUserPreferences"
-            size="lg"
+            data-testid="market-preferences-save"
+            :loading="isDialogLocked"
+            :disabled="isDialogLocked"
+            size="md"
             @click="formRef?.submit"
           >
             Save

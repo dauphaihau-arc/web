@@ -127,6 +127,7 @@ const filledStars = computed(() => {
       <div class="flex items-center space-x-3">
         <div class="flex items-center space-x-3">
           <div
+            data-testid="product-summary-price"
             class="price"
             :class="hasDiscount && 'text-[var(--state-success-text)]'"
           >
