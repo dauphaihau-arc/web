@@ -36,7 +36,10 @@ const {
   data: dataGetCart,
 } = useGetCart()
 
-const { data: dataUserAuth } = useGetCurrentUser()
+const {
+  data: dataUserAuth,
+  isPending: isPendingUserAuth,
+} = useGetCurrentUser()
 
 const isShowCart = ref(false)
 const isShowSearch = ref(false)
@@ -204,27 +207,36 @@ const showRegisterLoginDialog = async () => {
             </UButton>
           </UTooltip>
 
-          <template v-if="dataUserAuth?.user">
-            <NotificationPopover @mouseenter="preloadAuthMenu" />
-            <AccountDropdown
-              @hover-trigger="isShowCart = false"
-              @mouseenter="preloadAuthMenu"
-            />
-          </template>
+          <ClientOnly>
+            <template #fallback>
+              <USkeleton class="size-6 rounded-full" />
+            </template>
 
-          <template v-else>
-            <UTooltip text="Sign in">
-              <UButton
-                square
-                color="gray"
-                variant="ghost"
-                @click="showRegisterLoginDialog"
-                @mouseover="isShowCart = false"
-              >
-                <AppIcon name="user" />
-              </UButton>
-            </UTooltip>
-          </template>
+            <template v-if="isPendingUserAuth && !dataUserAuth">
+              <USkeleton class="size-6 rounded-full" />
+            </template>
+            <template v-else-if="dataUserAuth?.user">
+              <NotificationPopover @mouseenter="preloadAuthMenu" />
+              <AccountDropdown
+                @hover-trigger="isShowCart = false"
+                @mouseenter="preloadAuthMenu"
+              />
+            </template>
+            <template v-else>
+              <UTooltip text="Sign in">
+                <UButton
+                  data-testid="header-sign-in-trigger"
+                  square
+                  color="gray"
+                  variant="ghost"
+                  @click="showRegisterLoginDialog"
+                  @mouseover="isShowCart = false"
+                >
+                  <AppIcon name="user" />
+                </UButton>
+              </UTooltip>
+            </template>
+          </ClientOnly>
 
           <UTooltip :text="sellerCtaLabel">
             <UButton
@@ -249,6 +261,7 @@ const showRegisterLoginDialog = async () => {
             >
               <UButton
                 id="cart-btn"
+                data-testid="header-cart-trigger"
                 square
                 variant="ghost"
                 color="gray"

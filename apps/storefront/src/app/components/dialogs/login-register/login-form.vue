@@ -118,6 +118,7 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
         </NuxtLink>
 
         <UButton
+          data-testid="login-submit"
           :loading="isPendingLogin || isLoadingAuthClientConfig"
           size="xl"
           block
