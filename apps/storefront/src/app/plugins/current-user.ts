@@ -1,18 +1,18 @@
-import { currentUserQueryOptions } from '~/shared/server-state/me/current-user.query'
+import { currentUserQueryOptions } from '~/shared/server-state/me/current-user.query';
 
 export default defineNuxtPlugin(async () => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   if (import.meta.client) {
     await queryClient.fetchQuery({
       ...currentUserQueryOptions,
       staleTime: 0,
-    }).catch(() => {})
+    }).catch(() => {});
   }
   else {
-    await queryClient.prefetchQuery(currentUserQueryOptions).catch(() => {})
+    await queryClient.prefetchQuery(currentUserQueryOptions).catch(() => {});
   }
 
-  const marketStore = useMarketStore()
-  await marketStore.ensureMarketReady().catch(() => {})
-})
+  const marketStore = useMarketStore();
+  await marketStore.ensureMarketReady().catch(() => {});
+});

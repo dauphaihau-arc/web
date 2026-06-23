@@ -1,5 +1,5 @@
-import type { Page, Route } from '@playwright/test'
-import { createUser, type E2ENotification, type E2EUser } from './factories'
+import type { Page, Route } from '@playwright/test';
+import { createUser, type E2ENotification, type E2EUser } from './factories';
 
 type StorefrontMockOptions = {
   currentUser?: E2EUser | null
@@ -9,7 +9,7 @@ type StorefrontMockOptions = {
   notifications?: E2ENotification[]
   guestOrdersResponse?: Record<string, unknown>
   productDetailByCurrency?: Record<string, Record<string, unknown>>
-}
+};
 
 const defaultAuthClientConfig = {
   version: 'e2e-config-v1',
@@ -32,14 +32,14 @@ const defaultAuthClientConfig = {
   ai: {
     product_description_enabled: false,
   },
-}
+};
 
 function fulfillJSON(route: Route, body: unknown, status = 200) {
   return route.fulfill({
     status,
     contentType: 'application/json',
     body: JSON.stringify(body),
-  })
+  });
 }
 
 function buildCart(quantity: number) {
@@ -58,7 +58,7 @@ function buildCart(quantity: number) {
         total_price: 0,
       },
     },
-  }
+  };
 }
 
 function buildMarketConfig() {
@@ -74,7 +74,7 @@ function buildMarketConfig() {
         enabled: true,
       },
     ],
-  }
+  };
 }
 
 function buildIpData() {
@@ -83,7 +83,7 @@ function buildIpData() {
     currency: {
       code: 'USD',
     },
-  }
+  };
 }
 
 function buildCategories() {
@@ -108,7 +108,7 @@ function buildCategories() {
       featured_facet_keys: [],
       attributes: [],
     },
-  ]
+  ];
 }
 
 function buildDefaultProductDetail(currency: string) {
@@ -123,9 +123,9 @@ function buildDefaultProductDetail(currency: string) {
       original_amount_minor: 1500,
       currency: 'USD',
     },
-  } as const
+  } as const;
 
-  const pricing = pricingByCurrency[currency as keyof typeof pricingByCurrency] ?? pricingByCurrency.USD
+  const pricing = pricingByCurrency[currency as keyof typeof pricingByCurrency] ?? pricingByCurrency.USD;
 
   return {
     id: 'product-e2e-1',
@@ -162,118 +162,118 @@ function buildDefaultProductDetail(currency: string) {
         sub_variant_label: null,
       },
     ],
-  }
+  };
 }
 
 export async function installStorefrontApiMocks(
   page: Page,
-  options: StorefrontMockOptions = {},
+  options: StorefrontMockOptions = {}
 ) {
-  let currentUser = options.currentUser ?? null
-  let cartQuantity = options.cartQuantity ?? 0
-  const loginUser = options.loginUser ?? createUser()
-  let notifications = [...(options.notifications ?? [])]
+  let currentUser = options.currentUser ?? null;
+  let cartQuantity = options.cartQuantity ?? 0;
+  const loginUser = options.loginUser ?? createUser();
+  let notifications = [...(options.notifications ?? [])];
   const guestOrdersResponse = options.guestOrdersResponse ?? {
     order_shops: [],
-  }
-  const productDetailByCurrency = options.productDetailByCurrency ?? {}
+  };
+  const productDetailByCurrency = options.productDetailByCurrency ?? {};
 
   await page.route('**/*', async (route) => {
-    const request = route.request()
-    const url = new URL(request.url())
-    const { pathname } = url
-    const method = request.method()
+    const request = route.request();
+    const url = new URL(request.url());
+    const { pathname } = url;
+    const method = request.method();
 
     if (pathname === '/api/ip-data' && method === 'GET') {
-      return fulfillJSON(route, buildIpData())
+      return fulfillJSON(route, buildIpData());
     }
 
     if (pathname.endsWith('/marketplace/config') && method === 'GET') {
-      return fulfillJSON(route, buildMarketConfig())
+      return fulfillJSON(route, buildMarketConfig());
     }
 
     if (pathname.endsWith('/auth/client-config') && method === 'GET') {
-      return fulfillJSON(route, defaultAuthClientConfig)
+      return fulfillJSON(route, defaultAuthClientConfig);
     }
 
     if (pathname.endsWith('/categories') && method === 'GET') {
-      return fulfillJSON(route, buildCategories())
+      return fulfillJSON(route, buildCategories());
     }
 
     if (pathname.endsWith('/auth/me') && method === 'GET') {
       if (!currentUser) {
-        return fulfillJSON(route, { message: 'Unauthorized' }, 401)
+        return fulfillJSON(route, { message: 'Unauthorized' }, 401);
       }
 
-      return fulfillJSON(route, currentUser)
+      return fulfillJSON(route, currentUser);
     }
 
     if (pathname.endsWith('/auth/login') && method === 'POST') {
-      currentUser = loginUser
-      cartQuantity = options.cartQuantityAfterLogin ?? cartQuantity
-      return fulfillJSON(route, { user: loginUser })
+      currentUser = loginUser;
+      cartQuantity = options.cartQuantityAfterLogin ?? cartQuantity;
+      return fulfillJSON(route, { user: loginUser });
     }
 
     if (pathname.endsWith('/cart/merge') && method === 'POST') {
-      return fulfillJSON(route, buildCart(cartQuantity))
+      return fulfillJSON(route, buildCart(cartQuantity));
     }
 
     if (pathname.endsWith('/cart') && method === 'GET') {
-      return fulfillJSON(route, buildCart(cartQuantity))
+      return fulfillJSON(route, buildCart(cartQuantity));
     }
 
     if (pathname.endsWith('/me/notifications/unread-count') && method === 'GET') {
       return fulfillJSON(route, {
         unread_count: notifications.filter(notification => !notification.read_at).length,
-      })
+      });
     }
 
     if (pathname.endsWith('/me/notifications') && method === 'GET') {
       return fulfillJSON(route, {
         results: notifications,
         total_results: notifications.length,
-      })
+      });
     }
 
     if (pathname.endsWith('/me/notifications/read-all') && method === 'PATCH') {
       notifications = notifications.map(notification => ({
         ...notification,
         read_at: notification.read_at ?? new Date().toISOString(),
-      }))
+      }));
 
       return fulfillJSON(route, {
         success: true,
-      })
+      });
     }
 
     if (pathname.includes('/me/notifications/') && pathname.endsWith('/read') && method === 'PATCH') {
-      const notificationId = pathname.split('/').at(-2)
+      const notificationId = pathname.split('/').at(-2);
       notifications = notifications.map((notification) => {
         if (notification.id !== notificationId || notification.read_at) {
-          return notification
+          return notification;
         }
 
         return {
           ...notification,
           read_at: new Date().toISOString(),
-        }
-      })
+        };
+      });
 
       return fulfillJSON(route, {
         success: true,
-      })
+      });
     }
 
     if (pathname.endsWith('/checkout/guest-orders') && method === 'GET') {
-      return fulfillJSON(route, guestOrdersResponse)
+      return fulfillJSON(route, guestOrdersResponse);
     }
 
     if (pathname.includes('/products/by-slug/') && pathname.endsWith('/views') && method === 'POST') {
-      return fulfillJSON(route, { success: true })
+      return fulfillJSON(route, { success: true });
     }
 
     if (pathname.includes('/products/by-slug/') && pathname.endsWith('/recommendation-sections') && method === 'GET') {
-      return fulfillJSON(route, { sections: [] })
+      return fulfillJSON(route, { sections: [] });
     }
 
     if (pathname.includes('/products/by-slug/') && pathname.endsWith('/review-images') && method === 'GET') {
@@ -283,7 +283,7 @@ export async function installStorefrontApiMocks(
           next_cursor: undefined,
           has_more: false,
         },
-      })
+      });
     }
 
     if (pathname.includes('/products/by-slug/') && pathname.endsWith('/reviews') && method === 'GET') {
@@ -309,16 +309,16 @@ export async function installStorefrontApiMocks(
           page: 1,
           limit: 4,
         },
-      })
+      });
     }
 
     if (pathname.includes('/products/by-slug/') && method === 'GET') {
-      const requestedCurrency = request.headers()['x-currency'] ?? 'USD'
-      const detailResponse = productDetailByCurrency[requestedCurrency] ?? buildDefaultProductDetail(requestedCurrency)
+      const requestedCurrency = request.headers()['x-currency'] ?? 'USD';
+      const detailResponse = productDetailByCurrency[requestedCurrency] ?? buildDefaultProductDetail(requestedCurrency);
 
-      return fulfillJSON(route, detailResponse)
+      return fulfillJSON(route, detailResponse);
     }
 
-    return route.continue()
-  })
+    return route.continue();
+  });
 }

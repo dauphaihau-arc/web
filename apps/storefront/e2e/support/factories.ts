@@ -8,7 +8,7 @@ export type E2EUser = {
     language: string
     region: string
   }
-}
+};
 
 export type E2ENotification = {
   id: string
@@ -19,7 +19,7 @@ export type E2ENotification = {
   data?: {
     orderId?: string
   }
-}
+};
 
 export function createUser(overrides: Partial<E2EUser> = {}): E2EUser {
   return {
@@ -33,7 +33,7 @@ export function createUser(overrides: Partial<E2EUser> = {}): E2EUser {
       region: 'United States',
     },
     ...overrides,
-  }
+  };
 }
 
 export function createNotification(overrides: Partial<E2ENotification> = {}): E2ENotification {
@@ -47,5 +47,5 @@ export function createNotification(overrides: Partial<E2ENotification> = {}): E2
       orderId: 'order-1001',
     },
     ...overrides,
-  }
+  };
 }
