@@ -32,6 +32,14 @@ function stripDuplicatedPlugins(config) {
 export default withNuxt(
   ...(await dauphaihauConfig()).map(stripDuplicatedPlugins),
   {
+    files: ['**/*.{ts,tsx,vue}'],
+    languageOptions: {
+      parserOptions: {
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
+  {
     rules: {
       '@typescript-eslint/explicit-function-return-type': 'off',
       'no-console': ['error', { allow: ['warn', 'error', 'info'] }],
