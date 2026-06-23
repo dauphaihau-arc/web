@@ -93,6 +93,24 @@ export default withNuxt(
     },
   },
   {
+    files: ['e2e/**/*.ts'],
+    rules: {
+      '@typescript-eslint/naming-convention': [
+        'error',
+        {
+          selector: 'typeProperty',
+          format: null,
+        },
+      ],
+    },
+  },
+  {
+    files: ['scripts/**/*.{js,mjs,cjs,ts}'],
+    rules: {
+      'no-console': 'off',
+    },
+  },
+  {
     ignores: [
       '**/*.config.js',
       '**/*.config.ts',
