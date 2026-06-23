@@ -12,8 +12,6 @@ const emit = defineEmits<{
 
 const authStore = useAuthStore()
 const toast = useToast()
-const formRef = ref()
-
 const stateSubmit = reactive({
   email: authStore.emailRequestForgetPassword,
 })
@@ -40,7 +38,6 @@ async function onSubmit(event: FormSubmitEvent<ForgotPasswordRequest>) {
 
 <template>
   <UForm
-    ref="formRef"
     :validate-on="['submit']"
     :schema="forgotPasswordFormSchema"
     :state="stateSubmit"

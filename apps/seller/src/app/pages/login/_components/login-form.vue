@@ -10,7 +10,6 @@ import type { LoginRequest as LoginBody } from '~/shared/api/auth/contracts/logi
 import { appendPasswordError } from '~/shared/utils/password-policy'
 import { SellerAccessRequiredError } from '~/shared/utils/seller-access'
 
-const formRef = ref()
 const unknownErrorServerMsg = ref('')
 const invalidUsers = new Map<LoginBody['email'], LoginBody['password'][]>()
 const stateSubmit: Partial<LoginBody> = reactive({})
@@ -85,7 +84,6 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
 
     <div class="rounded">
       <UForm
-        ref="formRef"
         :validate-on="['submit']"
         :validate="validateForm"
         :state="stateSubmit"

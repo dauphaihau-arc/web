@@ -41,7 +41,6 @@ const toast = useToast()
 const { data: authClientConfig } = useAuthClientConfig()
 
 const fileImages = ref<File[]>([])
-const formRef = ref()
 const titleInputRef = ref()
 const isProductHaveVariants = ref(false)
 const btnSubmitRef = ref()
@@ -208,7 +207,6 @@ watch(isProductHaveVariants, () => {
     <ProductFormSectionNav :sections="sections" />
 
     <UForm
-      ref="formRef"
       :validate-on="['submit']"
       :validate="validateForm"
       :state="stateSubmit"

@@ -57,7 +57,6 @@ const noneVariant = reactive<Partial<NoneVariant>>({
 
 const stateSubmit = reactive<UpdateProductBody>({})
 
-const formRef = ref()
 const isVariantProduct = computed(() => stateSubmit.variant_type !== ProductVariantTypes.NONE)
 const btnSubmit = ref()
 const disabledButtonSubmit = ref(true)
@@ -231,7 +230,6 @@ watchDebounced(
     <ProductFormSectionNav :sections="sections" />
 
     <UForm
-      ref="formRef"
       :validate-on="['submit']"
       :validate="validateForm"
       :state="stateSubmit"
