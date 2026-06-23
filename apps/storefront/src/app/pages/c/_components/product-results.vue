@@ -23,7 +23,10 @@ defineProps<{
         :key="i"
       >
         <div>
-          <USkeleton class="size-[254px]" />
+          <USkeleton
+            class="w-full"
+            style="aspect-ratio: 1 / 1;"
+          />
           <div class="mt-3 space-y-3">
             <USkeleton class="h-5 w-[190px]" />
             <USkeleton class="h-5 w-[150px]" />

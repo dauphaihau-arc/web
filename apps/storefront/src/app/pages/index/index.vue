@@ -7,6 +7,14 @@ import NewArrivals from './_components/new-arrivals.vue'
 import RecommendedSubCategories from './_components/recommended-sub-categories.vue'
 import RootCategories from './_components/root-categories.vue'
 import TrendingNow from './_components/trending-now.vue'
+import { useGetRecentlyViewedProducts } from '~/shared/server-state/product/products.query'
+
+const recentlyViewedLimit = 10
+const { data: recentlyViewed, isPending: isRecentlyViewedPending } = useGetRecentlyViewedProducts(
+  computed(() => ({ limit: recentlyViewedLimit })),
+)
+const recentProducts = computed(() => recentlyViewed.value?.items)
+const recentAnchorProduct = computed(() => recentProducts.value?.[0])
 
 definePageMeta({ layout: 'market' })
 </script>
@@ -16,8 +24,12 @@ definePageMeta({ layout: 'market' })
     <TrendingNow />
     <BestSellers />
     <NewArrivals />
-    <RecentlyViewed />
-    <BecauseYouViewed />
+    <RecentlyViewed
+      :products="recentProducts"
+      :loading="isRecentlyViewedPending"
+      :limit="recentlyViewedLimit"
+    />
+    <BecauseYouViewed :anchor-product="recentAnchorProduct" />
     <RootCategories />
     <ContinueExploring />
     <RecommendedSubCategories />

@@ -3,7 +3,11 @@ import type { Category } from '@arc/models/category'
 import { getRoutePath, routes } from '~/shared/navigation/routes'
 import { useGetRootCategories } from '~/shared/server-state/category/categories.query'
 
-const { data: dataRootCategories } = useGetRootCategories()
+const {
+  data: dataRootCategories,
+  isPending: isPendingRootCategories,
+  isFetching: isFetchingRootCategories,
+} = useGetRootCategories()
 const marketStore = useMarketStore()
 
 const redirectByCategory = (rootCategory: Category) => {
@@ -15,8 +19,22 @@ const redirectByCategory = (rootCategory: Category) => {
 </script>
 
 <template>
-  <div v-if="dataRootCategories && dataRootCategories.length > 0">
-    <div class="flex gap-3">
+  <div>
+    <div
+      v-if="isPendingRootCategories && isFetchingRootCategories"
+      class="flex gap-3"
+    >
+      <USkeleton
+        v-for="index in 7"
+        :key="index"
+        class="h-7 w-20 rounded-md"
+      />
+    </div>
+
+    <div
+      v-else-if="dataRootCategories && dataRootCategories.length > 0"
+      class="flex gap-3"
+    >
       <div
         v-for="(cg, index) of dataRootCategories"
         :key="index"

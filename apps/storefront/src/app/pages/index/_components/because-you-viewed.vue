@@ -1,10 +1,14 @@
 <script lang="ts" setup>
 import ProductCard from './product-card.vue'
-import { useGetProductRecommendations, useGetRecentlyViewedProducts } from '~/shared/server-state/product/products.query'
+import type { GetProductsResponseItem } from '~/shared/api/product/contracts/product.contract'
+import { useGetProductRecommendations } from '~/shared/server-state/product/products.query'
 
 const limit = 8
-const { data: recentlyViewed } = useGetRecentlyViewedProducts(computed(() => ({ limit: 1 })))
-const anchorProduct = computed(() => recentlyViewed.value?.items?.[0])
+const props = defineProps<{
+  anchorProduct?: GetProductsResponseItem
+}>()
+
+const anchorProduct = computed(() => props.anchorProduct)
 const queryParams = computed(() => {
   if (!anchorProduct.value?.shop?.slug || !anchorProduct.value?.slug) {
     return undefined

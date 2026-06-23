@@ -28,7 +28,7 @@ const displayAmount = computed(() => {
 
   const minAmount = formatMinorCurrency(pricing.min_amount_minor, pricing.currency)
   if (pricing.max_amount_minor != null && pricing.max_amount_minor > pricing.min_amount_minor) {
-    return `From ${minAmount}`
+    return `from ${minAmount}`
   }
 
   return minAmount

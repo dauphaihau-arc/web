@@ -1,28 +1,17 @@
 <script lang="ts" setup>
-import ProductCard from './product-card.vue'
+import ProductSection from './product-section.vue'
 import { useGetTrendingProducts } from '~/shared/server-state/product/products.query'
 
 const limit = 10
-const { data } = useGetTrendingProducts(computed(() => ({ limit })))
+const { data, isPending } = useGetTrendingProducts(computed(() => ({ limit })))
 </script>
 
 <template>
-  <div v-if="data?.items?.length">
-    <div>
-      <h3 class="mb-1 text-lg font-medium">
-        Trending Now
-      </h3>
-      <p class="mb-3 text-md text-text-strong">
-        Popular products people are viewing right now
-      </p>
-      <div class="grid grid-cols-5 gap-4">
-        <div
-          v-for="(product, i) of data.items"
-          :key="i"
-        >
-          <ProductCard :product="product" />
-        </div>
-      </div>
-    </div>
-  </div>
+  <ProductSection
+    title="Trending Now"
+    description="Popular products people are viewing right now"
+    :products="data?.items"
+    :loading="isPending"
+    :limit="limit"
+  />
 </template>

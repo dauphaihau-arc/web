@@ -196,14 +196,14 @@ watch(() => stateSubmit.country, () => {
     <template #footer>
       <DialogActions>
         <UButton
-          size="lg"
+          size="md"
           color="gray"
           @click="dialog.close"
         >
           Cancel
         </UButton>
         <UButton
-          size="lg"
+          size="md"
           type="submit"
           @click="formRef?.submit"
         >

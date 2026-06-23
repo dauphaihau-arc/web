@@ -39,7 +39,7 @@ const displayAmount = computed(() => {
 
   const minAmount = formatMinorCurrency(pricing.min_amount_minor, pricing.currency)
   if (pricing.max_amount_minor != null && pricing.max_amount_minor > pricing.min_amount_minor) {
-    return `From ${minAmount}`
+    return `from ${minAmount}`
   }
 
   return minAmount
@@ -87,14 +87,17 @@ const hasDiscount = computed(() => {
     class="group flex h-full w-full cursor-pointer flex-col gap-1.5"
     @click="() => router.push(routes.productDetail(props.product.shop.slug, props.product.slug))"
   >
-    <div class="flex h-[230px] w-full items-center justify-center overflow-hidden rounded-lg bg-customGray-200 ring-1 ring-border-subtle">
+    <div
+      class="relative w-full overflow-hidden rounded-lg bg-customGray-200 ring-1 ring-border-subtle"
+      style="aspect-ratio: 1 / 1;"
+    >
       <NuxtImg
         :src="imageUrl"
-        class="size-full object-cover object-center transition-transform duration-300 group-hover:scale-[1.03]"
+        class="absolute inset-0 block size-full object-cover object-center transition-transform duration-300 group-hover:scale-[1.03]"
       />
     </div>
 
-    <div class="flex min-h-[104px] flex-col gap-1">
+    <div class="flex min-h-[104px] flex-col gap-0.5">
       <h1 class="truncate whitespace-nowrap text-sm font-semibold">
         {{ props.product?.title }}
       </h1>

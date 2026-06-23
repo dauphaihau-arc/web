@@ -35,7 +35,10 @@ const { data, isPending } = useGetProductRecommendationSections(queryParams)
           v-for="index in limit"
           :key="index"
         >
-          <USkeleton class="aspect-[254/320] w-full rounded-[28px] !bg-customGray-300/85" />
+          <USkeleton
+            class="w-full rounded-lg !bg-customGray-300/85"
+            style="aspect-ratio: 1 / 1;"
+          />
           <div class="mt-3 space-y-3">
             <USkeleton class="h-5 w-[190px] !bg-customGray-300/85" />
             <USkeleton class="h-5 w-[150px] !bg-customGray-300/85" />

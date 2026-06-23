@@ -1,34 +1,34 @@
 <script lang="ts" setup>
-import ProductCard from './product-card.vue'
-import { useGetRecentlyViewedProducts } from '~/shared/server-state/product/products.query'
+import ProductSection from './product-section.vue'
+import type { GetProductsResponseItem } from '~/shared/api/product/contracts/product.contract'
 
-const limit = 10
 const marketStore = useMarketStore()
+const props = withDefaults(defineProps<{
+  products?: GetProductsResponseItem[]
+  loading?: boolean
+  limit?: number
+}>(), {
+  products: undefined,
+  loading: false,
+  limit: 10,
+})
+
 const fallbackRecentProducts = computed(() => marketStore.recentProductViews
-  .slice(0, limit)
+  .slice(0, props.limit)
   .map(entry => entry.product))
-const { data } = useGetRecentlyViewedProducts(computed(() => ({ limit })))
-const recentProducts = computed(() => data.value?.items?.length
-  ? data.value.items
+
+const recentProducts = computed(() => props.products?.length
+  ? props.products
   : fallbackRecentProducts.value)
 </script>
 
 <template>
-  <div v-if="recentProducts.length > 0">
-    <div>
-      <h3 class="mb-3 text-lg font-medium">
-        Recently viewed
-      </h3>
-      <div class="grid grid-cols-5 gap-4">
-        <div
-          v-for="(product, i) of recentProducts"
-          :key="i"
-        >
-          <ProductCard :product="product" />
-        </div>
-      </div>
-    </div>
-  </div>
+  <ProductSection
+    title="Recently viewed"
+    :products="recentProducts"
+    :loading="props.loading && recentProducts.length === 0"
+    :limit="props.limit"
+  />
 </template>
 
 <style scoped>
