@@ -1,11 +1,13 @@
 <script lang="ts" setup>
+import type { UseQueryOptions } from '@tanstack/vue-query'
 import ProductCard from './product-card.vue'
-import type { GetProductsResponseItem } from '~/shared/api/product/contracts/product.contract'
+import type { GetProductsResponseItem, GetProductRecommendationsResponse } from '~/shared/api/product/contracts/product.contract'
 import { useGetProductRecommendations } from '~/shared/server-state/product/products.query'
 
 const limit = 8
 const props = defineProps<{
   anchorProduct?: GetProductsResponseItem
+  queryOptions?: Partial<UseQueryOptions<GetProductRecommendationsResponse>>
 }>()
 
 const anchorProduct = computed(() => props.anchorProduct)
@@ -21,7 +23,7 @@ const queryParams = computed(() => {
   }
 })
 
-const { data } = useGetProductRecommendations(queryParams)
+const { data } = useGetProductRecommendations(queryParams, props.queryOptions)
 </script>
 
 <template>

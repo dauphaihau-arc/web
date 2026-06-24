@@ -10,8 +10,16 @@ import TrendingNow from './_components/trending-now.vue'
 import { useGetRecentlyViewedProducts } from '~/shared/server-state/product/products.query'
 
 const recentlyViewedLimit = 10
+
+const homeSectionQueryOptions = {
+  staleTime: 60_000,
+  refetchOnMount: false,
+  refetchOnWindowFocus: false,
+} as const
+
 const { data: recentlyViewed, isPending: isRecentlyViewedPending } = useGetRecentlyViewedProducts(
   computed(() => ({ limit: recentlyViewedLimit })),
+  homeSectionQueryOptions,
 )
 const recentProducts = computed(() => recentlyViewed.value?.items)
 const recentAnchorProduct = computed(() => recentProducts.value?.[0])
@@ -21,15 +29,18 @@ definePageMeta({ layout: 'market' })
 
 <template>
   <div class="space-y-20 py-12">
-    <TrendingNow />
-    <BestSellers />
-    <NewArrivals />
+    <TrendingNow :query-options="homeSectionQueryOptions" />
+    <BestSellers :query-options="homeSectionQueryOptions" />
+    <NewArrivals :query-options="homeSectionQueryOptions" />
     <RecentlyViewed
       :products="recentProducts"
       :loading="isRecentlyViewedPending"
       :limit="recentlyViewedLimit"
     />
-    <BecauseYouViewed :anchor-product="recentAnchorProduct" />
+    <BecauseYouViewed
+      :anchor-product="recentAnchorProduct"
+      :query-options="homeSectionQueryOptions"
+    />
     <RootCategories />
     <ContinueExploring />
     <RecommendedSubCategories />
