@@ -31,3 +31,4 @@ test-results
 
 # Netlify local metadata
 .netlify
+.turbo
