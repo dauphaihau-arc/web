@@ -34,7 +34,7 @@ const isChecked = computed(() => {
 
 <template>
   <div
-    :class="['flex items-start', props.wrapperClass]"
+    :class="['flex items-center', props.wrapperClass]"
     @click="clickRadio"
   >
     <div class="grid h-6 place-items-center">
