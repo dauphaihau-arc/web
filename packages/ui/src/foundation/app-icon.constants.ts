@@ -78,3 +78,17 @@ export function resolveAppIconName(name?: AppIconAlias | string | null): string 
 
   return ICON_NAME_BY_ALIAS[name as AppIconAlias] ?? name
 }
+
+export function resolveAppIconCssClass(name?: AppIconAlias | string | null): string | undefined {
+  const resolvedName = resolveAppIconName(name)
+
+  if (!resolvedName) {
+    return undefined
+  }
+
+  if (resolvedName.startsWith('i-')) {
+    return resolvedName
+  }
+
+  return `i-${resolvedName}`
+}
