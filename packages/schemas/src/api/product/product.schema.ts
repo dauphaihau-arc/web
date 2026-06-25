@@ -15,6 +15,12 @@ export const publicProductShopSchema = z.object({
   slug: z.string(),
 })
 
+export const publicProductCategoryPathItemSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  slug: z.string(),
+})
+
 export const publicProductImageSchema = z.object({
   storage_key: z.string(),
   variant: z.string().optional(),
@@ -271,6 +277,7 @@ export const getDetailProductBySlugResponseSchema = z.object({
   id: z.string(),
   shop: publicProductShopSchema,
   category_id: z.string().optional(),
+  category_path: z.array(publicProductCategoryPathItemSchema).optional(),
   title: z.string(),
   slug: z.string(),
   description: z.string(),

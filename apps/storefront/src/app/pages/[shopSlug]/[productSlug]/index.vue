@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import AddToCartForm from './_components/add-to-cart-form/add-to-cart-form.vue'
 import ProductImages from './_components/product-images.vue'
+import ProductCategoryBreadcrumb from './_components/product-category-breadcrumb.vue'
 import MoreInfo from './_components/more-info.vue'
 import ProductReviews from './_components/product-reviews/product-reviews.vue'
 import ProductSummary from './_components/summary.vue'
@@ -118,13 +119,17 @@ watch(productData, (value) => {
 </script>
 
 <template>
-  <div class="mt-24">
+  <div class="mt-20">
     <div
       v-if="isPendingProduct || product"
       class="space-y-20"
     >
       <div class="mb-20 grid grid-cols-10 gap-16">
-        <div class="sticky top-24 col-span-6 self-start">
+        <div class="sticky top-24 col-span-6 self-start -mt-9">
+          <ProductCategoryBreadcrumb
+            :category-path="productData?.category_path"
+            class="mb-3"
+          />
           <ProductImages
             :images="product?.images"
             :is-loading="isPendingProduct"

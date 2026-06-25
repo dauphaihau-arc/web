@@ -72,9 +72,9 @@ watch(
     <section
       v-else-if="reviewCount > 0 && reviews"
       id="reviews"
-      class="space-y-5 py-10"
+      class="space-y-7 py-10"
     >
-      <div class="space-y-5">
+      <div class="space-y-3">
         <h2 class="text-xl font-semibold tracking-tight text-text">
           Reviews for this item
         </h2>
