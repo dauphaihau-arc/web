@@ -1,11 +1,13 @@
 <script lang="ts" setup>
+import { resolveAppIconCssClass } from '@arc/ui/foundation/app-icon.constants'
 import type { CategoriesBreadcrumbStorage } from '~/shared/stores/market/market.store.types'
 
 const route = useRoute()
 const marketStore = useMarketStore()
 
 defineProps<{
-  totalProducts: number
+  totalProducts?: number
+  loading: boolean
 }>()
 
 const currentNameCategory = computed(() => {
@@ -39,12 +41,17 @@ watch(() => route.fullPath, () => {
   <div>
     <UBreadcrumb
       v-if="categoriesBreadcrumb && route.params.categories.length > 1"
-      divider="i-heroicons-chevron-right-20-solid"
+      :divider="resolveAppIconCssClass('chevronRight')"
       :links="categoriesBreadcrumb"
       :ui="{ active: 'text-text-subtle' }"
     />
-    <div class="mb-2 text-2xl font-semibold capitalize">
-      {{ currentNameCategory }} ( {{ totalProducts }} )
+    <div class="mb-2 flex items-center gap-2 text-2xl font-semibold capitalize">
+      <span>{{ currentNameCategory }}</span>
+      <USkeleton
+        v-if="loading"
+        class="h-8 w-16"
+      />
+      <span v-else>( {{ totalProducts ?? 0 }} )</span>
     </div>
   </div>
 </template>

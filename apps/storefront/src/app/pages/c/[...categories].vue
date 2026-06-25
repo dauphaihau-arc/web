@@ -14,6 +14,12 @@ const marketStore = useMarketStore()
 
 const limit = 16
 const page = ref(1)
+const filterQueryKeys = new Set([
+  'is_digital',
+  'min_price',
+  'max_price',
+  'who_made',
+])
 
 function normalizeRouteQuery(query: typeof route.query): Record<string, string | string[]> {
   const normalized: Record<string, string | string[]> = {}
@@ -52,6 +58,24 @@ const params = computed(() => {
   return defaultParams
 })
 
+const hasActiveFilters = computed(() => {
+  return Object.entries(route.query).some(([key, value]) => {
+    if (key.startsWith('attr_')) {
+      return true
+    }
+
+    if (!filterQueryKeys.has(key)) {
+      return false
+    }
+
+    if (Array.isArray(value)) {
+      return value.some(entry => typeof entry === 'string' && entry.length > 0)
+    }
+
+    return typeof value === 'string' && value.length > 0
+  })
+})
+
 const {
   data: dataGetProducts,
   isPending: isPendingGetProducts,
@@ -66,7 +90,10 @@ watch(() => page.value, () => {
   <div class="pt-12">
     <div class="sticky top-0 z-[2] mb-4 flex items-center justify-between py-2">
       <div class="surface-backdrop categories-toolbar-backdrop" />
-      <CategoriesBreadcrumb :total-products="dataGetProducts?.meta.total || 0" />
+      <CategoriesBreadcrumb
+        :total-products="dataGetProducts?.meta.total"
+        :loading="isPendingGetProducts"
+      />
       <SortProductsBy />
     </div>
 
@@ -83,6 +110,7 @@ watch(() => page.value, () => {
         :total="dataGetProducts?.meta.total"
         :limit="limit"
         :loading="isPendingGetProducts"
+        :has-active-filters="hasActiveFilters"
       />
     </div>
   </div>

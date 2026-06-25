@@ -4,11 +4,12 @@ import type { GetProductsResponseItem } from '~/shared/api/product/contracts/pro
 
 const page = defineModel<number>('page', { required: true })
 
-defineProps<{
+const props = defineProps<{
   items?: GetProductsResponseItem[]
   total?: number
   limit: number
   loading: boolean
+  hasActiveFilters?: boolean
 }>()
 </script>
 
@@ -47,6 +48,20 @@ defineProps<{
         >
           <ProductCard :product="product" />
         </div>
+      </div>
+
+      <div
+        v-else
+        class="mb-16 flex min-h-[320px] flex-col items-center justify-center rounded-2xl px-6 text-center"
+      >
+        <h2 class="text-xl font-semibold text-text-strong">
+          {{ props.hasActiveFilters ? 'No results found' : 'No products here yet' }}
+        </h2>
+        <p class="mt-2 max-w-md text-sm text-text-subtle">
+          {{ props.hasActiveFilters
+            ? 'Try adjusting or clearing your filters.'
+            : 'Try another category or browse all products.' }}
+        </p>
       </div>
 
       <div
