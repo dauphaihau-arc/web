@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ProductVariantTypes } from '@arc/enums/product'
+import { FetchError } from 'ofetch'
 import { useAddToCartForm } from './use-add-to-cart-form'
 import type { FormSubmitEvent } from '#ui/types'
 import type { AddProductToCartRequest, AddProductToCartResponse } from '~/shared/api/cart/contracts/cart.contract'
@@ -7,6 +8,8 @@ import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contra
 import { routes } from '~/shared/navigation/routes'
 import { toastCustom } from '~/shared/config/toast'
 import { useAddProductToCart } from '~/shared/server-state/cart/add-product.mutation'
+import { getBackendErrorMessage } from '~/shared/utils/backend-error'
+import { getAddToCartFailureCopy, resolveAddToCartFailure } from '~/shared/utils/cart-error'
 
 type Inventory = GetDetailProductBySlugResponse['inventory'][number]
 type AddToCartProduct = Pick<
@@ -27,7 +30,7 @@ const toast = useToast()
 const {
   mutateAsync: addProductToCart,
   isPending: isPendingAddProductToCart,
-} = useAddProductToCart()
+} = useAddProductToCart({ showErrorToast: false })
 
 const formRef = ref()
 
@@ -81,38 +84,60 @@ async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
     quantity: event.data.quantity,
   }
 
-  if (isBuyNow) {
-    body.is_temp = true
+  try {
+    if (isBuyNow) {
+      body.is_temp = true
+      const response = await addProductToCart(body)
+
+      if (response.cart === null || !response.cart?.id) {
+        toast.add({
+          ...toastCustom.error,
+          title: 'Unable to start checkout',
+        })
+        return
+      }
+
+      queryClient.setQueryData<AddProductToCartResponse>(['get-cart', response.cart.id], response)
+      navigateTo(routes.checkout({ c: response.cart.id }))
+      return
+    }
+
     const response = await addProductToCart(body)
 
-    if (response.cart === null || !response.cart?.id) {
+    if (response.cart === null) {
       toast.add({
         ...toastCustom.error,
-        title: 'Checkout failed',
+        title: 'Add product to cart failed',
       })
       return
     }
 
-    queryClient.setQueryData<AddProductToCartResponse>(['get-cart', response.cart.id], response)
-    navigateTo(routes.checkout({ c: response.cart.id }))
-    return
+    queryClient.setQueryData<AddProductToCartResponse>(['get-cart', 'my-cart'], response)
+    toast.add({
+      ...toastCustom.success,
+      title: 'Added to cart',
+    })
   }
+  catch (error) {
+    const failure = resolveAddToCartFailure(error)
+    const failureCopy = getAddToCartFailureCopy(failure, { isBuyNow })
+    const backendMessage = getBackendErrorMessage(error)
 
-  const response = await addProductToCart(body)
-
-  if (response.cart === null) {
     toast.add({
       ...toastCustom.error,
-      title: 'Add product to cart failed',
+      title: failureCopy.title,
+      description: failureCopy.description
+        ?? (error instanceof FetchError && !backendMessage
+          ? `Request failed with status ${error.status ?? 'unknown'}`
+          : undefined),
+      ...(failure === 'unknown' && backendMessage
+        ? { title: backendMessage }
+        : {}),
+      ...(error instanceof FetchError && !backendMessage && failure === 'unknown'
+        ? { description: `Request failed with status ${error.status ?? 'unknown'}` }
+        : {}),
     })
-    return
   }
-
-  queryClient.setQueryData<AddProductToCartResponse>(['get-cart', 'my-cart'], response)
-  toast.add({
-    ...toastCustom.success,
-    title: 'Added to cart',
-  })
 }
 </script>
 
