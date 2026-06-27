@@ -1,16 +1,5 @@
-import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack'
 import type {
-  CheckoutQuoteResponse,
-  CreateCheckoutQuoteForBuyNowRequest,
-  CreateCheckoutQuoteFromCartRequest,
-  CreateOrderForBuyNowRequest,
-  CreateOrderForBuyNowResponse
-  ,
-  CreateOrderFromCartRequest,
-  CreateOrderFromCartResponse
-  ,
   GetMyOrderDetailResponse,
-  GetOrderShopsByCheckoutSessionResponse,
   GetOrderShopsRequest,
   GetOrderShopsResponse,
   RequestOrderCancelRequest,
@@ -19,34 +8,6 @@ import type {
 import { apiClient } from '~/shared/lib/api-client'
 
 export const meOrdersApi = {
-  createQuoteForBuyNow(payload: CreateCheckoutQuoteForBuyNowRequest) {
-    return apiClient.post<CheckoutQuoteResponse>(
-      '/me/checkout/buy-now/quote',
-      payload,
-    )
-  },
-
-  createQuoteFromCart(payload: CreateCheckoutQuoteFromCartRequest) {
-    return apiClient.post<CheckoutQuoteResponse>(
-      '/me/checkout/quote',
-      payload,
-    )
-  },
-
-  createForBuyNow(payload: CreateOrderForBuyNowRequest) {
-    return apiClient.put<CreateOrderForBuyNowResponse>(
-      '/me/checkout/buy-now',
-      payload,
-    )
-  },
-
-  createFromCart(payload: CreateOrderFromCartRequest) {
-    return apiClient.post<CreateOrderFromCartResponse>(
-      '/me/checkout',
-      payload,
-    )
-  },
-
   getShops(params?: GetOrderShopsRequest) {
     return apiClient.get<GetOrderShopsResponse>(
       '/me/orders',
@@ -71,19 +32,6 @@ export const meOrdersApi = {
     return apiClient.patch<GetMyOrderDetailResponse>(
       `/me/orders/${orderId}/support-request`,
       payload,
-    )
-  },
-
-  getShopsByCheckoutSession(
-    sessionId: string,
-    options?: NitroFetchOptions<NitroFetchRequest>,
-  ) {
-    return apiClient.get<GetOrderShopsByCheckoutSessionResponse>(
-      '/me/checkout/session',
-      { session_id: sessionId },
-      undefined,
-      options,
-      { retryOnWakeUp: true },
     )
   },
 }
