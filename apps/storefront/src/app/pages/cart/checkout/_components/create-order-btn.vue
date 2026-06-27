@@ -23,6 +23,7 @@ import type {
 } from '~/shared/api/me/order/contracts/order.contract'
 import { useGetCart } from '~/shared/server-state/cart/cart.query'
 import { getBackendErrorMessage } from '~/shared/utils/backend-error'
+import { getCheckoutFailureCopy, resolveCheckoutFailure } from '~/shared/utils/checkout-error'
 
 const marketStore = useMarketStore()
 const toast = useToast()
@@ -141,12 +142,27 @@ const onCreateOrder = async () => {
   }
   catch (error) {
     cartStore.stateCheckoutCart.isPendingCreateOrder = false
+    const checkoutFailure = resolveCheckoutFailure(error)
+    const checkoutFailureCopy = getCheckoutFailureCopy(checkoutFailure)
+
+    if (checkoutFailure !== 'unknown') {
+      await getCart()
+    }
+
     const backendMessage = getBackendErrorMessage(error)
 
     toast.add({
       ...toastCustom.error,
-      title: backendMessage ?? 'Create order failed',
+      title: checkoutFailureCopy.title,
+      description: checkoutFailureCopy.description
+        ?? (error instanceof FetchError && !backendMessage
+          ? `Request failed with status ${error.status ?? 'unknown'}`
+          : undefined),
+      ...(checkoutFailure === 'unknown' && backendMessage
+        ? { title: backendMessage }
+        : {}),
       ...(error instanceof FetchError && !backendMessage
+        && checkoutFailure === 'unknown'
         ? { description: `Request failed with status ${error.status ?? 'unknown'}` }
         : {}),
     })
