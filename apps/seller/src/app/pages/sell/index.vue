@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import CreateShopForm from './_components/create-shop-form.vue'
-import { isBackendWakeUpError } from '~/shared/composables/use-backend-status'
+import { isBackendWakeUpError } from '@arc/lib'
 import { routes } from '~/shared/navigation/routes'
 import { setPostAuthRedirect } from '~/shared/server-state/auth/post-auth-redirect'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'

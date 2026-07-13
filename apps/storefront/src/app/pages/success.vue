@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
-import { isBackendWakeUpError } from '~/shared/composables/use-backend-status'
+import { isBackendWakeUpError } from '@arc/lib'
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
 import { useGetCheckoutOrderShopsByCheckoutSession } from '~/shared/server-state/checkout/order-shops.query'
 import { routes } from '~/shared/navigation/routes'

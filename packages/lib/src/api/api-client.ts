@@ -9,7 +9,7 @@ export type RequestBehavior = {
 type RequestLifecycle = {
   markReady?: () => void
   markWaking?: () => void
-  waitForBackend?: () => Promise<boolean>
+  waitForBackend?: (options?: { force?: boolean }) => Promise<boolean>
 }
 
 type RefreshSessionConfig = {

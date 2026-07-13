@@ -1,0 +1,9 @@
+{
+  "name": "@arc/composables",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*"
+  }
+}

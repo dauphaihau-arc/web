@@ -1,6 +1,6 @@
+import { isBackendWakeUpError } from '@arc/lib';
 import { routes } from '~/shared/navigation/routes';
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query';
-import { isBackendWakeUpError } from '~/shared/composables/use-backend-status';
 import { setPostAuthRedirect } from '~/shared/server-state/auth/post-auth-redirect';
 import { clearExpTokensInLS } from '~/shared/server-state/auth/token-storage';
 import { hasSellerAccess } from '~/shared/utils/seller-access';

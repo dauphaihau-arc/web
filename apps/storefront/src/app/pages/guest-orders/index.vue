@@ -4,7 +4,7 @@ import type { FormSubmitEvent } from '#ui/types'
 import ShopItem from '~/app/pages/orders/_components/shop-item/shop-item.vue'
 import { useLookupGuestOrders } from '~/shared/server-state/checkout/guest-orders.query'
 import { routes } from '~/shared/navigation/routes'
-import { isBackendWakeUpError } from '~/shared/composables/use-backend-status'
+import { isBackendWakeUpError } from '@arc/lib'
 
 definePageMeta({ layout: 'market' })
 

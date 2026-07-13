@@ -24,7 +24,7 @@ describe('auth middleware', () => {
   afterEach(() => {
     vi.doUnmock('~/shared/server-state/me/current-user.query');
     vi.doUnmock('~/shared/navigation/routes');
-    vi.doUnmock('~/shared/composables/use-backend-status');
+    vi.doUnmock('@arc/lib');
   });
 
   it('allows authenticated users through auth middleware without redirecting', async () => {
@@ -39,7 +39,8 @@ describe('auth middleware', () => {
     vi.doMock('~/shared/navigation/routes', () => ({
       routes: { home: () => '/' },
     }));
-    vi.doMock('~/shared/composables/use-backend-status', () => ({
+    vi.doMock('@arc/lib', async () => ({
+      ...await vi.importActual('@arc/lib'),
       isBackendWakeUpError: () => false,
     }));
 
@@ -64,7 +65,8 @@ describe('auth middleware', () => {
     vi.doMock('~/shared/navigation/routes', () => ({
       routes: { home: () => '/' },
     }));
-    vi.doMock('~/shared/composables/use-backend-status', () => ({
+    vi.doMock('@arc/lib', async () => ({
+      ...await vi.importActual('@arc/lib'),
       isBackendWakeUpError: () => false,
     }));
 
@@ -91,7 +93,8 @@ describe('auth middleware', () => {
     vi.doMock('~/shared/navigation/routes', () => ({
       routes: { home: () => '/' },
     }));
-    vi.doMock('~/shared/composables/use-backend-status', () => ({
+    vi.doMock('@arc/lib', async () => ({
+      ...await vi.importActual('@arc/lib'),
       isBackendWakeUpError: () => false,
     }));
 
@@ -119,7 +122,8 @@ describe('auth middleware', () => {
     vi.doMock('~/shared/navigation/routes', () => ({
       routes: { home: () => '/' },
     }));
-    vi.doMock('~/shared/composables/use-backend-status', () => ({
+    vi.doMock('@arc/lib', async () => ({
+      ...await vi.importActual('@arc/lib'),
       isBackendWakeUpError: (error: unknown) => error === wakeUpError,
     }));
 

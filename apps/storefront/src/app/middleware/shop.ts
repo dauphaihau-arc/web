@@ -1,4 +1,4 @@
-import { isBackendWakeUpError } from '~/shared/composables/use-backend-status';
+import { isBackendWakeUpError } from '@arc/lib';
 import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query';
 
 export default defineNuxtRouteMiddleware(async () => {

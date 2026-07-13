@@ -1,6 +1,5 @@
-import { createApiClient } from '@arc/lib';
+import { createApiClient, isBackendWakeUpError } from '@arc/lib';
 import { RESOURCES } from '@arc/enums/resources';
-import { isBackendWakeUpError, useBackendStatus } from '~/shared/composables/use-backend-status';
 import { clearExpTokensInLS } from '~/shared/server-state/auth/token-storage';
 
 function getApiBaseURL() {

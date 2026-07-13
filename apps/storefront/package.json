@@ -61,6 +61,7 @@
     "vue-tsc": "^2.0.29"
   },
   "dependencies": {
+    "@arc/composables": "workspace:*",
     "@arc/contracts": "workspace:*",
     "@arc/enums": "workspace:*",
     "@arc/lib": "workspace:*",
