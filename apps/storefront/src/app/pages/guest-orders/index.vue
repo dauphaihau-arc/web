@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
+import { isBackendWakeUpError } from '@arc/lib'
 import type { FormSubmitEvent } from '#ui/types'
 import ShopItem from '~/app/pages/orders/_components/shop-item/shop-item.vue'
 import { useLookupGuestOrders } from '~/shared/server-state/checkout/guest-orders.query'
 import { routes } from '~/shared/navigation/routes'
-import { isBackendWakeUpError } from '@arc/lib'
 
 definePageMeta({ layout: 'market' })
 
