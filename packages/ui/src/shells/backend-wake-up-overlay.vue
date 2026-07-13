@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import LoadingSvg from '../primitives/loading-svg.vue'
 
-defineProps<{
+const props = defineProps<{
   isBackendPending: boolean
   isBackendError: boolean
 }>()
@@ -9,6 +9,8 @@ defineProps<{
 const emit = defineEmits<{
   retry: []
 }>()
+
+const shouldShowRetryAction = computed(() => props.isBackendError && !props.isBackendPending)
 </script>
 
 <template>
@@ -22,12 +24,12 @@ const emit = defineEmits<{
         v-if="isBackendPending"
         :child-class="'!w-4 !h-4'"
       />
-      <span v-if="isBackendPending">
-        Waking up the server. This can take a few seconds.
+      <span v-if="!shouldShowRetryAction">
+        Waking up the backend server. This can take a few seconds.
       </span>
       <span v-else> The server is still unavailable. </span>
       <UButton
-        v-if="isBackendError"
+        v-if="shouldShowRetryAction"
         color="gray"
         size="xs"
         :ui="{ rounded: 'rounded-full' }"
