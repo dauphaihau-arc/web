@@ -14,6 +14,9 @@ importers:
 
   apps/seller:
     dependencies:
+      '@arc/composables':
+        specifier: workspace:*
+        version: link:../../packages/composables
       '@arc/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
@@ -165,6 +168,9 @@ importers:
 
   apps/storefront:
     dependencies:
+      '@arc/composables':
+        specifier: workspace:*
+        version: link:../../packages/composables
       '@arc/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
@@ -316,6 +322,8 @@ importers:
       vue-tsc:
         specifier: ^2.0.29
         version: 2.1.6(typescript@5.6.3)
+
+  packages/composables: {}
 
   packages/contracts: {}
 
