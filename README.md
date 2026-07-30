@@ -42,6 +42,17 @@ packages/
 - **Code splitting and lazy loading** - Nuxt route-based chunking is supplemented with lazy-loaded interaction-heavy UI and large product-management surfaces so non-critical code is fetched on demand
 - **Bundle chunk optimization** - Vite/Rollup manual chunk rules split large shared dependencies such as workspace UI, Nuxt UI, Vue Query, and `dayjs` into more stable, cacheable bundles
 
+### Rendering Strategies
+
+- **Storefront uses mixed rendering** - `apps/storefront` runs with Nuxt SSR enabled and applies route-level rendering rules based on page behavior, SEO value, and personalization needs.
+- **Homepage uses ISR** - `/` is incrementally regenerated every hour so the landing experience can stay cacheable while still receiving fresh marketplace content.
+- **Catalog and public fallback pages use ISR** - unmatched public storefront routes use short-lived ISR so product and shop pages can be served quickly without rebuilding the whole app.
+- **Search stays server-rendered** - `/search` uses SSR so query-driven discovery pages can render from the server while still reflecting request-specific input.
+- **Interactive customer flows are client-rendered** - cart, checkout, account, orders, reset, success, and guest-order routes disable SSR because they depend heavily on user session state, browser-only state, or post-action UI.
+- **Category listing is client-rendered** - `/c/**` disables SSR to keep filter-heavy browsing and client-side query interactions simple.
+- **Seller app is SPA-style client-rendered** - `apps/seller` disables SSR globally because it is an authenticated operational dashboard where SEO is not a priority and most data is user/shop-specific.
+- **Static generation remains available** - `pnpm generate:<app>` can produce static output when needed, while app-level route rules decide which storefront paths should be prerendered, skipped, server-rendered, or regenerated.
+
 ### Security and Operations
 
 - **Runtime configuration by environment** - API base URLs, app-to-app links, asset hosts, and other public runtime settings are injected per environment rather than hardcoded
