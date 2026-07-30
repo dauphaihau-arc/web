@@ -1,5 +1,5 @@
 import { computed, readonly } from 'vue'
-import { useState } from '#app'
+import { useRuntimeConfig, useState } from '#app'
 
 export type BackendStatus = 'unknown' | 'checking' | 'waking' | 'ready' | 'error'
 
@@ -10,7 +10,7 @@ export type UseBackendStatusOptions = {
   stateKey?: string
 }
 
-const DEFAULT_READY_ENDPOINT = '/api/health/ready'
+const DEFAULT_READY_PATH = '/health/ready'
 const DEFAULT_PING_TIMEOUT_MS = 10000
 const DEFAULT_RETRY_DELAYS_MS = [1500, 2500, 4000, 6000]
 
@@ -20,7 +20,12 @@ function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+function joinURL(baseURL: string, path: string) {
+  return `${baseURL.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`
+}
+
 export function useBackendStatus(options: UseBackendStatusOptions = {}) {
+  const config = useRuntimeConfig()
   const stateKey = options.stateKey ?? 'backend-status'
   const status = useState<BackendStatus>(stateKey, () => 'unknown')
   const isUnknown = computed(() => status.value === 'unknown')
@@ -43,7 +48,12 @@ export function useBackendStatus(options: UseBackendStatusOptions = {}) {
   }
 
   const pingBackend = async () => {
-    await $fetch(options.readyEndpoint ?? DEFAULT_READY_ENDPOINT, {
+    const apiBaseURL = String(config.public.apiBaseURL ?? '')
+
+    const readyEndpoint = options.readyEndpoint
+      ?? (apiBaseURL ? joinURL(apiBaseURL, DEFAULT_READY_PATH) : DEFAULT_READY_PATH)
+
+    await $fetch(readyEndpoint, {
       retry: 0,
       timeout: options.pingTimeoutMs ?? DEFAULT_PING_TIMEOUT_MS,
     })
