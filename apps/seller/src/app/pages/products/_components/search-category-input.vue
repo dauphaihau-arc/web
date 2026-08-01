@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Category } from '@arc/models/category'
-import { useGetSuggestCategories } from '~/shared/server-state/category/suggest-categories.mutation'
+import { useGetSuggestCategories } from '~/domains/category/mutations/suggest-categories.mutation'
 
 const props = defineProps<{ title?: string, category?: Category | null }>()
 

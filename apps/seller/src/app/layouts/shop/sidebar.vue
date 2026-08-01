@@ -3,8 +3,8 @@ import LayoutShopSidebarSubLinks from './sidebar-sub-links.vue'
 import type { LinkItem } from './sidebar.types'
 import type { DropdownItem } from '#ui/types'
 import { shopSidebarLinks } from '~/shared/navigation/menu'
-import { useLogout } from '~/shared/server-state/auth/logout.mutation'
-import { useGetMyShop } from '~/shared/server-state/shop/my-shop.query'
+import { useLogout } from '~/domains/auth/mutations/logout.mutation'
+import { useGetMyShop } from '~/domains/shop/queries/my-shop.query'
 
 const route = useRoute()
 const config = useRuntimeConfig()

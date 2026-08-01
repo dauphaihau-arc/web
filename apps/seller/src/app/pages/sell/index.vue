@@ -2,8 +2,8 @@
 import { isBackendWakeUpError } from '@arc/lib'
 import CreateShopForm from './_components/create-shop-form.vue'
 import { routes } from '~/shared/navigation/routes'
-import { setPostAuthRedirect } from '~/shared/server-state/auth/post-auth-redirect'
-import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
+import { setPostAuthRedirect } from '~/domains/auth/utils/post-auth-redirect'
+import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
 
 definePageMeta({
   layout: 'auth',

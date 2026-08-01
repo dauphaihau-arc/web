@@ -7,13 +7,13 @@ import { PRODUCT_CONFIG } from '@arc/enums/product'
 import RadioGroupInput from '@arc/ui/primitives/radio-group-input.vue'
 import ApplyCouponOnProduct from './apply-coupon-on-product.vue'
 import SearchStartEndDateInput from './search-start-end-date-input/search-start-end-date-input.vue'
-import { createPromoCodeFormSchema } from '~/shared/schemas/forms/shop/coupon/create-promo-code-form.schema'
+import { createPromoCodeFormSchema } from '~/app/pages/coupons/_schemes/coupon/create-promo-code-form.schema'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import WrapperFormGroupCard from '~/app/components/wrapper-form-group-card.vue'
 import { routes } from '~/shared/navigation/routes'
 import { toastCustom } from '~/shared/config/toast'
-import { useShopCreateCoupon } from '~/shared/server-state/shop/coupon/create-coupon.mutation'
-import type { CreatePromoCodeBody } from '~/shared/api/shop/coupon/contracts/coupon.contract'
+import { useShopCreateCoupon } from '~/domains/shop/mutations/create-coupon.mutation'
+import type { CreatePromoCodeBody } from '~/domains/shop/api/coupon/contracts/coupon.contract'
 
 type StateSubmit = RequiredFields<Partial<CreatePromoCodeBody>, 'type' | 'applies_to' | 'min_order_type'>
 

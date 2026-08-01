@@ -1,0 +1,23 @@
+import { consumePostAuthRedirect } from '../utils/post-auth-redirect';
+import type { RegisterRequest } from '~/domains/auth/api/contracts/register.contract';
+import { authApi } from '~/domains/auth/api/auth.api';
+import { routes } from '~/shared/navigation/routes';
+
+export function useRegister() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ['register'],
+    mutationFn: (body: RegisterRequest) => {
+      return authApi.register(body);
+    },
+    onSuccess: async (data) => {
+      if (data?.user) {
+        queryClient.setQueryData(['current-user'], { user: data.user });
+
+        consumePostAuthRedirect();
+        await navigateTo(routes.sell());
+      }
+    },
+  });
+}

@@ -1,9 +1,9 @@
 import { isBackendWakeUpError } from '@arc/lib';
 import { routes } from '~/shared/navigation/routes';
-import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query';
-import { setPostAuthRedirect } from '~/shared/server-state/auth/post-auth-redirect';
-import { clearExpTokensInLS } from '~/shared/server-state/auth/token-storage';
-import { hasSellerAccess } from '~/shared/utils/seller-access';
+import { useGetCurrentUser } from '~/domains/me/queries/current-user.query';
+import { setPostAuthRedirect } from '~/domains/auth/utils/post-auth-redirect';
+import { clearExpTokensInLS } from '~/domains/auth/utils/token-storage';
+import { hasSellerAccess } from '~/domains/auth/utils/seller-access';
 
 export default defineNuxtRouteMiddleware(async (to) => {
   const queryClient = useQueryClient();

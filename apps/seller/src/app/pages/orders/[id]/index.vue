@@ -4,10 +4,10 @@ import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
 import StatusBadge from '@arc/ui/primitives/status-badge.vue'
 import OrderDetailActions from './_components/order-detail-actions.vue'
 import SellerOrderDetailContent from '~/app/pages/orders/[id]/_components/order-detail-content/order-detail-content.vue'
-import type { ShopOrder } from '~/shared/types/shop-order-detail'
+import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import { routes } from '~/shared/navigation/routes'
-import { useShopGetOrderDetail } from '~/shared/server-state/shop/order/detail.query'
+import { useShopGetOrderDetail } from '~/domains/shop/queries/order/detail.query'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 

@@ -1,5 +1,6 @@
 import { MARKET_CONFIG } from '@arc/enums/market';
 import formatCurrency from '@arc/utils/format-currency';
+import { useMarketStore } from '~/domains/market/stores/market.store';
 
 const tempRates = {
   AUD: 1.534853,

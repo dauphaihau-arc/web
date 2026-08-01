@@ -6,10 +6,10 @@ import CouponsTable from './_components/coupons-table.vue'
 import CouponsTypeTabs from './_components/coupons-type-tabs.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import { routes } from '~/shared/navigation/routes'
-import { useShopGetCoupons } from '~/shared/server-state/shop/coupon/coupons.query'
+import { useShopGetCoupons } from '~/domains/shop/queries/coupons.query'
 import type {
   ListShopCouponsRequest,
-} from '~/shared/api/shop/coupon/contracts/coupon.contract'
+} from '~/domains/shop/api/coupon/contracts/coupon.contract'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 const pageCount = 10

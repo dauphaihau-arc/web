@@ -18,14 +18,14 @@ import { useCreateProductSubmit } from './use-create-product-submit'
 import {
   createProductFormSchema,
   createProductInventoryFormSchema,
-} from '~/shared/schemas/forms/shop/product/create-product-form.schema'
+} from '~/app/pages/products/_schemes/product/create-product-form.schema'
 import { toastCustom } from '~/shared/config/toast'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import FormGroupCard from '~/app/components/wrapper-form-group-card.vue'
 import { routes } from '~/shared/navigation/routes'
-import { useAuthClientConfig } from '~/shared/server-state/auth/client-config.query'
-import { useGetMyShop } from '~/shared/server-state/shop/my-shop.query'
-import { useGenerateProductDescription } from '~/shared/server-state/shop/product/generate-product-description.mutation'
+import { useAuthClientConfig } from '~/domains/auth/queries/client-config.query'
+import { useGetMyShop } from '~/domains/shop/queries/my-shop.query'
+import { useGenerateProductDescription } from '~/domains/shop/mutations/generate-product-description.mutation'
 import type {
   CreateProductBody,
   CreateProductShipping,
@@ -33,7 +33,7 @@ import type {
   StateNoneVariant,
   StateSingleVariant,
   StateSubmit,
-} from '~/shared/api/shop/product/contracts/form.contract'
+} from '~/domains/shop/api/product/contracts/form.contract'
 
 const router = useRouter()
 const modal = useModal()

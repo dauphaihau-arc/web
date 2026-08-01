@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PRODUCT_CONFIG } from '@arc/enums/product'
-import type { StateNoneVariant } from '~/shared/api/shop/product/contracts/form.contract'
+import type { StateNoneVariant } from '~/domains/shop/api/product/contracts/form.contract'
 
 const props = defineProps<{ disabled?: boolean, currency?: string }>()
 

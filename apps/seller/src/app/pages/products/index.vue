@@ -8,9 +8,9 @@ import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import { routes } from '~/shared/navigation/routes'
 import type {
   ListShopProductsRequest,
-} from '~/shared/api/shop/product/contracts/read.contract'
-import { useShopGetProducts } from '~/shared/server-state/shop/product/list.query'
-import { useGetMyShop } from '~/shared/server-state/shop/my-shop.query'
+} from '~/domains/shop/api/product/contracts/read.contract'
+import { useShopGetProducts } from '~/domains/shop/queries/product/list.query'
+import { useGetMyShop } from '~/domains/shop/queries/my-shop.query'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 

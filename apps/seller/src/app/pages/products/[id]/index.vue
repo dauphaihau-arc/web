@@ -3,7 +3,7 @@ import { defineAsyncComponent } from 'vue'
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import { routes } from '~/shared/navigation/routes'
-import { useShopGetDetailProduct } from '~/shared/server-state/shop/product/detail.query'
+import { useShopGetDetailProduct } from '~/domains/shop/queries/product/detail.query'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 

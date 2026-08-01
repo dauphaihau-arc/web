@@ -1,4 +1,4 @@
-import { currentUserQueryOptions } from '~/shared/server-state/me/current-user.query';
+import { currentUserQueryOptions } from '~/domains/me/queries/current-user.query';
 
 export default defineNuxtPlugin(() => {
   const queryClient = useQueryClient();

@@ -4,11 +4,11 @@ import { FetchError } from 'ofetch'
 import { loginFormSchema } from '@arc/schemas/forms/auth/login-form.schema'
 import type { FormError, FormSubmitEvent } from '#ui/types'
 import { routes } from '~/shared/navigation/routes'
-import { useAuthClientConfig } from '~/shared/server-state/auth/client-config.query'
-import { useLogin } from '~/shared/server-state/auth/login.mutation'
-import type { LoginRequest as LoginBody } from '~/shared/api/auth/contracts/login.contract'
-import { appendPasswordError } from '~/shared/utils/password-policy'
-import { SellerAccessRequiredError } from '~/shared/utils/seller-access'
+import { useAuthClientConfig } from '~/domains/auth/queries/client-config.query'
+import { useLogin } from '~/domains/auth/mutations/login.mutation'
+import type { LoginRequest as LoginBody } from '~/domains/auth/api/contracts/login.contract'
+import { appendPasswordError } from '~/domains/auth/utils/password-policy'
+import { SellerAccessRequiredError } from '~/domains/auth/utils/seller-access'
 
 const unknownErrorServerMsg = ref('')
 const invalidUsers = new Map<LoginBody['email'], LoginBody['password'][]>()

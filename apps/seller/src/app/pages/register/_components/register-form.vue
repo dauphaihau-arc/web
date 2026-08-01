@@ -2,11 +2,11 @@
 import { StatusCodes } from 'http-status-codes'
 import { FetchError } from 'ofetch'
 import type { FormError, FormSubmitEvent } from '#ui/types'
-import { useAuthClientConfig } from '~/shared/server-state/auth/client-config.query'
-import { useRegister } from '~/shared/server-state/auth/register.mutation'
-import type { RegisterRequest as RegisterBody } from '~/shared/api/auth/contracts/register.contract'
-import { registerFormSchema } from '~/shared/schemas/api/auth/register.schema'
-import { appendPasswordError } from '~/shared/utils/password-policy'
+import { useAuthClientConfig } from '~/domains/auth/queries/client-config.query'
+import { useRegister } from '~/domains/auth/mutations/register.mutation'
+import type { RegisterRequest as RegisterBody } from '~/domains/auth/api/contracts/register.contract'
+import { registerFormSchema } from '~/app/pages/register/_schemes/register.scheme'
+import { appendPasswordError } from '~/domains/auth/utils/password-policy'
 
 const invalidEmails: string[] = []
 const formRef = ref()

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ShopOrder } from '~/shared/types/shop-order-detail'
+import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail'
 
 const props = defineProps<{
   shippingAddress: ShopOrder['shipping_address']

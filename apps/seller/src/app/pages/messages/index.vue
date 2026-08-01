@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import MessagesPageContent from './_components/messages-page-content/messages-page-content.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
-import { useShopChatUnreadCount } from '~/shared/server-state/shop/chat/conversations.query'
+import { useShopChatUnreadCount } from '~/domains/shop/queries/conversations.query'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 

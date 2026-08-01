@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ProductStates } from '@arc/enums/product'
 import { productStateFilterOptions } from './product-state-filter-options'
-import type { ListShopProductsResponse } from '~/shared/api/shop/product/contracts/read.contract'
+import type { ListShopProductsResponse } from '~/domains/shop/api/product/contracts/read.contract'
 
 type StateCounts = ListShopProductsResponse['state_counts']
 

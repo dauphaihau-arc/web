@@ -6,8 +6,8 @@ import { productInventorySchema } from '@arc/schemas/product-inventory.schema'
 import type { IOnChangeUpdateVariants } from './update-product-form.vue'
 import type {
   DetailShopProductResponse,
-} from '~/shared/api/shop/product/contracts/read.contract'
-import type { UpdateProductBody, UpdateVariantOptions } from '~/shared/api/shop/product/contracts/form.contract'
+} from '~/domains/shop/api/product/contracts/read.contract'
+import type { UpdateProductBody, UpdateVariantOptions } from '~/domains/shop/api/product/contracts/form.contract'
 
 type VariantEditorProduct = DetailShopProductResponse['product']
 

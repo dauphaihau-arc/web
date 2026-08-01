@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import type {
   ShopChatConversation,
   ShopChatMessage
-} from '~/shared/api/shop/chat/contracts/chat.contract';
+} from '~/domains/shop/api/chat/contracts/chat.contract';
 
 export function isConversationUnread(
   conversation: ShopChatConversation,

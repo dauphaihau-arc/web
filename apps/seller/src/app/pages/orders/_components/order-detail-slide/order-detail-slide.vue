@@ -8,7 +8,7 @@ import Products from './products.vue'
 import Timeline from './timeline.vue'
 import { useOrderActions } from '~/app/pages/orders/[id]/_components/order-detail-content/use-order-actions'
 import { routes } from '~/shared/navigation/routes'
-import { useShopGetOrderDetail } from '~/shared/server-state/shop/order/detail.query'
+import { useShopGetOrderDetail } from '~/domains/shop/queries/order/detail.query'
 
 const props = defineProps<{
   modelValue: boolean

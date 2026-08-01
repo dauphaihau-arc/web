@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import type { ProductStates } from '@arc/enums/product'
-import type { ListShopProductsRequest } from '~/shared/api/shop/product/contracts/read.contract'
+import type { ListShopProductsRequest } from '~/domains/shop/api/product/contracts/read.contract'
 import FilterPopover from '~/app/components/filter/filter-popover.vue'
 import FilterToolbar from '~/app/components/filter/filter-toolbar.vue'
-import { useGetSuggestCategories } from '~/shared/server-state/category/suggest-categories.mutation'
+import { useGetSuggestCategories } from '~/domains/category/mutations/suggest-categories.mutation'
 
 type ProductCategoryOption = {
   id: string

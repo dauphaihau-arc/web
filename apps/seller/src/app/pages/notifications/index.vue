@@ -3,9 +3,9 @@ import dayjs from 'dayjs'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import FixedPagination from '~/app/components/fixed-pagination.vue'
 import { routes } from '~/shared/navigation/routes'
-import type { NotificationItem } from '~/shared/api/me/notifications/contracts/notification.contract'
-import { useMarkAllMyNotificationsAsRead, useMarkMyNotificationAsRead } from '~/shared/server-state/me/notifications/notifications.mutation'
-import { useGetMyNotifications, useGetMyNotificationUnreadCount } from '~/shared/server-state/me/notifications/notifications.query'
+import type { NotificationItem } from '~/domains/me/api/notifications/contracts/notification.contract'
+import { useMarkAllMyNotificationsAsRead, useMarkMyNotificationAsRead } from '~/domains/me/mutations/notifications.mutation'
+import { useGetMyNotifications, useGetMyNotificationUnreadCount } from '~/domains/me/queries/notifications.query'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 

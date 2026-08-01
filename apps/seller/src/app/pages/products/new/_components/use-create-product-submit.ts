@@ -9,10 +9,10 @@ import {
 } from './create-product-form.mapper';
 import { routes } from '~/shared/navigation/routes';
 import { toastCustom } from '~/shared/config/toast';
-import { useShopCreateProduct } from '~/shared/server-state/shop/product/create-product.mutation';
-import { useShopPublishProduct } from '~/shared/server-state/shop/product/publish-product.mutation';
-import { useShopSetProductImagesByKeys } from '~/shared/server-state/shop/product/set-product-images-by-keys.mutation';
-import { useIssueProductImageUploadUrl } from '~/shared/server-state/upload/issue-product-image-upload-url.mutation';
+import { useShopCreateProduct } from '~/domains/shop/mutations/create-product.mutation';
+import { useShopPublishProduct } from '~/domains/shop/mutations/publish-product.mutation';
+import { useShopSetProductImagesByKeys } from '~/domains/shop/mutations/set-product-images-by-keys.mutation';
+import { useIssueProductImageUploadUrl } from '~/domains/shop/mutations/issue-product-image-upload-url.mutation';
 import type {
   CreateProductBody,
   CreateProductShipping,
@@ -20,7 +20,7 @@ import type {
   StateNoneVariant,
   StateSingleVariant,
   StateSubmit
-} from '~/shared/api/shop/product/contracts/form.contract';
+} from '~/domains/shop/api/product/contracts/form.contract';
 
 type UseCreateProductSubmitInput = {
   fileImages: Ref<File[]>

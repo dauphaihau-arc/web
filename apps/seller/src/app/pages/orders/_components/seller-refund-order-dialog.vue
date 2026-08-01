@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useShopUpdateOrderRefund } from '~/shared/server-state/shop/order/update-refund.mutation'
+import { useShopUpdateOrderRefund } from '~/domains/shop/mutations/update-refund.mutation'
 
 const props = defineProps<{
   orderId: string

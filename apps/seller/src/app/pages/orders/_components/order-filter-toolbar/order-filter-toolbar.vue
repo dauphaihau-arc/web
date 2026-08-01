@@ -23,9 +23,9 @@ import type {
 } from '~/app/components/date-filter-panel/order-filter.types'
 import FilterPopover from '~/app/components/filter/filter-popover.vue'
 import FilterToolbar from '~/app/components/filter/filter-toolbar.vue'
-import type { ListShopOrdersRequest } from '~/shared/api/shop/order/contracts/order.contract'
-import { useGetMarketplaceConfig } from '~/shared/server-state/market/config.query'
-import { useGetMyShop } from '~/shared/server-state/shop/my-shop.query'
+import type { ListShopOrdersRequest } from '~/domains/shop/api/order/contracts/order.contract'
+import { useGetMarketplaceConfig } from '~/domains/market/queries/config.query'
+import { useGetMyShop } from '~/domains/shop/queries/my-shop.query'
 
 const emit = defineEmits<{
   change: [payload: Partial<ListShopOrdersRequest>]

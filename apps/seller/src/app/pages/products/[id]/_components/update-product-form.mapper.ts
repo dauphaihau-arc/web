@@ -2,12 +2,12 @@
 // @ts-nocheck
 import { ProductVariantTypes } from '@arc/enums/product';
 import pick from '@arc/utils/pick';
-import type { DetailShopProductResponse } from '~/shared/api/shop/product/contracts/read.contract';
+import type { DetailShopProductResponse } from '~/domains/shop/api/product/contracts/read.contract';
 import type {
   NoneVariant,
   ProductImageReference,
   UpdateProductBody
-} from '~/shared/api/shop/product/contracts/form.contract';
+} from '~/domains/shop/api/product/contracts/form.contract';
 
 type DetailProduct = DetailShopProductResponse['product'];
 

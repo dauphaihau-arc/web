@@ -3,10 +3,10 @@ import { MarketCurrencies } from '@arc/enums/market'
 import { currencyOptions } from '@arc/utils'
 import { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
-import type { CreateShopRequest } from '~/shared/api/shop/contracts/shop.contract'
+import type { CreateShopRequest } from '~/domains/shop/api/contracts/shop.contract'
 import { routes } from '~/shared/navigation/routes'
 import { toastCustom } from '~/shared/config/toast'
-import { useCreateShop } from '~/shared/server-state/shop/create-shop.mutation'
+import { useCreateShop } from '~/domains/shop/mutations/create-shop.mutation'
 
 const toast = useToast()
 

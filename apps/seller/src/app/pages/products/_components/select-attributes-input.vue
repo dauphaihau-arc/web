@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Category } from '@arc/models/category'
-import { useGetAttributesByCategory } from '~/shared/server-state/category/attributes.query'
-import type { ReqAttributeOption } from '~/shared/api/shop/product/contracts/form.contract'
+import { useGetAttributesByCategory } from '~/domains/category/queries/attributes.query'
+import type { ReqAttributeOption } from '~/domains/shop/api/product/contracts/form.contract'
 
 type ProductAttributeSelection = {
   attribute: string

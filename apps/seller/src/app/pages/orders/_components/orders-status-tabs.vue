@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { OrderStatuses } from '@arc/enums/order'
 import { orderStatusTabOptions } from './order-status-filter-options'
-import type { ListShopOrdersResponse } from '~/shared/api/shop/order/contracts/order.contract'
+import type { ListShopOrdersResponse } from '~/domains/shop/api/order/contracts/order.contract'
 
 type StatusCounts = ListShopOrdersResponse['status_counts']
 

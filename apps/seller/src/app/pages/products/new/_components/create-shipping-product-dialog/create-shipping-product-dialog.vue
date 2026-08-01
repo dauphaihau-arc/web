@@ -2,10 +2,11 @@
 import { ADDRESS_CONFIG } from '@arc/enums/address'
 import { ProductShippingCharge, ProductShippingServices } from '@arc/enums/product'
 import LocationShipping from './location-shipping.vue'
-import { createProductShippingFormSchema } from '~/shared/schemas/forms/shop/product/create-product-form.schema'
+import { createProductShippingFormSchema } from '~/app/pages/products/_schemes/product/create-product-form.schema'
 import type { FormErrorEvent, FormSubmitEvent } from '#ui/types'
-import { useGetCountries } from '~/shared/server-state/location/countries.query'
-import type { CreateProductShipping } from '~/shared/api/shop/product/contracts/form.contract'
+import { useGetCountries } from '~/domains/location/queries/countries.query'
+import type { CreateProductShipping } from '~/domains/shop/api/product/contracts/form.contract'
+import { useMarketStore } from '~/domains/market/stores/market.store'
 
 type ShippingLocation = CreateProductShipping['standard_shipping'][number]
 type TStateSubmit = Partial<Pick<CreateProductShipping, 'country' | 'zip' | 'process_time'>> & {

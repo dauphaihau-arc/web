@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PRODUCT_CONFIG } from '@arc/enums/product'
-import type { ProductImageReference } from '~/shared/api/shop/product/contracts/form.contract'
+import type { ProductImageReference } from '~/domains/shop/api/product/contracts/form.contract'
 import { toastCustom } from '~/shared/config/toast'
 
 type PersistedImage = Required<Pick<ProductImageReference, 'id' | 'relative_url'>> & {

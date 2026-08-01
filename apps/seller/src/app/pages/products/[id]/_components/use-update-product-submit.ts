@@ -4,18 +4,18 @@ import type { QueryClient } from '@tanstack/vue-query';
 import type { Ref } from 'vue';
 import pick from '@arc/utils/pick';
 import { toastCustom } from '~/shared/config/toast';
-import { shopProductApi } from '~/shared/api/shop/product/product.api';
-import { resolveMyShopId } from '~/shared/server-state/shop/resolve-my-shop-id';
-import { useShopPublishProduct } from '~/shared/server-state/shop/product/publish-product.mutation';
-import { useIssueProductImageUploadUrl } from '~/shared/server-state/upload/issue-product-image-upload-url.mutation';
-import { useShopSetProductAttributes } from '~/shared/server-state/shop/product/set-product-attributes.mutation';
-import { useShopSetProductImagesByKeys } from '~/shared/server-state/shop/product/set-product-images-by-keys.mutation';
-import { useShopUpdateProduct } from '~/shared/server-state/shop/product/update-product.mutation';
-import type { DetailShopProductResponse } from '~/shared/api/shop/product/contracts/read.contract';
+import { shopProductApi } from '~/domains/shop/api/product/product.api';
+import { resolveMyShopId } from '~/domains/shop/utils/resolve-my-shop-id';
+import { useShopPublishProduct } from '~/domains/shop/mutations/publish-product.mutation';
+import { useIssueProductImageUploadUrl } from '~/domains/shop/mutations/issue-product-image-upload-url.mutation';
+import { useShopSetProductAttributes } from '~/domains/shop/mutations/set-product-attributes.mutation';
+import { useShopSetProductImagesByKeys } from '~/domains/shop/mutations/set-product-images-by-keys.mutation';
+import { useShopUpdateProduct } from '~/domains/shop/mutations/update-product.mutation';
+import type { DetailShopProductResponse } from '~/domains/shop/api/product/contracts/read.contract';
 import type {
   ProductImageReference,
   UpdateProductBody
-} from '~/shared/api/shop/product/contracts/form.contract';
+} from '~/domains/shop/api/product/contracts/form.contract';
 
 type UseUpdateProductSubmitInput = {
   productId: string

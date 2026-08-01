@@ -4,8 +4,8 @@ import OrdersStatusTabs from './_components/orders-status-tabs.vue'
 import OrdersTable from './_components/orders-table.vue'
 import OrderFilterToolbar from '~/app/pages/orders/_components/order-filter-toolbar/order-filter-toolbar.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
-import { useShopGetOrders } from '~/shared/server-state/shop/order/list.query'
-import type { ListShopOrdersRequest } from '~/shared/api/shop/order/contracts/order.contract'
+import { useShopGetOrders } from '~/domains/shop/queries/order/list.query'
+import type { ListShopOrdersRequest } from '~/domains/shop/api/order/contracts/order.contract'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 

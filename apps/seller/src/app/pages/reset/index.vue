@@ -7,7 +7,8 @@ import ForgetPasswordForm from './_components/forget-password-form.vue'
 import ResetPasswordForm from './_components/reset-password-form.vue'
 import SendEmailSuccess from './_components/send-email-success.vue'
 import { routes } from '~/shared/navigation/routes'
-import { useVerifyToken } from '~/shared/server-state/auth/verify-token.query'
+import { useVerifyToken } from '~/domains/auth/queries/verify-token.query'
+import { useAuthStore } from '~/domains/auth/stores/auth'
 
 definePageMeta({ layout: 'auth' })
 

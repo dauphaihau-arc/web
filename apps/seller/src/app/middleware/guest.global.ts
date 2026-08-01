@@ -1,6 +1,6 @@
 import { routePaths, routes } from '~/shared/navigation/routes';
-import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query';
-import { hasSellerAccess } from '~/shared/utils/seller-access';
+import { useGetCurrentUser } from '~/domains/me/queries/current-user.query';
+import { hasSellerAccess } from '~/domains/auth/utils/seller-access';
 
 export default defineNuxtRouteMiddleware(async (to, _from) => {
   const { refetch, data } = useGetCurrentUser();

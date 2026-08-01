@@ -23,16 +23,16 @@ import {
   useUpdateProductSubmit,
   type UpdateProductAction,
 } from './use-update-product-submit'
-import { updateProductFormSchema } from '~/shared/schemas/forms/shop/product/update-product-form.schema'
+import { updateProductFormSchema } from '~/app/pages/products/_schemes/product/update-product-form.schema'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import FormGroupCard from '~/app/components/wrapper-form-group-card.vue'
 import { routes } from '~/shared/navigation/routes'
-import { useShopGetDetailProduct } from '~/shared/server-state/shop/product/detail.query'
+import { useShopGetDetailProduct } from '~/domains/shop/queries/product/detail.query'
 import type {
   NoneVariant,
   ProductImageReference,
   UpdateProductBody,
-} from '~/shared/api/shop/product/contracts/form.contract'
+} from '~/domains/shop/api/product/contracts/form.contract'
 
 export type IOnChangeUpdateVariants = Partial<Pick<UpdateProductBody,
   'update_variants' | 'variant_inventories' |

@@ -4,11 +4,11 @@ import localizedFormat from 'dayjs/plugin/localizedFormat'
 import { CouponAppliesTo, CouponTypes } from '@arc/enums/coupon'
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import type { DropdownItem } from '#ui/types'
-import type { ListShopCouponsResponse } from '~/shared/api/shop/coupon/contracts/coupon.contract'
+import type { ListShopCouponsResponse } from '~/domains/shop/api/coupon/contracts/coupon.contract'
 import DataTable from '~/shared/ui/data-table/data-table.vue'
 import FixedPagination from '~/app/components/fixed-pagination.vue'
-import { useShopBulkDeleteCoupons } from '~/shared/server-state/shop/coupon/bulk-delete-coupons.mutation'
-import { useShopDeleteCoupon } from '~/shared/server-state/shop/coupon/delete-coupon.mutation'
+import { useShopBulkDeleteCoupons } from '~/domains/shop/mutations/bulk-delete-coupons.mutation'
+import { useShopDeleteCoupon } from '~/domains/shop/mutations/delete-coupon.mutation'
 
 dayjs.extend(localizedFormat)
 

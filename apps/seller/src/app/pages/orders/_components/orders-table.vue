@@ -8,7 +8,7 @@ import StatusBadge from '@arc/ui/primitives/status-badge.vue'
 import OrderDetailSlide from './order-detail-slide/order-detail-slide.vue'
 import type { DropdownItem } from '#ui/types'
 import FixedPagination from '~/app/components/fixed-pagination.vue'
-import type { ShopOrderSummary } from '~/shared/api/shop/order/contracts/order.contract'
+import type { ShopOrderSummary } from '~/domains/shop/api/order/contracts/order.contract'
 import { routes } from '~/shared/navigation/routes'
 import DataTable from '~/shared/ui/data-table/data-table.vue'
 

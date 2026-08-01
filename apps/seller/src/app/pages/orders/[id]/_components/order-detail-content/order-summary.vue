@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
 import { formatMinorCurrency } from '@arc/utils'
-import type { ShopOrder } from '~/shared/types/shop-order-detail'
+import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail'
 
 const props = defineProps<{
   assetHost: string

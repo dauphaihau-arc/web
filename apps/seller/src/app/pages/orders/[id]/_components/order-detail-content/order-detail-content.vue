@@ -5,7 +5,7 @@ import OrderDetails from './order-details.vue'
 import OrderSummary from './order-summary.vue'
 import OrderTimeline from './order-timeline.vue'
 import ShippingAddress from './shipping-address.vue'
-import { useShopGetOrderDetail } from '~/shared/server-state/shop/order/detail.query'
+import { useShopGetOrderDetail } from '~/domains/shop/queries/order/detail.query'
 
 const props = defineProps<{
   orderId: string

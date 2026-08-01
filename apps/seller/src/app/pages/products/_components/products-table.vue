@@ -9,8 +9,8 @@ import type {
   BulkMutateShopProductsAction,
   BulkMutateShopProductsResponse,
   ListShopProductsItem,
-} from '~/shared/api/shop/product/contracts/read.contract'
-import { useShopBulkMutateProducts } from '~/shared/server-state/shop/product/bulk-mutate-products.mutation'
+} from '~/domains/shop/api/product/contracts/read.contract'
+import { useShopBulkMutateProducts } from '~/domains/shop/mutations/bulk-mutate-products.mutation'
 import DataTable from '~/shared/ui/data-table/data-table.vue'
 import FixedPagination from '~/app/components/fixed-pagination.vue'
 import { routes } from '~/shared/navigation/routes'

@@ -6,13 +6,13 @@ import type { RequiredFields } from '@arc/contracts/utils'
 import RadioGroupInput from '@arc/ui/primitives/radio-group-input.vue'
 import ApplyCouponOnProduct from './apply-coupon-on-product.vue'
 import SearchStartEndDateInput from './search-start-end-date-input/search-start-end-date-input.vue'
-import { createSaleFormSchema } from '~/shared/schemas/forms/shop/coupon/create-sale-form.schema'
+import { createSaleFormSchema } from '~/app/pages/coupons/_schemes/coupon/create-sale-form.schema'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import WrapperFormGroupCard from '~/app/components/wrapper-form-group-card.vue'
 import { routes } from '~/shared/navigation/routes'
-import { useShopCreateCoupon } from '~/shared/server-state/shop/coupon/create-coupon.mutation'
+import { useShopCreateCoupon } from '~/domains/shop/mutations/create-coupon.mutation'
 import { toastCustom } from '~/shared/config/toast'
-import type { CreateSaleBody } from '~/shared/api/shop/coupon/contracts/coupon.contract'
+import type { CreateSaleBody } from '~/domains/shop/api/coupon/contracts/coupon.contract'
 
 const router = useRouter()
 const toast = useToast()

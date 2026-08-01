@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import NotificationPopover from '@arc/ui/shells/notification-popover/notification-popover.vue'
 import { routes } from '~/shared/navigation/routes'
-import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
-import { useMarkAllMyNotificationsAsRead, useMarkMyNotificationAsRead } from '~/shared/server-state/me/notifications/notifications.mutation'
-import { useGetMyNotifications, useGetMyNotificationUnreadCount } from '~/shared/server-state/me/notifications/notifications.query'
+import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
+import { useMarkAllMyNotificationsAsRead, useMarkMyNotificationAsRead } from '~/domains/me/mutations/notifications.mutation'
+import { useGetMyNotifications, useGetMyNotificationUnreadCount } from '~/domains/me/queries/notifications.query'
 
 type NotificationPopoverItem = {
   id: string

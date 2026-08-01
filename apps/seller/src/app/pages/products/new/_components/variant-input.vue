@@ -6,7 +6,7 @@ import type {
   VariantOption as ProductVariantOption,
   StateCombineVariant,
   StateSingleVariant,
-} from '~/shared/api/shop/product/contracts/form.contract'
+} from '~/domains/shop/api/product/contracts/form.contract'
 
 const props = defineProps<{ countValidate: number, currency?: string }>()
 

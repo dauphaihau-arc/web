@@ -4,8 +4,8 @@ import AppIcon from '@arc/ui/primitives/app-icon.vue'
 import SellerCancelOrderDialog from '../../_components/seller-cancel-order-dialog.vue'
 import SellerRefundOrderDialog from '../../_components/seller-refund-order-dialog.vue'
 import { useOrderActions } from '~/app/pages/orders/[id]/_components/order-detail-content/use-order-actions'
-import { useShopGetOrderDetail } from '~/shared/server-state/shop/order/detail.query'
-import { useShopUpdateOrderShipment } from '~/shared/server-state/shop/order/update-shipment.mutation'
+import { useShopGetOrderDetail } from '~/domains/shop/queries/order/detail.query'
+import { useShopUpdateOrderShipment } from '~/domains/shop/mutations/update-shipment.mutation'
 
 const props = defineProps<{
   orderId: string

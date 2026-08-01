@@ -8,7 +8,7 @@ import {
   toZonedDay,
 } from '../../../components/date-filter-panel/date-filter-timezone'
 import type { CouponTypeFilter } from './coupon-type-filter-options'
-import type { ListShopCouponsRequest } from '~/shared/api/shop/coupon/contracts/coupon.contract'
+import type { ListShopCouponsRequest } from '~/domains/shop/api/coupon/contracts/coupon.contract'
 import FilterPopover from '~/app/components/filter/filter-popover.vue'
 import FilterToolbar from '~/app/components/filter/filter-toolbar.vue'
 

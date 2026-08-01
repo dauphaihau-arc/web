@@ -8,13 +8,13 @@ import { routes } from '~/shared/navigation/routes';
 import type {
   ShopChatConversation,
   ShopChatMessage
-} from '~/shared/api/shop/chat/contracts/chat.contract';
-import { createSellerChatEventsClient } from '~/shared/realtime/chat-events.client';
-import { useGetMyShop } from '~/shared/server-state/shop/my-shop.query';
-import { useShopMarkChatRead } from '~/shared/server-state/shop/chat/mark-read.mutation';
-import { useShopChatMessages } from '~/shared/server-state/shop/chat/messages.query';
-import { useShopSendChatMessage } from '~/shared/server-state/shop/chat/send-message.mutation';
-import { useShopChatConversations } from '~/shared/server-state/shop/chat/conversations.query';
+} from '~/domains/shop/api/chat/contracts/chat.contract';
+import { createSellerChatEventsClient } from '~/domains/shop/chat/realtime/chat-events.client';
+import { useGetMyShop } from '~/domains/shop/queries/my-shop.query';
+import { useShopMarkChatRead } from '~/domains/shop/mutations/mark-read.mutation';
+import { useShopChatMessages } from '~/domains/shop/queries/messages.query';
+import { useShopSendChatMessage } from '~/domains/shop/mutations/send-message.mutation';
+import { useShopChatConversations } from '~/domains/shop/queries/conversations.query';
 
 export function useMessagesPage(selectedConversationId: Ref<string | undefined>) {
   const router = useRouter();

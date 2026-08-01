@@ -5,8 +5,8 @@ import {
   ProductShippingOtherCountriesOptions,
   ProductShippingServices,
 } from '@arc/enums/product'
-import { useGetCountries } from '~/shared/server-state/location/countries.query'
-import type { CreateProductShipping } from '~/shared/api/shop/product/contracts/form.contract'
+import { useGetCountries } from '~/domains/location/queries/countries.query'
+import type { CreateProductShipping } from '~/domains/shop/api/product/contracts/form.contract'
 
 type ShippingLocation = CreateProductShipping['standard_shipping'][number]
 

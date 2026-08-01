@@ -9,8 +9,8 @@ import type {
   StateCombineVariant,
   StateNoneVariant,
   StateSingleVariant
-} from '~/shared/api/shop/product/contracts/form.contract';
-import type { CreateDraftProductRequest as RequestCreateProductDraftBody } from '~/shared/api/shop/product/contracts/create-draft.contract';
+} from '~/domains/shop/api/product/contracts/form.contract';
+import type { CreateDraftProductRequest as RequestCreateProductDraftBody } from '~/domains/shop/api/product/contracts/create-draft.contract';
 
 export type CreateProductSubmitBody = {
   shipping: CreateProductShipping

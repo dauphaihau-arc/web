@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { couponTypeFilterOptions, type CouponTypeFilter } from './coupon-type-filter-options'
-import type { ListShopCouponsResponse } from '~/shared/api/shop/coupon/contracts/coupon.contract'
+import type { ListShopCouponsResponse } from '~/domains/shop/api/coupon/contracts/coupon.contract'
 
 type TypeCounts = ListShopCouponsResponse['type_counts']
 

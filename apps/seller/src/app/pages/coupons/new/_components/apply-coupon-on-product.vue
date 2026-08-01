@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { fromMinorUnits } from '@arc/utils'
-import { useShopGetProducts } from '~/shared/server-state/shop/product/list.query'
+import { useShopGetProducts } from '~/domains/shop/queries/product/list.query'
 import type {
   ListShopProductsItem,
   ListShopProductsRequest,
-} from '~/shared/api/shop/product/contracts/read.contract'
+} from '~/domains/shop/api/product/contracts/read.contract'
 
 type ProductCouponRow = ListShopProductsItem & {
   lowestPrice: number
