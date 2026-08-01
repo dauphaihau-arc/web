@@ -4,11 +4,11 @@ import BaseDialog from '@arc/ui/primitives/dialog/base-dialog.vue'
 import DialogActions from '@arc/ui/primitives/dialog/dialog-actions.vue'
 import { useUserPreferenceForm } from './use-user-preference-form'
 import type { PreferenceState } from './preference-options'
-import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
-import { useUpdateCurrentUser } from '~/shared/server-state/me/update-current-user.mutation'
-import { useGetMarketConfig } from '~/shared/server-state/market/config.query'
+import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
+import { useUpdateCurrentUser } from '~/domains/me/mutations/update-current-user.mutation'
+import { useGetMarketConfig } from '~/domains/market/queries/config.query'
 import type { FormSubmitEvent } from '#ui/types'
-import type { AuthPreferences } from '~/shared/api/auth/contracts/auth-user.contract'
+import type { AuthPreferences } from '~/domains/auth/api/contracts/auth-user.contract'
 
 const marketSensitiveQueryKeys = new Set([
   'get-products',

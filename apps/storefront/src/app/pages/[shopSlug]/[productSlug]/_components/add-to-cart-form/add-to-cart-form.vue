@@ -3,13 +3,13 @@ import { ProductVariantTypes } from '@arc/enums/product'
 import { FetchError } from 'ofetch'
 import { useAddToCartForm } from './use-add-to-cart-form'
 import type { FormSubmitEvent } from '#ui/types'
-import type { AddProductToCartRequest, AddProductToCartResponse } from '~/shared/api/cart/contracts/cart.contract'
-import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contracts/product.contract'
+import type { AddProductToCartRequest, AddProductToCartResponse } from '~/domains/cart/api/contracts/cart.contract'
+import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract'
 import { routes } from '~/shared/navigation/routes'
 import { toastCustom } from '~/shared/config/toast'
-import { useAddProductToCart } from '~/shared/server-state/cart/add-product.mutation'
+import { useAddProductToCart } from '~/domains/cart/mutations/add-product.mutation'
 import { getBackendErrorMessage } from '~/shared/utils/backend-error'
-import { getAddToCartFailureCopy, resolveAddToCartFailure } from '~/shared/utils/cart-error'
+import { getAddToCartFailureCopy, resolveAddToCartFailure } from '~/domains/cart/utils/cart-error'
 
 type Inventory = GetDetailProductBySlugResponse['inventory'][number]
 type AddToCartProduct = Pick<

@@ -4,8 +4,8 @@ import ProductResults from './_components/product-results.vue'
 import SubCategories from './_components/sub-categories.vue'
 import Filters from '~/app/components/product/filters/filters.vue'
 import SortProductsBy from '~/app/components/product/sort-products-by.vue'
-import { useGetProducts } from '~/shared/server-state/product/products.query'
-import type { GetProductsRequest } from '~/shared/api/product/contracts/product.contract'
+import { useGetProducts } from '~/domains/product/queries/products.query'
+import type { GetProductsRequest } from '~/domains/product/api/contracts/product.contract'
 
 definePageMeta({ layout: 'market' })
 

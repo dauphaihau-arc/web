@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { Category } from '@arc/models/category'
 import type { AttributeFilter } from '~/app/components/product/filters/product-filter.constants'
-import { categoryApi } from '~/shared/api/category/category.api'
-import { normalizeCategory } from '~/shared/server-state/category/category.types'
-import { useGetProductFacets } from '~/shared/server-state/product/products.query'
+import { categoryApi } from '~/domains/category/api/category.api'
+import { normalizeCategory } from '~/domains/category/utils/category.normalizer'
+import { useGetProductFacets } from '~/domains/product/queries/products.query'
 
 const props = defineProps<{
   categoryId?: Category['id']

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ORDER_CONFIG } from '@arc/enums/order'
-import type { CartShopGroup } from '~/shared/api/cart/cart.shared'
+import type { CartShopGroup } from '~/domains/cart/api/cart.shared'
 
 const props = defineProps<{
   shopCart: CartShopGroup

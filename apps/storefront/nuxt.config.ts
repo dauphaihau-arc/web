@@ -118,7 +118,7 @@ export default defineNuxtConfig({
   },
 
   pinia: {
-    storesDirs: ['./src/shared/stores/**'],
+    storesDirs: ['./src/domains/**/*.store.ts'],
   },
 
   components: [

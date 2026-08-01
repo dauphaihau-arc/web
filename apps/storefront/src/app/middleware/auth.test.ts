@@ -22,7 +22,7 @@ describe('auth middleware', () => {
   });
 
   afterEach(() => {
-    vi.doUnmock('~/shared/server-state/me/current-user.query');
+    vi.doUnmock('~/domains/me/queries/current-user.query');
     vi.doUnmock('~/shared/navigation/routes');
     vi.doUnmock('@arc/lib');
   });
@@ -30,7 +30,7 @@ describe('auth middleware', () => {
   it('allows authenticated users through auth middleware without redirecting', async () => {
     const refetch = vi.fn();
 
-    vi.doMock('~/shared/server-state/me/current-user.query', () => ({
+    vi.doMock('~/domains/me/queries/current-user.query', () => ({
       useGetCurrentUser: () => ({
         data: { value: { user: { id: 'user-1' } } },
         refetch,
@@ -56,7 +56,7 @@ describe('auth middleware', () => {
   it('redirects guests on protected routes after current user resolves to null', async () => {
     const refetch = vi.fn().mockResolvedValue({ data: { user: null } });
 
-    vi.doMock('~/shared/server-state/me/current-user.query', () => ({
+    vi.doMock('~/domains/me/queries/current-user.query', () => ({
       useGetCurrentUser: () => ({
         data: { value: { user: null } },
         refetch,
@@ -84,7 +84,7 @@ describe('auth middleware', () => {
   it('allows protected routes when refetch returns an authenticated user', async () => {
     const refetch = vi.fn().mockResolvedValue({ data: { user: { id: 'user-1' } } });
 
-    vi.doMock('~/shared/server-state/me/current-user.query', () => ({
+    vi.doMock('~/domains/me/queries/current-user.query', () => ({
       useGetCurrentUser: () => ({
         data: { value: { user: null } },
         refetch,
@@ -113,7 +113,7 @@ describe('auth middleware', () => {
       .mockRejectedValueOnce(wakeUpError)
       .mockResolvedValueOnce({ data: { user: null } });
 
-    vi.doMock('~/shared/server-state/me/current-user.query', () => ({
+    vi.doMock('~/domains/me/queries/current-user.query', () => ({
       useGetCurrentUser: () => ({
         data: { value: { user: null } },
         refetch,

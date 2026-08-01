@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { GetPublicProductReviewsResponse } from '~/shared/api/product/contracts/product.contract'
+import type { GetPublicProductReviewsResponse } from '~/domains/product/api/contracts/product.contract'
 import { resolveProductImageUrl } from '~/shared/utils/storage-public-url'
 
 const props = defineProps<{

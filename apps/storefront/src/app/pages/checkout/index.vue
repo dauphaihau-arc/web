@@ -7,9 +7,9 @@ import ShopCart from './_components/shop-cart.vue'
 import UserAddressShipping from './_components/user-address-shipping.vue'
 import SummaryOrderCard from '~/app/components/summary-order-card.vue'
 import CheckoutStepper from '~/app/components/checkout-stepper.vue'
-import { CheckoutNowSteps } from '~/shared/stores/cart/cart.store.types'
-import { useCartStore } from '~/shared/stores/cart/cart.store'
-import { useGetCart } from '~/shared/server-state/cart/cart.query'
+import { CheckoutNowSteps } from '~/domains/cart/stores/cart.store.types'
+import { useCartStore } from '~/domains/cart/stores/cart.store'
+import { useGetCart } from '~/domains/cart/queries/cart.query'
 
 definePageMeta({ layout: 'market', middleware: ['checkout'] })
 

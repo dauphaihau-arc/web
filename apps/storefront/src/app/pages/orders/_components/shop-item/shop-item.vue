@@ -7,7 +7,7 @@ import PaymentAndSummaryOrder from './payment-and-summary-order.vue'
 import ShopActions from './shop-actions/shop-actions.vue'
 import ShopProduct from './shop-product.vue'
 import ShopShippingInfo from './shop-shipping-info.vue'
-import type { GetOrderShopsResponse } from '~/shared/api/me/order/contracts/order.contract'
+import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract'
 import {
   mergeOrderShopWithLiveUpdate,
   useOrderLiveUpdates,

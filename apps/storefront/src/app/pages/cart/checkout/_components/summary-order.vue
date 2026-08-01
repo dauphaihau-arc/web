@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGetCart } from '~/shared/server-state/cart/cart.query'
+import { useGetCart } from '~/domains/cart/queries/cart.query'
 
 const {
   isPending: isPendingGetCart,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CartShopGroup } from '~/shared/api/cart/cart.shared'
+import type { CartShopGroup } from '~/domains/cart/api/cart.shared'
 import AddRemoveCoupons from '~/app/pages/cart/_components/add-remove-coupons.vue'
 import ShippingSelect from '~/app/pages/cart/_components/shipping-select.vue'
 import AddRemoveNote from '~/app/pages/cart/_components/add-remove-note.vue'

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
-import type { RequestOrderCancelRequest } from '~/shared/api/me/order/contracts/order.contract'
-import { useRequestOrderCancel } from '~/shared/server-state/me/orders/request-cancel.mutation'
+import type { RequestOrderCancelRequest } from '~/domains/me/api/order/contracts/order.contract'
+import { useRequestOrderCancel } from '~/domains/me/mutations/orders/request-cancel.mutation'
 
 const props = defineProps<{
   orderId: string

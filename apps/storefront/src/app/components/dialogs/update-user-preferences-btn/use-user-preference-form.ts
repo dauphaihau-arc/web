@@ -13,8 +13,8 @@ import {
   type LanguageOption,
   type PreferenceState
 } from './preference-options';
-import type { AuthPreferences } from '~/shared/api/auth/contracts/auth-user.contract';
-import type { MarketConfigMarket } from '~/shared/api/market/contracts/market.contract';
+import type { AuthPreferences } from '~/domains/auth/api/contracts/auth-user.contract';
+import type { MarketConfigMarket } from '~/domains/market/api/contracts/market.contract';
 
 type MarketConfigResponse = {
   markets: MarketConfigMarket[]

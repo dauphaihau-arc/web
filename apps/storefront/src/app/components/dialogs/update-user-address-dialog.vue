@@ -7,10 +7,10 @@ import type {
   GetUserAddressesResponse,
   UpdateUserAddressBody,
   UpdateUserAddressRequest,
-} from '~/shared/api/me/address/contracts/address.contract'
+} from '~/domains/me/api/address/contracts/address.contract'
 import { toastCustom } from '~/shared/config/toast'
-import { useUpdateUserAddress } from '~/shared/server-state/me/address/update-address.mutation'
-import { useGetCountries, useGetStatesByCountry } from '~/shared/server-state/location/countries.query'
+import { useUpdateUserAddress } from '~/domains/me/mutations/address/update-address.mutation'
+import { useGetCountries, useGetStatesByCountry } from '~/domains/location/queries/countries.query'
 
 type UserAddress = GetUserAddressesResponse['results'][number]
 

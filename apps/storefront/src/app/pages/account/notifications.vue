@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import { routes } from '~/shared/navigation/routes'
-import type { NotificationItem } from '~/shared/api/me/notifications/contracts/notification.contract'
-import { useMarkAllMyNotificationsAsRead, useMarkMyNotificationAsRead } from '~/shared/server-state/me/notifications/notifications.mutation'
-import { useGetMyNotifications, useGetMyNotificationUnreadCount } from '~/shared/server-state/me/notifications/notifications.query'
+import type { NotificationItem } from '~/domains/me/api/notifications/contracts/notification.contract'
+import { useMarkAllMyNotificationsAsRead, useMarkMyNotificationAsRead } from '~/domains/me/mutations/notifications/notifications.mutation'
+import { useGetMyNotifications, useGetMyNotificationUnreadCount } from '~/domains/me/queries/notifications/notifications.query'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 

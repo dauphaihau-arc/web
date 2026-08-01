@@ -2,10 +2,10 @@
 import { StatusCodes } from 'http-status-codes'
 import { FetchError } from 'ofetch'
 import { COUPON_CONFIG } from '@arc/enums/coupon'
-import { useCartStore } from '~/shared/stores/cart/cart.store'
+import { useCartStore } from '~/domains/cart/stores/cart.store'
 import { toastCustom } from '~/shared/config/toast'
-import { useUpdateCart } from '~/shared/server-state/cart/update-cart.mutation'
-import type { GetCartResponse } from '~/shared/api/cart/contracts/cart.contract'
+import { useUpdateCart } from '~/domains/cart/mutations/update-cart.mutation'
+import type { GetCartResponse } from '~/domains/cart/api/contracts/cart.contract'
 
 const toast = useToast()
 const cartStore = useCartStore()

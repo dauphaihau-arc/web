@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
-import type { GetUserAddressesResponse } from '~/shared/api/me/address/contracts/address.contract'
-import { useDeleteUserAddress } from '~/shared/server-state/me/address/delete-address.mutation'
-import { useGetUserAddresses } from '~/shared/server-state/me/address/addresses.query'
+import type { GetUserAddressesResponse } from '~/domains/me/api/address/contracts/address.contract'
+import { useDeleteUserAddress } from '~/domains/me/mutations/address/delete-address.mutation'
+import { useGetUserAddresses } from '~/domains/me/queries/address/addresses.query'
 import UpdateUserAddressDialog from '~/app/components/dialogs/update-user-address-dialog.vue'
 import CreateUserAddressDialog from '~/app/components/dialogs/create-user-address-dialog.vue'
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { formatMinorCurrency } from '@arc/utils'
 import VariantsProduct from './variants-product.vue'
-import type { ResponseGetOrderShopsProduct } from '~/shared/api/me/order/contracts/order.contract'
+import type { ResponseGetOrderShopsProduct } from '~/domains/me/api/order/contracts/order.contract'
 import { routes } from '~/shared/navigation/routes'
 
 const { productOrder } = defineProps<{

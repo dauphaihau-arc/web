@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { resolveAppIconCssClass } from '@arc/ui/foundation/app-icon.constants'
-import type { CategoriesBreadcrumbStorage } from '~/shared/stores/market/market.store.types'
+import type { CategoriesBreadcrumbStorage } from '~/domains/market/stores/market.store.types'
 
 const route = useRoute()
 const marketStore = useMarketStore()

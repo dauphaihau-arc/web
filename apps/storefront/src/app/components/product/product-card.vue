@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { formatMinorCurrency } from '@arc/utils'
-import type { GetProductsResponseItem } from '~/shared/api/product/contracts/product.contract'
-import { getProductStockNotice } from '~/shared/utils/product-stock'
+import type { GetProductsResponseItem } from '~/domains/product/api/contracts/product.contract'
+import { getProductStockNotice } from '~/domains/product/utils/product-stock'
 import { resolveProductImageUrl } from '~/shared/utils/storage-public-url'
 import { routes } from '~/shared/navigation/routes'
 

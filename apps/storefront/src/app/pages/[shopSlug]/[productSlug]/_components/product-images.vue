@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contracts/product.contract'
+import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract'
 import { resolveProductImageUrl } from '~/shared/utils/storage-public-url'
 
 const props = withDefaults(defineProps<{

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { Category } from '@arc/models/category'
-import { useGetCategories } from '~/shared/server-state/category/categories.query'
+import { useGetCategories } from '~/domains/category/queries/categories.query'
 import { getRoutePath, routes } from '~/shared/navigation/routes'
-import { CATEGORY_IMAGE_VARIANTS, resolveCategoryImageUrl } from '~/shared/utils/category-image'
+import { CATEGORY_IMAGE_VARIANTS, resolveCategoryImageUrl } from '~/domains/category/utils/category-image'
 
 const marketStore = useMarketStore()
 const config = useRuntimeConfig()

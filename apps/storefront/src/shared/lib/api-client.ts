@@ -1,7 +1,7 @@
 import { createApiClient, isBackendWakeUpError } from '@arc/lib';
 import { RESOURCES } from '@arc/enums/resources';
-import { getRequestMarketHeaders } from '~/shared/stores/market/request-market-context';
-import { clearExpTokensInLS } from '~/shared/server-state/auth/token-storage';
+import { getRequestMarketHeaders } from '~/domains/market/stores/request-market-context';
+import { clearExpTokensInLS } from '~/domains/auth/utils/token-storage';
 
 function getApiBaseURL() {
   const config = useRuntimeConfig();

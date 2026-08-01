@@ -2,11 +2,11 @@
 import { resetPasswordFormSchema } from '@arc/schemas/forms/auth/reset-password-form.schema'
 import ResetPasswordShell from '@arc/ui/shells/auth/reset-password-shell.vue'
 import type { FormError, FormSubmitEvent } from '#ui/types'
-import { useAuthClientConfig } from '~/shared/server-state/auth/client-config.query'
-import { useResetPassword } from '~/shared/server-state/auth/reset-password.mutation'
+import { useAuthClientConfig } from '~/domains/auth/queries/client-config.query'
+import { useResetPassword } from '~/domains/auth/mutations/reset-password.mutation'
 import { ROUTES } from '~/shared/config/enums/routes'
-import type { ResetPasswordForm as ResetPasswordBody } from '~/shared/api/auth/contracts/reset-password.contract'
-import { appendPasswordError } from '~/shared/utils/password-policy'
+import type { ResetPasswordForm as ResetPasswordBody } from '~/domains/auth/api/contracts/reset-password.contract'
+import { appendPasswordError } from '~/domains/auth/utils/password-policy'
 
 const authStore = useAuthStore()
 

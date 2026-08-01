@@ -25,7 +25,7 @@ vi.mock('@tanstack/vue-query', async () => {
   };
 });
 
-vi.mock('~/shared/stores/market/market.store', () => ({
+vi.mock('~/domains/market/stores/market.store', () => ({
   useMarketStore: useMarketStoreMock,
 }));
 

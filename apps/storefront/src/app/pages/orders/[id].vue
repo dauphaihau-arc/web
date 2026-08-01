@@ -2,7 +2,7 @@
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import ShopItem from './_components/shop-item/shop-item.vue'
 import { routes } from '~/shared/navigation/routes'
-import { useGetOrderById } from '~/shared/server-state/me/orders/order-shops.query'
+import { useGetOrderById } from '~/domains/me/queries/orders/order-shops.query'
 import {
   mergeOrderShopWithLiveUpdate,
   useOrderLiveUpdates,

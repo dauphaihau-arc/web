@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { DropdownItem } from '#ui/types'
 import { routes } from '~/shared/navigation/routes'
-import { useLogout } from '~/shared/server-state/auth/logout.mutation'
-import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
+import { useLogout } from '~/domains/auth/mutations/logout.mutation'
+import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
 
 const emit = defineEmits<{
   hoverTrigger: []

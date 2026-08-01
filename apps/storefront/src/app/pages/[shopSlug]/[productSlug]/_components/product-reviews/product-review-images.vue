@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { GetPublicProductReviewImagesResponse } from '~/shared/api/product/contracts/product.contract'
-import { useGetPublicProductReviewImages } from '~/shared/server-state/product/review-images.query'
+import type { GetPublicProductReviewImagesResponse } from '~/domains/product/api/contracts/product.contract'
+import { useGetPublicProductReviewImages } from '~/domains/product/queries/review-images.query'
 import { resolveProductImageUrl } from '~/shared/utils/storage-public-url'
 
 type CarouselRef = {

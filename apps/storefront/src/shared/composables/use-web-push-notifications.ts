@@ -1,4 +1,4 @@
-import { meNotificationApi } from '~/shared/api/me/notifications/notification.api';
+import { meNotificationApi } from '~/domains/me/api/notifications/notification.api';
 
 type BrowserNotificationStatus =
   | 'unsupported'

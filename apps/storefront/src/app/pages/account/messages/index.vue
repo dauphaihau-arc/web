@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
-import type { MyChatConversation } from '~/shared/api/me/chat/contracts/chat.contract'
+import type { MyChatConversation } from '~/domains/me/api/chat/contracts/chat.contract'
 import ChatConversationPanel from '~/app/components/chat/chat-conversation-panel.vue'
 import { routes } from '~/shared/navigation/routes'
 import { createStorefrontChatEventsClient } from '~/shared/realtime/chat-events.client'
 import {
   useMyChatConversations,
   useMyChatUnreadCount,
-} from '~/shared/server-state/me/chat/conversations.query'
+} from '~/domains/me/queries/chat/conversations.query'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 

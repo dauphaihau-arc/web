@@ -4,12 +4,12 @@ import { StatusCodes } from 'http-status-codes'
 import { LocalStorageKeys } from '@arc/enums/local-storage-keys'
 import { MarketCurrencies, MarketRegions } from '@arc/enums/market'
 import type { FormError, FormSubmitEvent } from '#ui/types'
-import { useAuthClientConfig } from '~/shared/server-state/auth/client-config.query'
-import type { AuthPreferences } from '~/shared/api/auth/contracts/auth-user.contract'
-import { useRegister } from '~/shared/server-state/auth/register.mutation'
-import type { RegisterRequest as RegisterBody } from '~/shared/api/auth/contracts/register.contract'
+import { useAuthClientConfig } from '~/domains/auth/queries/client-config.query'
+import type { AuthPreferences } from '~/domains/auth/api/contracts/auth-user.contract'
+import { useRegister } from '~/domains/auth/mutations/register.mutation'
+import type { RegisterRequest as RegisterBody } from '~/domains/auth/api/contracts/register.contract'
 import { registerFormSchema } from '~/shared/schemas/api/auth/register.schema'
-import { appendPasswordError } from '~/shared/utils/password-policy'
+import { appendPasswordError } from '~/domains/auth/utils/password-policy'
 
 const invalidEmails: string[] = []
 const formRef = ref()

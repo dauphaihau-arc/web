@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Category } from '@arc/models/category'
 import { getRoutePath, routes } from '~/shared/navigation/routes'
-import { useGetRootCategories } from '~/shared/server-state/category/categories.query'
+import { useGetRootCategories } from '~/domains/category/queries/categories.query'
 
 const {
   data: dataRootCategories,

@@ -2,10 +2,10 @@
 import { StatusCodes } from 'http-status-codes'
 import { FetchError } from 'ofetch'
 import { consola } from 'consola'
-import { type AdditionInfoShopCarts, useCartStore } from '~/shared/stores/cart/cart.store'
-import { useUpdateCart } from '~/shared/server-state/cart/update-cart.mutation'
+import { type AdditionInfoShopCarts, useCartStore } from '~/domains/cart/stores/cart.store'
+import { useUpdateCart } from '~/domains/cart/mutations/update-cart.mutation'
 import { toastCustom } from '~/shared/config/toast'
-import type { GetCartResponse } from '~/shared/api/cart/contracts/cart.contract'
+import type { GetCartResponse } from '~/domains/cart/api/contracts/cart.contract'
 
 const { shopId } = defineProps<{
   shopId: string

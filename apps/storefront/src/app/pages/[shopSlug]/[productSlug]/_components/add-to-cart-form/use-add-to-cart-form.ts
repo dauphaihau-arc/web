@@ -1,7 +1,7 @@
 import { computed, reactive, watch } from 'vue';
 import { ProductVariantTypes } from '@arc/enums/product';
 import type { FormError } from '#ui/types';
-import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contracts/product.contract';
+import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract';
 
 interface StateSubmit {
   quantity: number

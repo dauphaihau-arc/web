@@ -2,7 +2,7 @@
 import dayjs from 'dayjs'
 import { OrderShippingStatuses } from '@arc/enums/order'
 import type { ElementType } from '@arc/contracts/utils'
-import type { GetOrderShopsResponse } from '~/shared/api/me/order/contracts/order.contract'
+import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract'
 
 const props = defineProps<{
   orderShop: ElementType<GetOrderShopsResponse['order_shops']>

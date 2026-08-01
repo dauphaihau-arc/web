@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import type { ElementType } from '@arc/contracts/utils'
 import { PaymentTypes } from '@arc/enums/order'
 import { formatMinorCurrency } from '@arc/utils'
-import type { GetOrderShopsResponse } from '~/shared/api/me/order/contracts/order.contract'
+import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract'
 
 defineProps<{
   orderShop: ElementType<GetOrderShopsResponse['order_shops']>

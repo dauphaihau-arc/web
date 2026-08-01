@@ -1,7 +1,7 @@
 import type { QueryClient } from '@tanstack/vue-query';
 import type { OrderUpdatedRealtimeEvent } from './order-events';
 import { mergeOrderShopWithLiveUpdate, useOrderLiveUpdates } from './order-live-updates';
-import type { GetMyOrderDetailResponse, GetOrderShopsResponse } from '~/shared/api/me/order/contracts/order.contract';
+import type { GetMyOrderDetailResponse, GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract';
 
 type OrderEventsClient = {
   start: () => void

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { ProductSuggestion } from '~/shared/api/product/contracts/product.contract'
-import { useGetProductSuggestions } from '~/shared/server-state/product/products.query'
+import type { ProductSuggestion } from '~/domains/product/api/contracts/product.contract'
+import { useGetProductSuggestions } from '~/domains/product/queries/products.query'
 import { routes } from '~/shared/navigation/routes'
 
 const props = defineProps<{ show: boolean }>()

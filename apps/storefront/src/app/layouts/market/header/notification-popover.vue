@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import NotificationPopover from '@arc/ui/shells/notification-popover/notification-popover.vue'
 import { routes } from '~/shared/navigation/routes'
-import type { NotificationItem } from '~/shared/api/me/notifications/contracts/notification.contract'
-import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
-import { useMarkAllMyNotificationsAsRead, useMarkMyNotificationAsRead } from '~/shared/server-state/me/notifications/notifications.mutation'
-import { useGetMyNotifications, useGetMyNotificationUnreadCount } from '~/shared/server-state/me/notifications/notifications.query'
+import type { NotificationItem } from '~/domains/me/api/notifications/contracts/notification.contract'
+import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
+import { useMarkAllMyNotificationsAsRead, useMarkMyNotificationAsRead } from '~/domains/me/mutations/notifications/notifications.mutation'
+import { useGetMyNotifications, useGetMyNotificationUnreadCount } from '~/domains/me/queries/notifications/notifications.query'
 
 type NotificationPopoverClickItem = Pick<NotificationItem, 'id' | 'read_at'> & {
   data?: NotificationItem['data']

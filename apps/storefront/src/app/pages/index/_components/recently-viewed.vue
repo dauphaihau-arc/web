@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import ProductSection from './product-section.vue'
-import type { GetProductsResponseItem } from '~/shared/api/product/contracts/product.contract'
+import type { GetProductsResponseItem } from '~/domains/product/api/contracts/product.contract'
 
 const marketStore = useMarketStore()
 const props = withDefaults(defineProps<{

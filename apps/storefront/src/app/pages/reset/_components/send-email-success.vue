@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ResetPasswordViews } from '@arc/enums/common'
-import { useForgetPassword } from '~/shared/server-state/auth/forgot-password.mutation'
+import { useForgetPassword } from '~/domains/auth/mutations/forgot-password.mutation'
 import { toastCustom } from '~/shared/config/toast'
 
 const emit = defineEmits<{

@@ -2,7 +2,7 @@ import type { OrderUpdatedRealtimeEvent } from './order-events';
 import type {
   GetMyOrderDetailResponse,
   GetOrderShopsResponse
-} from '~/shared/api/me/order/contracts/order.contract';
+} from '~/domains/me/api/order/contracts/order.contract';
 
 type OrderShop = GetOrderShopsResponse['order_shops'][number];
 type OrderShopDetail = GetMyOrderDetailResponse['order_shop'];

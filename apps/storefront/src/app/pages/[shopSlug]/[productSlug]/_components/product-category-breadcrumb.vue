@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { resolveAppIconCssClass } from '@arc/ui/foundation/app-icon.constants'
 import { getRoutePath, routes } from '~/shared/navigation/routes'
-import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contracts/product.contract'
+import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract'
 
 const props = defineProps<{
   categoryPath?: GetDetailProductBySlugResponse['category_path']

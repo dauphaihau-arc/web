@@ -7,7 +7,7 @@ import NewArrivals from './_components/new-arrivals.vue'
 import RecommendedSubCategories from './_components/recommended-sub-categories.vue'
 import RootCategories from './_components/root-categories.vue'
 import TrendingNow from './_components/trending-now.vue'
-import { useGetRecentlyViewedProducts } from '~/shared/server-state/product/products.query'
+import { useGetRecentlyViewedProducts } from '~/domains/product/queries/products.query'
 
 const recentlyViewedLimit = 10
 

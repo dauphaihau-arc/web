@@ -1,5 +1,5 @@
 import { isBackendWakeUpError } from '@arc/lib';
-import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query';
+import { useGetCurrentUser } from '~/domains/me/queries/current-user.query';
 
 export default defineNuxtRouteMiddleware(async () => {
   const { data: dataUserAuth, refetch } = useGetCurrentUser();

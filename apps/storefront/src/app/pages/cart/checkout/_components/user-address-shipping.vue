@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { guestCheckoutFormSchema } from '@arc/schemas/guest-checkout.schema'
 import { ADDRESS_CONFIG } from '@arc/enums/address'
-import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
-import { useGetCountries, useGetStatesByCountry } from '~/shared/server-state/location/countries.query'
-import { useGetUserAddresses } from '~/shared/server-state/me/address/addresses.query'
+import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
+import { useGetCountries, useGetStatesByCountry } from '~/domains/location/queries/countries.query'
+import { useGetUserAddresses } from '~/domains/me/queries/address/addresses.query'
 import CreateUserAddressDialog from '~/app/components/dialogs/create-user-address-dialog.vue'
 
 const cartStore = useCartStore()

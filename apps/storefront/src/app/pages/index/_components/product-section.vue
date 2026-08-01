@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ProductCard from './product-card.vue'
-import type { GetProductsResponseItem } from '~/shared/api/product/contracts/product.contract'
+import type { GetProductsResponseItem } from '~/domains/product/api/contracts/product.contract'
 
 const props = withDefaults(defineProps<{
   title: string

@@ -2,8 +2,8 @@
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import ShopCart from './_components/shop-cart.vue'
 import SummaryOrder from './_components/summary-order.vue'
-import { useCartStore } from '~/shared/stores/cart/cart.store'
-import { useGetCart } from '~/shared/server-state/cart/cart.query'
+import { useCartStore } from '~/domains/cart/stores/cart.store'
+import { useGetCart } from '~/domains/cart/queries/cart.query'
 
 definePageMeta({ layout: 'market' })
 

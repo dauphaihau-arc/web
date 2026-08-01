@@ -2,7 +2,7 @@
 import { ProductVariantTypes } from '@arc/enums/product'
 import { formatMinorCurrency } from '@arc/utils'
 import type { ElementType } from '@arc/contracts/utils'
-import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contracts/product.contract'
+import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract'
 
 type SummaryProduct = Pick<
   GetDetailProductBySlugResponse,

@@ -1,4 +1,4 @@
-import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query';
+import { useGetCurrentUser } from '~/domains/me/queries/current-user.query';
 import { createOrderEventsClient } from '~/shared/realtime/order-events.client';
 
 export default defineNuxtPlugin(() => {

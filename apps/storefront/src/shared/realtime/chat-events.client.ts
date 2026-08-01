@@ -6,7 +6,7 @@ import {
 import type {
   MyChatConversation,
   MyChatMessage
-} from '~/shared/api/me/chat/contracts/chat.contract';
+} from '~/domains/me/api/chat/contracts/chat.contract';
 
 function buildChatSocketUrl(): string {
   const config = useRuntimeConfig();

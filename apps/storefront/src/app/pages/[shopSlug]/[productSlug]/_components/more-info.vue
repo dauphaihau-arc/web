@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { MyChatConversation } from '~/shared/api/me/chat/contracts/chat.contract'
+import type { MyChatConversation } from '~/domains/me/api/chat/contracts/chat.contract'
 import ChatConversationPanel from '~/app/components/chat/chat-conversation-panel.vue'
 import RegisterLoginDialog from '~/app/components/dialogs/login-register/register-login-dialog.vue'
-import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contracts/product.contract'
-import { setPostAuthRedirect } from '~/shared/server-state/auth/post-auth-redirect'
-import { useCreateOrGetMyChatConversation } from '~/shared/server-state/me/chat/create-conversation.mutation'
-import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
+import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract'
+import { setPostAuthRedirect } from '~/domains/auth/utils/post-auth-redirect'
+import { useCreateOrGetMyChatConversation } from '~/domains/me/mutations/chat/create-conversation.mutation'
+import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
 
 const props = defineProps<{
   product?: GetDetailProductBySlugResponse

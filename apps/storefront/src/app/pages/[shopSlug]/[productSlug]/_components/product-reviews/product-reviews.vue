@@ -2,7 +2,7 @@
 import ProductReviewImages from './product-review-images.vue'
 import ProductReviewList from './product-review-list.vue'
 import ProductReviewsSkeleton from './product-reviews-skeleton.vue'
-import { useGetPublicProductReviews } from '~/shared/server-state/product/reviews.query'
+import { useGetPublicProductReviews } from '~/domains/product/queries/reviews.query'
 
 type ReviewRatingFilter = 1 | 2 | 3 | 4 | 5
 

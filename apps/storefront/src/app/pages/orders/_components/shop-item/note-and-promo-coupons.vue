@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ElementType } from '@arc/contracts/utils'
-import type { GetOrderShopsResponse } from '~/shared/api/me/order/contracts/order.contract'
+import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract'
 
 defineProps<{
   orderShop: ElementType<GetOrderShopsResponse['order_shops']>

@@ -2,10 +2,10 @@
 import { ADDRESS_CONFIG } from '@arc/enums/address'
 import { addressFormSchema } from '@arc/schemas/forms/address/address-form.schema'
 import type { FormSubmitEvent } from '#ui/types'
-import type { CreateUserAddressRequest } from '~/shared/api/me/address/contracts/address.contract'
+import type { CreateUserAddressRequest } from '~/domains/me/api/address/contracts/address.contract'
 import { toastCustom } from '~/shared/config/toast'
-import { useCreateUserAddress } from '~/shared/server-state/me/address/create-address.mutation'
-import { useGetCountries, useGetStatesByCountry } from '~/shared/server-state/location/countries.query'
+import { useCreateUserAddress } from '~/domains/me/mutations/address/create-address.mutation'
+import { useGetCountries, useGetStatesByCountry } from '~/domains/location/queries/countries.query'
 
 const toast = useToast()
 const dialog = useModal()

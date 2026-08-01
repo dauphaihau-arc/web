@@ -3,10 +3,10 @@ import {
   computed, onBeforeUnmount, ref, watch
 } from 'vue';
 import { ProductVariantTypes } from '@arc/enums/product';
-import type { GetDetailProductBySlugResponse } from '~/shared/api/product/contracts/product.contract';
+import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract';
 import type { ProductInventoryUpdatedRealtimeEvent } from '~/shared/realtime/product-inventory-events';
 import { createProductInventoryEventsClient } from '~/shared/realtime/product-inventory-events.client';
-import { getProductStockNotice } from '~/shared/utils/product-stock';
+import { getProductStockNotice } from '~/domains/product/utils/product-stock';
 
 type UseLiveProductInventoryReturn = {
   inventorySelected: Ref<GetDetailProductBySlugResponse['inventory'][number] | undefined>

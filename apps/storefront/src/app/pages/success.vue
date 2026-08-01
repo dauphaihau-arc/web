@@ -2,8 +2,8 @@
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import { isBackendWakeUpError } from '@arc/lib'
 import { ROUTES } from '~/shared/config/enums/routes'
-import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
-import { useGetCheckoutOrderShopsByCheckoutSession } from '~/shared/server-state/checkout/order-shops.query'
+import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
+import { useGetCheckoutOrderShopsByCheckoutSession } from '~/domains/checkout/queries/order-shops.query'
 import { routes } from '~/shared/navigation/routes'
 
 definePageMeta({ layout: 'market' })

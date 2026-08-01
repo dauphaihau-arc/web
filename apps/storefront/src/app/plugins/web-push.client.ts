@@ -1,4 +1,4 @@
-import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query';
+import { useGetCurrentUser } from '~/domains/me/queries/current-user.query';
 import { useWebPushNotifications } from '~/shared/composables/use-web-push-notifications';
 
 export default defineNuxtPlugin(() => {

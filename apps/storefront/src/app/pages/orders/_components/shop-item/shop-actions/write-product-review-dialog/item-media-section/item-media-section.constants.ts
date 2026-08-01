@@ -1,4 +1,4 @@
-import type { ResponseGetOrderShopsProduct } from '~/shared/api/me/order/contracts/order.contract';
+import type { ResponseGetOrderShopsProduct } from '~/domains/me/api/order/contracts/order.contract';
 
 export const MAX_REVIEW_IMAGES = 5;
 export const MAX_REVIEW_IMAGE_BYTES = 8 * 1024 * 1024;

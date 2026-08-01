@@ -3,10 +3,10 @@ import AppIcon from '@arc/ui/primitives/app-icon.vue'
 import type { AppIconAlias } from '@arc/ui/foundation/app-icon.constants'
 import ItemMediaSection from './item-media-section/item-media-section.vue'
 import type { FormSubmitEvent } from '#ui/types'
-import type { GetOrderShopsResponse } from '~/shared/api/me/order/contracts/order.contract'
-import type { UpsertMyProductReviewRequest } from '~/shared/api/me/product-review/contracts/product-review.contract'
+import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract'
+import type { UpsertMyProductReviewRequest } from '~/domains/me/api/product-review/contracts/product-review.contract'
 import { toastCustom } from '~/shared/config/toast'
-import { useUpsertMyProductReview } from '~/shared/server-state/me/product-reviews/upsert-review.mutation'
+import { useUpsertMyProductReview } from '~/domains/me/mutations/product-reviews/upsert-review.mutation'
 
 type OrderShop = GetOrderShopsResponse['order_shops'][number]
 

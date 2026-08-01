@@ -2,9 +2,9 @@
 import { defineAsyncComponent } from 'vue'
 import Categories from './categories.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
-import { useGetCart } from '~/shared/server-state/cart/cart.query'
-import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
-import { hasSellerAccess } from '~/shared/utils/seller-access'
+import { useGetCart } from '~/domains/cart/queries/cart.query'
+import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
+import { hasSellerAccess } from '~/domains/auth/utils/seller-access'
 
 const loadCartMegaMenu = () => import('./cart-mega-menu.vue')
 const loadSearchAllMegaMenu = () => import('./search-all-mega-menu.vue')

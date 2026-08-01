@@ -5,25 +5,25 @@ import { MARKET_CONFIG } from '@arc/enums/market'
 import { FetchError } from 'ofetch'
 import { toastCustom } from '~/shared/config/toast'
 import { ROUTES } from '~/shared/config/enums/routes'
-import { useCartStore } from '~/shared/stores/cart/cart.store'
+import { useCartStore } from '~/domains/cart/stores/cart.store'
 import { routes } from '~/shared/navigation/routes'
-import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
-import { useCreateGuestCheckoutQuoteForBuyNow } from '~/shared/server-state/checkout/create-checkout-quote-buy-now.mutation'
-import { useCreateGuestOrderForBuyNow } from '~/shared/server-state/checkout/create-order-buy-now.mutation'
-import { useCreateCheckoutQuoteForBuyNow } from '~/shared/server-state/me/orders/create-checkout-quote-buy-now.mutation'
-import { useCreateOrderForBuyNow } from '~/shared/server-state/me/orders/create-order-buy-now.mutation'
-import { CheckoutNowSteps } from '~/shared/stores/cart/cart.store.types'
+import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
+import { useCreateGuestCheckoutQuoteForBuyNow } from '~/domains/checkout/mutations/create-checkout-quote-buy-now.mutation'
+import { useCreateGuestOrderForBuyNow } from '~/domains/checkout/mutations/create-order-buy-now.mutation'
+import { useCreateCheckoutQuoteForBuyNow } from '~/domains/me/mutations/orders/create-checkout-quote-buy-now.mutation'
+import { useCreateOrderForBuyNow } from '~/domains/me/mutations/orders/create-order-buy-now.mutation'
+import { CheckoutNowSteps } from '~/domains/cart/stores/cart.store.types'
 import type {
   CreateGuestCheckoutQuoteForBuyNowRequest,
   CreateGuestOrderForBuyNowRequest,
-} from '~/shared/api/checkout/contracts/checkout.contract'
+} from '~/domains/checkout/api/contracts/checkout.contract'
 import type {
   CreateCheckoutQuoteForBuyNowRequest,
   CreateOrderForBuyNowRequest,
-} from '~/shared/api/me/order/contracts/order.contract'
+} from '~/domains/me/api/order/contracts/order.contract'
 import { getBackendErrorMessage } from '~/shared/utils/backend-error'
-import { useGetCart } from '~/shared/server-state/cart/cart.query'
-import { getCheckoutFailureCopy, resolveCheckoutFailure } from '~/shared/utils/checkout-error'
+import { useGetCart } from '~/domains/cart/queries/cart.query'
+import { getCheckoutFailureCopy, resolveCheckoutFailure } from '~/domains/checkout/utils/checkout-error'
 
 const cartStore = useCartStore()
 const toast = useToast()

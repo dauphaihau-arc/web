@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { UseQueryOptions } from '@tanstack/vue-query'
 import ProductSection from './product-section.vue'
-import { useGetTrendingProducts } from '~/shared/server-state/product/products.query'
-import type { GetProductRecommendationsResponse } from '~/shared/api/product/contracts/product.contract'
+import { useGetTrendingProducts } from '~/domains/product/queries/products.query'
+import type { GetProductRecommendationsResponse } from '~/domains/product/api/contracts/product.contract'
 
 const limit = 10
 const props = defineProps<{

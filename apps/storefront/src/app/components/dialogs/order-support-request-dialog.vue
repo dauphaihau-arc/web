@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
-import type { RequestOrderSupportRequest } from '~/shared/api/me/order/contracts/order.contract'
-import { useRequestOrderSupport } from '~/shared/server-state/me/orders/request-support.mutation'
+import type { RequestOrderSupportRequest } from '~/domains/me/api/order/contracts/order.contract'
+import { useRequestOrderSupport } from '~/domains/me/mutations/orders/request-support.mutation'
 
 const props = defineProps<{
   orderId: string

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useCartStore } from '~/shared/stores/cart/cart.store'
-import { CheckoutNowSteps } from '~/shared/stores/cart/cart.store.types'
+import { useCartStore } from '~/domains/cart/stores/cart.store'
+import { CheckoutNowSteps } from '~/domains/cart/stores/cart.store.types'
 
 const cartStore = useCartStore()
 

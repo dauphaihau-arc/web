@@ -7,9 +7,9 @@ import ProductReviews from './_components/product-reviews/product-reviews.vue'
 import ProductSummary from './_components/summary.vue'
 import { useLiveProductInventory } from './_composables/use-live-product-inventory'
 import RecommendationSections from './_components/recommendation-sections.vue'
-import type { GetProductsResponseItem } from '~/shared/api/product/contracts/product.contract'
-import { useGetDetailProductBySlug } from '~/shared/server-state/product/detail-by-slug.query'
-import { useRecordProductView } from '~/shared/server-state/product/products.query'
+import type { GetProductsResponseItem } from '~/domains/product/api/contracts/product.contract'
+import { useGetDetailProductBySlug } from '~/domains/product/queries/detail-by-slug.query'
+import { useRecordProductView } from '~/domains/product/queries/products.query'
 
 definePageMeta({ layout: 'market' })
 

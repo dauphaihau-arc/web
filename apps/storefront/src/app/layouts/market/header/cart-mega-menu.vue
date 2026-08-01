@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { routes } from '~/shared/navigation/routes'
-import { useGetCart } from '~/shared/server-state/cart/cart.query'
+import { useGetCart } from '~/domains/cart/queries/cart.query'
 
 const props = defineProps<{ show: boolean }>()
 

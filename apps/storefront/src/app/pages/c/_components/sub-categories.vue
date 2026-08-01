@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { consola } from 'consola'
 import type { Category } from '@arc/models/category'
-import { useGetCategories } from '~/shared/server-state/category/categories.query'
+import { useGetCategories } from '~/domains/category/queries/categories.query'
 
 const route = useRoute()
 const marketStore = useMarketStore()

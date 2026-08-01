@@ -1,5 +1,5 @@
 import { routePaths, routes } from '~/shared/navigation/routes';
-import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query';
+import { useGetCurrentUser } from '~/domains/me/queries/current-user.query';
 
 export default defineNuxtRouteMiddleware(async (to, _from) => {
   const { data } = useGetCurrentUser();

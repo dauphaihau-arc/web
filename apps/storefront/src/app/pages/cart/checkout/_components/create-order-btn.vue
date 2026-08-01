@@ -3,27 +3,27 @@ import { consola } from 'consola'
 import { PaymentTypes } from '@arc/enums/order'
 import { MARKET_CONFIG } from '@arc/enums/market'
 import { FetchError } from 'ofetch'
-import { CheckoutCartSteps } from '~/shared/stores/cart/cart.store.types'
+import { CheckoutCartSteps } from '~/domains/cart/stores/cart.store.types'
 import { toastCustom } from '~/shared/config/toast'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { routes } from '~/shared/navigation/routes'
-import { useGetCurrentUser } from '~/shared/server-state/me/current-user.query'
-import { useCreateGuestCheckoutQuoteFromCart } from '~/shared/server-state/checkout/create-checkout-quote-from-cart.mutation'
-import { useCreateGuestOrderFromCart } from '~/shared/server-state/checkout/create-order-from-cart.mutation'
-import { useCreateCheckoutQuoteFromCart } from '~/shared/server-state/me/orders/create-checkout-quote-from-cart.mutation'
-import { useCreateOrderFromCart } from '~/shared/server-state/me/orders/create-order-from-cart.mutation'
-import { useCartStore } from '~/shared/stores/cart/cart.store'
+import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
+import { useCreateGuestCheckoutQuoteFromCart } from '~/domains/checkout/mutations/create-checkout-quote-from-cart.mutation'
+import { useCreateGuestOrderFromCart } from '~/domains/checkout/mutations/create-order-from-cart.mutation'
+import { useCreateCheckoutQuoteFromCart } from '~/domains/me/mutations/orders/create-checkout-quote-from-cart.mutation'
+import { useCreateOrderFromCart } from '~/domains/me/mutations/orders/create-order-from-cart.mutation'
+import { useCartStore } from '~/domains/cart/stores/cart.store'
 import type {
   CreateGuestCheckoutQuoteFromCartRequest,
   CreateGuestOrderFromCartRequest,
-} from '~/shared/api/checkout/contracts/checkout.contract'
+} from '~/domains/checkout/api/contracts/checkout.contract'
 import type {
   CreateCheckoutQuoteFromCartRequest,
   CreateOrderFromCartRequest,
-} from '~/shared/api/me/order/contracts/order.contract'
-import { useGetCart } from '~/shared/server-state/cart/cart.query'
+} from '~/domains/me/api/order/contracts/order.contract'
+import { useGetCart } from '~/domains/cart/queries/cart.query'
 import { getBackendErrorMessage } from '~/shared/utils/backend-error'
-import { getCheckoutFailureCopy, resolveCheckoutFailure } from '~/shared/utils/checkout-error'
+import { getCheckoutFailureCopy, resolveCheckoutFailure } from '~/domains/checkout/utils/checkout-error'
 
 const marketStore = useMarketStore()
 const toast = useToast()

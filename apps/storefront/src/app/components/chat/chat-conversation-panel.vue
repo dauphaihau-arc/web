@@ -4,11 +4,11 @@ import ChatThreadPanel from '@arc/ui/shells/chat-thread-panel.vue'
 import type {
   MyChatConversation,
   MyChatMessage,
-} from '~/shared/api/me/chat/contracts/chat.contract'
+} from '~/domains/me/api/chat/contracts/chat.contract'
 import { createStorefrontChatEventsClient } from '~/shared/realtime/chat-events.client'
-import { useMyMarkChatRead } from '~/shared/server-state/me/chat/mark-read.mutation'
-import { useMyChatMessages } from '~/shared/server-state/me/chat/messages.query'
-import { useMySendChatMessage } from '~/shared/server-state/me/chat/send-message.mutation'
+import { useMyMarkChatRead } from '~/domains/me/mutations/chat/mark-read.mutation'
+import { useMyChatMessages } from '~/domains/me/queries/chat/messages.query'
+import { useMySendChatMessage } from '~/domains/me/mutations/chat/send-message.mutation'
 
 const props = withDefaults(defineProps<{
   conversationId?: string

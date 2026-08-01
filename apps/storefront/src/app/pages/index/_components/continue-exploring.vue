@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Category } from '@arc/models/category'
 import ProductCard from './product-card.vue'
-import { useGetProductsByMultiQueries } from '~/shared/server-state/product/products.query'
+import { useGetProductsByMultiQueries } from '~/domains/product/queries/products.query'
 
 const groupSkeletons = 2
 const limit = 6

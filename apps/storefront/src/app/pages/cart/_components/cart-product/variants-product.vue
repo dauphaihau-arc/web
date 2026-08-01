@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CartProductItem } from '~/shared/api/cart/cart.shared'
+import type { CartProductItem } from '~/domains/cart/api/cart.shared'
 
 const props = defineProps<{ productCart: CartProductItem }>()
 </script>

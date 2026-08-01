@@ -4,7 +4,7 @@ import type { ElementType } from '@arc/contracts/utils'
 import WriteProductReviewDialog from './write-product-review-dialog/write-product-review-dialog.vue'
 import OrderCancelRequestDialog from '~/app/components/dialogs/order-cancel-request-dialog.vue'
 import OrderSupportRequestDialog from '~/app/components/dialogs/order-support-request-dialog.vue'
-import type { GetOrderShopsResponse } from '~/shared/api/me/order/contracts/order.contract'
+import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract'
 
 const props = withDefaults(defineProps<{
   orderShop: ElementType<GetOrderShopsResponse['order_shops']>

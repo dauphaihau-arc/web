@@ -6,7 +6,7 @@ import {
   buildProductDetailPath,
   routePaths
 } from './route-paths';
-import type { MyOrderListState } from '~/shared/api/me/order/contracts/order.contract';
+import type { MyOrderListState } from '~/domains/me/api/order/contracts/order.contract';
 
 export { routePaths } from './route-paths';
 

@@ -3,7 +3,7 @@ import AddRemoveCoupons from './add-remove-coupons.vue'
 import AddRemoveNote from './add-remove-note.vue'
 import Product from './cart-product/cart-product.vue'
 import ShippingSelect from './shipping-select.vue'
-import type { CartShopGroup } from '~/shared/api/cart/cart.shared'
+import type { CartShopGroup } from '~/domains/cart/api/cart.shared'
 
 const props = defineProps<{
   shopCart: CartShopGroup

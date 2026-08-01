@@ -4,9 +4,9 @@ import {
   MAX_REVIEW_IMAGES,
   MAX_REVIEW_IMAGE_BYTES
 } from './item-media-section.constants';
-import type { ResponseGetOrderShopsProduct } from '~/shared/api/me/order/contracts/order.contract';
+import type { ResponseGetOrderShopsProduct } from '~/domains/me/api/order/contracts/order.contract';
 import { toastCustom } from '~/shared/config/toast';
-import { uploadReviewImage } from '~/shared/server-state/me/product-reviews/upload-review-image.mutation';
+import { uploadReviewImage } from '~/domains/me/mutations/product-reviews/upload-review-image.mutation';
 import { resolveProductImageUrl } from '~/shared/utils/storage-public-url';
 
 type ProductReview = ResponseGetOrderShopsProduct['my_review'];

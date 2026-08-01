@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { MAX_REVIEW_IMAGES } from './item-media-section.constants'
 import { useItemMediaSection } from './use-item-media-section'
-import type { ResponseGetOrderShopsProduct } from '~/shared/api/me/order/contracts/order.contract'
+import type { ResponseGetOrderShopsProduct } from '~/domains/me/api/order/contracts/order.contract'
 
 type ProductReview = ResponseGetOrderShopsProduct['my_review']
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { formatMinorCurrency } from '@arc/utils'
-import type { CartSummary } from '~/shared/api/cart/cart.shared'
+import type { CartSummary } from '~/domains/cart/api/cart.shared'
 
 const props = defineProps<{
   loading: boolean

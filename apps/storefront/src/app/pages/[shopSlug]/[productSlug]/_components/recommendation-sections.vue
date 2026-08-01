@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import ProductCard from '~/app/components/product/product-card.vue'
-import { useGetProductRecommendationSections } from '~/shared/server-state/product/products.query'
+import { useGetProductRecommendationSections } from '~/domains/product/queries/products.query'
 
 const limit = 6
 

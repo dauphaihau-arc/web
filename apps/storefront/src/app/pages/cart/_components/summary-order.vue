@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { formatMinorCurrency } from '@arc/utils'
-import { useGetCart } from '~/shared/server-state/cart/cart.query'
+import { useGetCart } from '~/domains/cart/queries/cart.query'
 import { routes } from '~/shared/navigation/routes'
 
 const {
