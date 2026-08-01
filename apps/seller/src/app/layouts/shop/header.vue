@@ -2,7 +2,7 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 import ShortcutHint from '@arc/ui/primitives/shortcut-hint.vue'
 import NotificationPopover from './notification-popover.vue'
-import { shopHeaderCreateLinks } from '~/shared/navigation/menu'
+import { shopHeaderCreateItems } from './navigation-items'
 import type { DropdownItem } from '#ui/types'
 
 type HeaderDropdownItem = Omit<DropdownItem, 'icon' | 'shortcuts'> & {
@@ -11,7 +11,7 @@ type HeaderDropdownItem = Omit<DropdownItem, 'icon' | 'shortcuts'> & {
 }
 
 const itemsHeaderDropdown: HeaderDropdownItem[][] = [
-  shopHeaderCreateLinks.map(item => ({
+  shopHeaderCreateItems.map(item => ({
     ...item,
     shortcuts: item.shortcuts ? [...item.shortcuts] : undefined,
     click: () => navigateTo(item.to),
@@ -71,7 +71,7 @@ function onGlobalKeydown(event: KeyboardEvent) {
   }
 
   const key = event.key.toLowerCase()
-  const matchingPrefix = shopHeaderCreateLinks.some(item =>
+  const matchingPrefix = shopHeaderCreateItems.some(item =>
     item.sequence[0].toLowerCase() === key,
   )
 
@@ -84,7 +84,7 @@ function onGlobalKeydown(event: KeyboardEvent) {
     return
   }
 
-  const matchedItem = shopHeaderCreateLinks.find(item =>
+  const matchedItem = shopHeaderCreateItems.find(item =>
     item.sequence[0].toLowerCase() === pendingShortcutPrefix.value
     && item.sequence[1].toLowerCase() === key,
   )

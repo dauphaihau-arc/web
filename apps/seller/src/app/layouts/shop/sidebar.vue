@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import LayoutShopSidebarSubLinks from './sidebar-sub-links.vue'
 import type { LinkItem } from './sidebar.types'
+import { shopSidebarItems } from './navigation-items'
 import type { DropdownItem } from '#ui/types'
-import { shopSidebarLinks } from '~/shared/navigation/menu'
 import { useLogout } from '~/domains/auth/mutations/logout.mutation'
 import { useGetMyShop } from '~/domains/shop/queries/my-shop.query'
 
@@ -19,7 +19,7 @@ const formattedShopName = computed(() => {
 })
 const shopInitial = computed(() => formattedShopName.value.charAt(0))
 
-const itemsLinkSidebar: LinkItem[] = shopSidebarLinks
+const itemsLinkSidebar: LinkItem[] = shopSidebarItems
 
 const isOpen = ref(false)
 

@@ -1,24 +1,17 @@
-import type { RouteLocationRaw } from 'vue-router';
-import { CreateCouponPageTypes } from '@arc/enums/shop';
-import { routePaths, routes } from './routes';
+import type { RouteLocationRaw } from 'vue-router'
+import { CreateCouponPageTypes } from '@arc/enums/shop'
+import type { LinkItem } from './sidebar.types'
+import { routePaths, routes } from '~/shared/navigation/routes'
 
-export type AppNavigationItem = {
+type ShopHeaderCreateItem = {
   label: string
-  icon?: string
+  icon: string
+  shortcuts: string[]
+  sequence: [string, string]
   to: RouteLocationRaw
-  disabled?: boolean
-};
+}
 
-export type AppSidebarLink = {
-  title: string
-  icon?: string
-  to?: RouteLocationRaw
-  matchPath?: string
-  disabled?: boolean
-  sub?: AppSidebarLink[]
-};
-
-export const shopSidebarLinks: AppSidebarLink[] = [
+export const shopSidebarItems: LinkItem[] = [
   {
     title: 'Dashboard',
     icon: 'dashboard',
@@ -70,9 +63,9 @@ export const shopSidebarLinks: AppSidebarLink[] = [
     matchPath: '/finances',
     disabled: true,
   },
-];
+]
 
-export const shopHeaderCreateLinks = [
+export const shopHeaderCreateItems: ShopHeaderCreateItem[] = [
   {
     label: 'Create Product',
     icon: 'i-heroicons-cube',
@@ -93,4 +86,4 @@ export const shopHeaderCreateLinks = [
   //   shortcuts: ['S'],
   //   to: routes.couponsNew(CreateCouponPageTypes.SALE),
   // },
-] as const;
+]
