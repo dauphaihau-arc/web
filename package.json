@@ -43,6 +43,8 @@
     "url": "https://github.com/dauphaihau"
   },
   "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
     "turbo": "^2.9.18"
   },
   "volta": {
