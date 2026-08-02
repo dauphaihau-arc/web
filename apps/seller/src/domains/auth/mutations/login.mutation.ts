@@ -34,7 +34,7 @@ export function useLogin() {
           return;
         }
 
-        await navigateTo(routes.products());
+        await navigateTo(routes.dashboard());
       }
     },
   });

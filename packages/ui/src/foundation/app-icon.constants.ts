@@ -38,6 +38,8 @@ export const ICON_NAME_BY_ALIAS = {
   shipping: 'lucide:plane',
   product: 'tabler:cube',
   dashboard: 'streamline-flex:dashboard-3',
+  revenue: 'i-heroicons-banknotes-20-solid',
+  averageOrder: 'i-heroicons-chart-bar-20-solid',
   marketing: 'nimbus:marketing',
   refund: 'lets-icons:refund-forward',
   expired: 'i-heroicons-clock-20-solid',

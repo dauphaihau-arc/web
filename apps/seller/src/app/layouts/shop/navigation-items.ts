@@ -17,7 +17,6 @@ export const shopSidebarItems: LinkItem[] = [
     icon: 'dashboard',
     to: routes.dashboard(),
     matchPath: routePaths.dashboard,
-    disabled: true,
   },
   {
     title: 'Products',
