@@ -1,7 +1,7 @@
-import type { RouteLocationRaw } from 'vue-router'
-import { CreateCouponPageTypes } from '@arc/enums/shop'
-import type { LinkItem } from './sidebar.types'
-import { routePaths, routes } from '~/shared/navigation/routes'
+import type { RouteLocationRaw } from 'vue-router';
+import { CreateCouponPageTypes } from '@arc/enums/shop';
+import type { LinkItem } from './sidebar.types';
+import { routePaths, routes } from '~/shared/navigation/routes';
 
 type ShopHeaderCreateItem = {
   label: string
@@ -9,7 +9,7 @@ type ShopHeaderCreateItem = {
   shortcuts: string[]
   sequence: [string, string]
   to: RouteLocationRaw
-}
+};
 
 export const shopSidebarItems: LinkItem[] = [
   {
@@ -62,7 +62,7 @@ export const shopSidebarItems: LinkItem[] = [
     matchPath: '/finances',
     disabled: true,
   },
-]
+];
 
 export const shopHeaderCreateItems: ShopHeaderCreateItem[] = [
   {
@@ -85,4 +85,4 @@ export const shopHeaderCreateItems: ShopHeaderCreateItem[] = [
   //   shortcuts: ['S'],
   //   to: routes.couponsNew(CreateCouponPageTypes.SALE),
   // },
-]
+];

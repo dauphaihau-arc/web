@@ -48,9 +48,9 @@ export default withNuxt(
   },
   {
     files: [
-      'src/shared/api/**/*.ts',
-      'src/shared/types/**/*.ts',
-      'src/shared/server-state/**/*.ts',
+      'src/domains/**/api/**/*.ts',
+      'src/domains/**/mutations/**/*.ts',
+      'src/domains/**/*.types.ts',
       'src/server/api/**/*.ts',
     ],
     rules: {
