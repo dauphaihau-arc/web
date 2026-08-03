@@ -21,9 +21,10 @@ export const listShopProductsItemSchema = z.object({
   title: z.string(),
   state: z.nativeEnum(ProductStates).optional(),
   variant_type: z.nativeEnum(ProductVariantTypes).optional(),
+  image_url: z.string().optional(),
   images: z.array(z.object({
     id: z.string(),
-    storage_key: z.string(),
+    image_url: z.string().optional(),
     rank: z.number(),
   })),
   variants: z.array(z.object({
@@ -31,7 +32,6 @@ export const listShopProductsItemSchema = z.object({
     name: z.string(),
     option_value_1: z.string().optional(),
     option_value_2: z.string().optional(),
-    image_storage_key: z.string().optional(),
     rank: z.number(),
   })),
   inventory: z.array(z.object({

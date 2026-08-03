@@ -20,7 +20,7 @@ type ProductRow = {
   slug: string
   title: string
   state?: ProductStates
-  imageStorageKey: string
+  imageUrl?: string
   variants: ListShopProductsItem['variants']
   inventory: ListShopProductsItem['inventory']
   variantType: ProductVariantTypes
@@ -58,7 +58,6 @@ const selected = ref<ProductRow[]>([])
 const publishFeedback = ref<PublishFeedback | null>(null)
 
 const config = useRuntimeConfig()
-const assetHost = computed(() => config.public.assetHost?.replace(/\/+$/, '') ?? '')
 const storefrontAppURL = computed(() => config.public.storefrontAppURL.replace(/\/+$/, ''))
 
 const {
@@ -67,7 +66,7 @@ const {
 } = useShopBulkMutateProducts()
 
 const columns = [
-  { key: 'title', label: 'Title' },
+  { key: 'title', label: 'Product' },
   { key: 'sku', label: 'SKU Variant' },
   { key: 'variant', label: 'Variant' },
   { key: 'price', label: 'Price' },
@@ -81,7 +80,7 @@ const rows = computed<ProductRow[]>(() => {
     slug: product.slug,
     title: product.title,
     state: product.state,
-    imageStorageKey: product.images[0]?.storage_key ?? '',
+    imageUrl: product.image_url,
     variants: product.variants,
     inventory: product.inventory,
     variantType: product.variant_type ?? ProductVariantTypes.NONE,
@@ -97,14 +96,6 @@ watch(products, () => {
   selected.value = []
   publishFeedback.value = null
 })
-
-function buildAssetUrl(storageKey?: string) {
-  if (!storageKey || !assetHost.value) {
-    return ''
-  }
-
-  return `${assetHost.value}/${storageKey.replace(/^\/+/, '')}`
-}
 
 function editProduct(row: ProductRow) {
   navigateTo(routes.productDetail(row.id))
@@ -334,15 +325,25 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
       @row-click="row => editProduct(row as ProductRow)"
     >
       <template #title-data="{ row }">
-        <div class="flex max-w-[200px] gap-2">
+        <div class="flex max-w-[260px] items-center gap-2">
           <NuxtImg
-            v-if="row.imageStorageKey"
-            :src="buildAssetUrl(row.imageStorageKey)"
+            v-if="row.imageUrl"
+            :src="row.imageUrl"
+            :alt="row.title"
             width="50"
             height="50"
-            class="rounded"
+            class="size-[50px] shrink-0 rounded object-cover"
             preload
           />
+          <div
+            v-else
+            class="grid size-[50px] shrink-0 place-items-center rounded"
+          >
+            <AppIcon
+              name="i-heroicons-cube-20-solid"
+              size="sm"
+            />
+          </div>
           <div class="truncate">
             {{ row.title }}
           </div>
