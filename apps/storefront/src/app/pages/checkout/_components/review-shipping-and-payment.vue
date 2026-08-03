@@ -19,7 +19,7 @@ const changePayment = () => {
         Shipping & Payment
       </legend>
 
-      <div class="grid grid-cols-4">
+      <div class="grid grid-cols-3">
         <div>
           <div class="mb-1 font-semibold">
             Shipping address
