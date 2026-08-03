@@ -116,23 +116,9 @@ export default defineNuxtConfig({
   },
 
   i18n: {
-    locales: [
-      {
-        code: 'en',
-        file: 'en-us.js',
-      },
-      {
-        code: 'fr',
-        file: 'fr-fr.js',
-      },
-      {
-        code: 'la',
-        file: 'la-la.js',
-      },
-    ],
-    lazy: true,
-    langDir: 'app/locales',
+    locales: [{ code: 'en', language: 'en-US' }],
     defaultLocale: 'en',
+    vueI18n: './i18n.config.ts',
   },
 
   colorMode: {
