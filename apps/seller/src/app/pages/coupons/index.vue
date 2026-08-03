@@ -76,16 +76,17 @@ watch(typeFilter, () => {
     <template #actions>
       <div class="space-x-3">
         <UButton
+          :to="routes.couponsNew(CreateCouponPageTypes.SALE)"
+          size="sm"
+          color="gray"
+        >
+          + Run sale
+        </UButton>
+        <UButton
           :to="routes.couponsNew(CreateCouponPageTypes.PROMO_CODE)"
           size="sm"
         >
           + Create a promo code
-        </UButton>
-        <UButton
-          :to="routes.couponsNew(CreateCouponPageTypes.SALE)"
-          size="sm"
-        >
-          + Run sale
         </UButton>
       </div>
     </template>
