@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import LayoutShopSidebarSubLinks from './sidebar-sub-links.vue'
+import SubLinks from './sub-links.vue'
 import type { LinkItem } from './sidebar.types'
 import { shopSidebarItems } from './navigation-items'
 import type { DropdownItem } from '#ui/types'
@@ -94,7 +94,7 @@ const itemsShopDropdown: ShopDropdownItem[][] = [
         v-for="(item, index) of itemsLinkSidebar"
         :key="index"
       >
-        <LayoutShopSidebarSubLinks
+        <SubLinks
           v-if="item?.sub || !item.to"
           :data="item"
         />

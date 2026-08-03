@@ -2,7 +2,7 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 import ShortcutHint from '@arc/ui/primitives/shortcut-hint.vue'
 import NotificationPopover from './notification-popover.vue'
-import { shopHeaderCreateItems } from './navigation-items'
+import { shopHeaderCreateItems } from './sidebar/navigation-items'
 import type { DropdownItem } from '#ui/types'
 
 type HeaderDropdownItem = Omit<DropdownItem, 'icon' | 'shortcuts'> & {
