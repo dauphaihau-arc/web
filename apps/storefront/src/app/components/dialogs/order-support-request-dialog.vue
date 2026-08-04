@@ -28,7 +28,7 @@ async function onSubmit(event: FormSubmitEvent<RequestOrderSupportRequest>) {
 <template>
   <BaseDialog
     title="Help with order"
-    description="Describe the issue or question for this order. Support can review it from the admin tools."
+    description="Describe the issue or question for this order. Support will review your request."
   >
     <UForm
       ref="formRef"

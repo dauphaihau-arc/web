@@ -66,10 +66,10 @@ export const authApi = {
     );
   },
 
-  resetPassword(token: string, password: string) {
+  resetPassword(token: string, password: string, app: 'seller') {
     return apiClient.post<ResetPasswordResponse>(
       `/auth/reset-password?token=${token}`,
-      { password },
+      { password, app },
       undefined,
       { retryOnUnauthorized: false }
     );

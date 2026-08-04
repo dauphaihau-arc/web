@@ -14,7 +14,10 @@ export function useLogin() {
   return useMutation({
     mutationKey: ['login'],
     mutationFn: async (body: LoginRequest) => {
-      const response = await authApi.login(body);
+      const response = await authApi.login({
+        ...body,
+        app: 'seller',
+      });
 
       if (hasSellerAccess(response.user)) {
         return response;

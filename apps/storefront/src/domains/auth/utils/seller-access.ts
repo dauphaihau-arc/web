@@ -1,9 +1,5 @@
-const SELLER_PERMISSION = 'shops.manage';
-
-type SellerAccessUser = {
-  permissions?: string[]
-} | null | undefined;
-
-export function hasSellerAccess(user?: SellerAccessUser) {
-  return user?.permissions?.includes(SELLER_PERMISSION) ?? false;
-}
+export {
+  hasAdminRole,
+  hasCustomerAccess,
+  hasSellerAccess
+} from '@arc/schemas/api/auth/portal-access.schema';

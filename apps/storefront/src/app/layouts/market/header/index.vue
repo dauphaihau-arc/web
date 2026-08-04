@@ -4,7 +4,7 @@ import Categories from './categories.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { useGetCart } from '~/domains/cart/queries/cart.query'
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
-import { hasSellerAccess } from '~/domains/auth/utils/seller-access'
+import { hasAdminRole, hasCustomerAccess, hasSellerAccess } from '~/domains/auth/utils/seller-access'
 
 const loadCartMegaMenu = () => import('./cart-mega-menu.vue')
 const loadSearchAllMegaMenu = () => import('./search-all-mega-menu.vue')
@@ -103,6 +103,8 @@ const totalProductCarts = computed(() => {
   return dataGetCart.value?.cart?.total_quantity ?? 0
 })
 
+const isAdminUser = computed(() => hasAdminRole(dataUserAuth.value?.user))
+
 const sellerCtaLabel = computed(() => {
   if (!dataUserAuth.value?.user) {
     return 'Seller Center'
@@ -110,6 +112,8 @@ const sellerCtaLabel = computed(() => {
 
   return hasSellerAccess(dataUserAuth.value.user) ? 'Manage Shop' : 'Start Selling'
 })
+
+const hasCustomerAccountAccess = computed(() => hasCustomerAccess(dataUserAuth.value?.user))
 
 function getSellerRedirectURL() {
   const sellerAppURL = config.public.sellerAppURL.replace(/\/+$/, '')
@@ -215,7 +219,7 @@ const showRegisterLoginDialog = async () => {
             <template v-if="isPendingUserAuth && !dataUserAuth">
               <USkeleton class="size-6 rounded-full" />
             </template>
-            <template v-else-if="dataUserAuth?.user">
+            <template v-else-if="hasCustomerAccountAccess">
               <NotificationPopover @mouseenter="preloadAuthMenu" />
               <AccountDropdown
                 @hover-trigger="isShowCart = false"
@@ -238,7 +242,10 @@ const showRegisterLoginDialog = async () => {
             </template>
           </ClientOnly>
 
-          <UTooltip :text="sellerCtaLabel">
+          <UTooltip
+            v-if="!isAdminUser"
+            :text="sellerCtaLabel"
+          >
             <UButton
               square
               color="gray"

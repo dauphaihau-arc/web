@@ -9,7 +9,7 @@ export function useResetPassword(token: string) {
   return useMutation({
     mutationKey: ['reset-password'],
     mutationFn: (password: ResetPasswordRequest['password']) => {
-      return authApi.resetPassword(token, password);
+      return authApi.resetPassword(token, password, 'seller');
     },
     onSuccess: async (data) => {
       if (data?.user) {

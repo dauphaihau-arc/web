@@ -43,6 +43,7 @@ export const currentUserSchema = z.object({
   id: z.string(),
   email: z.string().email(),
   display_name: z.string().optional(),
+  roles: z.array(z.string()),
   permissions: z.array(z.string()),
   preferences: authPreferencesSchema.optional(),
   shop: currentUserShopSchema.optional(),

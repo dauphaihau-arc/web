@@ -62,6 +62,10 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
         unknownErrorServerMsg.value = 'Incorrect email or password'
         return
       }
+      if (error.status === StatusCodes.FORBIDDEN) {
+        unknownErrorServerMsg.value = 'This account does not have seller access'
+        return
+      }
       unknownErrorServerMsg.value = 'An unknown error occurred. Please try again'
     }
   }

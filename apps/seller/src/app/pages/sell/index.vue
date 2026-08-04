@@ -4,12 +4,23 @@ import CreateShopForm from './_components/create-shop-form.vue'
 import { routes } from '~/shared/navigation/routes'
 import { setPostAuthRedirect } from '~/domains/auth/utils/post-auth-redirect'
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
+import { hasAdminRole } from '~/domains/auth/utils/seller-access'
+import { authApi } from '~/domains/auth/api/auth.api'
+import { clearExpTokensInLS } from '~/domains/auth/utils/token-storage'
 
 definePageMeta({
   layout: 'auth',
   middleware: [
     async (to) => {
+      const queryClient = useQueryClient()
       const { data: dataUserAuth, refetch } = useGetCurrentUser()
+
+      if (hasAdminRole(dataUserAuth.value?.user)) {
+        await authApi.logout().catch(() => undefined)
+        queryClient.setQueryData(['current-user'], { user: null })
+        clearExpTokensInLS()
+        return navigateTo(routes.login())
+      }
 
       if (dataUserAuth.value?.user?.shop) {
         return navigateTo(routes.products())
@@ -24,6 +35,13 @@ definePageMeta({
 
         if (response.data?.user?.shop) {
           return navigateTo(routes.products())
+        }
+
+        if (hasAdminRole(response.data?.user)) {
+          await authApi.logout().catch(() => undefined)
+          queryClient.setQueryData(['current-user'], { user: null })
+          clearExpTokensInLS()
+          return navigateTo(routes.login())
         }
 
         if (response.data?.user) {

@@ -32,7 +32,7 @@ describe('auth middleware', () => {
 
     vi.doMock('~/domains/me/queries/current-user.query', () => ({
       useGetCurrentUser: () => ({
-        data: { value: { user: { id: 'user-1' } } },
+        data: { value: { user: { id: 'user-1', roles: ['customer'] } } },
         refetch,
       }),
     }));
@@ -81,8 +81,10 @@ describe('auth middleware', () => {
     expect(result).toBeTruthy();
   });
 
-  it('allows protected routes when refetch returns an authenticated user', async () => {
-    const refetch = vi.fn().mockResolvedValue({ data: { user: { id: 'user-1' } } });
+  it('allows protected routes when refetch returns a customer user', async () => {
+    const refetch = vi.fn().mockResolvedValue({
+      data: { user: { id: 'user-1', roles: ['customer'] } },
+    });
 
     vi.doMock('~/domains/me/queries/current-user.query', () => ({
       useGetCurrentUser: () => ({
@@ -105,6 +107,59 @@ describe('auth middleware', () => {
     expect(result).toBeUndefined();
     expect(refetch).toHaveBeenCalledTimes(1);
     expect(navigateToMock).not.toHaveBeenCalled();
+  });
+
+  it('allows seller users through storefront protected routes', async () => {
+    const refetch = vi.fn();
+
+    vi.doMock('~/domains/me/queries/current-user.query', () => ({
+      useGetCurrentUser: () => ({
+        data: { value: { user: { id: 'seller-1', roles: ['seller'] } } },
+        refetch,
+      }),
+    }));
+    vi.doMock('~/shared/navigation/routes', () => ({
+      routes: { home: () => '/' },
+    }));
+    vi.doMock('@arc/lib', async () => ({
+      ...await vi.importActual('@arc/lib'),
+      isBackendWakeUpError: () => false,
+    }));
+
+    const middleware = (await import('./auth')).default;
+
+    const result = await middleware({} as never, {} as never);
+
+    expect(result).toBeUndefined();
+    expect(refetch).not.toHaveBeenCalled();
+    expect(navigateToMock).not.toHaveBeenCalled();
+  });
+
+  it('redirects admin users away from storefront protected routes', async () => {
+    const refetch = vi.fn();
+
+    vi.doMock('~/domains/me/queries/current-user.query', () => ({
+      useGetCurrentUser: () => ({
+        data: { value: { user: { id: 'admin-1', roles: ['admin'] } } },
+        refetch,
+      }),
+    }));
+    vi.doMock('~/shared/navigation/routes', () => ({
+      routes: { home: () => '/' },
+    }));
+    vi.doMock('@arc/lib', async () => ({
+      ...await vi.importActual('@arc/lib'),
+      isBackendWakeUpError: () => false,
+    }));
+
+    navigateToMock.mockResolvedValue('/');
+
+    const middleware = (await import('./auth')).default;
+
+    const result = await middleware({} as never, {} as never);
+
+    expect(refetch).not.toHaveBeenCalled();
+    expect(result).toBeTruthy();
   });
 
   it('retries in background on backend wake-up errors', async () => {

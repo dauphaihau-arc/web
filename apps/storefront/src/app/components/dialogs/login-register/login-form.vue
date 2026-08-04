@@ -55,6 +55,10 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
         unknownErrorServerMsg.value = 'Incorrect email or password'
         return
       }
+      if (error.status === StatusCodes.FORBIDDEN) {
+        unknownErrorServerMsg.value = 'This account cannot access the customer site'
+        return
+      }
       unknownErrorServerMsg.value = 'An unknown error occurred. Please try again'
     }
   }

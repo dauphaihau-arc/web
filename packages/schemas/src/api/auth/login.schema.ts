@@ -14,6 +14,7 @@ export const loginRequestSchema = z.object({
     .min(USER_CONFIG.MIN_CHAR_PASSWORD)
     .max(USER_CONFIG.MAX_CHAR_PASSWORD)
     .regex(USER_REG_PASSWORD),
+  app: z.enum(['storefront', 'seller', 'admin']).optional(),
 })
 
 export const loginResponseSchema = authUserEnvelopeSchema

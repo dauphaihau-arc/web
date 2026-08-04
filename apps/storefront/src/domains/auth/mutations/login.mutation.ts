@@ -12,7 +12,10 @@ export function useLogin() {
   return useMutation({
     mutationKey: ['login'],
     mutationFn: (body: LoginRequest) => {
-      return authApi.login(body);
+      return authApi.login({
+        ...body,
+        app: 'storefront',
+      });
     },
     onSuccess: async (data) => {
       if (data?.user) {

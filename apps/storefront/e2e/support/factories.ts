@@ -2,6 +2,7 @@ export type E2EUser = {
   id: string
   display_name: string
   email: string
+  roles: string[]
   permissions: string[]
   preferences: {
     currency: string
@@ -26,6 +27,7 @@ export function createUser(overrides: Partial<E2EUser> = {}): E2EUser {
     id: 'user-e2e-1',
     display_name: 'E2E User',
     email: 'e2e@example.com',
+    roles: ['customer'],
     permissions: [],
     preferences: {
       currency: 'USD',
