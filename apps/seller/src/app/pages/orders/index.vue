@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { OrderStatuses } from '@arc/enums/order'
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import OrdersStatusTabs from './_components/orders-status-tabs.vue'
 import OrdersTable from './_components/orders-table.vue'
 import OrderFilterToolbar from '~/app/pages/orders/_components/order-filter-toolbar/order-filter-toolbar.vue'
@@ -13,6 +14,7 @@ const pageCount = 20
 const page = ref(1)
 const activeFilters = ref<Partial<ListShopOrdersRequest>>({})
 const statusFilter = ref<OrderStatuses[]>([])
+const dialog = useModal()
 
 const params = computed(() => ({
   page: page.value,
@@ -38,6 +40,14 @@ function handleToolbarChange(payload: Partial<ListShopOrdersRequest>) {
   activeFilters.value = payload
 }
 
+async function openExportDialog() {
+  const dialogComponent = await import('./_components/export-orders-dialog/export-orders-dialog.vue')
+
+  dialog.open(dialogComponent.default, {
+    filters: activeFilters.value,
+  })
+}
+
 watch(statusFilter, () => {
   page.value = 1
 }, { deep: true })
@@ -53,11 +63,23 @@ watch(statusFilter, () => {
         v-model="statusFilter"
         :counts="orderCountsQuery.data.value?.status_counts ?? data?.status_counts"
       />
-      <OrderFilterToolbar
-        v-model:status-filter="statusFilter"
-        @change="handleToolbarChange"
-        @reset-page="page = 1"
-      />
+
+      <div class="mb-6 flex justify-between">
+        <OrderFilterToolbar
+          v-model:status-filter="statusFilter"
+          @change="handleToolbarChange"
+          @reset-page="page = 1"
+        />
+
+        <UButton
+          color="gray"
+          :icon="ICON_NAME_BY_ALIAS['export']"
+          @click="openExportDialog"
+        >
+          Export
+        </UButton>
+      </div>
+
       <OrdersTable
         :orders="data?.results ?? []"
         :loading="isPending"

@@ -60,7 +60,7 @@ function handleFilterChange(index: number) {
 </script>
 
 <template>
-  <div class="flex max-h-[min(32rem,calc(100vh-5rem))] w-[22rem] max-w-[calc(100vw-2rem)] flex-col p-3">
+  <div class="flex max-h-[min(32rem,calc(100vh-5rem))] w-[25rem] max-w-[calc(100vw-2rem)] flex-col p-3">
     <div class="mb-3 flex items-center justify-between gap-3">
       <div>
         <div class="text-sm font-semibold">
@@ -84,7 +84,7 @@ function handleFilterChange(index: number) {
       </UButton>
     </div>
 
-    <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain pe-3">
+    <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain">
       <UTabs
         v-if="filters.length > 0"
         class="mb-2 w-full"
@@ -93,8 +93,14 @@ function handleFilterChange(index: number) {
         :ui="{
           list: {
             width: 'w-full md:w-full',
+            height: 'h-9',
+            padding: 'p-1',
             tab: {
               base: 'flex-1 justify-center',
+              height: 'h-7',
+              padding: 'px-2',
+              size: 'text-xs',
+              icon: 'w-3.5 h-3.5 me-1',
             },
           },
         }"

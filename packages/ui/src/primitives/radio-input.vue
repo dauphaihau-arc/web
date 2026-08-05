@@ -30,11 +30,17 @@ const clickRadio = () => {
 const isChecked = computed(() => {
   return model.value === props.value
 })
+
+const cursorClass = computed(() => props.disabled ? 'cursor-not-allowed' : 'cursor-pointer')
 </script>
 
 <template>
   <div
-    :class="['flex items-center', props.wrapperClass]"
+    :class="[
+      'flex items-center',
+      cursorClass,
+      props.wrapperClass,
+    ]"
     @click="clickRadio"
   >
     <div class="grid h-6 place-items-center">
@@ -50,6 +56,7 @@ const isChecked = computed(() => {
         shrink-0 appearance-none rounded-full border
       "
         :class="[
+          cursorClass,
           isChecked && 'border-primary bg-primary',
           props.radioClass,
         ]"
@@ -59,13 +66,13 @@ const isChecked = computed(() => {
         class="col-start-1 row-start-1 size-1.5 rounded-full bg-white"
       />
     </div>
-    <div class="ms-1.5 flex flex-col">
+    <div :class="['ms-2 flex flex-col', cursorClass]">
       <slot
         v-if="slots.label"
         name="label"
       />
       <div v-else>
-        <label :class="['text-sm font-medium text-text-subtle', props.labelClass]">
+        <label :class="['text-sm font-medium text-text-subtle', cursorClass, props.labelClass]">
           {{ props.label }}
         </label>
         <div

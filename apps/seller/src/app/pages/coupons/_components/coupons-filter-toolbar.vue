@@ -318,7 +318,7 @@ function isValidTime(value: string) {
 </script>
 
 <template>
-  <FilterToolbar>
+  <FilterToolbar class="mb-6">
     <FilterPopover
       :open="openFilter === 'date'"
       label="Start - End Date"

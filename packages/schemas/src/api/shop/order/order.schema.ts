@@ -15,6 +15,49 @@ export const listShopOrdersRequestSchema = z.object({
   search: z.string().optional(),
 })
 
+export const shopOrderExportColumnSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  default: z.boolean(),
+})
+
+export const exportShopOrdersRequestSchema = listShopOrdersRequestSchema.extend({
+  date_range: z.enum([
+    'today',
+    'current_month',
+    'last_7_days',
+    'last_4_weeks',
+    'last_month',
+    'all',
+    'custom',
+  ]).optional(),
+  timezone: z.string().optional(),
+  column_preset: z.enum(['default', 'custom']).optional(),
+  columns: z.array(z.string()).optional(),
+})
+
+export const shopOrderExportStatusSchema = z.enum([
+  'queued',
+  'processing',
+  'completed',
+  'failed',
+  'expired',
+])
+
+export const shopOrderExportResponseSchema = z.object({
+  id: z.string(),
+  status: shopOrderExportStatusSchema,
+  filename: z.string(),
+  total_rows: z.number(),
+  processed_rows: z.number(),
+  percent: z.number(),
+  error_message: z.string().optional(),
+  completed_at: z.coerce.date().optional(),
+  expires_at: z.coerce.date(),
+  created_at: z.coerce.date(),
+  updated_at: z.coerce.date(),
+})
+
 export const shopOrderProductSchema = z.object({
   id: z.string(),
   title: z.string(),

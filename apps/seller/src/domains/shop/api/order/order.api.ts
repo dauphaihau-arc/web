@@ -1,6 +1,8 @@
 import type {
+  ExportShopOrdersRequest,
   ListShopOrdersRequest,
   ListShopOrdersResponse,
+  ShopOrderExportResponse,
   ShopOrderDetailResponse,
   UpdateShopOrderRefundRequest,
   UpdateShopOrderShipmentRequest,
@@ -13,6 +15,35 @@ export const shopOrderApi = {
     return apiClient.get<ListShopOrdersResponse>(
       `/shops/${shopId}/orders`,
       query
+    );
+  },
+
+  exportCsv(shopId: string, query?: ExportShopOrdersRequest) {
+    return apiClient.get<Blob>(
+      `/shops/${shopId}/orders/export`,
+      query,
+      { responseType: 'blob' }
+    );
+  },
+
+  startExport(shopId: string, body: ExportShopOrdersRequest) {
+    return apiClient.post<ShopOrderExportResponse>(
+      `/shops/${shopId}/orders/exports`,
+      body
+    );
+  },
+
+  getExport(shopId: string, exportId: string) {
+    return apiClient.get<ShopOrderExportResponse>(
+      `/shops/${shopId}/orders/exports/${exportId}`
+    );
+  },
+
+  downloadExport(shopId: string, exportId: string) {
+    return apiClient.get<Blob>(
+      `/shops/${shopId}/orders/exports/${exportId}/download`,
+      undefined,
+      { responseType: 'blob' }
     );
   },
 

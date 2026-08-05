@@ -130,7 +130,7 @@ function updateOpenFilter(
 </script>
 
 <template>
-  <FilterToolbar>
+  <FilterToolbar class="mb-6">
     <FilterPopover
       :open="openFilter === 'search'"
       label="Search"

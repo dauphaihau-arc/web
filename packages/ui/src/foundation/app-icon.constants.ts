@@ -54,6 +54,7 @@ export const ICON_NAME_BY_ALIAS = {
   ratingNeutral: 'lucide:meh',
   ratingGood: 'lucide:smile',
   ratingExcellent: 'lucide:laugh',
+  export: 'ph:export',
 } as const
 
 export type AppIconAlias = keyof typeof ICON_NAME_BY_ALIAS
