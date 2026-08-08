@@ -20,7 +20,6 @@ const slots = useSlots()
       <div>
         <div
           v-if="backLabel || slots.preTitle"
-          class="mb-2"
         >
           <UButton
             v-if="backLabel && backTo"

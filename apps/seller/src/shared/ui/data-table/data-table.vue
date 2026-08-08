@@ -24,6 +24,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  selectable: {
+    type: Boolean,
+    default: true,
+  },
   emptyState: {
     type: Object as PropType<TableEmptyState>,
     required: true,
@@ -55,9 +59,9 @@ const selected = computed({
 })
 
 const tableModelValue = computed({
-  get: (): unknown[] | undefined => (props.rows.length > 0 ? selected.value : undefined),
+  get: (): unknown[] | undefined => (props.selectable && props.rows.length > 0 ? selected.value : undefined),
   set: (value) => {
-    if (value) {
+    if (props.selectable && value) {
       selected.value = value
     }
   },
@@ -79,6 +83,9 @@ const dataSlotColumns = computed(() =>
 const tableUi = {
   divide: 'divide-y divide-border-subtle',
   tbody: 'divide-y divide-border-subtle',
+  th: {
+    padding: 'p-2',
+  },
 } as const
 </script>
 

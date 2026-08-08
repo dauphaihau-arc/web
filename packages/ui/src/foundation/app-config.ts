@@ -72,6 +72,14 @@ export const sharedAppConfig = {
         width: 'w-full md:w-auto',
       },
     },
+    table: {
+      base: 'min-w-full table-fixed border-t border-border-subtle',
+      divide: 'divide-y divide-border-subtle',
+      tbody: 'divide-y divide-border-subtle',
+      td: {
+        padding: 'p-2',
+      },
+    },
   },
   icon: {
     size: '20px',

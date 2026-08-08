@@ -23,6 +23,7 @@ import type {
   UpdateProductRequestBody,
   UpdateProductResponse
 } from './contracts/update-product.contract';
+import type { ShopProductImportResponse } from './contracts/import.contract';
 import { apiClient } from '~/shared/lib/api-client';
 
 export const shopProductApi = {
@@ -98,6 +99,43 @@ export const shopProductApi = {
     return apiClient.patch<UpdateProductResponse>(
       `/shops/${shopId}/products/${productId}`,
       payload
+    );
+  },
+
+  downloadImportTemplate(shopId: string) {
+    return apiClient.get<Blob>(
+      `/shops/${shopId}/products/imports/template`,
+      undefined,
+      { responseType: 'blob' }
+    );
+  },
+
+  startImport(shopId: string, file: File, idempotencyKey: string) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return apiClient.post<ShopProductImportResponse>(
+      `/shops/${shopId}/products/imports`,
+      formData,
+      {
+        headers: {
+          'Idempotency-Key': idempotencyKey,
+        },
+      }
+    );
+  },
+
+  getImport(shopId: string, importId: string) {
+    return apiClient.get<ShopProductImportResponse>(
+      `/shops/${shopId}/products/imports/${importId}`
+    );
+  },
+
+  downloadImportReport(shopId: string, importId: string) {
+    return apiClient.get<Blob>(
+      `/shops/${shopId}/products/imports/${importId}/report`,
+      undefined,
+      { responseType: 'blob' }
     );
   },
 };

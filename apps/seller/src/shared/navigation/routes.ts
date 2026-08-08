@@ -33,6 +33,7 @@ export const routes = {
   reset: (query?: { v?: string | number }) => createRoute(routePaths.reset, query),
   dashboard: () => createRoute(routePaths.dashboard),
   products: () => createRoute(routePaths.products),
+  productsImport: () => createRoute(`${routePaths.products}/import`),
   productsNew: () => createRoute(`${routePaths.products}/new`),
   productDetail: (id: string) => createRoute(`${routePaths.products}/${id}`),
   coupons: () => createRoute(routePaths.coupons),
