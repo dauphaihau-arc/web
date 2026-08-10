@@ -30,10 +30,12 @@ const props = withDefaults(defineProps<{
   initialConversation?: MyChatConversation | null
   emptyStateText?: string
   showHeader?: boolean
+  autofocusComposer?: boolean
 }>(), {
   initialConversation: null,
   emptyStateText: 'Select a conversation to read and reply.',
   showHeader: true,
+  autofocusComposer: false,
 })
 
 const messageDraft = ref('')
@@ -209,6 +211,7 @@ async function handleSendMessage() {
     :sending="isSendingMessage"
     :has-older-messages="hasPreviousPage"
     :loading-older-messages="isFetchingPreviousPage"
+    :autofocus-composer="autofocusComposer"
     list-class="scrollbar-subtle min-h-0 flex-1 space-y-4 overflow-y-auto bg-surface-muted px-6 py-5"
     composer-class="shrink-0 bg-surface-muted px-6 pb-4"
     section-class="flex h-full min-h-0 flex-col"

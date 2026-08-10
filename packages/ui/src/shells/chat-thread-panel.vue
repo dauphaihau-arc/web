@@ -37,6 +37,7 @@ const props = withDefaults(defineProps<{
   textareaRows?: number
   textareaMaxRows?: number
   textareaClass?: string
+  autofocusComposer?: boolean
   messageBubbleClass?: string
   ownMessageBubbleClass?: string
   incomingMessageBubbleClass?: string
@@ -54,6 +55,7 @@ const props = withDefaults(defineProps<{
   textareaRows: 3,
   textareaMaxRows: 8,
   textareaClass: 'w-full',
+  autofocusComposer: false,
   messageBubbleClass: 'rounded-xl px-4 py-1 shadow-sm',
   ownMessageBubbleClass: 'bg-primary text-white',
   incomingMessageBubbleClass: 'bg-surface text-text-strong',
@@ -68,6 +70,7 @@ const emit = defineEmits<{
 }>()
 
 const threadPanel = ref<InstanceType<typeof ConversationThreadPanel> | null>(null)
+const composerField = ref<HTMLElement | null>(null)
 const scrollElement = computed(() => threadPanel.value?.listEl ?? null)
 const isNearBottom = ref(true)
 const previousScrollHeight = ref(0)
@@ -118,6 +121,19 @@ watch(
 
     previousFirstMessageId.value = firstMessageId.value
     previousLastMessageId.value = lastMessageId.value
+  },
+  { immediate: true },
+)
+
+watch(
+  () => [props.autofocusComposer, props.hasConversation] as const,
+  async ([autofocusComposer, hasConversation]) => {
+    if (!autofocusComposer || !hasConversation) {
+      return
+    }
+
+    await nextTick()
+    composerField.value?.querySelector('textarea')?.focus()
   },
   { immediate: true },
 )
@@ -283,7 +299,10 @@ function measureElement(ref: Element | ComponentPublicInstance | null) {
 
     <template #composer>
       <form @submit.prevent="handleSend">
-        <div class="relative">
+        <div
+          ref="composerField"
+          class="relative"
+        >
           <UTextarea
             v-model="messageDraft"
             :rows="textareaRows"

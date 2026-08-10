@@ -235,6 +235,7 @@ watch(
                 :conversation-id="activeConversation.id"
                 :initial-conversation="activeConversation"
                 :show-header="false"
+                autofocus-composer
                 empty-state-text="Loading conversation..."
               />
             </div>
