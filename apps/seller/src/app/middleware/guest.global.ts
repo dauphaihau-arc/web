@@ -6,11 +6,7 @@ import { authApi } from '~/domains/auth/api/auth.api';
 
 export default defineNuxtRouteMiddleware(async (to, _from) => {
   const queryClient = useQueryClient();
-  const { refetch, data } = useGetCurrentUser();
-
-  if (!data.value?.user) {
-    void refetch();
-  }
+  const { data } = useGetCurrentUser();
 
   if (hasAdminRole(data.value?.user)) {
     await authApi.logout().catch(() => undefined);
