@@ -12,30 +12,36 @@ const {
   conversationList,
   conversations,
   conversationTimeLabel,
+  fetchPreviousPage,
+  getConversationBuyerInitial,
+  getConversationBuyerName,
+  getConversationLatestMessagePreview,
+  getConversationSellerUnreadLabel,
+  hasPreviousPage,
   handleSendMessage,
-  isConversationUnread,
+  isFetchingPreviousPage,
   isPendingConversations,
   isPendingMessages,
   isSendingMessage,
   messageDraft,
   messages,
-  openProductPreview,
-  selectConversation,
   selectedConversationResolved,
+  selectConversation,
   threadMessages,
 } = useMessagesPage(selectedConversationId)
 </script>
 
 <template>
-  <ConversationInboxShell container-class="grid min-h-[70vh] grid-cols-[360px_minmax(0,1fr)] overflow-hidden">
+  <ConversationInboxShell container-class="grid h-[calc(100dvh-11rem)] min-h-0 grid-cols-[360px_minmax(0,1fr)] overflow-hidden">
     <ConversationListPanel
       :total-results="conversationList?.total_results ?? 0"
       :loading="isPendingConversations"
       :empty="conversations.length === 0"
       empty-text="No buyer conversations yet."
       min-height-class="h-[60vh]"
-      aside-class="border-r border-border-subtle"
+      aside-class="flex min-h-0 flex-col border-r border-border-subtle"
       header-class="flex min-h-[88px] flex-col justify-center border-b border-border-subtle px-5 py-4"
+      list-class="scrollbar-subtle min-h-0 flex-1 overflow-y-auto"
     >
       <button
         v-for="conversation in conversations"
@@ -47,32 +53,44 @@ const {
         ]"
         @click="selectConversation(conversation)"
       >
-        <div class="flex items-start justify-between gap-3">
-          <div class="min-w-0">
-            <div class="truncate text-sm font-semibold text-text-strong">
-              {{ conversation.product?.title || 'General inquiry' }}
-            </div>
-            <div class="truncate text-xs text-text-muted">
-              {{ conversation.product?.slug || conversation.shop.slug }}
-            </div>
-          </div>
-          <div class="shrink-0 text-xs text-text-muted">
-            {{ conversationTimeLabel(conversation) }}
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between gap-2">
-          <div class="truncate text-xs text-text-muted">
-            Buyer: {{ conversation.buyer_user_id }}
-          </div>
-          <UBadge
-            v-if="isConversationUnread(conversation)"
-            color="blue"
-            variant="subtle"
-            size="xs"
+        <div class="flex items-start gap-3">
+          <img
+            v-if="conversation.buyer.avatar"
+            :src="conversation.buyer.avatar"
+            :alt="getConversationBuyerName(conversation)"
+            class="size-10 shrink-0 rounded-full object-cover"
           >
-            Unread
-          </UBadge>
+          <div
+            v-else
+            class="flex size-10 shrink-0 items-center justify-center rounded-full bg-customGray-200 text-sm font-semibold text-text-strong"
+          >
+            {{ getConversationBuyerInitial(conversation) }}
+          </div>
+
+          <div class="min-w-0 flex-1">
+            <div class="flex items-start justify-between gap-3">
+              <div class="truncate text-sm font-semibold text-text-strong">
+                {{ getConversationBuyerName(conversation) }}
+              </div>
+              <div class="shrink-0 text-xs text-text-muted">
+                {{ conversationTimeLabel(conversation) }}
+              </div>
+            </div>
+
+            <div class="mt-1 flex items-center justify-between gap-2">
+              <div class="truncate text-xs text-text-muted">
+                {{ getConversationLatestMessagePreview(conversation) }}
+              </div>
+              <UBadge
+                v-if="conversation.seller_unread_count > 0"
+                variant="subtle"
+                size="xs"
+                class="flex size-4 shrink-0 items-center justify-center rounded p-0 text-[10px] leading-none"
+              >
+                {{ getConversationSellerUnreadLabel(conversation) }}
+              </UBadge>
+            </div>
+          </div>
         </div>
       </button>
     </ConversationListPanel>
@@ -86,35 +104,44 @@ const {
       :messages="threadMessages"
       :model-value="messageDraft"
       :sending="isSendingMessage"
-      list-class="flex-1 space-y-4 overflow-y-auto bg-surface-muted px-6 py-5"
-      composer-class="bg-surface-muted px-6 py-4"
-      section-class="flex min-h-[70vh] flex-col"
+      :has-older-messages="hasPreviousPage"
+      :loading-older-messages="isFetchingPreviousPage"
+      list-class="scrollbar-subtle min-h-0 flex-1 space-y-4 overflow-y-auto bg-surface-muted px-6 py-5"
+      composer-class="shrink-0 bg-surface-muted px-6 pb-4"
+      section-class="flex h-full min-h-0 flex-col"
       @update:model-value="messageDraft = $event"
+      @load-older-messages="fetchPreviousPage"
       @send="handleSendMessage"
     >
       <template
         v-if="selectedConversationResolved"
         #header
       >
-        <div class="flex min-h-[88px] items-center border-b border-border-subtle px-6 py-4">
+        <div class="flex min-h-[88px] shrink-0 items-center border-b border-border-subtle px-6 py-4">
           <div class="flex w-full items-start justify-between gap-4">
-            <div>
-              <div class="text-lg font-semibold text-text-strong">
-                {{ selectedConversationResolved.product?.title || 'General inquiry' }}
+            <div class="flex min-w-0 items-center gap-3">
+              <img
+                v-if="selectedConversationResolved.buyer.avatar"
+                :src="selectedConversationResolved.buyer.avatar"
+                :alt="getConversationBuyerName(selectedConversationResolved)"
+                class="size-11 shrink-0 rounded-full object-cover"
+              >
+              <div
+                v-else
+                class="flex size-11 shrink-0 items-center justify-center rounded-full bg-customGray-200 text-base font-semibold text-text-strong"
+              >
+                {{ getConversationBuyerInitial(selectedConversationResolved) }}
               </div>
-              <div class="text-sm text-text-muted">
-                Buyer {{ selectedConversationResolved.buyer_user_id }}
+
+              <div class="min-w-0">
+                <div class="truncate text-lg font-semibold text-text-strong">
+                  {{ getConversationBuyerName(selectedConversationResolved) }}
+                </div>
+                <div class="truncate text-sm text-text-muted">
+                  Conversation
+                </div>
               </div>
             </div>
-
-            <UButton
-              v-if="selectedConversationResolved.product?.slug"
-              color="gray"
-              variant="ghost"
-              @click="openProductPreview"
-            >
-              Open product
-            </UButton>
           </div>
         </div>
       </template>

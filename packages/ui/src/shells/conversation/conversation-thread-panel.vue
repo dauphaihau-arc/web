@@ -1,4 +1,10 @@
 <script setup lang="ts">
+const emit = defineEmits<{
+  (e: 'listScroll', event: Event): void
+}>()
+
+const listEl = ref<HTMLElement | null>(null)
+
 withDefaults(defineProps<{
   hasConversation: boolean
   loading?: boolean
@@ -15,9 +21,13 @@ withDefaults(defineProps<{
   emptyStateText: 'Select a conversation to read and reply.',
   loadingText: 'Loading messages...',
   emptyMessagesText: 'No messages yet.',
-  listClass: 'min-h-0 flex-1 space-y-4 overflow-y-auto bg-surface-muted px-6 py-5',
+  listClass: 'scrollbar-subtle min-h-0 flex-1 space-y-4 overflow-y-auto bg-surface-muted px-6 py-5',
   composerClass: 'mt-auto shrink-0 bg-surface-muted px-5 py-5',
   sectionClass: 'flex h-full min-h-0 flex-1 flex-col',
+})
+
+defineExpose({
+  listEl,
 })
 </script>
 
@@ -33,7 +43,11 @@ withDefaults(defineProps<{
     <template v-else>
       <slot name="header" />
 
-      <div :class="listClass">
+      <div
+        ref="listEl"
+        :class="listClass"
+        @scroll="emit('listScroll', $event)"
+      >
         <AppStateBlock
           v-if="loading"
           class="grid h-full place-content-center border-0 bg-transparent shadow-none"

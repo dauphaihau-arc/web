@@ -1,3 +1,4 @@
+import type { InfiniteData } from '@tanstack/vue-query'
 import type {
   BaseChatConversation,
   BaseChatMessage,
@@ -15,6 +16,10 @@ type MessageListData<TConversation, TMessage> = {
   results: TMessage[]
 }
 
+type InfiniteMessageListData<TConversation, TMessage> = InfiniteData<
+  MessageListData<TConversation, TMessage>
+>
+
 type UnreadCountData = {
   unread_count: number
 }
@@ -23,10 +28,25 @@ function patchConversation<TConversation extends BaseChatConversation>(
   conversation: TConversation,
   payload: ChatMessageCreatedRealtimeEvent,
 ): TConversation {
+  const senderUserId = payload.message.sender_user_id
+
   return {
     ...conversation,
+    last_message: {
+      id: payload.message.id,
+      body_preview: payload.message.body.trim().replace(/\s+/g, ' ').slice(0, 160),
+      sender_user_id: payload.message.sender_user_id,
+      message_type: payload.message.message_type ?? 'text',
+      created_at: payload.message.occurred_at,
+    },
     last_message_at: payload.message.occurred_at,
-    last_message_sender_user_id: payload.message.sender_user_id,
+    last_message_sender_user_id: senderUserId,
+    buyer_unread_count: senderUserId === conversation.buyer_user_id
+      ? 0
+      : conversation.buyer_unread_count + 1,
+    seller_unread_count: senderUserId === conversation.shop.owner_user_id
+      ? 0
+      : conversation.seller_unread_count + 1,
     updated_at: payload.message.occurred_at,
   }
 }
@@ -41,12 +61,52 @@ function patchMessageLists<
   >,
   payload: ChatMessageCreatedRealtimeEvent,
 ): void {
-  const cacheEntries = options.queryClient.getQueriesData<MessageListData<TConversation, TMessage>>({
+  const cacheEntries = options.queryClient.getQueriesData<
+    MessageListData<TConversation, TMessage> | InfiniteMessageListData<TConversation, TMessage>
+  >({
     queryKey: [options.messageQueryKey],
   })
 
   for (const [queryKey, queryData] of cacheEntries) {
-    if (queryData?.conversation?.id !== payload.conversation_id) {
+    if (!queryData) {
+      continue
+    }
+
+    if ('pages' in queryData) {
+      const conversationPage = queryData.pages.find(page => page.conversation.id === payload.conversation_id)
+
+      if (!conversationPage) {
+        continue
+      }
+
+      const hasExistingMessage = queryData.pages.some(page =>
+        page.results.some(message => message.id === payload.message.id))
+
+      if (hasExistingMessage) {
+        continue
+      }
+
+      const lastPageIndex = queryData.pages.length - 1
+      const nextPages = queryData.pages.map((page, index) => ({
+        ...page,
+        conversation: patchConversation(page.conversation, payload),
+        results: index === lastPageIndex
+          ? [
+              ...page.results,
+              options.createMessage(payload),
+            ]
+          : page.results,
+      }))
+
+      options.queryClient.setQueryData(queryKey, {
+        ...queryData,
+        pages: nextPages,
+      })
+
+      continue
+    }
+
+    if (queryData.conversation.id !== payload.conversation_id) {
       continue
     }
 

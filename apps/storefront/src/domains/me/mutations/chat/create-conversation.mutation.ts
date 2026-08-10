@@ -11,7 +11,8 @@ export function useCreateOrGetMyChatConversation() {
     mutationFn: async (body: CreateMyChatConversationRequest) => {
       return await meChatApi.createOrGetConversation(body);
     },
-    onSuccess() {
+    onSuccess(conversation) {
+      queryClient.removeQueries({ queryKey: ['my-chat-messages', conversation.id] });
       queryClient.invalidateQueries({ queryKey: ['my-chat-conversations'] });
       queryClient.invalidateQueries({ queryKey: ['my-chat-unread-count'] });
     },

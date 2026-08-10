@@ -10,6 +10,7 @@ withDefaults(defineProps<{
   minHeightClass?: string
   asideClass?: string
   headerClass?: string
+  listClass?: string
 }>(), {
   title: 'Conversations',
   totalResults: 0,
@@ -21,6 +22,7 @@ withDefaults(defineProps<{
   minHeightClass: 'h-52',
   asideClass: 'border-b border-border-subtle lg:border-b-0 lg:border-r',
   headerClass: 'border-b border-border-subtle px-5 py-4',
+  listClass: 'scrollbar-subtle max-h-[70vh] overflow-y-auto',
 })
 </script>
 
@@ -51,7 +53,7 @@ withDefaults(defineProps<{
 
     <div
       v-else
-      class="max-h-[70vh] overflow-y-auto"
+      :class="listClass"
     >
       <slot />
     </div>

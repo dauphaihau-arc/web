@@ -1,6 +1,7 @@
 import type { QueryClient } from '@tanstack/vue-query';
 import {
   createChatEventsClient,
+  isChatConversationUnread,
   type ChatMessageCreatedRealtimeEvent
 } from '@arc/lib';
 import type {
@@ -21,7 +22,7 @@ function createRealtimeChatMessage(
     conversation_id: payload.conversation_id,
     sender_user_id: payload.message.sender_user_id,
     body: payload.message.body,
-    message_type: 'text',
+    message_type: payload.message.message_type ?? 'text',
     metadata: payload.message.metadata,
     edited_at: null,
     created_at: payload.message.occurred_at,
@@ -30,15 +31,13 @@ function createRealtimeChatMessage(
 }
 
 function isConversationUnread(conversation: MyChatConversation): boolean {
-  return conversation.last_message_sender_user_id !== null &&
-    conversation.last_message_sender_user_id === conversation.shop.owner_user_id &&
-    (
-      !conversation.buyer_last_read_at ||
-      (
-        !!conversation.last_message_at &&
-        conversation.buyer_last_read_at < conversation.last_message_at
-      )
-    );
+  return isChatConversationUnread({
+    unreadCount: conversation.buyer_unread_count,
+    lastMessageSenderUserId: conversation.last_message_sender_user_id,
+    lastMessageIsOwn: conversation.last_message_sender_user_id !== conversation.shop.owner_user_id,
+    lastReadAt: conversation.buyer_last_read_at,
+    lastMessageAt: conversation.last_message_at,
+  });
 }
 
 export function createStorefrontChatEventsClient(queryClient: QueryClient) {

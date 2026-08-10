@@ -1,13 +1,16 @@
 <script lang="ts" setup>
-import dayjs from 'dayjs'
 import type { MyChatConversation } from '~/domains/me/api/chat/contracts/chat.contract'
 import ChatConversationPanel from '~/app/components/chat/chat-conversation-panel.vue'
+import {
+  getConversationBuyerUnreadLabel,
+  getConversationLatestMessagePreview,
+  getConversationShopInitial,
+  getConversationShopName,
+  getConversationTimeLabel,
+} from '~/app/components/chat/storefront-chat-conversation.helpers'
 import { routes } from '~/shared/navigation/routes'
 import { createStorefrontChatEventsClient } from '~/shared/realtime/chat-events.client'
-import {
-  useMyChatConversations,
-  useMyChatUnreadCount,
-} from '~/domains/me/queries/chat/conversations.query'
+import { useMyChatConversations } from '~/domains/me/queries/chat/conversations.query'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 
@@ -27,7 +30,6 @@ const conversationParams = computed(() => ({
   limit: 50,
 }))
 
-const { data: unreadCount } = useMyChatUnreadCount()
 const {
   data: conversationList,
   isPending: isPendingConversations,
@@ -61,26 +63,6 @@ function selectConversation(conversation: MyChatConversation) {
   router.push(routes.accountMessages({ conversationId: conversation.id }))
 }
 
-function isConversationUnread(conversation: MyChatConversation) {
-  return conversation.last_message_sender_user_id !== null
-    && conversation.last_message_sender_user_id === conversation.shop.owner_user_id
-    && (
-      !conversation.buyer_last_read_at
-      || (
-        !!conversation.last_message_at
-        && conversation.buyer_last_read_at < conversation.last_message_at
-      )
-    )
-}
-
-function formatConversationTime(value?: string | null) {
-  if (!value) {
-    return ''
-  }
-
-  return dayjs(value).format('MMM D, HH:mm')
-}
-
 if (import.meta.client) {
   onMounted(() => {
     chatEventsClient?.start()
@@ -93,27 +75,23 @@ if (import.meta.client) {
 </script>
 
 <template>
-  <div class="">
+  <div class="min-w-0 flex-1">
     <div class="mb-8">
       <SectionHeader
         title="Messages"
         description="Talk directly with sellers about products and orders."
         heading-class="text-3xl font-semibold text-text-strong"
-      >
-        <template #badge>
-          <div class="rounded-full border border-border-subtle bg-surface-muted px-3 py-1 text-sm text-text-subtle">
-            Unread: {{ unreadCount?.unread_count ?? 0 }}
-          </div>
-        </template>
-      </SectionHeader>
+      />
     </div>
 
-    <ConversationInboxShell>
+    <ConversationInboxShell container-class="grid h-[calc(100dvh-18rem)] min-h-0 grid-cols-1 overflow-hidden lg:grid-cols-[340px_minmax(0,1fr)]">
       <ConversationListPanel
         :total-results="conversationList?.total_results ?? 0"
         :loading="isPendingConversations"
         :empty="conversations.length === 0"
         empty-text="No conversations yet."
+        aside-class="flex min-h-0 flex-col border-b border-border-subtle lg:border-b-0 lg:border-r"
+        list-class="scrollbar-subtle min-h-0 flex-1 overflow-y-auto"
       >
         <button
           v-for="conversation in conversations"
@@ -123,32 +101,35 @@ if (import.meta.client) {
           :class="selectedConversationId === conversation.id ? 'bg-surface-muted' : ''"
           @click="selectConversation(conversation)"
         >
-          <div class="flex items-start justify-between gap-3">
-            <div class="min-w-0">
-              <div class="truncate text-sm font-semibold text-text-strong">
-                {{ conversation.product?.title || conversation.shop.shop_name }}
-              </div>
-              <div class="truncate text-xs text-text-muted">
-                {{ conversation.shop.shop_name }}
-              </div>
+          <div class="flex items-start gap-3">
+            <div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-customGray-200 text-sm font-semibold text-text-strong">
+              {{ getConversationShopInitial(conversation) }}
             </div>
-            <div class="shrink-0 text-xs text-text-muted">
-              {{ formatConversationTime(conversation.last_message_at || conversation.created_at) }}
-            </div>
-          </div>
 
-          <div class="flex items-center justify-between gap-2">
-            <div class="truncate text-xs text-text-muted">
-              {{ conversation.product?.slug || conversation.shop.slug }}
+            <div class="min-w-0 flex-1">
+              <div class="flex items-start justify-between gap-3">
+                <div class="truncate text-sm font-semibold text-text-strong">
+                  {{ getConversationShopName(conversation) }}
+                </div>
+                <div class="shrink-0 text-xs text-text-muted">
+                  {{ getConversationTimeLabel(conversation) }}
+                </div>
+              </div>
+
+              <div class="mt-1 flex items-center justify-between gap-2">
+                <div class="truncate text-xs text-text-muted">
+                  {{ getConversationLatestMessagePreview(conversation) }}
+                </div>
+                <UBadge
+                  v-if="conversation.buyer_unread_count > 0"
+                  color="blue"
+                  variant="subtle"
+                  size="xs"
+                >
+                  {{ getConversationBuyerUnreadLabel(conversation) }}
+                </UBadge>
+              </div>
             </div>
-            <UBadge
-              v-if="isConversationUnread(conversation)"
-              color="blue"
-              variant="subtle"
-              size="xs"
-            >
-              Unread
-            </UBadge>
           </div>
         </button>
       </ConversationListPanel>

@@ -213,7 +213,7 @@ watch(
             <div class="flex items-center justify-between border-b border-border-subtle px-5 py-3">
               <div>
                 <div class="text-sm font-semibold text-text-strong">
-                  Chat with {{ props.product?.shop.shop_name }}
+                  {{ props.product?.shop.shop_name }}
                 </div>
                 <div class="text-xs text-text-muted">
                   Ask about this product directly from here.
@@ -234,7 +234,7 @@ watch(
               <ChatConversationPanel
                 :conversation-id="activeConversation.id"
                 :initial-conversation="activeConversation"
-                :show-product-link="false"
+                :show-header="false"
                 empty-state-text="Loading conversation..."
               />
             </div>

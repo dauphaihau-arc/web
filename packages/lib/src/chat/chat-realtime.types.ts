@@ -7,6 +7,7 @@ export type ChatMessageCreatedRealtimeEvent = {
   message: {
     id: string
     body: string
+    message_type?: string
     sender_user_id: string
     occurred_at: string
     metadata: Record<string, unknown> | null
@@ -15,10 +16,23 @@ export type ChatMessageCreatedRealtimeEvent = {
 
 export type BaseChatConversation = {
   id: string
+  buyer_user_id: string
+  shop: {
+    owner_user_id: string
+  }
+  last_message: {
+    id: string
+    body_preview: string
+    sender_user_id: string
+    message_type: string
+    created_at: string
+  } | null
   last_message_at: string | null
   last_message_sender_user_id: string | null
   buyer_last_read_at: string | null
   seller_last_read_at: string | null
+  buyer_unread_count: number
+  seller_unread_count: number
   updated_at: string
 }
 

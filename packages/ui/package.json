@@ -1,5 +1,8 @@
 {
   "name": "@arc/ui",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@tanstack/vue-virtual": "^3.13.35"
+  }
 }

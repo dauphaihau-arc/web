@@ -83,3 +83,25 @@
 .shadow-hero {
   box-shadow: var(--shadow-hero);
 }
+
+.scrollbar-subtle {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(180 180 180) transparent;
+}
+
+.scrollbar-subtle::-webkit-scrollbar {
+  width: 10px;
+  background: inherit;
+}
+
+.scrollbar-subtle::-webkit-scrollbar-track {
+  background: inherit;
+  border: 0;
+}
+
+.scrollbar-subtle::-webkit-scrollbar-thumb {
+  background-color: rgb(180 180 180);
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: content-box;
+}

@@ -23,6 +23,8 @@ export const ICON_NAME_BY_ALIAS = {
   check: 'i-material-symbols:check-circle-rounded',
   calendar: 'i-material-symbols:calendar-month-rounded',
   location: 'i-material-symbols:location-on-outline',
+  arrowUp: 'lucide:arrow-up',
+  arrowDown: 'lucide:arrow-down',
   arrowRight: 'lucide:arrow-right',
   arrowLeft: 'lucide:arrow-left',
   arrowForward: 'tabler:arrow-forward',
