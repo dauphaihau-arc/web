@@ -3,7 +3,6 @@ import AppSplash from '@arc/ui/shells/app-splash.vue'
 import BackendWakeUpOverlay from '@arc/ui/shells/backend-wake-up-overlay.vue'
 
 const { status, isUnknown, isPending, isError, isReady, waitForBackend } = useBackendStatus()
-const queryClient = useQueryClient()
 
 const shouldShowBackendOverlay = computed(() => !isUnknown.value && (isPending.value || isError.value))
 
@@ -24,9 +23,6 @@ if (import.meta.client) {
       }
 
       void refreshNuxtData()
-      void queryClient.resetQueries()
-      void queryClient.invalidateQueries()
-      void queryClient.refetchQueries({ type: 'active' })
     },
   )
 }
