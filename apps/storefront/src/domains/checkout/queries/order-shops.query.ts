@@ -4,7 +4,7 @@ import type { GetCheckoutOrderShopsBySessionResponse } from '~/domains/checkout/
 
 export function useGetCheckoutOrderShopsByCheckoutSession(
   sessionId?: string,
-  options?: NitroFetchOptions<NitroFetchRequest>
+  options?: NitroFetchOptions<NitroFetchRequest>,
 ) {
   return useQuery({
     enabled: !!sessionId,
@@ -12,7 +12,7 @@ export function useGetCheckoutOrderShopsByCheckoutSession(
     queryFn: () => {
       return checkoutApi.getShopsByCheckoutSession(
         sessionId!,
-        options
+        options,
       ) as Promise<GetCheckoutOrderShopsBySessionResponse>;
     },
   });

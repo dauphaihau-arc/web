@@ -35,8 +35,8 @@ export function useAddToCartForm({
       new Set(
         product.value.inventory
           .map(inventory => inventory.option_value_1)
-          .filter((value): value is string => Boolean(value))
-      )
+          .filter((value): value is string => Boolean(value)),
+      ),
     );
   });
 
@@ -50,8 +50,8 @@ export function useAddToCartForm({
         product.value.inventory
           .filter(inventory => inventory.option_value_1 === stateSubmit.variantOption)
           .map(inventory => inventory.option_value_2)
-          .filter((value): value is string => Boolean(value))
-      )
+          .filter((value): value is string => Boolean(value)),
+      ),
     );
   });
 
@@ -73,8 +73,8 @@ export function useAddToCartForm({
     }
 
     return product.value.inventory.find((inventory) => {
-      return inventory.option_value_1 === currentSelection.option_value_1 &&
-        inventory.option_value_2 === currentSelection.option_value_2;
+      return inventory.option_value_1 === currentSelection.option_value_1
+        && inventory.option_value_2 === currentSelection.option_value_2;
     });
   }
 
@@ -91,15 +91,15 @@ export function useAddToCartForm({
 
     if (product.value.variant_type === ProductVariantTypes.SINGLE) {
       return product.value.inventory.find(
-        inventory => inventory.option_value_1 === stateSubmit.variantOption
+        inventory => inventory.option_value_1 === stateSubmit.variantOption,
       );
     }
 
     if (product.value.variant_type === ProductVariantTypes.COMBINE) {
       return product.value.inventory.find(
         inventory =>
-          inventory.option_value_1 === stateSubmit.variantOption &&
-          inventory.option_value_2 === stateSubmit.variantSubOption
+          inventory.option_value_1 === stateSubmit.variantOption
+          && inventory.option_value_2 === stateSubmit.variantSubOption,
       );
     }
 
@@ -162,13 +162,13 @@ export function useAddToCartForm({
       inventorySelectedModel.value = undefined;
 
       if (
-        product.value.variant_type === ProductVariantTypes.COMBINE &&
-        stateSubmit.variantSubOption &&
-        !subVariantOptions.value.includes(stateSubmit.variantSubOption)
+        product.value.variant_type === ProductVariantTypes.COMBINE
+        && stateSubmit.variantSubOption
+        && !subVariantOptions.value.includes(stateSubmit.variantSubOption)
       ) {
         stateSubmit.variantSubOption = '';
       }
-    }
+    },
   );
 
   watch(
@@ -176,7 +176,7 @@ export function useAddToCartForm({
     () => {
       stateSubmit.quantity = 1;
       inventorySelectedModel.value = undefined;
-    }
+    },
   );
 
   watch(
@@ -186,7 +186,7 @@ export function useAddToCartForm({
         inventorySelectedModel.value = inventory;
       }
     },
-    { immediate: true }
+    { immediate: true },
   );
 
   watch(
@@ -196,7 +196,7 @@ export function useAddToCartForm({
         inventorySelectedModel.value = product.value.inventory[0];
       }
     },
-    { immediate: true }
+    { immediate: true },
   );
 
   watch(
@@ -211,7 +211,7 @@ export function useAddToCartForm({
         stateSubmit.quantity = nextMaxQuantity;
       }
     },
-    { immediate: true }
+    { immediate: true },
   );
 
   watch(
@@ -225,7 +225,7 @@ export function useAddToCartForm({
       if (maxQuantity.value > 0 && nextQuantity > maxQuantity.value) {
         stateSubmit.quantity = maxQuantity.value;
       }
-    }
+    },
   );
 
   return {

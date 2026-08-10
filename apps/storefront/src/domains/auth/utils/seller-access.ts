@@ -1,5 +1,5 @@
 export {
   hasAdminRole,
   hasCustomerAccess,
-  hasSellerAccess
+  hasSellerAccess,
 } from '@arc/schemas/api/auth/portal-access.schema';

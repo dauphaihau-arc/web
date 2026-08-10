@@ -4,7 +4,7 @@ import type {
   DeleteUserAddressRequest,
   GetUserAddressesResponse,
   UpdateUserAddressRequest,
-  UpdateUserAddressResponse
+  UpdateUserAddressResponse,
 } from './contracts/address.contract';
 import { apiClient } from '~/shared/lib/api-client';
 
@@ -12,19 +12,19 @@ export const meAddressApi = {
   create(payload: CreateUserAddressRequest) {
     return apiClient.post<CreateUserAddressResponse>(
       '/me/addresses',
-      payload
+      payload,
     );
   },
 
   delete(id: DeleteUserAddressRequest['id']) {
     return apiClient.delete(
-      `/me/addresses/${id}`
+      `/me/addresses/${id}`,
     );
   },
 
   getList() {
     return apiClient.get<GetUserAddressesResponse>(
-      '/me/addresses'
+      '/me/addresses',
     );
   },
 
@@ -32,7 +32,7 @@ export const meAddressApi = {
     const { id, ...body } = payload;
     return apiClient.patch<UpdateUserAddressResponse>(
       `/me/addresses/${id}`,
-      body
+      body,
     );
   },
 };

@@ -12,11 +12,11 @@ export type CategoryImageVariant =
 export function resolveCategoryImageUrl(
   category: Pick<Category, 'imageUrl' | 'imageStorageKey'>,
   assetHost: string | undefined,
-  preferredVariant?: CategoryImageVariant
+  preferredVariant?: CategoryImageVariant,
 ): string | undefined {
-  const variantStorageKey = preferredVariant ?
-    buildCategoryVariantStorageKey(category.imageStorageKey, preferredVariant) :
-    undefined;
+  const variantStorageKey = preferredVariant
+    ? buildCategoryVariantStorageKey(category.imageStorageKey, preferredVariant)
+    : undefined;
 
   const variantUrl = resolveStoragePublicUrl({
     storageKey: variantStorageKey,
@@ -36,7 +36,7 @@ export function resolveCategoryImageUrl(
 
 function buildCategoryVariantStorageKey(
   originalStorageKey: string | undefined,
-  variant: CategoryImageVariant
+  variant: CategoryImageVariant,
 ): string | undefined {
   if (!originalStorageKey) {
     return undefined;
@@ -47,8 +47,8 @@ function buildCategoryVariantStorageKey(
   const originalSegmentIndex = imageSegmentIndex + 1;
 
   if (
-    imageSegmentIndex === -1 ||
-    segments[originalSegmentIndex] !== 'original'
+    imageSegmentIndex === -1
+    || segments[originalSegmentIndex] !== 'original'
   ) {
     return undefined;
   }

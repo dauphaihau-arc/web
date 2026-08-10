@@ -6,7 +6,7 @@ import type {
   createProductFormSchema,
   createProductInventoryFormSchema,
   createProductShippingFormSchema,
-  updateVariantOptionsFormSchema
+  updateVariantOptionsFormSchema,
 } from '~/app/pages/products/_schemes/product/create-product-form.schema';
 import type { updateProductFormSchema } from '~/app/pages/products/_schemes/product/update-product-form.schema';
 

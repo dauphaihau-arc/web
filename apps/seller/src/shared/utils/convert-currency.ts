@@ -24,8 +24,8 @@ export default function (amount: number | unknown) {
 
   const rates = marketStore.exchangeRate?.rates || tempRates;
 
-  const currency = marketStore.guestPreferences?.currency ||
-    MARKET_CONFIG.BASE_CURRENCY;
+  const currency = marketStore.guestPreferences?.currency
+    || MARKET_CONFIG.BASE_CURRENCY;
 
   if (currency === MARKET_CONFIG.BASE_CURRENCY) {
     return formatCurrency(amount);

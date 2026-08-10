@@ -17,7 +17,7 @@ import type {
   orderShopResourceSchema,
   orderShopShippingSchema,
   orderSupportRequestSchema,
-  paymentSchema
+  paymentSchema,
 } from '@arc/schemas/api/me/order/order.schema';
 
 export type Payment = z.infer<typeof paymentSchema>;

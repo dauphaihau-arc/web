@@ -2,7 +2,7 @@ import { z } from 'zod';
 import {
   ProductShippingCharge,
   ProductVariantTypes,
-  ProductWhoMade
+  ProductWhoMade,
 } from '@arc/enums/product';
 
 export const createDraftProductRequestImageSchema = z.object({

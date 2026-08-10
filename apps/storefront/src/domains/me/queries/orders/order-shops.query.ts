@@ -4,7 +4,7 @@ import { meOrdersApi } from '~/domains/me/api/order/me-orders.api';
 import type {
   GetOrderShopsRequest,
   GetMyOrderDetailResponse,
-  GetOrderShopsByCheckoutSessionResponse
+  GetOrderShopsByCheckoutSessionResponse,
 } from '~/domains/me/api/order/contracts/order.contract';
 
 export function useGetOrderShops(queryParams?: MaybeRefOrGetter<GetOrderShopsRequest | undefined>) {
@@ -29,7 +29,7 @@ export function useGetOrderById(orderId?: string) {
 
 export function useGetOrderShopsByCheckoutSession(
   sessionId?: string,
-  options?: NitroFetchOptions<NitroFetchRequest>
+  options?: NitroFetchOptions<NitroFetchRequest>,
 ) {
   return useQuery({
     enabled: !!sessionId,
@@ -37,7 +37,7 @@ export function useGetOrderShopsByCheckoutSession(
     queryFn: () => {
       return meCheckoutApi.getShopsByCheckoutSession(
         sessionId!,
-        options
+        options,
       ) as Promise<GetOrderShopsByCheckoutSessionResponse>;
     },
   });

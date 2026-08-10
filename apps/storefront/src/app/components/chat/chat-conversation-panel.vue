@@ -32,6 +32,7 @@ const props = withDefaults(defineProps<{
   showHeader?: boolean
   autofocusComposer?: boolean
 }>(), {
+  conversationId: undefined,
   initialConversation: null,
   emptyStateText: 'Select a conversation to read and reply.',
   showHeader: true,

@@ -13,7 +13,7 @@ import type {
   bulkMutateShopProductsActionSchema,
   bulkMutateShopProductsRequestSchema,
   bulkMutateShopProductsResponseSchema,
-  shopProductDetailApiResponseSchema
+  shopProductDetailApiResponseSchema,
 } from '~/domains/shop/api/schemas/product/read-product.schema';
 
 export type ListShopProductsRequest = z.infer<typeof listShopProductsRequestSchema>;

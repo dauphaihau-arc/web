@@ -5,7 +5,7 @@ import type {
   updateUserAddressBodySchema,
   updateUserAddressRequestSchema,
   userAddressEnvelopeSchema,
-  userAddressListResponseSchema
+  userAddressListResponseSchema,
 } from '@arc/schemas/api/me/address/address.schema';
 
 export type UserAddressItem = z.infer<typeof addressItemSchema>;

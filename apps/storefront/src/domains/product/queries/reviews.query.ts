@@ -12,7 +12,7 @@ export function useGetPublicProductReviews(
     rating?: 1 | 2 | 3 | 4 | 5
     has_images?: boolean
     has_comment?: boolean
-  } | undefined>
+  } | undefined>,
 ) {
   return useQuery({
     enabled: !!shopSlug && !!productSlug,

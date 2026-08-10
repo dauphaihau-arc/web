@@ -43,7 +43,7 @@ function isOrderUpdatedRealtimeEvent(value: unknown): value is OrderUpdatedRealt
 
 function patchOrderShopsCache(
   queryClient: QueryClient,
-  payload: OrderUpdatedRealtimeEvent
+  payload: OrderUpdatedRealtimeEvent,
 ): void {
   const cacheEntries = queryClient.getQueriesData<Pick<GetOrderShopsResponse, 'order_shops'>>({
     queryKey: ['get-order-shops'],
@@ -57,9 +57,9 @@ function patchOrderShopsCache(
     queryClient.setQueryData(queryKey, {
       ...queryData,
       order_shops: queryData.order_shops.map(orderShop =>
-        orderShop.id === payload.orderId ?
-          mergeOrderShopWithLiveUpdate(orderShop, payload) :
-          orderShop
+        orderShop.id === payload.orderId
+          ? mergeOrderShopWithLiveUpdate(orderShop, payload)
+          : orderShop,
       ),
     });
   }
@@ -67,7 +67,7 @@ function patchOrderShopsCache(
 
 function patchOrderDetailCache(
   queryClient: QueryClient,
-  payload: OrderUpdatedRealtimeEvent
+  payload: OrderUpdatedRealtimeEvent,
 ): void {
   queryClient.setQueryData<Pick<GetMyOrderDetailResponse, 'order_shop'>>(['get-order-by-id', payload.orderId], (current) => {
     if (!current?.order_shop) {
@@ -83,7 +83,7 @@ function patchOrderDetailCache(
 
 async function handleOrderUpdated(
   queryClient: QueryClient,
-  payload: OrderUpdatedRealtimeEvent
+  payload: OrderUpdatedRealtimeEvent,
 ): Promise<void> {
   useOrderLiveUpdates().applyUpdate(payload);
   patchOrderShopsCache(queryClient, payload);
@@ -105,7 +105,7 @@ async function handleOrderUpdated(
 
 async function handleIncomingMessage(
   queryClient: QueryClient,
-  rawPayload: string
+  rawPayload: string,
 ): Promise<void> {
   const payload = JSON.parse(rawPayload) as unknown;
 

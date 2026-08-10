@@ -5,11 +5,11 @@ import type {
   DetailShopProductResponse,
   DetailShopProductVariant,
   DetailShopProductVariantOption,
-  ShopProductDetailApiResponse
+  ShopProductDetailApiResponse,
 } from '../contracts/read.contract';
 
 function normalizeInventory(
-  inventory?: ShopProductDetailApiResponse['inventory'][number]
+  inventory?: ShopProductDetailApiResponse['inventory'][number],
 ): DetailShopProductInventory {
   if (!inventory || inventory.amount_minor == null || !inventory.currency) {
     return {};
@@ -18,9 +18,9 @@ function normalizeInventory(
   return {
     id: inventory.id,
     amount: fromMinorUnits(inventory.amount_minor, inventory.currency),
-    original_price: inventory.original_amount_minor != null ?
-      fromMinorUnits(inventory.original_amount_minor, inventory.currency) :
-      undefined,
+    original_price: inventory.original_amount_minor != null
+      ? fromMinorUnits(inventory.original_amount_minor, inventory.currency)
+      : undefined,
     stock: inventory.stock,
     sku: inventory.sku,
     currency: inventory.currency,
@@ -28,13 +28,13 @@ function normalizeInventory(
 }
 
 export function normalizeDetailShopProductResponse(
-  response: ShopProductDetailApiResponse
+  response: ShopProductDetailApiResponse,
 ): DetailShopProductResponse {
   const variantType = response.variant_type ?? ProductVariantTypes.NONE;
   const inventoryByVariantId = new Map(
     response.inventory
       .filter(item => item.product_variant_id)
-      .map(item => [item.product_variant_id!, item])
+      .map(item => [item.product_variant_id!, item]),
   );
 
   const baseProduct = {
@@ -48,12 +48,12 @@ export function normalizeDetailShopProductResponse(
     variant_group_name: response.variant_group_name,
     variant_sub_group_name: response.variant_sub_group_name,
     tags: [],
-    category: response.category_id ?
-      {
+    category: response.category_id
+      ? {
         id: response.category_id,
         name: '',
-      } :
-      null,
+      }
+      : null,
     images: response.images.map(image => ({
       id: image.id,
       relative_url: image.storage_key,

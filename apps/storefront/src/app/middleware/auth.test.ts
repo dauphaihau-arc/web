@@ -1,5 +1,5 @@
 import {
-  afterEach, beforeEach, describe, expect, it, vi
+  afterEach, beforeEach, describe, expect, it, vi,
 } from 'vitest';
 
 const {

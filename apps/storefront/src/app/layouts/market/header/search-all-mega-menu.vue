@@ -168,21 +168,21 @@ function openSuggestedProduct(product: ProductSuggestion) {
 
         <div
           v-if="props.show && state.search.trim().length > 0 && state.search.trim().length < MIN_SEARCH_LENGTH"
-          class="mt-6 ml-4 text-[12px] text-text-muted"
+          class="ml-4 mt-6 text-[12px] text-text-muted"
         >
           Type at least {{ MIN_SEARCH_LENGTH }} characters to search.
         </div>
 
         <div
           v-else-if="shouldShowNoResults"
-          class="mt-6 ml-4 text-[12px] text-text-muted"
+          class="ml-4 mt-6 text-[12px] text-text-muted"
         >
           No matching products.
         </div>
 
         <div
           v-else-if="trimmedSearch && suggestedProducts.length === 0 && !isFetchingGetSuggestions"
-          class="mt-6 ml-4 text-[12px] text-text-muted"
+          class="ml-4 mt-6 text-[12px] text-text-muted"
         >
           Press Enter to search for "{{ trimmedSearch }}".
         </div>

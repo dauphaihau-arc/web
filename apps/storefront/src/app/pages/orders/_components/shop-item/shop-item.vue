@@ -45,7 +45,7 @@ const displayOrderShop = computed(() =>
   <div class="mb-16 grid grid-cols-12 gap-16">
     <div class="col-span-8">
       <UCard class="relative">
-        <div class="shadow-border absolute -left-1 -top-4 flex w-[101%] items-center justify-between rounded-md border border-border-subtle bg-surface-muted px-4 py-3 text-text-muted">
+        <div class="absolute -left-1 -top-4 flex w-[101%] items-center justify-between rounded-md border border-border-subtle bg-surface-muted px-4 py-3 text-text-muted shadow-border">
           <div>
             <div class="text-xs font-medium uppercase tracking-[0.14em] text-text-muted">
               {{ displayOrderShop.order_number }}

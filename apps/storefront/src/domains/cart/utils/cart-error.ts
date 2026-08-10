@@ -39,7 +39,7 @@ export function resolveAddToCartFailure(error: unknown): AddToCartFailureKind {
 
 export function getAddToCartFailureCopy(
   kind: AddToCartFailureKind,
-  options: { isBuyNow: boolean }
+  options: { isBuyNow: boolean },
 ): {
     title: string
     description?: string

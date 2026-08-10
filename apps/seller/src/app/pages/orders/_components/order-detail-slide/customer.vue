@@ -34,7 +34,7 @@ const shippingAddressLines = computed(() => [
         <div class="text-text-muted">
           Email:
         </div>
-        <div class="text-text-strong break-all">
+        <div class="break-all text-text-strong">
           {{ customer.email }}
         </div>
       </div>

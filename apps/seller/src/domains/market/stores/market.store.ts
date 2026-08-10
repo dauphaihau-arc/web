@@ -8,7 +8,7 @@ import { useGetExchangeRates } from '~/domains/market/queries/exchange-rates.que
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query';
 import type {
   CategoriesBreadcrumbStorage, ExchangeRateStorage,
-  UserActivitiesSessionStorage
+  UserActivitiesSessionStorage,
 } from '~/domains/market/stores/market.store.types';
 
 dayjs.extend(utc);
@@ -19,15 +19,15 @@ export const useMarketStore = defineStore('market', () => {
   const categoriesBreadcrumb = useStorage(
     SessionStorageKeys.CATEGORIES_BREADCRUMB,
     parseJSON<CategoriesBreadcrumbStorage[]>(sessionStorage.getItem(SessionStorageKeys.CATEGORIES_BREADCRUMB)) || [],
-    sessionStorage // bind value with SS
+    sessionStorage, // bind value with SS
   );
 
   const userActivities = useStorage<Partial<UserActivitiesSessionStorage>>(
     SessionStorageKeys.USER_ACTIVITIES,
     parseJSON<UserActivitiesSessionStorage>(
-      sessionStorage.getItem(SessionStorageKeys.USER_ACTIVITIES)
+      sessionStorage.getItem(SessionStorageKeys.USER_ACTIVITIES),
     ) || {},
-    sessionStorage // bind value with SS
+    sessionStorage, // bind value with SS
   );
 
   const exchangeRate = useStorage<ExchangeRateStorage>(
@@ -38,7 +38,7 @@ export const useMarketStore = defineStore('market', () => {
       // specify type if defaultValue may be null | https://vueuse.org/core/useStorage/#custom-serialization
       serializer: StorageSerializers.object,
       mergeDefaults: true,
-    }
+    },
   );
 
   const guestPreferences = useStorage<AuthPreferences>(
@@ -47,7 +47,7 @@ export const useMarketStore = defineStore('market', () => {
     localStorage, // bind value with LS
     {
       serializer: StorageSerializers.object,
-    }
+    },
   );
 
   // sync with LS
@@ -69,7 +69,7 @@ export const useMarketStore = defineStore('market', () => {
           };
         }
       },
-    }
+    },
   );
 
   const clearCategoryRecommendationState = () => {

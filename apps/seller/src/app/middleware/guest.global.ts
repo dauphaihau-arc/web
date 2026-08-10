@@ -19,8 +19,8 @@ export default defineNuxtRouteMiddleware(async (to, _from) => {
     return;
   }
 
-  if (data.value?.user && !hasSellerAccess(data.value.user) &&
-    (to.path === routePaths.login || to.path === routePaths.register)) {
+  if (data.value?.user && !hasSellerAccess(data.value.user)
+    && (to.path === routePaths.login || to.path === routePaths.register)) {
     return navigateTo(routes.sell());
   }
 

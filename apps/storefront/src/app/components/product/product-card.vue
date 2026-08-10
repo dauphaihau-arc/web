@@ -84,7 +84,7 @@ const hasDiscount = computed(() => {
 
 <template>
   <div
-    class="group flex h-full w-full cursor-pointer flex-col gap-1.5"
+    class="group flex size-full cursor-pointer flex-col gap-1.5"
     @click="() => router.push(routes.productDetail(props.product.shop.slug, props.product.slug))"
   >
     <div

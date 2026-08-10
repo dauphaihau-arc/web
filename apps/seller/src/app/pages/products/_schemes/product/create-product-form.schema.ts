@@ -5,7 +5,7 @@ import { productShippingSchema } from '@arc/schemas/product-shipping.schema';
 import { productVariantOptSchema, productVariantSchema } from '@arc/schemas/product-variant.schema';
 import {
   baseProductSchema,
-  productStateUserCanModify
+  productStateUserCanModify,
 } from '@arc/schemas/product.schema';
 
 export const createProductInventoryFormSchema = productInventorySchema.pick({
@@ -36,16 +36,16 @@ export const createProductFormSchema = baseProductSchema
         z.object({
           attribute_id: idSchema,
           selected: z.string(),
-        })
+        }),
       ).default([]),
       category_id: idSchema,
       state: productStateUserCanModify,
       tags: baseProductSchema.shape.tags.default([]),
-    })
+    }),
   );
 
 export const updateVariantOptionsFormSchema = createProductInventoryFormSchema.merge(
   productVariantSchema.pick({ variant_name: true }).merge(
-    productVariantOptSchema.pick({ variant: true })
-  )
+    productVariantOptSchema.pick({ variant: true }),
+  ),
 );

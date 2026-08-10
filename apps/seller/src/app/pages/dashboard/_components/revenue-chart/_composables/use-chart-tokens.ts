@@ -31,20 +31,20 @@ export function useChartTokens() {
 function readChartTokens(): ChartTokens {
   const styles = getComputedStyle(document.documentElement);
   const primary = normalizeColor(
-    readCssVar(styles, '--color-primary-500', fallbackTokens.primary)
+    readCssVar(styles, '--color-primary-500', fallbackTokens.primary),
   ) ?? fallbackTokens.primary;
 
   return {
     primary,
     primaryFill: withOpacity(primary, 0.14) ?? fallbackTokens.primaryFill,
     border: normalizeColor(
-      readCssVar(styles, '--border-subtle', fallbackTokens.border)
+      readCssVar(styles, '--border-subtle', fallbackTokens.border),
     ) ?? fallbackTokens.border,
     textMuted: normalizeColor(
-      readCssVar(styles, '--text-muted', fallbackTokens.textMuted)
+      readCssVar(styles, '--text-muted', fallbackTokens.textMuted),
     ) ?? fallbackTokens.textMuted,
     surface: normalizeColor(
-      readCssVar(styles, '--surface-default', fallbackTokens.surface)
+      readCssVar(styles, '--surface-default', fallbackTokens.surface),
     ) ?? fallbackTokens.surface,
   };
 }

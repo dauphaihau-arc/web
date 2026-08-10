@@ -9,12 +9,12 @@ import type {
   GetProductSuggestionsResponse,
   GetProductsRequest,
   GetProductsResponse,
-  RecordProductViewResponse
+  RecordProductViewResponse,
 } from '~/domains/product/api/contracts/product.contract';
 
 export function useGetProducts(
   params: ComputedRef<GetProductsRequest | undefined>,
-  options?: Partial<UseQueryOptions<GetProductsResponse>>
+  options?: Partial<UseQueryOptions<GetProductsResponse>>,
 ) {
   const marketStore = useMarketStore();
   const marketContext = computed(() => ({
@@ -38,7 +38,7 @@ export function useGetProducts(
 
 export function useGetProductSuggestions(
   params: ComputedRef<{ search: string, limit?: number } | undefined>,
-  options?: Partial<UseQueryOptions<GetProductSuggestionsResponse>>
+  options?: Partial<UseQueryOptions<GetProductSuggestionsResponse>>,
 ) {
   return useQuery<GetProductSuggestionsResponse>({
     enabled: computed(() => !!params.value),
@@ -46,14 +46,14 @@ export function useGetProductSuggestions(
     queryKey: computed(() => ['get-product-suggestions', params.value]),
     queryFn: () => productApi.getSuggestions(
       params.value?.search ?? '',
-      params.value?.limit
+      params.value?.limit,
     ) as Promise<GetProductSuggestionsResponse>,
   });
 }
 
 export function useGetProductRecommendations(
   params: ComputedRef<{ shopSlug: string, productSlug: string, limit?: number } | undefined>,
-  options?: Partial<UseQueryOptions<GetProductRecommendationsResponse>>
+  options?: Partial<UseQueryOptions<GetProductRecommendationsResponse>>,
 ) {
   const marketStore = useMarketStore();
   const marketContext = computed(() => ({
@@ -64,9 +64,9 @@ export function useGetProductRecommendations(
 
   return useQuery<GetProductRecommendationsResponse>({
     enabled: computed(() =>
-      !!params.value?.shopSlug &&
-      !!params.value?.productSlug &&
-      marketStore.isMarketReady
+      !!params.value?.shopSlug
+      && !!params.value?.productSlug
+      && marketStore.isMarketReady,
     ),
     staleTime: 0,
     refetchOnMount: 'always',
@@ -76,14 +76,14 @@ export function useGetProductRecommendations(
     queryFn: () => productApi.getRecommendations(
       params.value?.shopSlug ?? '',
       params.value?.productSlug ?? '',
-      params.value?.limit
+      params.value?.limit,
     ) as Promise<GetProductRecommendationsResponse>,
   });
 }
 
 export function useGetProductRecommendationSections(
   params: ComputedRef<{ shopSlug: string, productSlug: string, limit?: number } | undefined>,
-  options?: Partial<UseQueryOptions<GetProductRecommendationSectionsResponse>>
+  options?: Partial<UseQueryOptions<GetProductRecommendationSectionsResponse>>,
 ) {
   const marketStore = useMarketStore();
   const marketContext = computed(() => ({
@@ -94,9 +94,9 @@ export function useGetProductRecommendationSections(
 
   return useQuery<GetProductRecommendationSectionsResponse>({
     enabled: computed(() =>
-      !!params.value?.shopSlug &&
-      !!params.value?.productSlug &&
-      marketStore.isMarketReady
+      !!params.value?.shopSlug
+      && !!params.value?.productSlug
+      && marketStore.isMarketReady,
     ),
     staleTime: 0,
     refetchOnMount: 'always',
@@ -106,14 +106,14 @@ export function useGetProductRecommendationSections(
     queryFn: () => productApi.getRecommendationSections(
       params.value?.shopSlug ?? '',
       params.value?.productSlug ?? '',
-      params.value?.limit
+      params.value?.limit,
     ) as Promise<GetProductRecommendationSectionsResponse>,
   });
 }
 
 export function useGetRecentlyViewedProducts(
   params: ComputedRef<{ limit?: number } | undefined>,
-  options?: Partial<UseQueryOptions<GetProductRecommendationsResponse>>
+  options?: Partial<UseQueryOptions<GetProductRecommendationsResponse>>,
 ) {
   const marketStore = useMarketStore();
   const marketContext = computed(() => ({
@@ -135,7 +135,7 @@ export function useGetRecentlyViewedProducts(
 
 export function useGetTrendingProducts(
   params: ComputedRef<{ limit?: number } | undefined>,
-  options?: Partial<UseQueryOptions<GetProductRecommendationsResponse>>
+  options?: Partial<UseQueryOptions<GetProductRecommendationsResponse>>,
 ) {
   const marketStore = useMarketStore();
   const marketContext = computed(() => ({
@@ -157,7 +157,7 @@ export function useGetTrendingProducts(
 
 export function useGetBestSellerProducts(
   params: ComputedRef<{ limit?: number } | undefined>,
-  options?: Partial<UseQueryOptions<GetProductRecommendationsResponse>>
+  options?: Partial<UseQueryOptions<GetProductRecommendationsResponse>>,
 ) {
   const marketStore = useMarketStore();
   const marketContext = computed(() => ({
@@ -192,7 +192,7 @@ export function useRecordProductView() {
 
 export function useGetProductFacets(
   params: ComputedRef<GetProductsRequest | undefined>,
-  options?: Partial<UseQueryOptions<GetProductFacetsResponse>>
+  options?: Partial<UseQueryOptions<GetProductFacetsResponse>>,
 ) {
   const marketStore = useMarketStore();
   const marketContext = computed(() => ({

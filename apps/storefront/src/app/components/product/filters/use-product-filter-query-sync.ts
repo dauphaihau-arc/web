@@ -5,13 +5,13 @@ import {
   productWhoMadeOpts,
   type AttributeFilter,
   type PricePresetId,
-  type ProductFilterState
+  type ProductFilterState,
 } from '~/app/components/product/filters/product-filter.constants';
 
 function parseQueryPriceValue(value: unknown) {
-  return typeof value === 'string' && /^\d+$/.test(value) ?
-    value :
-    '';
+  return typeof value === 'string' && /^\d+$/.test(value)
+    ? value
+    : '';
 }
 
 function getPricePresetByBounds(minPrice: string, maxPrice: string, currency: string): PricePresetId {
@@ -22,12 +22,12 @@ function getPricePresetByBounds(minPrice: string, maxPrice: string, currency: st
   const presetRanges = getPricePresetRanges(currency);
 
   for (const range of presetRanges) {
-    const normalizedMin = range.min !== undefined ?
-      String(toMinorUnits(range.min, currency)) :
-      '';
-    const normalizedMax = range.max !== undefined ?
-      String(toMinorUnits(range.max, currency)) :
-      '';
+    const normalizedMin = range.min !== undefined
+      ? String(toMinorUnits(range.min, currency))
+      : '';
+    const normalizedMax = range.max !== undefined
+      ? String(toMinorUnits(range.max, currency))
+      : '';
 
     if (minPrice === normalizedMin && maxPrice === normalizedMax) {
       return range.value;
@@ -63,16 +63,16 @@ function getPresetBounds(preset: PricePresetId, currency: string): QueryPriceBou
   }
 
   return {
-    ...(range.min !== undefined ?
-      {
+    ...(range.min !== undefined
+      ? {
         minPrice: String(toMinorUnits(range.min, currency) + (range.max === undefined ? 1 : 0)),
-      } :
-      {}),
-    ...(range.max !== undefined ?
-      {
+      }
+      : {}),
+    ...(range.max !== undefined
+      ? {
         maxPrice: String(toMinorUnits(range.max, currency) - (range.min === undefined ? 1 : 0)),
-      } :
-      {}),
+      }
+      : {}),
   };
 }
 
@@ -98,11 +98,11 @@ function parseAttributeFilters(query: Record<string, unknown>): AttributeFilter[
       return [];
     }
 
-    const values = Array.isArray(rawValue) ?
-      rawValue :
-      typeof rawValue === 'string' ?
-        [rawValue] :
-        [];
+    const values = Array.isArray(rawValue)
+      ? rawValue
+      : typeof rawValue === 'string'
+        ? [rawValue]
+        : [];
     const selectedOptionIds = values
       .flatMap(value => value.split(','))
       .map(value => value.trim())
@@ -154,7 +154,7 @@ export function createDefaultFilterState(routeQuery: Record<string, unknown>, cu
 
 export function useProductFilterQuerySync(
   state: ProductFilterState,
-  currency: Ref<string>
+  currency: Ref<string>,
 ) {
   const route = useRoute();
   const router = useRouter();
@@ -175,9 +175,9 @@ export function useProductFilterQuerySync(
   watch(state, () => {
     const routeQuery = Object.fromEntries(
       Object.entries(route.query).filter(([key]) => {
-        return !/^attr_.+/.test(key) &&
-          !controlledQueryKeys.has(key);
-      })
+        return !/^attr_.+/.test(key)
+          && !controlledQueryKeys.has(key);
+      }),
     ) as Record<string, string>;
 
     Object.keys(state).forEach((key) => {

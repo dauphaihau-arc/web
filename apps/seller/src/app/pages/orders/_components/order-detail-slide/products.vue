@@ -26,7 +26,7 @@ function formatAmountWithShortLabel(amountMinor: number) {
       <div class="font-semibold">
         Products
       </div>
-      <div class="rounded-md border border-border-subtle bg-elevated px-2 py-0.5 text-sm font-medium text-text-muted">
+      <div class="bg-elevated rounded-md border border-border-subtle px-2 py-0.5 text-sm font-medium text-text-muted">
         {{ order.products.length }}
       </div>
     </div>
@@ -37,17 +37,17 @@ function formatAmountWithShortLabel(amountMinor: number) {
         :key="product.id"
         class="grid grid-cols-[64px_minmax(0,1fr)_auto] items-start gap-4"
       >
-        <div class="overflow-hidden rounded-xl border border-border-subtle bg-elevated">
+        <div class="bg-elevated overflow-hidden rounded-xl border border-border-subtle">
           <NuxtImg
             v-if="product.storage_key"
             :src="buildAssetUrl(assetHost, product.storage_key)"
             width="64"
             height="64"
-            class="h-16 w-16 object-cover"
+            class="size-16 object-cover"
           />
           <div
             v-else
-            class="grid h-16 w-16 place-content-center text-xs text-text-muted"
+            class="grid size-16 place-content-center text-xs text-text-muted"
           >
             N/A
           </div>

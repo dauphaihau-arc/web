@@ -123,7 +123,7 @@ function getReviewImageSrc(review: GetPublicProductReviewsResponse['items'][numb
                     :class="index <= review.rating ? 'opacity-100' : 'opacity-25'"
                   />
                 </div>
-                <div class="text-lg font-semibold leading-none text-text">
+                <div class="text-text text-lg font-semibold leading-none">
                   {{ review.rating }}
                 </div>
               </div>
@@ -133,7 +133,7 @@ function getReviewImageSrc(review: GetPublicProductReviewsResponse['items'][numb
                   <div class="grid size-5 shrink-0 place-items-center rounded-full bg-customGray-200 text-xs font-semibold text-text-strong">
                     {{ getAuthorInitial(review.author.display_name) }}
                   </div>
-                  <div class="text-[12px] font-semibold text-text">
+                  <div class="text-text text-[12px] font-semibold">
                     {{ review.author.display_name }}
                   </div>
                 </div>
@@ -151,11 +151,11 @@ function getReviewImageSrc(review: GetPublicProductReviewsResponse['items'][numb
               <div class="space-y-1">
                 <h3
                   v-if="review.title"
-                  class="text-sm font-semibold text-text"
+                  class="text-text text-sm font-semibold"
                 >
                   {{ review.title }}
                 </h3>
-                <p class="max-w-4xl text-sm text-text">
+                <p class="text-text max-w-4xl text-sm">
                   {{ review.body || 'Customer left a star rating for this item.' }}
                 </p>
               </div>

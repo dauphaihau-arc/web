@@ -4,7 +4,7 @@ import { shopProductApi } from '~/domains/shop/api/product/product.api';
 
 export function useShopGetDetailProduct(
   id: string,
-  options?: NitroFetchOptions<NitroFetchRequest>
+  options?: NitroFetchOptions<NitroFetchRequest>,
 ) {
   const queryClient = useQueryClient();
   return useQuery({

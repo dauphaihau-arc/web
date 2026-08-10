@@ -170,7 +170,7 @@ watch(
       <LoadingSvg :child-class="'!w-12 !h-12'" />
     </div>
     <div v-else-if="dataGetOrderShops?.order_shops && dataGetOrderShops.order_shops.length > 0">
-      <h1 class="mb-6 text-2xl ml-1">
+      <h1 class="mb-6 ml-1 text-2xl">
         Products you’ve ordered.
       </h1>
       <div class="ml-2 space-y-12">

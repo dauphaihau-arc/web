@@ -70,7 +70,7 @@ defineEmits<{
 
     <span
       v-if="props.active && props.value"
-      class="text-[12px] font-semibold leading-none text-primary sm:text-[13px]"
+      class="text-primary text-[12px] font-semibold leading-none sm:text-[13px]"
     >
       {{ props.value }}
     </span>

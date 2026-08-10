@@ -4,7 +4,7 @@ import { authApi } from '~/domains/auth/api/auth.api';
 
 export function useVerifyToken(
   token?: string,
-  options?: NitroFetchOptions<NitroFetchRequest>
+  options?: NitroFetchOptions<NitroFetchRequest>,
 ) {
   return useQuery({
     enabled: !!token,
@@ -14,7 +14,7 @@ export function useVerifyToken(
       return authApi.verifyToken(
         token!,
         TokenTypes.RESET_PASSWORD,
-        options
+        options,
       );
     },
   });

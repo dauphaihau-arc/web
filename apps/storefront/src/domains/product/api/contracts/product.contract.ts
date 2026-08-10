@@ -12,7 +12,7 @@ import type {
   getProductsResponseItemSchema,
   getProductsResponseSchema,
   publicProductFacetSchema,
-  productSuggestionSchema
+  productSuggestionSchema,
 } from '@arc/schemas/api/product/product.schema';
 
 export type GetProductsRequest = z.input<typeof getProductsRequestSchema>;

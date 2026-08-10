@@ -2,12 +2,12 @@ import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import { checkoutApi } from '~/domains/checkout/api/checkout.api';
 import type {
   GetGuestOrderLookupRequest,
-  GetGuestOrderLookupResponse
+  GetGuestOrderLookupResponse,
 } from '~/domains/checkout/api/contracts/guest-orders.contract';
 
 export function useLookupGuestOrders(
   params: MaybeRefOrGetter<GetGuestOrderLookupRequest>,
-  options?: NitroFetchOptions<NitroFetchRequest>
+  options?: NitroFetchOptions<NitroFetchRequest>,
 ) {
   return useQuery({
     enabled: false,
@@ -16,7 +16,7 @@ export function useLookupGuestOrders(
       const resolvedParams = toValue(params);
       return checkoutApi.lookupGuestOrders(
         resolvedParams,
-        options
+        options,
       ) as Promise<GetGuestOrderLookupResponse>;
     },
   });

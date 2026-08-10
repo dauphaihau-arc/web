@@ -14,7 +14,7 @@ export function useOrderShipmentState(orderSource: MaybeRefOrGetter<ShopOrder | 
   const order = computed(() => toValue(orderSource));
 
   const shipmentUpdatesBlocked = computed(() =>
-    !!order.value && SHIPMENT_BLOCKED_ORDER_STATUSES.includes(order.value.status)
+    !!order.value && SHIPMENT_BLOCKED_ORDER_STATUSES.includes(order.value.status),
   );
 
   const allowedShipmentTransitions = computed<OrderShippingStatuses[]>(() => {

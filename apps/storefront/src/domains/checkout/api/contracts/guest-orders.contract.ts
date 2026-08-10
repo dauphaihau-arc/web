@@ -1,7 +1,7 @@
 import type { z } from 'zod';
 import type {
   getGuestOrderLookupRequestSchema,
-  getGuestOrderLookupResponseSchema
+  getGuestOrderLookupResponseSchema,
 } from '@arc/schemas/api/checkout/guest-orders.schema';
 
 export type GetGuestOrderLookupRequest = z.infer<typeof getGuestOrderLookupRequestSchema>;

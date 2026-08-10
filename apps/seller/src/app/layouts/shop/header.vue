@@ -131,7 +131,7 @@ onUnmounted(() => {
       class="surface-backdrop"
       :class="{ 'surface-backdrop-active': scrolled }"
     />
-    <div class="max-w-shop-layout mx-auto flex">
+    <div class="mx-auto flex max-w-shop-layout">
       <div class="w-shop-layout-sidebar shrink-0" />
 
       <div class="min-w-0 grow">

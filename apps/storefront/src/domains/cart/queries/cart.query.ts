@@ -4,7 +4,7 @@ import type { GetCartResponse } from '~/domains/cart/api/contracts/cart.contract
 
 export function useGetCart(
   params?: { cart_id: string },
-  queryOptions?: Partial<UseQueryOptions<GetCartResponse>>
+  queryOptions?: Partial<UseQueryOptions<GetCartResponse>>,
 ) {
   const enabled = (queryOptions as { enabled?: boolean } | undefined)?.enabled ?? true;
 

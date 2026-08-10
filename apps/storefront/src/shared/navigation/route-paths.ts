@@ -26,7 +26,7 @@ export function buildCategoryPath(categories: string | string[]): string {
 
 export function buildProductDetailPath(
   shopSlug: string,
-  productSlug: string
+  productSlug: string,
 ): string {
   return `/${shopSlug}/${productSlug}`;
 }

@@ -178,7 +178,7 @@ const removeImageInDB = (id: string, index: number) => {
           :disabled="state.urlImages.length + state.imagesInDB.length === PRODUCT_CONFIG.MAX_IMAGES"
           accept="image/*"
           @change="onFilePicked"
-        >
+        />
       </div>
     </div>
   </UFormGroup>

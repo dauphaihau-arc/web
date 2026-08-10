@@ -10,7 +10,7 @@ import {
   Tooltip,
   type ChartData,
   type ChartOptions,
-  type TooltipItem
+  type TooltipItem,
 } from 'chart.js';
 import { useChartTokens } from './use-chart-tokens';
 import type { ShopDashboardResponse } from '~/domains/shop/api/dashboard/contracts/dashboard.contract';
@@ -22,14 +22,14 @@ ChartJS.register(
   LineElement,
   Filler,
   Tooltip,
-  Legend
+  Legend,
 );
 
 type RevenuePoint = ShopDashboardResponse['revenue_series'][number];
 
 export function useRevenueChart(
   points: MaybeRefOrGetter<ShopDashboardResponse['revenue_series']>,
-  currency: MaybeRefOrGetter<string>
+  currency: MaybeRefOrGetter<string>,
 ) {
   const resolvedPoints = computed(() => toValue(points));
   const resolvedCurrency = computed(() => toValue(currency));
@@ -37,15 +37,15 @@ export function useRevenueChart(
   const { chartTokens } = useChartTokens();
 
   const hasRevenue = computed(() =>
-    resolvedPoints.value.some(point => point.revenue_minor > 0)
+    resolvedPoints.value.some(point => point.revenue_minor > 0),
   );
 
   const maxRevenue = computed(() =>
-    Math.max(...resolvedPoints.value.map(point => point.revenue_minor), 0)
+    Math.max(...resolvedPoints.value.map(point => point.revenue_minor), 0),
   );
 
   const maxRevenueLabel = computed(() =>
-    formatMinorCurrency(maxRevenue.value, resolvedCurrency.value)
+    formatMinorCurrency(maxRevenue.value, resolvedCurrency.value),
   );
 
   const chartData = computed<ChartData<'line', number[], string>>(() => ({

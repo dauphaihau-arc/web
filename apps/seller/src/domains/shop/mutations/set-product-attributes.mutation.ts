@@ -19,7 +19,7 @@ export function useShopSetProductAttributes() {
         `${RESOURCES.SHOPS}/${shopId}${RESOURCES.PRODUCTS}/${body.id}/attributes`,
         {
           attributes: body.attributes,
-        }
+        },
       );
     },
   });

@@ -16,6 +16,6 @@ export default defineNuxtPlugin(() => {
 
       orderEventsClient.start();
     },
-    { immediate: true }
+    { immediate: true },
   );
 });

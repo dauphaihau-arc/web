@@ -5,7 +5,7 @@ import { toastCustom } from '~/shared/config/toast';
 
 export function useDeleteProductCart(
   id: string,
-  options?: MutationOptions<DeleteCartProductResponse>
+  options?: MutationOptions<DeleteCartProductResponse>,
 ) {
   const toast = useToast();
   return useMutation({

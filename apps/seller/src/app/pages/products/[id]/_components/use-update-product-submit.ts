@@ -14,7 +14,7 @@ import { useShopUpdateProduct } from '~/domains/shop/mutations/update-product.mu
 import type { DetailShopProductResponse } from '~/domains/shop/api/product/contracts/read.contract';
 import type {
   ProductImageReference,
-  UpdateProductBody
+  UpdateProductBody,
 } from '~/domains/shop/api/product/contracts/form.contract';
 
 type UseUpdateProductSubmitInput = {
@@ -40,7 +40,7 @@ function buildDetailPayload(dataSubmit: UpdateProductBody) {
 }
 
 function buildAttributesPayload(
-  attributes: NonNullable<UpdateProductBody['attributes']>
+  attributes: NonNullable<UpdateProductBody['attributes']>,
 ) {
   return attributes.map(attribute => ({
     category_attribute_id: attribute.attribute_id,
@@ -51,7 +51,7 @@ function buildAttributesPayload(
 function buildImagesPayload(
   dataDetailProduct: DetailShopProductResponse | undefined,
   idsImageForDelete: Required<Pick<ProductImageReference, 'id'>>[],
-  uploadedKeys: string[] = []
+  uploadedKeys: string[] = [],
 ) {
   const currentImages = dataDetailProduct?.product.images ?? [];
   const deletedImageIds = new Set(idsImageForDelete.map(image => image.id));
@@ -144,7 +144,7 @@ export function useUpdateProductSubmit({
 
   async function submit(
     dataSubmit: UpdateProductBody,
-    action: UpdateProductAction = 'save'
+    action: UpdateProductAction = 'save',
   ) {
     if (action === 'publish' && getNextImageCount() === 0) {
       toast.add({
@@ -180,7 +180,7 @@ export function useUpdateProductSubmit({
           images: buildImagesPayload(
             dataDetailProduct.value,
             idsImageForDelete.value,
-            uploadedKeys
+            uploadedKeys,
           ),
         });
       }
@@ -215,11 +215,11 @@ export function useUpdateProductSubmit({
 
       toast.add({
         ...toastCustom.success,
-        title: action === 'publish' ?
-          'Product published' :
-          action === 'deactivate' ?
-            'Product deactivated' :
-            'Update product success',
+        title: action === 'publish'
+          ? 'Product published'
+          : action === 'deactivate'
+            ? 'Product deactivated'
+            : 'Update product success',
       });
     }
     catch (error) {

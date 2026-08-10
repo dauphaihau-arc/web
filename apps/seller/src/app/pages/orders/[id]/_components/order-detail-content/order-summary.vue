@@ -88,7 +88,7 @@ function formatAmountWithShortLabel(amountMinor: number) {
     </div>
 
     <div class="mt-2 border-t border-border-subtle pt-5">
-      <div class="ml-auto w-full max-w-[28rem] space-y-3 text-sm text-text-subtle">
+      <div class="ml-auto w-full max-w-md space-y-3 text-sm text-text-subtle">
         <div
           v-if="order.payment.refund_status"
           class="flex items-center justify-between gap-4"

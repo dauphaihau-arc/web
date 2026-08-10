@@ -105,7 +105,7 @@ useProductFilterQuerySync(state, currency)
           <span>{{ item.label }}</span>
           <UIcon
             :name="open ? 'i-heroicons-chevron-up-20-solid' : 'i-heroicons-chevron-down-20-solid'"
-            class="ml-auto h-5 w-5 text-text-subtle"
+            class="ml-auto size-5 text-text-subtle"
           />
         </button>
       </template>

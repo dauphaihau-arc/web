@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import {
   defaultExportColumnIds,
-  exportOrderColumns
+  exportOrderColumns,
 } from './export-orders-dialog.constants';
 import {
   type ExportDateRange,
@@ -9,7 +9,7 @@ import {
   createDefaultCustomEndDate,
   createDefaultCustomStartDate,
   formatExportDateRangeSummary,
-  formatExportFilenameTimestamp
+  formatExportFilenameTimestamp,
 } from './export-orders-date-ranges';
 import type { ExportShopOrdersRequest, ListShopOrdersRequest, ShopOrderExportResponse } from '~/domains/shop/api/order/contracts/order.contract';
 import { shopOrderApi } from '~/domains/shop/api/order/order.api';
@@ -17,7 +17,7 @@ import { createOrderExportEventsClient, type OrderExportSsePayload } from '~/dom
 import {
   UTC_TIMEZONE,
   formatTimezoneOptionLabel,
-  getDefaultDateFilterTimezone
+  getDefaultDateFilterTimezone,
 } from '~/app/components/date-filter-panel/date-filter-timezone';
 import { resolveMyShopId } from '~/domains/shop/utils/resolve-my-shop-id';
 
@@ -93,15 +93,15 @@ export function useExportOrdersDialog(options: UseExportOrdersDialogOptions) {
   ] satisfies Array<{ value: ExportDateRange, label: string, summary: string }>);
 
   const selectedColumnLabels = computed(() => {
-    const selected = columnPreset.value === 'custom' ?
-      exportOrderColumns.filter(column => selectedColumns.value.includes(column.id)) :
-      exportOrderColumns.filter(column => column.default);
+    const selected = columnPreset.value === 'custom'
+      ? exportOrderColumns.filter(column => selectedColumns.value.includes(column.id))
+      : exportOrderColumns.filter(column => column.default);
 
     return selected.map(column => column.label).join(', ');
   });
 
   const exportDisabled = computed(() =>
-    columnPreset.value === 'custom' && selectedColumns.value.length === 0
+    columnPreset.value === 'custom' && selectedColumns.value.length === 0,
   );
 
   const actions = computed(() => {
@@ -226,7 +226,7 @@ export function useExportOrdersDialog(options: UseExportOrdersDialogOptions) {
   async function handleExportEvent(
     shopId: string,
     exportId: string,
-    payload: OrderExportSsePayload
+    payload: OrderExportSsePayload,
   ) {
     if (payload.exportId !== exportId) {
       return;
@@ -254,9 +254,9 @@ export function useExportOrdersDialog(options: UseExportOrdersDialogOptions) {
     }
 
     if (payload.eventType === 'order_export.failed') {
-      activeExport.value = activeExport.value ?
-        { ...activeExport.value, status: 'failed', error_message: payload.message } :
-        null;
+      activeExport.value = activeExport.value
+        ? { ...activeExport.value, status: 'failed', error_message: payload.message }
+        : null;
       toast.add({
         title: 'Could not export orders',
         description: payload.message ?? 'Try again in a moment.',
@@ -292,7 +292,7 @@ export function useExportOrdersDialog(options: UseExportOrdersDialogOptions) {
   async function completeExportDownload(
     shopId: string,
     exportId: string,
-    filename?: string
+    filename?: string,
   ) {
     if (isCompletingExport.value) {
       return;
@@ -366,7 +366,7 @@ export function useExportOrdersDialog(options: UseExportOrdersDialogOptions) {
 
   function formatRangeSummary(range: ExportDateRange) {
     return formatExportDateRangeSummary(
-      buildExportDateRange(range, timezoneName.value, customStartDate.value, customEndDate.value)
+      buildExportDateRange(range, timezoneName.value, customStartDate.value, customEndDate.value),
     );
   }
 
@@ -375,7 +375,7 @@ export function useExportOrdersDialog(options: UseExportOrdersDialogOptions) {
       exportDateRange.value,
       timezoneName.value,
       customStartDate.value,
-      customEndDate.value
+      customEndDate.value,
     );
   }
 

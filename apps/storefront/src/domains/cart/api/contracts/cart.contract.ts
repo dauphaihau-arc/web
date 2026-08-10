@@ -9,7 +9,7 @@ import type {
   cartSummarySchema,
   deleteCartProductRequestSchema,
   getCartRequestSchema,
-  updateCartRequestSchema
+  updateCartRequestSchema,
 } from '@arc/schemas/api/me/cart/cart.schema';
 
 export type CartProductItem = z.infer<typeof cartProductItemSchema>;

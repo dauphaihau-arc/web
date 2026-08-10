@@ -6,7 +6,7 @@ import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contr
 export function useGetDetailProductBySlug(
   shopSlug: string,
   productSlug: string,
-  options?: NitroFetchOptions<NitroFetchRequest>
+  options?: NitroFetchOptions<NitroFetchRequest>,
 ) {
   const marketStore = useMarketStore();
   const marketContext = computed(() => ({

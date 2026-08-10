@@ -21,11 +21,11 @@ function formatLabel(value?: string | null) {
 }
 
 function metaLabel(milestone: { occurredAt?: Date, expectedAt?: Date }) {
-  return milestone.occurredAt ?
-    dayjs(milestone.occurredAt).format('MMM D, YYYY, h:mm A') :
-    milestone.expectedAt ?
-      dayjs(milestone.expectedAt).format('MMM D, YYYY') :
-      '';
+  return milestone.occurredAt
+    ? dayjs(milestone.occurredAt).format('MMM D, YYYY, h:mm A')
+    : milestone.expectedAt
+      ? dayjs(milestone.expectedAt).format('MMM D, YYYY')
+      : '';
 }
 
 export function useOrderTimelineItems(order: MaybeRefOrGetter<ShopOrder>, timeline: MaybeRefOrGetter<ShopOrderTimelineEvent[]>) {
@@ -38,12 +38,12 @@ export function useOrderTimelineItems(order: MaybeRefOrGetter<ShopOrder>, timeli
 
   function buildShippingDescription() {
     const parts = [
-      resolvedOrder.value.shipping.shipping_carrier ?
-        `Carrier: ${resolvedOrder.value.shipping.shipping_carrier}` :
-        '',
-      resolvedOrder.value.shipping.tracking_number ?
-        `Tracking: ${resolvedOrder.value.shipping.tracking_number}` :
-        '',
+      resolvedOrder.value.shipping.shipping_carrier
+        ? `Carrier: ${resolvedOrder.value.shipping.shipping_carrier}`
+        : '',
+      resolvedOrder.value.shipping.tracking_number
+        ? `Tracking: ${resolvedOrder.value.shipping.tracking_number}`
+        : '',
       resolvedOrder.value.shipping.shipment_note ?? '',
     ].filter(Boolean);
 
@@ -60,9 +60,9 @@ export function useOrderTimelineItems(order: MaybeRefOrGetter<ShopOrder>, timeli
     }
 
     if (
-      resolvedOrder.value.status === OrderStatuses.CANCELED ||
-      resolvedOrder.value.status === OrderStatuses.EXPIRED ||
-      resolvedOrder.value.status === OrderStatuses.ARCHIVED
+      resolvedOrder.value.status === OrderStatuses.CANCELED
+      || resolvedOrder.value.status === OrderStatuses.EXPIRED
+      || resolvedOrder.value.status === OrderStatuses.ARCHIVED
     ) {
       return 'canceled';
     }
@@ -89,31 +89,31 @@ export function useOrderTimelineItems(order: MaybeRefOrGetter<ShopOrder>, timeli
       items.push({
         key: 'refunded',
         title: 'Refund completed',
-        description: resolvedOrder.value.payment.refund_failed_reason ?
-          resolvedOrder.value.payment.refund_failed_reason :
-          'Summary was refunded successfully.',
+        description: resolvedOrder.value.payment.refund_failed_reason
+          ? resolvedOrder.value.payment.refund_failed_reason
+          : 'Summary was refunded successfully.',
         occurredAt: resolvedOrder.value.payment.refunded_at,
         state: 'current',
         icon: 'refund',
       });
     }
     else if (
-      resolvedOrder.value.status === OrderStatuses.CANCELED ||
-      resolvedOrder.value.status === OrderStatuses.EXPIRED ||
-      resolvedOrder.value.status === OrderStatuses.ARCHIVED
+      resolvedOrder.value.status === OrderStatuses.CANCELED
+      || resolvedOrder.value.status === OrderStatuses.EXPIRED
+      || resolvedOrder.value.status === OrderStatuses.ARCHIVED
     ) {
       items.push({
         key: 'canceled',
         title: resolvedOrder.value.status === OrderStatuses.EXPIRED ? 'Summary expired' : 'Order canceled',
         description: resolvedOrder.value.cancel_reason ??
-          (resolvedOrder.value.status === OrderStatuses.EXPIRED ?
-            'Checkout session expired before payment completed.' :
-            'This order is no longer active.'),
+          (resolvedOrder.value.status === OrderStatuses.EXPIRED
+            ? 'Checkout session expired before payment completed.'
+            : 'This order is no longer active.'),
         occurredAt: resolvedOrder.value.canceled_at ?? paymentExpiredAt.value,
         state: resolvedOrder.value.status === OrderStatuses.EXPIRED ? 'failed' : 'current',
-        icon: resolvedOrder.value.status === OrderStatuses.EXPIRED ?
-          'expired' :
-          'xCircle',
+        icon: resolvedOrder.value.status === OrderStatuses.EXPIRED
+          ? 'expired'
+          : 'xCircle',
       });
     }
 
@@ -122,14 +122,14 @@ export function useOrderTimelineItems(order: MaybeRefOrGetter<ShopOrder>, timeli
       title: 'Delivered',
       description: 'Shipment delivered successfully.',
       occurredAt: resolvedOrder.value.shipping.delivered_at,
-      expectedAt: resolvedOrder.value.shipping.delivered_at ?
-        undefined :
-        resolvedOrder.value.shipping.estimated_delivery,
-      state: currentStageKey.value === 'delivered' ?
-        'current' :
-        resolvedOrder.value.shipping.shipping_status === OrderShippingStatuses.DELIVERED ?
-          'completed' :
-          'upcoming',
+      expectedAt: resolvedOrder.value.shipping.delivered_at
+        ? undefined
+        : resolvedOrder.value.shipping.estimated_delivery,
+      state: currentStageKey.value === 'delivered'
+        ? 'current'
+        : resolvedOrder.value.shipping.shipping_status === OrderShippingStatuses.DELIVERED
+          ? 'completed'
+          : 'upcoming',
       icon: 'delivered',
     });
 
@@ -138,11 +138,11 @@ export function useOrderTimelineItems(order: MaybeRefOrGetter<ShopOrder>, timeli
       title: 'Shipped',
       description: shippingDescription || 'Shipment left the seller and is on the delivery route.',
       occurredAt: resolvedOrder.value.shipping.shipped_at,
-      state: currentStageKey.value === 'shipped' ?
-        'current' :
-        [OrderShippingStatuses.SHIPPED, OrderShippingStatuses.DELIVERED].includes(resolvedOrder.value.shipping.shipping_status) ?
-          'completed' :
-          'upcoming',
+      state: currentStageKey.value === 'shipped'
+        ? 'current'
+        : [OrderShippingStatuses.SHIPPED, OrderShippingStatuses.DELIVERED].includes(resolvedOrder.value.shipping.shipping_status)
+          ? 'completed'
+          : 'upcoming',
       icon: 'shipping',
     });
 
@@ -150,51 +150,51 @@ export function useOrderTimelineItems(order: MaybeRefOrGetter<ShopOrder>, timeli
       key: 'in_transit',
       title: 'In transit',
       description: shippingDescription || 'Shipment is moving through the delivery network.',
-      occurredAt: resolvedOrder.value.shipping.shipping_status === OrderShippingStatuses.IN_TRANSIT ?
-        resolvedOrder.value.shipping.updated_at :
-        undefined,
-      expectedAt: resolvedOrder.value.shipping.shipping_status === OrderShippingStatuses.IN_TRANSIT ?
-        resolvedOrder.value.shipping.estimated_delivery :
-        undefined,
-      state: currentStageKey.value === 'in_transit' ?
-        'current' :
-        [OrderShippingStatuses.IN_TRANSIT, OrderShippingStatuses.SHIPPED, OrderShippingStatuses.DELIVERED].includes(resolvedOrder.value.shipping.shipping_status) ?
-          'completed' :
-          'upcoming',
+      occurredAt: resolvedOrder.value.shipping.shipping_status === OrderShippingStatuses.IN_TRANSIT
+        ? resolvedOrder.value.shipping.updated_at
+        : undefined,
+      expectedAt: resolvedOrder.value.shipping.shipping_status === OrderShippingStatuses.IN_TRANSIT
+        ? resolvedOrder.value.shipping.estimated_delivery
+        : undefined,
+      state: currentStageKey.value === 'in_transit'
+        ? 'current'
+        : [OrderShippingStatuses.IN_TRANSIT, OrderShippingStatuses.SHIPPED, OrderShippingStatuses.DELIVERED].includes(resolvedOrder.value.shipping.shipping_status)
+          ? 'completed'
+          : 'upcoming',
       icon: 'transit',
     });
 
     items.push({
       key: 'payment',
-      title: paymentIsCard ?
-        (
-          resolvedOrder.value.status === OrderStatuses.AWAITING_PAYMENT ||
-          resolvedOrder.value.status === OrderStatuses.EXPIRED ?
-            'Awaiting payment' :
-            'Summary confirmed'
-        ) :
-        'Order confirmed',
-      description: paymentIsCard ?
-        (
-          resolvedOrder.value.status === OrderStatuses.AWAITING_PAYMENT ?
-            'Waiting for customer payment confirmation.' :
-            resolvedOrder.value.status === OrderStatuses.EXPIRED ?
-              'Checkout session expired before payment completed.' :
-              `Payment status: ${formatLabel(resolvedOrder.value.status)}`
-        ) :
-        'Cash order accepted and ready for shipment handling.',
-      occurredAt: paymentIsCard ?
-        paymentConfirmedAt.value ?? paymentExpiredAt.value :
-        resolvedOrder.value.created_at,
-      state: currentStageKey.value === 'payment' ?
-        (resolvedOrder.value.status === OrderStatuses.EXPIRED ? 'failed' : 'current') :
-        (
-          paymentIsCard ?
-            [OrderStatuses.PAID, OrderStatuses.COMPLETED, OrderStatuses.CANCELED, OrderStatuses.REFUNDED, OrderStatuses.ARCHIVED].includes(resolvedOrder.value.status) :
-            true
-        ) ?
-          'completed' :
-          'upcoming',
+      title: paymentIsCard
+        ? (
+          resolvedOrder.value.status === OrderStatuses.AWAITING_PAYMENT
+          || resolvedOrder.value.status === OrderStatuses.EXPIRED
+            ? 'Awaiting payment'
+            : 'Summary confirmed'
+        )
+        : 'Order confirmed',
+      description: paymentIsCard
+        ? (
+          resolvedOrder.value.status === OrderStatuses.AWAITING_PAYMENT
+            ? 'Waiting for customer payment confirmation.'
+            : resolvedOrder.value.status === OrderStatuses.EXPIRED
+              ? 'Checkout session expired before payment completed.'
+              : `Payment status: ${formatLabel(resolvedOrder.value.status)}`
+        )
+        : 'Cash order accepted and ready for shipment handling.',
+      occurredAt: paymentIsCard
+        ? paymentConfirmedAt.value ?? paymentExpiredAt.value
+        : resolvedOrder.value.created_at,
+      state: currentStageKey.value === 'payment'
+        ? (resolvedOrder.value.status === OrderStatuses.EXPIRED ? 'failed' : 'current')
+        : (
+          paymentIsCard
+            ? [OrderStatuses.PAID, OrderStatuses.COMPLETED, OrderStatuses.CANCELED, OrderStatuses.REFUNDED, OrderStatuses.ARCHIVED].includes(resolvedOrder.value.status)
+            : true
+        )
+          ? 'completed'
+          : 'upcoming',
       icon: 'payment',
     });
 

@@ -9,7 +9,7 @@ import type {
   updateShopOrderRefundRequestSchema,
   shopOrderSummarySchema,
   updateShopOrderShipmentRequestSchema,
-  updateShopOrderStatusRequestSchema
+  updateShopOrderStatusRequestSchema,
 } from '@arc/schemas/api/shop/order/order.schema';
 
 export type ListShopOrdersRequest = z.infer<typeof listShopOrdersRequestSchema>;

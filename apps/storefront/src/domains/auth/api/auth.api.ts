@@ -2,21 +2,21 @@ import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import type { AuthClientConfigResponse } from './contracts/client-config.contract';
 import type {
   ForgotPasswordRequest,
-  ForgotPasswordResponse
+  ForgotPasswordResponse,
 } from './contracts/forgot-password.contract';
 import type {
   LoginRequest,
-  LoginResponse
+  LoginResponse,
 } from './contracts/login.contract';
 import type {
   RegisterRequest,
-  RegisterResponse
+  RegisterResponse,
 } from './contracts/register.contract';
 import type {
-  ResetPasswordResponse
+  ResetPasswordResponse,
 } from './contracts/reset-password.contract';
 import type {
-  VerifyTokenResponse
+  VerifyTokenResponse,
 } from './contracts/verify-token.contract';
 import { apiClient } from '~/shared/lib/api-client';
 
@@ -26,7 +26,7 @@ export const authApi = {
       '/auth/client-config',
       undefined,
       undefined,
-      { retryOnWakeUp: true, retryOnUnauthorized: false }
+      { retryOnWakeUp: true, retryOnUnauthorized: false },
     );
   },
 
@@ -35,7 +35,7 @@ export const authApi = {
       '/auth/forgot-password',
       payload,
       undefined,
-      { retryOnUnauthorized: false }
+      { retryOnUnauthorized: false },
     );
   },
 
@@ -44,7 +44,7 @@ export const authApi = {
       '/auth/login',
       payload,
       undefined,
-      { retryOnUnauthorized: false }
+      { retryOnUnauthorized: false },
     );
   },
 
@@ -53,7 +53,7 @@ export const authApi = {
       '/auth/logout',
       null,
       undefined,
-      { retryOnUnauthorized: false }
+      { retryOnUnauthorized: false },
     );
   },
 
@@ -62,7 +62,7 @@ export const authApi = {
       '/auth/register',
       payload,
       undefined,
-      { retryOnUnauthorized: false }
+      { retryOnUnauthorized: false },
     );
   },
 
@@ -71,20 +71,20 @@ export const authApi = {
       `/auth/reset-password?token=${token}`,
       { password, app },
       undefined,
-      { retryOnUnauthorized: false }
+      { retryOnUnauthorized: false },
     );
   },
 
   verifyToken(
     token: string,
     type: string,
-    options?: NitroFetchOptions<NitroFetchRequest>
+    options?: NitroFetchOptions<NitroFetchRequest>,
   ) {
     return apiClient.get<VerifyTokenResponse>(
       `/auth/verify-token?token=${token}&type=${type}`,
       undefined,
       options,
-      { retryOnUnauthorized: false }
+      { retryOnUnauthorized: false },
     );
   },
 };

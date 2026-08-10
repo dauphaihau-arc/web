@@ -4,5 +4,5 @@ export type {
   CartResource,
   CartResponse,
   CartShopGroup,
-  CartSummary
+  CartSummary,
 } from './contracts/cart.contract';

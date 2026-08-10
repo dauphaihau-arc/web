@@ -1,6 +1,6 @@
 import type { ComputedRef, Ref } from 'vue';
 import {
-  computed, onBeforeUnmount, ref, watch
+  computed, onBeforeUnmount, ref, watch,
 } from 'vue';
 import { ProductVariantTypes } from '@arc/enums/product';
 import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract';
@@ -16,7 +16,7 @@ type UseLiveProductInventoryReturn = {
 };
 
 export function useLiveProductInventory(
-  sourceProduct: Ref<GetDetailProductBySlugResponse | undefined>
+  sourceProduct: Ref<GetDetailProductBySlugResponse | undefined>,
 ): UseLiveProductInventoryReturn {
   const inventorySelected = ref<GetDetailProductBySlugResponse['inventory'][number]>();
   const inventoryStockById = ref<Record<string, number>>({});
@@ -57,8 +57,8 @@ export function useLiveProductInventory(
     }
 
     return currentProduct.inventory.find((inventory) => {
-      return inventory.option_value_1 === currentSelection.option_value_1 &&
-        inventory.option_value_2 === currentSelection.option_value_2;
+      return inventory.option_value_1 === currentSelection.option_value_1
+        && inventory.option_value_2 === currentSelection.option_value_2;
     });
   }
 
@@ -102,7 +102,7 @@ export function useLiveProductInventory(
     }
 
     return currentProduct.inventory.some(
-      inventory => inventory.stock < currentProduct.stock_notice_threshold
+      inventory => inventory.stock < currentProduct.stock_notice_threshold,
     );
   });
 
@@ -138,7 +138,7 @@ export function useLiveProductInventory(
 
         productInventoryEventsClient.start(productId);
       },
-      { immediate: true }
+      { immediate: true },
     );
 
     onBeforeUnmount(() => {
@@ -152,7 +152,7 @@ export function useLiveProductInventory(
       if (inventoryId !== backInStockInventoryId.value) {
         backInStockInventoryId.value = null;
       }
-    }
+    },
   );
 
   return {

@@ -4,7 +4,7 @@ import { shopChatApi } from '~/domains/shop/api/chat/chat.api';
 import type { ListShopChatConversationsRequest } from '~/domains/shop/api/chat/contracts/chat.contract';
 
 export function useShopChatConversations(
-  query?: MaybeRefOrGetter<ListShopChatConversationsRequest>
+  query?: MaybeRefOrGetter<ListShopChatConversationsRequest>,
 ) {
   const queryClient = useQueryClient();
   const resolvedQuery = computed(() => toValue(query));

@@ -4,7 +4,7 @@ import {
   buildCategoryPath,
   buildOrderDetailPath,
   buildProductDetailPath,
-  routePaths
+  routePaths,
 } from './route-paths';
 import type { MyOrderListState } from '~/domains/me/api/order/contracts/order.contract';
 
@@ -12,7 +12,7 @@ export { routePaths } from './route-paths';
 
 function createRoute(
   path: string,
-  query?: LocationQueryRaw
+  query?: LocationQueryRaw,
 ): RouteLocationRaw {
   if (!query) {
     return { path };
@@ -29,7 +29,7 @@ export const routes = {
   accountMessages: (query?: { conversationId?: string }) =>
     createRoute(
       routePaths.accountMessages,
-      query?.conversationId ? { conversation_id: query.conversationId } : undefined
+      query?.conversationId ? { conversation_id: query.conversationId } : undefined,
     ),
   orders: (query?: {
     search?: string
@@ -38,14 +38,14 @@ export const routes = {
     state?: MyOrderListState
   }) => createRoute(
     routePaths.orders,
-    query ?
-      {
+    query
+      ? {
         ...(query.search ? { search: query.search } : {}),
         ...(query.shippingStatus ? { shipping_status: query.shippingStatus } : {}),
         ...(query.status ? { status: query.status } : {}),
         ...(query.state ? { state: query.state } : {}),
-      } :
-      undefined
+      }
+      : undefined,
   ),
   orderDetail: (id: string) => createRoute(buildOrderDetailPath(id)),
   search: (query?: { search?: string }) => createRoute(routePaths.search, query),
@@ -60,30 +60,30 @@ export const routes = {
     token?: string
     zip?: string
   }) =>
-    createRoute(routePaths.guestOrders, query ?
-      {
+    createRoute(routePaths.guestOrders, query
+      ? {
         ...(query.email ? { email: query.email } : {}),
         ...(query.orderId ? { order_id: query.orderId } : {}),
         ...(query.orderIds ? { order_ids: query.orderIds } : {}),
         ...(query.sessionId ? { session_id: query.sessionId } : {}),
         ...(query.token ? { token: query.token } : {}),
         ...(query.zip ? { zip: query.zip } : {}),
-      } :
-      undefined),
+      }
+      : undefined),
   success: (query?: {
     guestEmail?: string
     guestZip?: string
     orderIds?: string
     sessionId?: string
   }) =>
-    createRoute(routePaths.success, query ?
-      {
+    createRoute(routePaths.success, query
+      ? {
         ...(query.guestEmail ? { guest_email: query.guestEmail } : {}),
         ...(query.guestZip ? { guest_zip: query.guestZip } : {}),
         ...(query.orderIds ? { order_ids: query.orderIds } : {}),
         ...(query.sessionId ? { session_id: query.sessionId } : {}),
-      } :
-      undefined),
+      }
+      : undefined),
   category: (categories: string | string[]) =>
     createRoute(buildCategoryPath(categories)),
   productDetail: (shopSlug: string, productSlug: string) =>

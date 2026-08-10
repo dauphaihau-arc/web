@@ -2,7 +2,7 @@ import { meChatApi } from '~/domains/me/api/chat/chat.api';
 import type { ListMyChatConversationsRequest } from '~/domains/me/api/chat/contracts/chat.contract';
 
 export function useMyChatConversations(
-  query?: MaybeRefOrGetter<ListMyChatConversationsRequest>
+  query?: MaybeRefOrGetter<ListMyChatConversationsRequest>,
 ) {
   const resolvedQuery = computed(() => toValue(query));
 

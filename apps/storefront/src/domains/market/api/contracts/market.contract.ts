@@ -2,7 +2,7 @@ import type { z } from 'zod';
 import type {
   marketConfigMarketSchema,
   marketConfigResponseSchema,
-  ipDataResponseSchema
+  ipDataResponseSchema,
 } from '@arc/schemas/api/market/market.schema';
 
 export type IpDataResponse = z.infer<typeof ipDataResponseSchema>;

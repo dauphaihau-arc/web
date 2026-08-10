@@ -1,22 +1,22 @@
 import {
   type InfiniteData,
-  useInfiniteQuery
+  useInfiniteQuery,
 } from '@tanstack/vue-query';
 import { meChatApi } from '~/domains/me/api/chat/chat.api';
 import type {
   ListMyChatMessagesRequest,
-  ListMyChatMessagesResponse
+  ListMyChatMessagesResponse,
 } from '~/domains/me/api/chat/contracts/chat.contract';
 
 type MyChatMessagesQueryKey = [
   'my-chat-messages',
   string | undefined,
-  { limit: number }
+  { limit: number },
 ];
 
 export function useMyChatMessages(
   conversationId?: MaybeRefOrGetter<string | undefined>,
-  query?: MaybeRefOrGetter<ListMyChatMessagesRequest>
+  query?: MaybeRefOrGetter<ListMyChatMessagesRequest>,
 ) {
   const resolvedConversationId = computed(() => toValue(conversationId));
   const resolvedQuery = computed(() => toValue(query));
@@ -42,12 +42,12 @@ export function useMyChatMessages(
         {
           limit: resolvedLimit.value,
           before: pageParam,
-        }
+        },
       );
     },
-    getPreviousPageParam: firstPage => firstPage.page_info.has_more_before ?
-      firstPage.page_info.before_cursor ?? undefined :
-      undefined,
+    getPreviousPageParam: firstPage => firstPage.page_info.has_more_before
+      ? firstPage.page_info.before_cursor ?? undefined
+      : undefined,
     getNextPageParam: () => undefined,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,

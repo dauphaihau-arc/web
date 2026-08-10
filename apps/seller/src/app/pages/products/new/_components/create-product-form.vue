@@ -230,7 +230,7 @@ watch(isProductHaveVariants, () => {
             <UFormGroup
               label="Title"
               name="title"
-              class="mb-4 form-field-constrained"
+              class="form-field-constrained mb-4"
               description="Include keywords that buyers would use to search for your product."
               required
             >
@@ -256,7 +256,7 @@ watch(isProductHaveVariants, () => {
               <div class="relative">
                 <div
                   v-if="isAiDescriptionEnabled"
-                  class="absolute top-3 right-3 z-10"
+                  class="absolute right-3 top-3 z-10"
                 >
                   <UTooltip :text="canGenerateDescription ? 'Generate with AI' : 'Add a title first to generate with AI'">
                     <UButton

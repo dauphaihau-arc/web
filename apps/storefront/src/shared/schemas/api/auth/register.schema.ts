@@ -2,7 +2,7 @@ import { z } from 'zod';
 import {
   USER_CONFIG,
   USER_REG_NAME,
-  USER_REG_PASSWORD
+  USER_REG_PASSWORD,
 } from '@arc/enums/user';
 import { authPreferencesSchema, authUserEnvelopeSchema } from '@arc/schemas/api/auth/auth-user.schema';
 

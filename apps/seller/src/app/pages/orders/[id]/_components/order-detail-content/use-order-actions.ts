@@ -8,26 +8,26 @@ export function useOrderActions(orderSource: MaybeRefOrGetter<ShopOrder | undefi
   const { allowedShipmentTransitions, canTransitionTo } = useOrderShipmentState(order);
 
   const canRefund = computed(() =>
-    !!order.value &&
-    order.value.payment.type === PaymentTypes.CARD &&
-    [undefined, 'failed'].includes(order.value.payment.refund_status) &&
-    (
-      (order.value.status === OrderStatuses.PAID && order.value.shipping.shipping_status !== OrderShippingStatuses.PRE_TRANSIT) ||
-      order.value.status === OrderStatuses.COMPLETED
-    )
+    !!order.value
+    && order.value.payment.type === PaymentTypes.CARD
+    && [undefined, 'failed'].includes(order.value.payment.refund_status)
+    && (
+      (order.value.status === OrderStatuses.PAID && order.value.shipping.shipping_status !== OrderShippingStatuses.PRE_TRANSIT)
+      || order.value.status === OrderStatuses.COMPLETED
+    ),
   );
 
   const canCancel = computed(() =>
-    !!order.value &&
-    [OrderStatuses.PAID, OrderStatuses.PENDING].includes(order.value.status) &&
-    order.value.shipping.shipping_status === OrderShippingStatuses.PRE_TRANSIT
+    !!order.value
+    && [OrderStatuses.PAID, OrderStatuses.PENDING].includes(order.value.status)
+    && order.value.shipping.shipping_status === OrderShippingStatuses.PRE_TRANSIT,
   );
 
   const canRetryRefund = computed(() =>
-    !!order.value &&
-    order.value.payment.type === PaymentTypes.CARD &&
-    order.value.payment.refund_status === 'failed' &&
-    [OrderStatuses.CANCELED, OrderStatuses.PAID, OrderStatuses.COMPLETED].includes(order.value.status)
+    !!order.value
+    && order.value.payment.type === PaymentTypes.CARD
+    && order.value.payment.refund_status === 'failed'
+    && [OrderStatuses.CANCELED, OrderStatuses.PAID, OrderStatuses.COMPLETED].includes(order.value.status),
   );
 
   const primaryShipmentAction = computed(() => {

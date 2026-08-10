@@ -101,7 +101,7 @@ const INR_PRICE_PRESET_RANGES: PricePresetRange[] = [
 
 function assignPresetRanges(
   currencies: MarketCurrencies[],
-  ranges: PricePresetRange[]
+  ranges: PricePresetRange[],
 ): Partial<Record<MarketCurrencies, PricePresetRange[]>> {
   return Object.fromEntries(currencies.map(currency => [currency, ranges]));
 }

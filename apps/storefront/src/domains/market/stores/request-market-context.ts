@@ -1,7 +1,7 @@
 import {
   MARKET_CONFIG,
   type MarketLanguages,
-  type MarketRegions
+  type MarketRegions,
 } from '@arc/enums/market';
 import { getFallbackMarketPreferences } from '~/domains/market/stores/market-preferences';
 

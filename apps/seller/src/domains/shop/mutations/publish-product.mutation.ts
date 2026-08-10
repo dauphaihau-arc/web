@@ -10,7 +10,7 @@ export function useShopPublishProduct() {
     mutationFn: async (id: string) => {
       const shopId = await resolveMyShopId(queryClient);
       return apiClient.post<CreateDraftProductResponse>(
-        `${RESOURCES.SHOPS}/${shopId}${RESOURCES.PRODUCTS}/${id}/publish`
+        `${RESOURCES.SHOPS}/${shopId}${RESOURCES.PRODUCTS}/${id}/publish`,
       );
     },
   });

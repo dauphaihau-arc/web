@@ -8,12 +8,12 @@ import {
   getConversationLatestMessagePreview,
   getConversationSellerUnreadLabel,
   isConversationUnread,
-  toThreadMessages
+  toThreadMessages,
 } from './messages-page-content.helpers';
 import { routes } from '~/shared/navigation/routes';
 import type {
   ShopChatConversation,
-  ShopChatMessage
+  ShopChatMessage,
 } from '~/domains/shop/api/chat/contracts/chat.contract';
 import { createSellerChatEventsClient } from '~/domains/shop/chat/realtime/chat-events.client';
 import { useGetMyShop } from '~/domains/shop/queries/my-shop.query';
@@ -38,9 +38,9 @@ export function useMessagesPage(selectedConversationId: Ref<string | undefined>)
   const storefrontAppURL = computed(() => config.public.storefrontAppURL.replace(/\/+$/, ''));
   const assetHost = computed(() => config.public.assetHost?.replace(/\/+$/, '') ?? '');
 
-  const chatEventsClient = import.meta.client ?
-    createSellerChatEventsClient(queryClient) :
-    null;
+  const chatEventsClient = import.meta.client
+    ? createSellerChatEventsClient(queryClient)
+    : null;
 
   const conversationParams = computed(() => ({
     page: 1,
@@ -91,9 +91,9 @@ export function useMessagesPage(selectedConversationId: Ref<string | undefined>)
       .sort((left, right) => {
         const timeDelta = Date.parse(left.created_at) - Date.parse(right.created_at);
 
-        return timeDelta === 0 ?
-          left.id.localeCompare(right.id) :
-          timeDelta;
+        return timeDelta === 0
+          ? left.id.localeCompare(right.id)
+          : timeDelta;
       });
   });
 
@@ -108,15 +108,15 @@ export function useMessagesPage(selectedConversationId: Ref<string | undefined>)
   const selectedConversationUnread = computed(() => {
     const conversation = selectedConversationResolved.value;
 
-    return conversation ?
-      isConversationUnread(conversation, shopOwnerUserId.value) :
-      false;
+    return conversation
+      ? isConversationUnread(conversation, shopOwnerUserId.value)
+      : false;
   });
 
   const threadMessages = computed(() => toThreadMessages(
     messages.value,
     shopOwnerUserId.value,
-    toProductReferenceDisplay
+    toProductReferenceDisplay,
   ));
 
   watch(
@@ -134,7 +134,7 @@ export function useMessagesPage(selectedConversationId: Ref<string | undefined>)
 
       router.replace(routes.messages({ conversationId: firstConversation.id }));
     },
-    { immediate: true }
+    { immediate: true },
   );
 
   watch(
@@ -146,7 +146,7 @@ export function useMessagesPage(selectedConversationId: Ref<string | undefined>)
 
       markConversationRead(conversation.id);
     },
-    { immediate: true }
+    { immediate: true },
   );
 
   if (import.meta.client) {
@@ -167,7 +167,7 @@ export function useMessagesPage(selectedConversationId: Ref<string | undefined>)
 
         chatEventsClient?.subscribeConversation(conversationId);
       },
-      { immediate: true }
+      { immediate: true },
     );
 
     onBeforeUnmount(() => {
@@ -195,12 +195,12 @@ export function useMessagesPage(selectedConversationId: Ref<string | undefined>)
     }
 
     const snapshot = productReference.snapshot;
-    const priceLabel = snapshot.amount_minor != null && snapshot.currency ?
-      formatMinorCurrency(snapshot.amount_minor, snapshot.currency) :
-      undefined;
-    const statusLabel = productReference.current?.in_stock === false ?
-      'Currently unavailable' :
-      undefined;
+    const priceLabel = snapshot.amount_minor != null && snapshot.currency
+      ? formatMinorCurrency(snapshot.amount_minor, snapshot.currency)
+      : undefined;
+    const statusLabel = productReference.current?.in_stock === false
+      ? 'Currently unavailable'
+      : undefined;
 
     return {
       title: snapshot.title,

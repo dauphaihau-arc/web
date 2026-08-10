@@ -1,13 +1,13 @@
 import type { Category } from '@arc/models/category';
 import type {
   LegacyCategoryAttributesResponse,
-  NestCategoryAttributesResponse
+  NestCategoryAttributesResponse,
 } from '../utils/category.normalizer';
 import { normalizeCategoryAttributesResponse } from '../utils/category.normalizer';
 import { categoryApi } from '~/domains/category/api/category.api';
 
 export function useGetAttributesByCategory(
-  id: MaybeRefOrGetter<Category['id'] | undefined>
+  id: MaybeRefOrGetter<Category['id'] | undefined>,
 ) {
   return useQuery({
     enabled: computed(() => !!toValue(id)),
@@ -18,7 +18,7 @@ export function useGetAttributesByCategory(
       const response = await categoryApi.getAttributes(categoryId!);
 
       return normalizeCategoryAttributesResponse(
-        response as LegacyCategoryAttributesResponse | NestCategoryAttributesResponse
+        response as LegacyCategoryAttributesResponse | NestCategoryAttributesResponse,
       );
     },
   });

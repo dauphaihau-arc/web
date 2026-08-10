@@ -125,7 +125,7 @@ watch(productData, (value) => {
       class="space-y-20"
     >
       <div class="mb-20 grid grid-cols-10 gap-16">
-        <div class="sticky top-24 col-span-6 self-start -mt-9">
+        <div class="sticky top-24 col-span-6 -mt-9 self-start">
           <ProductCategoryBreadcrumb
             :category-path="productData?.category_path"
             class="mb-3"

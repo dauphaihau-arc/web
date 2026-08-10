@@ -49,7 +49,7 @@ const itemsShopDropdown: ShopDropdownItem[][] = [
 
 <template>
   <aside
-    class="w-shop-layout-sidebar fixed z-[3] h-full border-r border-border-subtle"
+    class="fixed z-[3] h-full w-shop-layout-sidebar border-r border-border-subtle"
     :class="[{ 'bg-layout-shop': !isOpen }]"
   >
     <UDropdown
@@ -123,7 +123,7 @@ const itemsShopDropdown: ShopDropdownItem[][] = [
               :class="[
                 'pl-5',
                 item.disabled
-                  ? 'cursor-not-allowed opacity-50 text-text-strong'
+                  ? 'cursor-not-allowed text-text-strong opacity-50'
                   : item.matchPath && route.path.startsWith(item.matchPath) ? 'link-active' : 'link-inactive',
               ]"
             >

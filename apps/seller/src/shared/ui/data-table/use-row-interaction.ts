@@ -8,7 +8,7 @@ type RowInteractionOptions<Row extends { id: string }> = {
 };
 
 export function useRowInteraction<Row extends { id: string }>(
-  options: RowInteractionOptions<Row>
+  options: RowInteractionOptions<Row>,
 ) {
   const tableWrapper = ref<HTMLElement | null>(null);
   let rowObserver: MutationObserver | null = null;
@@ -23,7 +23,7 @@ export function useRowInteraction<Row extends { id: string }>(
 
   function isInteractiveTarget(target: EventTarget | null) {
     return target instanceof Element && !!target.closest(
-      'button, a, input, select, textarea, summary, [role="button"], [role="link"], [role="menuitem"], [data-row-click-ignore]'
+      'button, a, input, select, textarea, summary, [role="button"], [role="link"], [role="menuitem"], [data-row-click-ignore]',
     );
   }
 

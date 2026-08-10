@@ -6,7 +6,7 @@ import type {
   createGuestOrderForBuyNowRequestSchema,
   createGuestOrderFromCartRequestSchema,
   createOrderResponseSchema,
-  getCheckoutOrderShopsBySessionResponseSchema
+  getCheckoutOrderShopsBySessionResponseSchema,
 } from '@arc/schemas/api/checkout/checkout.schema';
 
 export type CreateGuestOrderResponse = z.infer<typeof createOrderResponseSchema>;

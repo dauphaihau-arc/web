@@ -118,13 +118,13 @@ const onSelectNextImg = () => {
         </button>
       </div>
     </div>
-    <div class="relative h-[575px] w-[575px] max-w-full overflow-hidden rounded bg-surface-muted">
+    <div class="relative size-[575px] max-w-full overflow-hidden rounded bg-surface-muted">
       <NuxtImg
         preload
         :src="imageUrlSelected"
         width="575"
         height="575"
-        class="absolute inset-0 h-full w-full rounded object-contain"
+        class="absolute inset-0 size-full rounded object-contain"
       />
       <template v-if="props.images.length > 1">
         <div

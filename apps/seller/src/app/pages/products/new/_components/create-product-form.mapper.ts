@@ -8,7 +8,7 @@ import type {
   CreateProductShipping,
   StateCombineVariant,
   StateNoneVariant,
-  StateSingleVariant
+  StateSingleVariant,
 } from '~/domains/shop/api/product/contracts/form.contract';
 import type { CreateDraftProductRequest as RequestCreateProductDraftBody } from '~/domains/shop/api/product/contracts/create-draft.contract';
 
@@ -21,7 +21,7 @@ export type CreateProductSubmitBody = {
 );
 
 export function pruneEmptyCreateProductFields(
-  dataSubmit: PickPartial<CreateProductBody, 'attributes' | 'tags'>
+  dataSubmit: PickPartial<CreateProductBody, 'attributes' | 'tags'>,
 ) {
   const nextDataSubmit = { ...dataSubmit };
 
@@ -41,7 +41,7 @@ export function buildCreateProductSubmitBody(
   shipping: CreateProductShipping,
   noneVariant: StateNoneVariant,
   singleVariant: StateSingleVariant,
-  combineVariant: StateCombineVariant
+  combineVariant: StateCombineVariant,
 ): CreateProductSubmitBody | null {
   let bodyData: CreateProductSubmitBody = {
     ...dataSubmit,
@@ -66,7 +66,7 @@ export function buildCreateProductSubmitBody(
 }
 
 export function mapAttributes(
-  attributes: NonNullable<CreateProductBody['attributes']>
+  attributes: NonNullable<CreateProductBody['attributes']>,
 ): RequestCreateProductDraftBody['attributes'] {
   return attributes.map(attribute => ({
     category_attribute_id: attribute.attribute_id,
@@ -76,7 +76,7 @@ export function mapAttributes(
 
 export function mapInventoryAndVariants(
   bodyData: CreateProductSubmitBody,
-  currency: string
+  currency: string,
 ): Pick<RequestCreateProductDraftBody, 'inventory' | 'pricing' | 'variants'> {
   if (bodyData.variant_type === ProductVariantTypes.NONE) {
     return {
@@ -159,7 +159,7 @@ export function mapInventoryAndVariants(
 }
 
 export function mapShipping(
-  data: CreateProductShipping
+  data: CreateProductShipping,
 ): RequestCreateProductDraftBody['shipping'] {
   return {
     origin_country: data.country,
@@ -176,7 +176,7 @@ export function mapShipping(
 
 export function buildCreateProductPayload(
   bodyData: CreateProductSubmitBody,
-  currency: string
+  currency: string,
 ): RequestCreateProductDraftBody {
   return {
     category_id: bodyData.category_id,
@@ -187,16 +187,16 @@ export function buildCreateProductPayload(
     non_taxable: false,
     variant_type: bodyData.variant_type,
     variant_group_name:
-      bodyData.variant_type === ProductVariantTypes.NONE ?
-        undefined :
-        bodyData.variant_group_name,
+      bodyData.variant_type === ProductVariantTypes.NONE
+        ? undefined
+        : bodyData.variant_group_name,
     variant_sub_group_name:
-      bodyData.variant_type === ProductVariantTypes.COMBINE ?
-        bodyData.variant_sub_group_name :
-        undefined,
-    attributes: bodyData.attributes?.length ?
-      mapAttributes(bodyData.attributes) :
-      undefined,
+      bodyData.variant_type === ProductVariantTypes.COMBINE
+        ? bodyData.variant_sub_group_name
+        : undefined,
+    attributes: bodyData.attributes?.length
+      ? mapAttributes(bodyData.attributes)
+      : undefined,
     ...mapInventoryAndVariants(bodyData, currency),
     shipping: mapShipping(bodyData.shipping),
   };

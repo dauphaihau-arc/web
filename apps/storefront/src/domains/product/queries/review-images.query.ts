@@ -7,7 +7,7 @@ export function useGetPublicProductReviewImages(
   params?: MaybeRefOrGetter<{
     cursor?: string
     limit?: number
-  } | undefined>
+  } | undefined>,
 ) {
   return useQuery({
     enabled: !!shopSlug && !!productSlug,

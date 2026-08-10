@@ -160,7 +160,7 @@ watch(
     v-if="resolvedItems.length > 0 || reviewImagesLoading"
     class="space-y-4"
   >
-    <h3 class="text-xl font-medium leading-tight tracking-tight text-text">
+    <h3 class="text-text text-xl font-medium leading-tight tracking-tight">
       Photos from reviews
     </h3>
 

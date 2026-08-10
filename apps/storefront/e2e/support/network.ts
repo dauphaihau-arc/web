@@ -167,7 +167,7 @@ function buildDefaultProductDetail(currency: string) {
 
 export async function installStorefrontApiMocks(
   page: Page,
-  options: StorefrontMockOptions = {}
+  options: StorefrontMockOptions = {},
 ) {
   let currentUser = options.currentUser ?? null;
   let cartQuantity = options.cartQuantity ?? 0;

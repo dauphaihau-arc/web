@@ -147,7 +147,7 @@ async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zi
       v-if="isLoading"
       class="grid h-[40vh] w-full place-content-center text-center"
     >
-      <div class="space-y-4 flex flex-col justify-center items-center">
+      <div class="flex flex-col items-center justify-center space-y-4">
         <LoadingSvg :child-class="'!w-12 !h-12'" />
         <p
           v-if="hasDirectLookup"

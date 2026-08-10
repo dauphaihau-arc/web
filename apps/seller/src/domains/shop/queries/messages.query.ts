@@ -1,24 +1,24 @@
 import {
   type InfiniteData,
   useInfiniteQuery,
-  useQueryClient
+  useQueryClient,
 } from '@tanstack/vue-query';
 import { resolveMyShopId } from '../utils/resolve-my-shop-id';
 import { shopChatApi } from '~/domains/shop/api/chat/chat.api';
 import type {
   ListShopChatMessagesRequest,
-  ListShopChatMessagesResponse
+  ListShopChatMessagesResponse,
 } from '~/domains/shop/api/chat/contracts/chat.contract';
 
 type ShopChatMessagesQueryKey = [
   'shop-chat-messages',
   string | undefined,
-  { limit: number }
+  { limit: number },
 ];
 
 export function useShopChatMessages(
   conversationId?: MaybeRefOrGetter<string | undefined>,
-  query?: MaybeRefOrGetter<ListShopChatMessagesRequest>
+  query?: MaybeRefOrGetter<ListShopChatMessagesRequest>,
 ) {
   const queryClient = useQueryClient();
   const resolvedConversationId = computed(() => toValue(conversationId));
@@ -47,12 +47,12 @@ export function useShopChatMessages(
         {
           limit: resolvedLimit.value,
           before: pageParam,
-        }
+        },
       );
     },
-    getPreviousPageParam: firstPage => firstPage.page_info.has_more_before ?
-      firstPage.page_info.before_cursor ?? undefined :
-      undefined,
+    getPreviousPageParam: firstPage => firstPage.page_info.has_more_before
+      ? firstPage.page_info.before_cursor ?? undefined
+      : undefined,
     getNextPageParam: () => undefined,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,

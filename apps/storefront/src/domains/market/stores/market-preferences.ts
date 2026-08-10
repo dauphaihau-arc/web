@@ -3,7 +3,7 @@ import {
   MARKET_CONFIG,
   MarketCurrencies,
   MarketLanguages,
-  MarketRegions
+  MarketRegions,
 } from '@arc/enums/market';
 import type { AuthPreferences } from '~/domains/auth/api/contracts/auth-user.contract';
 
@@ -18,7 +18,7 @@ export function getFallbackMarketPreferences(): AuthPreferences {
 }
 
 export function sanitizeMarketPreferences(
-  preferences?: Partial<AuthPreferences> | null
+  preferences?: Partial<AuthPreferences> | null,
 ): AuthPreferences | null {
   if (!preferences) {
     return null;
@@ -29,12 +29,12 @@ export function sanitizeMarketPreferences(
   const region = preferences.region as MarketRegions | undefined;
 
   if (
-    !currency ||
-    !language ||
-    !region ||
-    !Object.values(MarketCurrencies).includes(currency) ||
-    !Object.values(MarketLanguages).includes(language) ||
-    !Object.values(MarketRegions).includes(region)
+    !currency
+    || !language
+    || !region
+    || !Object.values(MarketCurrencies).includes(currency)
+    || !Object.values(MarketLanguages).includes(language)
+    || !Object.values(MarketRegions).includes(region)
   ) {
     return null;
   }

@@ -6,13 +6,13 @@ import Sidebar from './sidebar/sidebar.vue'
 <template>
   <div class="bg-layout-shop">
     <div class="fixed right-0 z-[1] h-full w-1/2 bg-white" />
-    <div class="max-w-shop-layout flex min-h-screen xl:mx-auto">
+    <div class="flex min-h-screen max-w-shop-layout xl:mx-auto">
       <Sidebar />
-      <div class="w-shop-layout-sidebar h-full shrink-0" />
+      <div class="h-full w-shop-layout-sidebar shrink-0" />
 
       <div class="relative z-[2] h-full grow bg-white">
         <Header />
-        <main class="pt-20 min-h-screen">
+        <main class="min-h-screen pt-20">
           <div class="shop-layout-content-inner">
             <slot />
           </div>

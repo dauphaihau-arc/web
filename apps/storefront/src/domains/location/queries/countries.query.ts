@@ -3,7 +3,7 @@ import type { UseQueryOptions } from '@tanstack/vue-query';
 import { locationApi } from '~/domains/location/api/location.api';
 import type {
   GetCountriesResponse,
-  GetStatesByCountryResponse
+  GetStatesByCountryResponse,
 } from '~/domains/location/api/contracts/location.contract';
 
 export function useGetCountries(options?: Partial<UseQueryOptions<GetCountriesResponse>>) {

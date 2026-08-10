@@ -2,11 +2,11 @@ import type { QueryClient } from '@tanstack/vue-query';
 import {
   createChatEventsClient,
   isChatConversationUnread,
-  type ChatMessageCreatedRealtimeEvent
+  type ChatMessageCreatedRealtimeEvent,
 } from '@arc/lib';
 import type {
   ShopChatConversation,
-  ShopChatMessage
+  ShopChatMessage,
 } from '~/domains/shop/api/chat/contracts/chat.contract';
 
 function buildChatSocketUrl(): string {
@@ -15,7 +15,7 @@ function buildChatSocketUrl(): string {
 }
 
 function createRealtimeChatMessage(
-  payload: ChatMessageCreatedRealtimeEvent
+  payload: ChatMessageCreatedRealtimeEvent,
 ): ShopChatMessage {
   return {
     id: payload.message.id,

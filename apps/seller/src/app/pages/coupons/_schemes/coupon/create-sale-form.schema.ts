@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { CouponTypes } from '@arc/enums/coupon';
 import {
-  baseCouponSchema, conditionApplyToTypeSchema, conditionMinOrderTypeSchema, conditionTypeCouponSchema
+  baseCouponSchema, conditionApplyToTypeSchema, conditionMinOrderTypeSchema, conditionTypeCouponSchema,
 } from '@arc/schemas/coupon.schema';
 
 const baseCreateCouponBodySchema = baseCouponSchema.pick({

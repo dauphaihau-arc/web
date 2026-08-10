@@ -3,7 +3,7 @@ import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import type { ExportShopOrdersRequest } from '~/domains/shop/api/order/contracts/order.contract';
 import {
-  getNowInTimezone
+  getNowInTimezone,
 } from '~/app/components/date-filter-panel/date-filter-timezone';
 
 dayjs.extend(utc);
@@ -23,7 +23,7 @@ export function buildExportDateRange(
   range: ExportDateRange,
   timezoneName: string,
   customStartDate: string,
-  customEndDate: string
+  customEndDate: string,
 ) {
   const now = getNowInTimezone(timezoneName);
 
@@ -66,7 +66,7 @@ export function buildExportDateRange(
 }
 
 export function formatExportDateRangeSummary(
-  range: ReturnType<typeof buildExportDateRange>
+  range: ReturnType<typeof buildExportDateRange>,
 ) {
   if (!range) {
     return '';

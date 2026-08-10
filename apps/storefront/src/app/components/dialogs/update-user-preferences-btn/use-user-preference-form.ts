@@ -2,16 +2,16 @@ import { MARKET_CONFIG } from '@arc/enums/market';
 import {
   defaultCurrencyOption,
   toCurrencyOption,
-  type CurrencyOption
+  type CurrencyOption,
 } from '@arc/utils/currency-options';
 import {
-  computed, reactive, watch, type ComputedRef, type Ref
+  computed, reactive, watch, type ComputedRef, type Ref,
 } from 'vue';
 import {
   defaultLanguageOption,
   localeToLanguageOption,
   type LanguageOption,
-  type PreferenceState
+  type PreferenceState,
 } from './preference-options';
 import type { AuthPreferences } from '~/domains/auth/api/contracts/auth-user.contract';
 import type { MarketConfigMarket } from '~/domains/market/api/contracts/market.contract';

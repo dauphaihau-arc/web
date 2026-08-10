@@ -1,7 +1,7 @@
 import type { z } from 'zod';
 import type {
   registerRequestSchema,
-  registerResponseSchema
+  registerResponseSchema,
 } from '~/shared/schemas/api/auth/register.schema';
 
 export type RegisterRequest = z.infer<typeof registerRequestSchema>;

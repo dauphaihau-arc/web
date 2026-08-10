@@ -18,7 +18,7 @@ export function useShopSetProductImagesByKeys() {
         `${RESOURCES.SHOPS}/${shopId}${RESOURCES.PRODUCTS}/${body.id}/images-by-keys`,
         {
           images: body.images,
-        }
+        },
       );
     },
   });

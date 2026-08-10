@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { routePaths } from '~/shared/navigation/routes'
 
+defineOptions({
+  name: 'StorefrontErrorPage',
+})
+
 interface IError {
   statusCode: number
   statusMessage: string

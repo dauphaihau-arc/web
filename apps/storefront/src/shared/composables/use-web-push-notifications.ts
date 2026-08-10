@@ -29,9 +29,9 @@ function normalizePermission(): NotificationPermission {
 
 export function useWebPushNotifications() {
   const status = useState<BrowserNotificationStatus>('web-push-status', () =>
-    import.meta.client && 'serviceWorker' in navigator && 'PushManager' in window ?
-      'idle' :
-      'unsupported'
+    import.meta.client && 'serviceWorker' in navigator && 'PushManager' in window
+      ? 'idle'
+      : 'unsupported',
   );
   const permission = useState<NotificationPermission>('web-push-permission', normalizePermission);
 

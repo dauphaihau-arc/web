@@ -8,7 +8,7 @@ import type { MarketConfigMarket, IpDataResponse } from '~/domains/market/api/co
 import {
   GUEST_PREFERENCES_COOKIE_KEY,
   getFallbackMarketPreferences,
-  sanitizeMarketPreferences
+  sanitizeMarketPreferences,
 } from '~/domains/market/stores/market-preferences';
 import { currentUserQueryOptions, useGetCurrentUser } from '~/domains/me/queries/current-user.query';
 import { marketConfigQueryOptions } from '~/domains/market/queries/config.query';
@@ -16,7 +16,7 @@ import { getIpData } from '~/domains/market/queries/ip-data.query';
 import type {
   CategoriesBreadcrumbStorage,
   RecentProductViewStorage,
-  UserActivitiesSessionStorage
+  UserActivitiesSessionStorage,
 } from '~/domains/market/stores/market.store.types';
 
 const MAX_RECENT_PRODUCT_VIEWS = 24;
@@ -61,7 +61,7 @@ function resolveSupportedMarket(countryName: string | undefined, enabledMarkets:
 
 function resolveMarketCurrency(
   currencyCode: string | undefined,
-  market: MarketConfigMarket
+  market: MarketConfigMarket,
 ): MarketCurrencies {
   if (currencyCode && market.supportedCurrencies.includes(currencyCode as MarketCurrencies)) {
     return currencyCode as MarketCurrencies;
@@ -138,30 +138,30 @@ export const useMarketStore = defineStore('market', () => {
     SessionStorageKeys.CATEGORIES_BREADCRUMB,
     readStoredObject<CategoriesBreadcrumbStorage[]>(
       sessionStorageRef,
-      SessionStorageKeys.CATEGORIES_BREADCRUMB
+      SessionStorageKeys.CATEGORIES_BREADCRUMB,
     ) || [],
-    sessionStorageRef
+    sessionStorageRef,
   );
 
   const userActivities = useStorage<Partial<UserActivitiesSessionStorage>>(
     SessionStorageKeys.USER_ACTIVITIES,
     readStoredObject<UserActivitiesSessionStorage>(
       sessionStorageRef,
-      SessionStorageKeys.USER_ACTIVITIES
+      SessionStorageKeys.USER_ACTIVITIES,
     ) || {},
-    sessionStorageRef
+    sessionStorageRef,
   );
 
   const recentProductViews = useStorage<RecentProductViewStorage[]>(
     LocalStorageKeys.RECENT_PRODUCT_VIEWS,
     readStoredObject<RecentProductViewStorage[]>(
       localStorageRef,
-      LocalStorageKeys.RECENT_PRODUCT_VIEWS
+      LocalStorageKeys.RECENT_PRODUCT_VIEWS,
     ) || [],
     localStorageRef,
     {
       serializer: StorageSerializers.object,
-    }
+    },
   );
 
   const guestPreferencesCookie = useCookie<AuthPreferences | null>(
@@ -169,16 +169,16 @@ export const useMarketStore = defineStore('market', () => {
     {
       default: () => null,
       sameSite: 'lax',
-    }
+    },
   );
 
   const persistedGuestPreferences = sanitizeMarketPreferences(
-    import.meta.client ?
-      readStoredObject<AuthPreferences>(
+    import.meta.client
+      ? readStoredObject<AuthPreferences>(
         localStorageRef,
-        LocalStorageKeys.GUEST_PREFERENCES
-      ) ?? guestPreferencesCookie.value :
-      guestPreferencesCookie.value
+        LocalStorageKeys.GUEST_PREFERENCES,
+      ) ?? guestPreferencesCookie.value
+      : guestPreferencesCookie.value,
   );
 
   const guestPreferences = useStorage<AuthPreferences | null>(
@@ -187,7 +187,7 @@ export const useMarketStore = defineStore('market', () => {
     localStorageRef,
     {
       serializer: StorageSerializers.object,
-    }
+    },
   );
 
   const marketPreferenceSource = ref<MarketPreferenceSource | null>(null);
@@ -199,7 +199,7 @@ export const useMarketStore = defineStore('market', () => {
 
   const markMarketReady = (
     preferences: AuthPreferences,
-    source: MarketPreferenceSource
+    source: MarketPreferenceSource,
   ) => {
     guestPreferences.value = preferences;
     guestPreferencesCookie.value = preferences;
@@ -264,11 +264,11 @@ export const useMarketStore = defineStore('market', () => {
       const enabledMarkets = marketConfig?.markets.filter(market => market.enabled) ?? [];
       const market = resolveSupportedMarket(
         (ipData as IpDataResponse).country_name,
-        enabledMarkets
+        enabledMarkets,
       ) ?? getBaseMarket();
       const language = localeToMarketLanguage(
         getBrowserLocale(),
-        market.supportedLocales
+        market.supportedLocales,
       ) ?? localeToMarketLanguage(market.defaultLocale, market.supportedLocales) ??
       MARKET_CONFIG.BASE_LANGUAGE;
 
@@ -312,7 +312,7 @@ export const useMarketStore = defineStore('market', () => {
       viewedAt: new Date().toISOString(),
     };
     const dedupedEntries = recentProductViews.value.filter(
-      entry => entry.product.id !== product.id
+      entry => entry.product.id !== product.id,
     );
 
     recentProductViews.value = [

@@ -19,6 +19,6 @@ export default defineNuxtPlugin(() => {
 
       await syncSubscriptionWithServer();
     },
-    { immediate: true }
+    { immediate: true },
   );
 });

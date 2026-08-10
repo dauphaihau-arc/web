@@ -1,5 +1,5 @@
 import {
-  describe, it, expect, beforeEach, vi
+  describe, it, expect, beforeEach, vi,
 } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime';

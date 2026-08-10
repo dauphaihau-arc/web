@@ -134,7 +134,7 @@ const {
 
           <p
             v-if="columnPreset === 'default'"
-            class="max-w-3xl text-sm leading-6 text-text-muted !mt-3"
+            class="!mt-3 max-w-3xl text-sm leading-6 text-text-muted"
           >
             {{ selectedColumnLabels }}
           </p>
@@ -164,7 +164,7 @@ const {
         <p class=" text-text-strong">
           Your export is ready. If you don't see your file,
           <span
-            class="inline whitespace-normal text-left align-baseline font-medium text-primary hover:text-primary-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+            class="text-primary hover:text-primary-600 focus-visible:ring-primary-500 inline cursor-pointer whitespace-normal text-left align-baseline font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
             :disabled="isCompletingExport"
             @click="retryDownload"
           >
@@ -191,7 +191,7 @@ const {
           </span>
         </div>
         <UProgress :value="progress" />
-        <p class="text-xs text-text-soft">
+        <p class="text-text-soft text-xs">
           {{ progressLabel }}
         </p>
       </section>

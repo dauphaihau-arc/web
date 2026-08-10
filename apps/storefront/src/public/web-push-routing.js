@@ -18,9 +18,9 @@ export function getNotificationTargetPath(data) {
     case 'order.shipping.in_transit':
     case 'order.shipping.shipped':
     case 'order.shipping.delivered':
-      return typeof data.orderId === 'string' && data.orderId.length > 0 ?
-        buildOrderDetailPath(data.orderId) :
-        routePaths.orders;
+      return typeof data.orderId === 'string' && data.orderId.length > 0
+        ? buildOrderDetailPath(data.orderId)
+        : routePaths.orders;
     default:
       return routePaths.home;
   }

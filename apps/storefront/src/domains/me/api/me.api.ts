@@ -10,7 +10,7 @@ export const meApi = {
         '/auth/me',
         undefined,
         undefined,
-        { retryOnUnauthorized: false }
+        { retryOnUnauthorized: false },
       );
     }
     catch (error) {
@@ -26,13 +26,13 @@ export const meApi = {
       '/auth/me',
       undefined,
       undefined,
-      { retryOnUnauthorized: false }
+      { retryOnUnauthorized: false },
     );
   },
   updateCurrent(payload: UpdateMeRequest) {
     return apiClient.patch<UpdateMeResponse>(
       '/me',
-      payload
+      payload,
     );
   },
 };

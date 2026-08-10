@@ -1,7 +1,7 @@
 import type { z } from 'zod';
 import type {
   createShopRequestSchema,
-  myShopResponseSchema
+  myShopResponseSchema,
 } from '@arc/schemas/api/shop/shop.schema';
 
 export type MyShopResponse = z.infer<typeof myShopResponseSchema>;

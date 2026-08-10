@@ -3,7 +3,7 @@ export function getProductStockNotice(
   options?: {
     backInStock?: boolean
     lowStockThreshold?: number
-  }
+  },
 ): string {
   if (options?.backInStock && stock > 0) {
     return 'Back in stock';

@@ -18,7 +18,7 @@ export const orderStatusTabOptions = orderStatusFilterOptions.filter(option =>
     OrderStatuses.REFUNDED,
     OrderStatuses.COMPLETED,
     OrderStatuses.CANCELED,
-  ].includes(option.value as OrderStatuses)
+  ].includes(option.value as OrderStatuses),
 );
 
 export const orderFulfillmentFilterOptions: FilterOption[] = [

@@ -4,7 +4,7 @@ import { categoryApi } from '~/domains/category/api/category.api';
 import type { GetCategoriesRequest as GetCategoriesParams } from '~/domains/category/api/contracts/category.contract';
 
 export function useGetCategories(
-  params?: GetCategoriesParams
+  params?: GetCategoriesParams,
 ) {
   return useQuery<Category[]>({
     enabled: !!params,

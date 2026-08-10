@@ -150,7 +150,7 @@ watch(
       <template #item="{ item }">
         <div
           v-if="item.id === 'info'"
-          class="px-1 text-sm leading-6 whitespace-pre-line text-text-subtle"
+          class="whitespace-pre-line px-1 text-sm leading-6 text-text-subtle"
         >
           {{ item.content }}
         </div>
@@ -187,7 +187,7 @@ watch(
 
         <div
           v-else
-          class="px-1 text-sm leading-6 whitespace-pre-line text-text-subtle"
+          class="whitespace-pre-line px-1 text-sm leading-6 text-text-subtle"
         >
           {{ item.content }}
         </div>

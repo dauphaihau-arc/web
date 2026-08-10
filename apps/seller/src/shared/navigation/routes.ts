@@ -3,7 +3,7 @@ import type { CreateCouponPageTypes } from '@arc/enums/shop';
 
 function createRoute(
   path: string,
-  query?: LocationQueryRaw
+  query?: LocationQueryRaw,
 ): RouteLocationRaw {
   if (!query) {
     return { path };
@@ -41,7 +41,7 @@ export const routes = {
   messages: (query?: { conversationId?: string }) =>
     createRoute(
       routePaths.messages,
-      query?.conversationId ? { conversation_id: query.conversationId } : undefined
+      query?.conversationId ? { conversation_id: query.conversationId } : undefined,
     ),
   notifications: () => createRoute(routePaths.notifications),
   orderDetail: (id: string) => createRoute(`${routePaths.orders}/${id}`),

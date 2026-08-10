@@ -1,7 +1,7 @@
 import type { z } from 'zod';
 import type {
   updateProductRequestBodySchema,
-  updateProductRequestSchema
+  updateProductRequestSchema,
 } from '~/domains/shop/api/schemas/product/update-product.schema';
 
 export type UpdateProductRequestBody = z.infer<typeof updateProductRequestBodySchema>;

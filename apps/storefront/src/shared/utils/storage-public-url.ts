@@ -56,7 +56,7 @@ export function resolveStoragePublicUrl(input: StorageUrlInput): string | undefi
 export function resolveProductImageUrl(
   image: ProductImageLike | undefined,
   assetHost: string | undefined,
-  preferredVariant?: string
+  preferredVariant?: string,
 ): string | undefined {
   if (!image) {
     return undefined;

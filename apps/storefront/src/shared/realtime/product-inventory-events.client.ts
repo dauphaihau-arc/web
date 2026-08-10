@@ -11,21 +11,21 @@ function buildEventsUrl(productId: string): string {
 }
 
 function isProductInventoryUpdatedRealtimeEvent(
-  value: unknown
+  value: unknown,
 ): value is ProductInventoryUpdatedRealtimeEvent {
   if (!value || typeof value !== 'object') {
     return false;
   }
 
-  return Reflect.get(value, 'eventType') === 'product.inventory.updated' &&
-    typeof Reflect.get(value, 'productId') === 'string' &&
-    typeof Reflect.get(value, 'inventoryId') === 'string' &&
-    typeof Reflect.get(value, 'stock') === 'number';
+  return Reflect.get(value, 'eventType') === 'product.inventory.updated'
+    && typeof Reflect.get(value, 'productId') === 'string'
+    && typeof Reflect.get(value, 'inventoryId') === 'string'
+    && typeof Reflect.get(value, 'stock') === 'number';
 }
 
 async function handleIncomingMessage(
   onInventoryUpdated: (payload: ProductInventoryUpdatedRealtimeEvent) => void | Promise<void>,
-  rawPayload: string
+  rawPayload: string,
 ): Promise<void> {
   const payload = JSON.parse(rawPayload) as unknown;
 
@@ -37,7 +37,7 @@ async function handleIncomingMessage(
 }
 
 export function createProductInventoryEventsClient(
-  onInventoryUpdated: (payload: ProductInventoryUpdatedRealtimeEvent) => void | Promise<void>
+  onInventoryUpdated: (payload: ProductInventoryUpdatedRealtimeEvent) => void | Promise<void>,
 ): ProductInventoryEventsClient {
   let eventSource: EventSource | null = null;
   let currentProductId: string | null = null;

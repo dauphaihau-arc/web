@@ -40,7 +40,7 @@ const {
 
     <USkeleton
       v-if="loading"
-      class="h-full w-full"
+      class="size-full"
     />
     <div
       v-else-if="!hasRevenue"
@@ -52,7 +52,7 @@ const {
       v-else
       :data="chartData"
       :options="chartOptions"
-      class="h-full w-full"
+      class="size-full"
       aria-label="Revenue chart"
     />
   </DashboardPanel>

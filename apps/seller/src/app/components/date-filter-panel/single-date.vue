@@ -41,7 +41,7 @@ function setTime(value: string | number) {
 <template>
   <div class="space-y-3">
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-      <div class="hidden text-primary sm:block">
+      <div class="text-primary hidden sm:block">
         <AppIcon
           name="arrowForward"
           class="size-7"

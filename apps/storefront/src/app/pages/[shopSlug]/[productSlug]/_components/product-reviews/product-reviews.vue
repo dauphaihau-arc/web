@@ -75,13 +75,13 @@ watch(
       class="space-y-7 py-10"
     >
       <div class="space-y-3">
-        <h2 class="text-xl font-semibold tracking-tight text-text">
+        <h2 class="text-text text-xl font-semibold tracking-tight">
           Reviews for this item
         </h2>
 
         <div class="flex items-center gap-4">
           <div class="flex gap-3">
-            <div class="text-4xl font-semibold leading-none text-text">
+            <div class="text-text text-4xl font-semibold leading-none">
               {{ averageLabel }}
             </div>
             <div class="flex items-center gap-1 text-rating-star">
@@ -92,7 +92,7 @@ watch(
             </div>
           </div>
           <div>
-            <div class="text-base font-medium text-text">
+            <div class="text-text text-base font-medium">
               Item average
             </div>
             <div class="text-sm text-text-muted">

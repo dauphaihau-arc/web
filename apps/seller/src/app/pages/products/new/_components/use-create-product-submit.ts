@@ -5,7 +5,7 @@ import {
   buildCreateProductImagesPayload,
   buildCreateProductPayload,
   buildCreateProductSubmitBody,
-  pruneEmptyCreateProductFields
+  pruneEmptyCreateProductFields,
 } from './create-product-form.mapper';
 import { routes } from '~/shared/navigation/routes';
 import { toastCustom } from '~/shared/config/toast';
@@ -19,7 +19,7 @@ import type {
   StateCombineVariant,
   StateNoneVariant,
   StateSingleVariant,
-  StateSubmit
+  StateSubmit,
 } from '~/domains/shop/api/product/contracts/form.contract';
 
 type UseCreateProductSubmitInput = {
@@ -33,9 +33,9 @@ type UseCreateProductSubmitInput = {
 };
 
 function unwrap<T>(value: Ref<T> | { value: T } | T): T {
-  return typeof value === 'object' && value !== null && 'value' in value ?
-    value.value :
-    value;
+  return typeof value === 'object' && value !== null && 'value' in value
+    ? value.value
+    : value;
 }
 
 export function useCreateProductSubmit({
@@ -112,12 +112,12 @@ export function useCreateProductSubmit({
 
   async function submit(eventData: CreateProductBody) {
     const dataSubmit = pruneEmptyCreateProductFields(
-      eventData as PickPartial<CreateProductBody, 'attributes' | 'tags'>
+      eventData as PickPartial<CreateProductBody, 'attributes' | 'tags'>,
     );
 
     if (
-      stateSubmit.state === ProductStates.ACTIVE &&
-      fileImages.value.length === 0
+      stateSubmit.state === ProductStates.ACTIVE
+      && fileImages.value.length === 0
     ) {
       consola.error('images is invalid');
       return;
@@ -133,7 +133,7 @@ export function useCreateProductSubmit({
       shipping.value,
       unwrap(noneVariant),
       unwrap(singleVariant),
-      unwrap(combineVariant)
+      unwrap(combineVariant),
     );
 
     if (!bodyData) {
@@ -144,7 +144,7 @@ export function useCreateProductSubmit({
 
     try {
       const productDraft = await createProduct(
-        buildCreateProductPayload(bodyData, unwrap(shopCurrency) || 'USD')
+        buildCreateProductPayload(bodyData, unwrap(shopCurrency) || 'USD'),
       );
 
       if (fileImages.value.length > 0) {
@@ -163,9 +163,9 @@ export function useCreateProductSubmit({
 
       toast.add({
         ...toastCustom.success,
-        title: stateSubmit.state === ProductStates.ACTIVE ?
-          'Product published' :
-          'Draft saved',
+        title: stateSubmit.state === ProductStates.ACTIVE
+          ? 'Product published'
+          : 'Draft saved',
       });
       await router.push(routes.products());
     }

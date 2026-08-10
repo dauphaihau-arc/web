@@ -1,7 +1,7 @@
 import type { z } from 'zod';
 import type {
   resetPasswordRequestSchema,
-  resetPasswordResponseSchema
+  resetPasswordResponseSchema,
 } from '@arc/schemas/api/auth/reset-password.schema';
 
 export type ResetPasswordRequest = z.infer<typeof resetPasswordRequestSchema>;

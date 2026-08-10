@@ -266,7 +266,7 @@ watchDebounced(
             <UFormGroup
               label="Title"
               name="title"
-              class="mb-4 form-field-constrained"
+              class="form-field-constrained mb-4"
               description="Include keywords that buyers would use to search for your product."
               required
             >

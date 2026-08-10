@@ -48,22 +48,22 @@ export function normalizeCategory(response: GetCategoriesResponse[number]): Cate
 }
 
 export function normalizeCategoryAttributesResponse(
-  response: LegacyCategoryAttributesResponse | NestCategoryAttributesResponse
+  response: LegacyCategoryAttributesResponse | NestCategoryAttributesResponse,
 ): LegacyCategoryAttributesResponse {
   return {
     attributes: response.attributes.map(attribute => ({
       ...attribute,
       key: attribute.key,
       options: attribute.options?.map(option =>
-        typeof option === 'string' ?
-          {
+        typeof option === 'string'
+          ? {
             id: option,
             value: option,
-          } :
-          {
+          }
+          : {
             id: option.id,
             value: option.value,
-          }
+          },
       ),
     })),
   };

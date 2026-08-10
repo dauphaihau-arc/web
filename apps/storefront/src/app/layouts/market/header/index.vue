@@ -174,7 +174,7 @@ const showRegisterLoginDialog = async () => {
       :class="{ 'hidden-header': !state.showNavbar }"
       @mouseleave="onMouseleave"
     >
-      <nav class="max-w-home-layout mx-auto grid grid-cols-[1fr_auto_1fr] items-start py-3">
+      <nav class="mx-auto grid max-w-home-layout grid-cols-[1fr_auto_1fr] items-start py-3">
         <NuxtLink
           id="brand"
           :to="ROUTES.HOME"
@@ -197,7 +197,7 @@ const showRegisterLoginDialog = async () => {
           />
         </div>
 
-        <div class="flex h-fit items-center justify-self-end gap-2">
+        <div class="flex h-fit items-center gap-2 justify-self-end">
           <UTooltip text="Search">
             <UButton
               square

@@ -58,7 +58,7 @@ const fetchIpWhoIs = (url: string) =>
             reject(error);
           }
         });
-      }
+      },
     ).on('error', reject);
   });
 

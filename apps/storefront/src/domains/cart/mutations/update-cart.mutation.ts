@@ -5,7 +5,7 @@ import type { UpdateCartRequest, UpdateCartResponse } from '~/domains/cart/api/c
 import { toastCustom } from '~/shared/config/toast';
 
 export function useUpdateCart(
-  options?: MutationOptions<UpdateCartResponse, FetchError, UpdateCartRequest>
+  options?: MutationOptions<UpdateCartResponse, FetchError, UpdateCartRequest>,
 ) {
   const toast = useToast();
   return useMutation({

@@ -49,7 +49,7 @@ function shippingStatusTone(status: ShopOrder['shipping']['shipping_status']) {
       <div class="text-sm text-text-muted">
         Created at
       </div>
-      <div class="font-medium text-sm text-text-strong">
+      <div class="text-sm font-medium text-text-strong">
         {{ createdLabel }}
       </div>
     </div>

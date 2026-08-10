@@ -58,7 +58,7 @@ export async function buildProductImportPreview(file: File) {
   }
 
   const columnIndex: Record<string, number | undefined> = Object.fromEntries(
-    headers.map((header, index) => [header, index])
+    headers.map((header, index) => [header, index]),
   );
 
   const productRows = Array.from(
@@ -70,9 +70,9 @@ export async function buildProductImportPreview(file: File) {
         productsSheet,
         readSheetRow(productsSheet, rowNumber - 1, productRange.e.c + 1),
         rowNumber,
-        columnIndex
+        columnIndex,
       );
-    }
+    },
   );
 
   return {
@@ -103,7 +103,7 @@ function buildPreviewRow(
   productsSheet: XLSX.WorkSheet,
   row: unknown[],
   rowNumber: number,
-  columnIndex: Record<string, number | undefined>
+  columnIndex: Record<string, number | undefined>,
 ): ProductImportPreviewRow {
   const previewRow = {
     row: rowNumber,
@@ -125,7 +125,7 @@ function validatePreviewRow(
   productsSheet: XLSX.WorkSheet,
   rowNumber: number,
   columnIndex: Record<string, number | undefined>,
-  row: Omit<ProductImportPreviewRow, 'issues'>
+  row: Omit<ProductImportPreviewRow, 'issues'>,
 ) {
   const issues: ProductImportPreviewIssue[] = [];
 
@@ -156,7 +156,7 @@ function addRequiredIssue(
   issues: ProductImportPreviewIssue[],
   field: ProductImportPreviewField,
   value: string,
-  message: string
+  message: string,
 ) {
   if (!value) {
     issues.push({ field, message });
@@ -167,7 +167,7 @@ function addFormulaIssues(
   issues: ProductImportPreviewIssue[],
   sheet: XLSX.WorkSheet,
   rowNumber: number,
-  columnIndex: Record<string, number | undefined>
+  columnIndex: Record<string, number | undefined>,
 ) {
   const fields = [
     { field: 'title', column: columnIndex.title },
@@ -219,7 +219,7 @@ function validateHeaders(productsSheet: XLSX.WorkSheet, headers: string[]) {
   const missingHeaders = REQUIRED_COLUMNS.filter(column => !headers.includes(column));
 
   const duplicateHeaders = headers.filter((header, index) =>
-    header && headers.indexOf(header) !== index
+    header && headers.indexOf(header) !== index,
   );
 
   if (missingHeaders.length > 0) {

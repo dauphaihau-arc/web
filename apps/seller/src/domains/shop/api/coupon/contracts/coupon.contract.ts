@@ -6,7 +6,7 @@ import type {
   createShopCouponResponseSchema,
   listShopCouponsRequestSchema,
   listShopCouponsResponseSchema,
-  shopCouponSchema
+  shopCouponSchema,
 } from '~/domains/shop/api/schemas/coupon/coupon.schema';
 import type { createPromoCodeFormSchema } from '~/app/pages/coupons/_schemes/coupon/create-promo-code-form.schema';
 import type { createSaleFormSchema } from '~/app/pages/coupons/_schemes/coupon/create-sale-form.schema';

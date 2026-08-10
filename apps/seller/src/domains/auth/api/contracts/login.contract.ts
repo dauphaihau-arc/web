@@ -1,7 +1,7 @@
 import type { z } from 'zod';
 import type {
   loginRequestSchema,
-  loginResponseSchema
+  loginResponseSchema,
 } from '@arc/schemas/api/auth/login.schema';
 
 export type LoginRequest = z.infer<typeof loginRequestSchema>;

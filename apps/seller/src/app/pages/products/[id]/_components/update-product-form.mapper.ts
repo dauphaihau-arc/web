@@ -6,7 +6,7 @@ import type { DetailShopProductResponse } from '~/domains/shop/api/product/contr
 import type {
   NoneVariant,
   ProductImageReference,
-  UpdateProductBody
+  UpdateProductBody,
 } from '~/domains/shop/api/product/contracts/form.contract';
 
 type DetailProduct = DetailShopProductResponse['product'];
@@ -14,7 +14,7 @@ type DetailProduct = DetailShopProductResponse['product'];
 export function applyDetailProductToFormState(
   detailProduct: DetailProduct,
   stateSubmit: UpdateProductBody,
-  noneVariant: Partial<NoneVariant>
+  noneVariant: Partial<NoneVariant>,
 ) {
   const base = pick(detailProduct, [
     'title',
@@ -40,7 +40,7 @@ export function applyDetailProductToFormState(
 
 export function pruneUnchangedUpdateFields(
   dataSubmit: UpdateProductBody,
-  detailProduct?: DetailProduct
+  detailProduct?: DetailProduct,
 ) {
   if (!detailProduct) {
     return dataSubmit;
@@ -53,7 +53,7 @@ export function pruneUnchangedUpdateFields(
       }
 
       return JSON.stringify(value) !== JSON.stringify(detailProduct[key]);
-    })
+    }),
   );
 
   return nextDataSubmit as UpdateProductBody;
@@ -62,12 +62,12 @@ export function pruneUnchangedUpdateFields(
 export function hasRemovedAllImages(
   idsImageForDelete: Required<Pick<ProductImageReference, 'id'>>[],
   fileImages: File[],
-  detailProduct?: DetailProduct
+  detailProduct?: DetailProduct,
 ) {
   if (!detailProduct) {
     return false;
   }
 
-  return idsImageForDelete.length === detailProduct.images.length &&
-    fileImages.length === 0;
+  return idsImageForDelete.length === detailProduct.images.length
+    && fileImages.length === 0;
 }

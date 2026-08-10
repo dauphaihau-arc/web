@@ -6,7 +6,6 @@ import withNuxt from './.nuxt/eslint.config.mjs';
 const duplicatedNuxtPlugins = new Set([
   '@stylistic',
   '@typescript-eslint',
-  'tailwindcss',
   'vue',
 ]);
 
@@ -16,7 +15,7 @@ function stripDuplicatedPlugins(config) {
   }
 
   const plugins = Object.fromEntries(
-    Object.entries(config.plugins).filter(([name]) => !duplicatedNuxtPlugins.has(name))
+    Object.entries(config.plugins).filter(([name]) => !duplicatedNuxtPlugins.has(name)),
   );
 
   if (Object.keys(plugins).length > 0) {
@@ -101,6 +100,17 @@ export default withNuxt(
     },
   },
   {
+    files: [
+      'src/app/pages/**/\\[*\\].vue',
+      'src/app/pages/**/\\[...*\\].vue',
+      'apps/storefront/src/app/pages/**/\\[*\\].vue',
+      'apps/storefront/src/app/pages/**/\\[...*\\].vue',
+    ],
+    rules: {
+      'check-file/filename-naming-convention': 'off',
+    },
+  },
+  {
     files: ['e2e/**/*.ts'],
     rules: {
       '@typescript-eslint/naming-convention': [
@@ -130,5 +140,5 @@ export default withNuxt(
       'public/*',
       'src/assets/**',
     ],
-  }
+  },
 );

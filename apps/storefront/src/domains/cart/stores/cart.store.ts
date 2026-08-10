@@ -1,6 +1,6 @@
 import { PaymentTypes } from '@arc/enums/order';
 import {
-  CheckoutNowSteps, CheckoutCartSteps, type StateCheckoutNow, type StateCheckoutCart
+  CheckoutNowSteps, CheckoutCartSteps, type StateCheckoutNow, type StateCheckoutCart,
 } from '~/domains/cart/stores/cart.store.types';
 import { routePaths } from '~/shared/navigation/routes';
 import type { CreateOrderResponse } from '~/domains/me/api/order/contracts/order.contract';
@@ -57,8 +57,8 @@ export const useCartStore = defineStore('cart', () => {
     const activeCheckoutPaths: string[] = [routePaths.cartCheckout, routePaths.cart];
 
     if (
-      additionInfoShopCarts.value.size &&
-      !activeCheckoutPaths.includes(router.currentRoute.value.path)
+      additionInfoShopCarts.value.size
+      && !activeCheckoutPaths.includes(router.currentRoute.value.path)
     ) {
       additionInfoShopCarts.value.clear();
     }

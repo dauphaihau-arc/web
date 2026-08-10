@@ -11,7 +11,7 @@ export enum CheckoutNowSteps {
   ADDRESS_SHIPPING,
   PAYMENT,
   REVIEW_CONFIRMATION,
-  ORDER
+  ORDER,
 }
 
 export type StateCheckoutNow = {
@@ -31,7 +31,7 @@ export enum CheckoutCartSteps {
   ADDRESS_SHIPPING,
   PAYMENT,
   REVIEW_CONFIRMATION,
-  ORDER
+  ORDER,
 }
 
 export type StateCheckoutCart = {

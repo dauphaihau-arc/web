@@ -62,7 +62,7 @@ function handleDrop(event: DragEvent) {
       class="hidden"
       @change="handleFileInput"
       @click.stop
-    >
+    />
     <div class="mb-4 flex size-12 items-center justify-center rounded-full bg-surface-muted text-text-muted">
       <UIcon
         name="i-heroicons-document-arrow-up"

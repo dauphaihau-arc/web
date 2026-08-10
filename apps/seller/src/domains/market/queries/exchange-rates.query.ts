@@ -12,7 +12,7 @@ type QueryOptions<TData> = Omit<
 
 export function useGetExchangeRates(
   queryOptions?: QueryOptions<ExchangeRatesResponse>,
-  nitroOptions?: NitroFetchOptions<NitroFetchRequest>
+  nitroOptions?: NitroFetchOptions<NitroFetchRequest>,
 ) {
   return useQuery<ExchangeRatesResponse>({
     ...queryOptions,
@@ -28,7 +28,7 @@ export function useGetExchangeRates(
           onResponseError: () => {
             consola.error('get exchange rates failed');
           },
-        }
+        },
       );
     },
   });

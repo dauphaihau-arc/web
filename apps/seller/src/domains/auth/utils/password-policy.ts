@@ -26,7 +26,7 @@ export const DEFAULT_AUTH_CLIENT_CONFIG: AuthClientConfig = {
 
 export function validatePasswordByPolicy(
   password: string | undefined,
-  policy: AuthClientConfig = DEFAULT_AUTH_CLIENT_CONFIG
+  policy: AuthClientConfig = DEFAULT_AUTH_CLIENT_CONFIG,
 ): string | undefined {
   if (!password) {
     return 'Password is required';
@@ -53,7 +53,7 @@ export function appendPasswordError(
   errors: FormError[],
   path: string,
   password: string | undefined,
-  policy: AuthClientConfig = DEFAULT_AUTH_CLIENT_CONFIG
+  policy: AuthClientConfig = DEFAULT_AUTH_CLIENT_CONFIG,
 ) {
   const message = validatePasswordByPolicy(password, policy);
 

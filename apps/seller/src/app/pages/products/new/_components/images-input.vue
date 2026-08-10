@@ -110,7 +110,7 @@ watch(state, () => {
           :disabled="state.urlImages.length === PRODUCT_CONFIG.MAX_IMAGES"
           accept="image/*"
           @change="onFilePicked"
-        >
+        />
       </div>
     </div>
   </UFormGroup>

@@ -59,7 +59,7 @@ const {
             :src="conversation.buyer.avatar"
             :alt="getConversationBuyerName(conversation)"
             class="size-10 shrink-0 rounded-full object-cover"
-          >
+          />
           <div
             v-else
             class="flex size-10 shrink-0 items-center justify-center rounded-full bg-customGray-200 text-sm font-semibold text-text-strong"
@@ -125,7 +125,7 @@ const {
                 :src="selectedConversationResolved.buyer.avatar"
                 :alt="getConversationBuyerName(selectedConversationResolved)"
                 class="size-11 shrink-0 rounded-full object-cover"
-              >
+              />
               <div
                 v-else
                 class="flex size-11 shrink-0 items-center justify-center rounded-full bg-customGray-200 text-base font-semibold text-text-strong"

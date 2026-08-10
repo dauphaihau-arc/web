@@ -5,7 +5,7 @@ import { authApi } from '~/domains/auth/api/auth.api';
 import { routes } from '~/shared/navigation/routes';
 import {
   hasSellerAccess,
-  SellerAccessRequiredError
+  SellerAccessRequiredError,
 } from '~/domains/auth/utils/seller-access';
 
 export function useLogin() {

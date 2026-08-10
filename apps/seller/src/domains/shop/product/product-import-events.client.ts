@@ -12,7 +12,7 @@ export type ProductImportSsePayload = {
 };
 
 export function createProductImportEventsClient(
-  onMessage: (payload: ProductImportSsePayload) => void
+  onMessage: (payload: ProductImportSsePayload) => void,
 ) {
   if (!import.meta.client) {
     return null;

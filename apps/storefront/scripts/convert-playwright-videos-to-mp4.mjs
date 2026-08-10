@@ -59,7 +59,7 @@ function convertToMp4(inputPath) {
       ],
       {
         stdio: 'inherit',
-      }
+      },
     );
 
     child.on('exit', (code) => {

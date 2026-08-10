@@ -68,14 +68,14 @@ const {
         multiple
         class="hidden"
         @change="onFileSelection"
-      >
+      />
 
       <div
         role="button"
         :tabindex="disabled || !canAddMoreImages || isUploadingImages ? -1 : 0"
         :aria-disabled="disabled || !canAddMoreImages || isUploadingImages"
         :class="[
-          'group flex w-full flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border-muted bg-surface-subtle px-6 py-6 text-center transition',
+          'group flex w-full flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border-muted bg-surface-subtle p-6 text-center transition',
           disabled || !canAddMoreImages || isUploadingImages
             ? 'cursor-not-allowed opacity-60'
             : 'hover:border-primary/40 hover:bg-surface',
@@ -88,7 +88,7 @@ const {
           <AppIcon
             name="uploadCloud"
             size="lg"
-            class="text-text-subtle transition group-hover:text-primary"
+            class="group-hover:text-primary text-text-subtle transition"
           />
         </div>
 
@@ -117,8 +117,8 @@ const {
               <img
                 :src="image.previewUrl"
                 :alt="image.displayName"
-                class="h-full w-full object-cover"
-              >
+                class="size-full object-cover"
+              />
             </div>
 
             <div class="min-w-0 flex-1 space-y-3">

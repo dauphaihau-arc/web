@@ -27,9 +27,9 @@ export function useShopBulkDeleteCoupons() {
 
       toast.add({
         ...(result.succeeded_ids.length > 0 ? toastCustom.warning : toastCustom.error),
-        title: result.succeeded_ids.length > 0 ?
-          'Coupons deleted with some failures' :
-          'Failed to delete coupons',
+        title: result.succeeded_ids.length > 0
+          ? 'Coupons deleted with some failures'
+          : 'Failed to delete coupons',
         description: `${result.succeeded_ids.length} succeeded, ${result.failed.length} failed.`,
       });
     },

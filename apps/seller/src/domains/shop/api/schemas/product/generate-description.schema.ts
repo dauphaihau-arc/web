@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import {
   ProductVariantTypes,
-  ProductWhoMade
+  ProductWhoMade,
 } from '@arc/enums/product';
 
 export const generateProductDescriptionRequestAttributeSchema = z.object({

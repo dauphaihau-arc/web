@@ -130,16 +130,16 @@ const secondaryLinks = [
 
 <template>
   <footer class="footer">
-    <div class="max-w-home-layout mx-auto">
+    <div class="mx-auto max-w-home-layout">
       <div class="grid grid-cols-5 gap-32 py-8">
-        <div class="text-text-strong text-xl font-semibold">
+        <div class="text-xl font-semibold text-text-strong">
           Arc
         </div>
         <div
           v-for="(item, idx) of primaryLinks"
           :key="idx"
         >
-          <div class="text-text-strong mb-3 text-sm font-semibold">
+          <div class="mb-3 text-sm font-semibold text-text-strong">
             {{ item.title }}
           </div>
 

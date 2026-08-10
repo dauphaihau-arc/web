@@ -165,11 +165,11 @@ const actionMenuGroups = computed<ActionMenuGroup[]>(() => {
       :ui="{ rounded: 'rounded-[16px]', shadow: 'shadow-none', ring: '', background: 'bg-transparent', base: 'overflow-hidden' }"
     >
       <template #panel>
-        <div class="min-w-[18rem] overflow-hidden rounded-[16px] border border-border-subtle bg-surface shadow-[0_24px_60px_rgba(15,23,42,0.16)]">
+        <div class="min-w-72 overflow-hidden rounded-[16px] border border-border-subtle bg-surface shadow-[0_24px_60px_rgba(15,23,42,0.16)]">
           <div
             v-for="(group, groupIndex) in actionMenuGroups"
             :key="group.label"
-            class="px-2 py-2"
+            class="p-2"
             :class="{ 'border-t border-border-subtle': groupIndex > 0 }"
           >
             <div class="px-3 py-2 text-sm font-medium text-text-muted">

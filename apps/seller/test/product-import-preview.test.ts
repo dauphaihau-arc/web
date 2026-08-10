@@ -1,5 +1,5 @@
 import {
-  describe, expect, it
+  describe, expect, it,
 } from 'vitest';
 import * as XLSX from 'xlsx';
 import { buildProductImportPreview } from '../src/app/pages/products/import/product-import-preview';

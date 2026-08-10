@@ -6,7 +6,7 @@ import type {
   getCategoriesRequestSchema,
   getCategoriesResponseSchema,
   getCategoryAttributesResponseSchema,
-  getCategorySuggestionsResponseSchema
+  getCategorySuggestionsResponseSchema,
 } from '@arc/schemas/api/category/category.schema';
 
 export type GetCategoriesRequest = z.infer<typeof getCategoriesRequestSchema>;

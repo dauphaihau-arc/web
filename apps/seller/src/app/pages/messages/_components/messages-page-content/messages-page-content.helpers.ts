@@ -4,16 +4,16 @@ import {
   formatChatUnreadCountLabel,
   getChatLatestMessagePreview,
   isChatConversationUnread,
-  shouldShowChatMessageTime
+  shouldShowChatMessageTime,
 } from '@arc/lib';
 import type {
   ShopChatConversation,
-  ShopChatMessage
+  ShopChatMessage,
 } from '~/domains/shop/api/chat/contracts/chat.contract';
 
 export function isConversationUnread(
   conversation: ShopChatConversation,
-  shopOwnerUserId?: string | null
+  shopOwnerUserId?: string | null,
 ) {
   if (!shopOwnerUserId) {
     return false;
@@ -39,7 +39,7 @@ export function formatMessageTime(message: ShopChatMessage) {
 export function shouldShowMessageTime(
   message: ShopChatMessage,
   index: number,
-  messages: ShopChatMessage[]
+  messages: ShopChatMessage[],
 ) {
   return shouldShowChatMessageTime(message, index, messages);
 }
@@ -54,7 +54,7 @@ export function toThreadMessages(
     statusLabel?: string
     href?: string
     external?: boolean
-  } | undefined
+  } | undefined,
 ) {
   return messages.map((message, index) => ({
     id: message.id,

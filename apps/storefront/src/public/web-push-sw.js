@@ -11,7 +11,7 @@ self.addEventListener('push', (event) => {
   };
 
   event.waitUntil(
-    self.registration.showNotification(notificationTitle, notificationOptions)
+    self.registration.showNotification(notificationTitle, notificationOptions),
   );
 });
 
@@ -31,6 +31,6 @@ self.addEventListener('notificationclick', (event) => {
         }
 
         return self.clients.openWindow(targetPath);
-      })
+      }),
   );
 });

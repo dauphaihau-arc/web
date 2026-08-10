@@ -2,7 +2,7 @@ import {
   formatChatConversationTime,
   formatChatUnreadCountLabel,
   getChatLatestMessagePreview,
-  isChatConversationUnread
+  isChatConversationUnread,
 } from '@arc/lib';
 import type { MyChatConversation } from '~/domains/me/api/chat/contracts/chat.contract';
 
@@ -22,9 +22,9 @@ export function formatConversationTime(value?: string | null) {
 
 export function getConversationTimeLabel(conversation: MyChatConversation) {
   return formatConversationTime(
-    conversation.last_message?.created_at ||
-    conversation.last_message_at ||
-    conversation.created_at
+    conversation.last_message?.created_at
+    || conversation.last_message_at
+    || conversation.created_at,
   );
 }
 

@@ -171,7 +171,7 @@ function onError(event: FormErrorEvent) {
                   :options="couponTypeOptions"
                   value-attribute="value"
                   name-attribute="label"
-                  class="w-[220px]"
+                  class="w-shop-layout-sidebar"
                 />
                 <UFormGroup
                   v-if="state.type === CouponTypes.PERCENTAGE"

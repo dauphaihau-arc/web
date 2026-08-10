@@ -2,7 +2,7 @@ import {
   buildProductLabel,
   formatFileSize,
   MAX_REVIEW_IMAGES,
-  MAX_REVIEW_IMAGE_BYTES
+  MAX_REVIEW_IMAGE_BYTES,
 } from './item-media-section.constants';
 import type { ResponseGetOrderShopsProduct } from '~/domains/me/api/order/contracts/order.contract';
 import { toastCustom } from '~/shared/config/toast';
@@ -37,7 +37,7 @@ type ItemMediaSectionEmit = {
 
 export function useItemMediaSection(
   props: ItemMediaSectionProps,
-  emit: ItemMediaSectionEmit
+  emit: ItemMediaSectionEmit,
 ) {
   const toast = useToast();
   const runtimeConfig = useRuntimeConfig();
@@ -48,17 +48,17 @@ export function useItemMediaSection(
     props.products.map(product => ({
       label: `${buildProductLabel(product)}${product.my_review ? ' (reviewed)' : ''}`,
       value: product.id,
-    }))
+    })),
   );
 
   const isUploadingImages = computed(() =>
-    reviewImages.value.some(image => image.status === 'uploading')
+    reviewImages.value.some(image => image.status === 'uploading'),
   );
   const hasFailedImages = computed(() =>
-    reviewImages.value.some(image => image.status === 'failed')
+    reviewImages.value.some(image => image.status === 'failed'),
   );
   const canAddMoreImages = computed(() =>
-    reviewImages.value.length < MAX_REVIEW_IMAGES
+    reviewImages.value.length < MAX_REVIEW_IMAGES,
   );
 
   function openFilePicker() {
@@ -240,7 +240,7 @@ export function useItemMediaSection(
     () => {
       syncImagesWithSelectedProduct();
     },
-    { immediate: true }
+    { immediate: true },
   );
 
   onBeforeUnmount(() => {

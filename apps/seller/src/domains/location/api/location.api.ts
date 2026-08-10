@@ -1,7 +1,7 @@
 import type {
   GetCountriesResponse,
   GetStatesByCountryRequest,
-  GetStatesByCountryResponse
+  GetStatesByCountryResponse,
 } from './contracts/location.contract';
 import { apiClient } from '~/shared/lib/api-client';
 
@@ -13,7 +13,7 @@ export const locationApi = {
       {
         baseURL: '',
         credentials: undefined,
-      }
+      },
     );
   },
 
@@ -24,7 +24,7 @@ export const locationApi = {
       {
         baseURL: '',
         credentials: undefined,
-      }
+      },
     );
   },
 };

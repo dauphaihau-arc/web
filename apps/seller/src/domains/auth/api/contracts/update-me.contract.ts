@@ -1,7 +1,7 @@
 import type { z } from 'zod';
 import type {
   updateMeRequestSchema,
-  updateMeResponseSchema
+  updateMeResponseSchema,
 } from '@arc/schemas/api/auth/update-me.schema';
 
 export type UpdateMeRequest = z.infer<typeof updateMeRequestSchema>;

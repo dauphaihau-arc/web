@@ -6,7 +6,7 @@ import type {
   GetCartRequest,
   GetCartResponse,
   UpdateCartRequest,
-  UpdateCartResponse
+  UpdateCartResponse,
 } from './contracts/cart.contract';
 import { apiClient } from '~/shared/lib/api-client';
 
@@ -14,14 +14,14 @@ export const cartApi = {
   add(payload: AddProductToCartRequest) {
     return apiClient.post<AddProductToCartResponse>(
       '/cart/items',
-      payload
+      payload,
     );
   },
 
   get(params?: GetCartRequest) {
     return apiClient.get<GetCartResponse>(
       '/cart',
-      params
+      params,
     );
   },
 
@@ -29,20 +29,20 @@ export const cartApi = {
     return apiClient.delete<DeleteCartProductResponse>(
       '/cart/items',
       params,
-      undefined
+      undefined,
     );
   },
 
   update(payload: UpdateCartRequest) {
     return apiClient.patch<UpdateCartResponse>(
       '/cart/items',
-      payload
+      payload,
     );
   },
 
   merge() {
     return apiClient.post<GetCartResponse>(
-      '/cart/merge'
+      '/cart/merge',
     );
   },
 };

@@ -3,7 +3,7 @@ import { toastCustom } from '~/shared/config/toast';
 import { shopProductApi } from '~/domains/shop/api/product/product.api';
 import type {
   BulkMutateShopProductsAction,
-  BulkMutateShopProductsRequest
+  BulkMutateShopProductsRequest,
 } from '~/domains/shop/api/product/contracts/read.contract';
 
 function getSuccessTitle(action: BulkMutateShopProductsAction) {
@@ -52,9 +52,9 @@ export function useShopBulkMutateProducts() {
 
       toast.add({
         ...(result.succeeded_ids.length > 0 ? toastCustom.warning : toastCustom.error),
-        title: result.succeeded_ids.length > 0 ?
-          'Products updated with some failures' :
-          getErrorTitle(variables.action),
+        title: result.succeeded_ids.length > 0
+          ? 'Products updated with some failures'
+          : getErrorTitle(variables.action),
         description: `${result.succeeded_ids.length} succeeded, ${result.failed.length} failed.`,
       });
     },

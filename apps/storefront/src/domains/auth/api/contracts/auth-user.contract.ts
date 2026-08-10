@@ -6,7 +6,7 @@ import type {
   authUserSchema,
   currentUserEnvelopeSchema,
   currentUserSchema,
-  currentUserShopSchema
+  currentUserShopSchema,
 } from '@arc/schemas/api/auth/auth-user.schema';
 
 export type AuthPreferences = z.infer<typeof authPreferencesSchema>;

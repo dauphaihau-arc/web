@@ -1,6 +1,6 @@
 import {
   buildProductImportPreview,
-  type ProductImportPreviewRow
+  type ProductImportPreviewRow,
 } from './product-import-preview';
 import { shopProductApi } from '~/domains/shop/api/product/product.api';
 import type { ShopProductImportResponse, ShopProductImportStatus } from '~/domains/shop/api/product/contracts/import.contract';
@@ -32,15 +32,15 @@ export function useProductImport() {
   const hasInvalidPreviewRows = computed(() => invalidPreviewRowCount.value > 0);
 
   const isImportRunning = computed(() =>
-    activeImport.value?.status === 'queued' || activeImport.value?.status === 'processing'
+    activeImport.value?.status === 'queued' || activeImport.value?.status === 'processing',
   );
 
   const canStartImport = computed(() =>
-    selectedFile.value !== null &&
-    validationErrors.value.length === 0 &&
-    !hasInvalidPreviewRows.value &&
-    !isUploading.value &&
-    !isImportRunning.value
+    selectedFile.value !== null
+    && validationErrors.value.length === 0
+    && !hasInvalidPreviewRows.value
+    && !isUploading.value
+    && !isImportRunning.value,
   );
 
   const progressValue = computed(() => {
@@ -126,7 +126,7 @@ export function useProductImport() {
       const productImport = await shopProductApi.startImport(
         shopId,
         selectedFile.value,
-        crypto.randomUUID()
+        crypto.randomUUID(),
       );
 
       activeImport.value = productImport;
@@ -240,7 +240,7 @@ export function useProductImport() {
   async function handleImportEvent(
     shopId: string,
     importId: string,
-    payload: ProductImportSsePayload
+    payload: ProductImportSsePayload,
   ) {
     if (payload.importId !== importId) {
       return;

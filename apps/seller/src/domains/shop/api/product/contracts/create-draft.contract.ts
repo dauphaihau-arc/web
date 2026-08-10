@@ -7,7 +7,7 @@ import type {
   createDraftProductRequestSchema,
   createDraftProductRequestShippingSchema,
   createDraftProductRequestVariantSchema,
-  createDraftProductResponseSchema
+  createDraftProductResponseSchema,
 } from '~/domains/shop/api/schemas/product/create-draft.schema';
 
 export type CreateDraftProductRequestImage = z.infer<typeof createDraftProductRequestImageSchema>;

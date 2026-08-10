@@ -120,7 +120,7 @@ onUnmounted(() => {
             {{ item.shop.shop_name }}
           </span>
         </span>
-        will start working on this right away.<br>
+        will start working on this right away.<br />
         We'll email you as soon as it ships.
       </div>
       <div>
@@ -132,7 +132,7 @@ onUnmounted(() => {
         </UButton>
       </div>
       <div class="">
-        Delivery times are estimated. If you're experiencing difficulty with this order, please <br>
+        Delivery times are estimated. If you're experiencing difficulty with this order, please <br />
         <span class="underline underline-offset-2">contact the seller</span>. See <span class="underline underline-offset-2">more info</span>.
       </div>
     </div>

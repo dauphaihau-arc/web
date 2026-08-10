@@ -3,7 +3,7 @@ import type {
   issueReviewImageUploadRequestSchema,
   issueReviewImageUploadResponseSchema,
   myProductReviewResponseSchema,
-  upsertMyProductReviewRequestSchema
+  upsertMyProductReviewRequestSchema,
 } from '@arc/schemas/api/me/product-review/product-review.schema';
 
 export type UpsertMyProductReviewRequest = z.input<typeof upsertMyProductReviewRequestSchema>;

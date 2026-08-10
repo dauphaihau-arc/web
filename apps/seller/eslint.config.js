@@ -6,7 +6,6 @@ import withNuxt from './.nuxt/eslint.config.mjs';
 const duplicatedNuxtPlugins = new Set([
   '@stylistic',
   '@typescript-eslint',
-  'tailwindcss',
   'vue',
 ]);
 
@@ -16,7 +15,7 @@ function stripDuplicatedPlugins(config) {
   }
 
   const plugins = Object.fromEntries(
-    Object.entries(config.plugins).filter(([name]) => !duplicatedNuxtPlugins.has(name))
+    Object.entries(config.plugins).filter(([name]) => !duplicatedNuxtPlugins.has(name)),
   );
 
   if (Object.keys(plugins).length > 0) {
@@ -112,5 +111,5 @@ export default withNuxt(
       'public/*',
       'src/assets/**',
     ],
-  }
+  },
 );

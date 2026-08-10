@@ -21,7 +21,7 @@ watch(() => route.path, () => {
 <template>
   <div>
     <LayoutMarketHeader />
-    <div class="max-w-home-layout mx-auto pb-[500px] pt-14">
+    <div class="mx-auto max-w-home-layout pb-[500px] pt-14">
       <div
         v-if="isAccountRoute"
         class="mx-auto mt-24 flex min-h-[50vh] max-w-[900px] gap-10"

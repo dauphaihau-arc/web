@@ -1,7 +1,7 @@
 import type {
   ListNotificationsRequest,
   ListNotificationsResponse,
-  UnreadCountResponse
+  UnreadCountResponse,
 } from '~/domains/me/api/notifications/contracts/notification.contract';
 import { meNotificationApi } from '~/domains/me/api/notifications/notification.api';
 

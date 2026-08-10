@@ -26,13 +26,13 @@ export function getIpData() {
       onResponseError: () => {
         consola.error('get data by IP failed');
       },
-    }
+    },
   );
 }
 
 export function useGetDataByIP(
   queryOptions?: QueryOptions<IpDataResponse>,
-  nitroOptions?: NitroFetchOptions<NitroFetchRequest>
+  nitroOptions?: NitroFetchOptions<NitroFetchRequest>,
 ) {
   return useQuery<IpDataResponse>({
     ...queryOptions,
@@ -48,7 +48,7 @@ export function useGetDataByIP(
           onResponseError: () => {
             consola.error('get data by IP failed');
           },
-        }
+        },
       );
     },
   });

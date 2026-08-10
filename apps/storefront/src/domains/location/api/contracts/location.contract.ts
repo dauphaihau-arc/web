@@ -4,7 +4,7 @@ import type {
   getCountriesResponseSchema,
   getStatesByCountryRequestSchema,
   getStatesByCountryResponseSchema,
-  stateSchema
+  stateSchema,
 } from '@arc/schemas/api/location/location.schema';
 
 export type Country = z.infer<typeof countrySchema>;

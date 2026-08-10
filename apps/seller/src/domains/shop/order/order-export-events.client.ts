@@ -10,7 +10,7 @@ export type OrderExportSsePayload = {
 };
 
 export function createOrderExportEventsClient(
-  onMessage: (payload: OrderExportSsePayload) => void
+  onMessage: (payload: OrderExportSsePayload) => void,
 ) {
   if (!import.meta.client) {
     return null;
