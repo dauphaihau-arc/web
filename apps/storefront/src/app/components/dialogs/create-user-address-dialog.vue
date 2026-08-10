@@ -47,7 +47,7 @@ async function onSubmit(event: FormSubmitEvent<CreateUserAddressRequest>) {
       queryKey: ['get-user-addresses'],
     })
   }
-  catch (error) {
+  catch {
     toast.add({
       ...toastCustom.error,
       title: 'Create address failed',

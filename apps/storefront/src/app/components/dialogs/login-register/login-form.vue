@@ -51,7 +51,12 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
   catch (error) {
     if (error instanceof FetchError) {
       if (error.status === StatusCodes.UNAUTHORIZED) {
-        invalidUser ? invalidUser.push(password) : invalidUsers.set(email, [password])
+        if (invalidUser) {
+          invalidUser.push(password)
+        }
+        else {
+          invalidUsers.set(email, [password])
+        }
         unknownErrorServerMsg.value = 'Incorrect email or password'
         return
       }

@@ -15,9 +15,9 @@ import type { CreateDraftProductRequest as RequestCreateProductDraftBody } from 
 export type CreateProductSubmitBody = {
   shipping: CreateProductShipping
 } & PickPartial<CreateProductBody, 'attributes' | 'tags'> & (
-  NoneVariant |
-  SingleVariant |
-  CombineVariant
+  NoneVariant
+  | SingleVariant
+  | CombineVariant
 );
 
 export function pruneEmptyCreateProductFields(

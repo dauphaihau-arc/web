@@ -133,10 +133,10 @@ const onCreateOrder = async () => {
       navigateTo(isAuthenticated
         ? ROUTES.SUCCESS
         : routes.success({
-          guestEmail: cartStore.stateCheckoutCart.guestEmail,
-          guestZip: cartStore.stateCheckoutCart.address?.zip,
-          orderIds: guestOrderIds,
-        }))
+            guestEmail: cartStore.stateCheckoutCart.guestEmail,
+            guestZip: cartStore.stateCheckoutCart.address?.zip,
+            orderIds: guestOrderIds,
+          }))
       getCart()
     }
   }

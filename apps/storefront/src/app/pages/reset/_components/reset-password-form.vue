@@ -52,7 +52,7 @@ async function onSubmit(event: FormSubmitEvent<ResetPasswordBody>) {
     await resetPassword(password)
     resetPasswordSuccess.value = true
   }
-  catch (error) {
+  catch {
     unknownErrorServerMsg.value = 'An unknown error occurred. Please try again'
   }
 }

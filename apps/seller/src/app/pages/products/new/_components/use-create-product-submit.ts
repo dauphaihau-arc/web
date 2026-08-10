@@ -169,7 +169,7 @@ export function useCreateProductSubmit({
       });
       await router.push(routes.products());
     }
-    catch (error) {
+    catch {
       toast.add({
         ...toastCustom.error,
         title: 'Create product failed',

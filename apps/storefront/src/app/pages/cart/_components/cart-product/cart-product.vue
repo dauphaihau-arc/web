@@ -69,9 +69,9 @@ const displayAmount = computed(() => formatMinorCurrency(
 const compareAtAmount = computed(() =>
   props.productCart.inventory.original_amount_minor
     ? formatMinorCurrency(
-      props.productCart.inventory.original_amount_minor,
-      props.productCart.inventory.currency,
-    )
+        props.productCart.inventory.original_amount_minor,
+        props.productCart.inventory.currency,
+      )
     : undefined,
 )
 </script>

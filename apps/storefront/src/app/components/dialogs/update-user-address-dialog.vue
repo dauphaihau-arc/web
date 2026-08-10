@@ -85,7 +85,7 @@ async function onSubmit(event: FormSubmitEvent<CreateUserAddressRequest>) {
     })
     await dialog.close()
   }
-  catch (error) {
+  catch {
     toast.add({
       ...toastCustom.error,
       title: 'Update address failed',

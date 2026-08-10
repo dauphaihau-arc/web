@@ -85,7 +85,7 @@ async function deleteCoupon(code: string) {
     updateCacheSummaryOrder(summary)
     product.promoCodes = newPromoCodes
   }
-  catch (error) {
+  catch {
     toast.add({
       ...toastCustom.error,
       title: 'Delete coupon failed',
@@ -108,7 +108,7 @@ async function toggleShowAddCouponInput() {
       updateCacheSummaryOrder(summary)
       product.promoCodes = []
     }
-    catch (error) {
+    catch {
       toast.add({
         ...toastCustom.error,
         title: 'Delete all coupons failed',

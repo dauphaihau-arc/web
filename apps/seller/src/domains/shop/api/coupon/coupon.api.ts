@@ -2,8 +2,7 @@ import type {
   BulkDeleteShopCouponsRequest,
   BulkDeleteShopCouponsResponse,
   CreateShopCouponRequest,
-  CreateShopCouponResponse
-  ,
+  CreateShopCouponResponse,
   DeleteShopCouponResponse,
   ListShopCouponsRequest,
   ListShopCouponsResponse,

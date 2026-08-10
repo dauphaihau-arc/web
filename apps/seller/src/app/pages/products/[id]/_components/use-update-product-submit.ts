@@ -222,7 +222,7 @@ export function useUpdateProductSubmit({
             : 'Update product success',
       });
     }
-    catch (error) {
+    catch {
       toast.add({
         ...toastCustom.error,
         title: 'Update product failed',

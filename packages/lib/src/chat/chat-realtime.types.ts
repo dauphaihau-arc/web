@@ -70,5 +70,5 @@ export type ChatEventsClient = {
 }
 
 export type ChatEventsHandler = (
-  payload: ChatMessageCreatedRealtimeEvent
+  payload: ChatMessageCreatedRealtimeEvent,
 ) => void | Promise<void>

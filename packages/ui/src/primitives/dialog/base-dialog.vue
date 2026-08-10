@@ -9,19 +9,19 @@ defineOptions({
 type DialogActionShortcut = 'escape' | 'enter' | 'meta_enter'
 
 type DialogActionVariant = 'primary' | 'secondary' | 'danger'
-type DialogActionColor =
-  | 'white'
-  | 'gray'
-  | 'black'
-  | 'red'
-  | 'orange'
-  | 'yellow'
-  | 'green'
-  | 'teal'
-  | 'blue'
-  | 'indigo'
-  | 'purple'
-  | 'pink'
+type DialogActionColor
+  = | 'white'
+    | 'gray'
+    | 'black'
+    | 'red'
+    | 'orange'
+    | 'yellow'
+    | 'green'
+    | 'teal'
+    | 'blue'
+    | 'indigo'
+    | 'purple'
+    | 'pink'
 
 type DialogActionConfig = {
   id: string

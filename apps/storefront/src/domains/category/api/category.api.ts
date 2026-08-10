@@ -1,9 +1,7 @@
 import type {
-  GetCategoryAttributesResponse
-  ,
+  GetCategoryAttributesResponse,
   GetCategoriesRequest,
-  GetCategoriesResponse
-  ,
+  GetCategoriesResponse,
   GetCategorySuggestionsResponse,
 } from './contracts/category.contract';
 import { apiClient } from '~/shared/lib/api-client';

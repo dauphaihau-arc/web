@@ -87,7 +87,7 @@ async function onSubmit(event: FormSubmitEvent<CreatePromoCodeBody>) {
       title: 'Create promo code success',
     })
   }
-  catch (error) {
+  catch {
     toast.add({
       ...toastCustom.error,
       title: 'Create promo code failed',

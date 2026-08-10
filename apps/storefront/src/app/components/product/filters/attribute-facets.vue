@@ -124,15 +124,15 @@ function toggleAttributeOption(
 
   state.value = selectedOptionKeys.length > 0
     ? filters.map(filter =>
-      filter.facetKey === facetKey
-        ? {
-            ...filter,
-            attributeName,
-            selectedOptionKeys,
-            selectedOptionValues,
-          }
-        : filter,
-    )
+        filter.facetKey === facetKey
+          ? {
+              ...filter,
+              attributeName,
+              selectedOptionKeys,
+              selectedOptionValues,
+            }
+          : filter,
+      )
     : filters.filter(filter => filter.facetKey !== facetKey)
 
   emit('update:modelValue', state.value)

@@ -46,7 +46,7 @@ async function suggestCategories(q: Category['name']) {
     hideOptions.value = false
     return response.categories.map(normalizeCategoryOption)
   }
-  catch (error) {
+  catch {
     return []
   }
 }

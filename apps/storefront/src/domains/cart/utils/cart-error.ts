@@ -41,9 +41,9 @@ export function getAddToCartFailureCopy(
   kind: AddToCartFailureKind,
   options: { isBuyNow: boolean },
 ): {
-    title: string
-    description?: string
-  } {
+  title: string
+  description?: string
+} {
   if (options.isBuyNow) {
     switch (kind) {
       case 'quantity_exceeds_stock':

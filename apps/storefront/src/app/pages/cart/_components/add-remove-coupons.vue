@@ -174,7 +174,7 @@ const deleteCoupon = async (code: string) => {
     cartStore.additionInfoShopCarts.set(shopId, additionInfoOrderShop)
     state.codes = tempAdditionInfoOrderShop.promoCodes
   }
-  catch (e) {
+  catch {
     toast.add({
       ...toastCustom.error,
       title: 'Delete coupon failed',
@@ -241,7 +241,7 @@ const toggleShowAddCouponInput = async () => {
       cartStore.additionInfoShopCarts.set(shopId, additionInfoOrderShop)
       state.codes = []
     }
-    catch (error) {
+    catch {
       toast.add({
         ...toastCustom.error,
         title: 'Delete all coupons failed',

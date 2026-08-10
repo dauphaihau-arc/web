@@ -27,7 +27,7 @@ async function onSubmit(event: FormSubmitEvent<ForgotPasswordRequest>) {
     await forgetPassword(event.data.email)
     emit('changeView', ResetPasswordViews.SEND_EMAIL_SUCCESS)
   }
-  catch (error) {
+  catch {
     toast.add({
       ...toastCustom.error,
       title: 'An unknown error occurred. Please try again',

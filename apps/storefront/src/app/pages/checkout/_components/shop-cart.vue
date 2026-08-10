@@ -54,9 +54,9 @@ const displayAmount = computed(() => {
 const compareAtAmount = computed(() =>
   productCart.value?.inventory.original_amount_minor
     ? formatMinorCurrency(
-      productCart.value.inventory.original_amount_minor,
-      productCart.value.inventory.currency,
-    )
+        productCart.value.inventory.original_amount_minor,
+        productCart.value.inventory.currency,
+      )
     : undefined,
 )
 

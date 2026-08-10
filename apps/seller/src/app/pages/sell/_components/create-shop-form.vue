@@ -38,7 +38,7 @@ async function onSubmit(event: FormSubmitEvent<CreateShopRequest>) {
     })
     navigateTo(routes.dashboard())
   }
-  catch (error) {
+  catch {
     toast.add({
       ...toastCustom.error,
       title: 'Unknown error from server',

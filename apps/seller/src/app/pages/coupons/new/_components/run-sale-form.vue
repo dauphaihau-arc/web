@@ -85,7 +85,7 @@ async function onSubmit(event: FormSubmitEvent<CreateSaleBody>) {
       title: 'Run sale success',
     })
   }
-  catch (error) {
+  catch {
     toast.add({
       ...toastCustom.error,
       title: 'Run sale failed',

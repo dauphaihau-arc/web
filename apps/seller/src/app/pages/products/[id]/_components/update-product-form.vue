@@ -35,8 +35,8 @@ import type {
 } from '~/domains/shop/api/product/contracts/form.contract'
 
 export type IOnChangeUpdateVariants = Partial<Pick<UpdateProductBody,
-  'update_variants' | 'variant_inventories' |
-  'new_single_variants' | 'variant_type' | 'new_combine_variants'
+  'update_variants' | 'variant_inventories'
+  | 'new_single_variants' | 'variant_type' | 'new_combine_variants'
 >> & {
   variant_group_name?: string
   variant_sub_group_name?: string
@@ -217,9 +217,9 @@ watchDebounced(
     )
 
     disabledButtonSubmit.value = countValidateInputs.value === 1
-    || !result.success
-    || isEmptyImages
-    || countValidateVariantsInputs.value === 1
+      || !result.success
+      || isEmptyImages
+      || countValidateVariantsInputs.value === 1
   },
   { debounce: 500, maxWait: 1000, deep: true },
 )

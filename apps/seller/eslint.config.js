@@ -37,6 +37,11 @@ export default withNuxt(
         tsconfigRootDir: import.meta.dirname,
       },
     },
+    settings: {
+      tailwindcss: {
+        config: `${import.meta.dirname}/tailwind.config.ts`,
+      },
+    },
   },
   {
     rules: {

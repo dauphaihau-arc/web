@@ -79,9 +79,9 @@ const rowsDialog = computed<ProductCouponRow[]>(() => {
         : 0,
       highestPrice: inventory.length > 1
         ? fromMinorUnits(
-          inventory[inventory.length - 1].amount_minor,
-          inventory[inventory.length - 1].currency,
-        )
+            inventory[inventory.length - 1].amount_minor,
+            inventory[inventory.length - 1].currency,
+          )
         : 0,
       stock: inventory.reduce((acc, next) => acc + next.stock, 0),
     }

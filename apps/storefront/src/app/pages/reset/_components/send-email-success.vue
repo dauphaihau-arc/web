@@ -22,7 +22,7 @@ async function resendEmail() {
     await resend(authStore.emailRequestForgetPassword)
     isResendEmail.value = true
   }
-  catch (error) {
+  catch {
     toast.add({
       ...toastCustom.error,
       title: 'An unknown error occurred. Please try again',
