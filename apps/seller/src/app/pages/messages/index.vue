@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import MessagesPageContent from './_components/messages-page-content/messages-page-content.vue'
+import MessagesInbox from './_components/messages-inbox/messages-inbox.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
@@ -21,7 +21,7 @@ const selectedConversationId = computed(() => {
       Respond to buyer conversations and keep support requests moving.
     </template>
     <template #content>
-      <MessagesPageContent :selected-conversation-id="selectedConversationId" />
+      <MessagesInbox :selected-conversation-id="selectedConversationId" />
     </template>
   </LayoutShopWrapperContent>
 </template>

@@ -9,7 +9,7 @@ import {
   getConversationSellerUnreadLabel,
   isConversationUnread,
   toThreadMessages,
-} from './messages-page-content.helpers';
+} from './messages-inbox.helpers';
 import { routes } from '~/shared/navigation/routes';
 import type {
   ShopChatConversation,
@@ -30,7 +30,7 @@ function buildAssetUrl(assetHost: string, storageKey?: string) {
   return `${assetHost}/${storageKey.replace(/^\/+/, '')}`;
 }
 
-export function useMessagesPage(selectedConversationId: Ref<string | undefined>) {
+export function useMessagesInbox(selectedConversationId: Ref<string | undefined>) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const config = useRuntimeConfig();

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import ChatThreadPanel from '@arc/ui/shells/chat-thread-panel.vue'
-import { useMessagesPage } from './use-messages-page'
+import { useMessagesInbox } from './use-messages-inbox'
 
 const props = defineProps<{
   selectedConversationId?: string
@@ -28,7 +28,7 @@ const {
   selectedConversationResolved,
   selectConversation,
   threadMessages,
-} = useMessagesPage(selectedConversationId)
+} = useMessagesInbox(selectedConversationId)
 </script>
 
 <template>
