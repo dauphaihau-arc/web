@@ -28,6 +28,7 @@
     "docker:prod": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up"
   },
   "devDependencies": {
+    "@arc/eslint-config": "workspace:*",
     "@playwright/test": "latest"
   },
   "dependencies": {
