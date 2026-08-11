@@ -36,7 +36,7 @@ importers:
         version: 1.8.1(ioredis@5.4.1)(magicast@0.3.5)
       '@nuxt/test-utils':
         specifier: 3.14.4
-        version: 3.14.4(@playwright/test@1.62.1)(@vue/test-utils@2.4.6)(h3@2.0.1-rc.26(crossws@0.4.10(srvx@0.12.5)))(happy-dom@15.11.7)(jsdom@23.2.0)(magicast@0.3.5)(nitropack@2.9.7(magicast@0.3.5))(playwright-core@1.62.1)(rollup@4.24.0)(vite@5.4.10(@types/node@22.13.13)(terser@5.36.0))(vitest@3.2.7(@types/node@22.13.13)(@vitest/browser@3.2.7)(happy-dom@15.11.7)(jsdom@23.2.0)(terser@5.36.0))(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))(vue@3.5.12(typescript@5.6.3))
+        version: 3.14.4(@playwright/test@1.62.1)(@vue/test-utils@2.4.6)(h3@1.15.11)(happy-dom@15.11.7)(jsdom@23.2.0)(magicast@0.3.5)(nitropack@2.9.7(magicast@0.3.5))(playwright-core@1.62.1)(rollup@4.24.0)(vite@5.4.10(@types/node@22.13.13)(terser@5.36.0))(vitest@3.2.7(@types/node@22.13.13)(@vitest/browser@3.2.7)(happy-dom@15.11.7)(jsdom@23.2.0)(terser@5.36.0))(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))(vue@3.5.12(typescript@5.6.3))
       '@nuxtjs/color-mode':
         specifier: ^3.3.2
         version: 3.5.1(magicast@0.3.5)
@@ -70,6 +70,9 @@ importers:
       eslint-plugin-vue:
         specifier: ^10.10.0
         version: 10.10.0(@stylistic/eslint-plugin@5.10.0(eslint@10.8.1(jiti@2.7.0)))(@typescript-eslint/parser@8.66.0(eslint@10.8.1(jiti@2.7.0))(typescript@5.6.3))(eslint@10.8.1(jiti@2.7.0))(vue-eslint-parser@10.4.1(eslint@10.8.1(jiti@2.7.0)))
+      h3:
+        specifier: 1.15.11
+        version: 1.15.11
       happy-dom:
         specifier: ^15.11.7
         version: 15.11.7
@@ -2980,9 +2983,6 @@ packages:
       uWebSockets.js:
         optional: true
 
-  crossws@0.3.1:
-    resolution: {integrity: sha512-HsZgeVYaG+b5zA+9PbIPGq4+J/CJynJuearykPsXx4V/eMhyQ5EDVg3Ak2FBZtVXCiOLu/U7IiwDHTr9MA+IKw==}
-
   crossws@0.3.5:
     resolution: {integrity: sha512-ojKiDvcmByhwa8YYqbQI/hg7MEU0NC03+pSdEq4ZUnZR9xXpwk7E43SMNGkn+JxJGPFtNvQ48+vV2p+P1ml5PA==}
 
@@ -3842,9 +3842,6 @@ packages:
   gzip-size@7.0.0:
     resolution: {integrity: sha512-O1Ld7Dr+nqPnmGpdhzLmMTQ4vAsD+rHwMm1NLUmoUFFymBOMKxCCrtDxqdBRYXdeEPEi3SyoR4TizJLQrnKBNA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-
-  h3@1.13.0:
-    resolution: {integrity: sha512-vFEAu/yf8UMUcB4s43OaDaigcqpQd14yanmOsn+NcRX3/guSKncyE2rOYhq8RIchgJrPSs/QiIddnTTR1ddiAg==}
 
   h3@1.15.11:
     resolution: {integrity: sha512-L3THSe2MPeBwgIZVSH5zLdBBU90TOxarvhK9d04IDY2AmVS8j2Jz2LIWtwsGOU3lu2I5jCN7FNvVfY2+XyF+mg==}
@@ -7607,8 +7604,8 @@ snapshots:
       '@nuxt/schema': 3.12.4(rollup@4.24.0)
       c12: 1.11.2(magicast@0.3.5)
       consola: 3.2.3
-      defu: 6.1.4
-      destr: 2.0.3
+      defu: 6.1.7
+      destr: 2.0.5
       globby: 14.0.2
       hash-sum: 2.0.0
       ignore: 5.3.2
@@ -7620,7 +7617,7 @@ snapshots:
       pkg-types: 1.2.1
       scule: 1.3.0
       semver: 7.8.0
-      ufo: 1.5.4
+      ufo: 1.6.4
       unctx: 2.3.1
       unimport: 3.13.1(rollup@4.24.0)
       untyped: 1.5.1
@@ -7718,13 +7715,13 @@ snapshots:
     dependencies:
       compatx: 0.1.8
       consola: 3.2.3
-      defu: 6.1.4
+      defu: 6.1.7
       hookable: 5.5.3
       pathe: 1.1.2
       pkg-types: 1.2.1
       scule: 1.3.0
       std-env: 3.7.0
-      ufo: 1.5.4
+      ufo: 1.6.4
       uncrypto: 0.1.3
       unimport: 3.13.1(rollup@4.24.0)
       untyped: 1.5.1
@@ -7758,8 +7755,8 @@ snapshots:
       ci-info: 4.0.0
       consola: 3.2.3
       create-require: 1.1.1
-      defu: 6.1.4
-      destr: 2.0.3
+      defu: 6.1.7
+      destr: 2.0.5
       dotenv: 16.4.5
       git-url-parse: 15.0.0
       is-docker: 3.0.0
@@ -7778,7 +7775,7 @@ snapshots:
       - supports-color
       - webpack-sources
 
-  '@nuxt/test-utils@3.14.4(@playwright/test@1.62.1)(@vue/test-utils@2.4.6)(h3@2.0.1-rc.26(crossws@0.4.10(srvx@0.12.5)))(happy-dom@15.11.7)(jsdom@23.2.0)(magicast@0.3.5)(nitropack@2.9.7(magicast@0.3.5))(playwright-core@1.62.1)(rollup@4.24.0)(vite@5.4.10(@types/node@22.13.13)(terser@5.36.0))(vitest@3.2.7(@types/node@22.13.13)(@vitest/browser@3.2.7)(happy-dom@15.11.7)(jsdom@23.2.0)(terser@5.36.0))(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))(vue@3.5.12(typescript@5.6.3))':
+  '@nuxt/test-utils@3.14.4(@playwright/test@1.62.1)(@vue/test-utils@2.4.6)(h3@1.15.11)(happy-dom@15.11.7)(jsdom@23.2.0)(magicast@0.3.5)(nitropack@2.9.7(magicast@0.3.5))(playwright-core@1.62.1)(rollup@4.24.0)(vite@5.4.10(@types/node@22.13.13)(terser@5.36.0))(vitest@3.2.7(@types/node@22.13.13)(@vitest/browser@3.2.7)(happy-dom@15.11.7)(jsdom@23.2.0)(terser@5.36.0))(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))(vue@3.5.12(typescript@5.6.3))':
     dependencies:
       '@nuxt/kit': 3.21.8(magicast@0.3.5)
       '@nuxt/schema': 3.13.2(rollup@4.24.0)
@@ -7789,7 +7786,7 @@ snapshots:
       estree-walker: 3.0.3
       fake-indexeddb: 6.2.5
       get-port-please: 3.2.0
-      h3: 2.0.1-rc.26(crossws@0.4.10(srvx@0.12.5))
+      h3: 1.15.11
       local-pkg: 0.5.0
       magic-string: 0.30.21
       nitropack: 2.9.7(magicast@0.3.5)
@@ -7805,7 +7802,7 @@ snapshots:
       unenv: 1.10.0
       unplugin: 1.14.1
       vite: 5.4.10(@types/node@22.13.13)(terser@5.36.0)
-      vitest-environment-nuxt: 1.0.1(@playwright/test@1.62.1)(@vue/test-utils@2.4.6)(h3@2.0.1-rc.26(crossws@0.4.10(srvx@0.12.5)))(happy-dom@15.11.7)(jsdom@23.2.0)(magicast@0.3.5)(nitropack@2.9.7(magicast@0.3.5))(playwright-core@1.62.1)(rollup@4.24.0)(vite@5.4.10(@types/node@22.13.13)(terser@5.36.0))(vitest@3.2.7(@types/node@22.13.13)(@vitest/browser@3.2.7)(happy-dom@15.11.7)(jsdom@23.2.0)(terser@5.36.0))(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))(vue@3.5.12(typescript@5.6.3))
+      vitest-environment-nuxt: 1.0.1(@playwright/test@1.62.1)(@vue/test-utils@2.4.6)(h3@1.15.11)(happy-dom@15.11.7)(jsdom@23.2.0)(magicast@0.3.5)(nitropack@2.9.7(magicast@0.3.5))(playwright-core@1.62.1)(rollup@4.24.0)(vite@5.4.10(@types/node@22.13.13)(terser@5.36.0))(vitest@3.2.7(@types/node@22.13.13)(@vitest/browser@3.2.7)(happy-dom@15.11.7)(jsdom@23.2.0)(terser@5.36.0))(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))(vue@3.5.12(typescript@5.6.3))
       vue: 3.5.12(typescript@5.6.3)
       vue-router: 4.4.5(vue@3.5.12(typescript@5.6.3))
     optionalDependencies:
@@ -7876,13 +7873,13 @@ snapshots:
       clear: 0.1.0
       consola: 3.2.3
       cssnano: 7.0.6(postcss@8.4.47)
-      defu: 6.1.4
+      defu: 6.1.7
       esbuild: 0.23.1
       escape-string-regexp: 5.0.0
       estree-walker: 3.0.3
       externality: 1.0.2
       get-port-please: 3.1.2
-      h3: 1.13.0
+      h3: 1.15.11
       knitwork: 1.1.0
       magic-string: 0.30.12
       mlly: 1.7.2
@@ -7894,7 +7891,7 @@ snapshots:
       rollup-plugin-visualizer: 5.12.0(rollup@4.24.0)
       std-env: 3.7.0
       strip-literal: 2.1.0
-      ufo: 1.5.4
+      ufo: 1.6.4
       unenv: 1.10.0
       unplugin: 1.14.1
       vite: 5.4.10(@types/node@22.13.13)(terser@5.36.0)
@@ -7974,7 +7971,7 @@ snapshots:
       autoprefixer: 10.4.20(postcss@8.5.19)
       consola: 3.2.3
       defu: 6.1.4
-      h3: 1.13.0
+      h3: 1.15.11
       klona: 2.0.6
       pathe: 1.1.2
       postcss: 8.5.19
@@ -8465,7 +8462,7 @@ snapshots:
     dependencies:
       '@unhead/schema': 1.11.10
       '@unhead/shared': 1.11.10
-      defu: 6.1.4
+      defu: 6.1.7
       hookable: 5.5.3
       unhead: 1.11.10
       vue: 3.5.12(typescript@5.6.3)
@@ -9178,7 +9175,7 @@ snapshots:
     dependencies:
       chokidar: 3.6.0
       confbox: 0.1.8
-      defu: 6.1.4
+      defu: 6.1.7
       dotenv: 16.4.5
       giget: 1.2.3
       jiti: 1.21.6
@@ -9502,10 +9499,6 @@ snapshots:
       which: 2.0.2
 
   crossws@0.2.4: {}
-
-  crossws@0.3.1:
-    dependencies:
-      uncrypto: 0.1.3
 
   crossws@0.3.5:
     dependencies:
@@ -10470,19 +10463,6 @@ snapshots:
     dependencies:
       duplexer: 0.1.2
 
-  h3@1.13.0:
-    dependencies:
-      cookie-es: 1.2.2
-      crossws: 0.3.1
-      defu: 6.1.4
-      destr: 2.0.3
-      iron-webcrypto: 1.2.1
-      ohash: 1.1.4
-      radix3: 1.1.2
-      ufo: 1.5.4
-      uncrypto: 0.1.3
-      unenv: 1.10.0
-
   h3@1.15.11:
     dependencies:
       cookie-es: 1.2.3
@@ -10981,7 +10961,7 @@ snapshots:
       citty: 0.1.6
       clipboardy: 4.0.0
       consola: 3.4.2
-      crossws: 0.3.1
+      crossws: 0.3.5
       defu: 6.1.7
       get-port-please: 3.2.0
       h3: 1.15.11
@@ -11180,7 +11160,7 @@ snapshots:
       acorn: 8.16.0
       pathe: 1.1.2
       pkg-types: 1.2.1
-      ufo: 1.5.4
+      ufo: 1.6.4
 
   mlly@1.8.2:
     dependencies:
@@ -11242,12 +11222,12 @@ snapshots:
       chokidar: 3.6.0
       citty: 0.1.6
       consola: 3.2.3
-      cookie-es: 1.2.2
+      cookie-es: 1.2.3
       croner: 8.1.2
       crossws: 0.2.4
       db0: 0.1.4
-      defu: 6.1.4
-      destr: 2.0.3
+      defu: 6.1.7
+      destr: 2.0.5
       dot-prop: 8.0.2
       esbuild: 0.20.2
       escape-string-regexp: 5.0.0
@@ -11255,7 +11235,7 @@ snapshots:
       fs-extra: 11.2.0
       globby: 14.0.2
       gzip-size: 7.0.0
-      h3: 1.13.0
+      h3: 1.15.11
       hookable: 5.5.3
       httpxy: 0.1.5
       ioredis: 5.4.1
@@ -11283,7 +11263,7 @@ snapshots:
       serve-placeholder: 2.0.2
       serve-static: 1.16.2
       std-env: 3.7.0
-      ufo: 1.5.4
+      ufo: 1.6.4
       uncrypto: 0.1.3
       unctx: 2.3.1
       unenv: 1.10.0
@@ -11424,7 +11404,7 @@ snapshots:
       escape-string-regexp: 5.0.0
       estree-walker: 3.0.3
       globby: 14.0.2
-      h3: 1.13.0
+      h3: 1.15.11
       hookable: 5.5.3
       ignore: 5.3.2
       jiti: 1.21.6
@@ -11532,9 +11512,9 @@ snapshots:
 
   ofetch@1.4.1:
     dependencies:
-      destr: 2.0.3
+      destr: 2.0.5
       node-fetch-native: 1.6.4
-      ufo: 1.5.4
+      ufo: 1.6.4
 
   ofetch@1.5.1:
     dependencies:
@@ -12930,14 +12910,14 @@ snapshots:
     dependencies:
       anymatch: 3.1.3
       chokidar: 3.6.0
-      destr: 2.0.3
-      h3: 1.13.0
+      destr: 2.0.5
+      h3: 1.15.11
       listhen: 1.9.0
       lru-cache: 10.4.3
       mri: 1.2.0
       node-fetch-native: 1.6.4
       ofetch: 1.4.1
-      ufo: 1.5.4
+      ufo: 1.6.4
     optionalDependencies:
       ioredis: 5.4.1
 
@@ -12952,7 +12932,7 @@ snapshots:
       '@babel/core': 7.25.9
       '@babel/standalone': 7.25.9
       '@babel/types': 7.25.9
-      defu: 6.1.4
+      defu: 6.1.7
       jiti: 2.3.3
       mri: 1.2.0
       scule: 1.3.0
@@ -13125,9 +13105,9 @@ snapshots:
       fsevents: 2.3.3
       terser: 5.36.0
 
-  vitest-environment-nuxt@1.0.1(@playwright/test@1.62.1)(@vue/test-utils@2.4.6)(h3@2.0.1-rc.26(crossws@0.4.10(srvx@0.12.5)))(happy-dom@15.11.7)(jsdom@23.2.0)(magicast@0.3.5)(nitropack@2.9.7(magicast@0.3.5))(playwright-core@1.62.1)(rollup@4.24.0)(vite@5.4.10(@types/node@22.13.13)(terser@5.36.0))(vitest@3.2.7(@types/node@22.13.13)(@vitest/browser@3.2.7)(happy-dom@15.11.7)(jsdom@23.2.0)(terser@5.36.0))(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))(vue@3.5.12(typescript@5.6.3)):
+  vitest-environment-nuxt@1.0.1(@playwright/test@1.62.1)(@vue/test-utils@2.4.6)(h3@1.15.11)(happy-dom@15.11.7)(jsdom@23.2.0)(magicast@0.3.5)(nitropack@2.9.7(magicast@0.3.5))(playwright-core@1.62.1)(rollup@4.24.0)(vite@5.4.10(@types/node@22.13.13)(terser@5.36.0))(vitest@3.2.7(@types/node@22.13.13)(@vitest/browser@3.2.7)(happy-dom@15.11.7)(jsdom@23.2.0)(terser@5.36.0))(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))(vue@3.5.12(typescript@5.6.3)):
     dependencies:
-      '@nuxt/test-utils': 3.14.4(@playwright/test@1.62.1)(@vue/test-utils@2.4.6)(h3@2.0.1-rc.26(crossws@0.4.10(srvx@0.12.5)))(happy-dom@15.11.7)(jsdom@23.2.0)(magicast@0.3.5)(nitropack@2.9.7(magicast@0.3.5))(playwright-core@1.62.1)(rollup@4.24.0)(vite@5.4.10(@types/node@22.13.13)(terser@5.36.0))(vitest@3.2.7(@types/node@22.13.13)(@vitest/browser@3.2.7)(happy-dom@15.11.7)(jsdom@23.2.0)(terser@5.36.0))(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))(vue@3.5.12(typescript@5.6.3))
+      '@nuxt/test-utils': 3.14.4(@playwright/test@1.62.1)(@vue/test-utils@2.4.6)(h3@1.15.11)(happy-dom@15.11.7)(jsdom@23.2.0)(magicast@0.3.5)(nitropack@2.9.7(magicast@0.3.5))(playwright-core@1.62.1)(rollup@4.24.0)(vite@5.4.10(@types/node@22.13.13)(terser@5.36.0))(vitest@3.2.7(@types/node@22.13.13)(@vitest/browser@3.2.7)(happy-dom@15.11.7)(jsdom@23.2.0)(terser@5.36.0))(vue-router@4.4.5(vue@3.5.12(typescript@5.6.3)))(vue@3.5.12(typescript@5.6.3))
     transitivePeerDependencies:
       - '@cucumber/cucumber'
       - '@jest/globals'
@@ -13215,7 +13195,7 @@ snapshots:
 
   vue-bundle-renderer@2.1.1:
     dependencies:
-      ufo: 1.5.4
+      ufo: 1.6.4
 
   vue-chartjs@5.3.4(chart.js@4.5.1)(vue@3.5.12(typescript@5.6.3)):
     dependencies:
