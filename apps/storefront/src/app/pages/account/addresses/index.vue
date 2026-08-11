@@ -3,8 +3,8 @@ import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import type { GetUserAddressesResponse } from '~/domains/me/api/address/contracts/address.contract'
 import { useDeleteUserAddress } from '~/domains/me/mutations/address/delete-address.mutation'
 import { useGetUserAddresses } from '~/domains/me/queries/address/addresses.query'
-import UpdateUserAddressDialog from '~/app/components/dialogs/update-user-address-dialog.vue'
-import CreateUserAddressDialog from '~/app/components/dialogs/create-user-address-dialog.vue'
+import UpdateUserAddressDialog from './_components/update-user-address-dialog.vue'
+import CreateUserAddressDialog from './_components/create-user-address-dialog.vue'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 
