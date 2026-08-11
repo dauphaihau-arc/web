@@ -1,12 +1,20 @@
 <script lang="ts" setup>
+import MarketPreferencesForm from '~/app/components/market-preferences/market-preferences-form.vue'
+import type { PreferenceState } from '~/app/components/market-preferences/preference-options'
+import { useUpdateMarketPreferences } from '~/app/components/market-preferences/use-update-market-preferences'
+import { useUserPreferenceForm } from '~/app/components/market-preferences/use-user-preference-form'
+import { useGetMarketConfig } from '~/domains/market/queries/config.query'
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
 import { toastCustom } from '~/shared/config/toast'
 import { useWebPushNotifications } from '~/shared/composables/use-web-push-notifications'
+import type { FormSubmitEvent } from '#ui/types'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 
 const { data: currentUser } = useGetCurrentUser()
 const toast = useToast()
+const marketStore = useMarketStore()
+const preferencesFormRef = ref()
 const {
   status,
   permission,
@@ -18,6 +26,31 @@ const {
 } = useWebPushNotifications()
 
 const isPending = ref(false)
+
+const {
+  data: marketConfig,
+  isPending: isPendingGetMarketConfig,
+} = useGetMarketConfig({
+  enabled: true,
+})
+
+const currentUserPreferences = computed(() => {
+  return currentUser.value?.user?.preferences || marketStore.guestPreferences || undefined
+})
+
+const {
+  currencyOptions,
+  regionOptions,
+  state: preferenceState,
+} = useUserPreferenceForm({
+  currentUserPreferences,
+  marketConfig,
+})
+
+const {
+  isSavingPreferences,
+  submitPreferences,
+} = useUpdateMarketPreferences()
 
 const notificationStatusLabel = computed(() => {
   switch (status.value) {
@@ -37,6 +70,22 @@ const notificationStatusLabel = computed(() => {
       return 'Disabled'
   }
 })
+
+async function saveMarketPreferences(event: FormSubmitEvent<PreferenceState>) {
+  try {
+    await submitPreferences(event.data)
+    toast.add({
+      ...toastCustom.success,
+      title: 'Preferences updated',
+    })
+  }
+  catch (error) {
+    toast.add({
+      ...toastCustom.error,
+      title: error instanceof Error ? error.message : 'Failed to update preferences',
+    })
+  }
+}
 
 async function toggleBrowserNotifications() {
   if (isPending.value || !isSupported.value) {
@@ -103,6 +152,39 @@ onMounted(() => {
             <div class="font-light text-text-subtle">
               {{ currentUser?.user?.email }}
             </div>
+          </div>
+        </div>
+      </UCard>
+
+      <UCard>
+        <div class="space-y-4">
+          <div class="space-y-1">
+            <div class="font-medium">
+              Market preferences
+            </div>
+            <div class="text-sm text-text-subtle">
+              Choose the region and currency used for storefront browsing.
+            </div>
+          </div>
+
+          <MarketPreferencesForm
+            ref="preferencesFormRef"
+            :state="preferenceState"
+            :region-options="regionOptions"
+            :currency-options="currencyOptions"
+            :disabled="isSavingPreferences"
+            :is-pending-market-config="isPendingGetMarketConfig"
+            @submit="saveMarketPreferences"
+          />
+
+          <div class="flex justify-end">
+            <UButton
+              :loading="isSavingPreferences"
+              :disabled="isSavingPreferences"
+              @click="preferencesFormRef?.submit"
+            >
+              Save preferences
+            </UButton>
           </div>
         </div>
       </UCard>
