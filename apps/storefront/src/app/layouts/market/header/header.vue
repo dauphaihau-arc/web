@@ -161,7 +161,7 @@ function handleCartTriggerHover() {
   isShowSearch.value = false
 }
 
-const showRegisterLoginDialog = async () => {
+async function showRegisterLoginDialog(): Promise<void> {
   const dialog = await import('~/app/components/dialogs/login-register/register-login-dialog.vue')
   modal.open(dialog.default)
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { resolveAppIconName } from '@arc/ui/foundation/app-icon.constants'
-import LayoutMarketFooter from './footer.vue'
-import LayoutMarketHeader from './header/index.vue'
+import LayoutMarketFooter from './footer/footer.vue'
+import LayoutMarketHeader from './header/header.vue'
 import { accountSidebarLinks } from '~/shared/navigation/menu'
 import { routePaths } from '~/shared/navigation/routes'
 
@@ -21,6 +21,7 @@ watch(() => route.path, () => {
 <template>
   <div>
     <LayoutMarketHeader />
+
     <div class="mx-auto max-w-home-layout pb-[500px] pt-14">
       <div
         v-if="isAccountRoute"
@@ -62,6 +63,7 @@ watch(() => route.path, () => {
         <slot />
       </div>
     </div>
+
     <LayoutMarketFooter />
   </div>
 </template>
