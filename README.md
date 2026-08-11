@@ -37,7 +37,7 @@ docs/
 
 ## Requirements
 
-- Node.js `20.20.2`
+- Node.js `22.13.0`
 - PNPM `8.13.1`
 
 ## Common commands
