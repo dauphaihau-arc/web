@@ -204,5 +204,11 @@ export function createChatQuerySyncHandler<
       options,
       payload,
     )
+
+    if (payload.message.message_type === 'product_reference') {
+      options.queryClient.invalidateQueries({
+        queryKey: [options.messageQueryKey, payload.conversation_id],
+      })
+    }
   }
 }
