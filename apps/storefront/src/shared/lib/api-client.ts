@@ -14,7 +14,6 @@ export const apiClient = createApiClient({
   clearUnauthorizedState: clearExpTokensInLS,
   isWakeUpError: isBackendWakeUpError,
   lifecycle: {
-    markReady: () => useBackendStatus().markReady(),
     markWaking: () => useBackendStatus().markWaking(),
     waitForBackend: () => useBackendStatus().waitForBackend(),
   },

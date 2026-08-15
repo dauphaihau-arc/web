@@ -7,7 +7,6 @@ export type RequestBehavior = {
 }
 
 type RequestLifecycle = {
-  markReady?: () => void
   markWaking?: () => void
   waitForBackend?: (options?: { force?: boolean }) => Promise<boolean>
 }
@@ -89,7 +88,6 @@ export function createApiClient(config: CreateApiClientConfig) {
   ) => {
     try {
       const response = await request()
-      config.lifecycle?.markReady?.()
       return response
     }
     catch (error) {
@@ -114,7 +112,6 @@ export function createApiClient(config: CreateApiClientConfig) {
       }
 
       const response = await request()
-      config.lifecycle.markReady?.()
       return response
     }
   }
