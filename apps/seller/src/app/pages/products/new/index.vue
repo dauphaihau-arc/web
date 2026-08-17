@@ -7,7 +7,7 @@ import { routes } from '~/shared/navigation/routes'
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 
 const CreateProductForm = defineAsyncComponent({
-  loader: () => import('./_components/create-product-form.vue'),
+  loader: () => import('./_components/create-product-form/create-product-form.vue'),
   loadingComponent: LoadingSvg,
 })
 </script>
