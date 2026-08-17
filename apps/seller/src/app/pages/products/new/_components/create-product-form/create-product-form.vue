@@ -241,7 +241,7 @@ function onPublishProduct() {
                 variant="solid"
                 @click="() => isProductHaveVariants = !isProductHaveVariants"
               >
-                {{ !isProductHaveVariants ? 'Add variantions' : 'Remove variantions' }}
+                {{ isProductHaveVariants ? 'Remove variantions' : 'Add variantions' }}
               </UButton>
               <VariantInput
                 v-if="isProductHaveVariants"

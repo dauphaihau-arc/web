@@ -225,12 +225,14 @@ export function useVariantInput({
     }
   };
 
-  function validateDuplicateOptions(options: VariantOption[]) {
+  function validateDuplicateOptions(options: VariantOption[], showErrors = true) {
     const variantNameMap = new Map<string, number>();
     let isAnyDuplicateVariantName = false;
 
     options.forEach((variant, index) => {
-      variant.errorMsg = '';
+      if (showErrors) {
+        variant.errorMsg = '';
+      }
       const isHasVariantName = variantNameMap.has(variant.variant_name);
 
       if (!isHasVariantName) {
@@ -238,10 +240,14 @@ export function useVariantInput({
       }
       else {
         const indexInMap = variantNameMap.get(variant.variant_name);
-        variant.errorMsg = DUPLICATE_ERROR;
+        if (showErrors) {
+          variant.errorMsg = DUPLICATE_ERROR;
+        }
         isAnyDuplicateVariantName = true;
         if (indexInMap || indexInMap === 0) {
-          options[indexInMap].errorMsg = DUPLICATE_ERROR;
+          if (showErrors) {
+            options[indexInMap].errorMsg = DUPLICATE_ERROR;
+          }
         }
       }
     });
@@ -249,12 +255,14 @@ export function useVariantInput({
     return isAnyDuplicateVariantName;
   }
 
-  function validateInventoryRows() {
+  function validateInventoryRows(showErrors = true) {
     const variantsTableForParse: Pick<VariantTable, 'amount' | 'stock' | 'sku'>[] = [];
 
     variantsTable.value.forEach((variantTable) => {
-      variantTable.errorAmount = '';
-      variantTable.errorStock = '';
+      if (showErrors) {
+        variantTable.errorAmount = '';
+        variantTable.errorStock = '';
+      }
       const { stock, amount, sku } = variantTable;
       variantsTableForParse.push({ stock, amount, sku });
     });
@@ -264,7 +272,7 @@ export function useVariantInput({
       .array()
       .safeParse(variantsTableForParse);
 
-    if (!parsedVariantsTable.success) {
+    if (showErrors && !parsedVariantsTable.success) {
       parsedVariantsTable.error.issues.forEach((detail) => {
         const index = detail.path[0] as number;
         const name = detail.path[1];
@@ -282,14 +290,43 @@ export function useVariantInput({
 
   function emitData() {
     if (state.isActiveSubVariant) {
+      singleVariantModel.value.variant_options = undefined;
       combineVariantModel.value.variant_group_name = state.variant_group_name;
       combineVariantModel.value.variant_sub_group_name = state.variant_sub_group_name;
       combineVariantModel.value.variant_options = buildCombineVariantOptions(variantsTable.value);
     }
     else {
+      combineVariantModel.value.variant_options = undefined;
       singleVariantModel.value.variant_group_name = state.variant_group_name;
       singleVariantModel.value.variant_options = buildSingleVariantOptions(variantsTable.value);
     }
+  }
+
+  function syncVariantData(showErrors = false) {
+    if (showErrors) {
+      state.errorVariantGroupName = !state.variant_group_name ? REQUIRED_ERROR : '';
+      state.errorVariantOption = state.variants.length === 0 ? REQUIRED_VARIANT_ERROR : '';
+      if (state.isActiveSubVariant) {
+        state.errorVariantSubGroupName = !state.variant_sub_group_name ? REQUIRED_ERROR : '';
+        state.errorSubVariantOption = state.subVariants.length === 0 ? REQUIRED_VARIANT_ERROR : '';
+      }
+    }
+
+    const isAnyDuplicateVariantName = validateDuplicateOptions(state.variants, showErrors);
+    const isInventoryValid = validateInventoryRows(showErrors);
+
+    if (
+      state.variants.length > 0
+      && (state.isActiveSubVariant ? state.subVariants.length > 0 : true)
+      && !isAnyDuplicateVariantName
+      && isInventoryValid
+    ) {
+      emitData();
+      return;
+    }
+
+    singleVariantModel.value.variant_options = undefined;
+    combineVariantModel.value.variant_options = undefined;
   }
 
   watch(() => [state.variant_group_name, state.variant_sub_group_name], () => {
@@ -299,30 +336,20 @@ export function useVariantInput({
     }
   });
 
-  watch(countValidate, () => {
-    state.errorVariantGroupName = !state.variant_group_name ? REQUIRED_ERROR : '';
-    state.errorVariantOption = state.variants.length === 0 ? REQUIRED_VARIANT_ERROR : '';
-    if (state.isActiveSubVariant) {
-      state.errorVariantSubGroupName = !state.variant_sub_group_name ? REQUIRED_ERROR : '';
-      state.errorSubVariantOption = state.subVariants.length === 0 ? REQUIRED_VARIANT_ERROR : '';
-    }
+  watch(countValidate, () => syncVariantData(true), { flush: 'sync' });
 
-    const isAnyDuplicateVariantName = validateDuplicateOptions(state.variants);
-    const isInventoryValid = validateInventoryRows();
-
-    if (
-      state.variants.length > 0
-      && (state.isActiveSubVariant ? state.subVariants.length > 0 : true)
-      && !isAnyDuplicateVariantName
-      && isInventoryValid
-    ) {
-      emitData();
-    }
-    else {
-      singleVariantModel.value.variant_options = undefined;
-      combineVariantModel.value.variant_options = undefined;
-    }
-  });
+  watchDebounced(
+    () => [
+      state.variant_group_name,
+      state.variant_sub_group_name,
+      state.isActiveSubVariant,
+      state.variants,
+      state.subVariants,
+      variantsTable.value,
+    ],
+    () => syncVariantData(),
+    { debounce: 300, maxWait: 1000, deep: true },
+  );
 
   watchDebounced(
     () => state.variantOption,

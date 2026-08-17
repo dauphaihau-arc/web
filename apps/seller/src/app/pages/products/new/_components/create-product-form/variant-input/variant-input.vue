@@ -18,7 +18,7 @@ const combineVariantModel = defineModel<StateCombineVariant>('combineVariant', {
   default: {},
 })
 
-const variantTypeModel = defineModel<ProductVariantTypes>('variant_type', {
+const variantTypeModel = defineModel<ProductVariantTypes>('variantType', {
   default: ProductVariantTypes.SINGLE,
 })
 
