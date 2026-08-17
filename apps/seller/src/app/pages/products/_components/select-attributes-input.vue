@@ -66,7 +66,7 @@ watch(() => state, () => {
 <template>
   <div
     v-if="dataGetAttributesByCategory?.attributes && dataGetAttributesByCategory.attributes.length > 0"
-    class="flex gap-4"
+    class="flex min-w-0 flex-wrap gap-x-4"
   >
     <div
       v-for="attr of dataGetAttributesByCategory.attributes"
@@ -79,7 +79,7 @@ watch(() => state, () => {
       >
         <USelectMenu
           v-model="state[attr.id]"
-          class="w-full lg:w-52"
+          class="w-full min-w-0 lg:w-52"
           :options="attr.options"
           option-attribute="value"
           value-attribute="id"
