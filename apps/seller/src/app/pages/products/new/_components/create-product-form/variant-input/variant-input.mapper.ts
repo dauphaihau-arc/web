@@ -27,13 +27,18 @@ export function mixVariantsTable(
     state.subVariants.forEach((stateSubVariant) => {
       id++;
       const result = variantsTable.find(
+        variant => variant.variant_option_id === stateVariant.id
+          && variant.sub_variant_option_id === stateSubVariant.id,
+      ) ?? variantsTable.find(
         variant => variant.variant_name === stateVariant.variant_name
           && variant.sub_variant_name === stateSubVariant.variant_name,
       );
 
       newVariantsTable.push({
         id,
+        variant_option_id: stateVariant.id,
         variant_name: stateVariant.variant_name || '',
+        sub_variant_option_id: stateSubVariant.id,
         sub_variant_name: stateSubVariant.variant_name || '',
         amount: result?.amount || undefined,
         stock: result?.stock || 0,

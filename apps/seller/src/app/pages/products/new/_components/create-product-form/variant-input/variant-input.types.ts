@@ -29,6 +29,8 @@ export type VariantInputState = {
 
 export type VariantTable = {
   id: number
+  variant_option_id?: number | string
+  sub_variant_option_id?: number | string
   sub_variant_name?: string
   errorAmount: string
   errorStock: string

@@ -20,7 +20,7 @@ export type UpdateVariantInputState = {
   errorVariantGroupName: string
   errorVariantSubGroupName: string
   variantIdsDelete: Array<number | string>
-  variantsCurrent: Map<string, string>
+  variantsCurrent: Map<number | string, number | string>
 } & Record<'variants' | 'subVariants', UpdateVariantOption[]> & {
   variant_group_name?: string
   variant_sub_group_name?: string
@@ -28,6 +28,8 @@ export type UpdateVariantInputState = {
 
 export type UpdateVariantTable = {
   id: number
+  variant_option_id?: number | string
+  sub_variant_option_id?: number | string
   inventoryId?: string | null
   subVariantId?: string | null
   sub_variant_name?: string

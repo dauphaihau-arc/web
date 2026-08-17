@@ -73,13 +73,16 @@ export function useUpdateVariantInput({
   }
 
   const addVariant = () => {
-    state.variants.push({
+    const variantOption = {
       id: generateUpdateVariantOptionId(),
       variant_name: state.variantOption,
       errorMsg: '',
-    });
+    };
+
+    state.variants.push(variantOption);
 
     if (variantsTable.value.length === 1 && !variantsTable.value[0].variant_name) {
+      variantsTable.value[0].variant_option_id = variantOption.id;
       variantsTable.value[0].variant_name = state.variantOption;
       state.variantOption = '';
       return;
@@ -88,6 +91,7 @@ export function useUpdateVariantInput({
     if (!state.subVariants.length) {
       const newVariantTable = createDefaultUpdateVariantTable({
         id: variantsTable.value.length + 1,
+        variant_option_id: variantOption.id,
         variant_name: state.variantOption,
       });
 
@@ -104,13 +108,16 @@ export function useUpdateVariantInput({
   };
 
   const addSubVariant = () => {
-    state.subVariants.push({
+    const subVariantOption = {
       id: generateUpdateVariantOptionId(),
       variant_name: state.subVariantOption,
       errorMsg: '',
-    });
+    };
+
+    state.subVariants.push(subVariantOption);
 
     if (!variantsTable.value[0].sub_variant_name && variantsTable.value.length === 1) {
+      variantsTable.value[0].sub_variant_option_id = subVariantOption.id;
       variantsTable.value[0].sub_variant_name = state.subVariantOption;
       state.subVariantOption = '';
       return;
@@ -120,6 +127,7 @@ export function useUpdateVariantInput({
       variantsTable.value = state.subVariants.map((subVariant, index) =>
         createDefaultUpdateVariantTable({
           id: index + 1,
+          sub_variant_option_id: subVariant.id,
           sub_variant_name: subVariant.variant_name,
         }),
       );
@@ -134,20 +142,27 @@ export function useUpdateVariantInput({
   const removeVariant = ({ id, variant_name: variantName }: UpdateVariantOption) => {
     state.variantIdsDelete.push(id);
     state.variants = state.variants.filter(variant => variant.id !== id);
-    variantsTable.value = variantsTable.value.filter(variant => variant.variant_name !== variantName);
+    variantsTable.value = variantsTable.value.filter((variant) => {
+      if (variant.variant_option_id) {
+        return variant.variant_option_id !== id;
+      }
+      return variant.variant_name !== variantName;
+    });
   };
 
   const removeSubVariant = ({ id, variant_name: variantName }: UpdateVariantOption) => {
     state.variantIdsDelete.push(id);
     state.subVariants = state.subVariants.filter(variant => variant.id !== id);
     variantsTable.value = variantsTable.value.filter((variant) => {
+      if (variant.sub_variant_option_id) {
+        return variant.sub_variant_option_id !== id;
+      }
       return variant.sub_variant_name !== variantName;
     });
   };
 
-  const updateVariantName = (currentVariant: UpdateVariantOption, event: Event) => {
+  const updateVariantName = (currentVariant: UpdateVariantOption, newVariantName: string) => {
     const { id, variant_name: variantName } = currentVariant;
-    const newVariantName = (event.target as HTMLInputElement).value;
 
     state.variants = state.variants.map((variant) => {
       if (variant.id === id) {
@@ -157,16 +172,15 @@ export function useUpdateVariantInput({
     });
 
     variantsTable.value = variantsTable.value.map((variant) => {
-      if (variant.variant_name === variantName) {
+      if (variant.variant_option_id === id || (!variant.variant_option_id && variant.variant_name === variantName)) {
         return { ...variant, variant_name: newVariantName };
       }
       return variant;
     });
   };
 
-  const updateSubVariantName = (currentVariant: UpdateVariantOption, event: Event) => {
+  const updateSubVariantName = (currentVariant: UpdateVariantOption, newSubVariantName: string) => {
     const { id, variant_name: variantName } = currentVariant;
-    const newSubVariantName = (event.target as HTMLInputElement).value;
 
     state.subVariants = state.subVariants.map((variant) => {
       if (variant.id === id) {
@@ -176,7 +190,7 @@ export function useUpdateVariantInput({
     });
 
     variantsTable.value = variantsTable.value.map((variant) => {
-      if (variant.sub_variant_name === variantName) {
+      if (variant.sub_variant_option_id === id || (!variant.sub_variant_option_id && variant.sub_variant_name === variantName)) {
         return { ...variant, sub_variant_name: newSubVariantName };
       }
       return variant;
@@ -212,6 +226,7 @@ export function useUpdateVariantInput({
     if (state.variants.length) {
       variantsTable.value = state.variants.map((variant) => {
         return createDefaultUpdateVariantTable({
+          variant_option_id: variant.id,
           variant_name: variant.variant_name,
           sub_variant_name: '',
         });
@@ -231,6 +246,7 @@ export function useUpdateVariantInput({
       variantsTable.value = state.variants.map((variant, index) => {
         return createDefaultUpdateVariantTable({
           id: index + 1,
+          variant_option_id: variant.id,
           variant_name: variant.variant_name,
         });
       });

@@ -12,6 +12,8 @@ export type VariantInputColumn = {
 
 export type VariantInputTableRow = {
   id: number
+  variant_option_id?: number | string
+  sub_variant_option_id?: number | string
   variant_name?: string
   sub_variant_name?: string
   amount?: number

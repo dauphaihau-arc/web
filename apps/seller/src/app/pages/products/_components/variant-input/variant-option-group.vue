@@ -23,7 +23,7 @@ defineEmits<{
   close: []
   open: []
   remove: [option: VariantInputOption]
-  updateName: [option: VariantInputOption, event: Event]
+  updateName: [option: VariantInputOption, value: string]
 }>()
 </script>
 
@@ -122,7 +122,7 @@ defineEmits<{
               <UInput
                 :model-value="option.variant_name"
                 :maxlength="limitOptionName === false ? undefined : PRODUCT_CONFIG.MAX_CHAR_VARIANT_NAME"
-                @change="(event: Event) => $emit('updateName', option, event)"
+                @update:model-value="(value: string) => $emit('updateName', option, value)"
               />
 
               <UButton

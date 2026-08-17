@@ -47,6 +47,7 @@ export function hydrateUpdateVariantInput(
     state.variant_group_name = variantGroupName;
     return variants.map((variant, index) => ({
       id: index + 1,
+      variant_option_id: variant.id,
       inventoryId: variant.inventory.id,
       variant_name: variant.variant_name || '',
       amount: variant.inventory.amount,
@@ -79,7 +80,9 @@ export function hydrateUpdateVariantInput(
         id++;
         initVariantsTable.push({
           id,
+          variant_option_id: variant.id,
           variant_name: variant.variant_name || '',
+          sub_variant_option_id: variantOpt.variant.id,
           sub_variant_name: variantOpt.variant.variant_name || '',
           subVariantId: variantOpt.variant.id,
           inventoryId: variantOpt.inventory.id,
@@ -109,15 +112,22 @@ export function mixUpdateVariantsTable(
     state.subVariants.forEach((stateSubVariant) => {
       id++;
       const result = variantsTable.find(
+        variant => variant.variant_option_id === stateVariant.id
+          && variant.sub_variant_option_id === stateSubVariant.id,
+      ) ?? variantsTable.find(
         variant => variant.variant_name === stateVariant.variant_name
           && variant.sub_variant_name === stateSubVariant.variant_name,
       );
 
       newVariantsTable.push({
         id,
+        variant_option_id: stateVariant.id,
         variant_name: stateVariant.variant_name || '',
+        sub_variant_option_id: stateSubVariant.id,
         sub_variant_name: stateSubVariant.variant_name || '',
-        subVariantId: state.variantsCurrent.get(stateSubVariant.variant_name),
+        subVariantId: state.variantsCurrent.has(stateSubVariant.id)
+          ? stateSubVariant.id as string
+          : null,
         inventoryId: result?.inventoryId || null,
         amount: result?.amount || undefined,
         stock: result?.stock || 0,
