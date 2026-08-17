@@ -39,23 +39,22 @@ defineEmits<{
       :loading="loadingSubmit"
       :disabled="disabledButtonSubmit || !!publishImageError"
       size="md"
-      color="emerald"
       type="submit"
+      variant="subtle"
       @click="$emit('submitAction', 'publish')"
     >
-      Save & publish
+      Publish
     </UButton>
     <UButton
       v-if="canDeactivateFromDetail"
       :loading="loadingSubmit"
       :disabled="disabledButtonSubmit"
       size="md"
-      color="amber"
-      variant="soft"
       type="submit"
+      variant="subtle"
       @click="$emit('submitAction', 'deactivate')"
     >
-      Save & deactivate
+      Deactivate
     </UButton>
   </FixedFormActions>
 </template>

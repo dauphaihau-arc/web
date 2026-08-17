@@ -42,7 +42,7 @@ defineEmits<{
       type="submit"
       @click="$emit('publish')"
     >
-      Publish product
+      Publish
     </UButton>
   </FixedFormActions>
 </template>
