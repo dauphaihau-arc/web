@@ -8,7 +8,7 @@ import { useShopGetDetailProduct } from '~/domains/shop/queries/product/detail.q
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 
 const UpdateProductForm = defineAsyncComponent({
-  loader: () => import('./_components/update-product-form.vue'),
+  loader: () => import('./_components/update-product-form/update-product-form.vue'),
   loadingComponent: LoadingSvg,
 })
 
