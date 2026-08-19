@@ -6,6 +6,7 @@ defineProps<{
   canDeactivateFromDetail: boolean
   canPublishFromDetail: boolean
   disabledButtonSubmit: boolean
+  loadingAction: UpdateProductAction | null
   loadingSubmit: boolean
   publishImageError: string
 }>()
@@ -26,8 +27,8 @@ defineEmits<{
       Cancel
     </UButton>
     <UButton
-      :loading="loadingSubmit"
-      :disabled="disabledButtonSubmit"
+      :loading="loadingAction === 'save'"
+      :disabled="disabledButtonSubmit || (loadingSubmit && loadingAction !== 'save')"
       size="md"
       type="submit"
       @click="$emit('submitAction', 'save')"
@@ -36,8 +37,8 @@ defineEmits<{
     </UButton>
     <UButton
       v-if="canPublishFromDetail"
-      :loading="loadingSubmit"
-      :disabled="disabledButtonSubmit || !!publishImageError"
+      :loading="loadingAction === 'publish'"
+      :disabled="disabledButtonSubmit || !!publishImageError || (loadingSubmit && loadingAction !== 'publish')"
       size="md"
       type="submit"
       variant="subtle"
@@ -47,8 +48,8 @@ defineEmits<{
     </UButton>
     <UButton
       v-if="canDeactivateFromDetail"
-      :loading="loadingSubmit"
-      :disabled="disabledButtonSubmit"
+      :loading="loadingAction === 'deactivate'"
+      :disabled="disabledButtonSubmit || (loadingSubmit && loadingAction !== 'deactivate')"
       size="md"
       type="submit"
       variant="subtle"

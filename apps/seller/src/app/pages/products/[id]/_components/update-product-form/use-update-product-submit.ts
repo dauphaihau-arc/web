@@ -74,6 +74,7 @@ export function useUpdateProductSubmit({
 }: UseUpdateProductSubmitInput) {
   const toast = useToast();
   const loadingSubmit = ref(false);
+  const loadingAction = ref<UpdateProductAction | null>(null);
 
   const {
     mutateAsync: issueProductImageUploadUrl,
@@ -155,6 +156,7 @@ export function useUpdateProductSubmit({
     }
 
     loadingSubmit.value = true;
+    loadingAction.value = action;
 
     try {
       const uploadedKeys = await uploadImage();
@@ -230,10 +232,12 @@ export function useUpdateProductSubmit({
     }
     finally {
       loadingSubmit.value = false;
+      loadingAction.value = null;
     }
   }
 
   return {
+    loadingAction,
     loadingSubmit,
     submit,
   };

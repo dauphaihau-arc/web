@@ -32,6 +32,7 @@ const {
   formatStateLabel,
   idsImageForDelete,
   isVariantProduct,
+  loadingAction,
   loadingSubmit,
   noneVariant,
   onChangeVariants,
@@ -215,6 +216,7 @@ const {
       :can-deactivate-from-detail="canDeactivateFromDetail"
       :can-publish-from-detail="canPublishFromDetail"
       :disabled-button-submit="disabledButtonSubmit"
+      :loading-action="loadingAction"
       :loading-submit="loadingSubmit"
       :publish-image-error="publishImageError"
       @submit-action="submitWithAction"

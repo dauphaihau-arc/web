@@ -51,6 +51,7 @@ export function useUpdateProductForm() {
   const pendingAction = ref<UpdateProductAction>('save');
 
   const {
+    loadingAction,
     loadingSubmit,
     submit,
   } = useUpdateProductSubmit({
@@ -216,6 +217,7 @@ export function useUpdateProductForm() {
     formatStateLabel,
     idsImageForDelete,
     isVariantProduct,
+    loadingAction,
     loadingSubmit,
     noneVariant,
     onChangeVariants,
