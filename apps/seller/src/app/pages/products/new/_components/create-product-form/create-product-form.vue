@@ -67,6 +67,7 @@ function onSaveDraft() {
 }
 
 function onPublishProduct() {
+  stateSubmit.state = ProductStates.ACTIVE
   btnSubmitRef.value?.click()
 }
 </script>
