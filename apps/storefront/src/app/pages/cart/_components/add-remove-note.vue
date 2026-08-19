@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import { ORDER_CONFIG } from '@arc/enums/order'
 import type { CartShopGroup } from '~/domains/cart/api/cart.shared'
 
@@ -51,7 +52,7 @@ watch(() => state.showNoteInput, () => {
   <div>
     <UButton
       variant="ghost"
-      icon="i-heroicons-clipboard-document-list"
+      :icon="ICON_NAME_BY_ALIAS['clipboardDocumentList']"
       color="gray"
       class="mb-1 w-fit"
       :disabled="cartStore.stateCheckoutCart.isPendingCreateOrder"

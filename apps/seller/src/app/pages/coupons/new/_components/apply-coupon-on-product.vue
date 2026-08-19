@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import { fromMinorUnits } from '@arc/utils'
 import { useShopGetProducts } from '~/domains/shop/queries/product/list.query'
 import type {
@@ -131,7 +132,7 @@ watchDebounced(
     >
       <UInput
         v-model="search"
-        icon="i-heroicons-magnifying-glass-20-solid"
+        :icon="ICON_NAME_BY_ALIAS['searchSolid']"
         placeholder="Title product..."
         class="w-1/2"
         size="lg"
@@ -205,7 +206,7 @@ watchDebounced(
             <UButton
               color="gray"
               variant="ghost"
-              icon="i-heroicons-trash"
+              :icon="ICON_NAME_BY_ALIAS['trash']"
               @click="() => removeProduct(row.id)"
             />
           </div>

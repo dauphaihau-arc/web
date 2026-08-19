@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import { StatusCodes } from 'http-status-codes'
 import { FetchError } from 'ofetch'
 import { consola } from 'consola'
@@ -255,7 +256,7 @@ const toggleShowAddCouponInput = async () => {
   <div>
     <UButton
       variant="ghost"
-      icon="i-heroicons-ticket"
+      :icon="ICON_NAME_BY_ALIAS['ticket']"
       color="gray"
       class="mb-1 w-fit"
       :disabled="isPendingUpdateCart"

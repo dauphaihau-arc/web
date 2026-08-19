@@ -1,4 +1,5 @@
-<script lang="ts" setup>
+<script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import { CouponAppliesTo, CouponTypes } from '@arc/enums/coupon'
@@ -201,7 +202,7 @@ const itemsDropdownWithRow = (row: { id: string }): DropdownItem[][] => [
             <UButton
               color="gray"
               variant="ghost"
-              icon="i-heroicons-ellipsis-horizontal-20-solid"
+              :icon="ICON_NAME_BY_ALIAS['moreHorizontal']"
             />
           </UDropdown>
         </div>

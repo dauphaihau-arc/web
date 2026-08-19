@@ -1,4 +1,5 @@
-<script lang="ts" setup>
+<script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import FileDropzone from './file-dropzone.vue'
 
 defineProps<{
@@ -24,7 +25,7 @@ defineEmits<{
       </div>
       <UButton
         color="gray"
-        icon="i-heroicons-arrow-down-tray"
+        :icon="ICON_NAME_BY_ALIAS['downloadTray']"
         :loading="isDownloadingTemplate"
         @click="$emit('downloadTemplate')"
       >

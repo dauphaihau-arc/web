@@ -138,7 +138,7 @@ onUnmounted(() => {
         <div class="shop-layout-content-inner flex items-center justify-between">
           <div class="h-fit rounded-lg hover:bg-customGray-100">
             <!-- <UInput
-              icon="i-heroicons-magnifying-glass-20-solid"
+              icon="searchSolid"
               placeholder="Search"
               variant="none"
               class="w-full text-text-subtle"

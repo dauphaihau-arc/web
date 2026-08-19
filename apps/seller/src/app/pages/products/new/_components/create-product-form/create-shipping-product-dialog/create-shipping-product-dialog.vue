@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import { ADDRESS_CONFIG } from '@arc/enums/address'
 import { ProductShippingCharge, ProductShippingServices } from '@arc/enums/product'
 import LocationShipping from './location-shipping.vue'
@@ -210,7 +211,7 @@ async function onError(event: FormErrorEvent) {
       </div>
       <UButton
         color="gray"
-        icon="i-heroicons-plus"
+        :icon="ICON_NAME_BY_ALIAS['plus']"
         @click="addLocation"
       >
         Add another location

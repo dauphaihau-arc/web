@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import { watchDebounced } from '@vueuse/core'
 import { useCartStore } from '~/domains/cart/stores/cart.store'
 import { useUpdateCart } from '~/domains/cart/mutations/update-cart.mutation'
@@ -92,7 +93,7 @@ watchDebounced(
     orientation="horizontal"
   >
     <UButton
-      icon="i-heroicons-minus"
+      :icon="ICON_NAME_BY_ALIAS['minus']"
       color="white"
       class="rounded-l-md rounded-r-none"
       :disabled="cartStore.stateCheckoutCart.isPendingCreateOrder"
@@ -107,7 +108,7 @@ watchDebounced(
       :ui="{ base: 'text-center rounded-l-none' }"
     />
     <UButton
-      icon="i-heroicons-plus"
+      :icon="ICON_NAME_BY_ALIAS['plus']"
       color="white"
       class="rounded-l-none rounded-r-md"
       :disabled="cartStore.stateCheckoutCart.isPendingCreateOrder"

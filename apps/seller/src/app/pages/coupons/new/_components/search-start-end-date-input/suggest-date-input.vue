@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import dayjs from 'dayjs'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import { consola } from 'consola'
@@ -236,7 +237,7 @@ async function search(q: string) {
     option-attribute="dateInputValueFormatted"
     class="w-72"
     by="dateInputValueFormatted"
-    icon="i-heroicons-calendar-days-20-solid"
+    :icon="ICON_NAME_BY_ALIAS['calendarDaysSolid']"
     :debounce="300"
     placeholder="Type a date or time..."
     size="lg"

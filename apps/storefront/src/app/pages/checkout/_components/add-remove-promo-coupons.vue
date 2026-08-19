@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import { StatusCodes } from 'http-status-codes'
 import { FetchError } from 'ofetch'
 import { COUPON_CONFIG } from '@arc/enums/coupon'
@@ -139,7 +140,7 @@ const disabledInput = computed(() => {
   <div>
     <UButton
       variant="ghost"
-      icon="i-heroicons-ticket"
+      :icon="ICON_NAME_BY_ALIAS['ticket']"
       color="gray"
       class="w-fit"
       :disabled="cartStore.stateCheckoutNow.isPendingCreateOrder"
@@ -198,7 +199,7 @@ const disabledInput = computed(() => {
               color="gray"
               variant="solid"
               :disabled="isPendingUpdateCart || cartStore.stateCheckoutNow.isPendingCreateOrder"
-              icon="i-heroicons-x-mark-20-solid"
+              :icon="ICON_NAME_BY_ALIAS['xMarkSolid']"
               :ui="{ rounded: 'rounded-full' }"
               @click="() => deleteCoupon(code)"
             />

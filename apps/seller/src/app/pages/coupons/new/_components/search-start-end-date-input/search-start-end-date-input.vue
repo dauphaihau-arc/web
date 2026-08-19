@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import dayjs from 'dayjs'
 import SuggestDateInput from './suggest-date-input.vue'
 
@@ -91,8 +92,8 @@ watch(state, () => {
       <UButton
         color="white"
         size="lg"
-        trailing-icon="i-heroicons-chevron-down-20-solid"
-        icon="i-heroicons-calendar-days-20-solid"
+        :trailing-icon="ICON_NAME_BY_ALIAS['chevronDown']"
+        :icon="ICON_NAME_BY_ALIAS['calendarDaysSolid']"
         :ui="{ font: 'font-normal' }"
       >
         {{ state.startDate?.format(formatDisplayOnBtn) }}

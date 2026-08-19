@@ -1,4 +1,5 @@
-<script lang="ts" setup>
+<script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import type { ProductSuggestion } from '~/domains/product/api/contracts/product.contract'
 import { useGetProductSuggestions } from '~/domains/product/queries/products.query'
 import { routes } from '~/shared/navigation/routes'
@@ -116,7 +117,7 @@ function openSuggestedProduct(product: ProductSuggestion) {
       <div class="mx-auto ml-1.5 pb-12">
         <UInput
           v-model="state.search"
-          icon="i-heroicons-magnifying-glass-20-solid"
+          :icon="ICON_NAME_BY_ALIAS['searchSolid']"
           :padded="false"
           placeholder="Search..."
           variant="none"

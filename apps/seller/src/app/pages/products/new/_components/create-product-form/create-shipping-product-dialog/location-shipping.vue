@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import {
   ProductShippingCharge,
   PRODUCT_SHIPPING_CONFIG,
@@ -132,7 +133,7 @@ function setService(value: Partial<ShippingLocation>['service']) {
       <UButton
         v-if="!disabledDelete"
         variant="ghost"
-        icon="i-heroicons-x-mark"
+        :icon="ICON_NAME_BY_ALIAS['xMark']"
         color="gray"
         @click="emit('delete')"
       />

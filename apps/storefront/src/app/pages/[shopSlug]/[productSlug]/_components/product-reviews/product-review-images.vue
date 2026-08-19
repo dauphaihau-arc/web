@@ -1,4 +1,5 @@
-<script lang="ts" setup>
+<script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import type { GetPublicProductReviewImagesResponse } from '~/domains/product/api/contracts/product.contract'
 import { useGetPublicProductReviewImages } from '~/domains/product/queries/review-images.query'
 import { resolveProductImageUrl } from '~/shared/utils/storage-public-url'
@@ -196,7 +197,7 @@ watch(
         <UButton
           v-if="!disabled"
           variant="ghost"
-          icon="i-heroicons-chevron-left-20-solid"
+          :icon="ICON_NAME_BY_ALIAS['chevronLeftSolid']"
           :class="[arrowButtonClass, 'left-4']"
           aria-label="Previous"
           @click="onClick"
@@ -207,7 +208,7 @@ watch(
         <UButton
           v-if="!disabled"
           variant="ghost"
-          icon="i-heroicons-chevron-right-20-solid"
+          :icon="ICON_NAME_BY_ALIAS['chevronRightSolid']"
           :class="[arrowButtonClass, 'right-4']"
           aria-label="Next"
           @click="handleNext(onClick, disabled)"

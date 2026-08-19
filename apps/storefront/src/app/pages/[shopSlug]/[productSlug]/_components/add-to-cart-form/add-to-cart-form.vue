@@ -10,6 +10,7 @@ import { toastCustom } from '~/shared/config/toast'
 import { useAddProductToCart } from '~/domains/cart/mutations/add-product.mutation'
 import { getBackendErrorMessage } from '~/shared/utils/backend-error'
 import { getAddToCartFailureCopy, resolveAddToCartFailure } from '~/domains/cart/utils/cart-error'
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 
 type Inventory = GetDetailProductBySlugResponse['inventory'][number]
 type AddToCartProduct = Pick<
@@ -208,7 +209,7 @@ async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
           orientation="horizontal"
         >
           <UButton
-            icon="i-heroicons-minus"
+            :icon="ICON_NAME_BY_ALIAS['minus']"
             color="white"
             class="rounded-l-md rounded-r-none"
             @click="decreaseQty"
@@ -222,7 +223,7 @@ async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
             :ui="{ base: ' text-center rounded-l-none' }"
           />
           <UButton
-            icon="i-heroicons-plus"
+            :icon="ICON_NAME_BY_ALIAS['plus']"
             color="white"
             class="rounded-l-none rounded-r-md"
             @click="increaseQty"

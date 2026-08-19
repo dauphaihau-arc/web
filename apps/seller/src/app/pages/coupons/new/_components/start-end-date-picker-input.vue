@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import dayjs from 'dayjs'
 
 type CouponDateRange = {
@@ -59,7 +60,7 @@ watch(state, () => {
       <UButton
         size="lg"
         color="white"
-        icon="i-heroicons-calendar-days-20-solid"
+        :icon="ICON_NAME_BY_ALIAS['calendarDaysSolid']"
         :label="labelStartDate"
       />
 
@@ -80,7 +81,7 @@ watch(state, () => {
       <UButton
         size="lg"
         color="white"
-        icon="i-heroicons-calendar-days-20-solid"
+        :icon="ICON_NAME_BY_ALIAS['calendarDaysSolid']"
         :label="labelEndDate"
       />
 

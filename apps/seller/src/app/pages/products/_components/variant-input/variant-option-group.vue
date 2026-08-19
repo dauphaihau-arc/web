@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import { PRODUCT_CONFIG } from '@arc/enums/product'
 import type { VariantInputOption } from './variant-input.types'
 
@@ -32,7 +33,7 @@ defineEmits<{
     <UButton
       v-if="showOpenButton && !isActive"
       class="mb-4"
-      icon="i-heroicons-plus"
+      :icon="ICON_NAME_BY_ALIAS['plus']"
       color="gray"
       variant="solid"
       @click="$emit('open')"
@@ -45,7 +46,7 @@ defineEmits<{
         v-if="showCloseButton"
         class="absolute -right-20 -top-4"
         variant="ghost"
-        icon="i-heroicons-x-mark"
+        :icon="ICON_NAME_BY_ALIAS['xMark']"
         color="gray"
         @click="$emit('close')"
       />
@@ -127,7 +128,7 @@ defineEmits<{
 
               <UButton
                 :disabled="options.length === 1"
-                icon="i-heroicons-x-mark"
+                :icon="ICON_NAME_BY_ALIAS['xMark']"
                 color="gray"
                 @click="$emit('remove', option)"
               />

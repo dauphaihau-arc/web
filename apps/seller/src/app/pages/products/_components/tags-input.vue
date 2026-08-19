@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import { PRODUCT_CONFIG } from '@arc/enums/product'
 
 const tagsModel = defineModel<string[]>({
@@ -79,7 +80,7 @@ watchDebounced(
               color="white"
             />
             <UButton
-              icon="i-heroicons-x-mark"
+              :icon="ICON_NAME_BY_ALIAS['xMark']"
               color="gray"
               @click="() => removeTag(index)"
             />

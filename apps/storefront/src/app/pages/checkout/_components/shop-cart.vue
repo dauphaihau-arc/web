@@ -7,6 +7,7 @@ import { useCartStore } from '~/domains/cart/stores/cart.store'
 import { useGetCart } from '~/domains/cart/queries/cart.query'
 import { useUpdateCart } from '~/domains/cart/mutations/update-cart.mutation'
 import type { GetCartResponse } from '~/domains/cart/api/contracts/cart.contract'
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 
 const cartStore = useCartStore()
 const queryClient = useQueryClient()
@@ -126,7 +127,7 @@ watchDebounced(
                 orientation="horizontal"
               >
                 <UButton
-                  icon="i-heroicons-minus"
+                  :icon="ICON_NAME_BY_ALIAS['minus']"
                   color="white"
                   class="rounded-l-md rounded-r-none"
                   :disabled="cartStore.stateCheckoutNow.isPendingCreateOrder"
@@ -142,7 +143,7 @@ watchDebounced(
                   :ui="{ base: 'text-center rounded-l-none' }"
                 />
                 <UButton
-                  icon="i-heroicons-plus"
+                  :icon="ICON_NAME_BY_ALIAS['plus']"
                   color="white"
                   :disabled="cartStore.stateCheckoutNow.isPendingCreateOrder"
                   class="rounded-l-none rounded-r-md"
@@ -180,7 +181,7 @@ watchDebounced(
         <div>
           <UButton
             variant="ghost"
-            icon="i-heroicons-clipboard-document-list"
+            :icon="ICON_NAME_BY_ALIAS['clipboardDocumentList']"
             color="gray"
             :disabled="cartStore.stateCheckoutNow.isPendingCreateOrder"
             class="mb-3 w-fit"

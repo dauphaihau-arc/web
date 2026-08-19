@@ -1,4 +1,5 @@
-<script lang="ts" setup>
+<script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import ShopItem from './_components/shop-item/shop-item.vue'
 import type { MyOrderListState } from '~/domains/me/api/order/contracts/order.contract'
@@ -156,7 +157,7 @@ watch(
 
       <UInput
         v-model="state.search"
-        icon="i-heroicons-magnifying-glass-20-solid"
+        :icon="ICON_NAME_BY_ALIAS['searchSolid']"
         placeholder="Search by order number, product, or shop"
         class="w-full max-w-md"
         size="lg"

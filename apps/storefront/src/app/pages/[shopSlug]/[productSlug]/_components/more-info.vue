@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import type { MyChatConversation } from '~/domains/me/api/chat/contracts/chat.contract'
 import ChatConversationPanel from '~/app/components/chat/chat-conversation-panel.vue'
 import RegisterLoginDialog from '~/app/components/dialogs/login-register/register-login-dialog.vue'
@@ -223,7 +224,7 @@ watch(
               <UButton
                 color="gray"
                 variant="ghost"
-                icon="i-lucide-x"
+                :icon="ICON_NAME_BY_ALIAS['x']"
                 aria-label="Close seller chat"
                 class="-mr-2"
                 @click="isSellerChatOpen = false"

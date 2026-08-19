@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import type { Category } from '@arc/models/category'
 import { useGetCategories } from '~/domains/category/queries/categories.query'
 
@@ -80,7 +81,7 @@ const onSave = () => {
   <div>
     <UInput
       v-model="state.input"
-      icon="i-heroicons-magnifying-glass-20-solid"
+      :icon="ICON_NAME_BY_ALIAS['searchSolid']"
       size="xl"
       color="white"
       :trailing="false"
@@ -136,7 +137,7 @@ const onSave = () => {
       <div class="rounded-lg bg-surface-muted p-3">
         <div class="mb-5">
           <UInput
-            icon="i-heroicons-magnifying-glass-20-solid"
+            :icon="ICON_NAME_BY_ALIAS['searchSolid']"
             size="md"
             class="w-1/2"
             color="white"

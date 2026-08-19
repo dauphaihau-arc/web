@@ -1,4 +1,5 @@
-<script lang="ts" setup>
+<script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import Actions from './actions.vue'
 import Customer from './customer.vue'
@@ -76,7 +77,7 @@ const hasFooterActions = computed(() =>
           <UButton
             color="gray"
             variant="ghost"
-            icon="i-heroicons-x-mark-20-solid"
+            :icon="ICON_NAME_BY_ALIAS['xMarkSolid']"
             @click="open = false"
           />
         </div>
