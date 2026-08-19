@@ -38,6 +38,22 @@ export const sharedAppConfig = {
     radio: {
       help: 'text-text-muted',
     },
+    pagination: {
+      default: {
+        firstButton: {
+          icon: 'lucide:chevrons-left',
+        },
+        lastButton: {
+          icon: 'lucide:chevrons-right',
+        },
+        prevButton: {
+          icon: 'lucide:chevron-left',
+        },
+        nextButton: {
+          icon: 'lucide:chevron-right',
+        },
+      },
+    },
     button: {
       default: {
         loadingIcon: 'i-eos-icons:loading',

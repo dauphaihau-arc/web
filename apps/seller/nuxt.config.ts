@@ -1,4 +1,5 @@
 import { fileURLToPath } from 'node:url'
+import { removePageComponents } from '../../packages/ui/src/foundation/nuxt-pages'
 import pkg from './package.json'
 
 const packagesDir = fileURLToPath(new URL('../../packages/', import.meta.url))
@@ -57,6 +58,8 @@ const appIconAliases = [
   'tabler:arrow-forward',
   'lucide:chevron-left',
   'lucide:chevron-right',
+  'lucide:chevrons-left',
+  'lucide:chevrons-right',
   'heroicons:chevron-up-20-solid',
   'heroicons:chevron-down-20-solid',
   'heroicons:language',
@@ -204,6 +207,12 @@ export default defineNuxtConfig({
 
   imports: {
     dirs: ['shared/composables', 'shared/utils', `${packagesDir}utils/src`, `${packagesDir}composables/src`],
+  },
+
+  hooks: {
+    'pages:extend'(pages) {
+      removePageComponents(pages)
+    },
   },
 
   i18n: {

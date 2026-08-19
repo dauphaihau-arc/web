@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
-import type { NuxtPage } from '@nuxt/schema'
+import { removePageComponents } from '../../packages/ui/src/foundation/nuxt-pages'
 import pkg from './package.json'
 
 const packagesDir = fileURLToPath(new URL('../../packages/', import.meta.url))
@@ -63,6 +63,8 @@ const appIconAliases = [
   'tabler:arrow-forward',
   'lucide:chevron-left',
   'lucide:chevron-right',
+  'lucide:chevrons-left',
+  'lucide:chevrons-right',
   'heroicons:chevron-up-20-solid',
   'heroicons:chevron-down-20-solid',
   'heroicons:language',
@@ -92,21 +94,6 @@ const appIconAliases = [
   'iconoir:import',
   'ph:export',
 ] as const
-
-function removePageComponents(pages: NuxtPage[]) {
-  for (let index = pages.length - 1; index >= 0; index -= 1) {
-    const page = pages[index]
-
-    if (page.file?.includes('/pages/') && page.file.includes('/_components/')) {
-      pages.splice(index, 1)
-      continue
-    }
-
-    if (page.children?.length) {
-      removePageComponents(page.children)
-    }
-  }
-}
 
 export default defineNuxtConfig({
   app: {
