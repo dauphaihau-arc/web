@@ -1,4 +1,5 @@
 import { fileURLToPath } from 'node:url'
+import { APP_ICON_CLIENT_BUNDLE_ICONS, APP_ICON_COLLECTIONS } from '../../packages/ui/src/foundation/app-icon.constants'
 import { removePageComponents } from '../../packages/ui/src/foundation/nuxt-pages'
 import pkg from './package.json'
 
@@ -7,88 +8,6 @@ const uiPackageDir = `${packagesDir}ui/src`
 
 const assetHost = process.env.ASSET_HOST || ''
 const awsHostBucketAlias = assetHost.replace(/\/+$/, '')
-
-const iconCollections = [
-  'akar-icons',
-  'fluent',
-  'heroicons',
-  'hugeicons',
-  'iconoir',
-  'lets-icons',
-  'lucide',
-  'majesticons',
-  'material-symbols',
-  'mynaui',
-  'nimbus',
-  'ph',
-  'solar',
-  'streamline-flex',
-  'tabler',
-  'uil',
-] as const
-
-const appIconAliases = [
-  'tabler:ai',
-  'uil:search',
-  'majesticons:user-line',
-  'uil:cart',
-  'akar-icons:bell',
-  'heroicons:cog-8-tooth',
-  'lets-icons:order',
-  'heroicons:archive-box-20-solid',
-  'solar:shop-bold-duotone',
-  'heroicons:arrow-left-start-on-rectangle',
-  'solar:star-bold',
-  'solar:shop-linear',
-  'ph:warning-duotone',
-  'heroicons:plus',
-  'lucide:circle-plus',
-  'lucide:circle-x',
-  'heroicons:minus',
-  'lucide:edit',
-  'heroicons:trash',
-  'material-symbols:cancel-rounded',
-  'material-symbols:check-circle-rounded',
-  'material-symbols:calendar-month-rounded',
-  'material-symbols:location-on-outline',
-  'lucide:arrow-up',
-  'lucide:arrow-down',
-  'lucide:arrow-right',
-  'lucide:arrow-left',
-  'tabler:arrow-forward',
-  'lucide:chevron-left',
-  'lucide:chevron-right',
-  'lucide:chevrons-left',
-  'lucide:chevrons-right',
-  'heroicons:chevron-up-20-solid',
-  'heroicons:chevron-down-20-solid',
-  'heroicons:language',
-  'mynaui:store',
-  'heroicons:ticket',
-  'material-symbols:android-camera',
-  'tabler:message',
-  'lucide:plane',
-  'tabler:cube',
-  'streamline-flex:dashboard-3',
-  'heroicons:banknotes-20-solid',
-  'heroicons:chart-bar-20-solid',
-  'nimbus:marketing',
-  'lets-icons:refund-forward',
-  'heroicons:clock-20-solid',
-  'hugeicons:package-delivered',
-  'lucide:map',
-  'fluent:payment-28-regular',
-  'heroicons:document-plus-20-solid',
-  'heroicons:ellipsis-horizontal-20-solid',
-  'lucide:cloud-upload',
-  'lucide:frown',
-  'lucide:annoyed',
-  'lucide:meh',
-  'lucide:smile',
-  'lucide:laugh',
-  'iconoir:import',
-  'ph:export',
-] as const
 
 export default defineNuxtConfig({
   app: {
@@ -150,10 +69,10 @@ export default defineNuxtConfig({
   icon: {
     fallbackToApi: false,
     serverBundle: {
-      collections: [...iconCollections],
+      collections: [...APP_ICON_COLLECTIONS],
     },
     clientBundle: {
-      icons: [...appIconAliases],
+      icons: [...APP_ICON_CLIENT_BUNDLE_ICONS],
       scan: true,
     },
   },
