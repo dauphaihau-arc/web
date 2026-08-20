@@ -1,22 +1,38 @@
 import {
   describe, it, expect, beforeEach, vi,
 } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { FetchError } from 'ofetch';
+import { flushPromises, mount } from '@vue/test-utils';
 import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime';
-import type { Ref, ComponentPublicInstance } from 'vue';
 import { routes } from '~/shared/navigation/routes';
 import LayoutShopHeader from '~/app/layouts/shop/header.vue';
 import LoginForm from '~/app/pages/login/_components/login-form.vue';
 
-const { mockNavigateTo } = vi.hoisted(() => ({
+const { mockNavigateTo, loginMock } = vi.hoisted(() => ({
   mockNavigateTo: vi.fn(),
+  loginMock: vi.fn(),
 }));
 
 mockNuxtImport('navigateTo', () => mockNavigateTo);
 
+vi.mock('~/domains/auth/mutations/login.mutation', () => ({
+  useLogin: () => ({
+    mutateAsync: loginMock,
+    isPending: false,
+  }),
+}));
+
+vi.mock('~/domains/auth/queries/client-config.query', () => ({
+  useAuthClientConfig: () => ({
+    data: { value: undefined },
+    isLoading: false,
+  }),
+}));
+
 describe('login', () => {
   beforeEach(() => {
     mockNavigateTo.mockReset();
+    loginMock.mockReset();
   });
 
   it('mounts seller header', async () => {
@@ -78,27 +94,28 @@ describe('login', () => {
     expect((passwordInput.element as HTMLInputElement).value).toBe(password);
   });
 
-  it('alert user input incorrect password', async () => {
+  it('alerts user when password is incorrect', async () => {
+    const unauthorizedError = new FetchError('Unauthorized');
+    unauthorizedError.status = 401;
+    loginMock.mockRejectedValueOnce(unauthorizedError);
+
     const component = await mountSuspended(LoginForm, {
       global: {
         stubs: {
           NuxtLink: true,
-          UAlert: true, // Stub UAlert to ensure it renders even with v-if
         },
       },
     });
 
-    // Define the type for the component instance
-    const vm = component.vm as ComponentPublicInstance & {
-      unknownErrorServerMsg: Ref<string>
-    };
+    await component.find('[name="email"]').setValue('seller@example.com');
+    await component.find('[name="password"]').setValue('Valid1!Pass');
+    await component.find('form').trigger('submit');
+    await flushPromises();
 
-    // Access the internal ref and set its value
-    vm.unknownErrorServerMsg.value = 'Incorrect email or password';
-
-    // Wait for the next tick to allow the component to update
-    await component.vm.$nextTick();
-
+    expect(loginMock).toHaveBeenCalledWith({
+      email: 'seller@example.com',
+      password: 'Valid1!Pass',
+    });
     expect(component.html()).toContain('Incorrect email or password');
   });
 
