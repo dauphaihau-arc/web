@@ -1,10 +1,36 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime';
-import { mount } from '@vue/test-utils';
-import type { ComponentPublicInstance, Ref } from 'vue';
-import { describe, expect, it } from 'vitest';
+import { flushPromises, mount } from '@vue/test-utils';
+import { FetchError } from 'ofetch';
+import {
+  beforeEach, describe, expect, it, vi,
+} from 'vitest';
 import LoginForm from './login-form.vue';
 
+const {
+  loginMock,
+} = vi.hoisted(() => ({
+  loginMock: vi.fn(),
+}));
+
+vi.mock('~/domains/auth/mutations/login.mutation', () => ({
+  useLogin: () => ({
+    mutateAsync: loginMock,
+    isPending: false,
+  }),
+}));
+
+vi.mock('~/domains/auth/queries/client-config.query', () => ({
+  useAuthClientConfig: () => ({
+    data: { value: undefined },
+    isLoading: false,
+  }),
+}));
+
 describe('login form', () => {
+  beforeEach(() => {
+    loginMock.mockReset();
+  });
+
   it('fills email and password input', async () => {
     const component = mount(LoginForm, {
       global: {
@@ -28,23 +54,27 @@ describe('login form', () => {
   });
 
   it('alerts user when password is incorrect', async () => {
+    const unauthorizedError = new FetchError('Unauthorized');
+    unauthorizedError.status = 401;
+    loginMock.mockRejectedValueOnce(unauthorizedError);
+
     const component = await mountSuspended(LoginForm, {
       global: {
         stubs: {
           NuxtLink: true,
-          UAlert: true,
         },
       },
     });
 
-    const vm = component.vm as ComponentPublicInstance & {
-      unknownErrorServerMsg: Ref<string>
-    };
+    await component.find('[name="email"]').setValue('customer@example.com');
+    await component.find('[name="password"]').setValue('Valid1!Pass');
+    await component.find('form').trigger('submit');
+    await flushPromises();
 
-    vm.unknownErrorServerMsg.value = 'Incorrect email or password';
-
-    await component.vm.$nextTick();
-
+    expect(loginMock).toHaveBeenCalledWith({
+      email: 'customer@example.com',
+      password: 'Valid1!Pass',
+    });
     expect(component.html()).toContain('Incorrect email or password');
   });
 });
