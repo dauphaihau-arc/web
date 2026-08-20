@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { createUser } from '../support/factories';
 import { installStorefrontApiMocks } from '../support/network';
 
-test('logs in from the header dialog and unlocks the account page', async ({ page }) => {
+test('logs in from the header dialog and unlocks the account page @smoke', async ({ page }) => {
   const user = createUser({
     display_name: 'Storefront E2E',
     email: 'storefront-e2e@example.com',

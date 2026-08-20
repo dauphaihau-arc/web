@@ -12,6 +12,7 @@ This folder contains Playwright browser tests for the storefront app.
 
 ```bash
 pnpm e2e
+pnpm e2e:smoke
 pnpm e2e:headed
 pnpm e2e:ui
 ```
@@ -23,6 +24,7 @@ pnpm e2e:ui
 - `checkout/redirect.spec.ts`
 - `guest-orders/lookup.spec.ts`
 - `notifications/read-all.spec.ts`
+- `preferences/currency-product-price.spec.ts`
 
 ## Next flows worth promoting to stronger e2e coverage
 
@@ -37,3 +39,4 @@ pnpm e2e:ui
 - `support/factories.ts`: small mock data builders
 - `support/network.ts`: shared route interception helpers
 - feature folders: spec files grouped by user flow
+- `@smoke` title tag: small PR-ready checks selected by `pnpm e2e:smoke`
