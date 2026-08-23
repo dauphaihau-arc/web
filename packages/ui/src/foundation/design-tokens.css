@@ -106,3 +106,117 @@
   border-radius: 999px;
   background-clip: content-box;
 }
+
+@property --scroll-fade-top {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0;
+}
+
+@property --scroll-fade-bottom {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0;
+}
+
+@property --scroll-fade-left {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0;
+}
+
+@property --scroll-fade-right {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0;
+}
+
+.scroll-fade,
+.scroll-fade-y {
+  --scroll-fade-size: min(12%, 40px);
+  --scroll-fade-top: 0;
+  --scroll-fade-bottom: var(--scroll-fade-size);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black var(--scroll-fade-top),
+    black calc(100% - var(--scroll-fade-bottom)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black var(--scroll-fade-top),
+    black calc(100% - var(--scroll-fade-bottom)),
+    transparent
+  );
+}
+
+.scroll-fade-x {
+  --scroll-fade-size: min(12%, 40px);
+  --scroll-fade-left: 0;
+  --scroll-fade-right: var(--scroll-fade-size);
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black var(--scroll-fade-left),
+    black calc(100% - var(--scroll-fade-right)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black var(--scroll-fade-left),
+    black calc(100% - var(--scroll-fade-right)),
+    transparent
+  );
+}
+
+@supports (animation-timeline: scroll()) {
+  .scroll-fade,
+  .scroll-fade-y {
+    animation: scroll-fade-y linear both;
+    animation-timeline: scroll(self y);
+  }
+
+  .scroll-fade-x {
+    animation: scroll-fade-x linear both;
+    animation-timeline: scroll(self x);
+  }
+}
+
+@keyframes scroll-fade-y {
+  0% {
+    --scroll-fade-top: 0;
+    --scroll-fade-bottom: var(--scroll-fade-size);
+  }
+
+  8%,
+  92% {
+    --scroll-fade-top: var(--scroll-fade-size);
+    --scroll-fade-bottom: var(--scroll-fade-size);
+  }
+
+  100% {
+    --scroll-fade-top: var(--scroll-fade-size);
+    --scroll-fade-bottom: 0;
+  }
+}
+
+@keyframes scroll-fade-x {
+  0% {
+    --scroll-fade-left: 0;
+    --scroll-fade-right: var(--scroll-fade-size);
+  }
+
+  8%,
+  92% {
+    --scroll-fade-left: var(--scroll-fade-size);
+    --scroll-fade-right: var(--scroll-fade-size);
+  }
+
+  100% {
+    --scroll-fade-left: var(--scroll-fade-size);
+    --scroll-fade-right: 0;
+  }
+}
