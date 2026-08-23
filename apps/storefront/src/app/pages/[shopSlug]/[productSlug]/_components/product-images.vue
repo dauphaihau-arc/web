@@ -13,6 +13,7 @@ const props = withDefaults(defineProps<{
 const config = useRuntimeConfig()
 const selectedImg = ref(0)
 const previewImg = ref<number | null>(null)
+const imageThumbRefs = ref<HTMLElement[]>([])
 
 const currentImg = computed(() => previewImg.value ?? selectedImg.value)
 
@@ -36,6 +37,12 @@ const imageThumbSelected = (index: number) => {
     config.public.assetHost,
     'thumb_1x1',
   )
+}
+
+const setImageThumbRef = (element: unknown, index: number) => {
+  if (element instanceof HTMLElement) {
+    imageThumbRefs.value[index] = element
+  }
 }
 
 const onPreviewImg = (index: number) => {
@@ -66,6 +73,19 @@ const onSelectNextImg = () => {
   selectedImg.value++
   previewImg.value = null
 }
+
+onBeforeUpdate(() => {
+  imageThumbRefs.value = []
+})
+
+watch(selectedImg, async () => {
+  await nextTick()
+
+  imageThumbRefs.value[selectedImg.value]?.scrollIntoView({
+    behavior: 'smooth',
+    block: 'nearest',
+  })
+})
 </script>
 
 <template>
@@ -98,6 +118,7 @@ const onSelectNextImg = () => {
         :key="image.id"
       >
         <button
+          :ref="element => setImageThumbRef(element, index)"
           type="button"
           :class="[
             'block rounded bg-media-product ring-2 ring-transparent',
