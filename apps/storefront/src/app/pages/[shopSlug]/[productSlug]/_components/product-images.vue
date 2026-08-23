@@ -90,7 +90,7 @@ const onSelectNextImg = () => {
     class="flex gap-6"
   >
     <div
-      class="flex w-fit flex-col gap-3"
+      class="no-scrollbar scroll-fade flex h-[575px] w-fit flex-col gap-3 overflow-y-auto p-1"
       @mouseleave="onResetPreviewImg"
     >
       <div
@@ -112,13 +112,14 @@ const onSelectNextImg = () => {
           <NuxtImg
             preload
             :src="imageThumbSelected(index)"
-            width="100"
-            height="100"
+            width="90"
+            height="90"
             class="rounded"
           />
         </button>
       </div>
     </div>
+
     <div class="relative size-[575px] max-w-full overflow-hidden rounded bg-media-product">
       <NuxtImg
         preload
@@ -155,5 +156,13 @@ const onSelectNextImg = () => {
 .arrow {
   @apply cursor-pointer bg-surface rounded-full p-4
   h-10 w-10 grid place-content-center;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 </style>
