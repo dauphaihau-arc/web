@@ -93,7 +93,7 @@ const compareAtAmount = computed(() =>
     </div>
 
     <div
-      class="size-[180px] shrink-0 cursor-pointer overflow-hidden rounded-lg bg-customGray-200 ring-1 ring-border-subtle"
+      class="size-[180px] shrink-0 cursor-pointer overflow-hidden rounded-lg bg-media-product ring-1 ring-border-subtle"
       @click="goToDetailProduct"
     >
       <NuxtImg

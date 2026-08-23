@@ -84,18 +84,15 @@ const hasDiscount = computed(() => {
 
 <template>
   <div
-    class="group flex size-full cursor-pointer flex-col gap-1.5"
+    class="group flex w-full cursor-pointer flex-col gap-1.5"
     @click="() => router.push(routes.productDetail(props.product.shop.slug, props.product.slug))"
   >
-    <div
-      class="relative w-full overflow-hidden rounded-lg bg-customGray-200 ring-1 ring-border-subtle"
-      style="aspect-ratio: 1 / 1;"
-    >
-      <NuxtImg
-        :src="imageUrl"
-        class="absolute inset-0 block size-full object-cover object-center transition-transform duration-300 group-hover:scale-[1.03]"
-      />
-    </div>
+    <ProductCardImage
+      :src="imageUrl"
+      frame-class="w-full"
+      :frame-style="{ aspectRatio: '1 / 1' }"
+      hover-scale
+    />
 
     <div class="flex min-h-[104px] flex-col gap-0.5">
       <h1 class="truncate whitespace-nowrap text-sm font-semibold">

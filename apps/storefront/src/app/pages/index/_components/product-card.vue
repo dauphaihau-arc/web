@@ -20,6 +20,16 @@ const imageUrl = computed(() => {
   )
 })
 
+const imageFrameClass = computed(() => {
+  return props.fill || props.autoSize ? 'size-full' : ''
+})
+
+const imageFrameStyle = computed(() => {
+  return props.fill || props.autoSize
+    ? undefined
+    : { height: '160px', width: '100%' }
+})
+
 const displayAmount = computed(() => {
   const pricing = props.product.pricing
   if (!pricing?.currency || pricing.min_amount_minor == null) {
@@ -38,17 +48,15 @@ const displayAmount = computed(() => {
 <template>
   <NuxtLink
     :class="[
-      'relative flex cursor-pointer flex-col gap-2',
+      'relative flex w-full cursor-pointer flex-col gap-2',
       props.fill ? 'h-full' : '',
     ]"
     :to="routes.productDetail(props.product.shop.slug, props.product.slug)"
   >
-    <NuxtImg
+    <ProductCardImage
       :src="imageUrl"
-      :class="[
-        'rounded-lg object-cover',
-        props.fill ? 'size-full' : props.autoSize ? 'size-full' : 'h-[160px] w-[250px]',
-      ]"
+      :frame-class="imageFrameClass"
+      :frame-style="imageFrameStyle"
     />
     <div class="absolute bottom-3 left-3 flex gap-1 space-y-0.5 rounded-lg bg-white px-2.5 py-1">
       <p

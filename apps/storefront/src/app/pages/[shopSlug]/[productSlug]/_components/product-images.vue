@@ -26,6 +26,7 @@ const imageUrlSelected = computed(() => {
   return resolveProductImageUrl(
     selectedImage.value,
     config.public.assetHost,
+    'pdp_contain',
   )
 })
 
@@ -99,7 +100,7 @@ const onSelectNextImg = () => {
         <button
           type="button"
           :class="[
-            'block rounded bg-customGray-200 ring-2 ring-transparent',
+            'block rounded bg-media-product ring-2 ring-transparent',
             {
               '!ring-primary': selectedImg === index,
             }]"
@@ -118,7 +119,7 @@ const onSelectNextImg = () => {
         </button>
       </div>
     </div>
-    <div class="relative size-[575px] max-w-full overflow-hidden rounded bg-surface-muted">
+    <div class="relative size-[575px] max-w-full overflow-hidden rounded bg-media-product">
       <NuxtImg
         preload
         :src="imageUrlSelected"

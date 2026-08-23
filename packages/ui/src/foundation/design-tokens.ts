@@ -22,6 +22,9 @@ export const designColors = {
     overlay: 'rgb(255 255 255 / 0.85)',
     overlayDark: 'rgb(0 0 0 / 0.75)',
   },
+  media: {
+    product: '#F5F5F5',
+  },
   border: {
     muted: '#D4D4D8',
     subtle: '#E4E4E7',
