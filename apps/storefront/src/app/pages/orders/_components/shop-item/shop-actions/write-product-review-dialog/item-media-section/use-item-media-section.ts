@@ -7,7 +7,10 @@ import {
 import type { ResponseGetOrderShopsProduct } from '~/domains/me/api/order/contracts/order.contract';
 import { toastCustom } from '~/shared/config/toast';
 import { uploadReviewImage } from '~/domains/me/mutations/product-reviews/upload-review-image.mutation';
-import { resolveProductImageUrl } from '~/shared/utils/storage-public-url';
+import {
+  resolveProductImageUrl,
+  resolveStorageKeyFromPublicUrl,
+} from '~/shared/utils/storage-public-url';
 
 type ProductReview = ResponseGetOrderShopsProduct['my_review'];
 
@@ -201,10 +204,10 @@ export function useItemMediaSection(
 
     reviewImages.value = (props.selectedProductReview?.images ?? []).map((image, index) => reactive<ReviewImageUploadItem>({
       id: image.id,
-      key: image.storage_key,
+      key: resolveStorageKeyFromPublicUrl(image.url, runtimeConfig.public.assetHost),
       previewUrl: resolveProductImageUrl(image, runtimeConfig.public.assetHost, 'thumb_1x1') ??
         image.url ??
-        image.storage_key,
+        '',
       displayName: `Review photo ${index + 1}`,
       sizeLabel: image.size_bytes ? formatFileSize(image.size_bytes) : '',
       isObjectUrl: false,

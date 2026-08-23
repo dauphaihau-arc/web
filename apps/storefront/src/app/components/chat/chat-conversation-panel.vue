@@ -20,7 +20,6 @@ import {
   getRoutePath,
   routes,
 } from '~/shared/navigation/routes'
-import { resolveStoragePublicUrl } from '~/shared/utils/storage-public-url'
 import { useMyMarkChatRead } from '~/domains/me/mutations/chat/mark-read.mutation'
 import { useMyChatMessages } from '~/domains/me/queries/chat/messages.query'
 import { useMySendChatMessage } from '~/domains/me/mutations/chat/send-message.mutation'
@@ -41,7 +40,6 @@ const props = withDefaults(defineProps<{
 
 const messageDraft = ref('')
 const queryClient = useQueryClient()
-const config = useRuntimeConfig()
 
 const chatEventsClient = import.meta.client
   ? createStorefrontChatEventsClient(queryClient)
@@ -174,10 +172,7 @@ function toProductReferenceDisplay(message: MyChatMessage) {
 
   return {
     title: snapshot.title,
-    imageUrl: resolveStoragePublicUrl({
-      storageKey: snapshot.image_storage_key,
-      assetHost: config.public.assetHost,
-    }),
+    imageUrl: snapshot.image_url,
     priceLabel,
     statusLabel,
     href: getRoutePath(routes.productDetail(snapshot.shop_slug, snapshot.product_slug)),

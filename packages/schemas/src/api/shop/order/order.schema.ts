@@ -86,7 +86,7 @@ export const shopOrderProductSchema = z.object({
 export const shopOrderDetailProductSchema = shopOrderProductSchema.omit({
   image_url: true,
 }).extend({
-  storage_key: z.string().optional(),
+  image_url: z.string().optional(),
 })
 
 export const shopOrderTimelineEventSchema = z.object({

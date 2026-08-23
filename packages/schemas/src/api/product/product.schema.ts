@@ -22,10 +22,10 @@ export const publicProductCategoryPathItemSchema = z.object({
 })
 
 export const publicProductImageSchema = z.object({
-  storage_key: z.string(),
+  url: z.string().optional(),
   variant: z.string().optional(),
   variants: z.record(z.string(), z.object({
-    storage_key: z.string(),
+    url: z.string().optional(),
   })).optional(),
 })
 
@@ -140,12 +140,10 @@ export const recordProductViewResponseSchema = z.object({
 
 export const publicProductDetailImageSchema = z.object({
   id: z.string(),
-  storage_key: z.string(),
-  url: z.string().optional(),
+  url: z.string(),
   rank: z.number(),
   variants: z.record(z.string(), z.object({
-    storage_key: z.string(),
-    url: z.string().optional(),
+    url: z.string(),
     width: z.number().optional(),
     height: z.number().optional(),
     format: z.string().optional(),
@@ -157,7 +155,7 @@ export const publicProductDetailVariantSchema = z.object({
   name: z.string(),
   option_value_1: z.string().optional(),
   option_value_2: z.string().optional(),
-  image_storage_key: z.string().optional(),
+  image_url: z.string().optional(),
   rank: z.number(),
 })
 
@@ -206,12 +204,10 @@ export const publicProductReviewSummarySchema = z.object({
 
 export const publicProductReviewImageSchema = z.object({
   id: z.string(),
-  storage_key: z.string(),
-  url: z.string().optional(),
+  url: z.string(),
   rank: z.coerce.number().int().nonnegative(),
   variants: z.record(z.string(), z.object({
-    storage_key: z.string(),
-    url: z.string().optional(),
+    url: z.string(),
     width: z.coerce.number().int().positive().optional(),
     height: z.coerce.number().int().positive().optional(),
     format: z.string().optional(),
@@ -220,15 +216,13 @@ export const publicProductReviewImageSchema = z.object({
 
 export const publicProductReviewGalleryItemSchema = z.object({
   id: z.string(),
-  storage_key: z.string(),
-  url: z.string().optional(),
+  url: z.string(),
   rank: z.coerce.number().int().nonnegative(),
   review_id: z.string(),
   review_title: z.string().optional(),
   created_at: z.union([z.string(), z.date()]),
   variants: z.record(z.string(), z.object({
-    storage_key: z.string(),
-    url: z.string().optional(),
+    url: z.string(),
     width: z.coerce.number().int().positive().optional(),
     height: z.coerce.number().int().positive().optional(),
     format: z.string().optional(),

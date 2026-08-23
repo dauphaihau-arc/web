@@ -33,16 +33,14 @@ export const myProductReviewResponseSchema = z.object({
   body: z.string().optional(),
   images: z.array(z.object({
     id: z.string(),
-    storage_key: z.string(),
-    url: z.string().optional(),
+    url: z.string(),
     size_bytes: z.number().int().positive().optional(),
     rank: z.number(),
     variant_status: z.enum(['pending', 'processing', 'ready', 'failed']).optional(),
     variant_error: z.string().optional(),
     variants_generated_at: z.coerce.date().optional(),
     variants: z.record(z.string(), z.object({
-      storage_key: z.string(),
-      url: z.string().optional(),
+      url: z.string(),
       width: z.number().int().positive().optional(),
       height: z.number().int().positive().optional(),
       format: z.string().optional(),

@@ -21,7 +21,6 @@ export const categoryResponseSchema = z.object({
   parent_id: z.string().optional(),
   name: z.string(),
   rank: z.number(),
-  image_storage_key: z.string().optional(),
   image_url: z.string().optional(),
   featured_facet_keys: z.array(z.string()).optional(),
   attributes: z.array(categoryAttributeResponseSchema),

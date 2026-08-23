@@ -28,7 +28,6 @@ export function normalizeCategory(response: GetCategoriesResponse[number]): Cate
     parentId: response.parent_id,
     name: response.name,
     rank: response.rank,
-    imageStorageKey: response.image_storage_key,
     imageUrl: response.image_url,
     featuredFacetKeys: response.featured_facet_keys,
     attributes: response.attributes.map(attribute => ({

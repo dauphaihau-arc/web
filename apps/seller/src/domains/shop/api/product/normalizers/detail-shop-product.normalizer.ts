@@ -56,8 +56,9 @@ export function normalizeDetailShopProductResponse(
       : null,
     images: response.images.map(image => ({
       id: image.id,
-      relative_url: image.storage_key,
+      relative_url: image.url,
       rank: image.rank,
+      url: image.url,
     })),
     attributes: response.attributes.map(attribute => ({
       id: attribute.id,

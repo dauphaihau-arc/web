@@ -7,6 +7,7 @@ import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/ord
 import type { UpsertMyProductReviewRequest } from '~/domains/me/api/product-review/contracts/product-review.contract'
 import { toastCustom } from '~/shared/config/toast'
 import { useUpsertMyProductReview } from '~/domains/me/mutations/product-reviews/upsert-review.mutation'
+import { resolveStorageKeyFromPublicUrl } from '~/shared/utils/storage-public-url'
 
 type OrderShop = GetOrderShopsResponse['order_shops'][number]
 
@@ -32,6 +33,7 @@ const props = defineProps<{
 
 const dialog = useModal()
 const toast = useToast()
+const runtimeConfig = useRuntimeConfig()
 const formRef = ref()
 const isUploadingImages = ref(false)
 
@@ -91,7 +93,9 @@ function syncFormWithSelectedProduct() {
   state.rating = review?.rating ?? 5
   state.title = review?.title ?? ''
   state.body = review?.body ?? ''
-  state.image_keys = (review?.images ?? []).map(image => image.storage_key)
+  state.image_keys = (review?.images ?? [])
+    .map(image => resolveStorageKeyFromPublicUrl(image.url, runtimeConfig.public.assetHost))
+    .filter((key): key is string => !!key)
 }
 
 watch(() => state.orderItemId, () => {

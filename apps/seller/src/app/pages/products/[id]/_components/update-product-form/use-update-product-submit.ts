@@ -52,17 +52,33 @@ function buildImagesPayload(
   dataDetailProduct: DetailShopProductResponse | undefined,
   idsImageForDelete: Required<Pick<ProductImageReference, 'id'>>[],
   uploadedKeys: string[] = [],
+  assetHost = '',
 ) {
   const currentImages = dataDetailProduct?.product.images ?? [];
   const deletedImageIds = new Set(idsImageForDelete.map(image => image.id));
   const persistedImages = currentImages
     .filter(image => !deletedImageIds.has(image.id))
-    .map(image => image.relative_url);
+    .map(image => toStorageKey(image.relative_url, assetHost))
+    .filter((storageKey): storageKey is string => !!storageKey);
 
   return [...persistedImages, ...uploadedKeys].map((storageKey, index) => ({
     storage_key: storageKey,
     rank: index + 1,
   }));
+}
+
+function toStorageKey(url: string | undefined, assetHost: string) {
+  if (!url) {
+    return undefined;
+  }
+
+  const normalizedAssetHost = assetHost.replace(/\/+$/, '');
+
+  if (normalizedAssetHost && url.startsWith(`${normalizedAssetHost}/`)) {
+    return decodeURIComponent(url.slice(normalizedAssetHost.length + 1));
+  }
+
+  return url.replace(/^\/+/, '');
 }
 
 export function useUpdateProductSubmit({
@@ -73,6 +89,7 @@ export function useUpdateProductSubmit({
   idsImageForDelete,
 }: UseUpdateProductSubmitInput) {
   const toast = useToast();
+  const config = useRuntimeConfig();
   const loadingSubmit = ref(false);
   const loadingAction = ref<UpdateProductAction | null>(null);
 
@@ -183,6 +200,7 @@ export function useUpdateProductSubmit({
             dataDetailProduct.value,
             idsImageForDelete.value,
             uploadedKeys,
+            config.public.assetHost ?? '',
           ),
         });
       }

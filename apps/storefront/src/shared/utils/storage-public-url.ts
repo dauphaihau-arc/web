@@ -53,6 +53,20 @@ export function resolveStoragePublicUrl(input: StorageUrlInput): string | undefi
   return `${baseUrl}/${encodedKey}`;
 }
 
+export function resolveStorageKeyFromPublicUrl(url: string | undefined, assetHost: string | undefined): string | undefined {
+  if (!url) {
+    return undefined;
+  }
+
+  const normalizedAssetHost = assetHost?.replace(/\/+$/, '');
+
+  if (normalizedAssetHost && url.startsWith(`${normalizedAssetHost}/`)) {
+    return decodeURIComponent(url.slice(normalizedAssetHost.length + 1));
+  }
+
+  return getStorageKey({ storage_key: url });
+}
+
 export function resolveProductImageUrl(
   image: ProductImageLike | undefined,
   assetHost: string | undefined,

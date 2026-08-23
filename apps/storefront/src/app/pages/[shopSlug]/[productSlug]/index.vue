@@ -65,13 +65,13 @@ function toRecentProductView(input: NonNullable<typeof productData.value>): GetP
     slug: input.slug,
     image: primaryImage
       ? {
-          storage_key: primaryImage.storage_key,
+          url: primaryImage.url,
           variant: 'original',
           variants: primaryImage.variants
             ? Object.fromEntries(
                 Object.entries(primaryImage.variants).map(([variant, image]) => [
                   variant,
-                  { storage_key: image.storage_key },
+                  { url: image.url },
                 ]),
               )
             : undefined,

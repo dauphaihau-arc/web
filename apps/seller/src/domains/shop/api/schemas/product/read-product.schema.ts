@@ -83,7 +83,7 @@ export const shopProductDetailApiResponseSchema = z.object({
   variant_sub_group_name: z.string().optional(),
   images: z.array(z.object({
     id: z.string(),
-    storage_key: z.string(),
+    url: z.string(),
     rank: z.number(),
     variant_status: z.string(),
     variant_error: z.string().optional(),
@@ -91,7 +91,7 @@ export const shopProductDetailApiResponseSchema = z.object({
     variants: z.array(z.object({
       id: z.string(),
       variant: z.string(),
-      storage_key: z.string(),
+      url: z.string(),
       width: z.number().optional(),
       height: z.number().optional(),
       format: z.string().optional(),
@@ -111,7 +111,7 @@ export const shopProductDetailApiResponseSchema = z.object({
     name: z.string(),
     option_value_1: z.string().optional(),
     option_value_2: z.string().optional(),
-    image_storage_key: z.string().optional(),
+    image_url: z.string().optional(),
     rank: z.number(),
   })),
   inventory: z.array(z.object({

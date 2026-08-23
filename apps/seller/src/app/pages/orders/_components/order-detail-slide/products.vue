@@ -3,17 +3,8 @@ import { formatMinorCurrency } from '@arc/utils'
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail'
 
 const props = defineProps<{
-  assetHost: string
   order: ShopOrder
 }>()
-
-function buildAssetUrl(assetHostValue: string, storageKey?: string) {
-  if (!storageKey || !assetHostValue) {
-    return ''
-  }
-
-  return `${assetHostValue}/${storageKey.replace(/^\/+/, '')}`
-}
 
 function formatAmountWithShortLabel(amountMinor: number) {
   return formatMinorCurrency(amountMinor, props.order.currency)
@@ -39,8 +30,8 @@ function formatAmountWithShortLabel(amountMinor: number) {
       >
         <div class="bg-elevated overflow-hidden rounded-xl border border-border-subtle">
           <NuxtImg
-            v-if="product.storage_key"
-            :src="buildAssetUrl(assetHost, product.storage_key)"
+            v-if="product.image_url"
+            :src="product.image_url"
             width="64"
             height="64"
             class="size-16 object-cover"

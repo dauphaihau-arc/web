@@ -7,7 +7,7 @@ export type ChatProductReferenceSnapshot = {
   title: string
   shop_slug: string
   product_slug: string
-  image_storage_key?: string
+  image_url?: string
   amount_minor?: number
   original_amount_minor?: number
   currency?: string
@@ -68,7 +68,7 @@ export function parseChatProductReference(
       title,
       shop_slug: shopSlug,
       product_slug: productSlug,
-      image_storage_key: getOptionalString(snapshot.image_storage_key),
+      image_url: getOptionalString(snapshot.image_url),
       amount_minor: getOptionalNumber(snapshot.amount_minor),
       original_amount_minor: getOptionalNumber(snapshot.original_amount_minor),
       currency: getOptionalString(snapshot.currency),

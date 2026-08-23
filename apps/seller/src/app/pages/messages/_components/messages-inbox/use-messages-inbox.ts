@@ -22,22 +22,12 @@ import { useShopChatMessages } from '~/domains/shop/queries/messages.query';
 import { useShopSendChatMessage } from '~/domains/shop/mutations/send-message.mutation';
 import { useShopChatConversations } from '~/domains/shop/queries/conversations.query';
 
-function buildAssetUrl(assetHost: string, storageKey?: string) {
-  if (!storageKey || !assetHost) {
-    return undefined;
-  }
-
-  return `${assetHost}/${storageKey.replace(/^\/+/, '')}`;
-}
-
 export function useMessagesInbox(selectedConversationId: Ref<string | undefined>) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const config = useRuntimeConfig();
 
   const storefrontAppURL = computed(() => config.public.storefrontAppURL.replace(/\/+$/, ''));
-  const assetHost = computed(() => config.public.assetHost?.replace(/\/+$/, '') ?? '');
-
   const chatEventsClient = import.meta.client
     ? createSellerChatEventsClient(queryClient)
     : null;
@@ -204,7 +194,7 @@ export function useMessagesInbox(selectedConversationId: Ref<string | undefined>
 
     return {
       title: snapshot.title,
-      imageUrl: buildAssetUrl(assetHost.value, snapshot.image_storage_key),
+      imageUrl: snapshot.image_url,
       priceLabel,
       statusLabel,
       href: `${storefrontAppURL.value}/${snapshot.shop_slug}/${snapshot.product_slug}`,
