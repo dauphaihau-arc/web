@@ -1,3 +1,4 @@
+import { ICON_NAME_BY_ALIAS } from './app-icon.constants'
 import { designTokenClasses } from './design-tokens'
 
 export const sharedAppConfig = {
@@ -14,7 +15,7 @@ export const sharedAppConfig = {
     },
     select: {
       default: {
-        loadingIcon: 'i-eos-icons:loading',
+        loadingIcon: ICON_NAME_BY_ALIAS.loading,
       },
     },
     selectMenu: {
@@ -56,7 +57,7 @@ export const sharedAppConfig = {
     },
     button: {
       default: {
-        loadingIcon: 'i-eos-icons:loading',
+        loadingIcon: ICON_NAME_BY_ALIAS.loading,
       },
       variant: {
         subtle: 'ring-1 ring-inset ring-{color}-200 text-{color}-500 bg-{color}-50 hover:bg-{color}-100 disabled:bg-{color}-50 aria-disabled:bg-{color}-50 dark:ring-{color}-800 dark:text-{color}-400 dark:bg-{color}-950 dark:hover:bg-{color}-900 dark:disabled:bg-{color}-950 dark:aria-disabled:bg-{color}-950 focus-visible:ring-2 focus-visible:ring-{color}-500 dark:focus-visible:ring-{color}-400',
@@ -77,7 +78,7 @@ export const sharedAppConfig = {
     },
     input: {
       default: {
-        loadingIcon: 'i-eos-icons:loading',
+        loadingIcon: ICON_NAME_BY_ALIAS.loading,
       },
     },
     tabs: {

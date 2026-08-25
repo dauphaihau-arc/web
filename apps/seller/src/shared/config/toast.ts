@@ -1,3 +1,4 @@
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants';
 import type { Notification } from '#ui/types';
 
 interface ToastCustom {
@@ -7,18 +8,18 @@ interface ToastCustom {
 export const toastCustom: ToastCustom = {
   error: {
     color: 'red',
-    icon: 'i-carbon:warning-filled',
+    icon: ICON_NAME_BY_ALIAS.warning,
   },
   success: {
     color: 'green',
-    icon: 'i-material-symbols:check-circle',
+    icon: ICON_NAME_BY_ALIAS.check,
   },
   info: {
     color: 'blue',
-    icon: 'i-ic:baseline-info',
+    icon: ICON_NAME_BY_ALIAS.info,
   },
   warning: {
     color: 'yellow',
-    icon: 'i-ph:warning-fill',
+    icon: ICON_NAME_BY_ALIAS.warning,
   },
 };

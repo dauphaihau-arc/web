@@ -25,6 +25,7 @@ export const ICON_NAME_BY_ALIAS = {
   trash: 'i-heroicons-trash',
   close: 'i-material-symbols:cancel-rounded',
   check: 'i-material-symbols:check-circle-rounded',
+  info: 'i-material-symbols:info-rounded',
   calendar: 'i-material-symbols:calendar-month-rounded',
   calendarDaysSolid: 'i-heroicons-calendar-days-20-solid',
   location: 'i-material-symbols:location-on-outline',
@@ -67,6 +68,7 @@ export const ICON_NAME_BY_ALIAS = {
   import: 'iconoir:import',
   export: 'ph:export',
   downloadTray: 'i-heroicons-arrow-down-tray',
+  loading: 'i-heroicons-arrow-path-20-solid',
 } as const
 
 export type AppIconAlias = keyof typeof ICON_NAME_BY_ALIAS
@@ -112,6 +114,7 @@ export const APP_ICON_CLIENT_BUNDLE_ICONS = [
   'heroicons:trash',
   'material-symbols:cancel-rounded',
   'material-symbols:check-circle-rounded',
+  'material-symbols:info-rounded',
   'material-symbols:calendar-month-rounded',
   'material-symbols:location-on-outline',
   'lucide:arrow-up',
@@ -151,6 +154,7 @@ export const APP_ICON_CLIENT_BUNDLE_ICONS = [
   'lucide:laugh',
   'iconoir:import',
   'ph:export',
+  'heroicons:arrow-path-20-solid',
 ] as const
 
 export const APPROVED_ICON_PREFIXES = [
