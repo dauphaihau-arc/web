@@ -86,7 +86,7 @@ defineEmits<{
         <UInput
           v-if="uppercaseSku"
           v-model="row.sku"
-          v-alphanumeric
+          v-sku
           v-uppercase
           :maxlength="PRODUCT_CONFIG.MAX_CHAR_SKU"
           name="sku"
@@ -96,7 +96,7 @@ defineEmits<{
         <UInput
           v-else
           v-model="row.sku"
-          v-alphanumeric
+          v-sku
           :maxlength="PRODUCT_CONFIG.MAX_CHAR_SKU"
           name="sku"
           size="lg"

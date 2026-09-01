@@ -71,7 +71,7 @@ function setSku(value: string | number) {
     >
       <UInput
         v-uppercase
-        v-alphanumeric
+        v-sku
         :model-value="noneVariantModel.sku"
         :maxlength="PRODUCT_CONFIG.MAX_CHAR_SKU"
         :disabled="props.disabled"

@@ -40,6 +40,22 @@ export function registerAlphanumericDirective(app: App) {
   })
 }
 
+export function registerSkuDirective(app: App) {
+  app.directive('sku', {
+    created(el: HTMLElement) {
+      el.addEventListener('keydown', (event: KeyboardEvent) => {
+        if (isAllowedEditingKey(event)) {
+          return
+        }
+
+        if (!isNumberKey(event) && !isLetterKey(event) && event.key !== '-') {
+          event.preventDefault()
+        }
+      })
+    },
+  })
+}
+
 export function registerNumericDirective(app: App) {
   app.directive('numeric', {
     created(el: HTMLElement) {
