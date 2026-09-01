@@ -90,8 +90,21 @@ function isActive(path?: string) {
 </template>
 
 <style scoped>
-@import url("~/app/assets/css/layout-shop.css");
+.link-default {
+  @apply font-medium text-sm;
+}
 
+.link-theme {
+  @apply py-1.5 px-3 rounded-md transition-all duration-200;
+}
+
+.link-active {
+  @apply text-primary hover:bg-primary/5;
+}
+
+.link-inactive {
+  @apply text-text-strong hover:bg-customGray-200/50;
+}
 .slide-down-enter-active,
 .slide-down-leave-active {
   transition: max-height 0.3s ease-in-out;
