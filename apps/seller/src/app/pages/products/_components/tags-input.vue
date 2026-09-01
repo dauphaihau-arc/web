@@ -4,7 +4,6 @@ import { PRODUCT_CONFIG } from '@arc/enums/product'
 
 const tagsModel = defineModel<string[]>({
   default: [],
-  required: true,
 })
 
 const state = reactive({
@@ -12,13 +11,28 @@ const state = reactive({
   errorMsgInput: '',
 })
 
-const addTag = () => {
+const tagInputRef = ref()
+
+const isAddTagDisabled = computed(() =>
+  !state.input
+  || Boolean(state.errorMsgInput)
+  || tagsModel.value.length === PRODUCT_CONFIG.MAX_TAGS
+  || tagsModel.value.includes(state.input),
+)
+
+const addTag = async () => {
+  if (isAddTagDisabled.value) {
+    return
+  }
+
   tagsModel.value = [...tagsModel.value, state.input]
   state.input = ''
+  await nextTick()
+  tagInputRef.value?.input?.focus()
 }
 
 const removeTag = (index: number) => {
-  tagsModel.value = tagsModel.value.toSpliced(index, 1)
+  tagsModel.value = tagsModel.value.filter((_, currentIndex) => currentIndex !== index)
 }
 
 watchDebounced(
@@ -46,12 +60,15 @@ watchDebounced(
         orientation="horizontal"
       >
         <UInput
+          ref="tagInputRef"
           v-model="state.input"
           :maxlength="PRODUCT_CONFIG.MAX_CHAR_TAG"
           :disabled="tagsModel.length === PRODUCT_CONFIG.MAX_TAGS"
+          @keydown.enter.prevent="addTag"
         />
         <UButton
-          :disabled=" !state.input || Boolean(state.errorMsgInput)"
+          :disabled="isAddTagDisabled"
+          type="button"
           color="gray"
           variant="solid"
           @click="addTag"
@@ -70,7 +87,7 @@ watchDebounced(
       >
         <UFormGroup class="mb-4">
           <UButtonGroup
-            v-if="tag"
+            v-if="tag !== undefined"
             size="lg"
             orientation="horizontal"
           >
@@ -80,9 +97,10 @@ watchDebounced(
               color="white"
             />
             <UButton
+              type="button"
               :icon="ICON_NAME_BY_ALIAS['xMark']"
               color="gray"
-              @click="() => removeTag(index)"
+              @click="removeTag(index)"
             />
           </UButtonGroup>
         </UFormGroup>

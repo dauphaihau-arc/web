@@ -6,7 +6,7 @@ import type { VariantInputOption } from './variant-input.types'
 const groupName = defineModel<string | undefined>('groupName')
 const optionName = defineModel<string>('optionName', { default: '' })
 
-defineProps<{
+const props = defineProps<{
   errorGroupName?: string
   errorOption?: string
   groupNameFieldName?: string
@@ -19,19 +19,32 @@ defineProps<{
   title: string
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   add: []
   close: []
   open: []
   remove: [option: VariantInputOption]
   updateName: [option: VariantInputOption, value: string]
 }>()
+
+const optionNameInputRef = ref()
+
+async function handleAdd() {
+  if (!optionName.value || props.errorOption) {
+    return
+  }
+
+  emit('add')
+  await nextTick()
+  optionNameInputRef.value?.input?.focus()
+}
 </script>
 
 <template>
   <div class="relative w-1/5">
     <UButton
       v-if="showOpenButton && !isActive"
+      type="button"
       class="mb-4"
       :icon="ICON_NAME_BY_ALIAS['plus']"
       color="gray"
@@ -44,6 +57,7 @@ defineEmits<{
     <div v-else>
       <UButton
         v-if="showCloseButton"
+        type="button"
         class="absolute -right-20 -top-4"
         variant="ghost"
         :icon="ICON_NAME_BY_ALIAS['xMark']"
@@ -89,17 +103,20 @@ defineEmits<{
           orientation="horizontal"
         >
           <UInput
+            ref="optionNameInputRef"
             v-model="optionName"
             :maxlength="limitOptionName === false ? undefined : PRODUCT_CONFIG.MAX_CHAR_VARIANT_NAME"
+            @keydown.enter.prevent="handleAdd"
           />
           <template v-if="showInlineOptionError">
             {{ errorOption }}
           </template>
           <UButton
+            type="button"
             :disabled="!optionName || !!errorOption"
             color="gray"
             variant="solid"
-            @click="$emit('add')"
+            @click="handleAdd"
           >
             Add
           </UButton>
