@@ -96,6 +96,7 @@ watchDebounced(
       <h3 class="mb-3 text-lg font-medium">
         {{ shopCart?.shop?.name }}
       </h3>
+
       <div class="mb-8 flex gap-4">
         <NuxtImg
           :src="productCart?.product.image_url"
@@ -121,7 +122,7 @@ watchDebounced(
               {{ productCart.inventory.variant_name }}
             </div>
 
-            <div class="w-1/2">
+            <div class="w-[45%]">
               <UButtonGroup
                 size="lg"
                 orientation="horizontal"
@@ -176,15 +177,16 @@ watchDebounced(
 
       <UDivider />
 
-      <div class="mt-6 flex w-fit flex-col gap-4">
+      <div class="mt-6 w-fit">
         <CheckoutAddRemovePromoCoupons />
+
         <div>
           <UButton
             variant="ghost"
             :icon="ICON_NAME_BY_ALIAS['clipboardDocumentList']"
             color="gray"
             :disabled="cartStore.stateCheckoutNow.isPendingCreateOrder"
-            class="mb-3 w-fit"
+            class="mb-2 w-fit"
             @click="showNoteInput = !showNoteInput"
           >
             Add a note to {{ shopCart.shop.name }}

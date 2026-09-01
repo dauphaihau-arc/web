@@ -21,6 +21,7 @@ defineEmits<{
     class="mt-5"
     :ui="{
       th: { base: 'max-w-28 truncate' },
+      td: { base: 'py-4 align-top' },
     }"
   >
     <template #variant_name-data="{ row }">
@@ -37,7 +38,6 @@ defineEmits<{
 
     <template #amount-data="{ row }">
       <UFormGroup
-        class="mt-6"
         :error="row.errorAmount ?? ''"
       >
         <UInput
@@ -62,7 +62,6 @@ defineEmits<{
 
     <template #stock-data="{ row }">
       <UFormGroup
-        class="mt-6"
         :error="row.errorStock ?? ''"
       >
         <UInput
@@ -82,7 +81,7 @@ defineEmits<{
     </template>
 
     <template #sku-data="{ row }">
-      <UFormGroup class="mt-6">
+      <UFormGroup>
         <UInput
           v-if="uppercaseSku"
           v-model="row.sku"

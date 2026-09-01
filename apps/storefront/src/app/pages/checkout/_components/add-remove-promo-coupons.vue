@@ -142,7 +142,7 @@ const disabledInput = computed(() => {
       variant="ghost"
       :icon="ICON_NAME_BY_ALIAS['ticket']"
       color="gray"
-      class="w-fit"
+      class="mb-2 w-fit"
       :disabled="cartStore.stateCheckoutNow.isPendingCreateOrder"
       @click="toggleShowAddCouponInput"
     >
@@ -159,7 +159,6 @@ const disabledInput = computed(() => {
         :error="state.errorMsg"
       >
         <UButtonGroup
-          size="lg"
           orientation="horizontal"
         >
           <UInput

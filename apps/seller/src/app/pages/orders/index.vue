@@ -64,7 +64,7 @@ watch(statusFilter, () => {
         :counts="orderCountsQuery.data.value?.status_counts ?? data?.status_counts"
       />
 
-      <div class="mb-6 flex justify-between">
+      <div class="mb-6 flex items-start justify-between gap-4">
         <OrderFilterToolbar
           v-model:status-filter="statusFilter"
           @change="handleToolbarChange"
@@ -74,6 +74,7 @@ watch(statusFilter, () => {
         <UButton
           color="gray"
           :icon="ICON_NAME_BY_ALIAS['export']"
+          class="shrink-0"
           @click="openExportDialog"
         >
           Export
