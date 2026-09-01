@@ -48,7 +48,7 @@ export default defineNuxtConfig({
 
   devServer: {
     host: '0.0.0.0',
-    port: 4000,
+    port: 4001,
   },
 
   srcDir: 'src/',
@@ -110,7 +110,7 @@ export default defineNuxtConfig({
       apiBaseURL: process.env.API_BASE_URL,
       apiVersion: process.env.API_VERSION,
       assetHost: process.env.ASSET_HOST,
-      sellerAppURL: process.env.SELLER_APP_URL || 'http://localhost:4001',
+      sellerAppURL: process.env.SELLER_APP_URL || 'http://localhost:4002',
     },
   },
 

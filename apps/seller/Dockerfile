@@ -26,12 +26,12 @@ RUN apk add --no-cache libc6-compat
 
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
-ENV PORT=4001
+ENV PORT=4002
 
 WORKDIR /app
 
 COPY --from=build /repo/apps/seller/.output ./.output
 
-EXPOSE 4001
+EXPOSE 4002
 
 CMD ["node", ".output/server/index.mjs"]
