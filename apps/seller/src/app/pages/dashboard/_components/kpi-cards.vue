@@ -10,7 +10,7 @@ const props = defineProps<{
 
 type KpiCardIcon = Extract<
   AppIconAlias,
-  'revenue' | 'orders' | 'product' | 'averageOrder'
+  'revenueSolid' | 'orders' | 'product' | 'averageOrder'
 >
 
 type KpiCard = {
@@ -27,7 +27,7 @@ const cards = computed<KpiCard[]>(() => {
     {
       label: 'Revenue',
       value: formatMinorCurrency(summary?.revenue_minor ?? 0, currency),
-      icon: 'revenue',
+      icon: 'revenueSolid',
     },
     {
       label: 'Orders',

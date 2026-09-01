@@ -57,7 +57,7 @@ export const shopSidebarItems: LinkItem[] = [
   },
   {
     title: 'Finances',
-    icon: 'i-heroicons-banknotes',
+    icon: 'revenue',
     to: { path: '/finances' },
     matchPath: '/finances',
     disabled: true,

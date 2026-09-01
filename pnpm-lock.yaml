@@ -188,6 +188,9 @@ importers:
       '@iconify-json/akar-icons':
         specifier: ^1.2.7
         version: 1.2.7
+      '@iconify-json/eos-icons':
+        specifier: ^1.2.4
+        version: 1.2.4
       '@iconify-json/fluent':
         specifier: ^1.2.56
         version: 1.2.56
@@ -303,6 +306,9 @@ importers:
       '@iconify-json/akar-icons':
         specifier: ^1.2.7
         version: 1.2.7
+      '@iconify-json/eos-icons':
+        specifier: ^1.2.4
+        version: 1.2.4
       '@iconify-json/fluent':
         specifier: ^1.2.56
         version: 1.2.56
@@ -1331,6 +1337,9 @@ packages:
 
   '@iconify-json/akar-icons@1.2.7':
     resolution: {integrity: sha512-cw44dCnZgGhm6Tywxm0WALAnDB9AyGkDk7kiLMo2B/Ayt7duZu/uyrsqb55weWUN8Ge2sQAOl8MRtT6bFcLzPg==}
+
+  '@iconify-json/eos-icons@1.2.4':
+    resolution: {integrity: sha512-gp2BCSF3+aRgMqE7LRAVxT5nXJLOtfcvGnOYwJz4gc4zxcEqAaOByxFVLZej15jXPRJmUv2TSzMNrQ2gDtw4VA==}
 
   '@iconify-json/fluent@1.2.56':
     resolution: {integrity: sha512-WqP0v2J5qs/VJcCaRWCgCvdOwq+vV7OPENlJVczc1aUXCfBtLdl/A4ohYlJEopAUAfVyTKadj2kYNODJapRBNw==}
@@ -7323,6 +7332,10 @@ snapshots:
   '@humanwhocodes/retry@0.4.3': {}
 
   '@iconify-json/akar-icons@1.2.7':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify-json/eos-icons@1.2.4':
     dependencies:
       '@iconify/types': 2.0.0
 

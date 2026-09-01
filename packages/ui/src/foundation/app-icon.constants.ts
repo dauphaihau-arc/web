@@ -48,7 +48,8 @@ export const ICON_NAME_BY_ALIAS = {
   shipping: 'lucide:plane',
   product: 'tabler:cube',
   dashboard: 'streamline-flex:dashboard-3',
-  revenue: 'i-heroicons-banknotes-20-solid',
+  revenue: 'i-heroicons-banknotes',
+  revenueSolid: 'i-heroicons-banknotes-20-solid',
   averageOrder: 'i-heroicons-chart-bar-20-solid',
   marketing: 'nimbus:marketing',
   refund: 'lets-icons:refund-forward',
@@ -68,13 +69,14 @@ export const ICON_NAME_BY_ALIAS = {
   import: 'iconoir:import',
   export: 'ph:export',
   downloadTray: 'i-heroicons-arrow-down-tray',
-  loading: 'i-heroicons-arrow-path-20-solid',
+  loading: 'eos-icons:loading',
 } as const
 
 export type AppIconAlias = keyof typeof ICON_NAME_BY_ALIAS
 
 export const APP_ICON_COLLECTIONS = [
   'akar-icons',
+  'eos-icons',
   'fluent',
   'heroicons',
   'hugeicons',
@@ -95,6 +97,7 @@ export const APP_ICON_COLLECTIONS = [
 export const APP_ICON_CLIENT_BUNDLE_ICONS = [
   'tabler:ai',
   'uil:search',
+  'heroicons:magnifying-glass-20-solid',
   'majesticons:user-line',
   'uil:cart',
   'akar-icons:bell',
@@ -109,6 +112,9 @@ export const APP_ICON_CLIENT_BUNDLE_ICONS = [
   'heroicons:plus',
   'lucide:circle-plus',
   'lucide:circle-x',
+  'lucide:x',
+  'heroicons:x-mark',
+  'heroicons:x-mark-20-solid',
   'heroicons:minus',
   'lucide:edit',
   'heroicons:trash',
@@ -116,6 +122,7 @@ export const APP_ICON_CLIENT_BUNDLE_ICONS = [
   'material-symbols:check-circle-rounded',
   'material-symbols:info-rounded',
   'material-symbols:calendar-month-rounded',
+  'heroicons:calendar-days-20-solid',
   'material-symbols:location-on-outline',
   'lucide:arrow-up',
   'lucide:arrow-down',
@@ -124,6 +131,8 @@ export const APP_ICON_CLIENT_BUNDLE_ICONS = [
   'tabler:arrow-forward',
   'lucide:chevron-left',
   'lucide:chevron-right',
+  'heroicons:chevron-left-20-solid',
+  'heroicons:chevron-right-20-solid',
   'lucide:chevrons-left',
   'lucide:chevrons-right',
   'heroicons:chevron-up-20-solid',
@@ -136,6 +145,7 @@ export const APP_ICON_CLIENT_BUNDLE_ICONS = [
   'lucide:plane',
   'tabler:cube',
   'streamline-flex:dashboard-3',
+  'heroicons:banknotes',
   'heroicons:banknotes-20-solid',
   'heroicons:chart-bar-20-solid',
   'nimbus:marketing',
@@ -145,6 +155,7 @@ export const APP_ICON_CLIENT_BUNDLE_ICONS = [
   'lucide:map',
   'fluent:payment-28-regular',
   'heroicons:document-plus-20-solid',
+  'heroicons:clipboard-document-list',
   'heroicons:ellipsis-horizontal-20-solid',
   'lucide:cloud-upload',
   'lucide:frown',
@@ -154,10 +165,13 @@ export const APP_ICON_CLIENT_BUNDLE_ICONS = [
   'lucide:laugh',
   'iconoir:import',
   'ph:export',
-  'heroicons:arrow-path-20-solid',
+  'heroicons:arrow-down-tray',
+  'eos-icons:loading',
 ] as const
 
 export const APPROVED_ICON_PREFIXES = [
+  'eos-icons:',
+  'i-eos-icons:',
   'i-heroicons-',
   'i-material-symbols:',
   'material-symbols:',
