@@ -1,15 +1,11 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue'
+import HeaderActions from './header-actions.vue'
 import Categories from './categories.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
-import { useGetCart } from '~/domains/cart/queries/cart.query'
-import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
-import { hasAdminRole, hasCustomerAccess, hasSellerAccess } from '~/domains/auth/utils/seller-access'
 
 const loadCartMegaMenu = () => import('./cart-mega-menu.vue')
 const loadSearchAllMegaMenu = () => import('./search-all-mega-menu.vue')
-const loadAccountDropdown = () => import('./account-dropdown.vue')
-const loadNotificationPopover = () => import('./notification-popover.vue')
 
 const CartMegaMenu = defineAsyncComponent({
   loader: loadCartMegaMenu,
@@ -19,28 +15,8 @@ const SearchAllMegaMenu = defineAsyncComponent({
   loader: loadSearchAllMegaMenu,
   suspensible: false,
 })
-const AccountDropdown = defineAsyncComponent({
-  loader: loadAccountDropdown,
-  suspensible: false,
-})
-const NotificationPopover = defineAsyncComponent({
-  loader: loadNotificationPopover,
-  suspensible: false,
-})
 
 const route = useRoute()
-const modal = useModal()
-const config = useRuntimeConfig()
-
-const {
-  data: dataGetCart,
-} = useGetCart()
-
-const {
-  data: dataUserAuth,
-  isPending: isPendingUserAuth,
-} = useGetCurrentUser()
-
 const isShowCart = ref(false)
 const isShowSearch = ref(false)
 const hasLoadedCartMegaMenu = ref(false)
@@ -54,11 +30,6 @@ async function preloadCartMegaMenu() {
 async function preloadSearchAllMegaMenu() {
   hasLoadedSearchAllMegaMenu.value = true
   await loadSearchAllMegaMenu()
-}
-
-function preloadAuthMenu() {
-  void loadNotificationPopover()
-  void loadAccountDropdown()
 }
 
 watch(() => [route.path, route.query], () => {
@@ -99,40 +70,6 @@ onMounted(async () => {
   document.head.appendChild(viewportMeta)
 })
 
-const totalProductCarts = computed(() => {
-  return dataGetCart.value?.cart?.total_quantity ?? 0
-})
-
-const isAdminUser = computed(() => hasAdminRole(dataUserAuth.value?.user))
-
-const sellerCtaLabel = computed(() => {
-  if (!dataUserAuth.value?.user) {
-    return 'Seller Center'
-  }
-
-  return hasSellerAccess(dataUserAuth.value.user) ? 'Manage Shop' : 'Start Selling'
-})
-
-const hasCustomerAccountAccess = computed(() => hasCustomerAccess(dataUserAuth.value?.user))
-
-function getSellerRedirectURL() {
-  const sellerAppURL = config.public.sellerAppURL.replace(/\/+$/, '')
-
-  if (!dataUserAuth.value?.user) {
-    return `${sellerAppURL}/login`
-  }
-
-  if (hasSellerAccess(dataUserAuth.value.user)) {
-    return `${sellerAppURL}/dashboard`
-  }
-
-  return `${sellerAppURL}/sell`
-}
-
-function navigateToSellerApp() {
-  return navigateTo(getSellerRedirectURL(), { external: true })
-}
-
 async function toggleSearchMenu() {
   if (!isShowSearch.value) {
     void preloadSearchAllMegaMenu()
@@ -149,21 +86,6 @@ async function toggleCartMenu() {
 
   isShowCart.value = !isShowCart.value
   isShowSearch.value = false
-}
-
-function handleSearchTriggerHover() {
-  void preloadSearchAllMegaMenu()
-  isShowCart.value = false
-}
-
-function handleCartTriggerHover() {
-  void preloadCartMegaMenu()
-  isShowSearch.value = false
-}
-
-async function showRegisterLoginDialog(): Promise<void> {
-  const dialog = await import('~/app/components/dialogs/login-register/register-login-dialog.vue')
-  modal.open(dialog.default)
 }
 </script>
 
@@ -197,90 +119,14 @@ async function showRegisterLoginDialog(): Promise<void> {
           />
         </div>
 
-        <div class="flex h-fit items-center gap-2 justify-self-end">
-          <UTooltip text="Search">
-            <UButton
-              square
-              color="gray"
-              variant="ghost"
-              @click="toggleSearchMenu"
-              @mouseover="handleSearchTriggerHover"
-              @focus="preloadSearchAllMegaMenu"
-            >
-              <AppIcon name="search" />
-            </UButton>
-          </UTooltip>
-
-          <ClientOnly>
-            <template #fallback>
-              <USkeleton class="size-6 rounded-full" />
-            </template>
-
-            <template v-if="isPendingUserAuth && !dataUserAuth">
-              <USkeleton class="size-6 rounded-full" />
-            </template>
-            <template v-else-if="hasCustomerAccountAccess">
-              <NotificationPopover @mouseenter="preloadAuthMenu" />
-              <AccountDropdown
-                @hover-trigger="isShowCart = false"
-                @mouseenter="preloadAuthMenu"
-              />
-            </template>
-            <template v-else>
-              <UTooltip text="Sign in">
-                <UButton
-                  data-testid="header-sign-in-trigger"
-                  square
-                  color="gray"
-                  variant="ghost"
-                  @click="showRegisterLoginDialog"
-                  @mouseover="isShowCart = false"
-                >
-                  <AppIcon name="user" />
-                </UButton>
-              </UTooltip>
-            </template>
-          </ClientOnly>
-
-          <UTooltip
-            v-if="!isAdminUser"
-            :text="sellerCtaLabel"
-          >
-            <UButton
-              square
-              color="gray"
-              variant="ghost"
-              @click="navigateToSellerApp"
-            >
-              <AppIcon name="shop" />
-            </UButton>
-          </UTooltip>
-
-          <UTooltip text="Cart">
-            <UChip
-              :text="totalProductCarts"
-              :show="totalProductCarts > 0"
-              class="cursor-pointer"
-              size="lg"
-              position="bottom-right"
-              @click="toggleCartMenu"
-              @mouseover="handleCartTriggerHover"
-            >
-              <UButton
-                id="cart-btn"
-                data-testid="header-cart-trigger"
-                square
-                variant="ghost"
-                color="gray"
-                @click.stop="toggleCartMenu"
-                @mouseover="handleCartTriggerHover"
-                @focus="preloadCartMegaMenu"
-              >
-                <AppIcon name="cart" />
-              </UButton>
-            </UChip>
-          </UTooltip>
-        </div>
+        <HeaderActions
+          @close-cart="isShowCart = false"
+          @close-search="isShowSearch = false"
+          @preload-cart="preloadCartMegaMenu"
+          @preload-search="preloadSearchAllMegaMenu"
+          @toggle-cart="toggleCartMenu"
+          @toggle-search="toggleSearchMenu"
+        />
       </nav>
     </header>
 
