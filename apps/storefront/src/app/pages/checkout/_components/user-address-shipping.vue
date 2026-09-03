@@ -149,7 +149,7 @@ const showCreateDialog = () => {
           v-model="addressIdSelected"
           :options="addressRadioOptions"
           value-attribute="id"
-          direction="vertical"
+          :ui="{ container: 'space-y-3' }"
         >
           <template #label="{ option }">
             <div class="text-sm font-medium text-text-subtle">
