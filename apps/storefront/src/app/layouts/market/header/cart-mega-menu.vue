@@ -61,11 +61,10 @@ const remainProductCart = computed(() => {
                     )
                   "
                 >
-                  <NuxtImg
+                  <ProductCardImage
                     :src="productCart.product.image_url"
-                    width="70"
-                    height="70"
-                    class="rounded"
+                    frame-class="w-[70px] shrink-0 cursor-pointer"
+                    :frame-style="{ aspectRatio: '1 / 1' }"
                   />
                   <div>
                     <div class="text-xl font-medium">

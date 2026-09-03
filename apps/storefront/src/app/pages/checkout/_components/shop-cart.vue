@@ -98,11 +98,10 @@ watchDebounced(
       </h3>
 
       <div class="mb-8 flex gap-4">
-        <NuxtImg
+        <ProductCardImage
           :src="productCart?.product.image_url"
-          width="180"
-          height="180"
-          class="max-h-[180px] max-w-[180px] cursor-pointer rounded"
+          frame-class="w-[180px] shrink-0 cursor-pointer"
+          :frame-style="{ aspectRatio: '1 / 1' }"
         />
 
         <div class="flex w-full justify-between">
