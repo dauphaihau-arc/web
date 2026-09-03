@@ -149,16 +149,15 @@ const showCreateDialog = () => {
           v-model="addressIdSelected"
           :options="addressRadioOptions"
           value-attribute="id"
+          direction="vertical"
         >
           <template #label="{ option }">
-            <div class="mb-6 flex w-full flex-col gap-1 text-text-strong">
-              <div class="text-sm font-medium text-text-subtle">
-                {{ option.full_name }} |
-                <span class="font-normal">{{ option.phone }}</span>
-              </div>
-              <div class="text-sm text-text-muted">
-                {{ option.address_1 }}, {{ option.city }}, {{ option.zip }}, {{ option.country }}
-              </div>
+            <div class="text-sm font-medium text-text-subtle">
+              {{ option.full_name }} |
+              <span class="font-normal">{{ option.phone }}</span>
+            </div>
+            <div class="text-sm text-text-muted">
+              {{ option.address_1 }}, {{ option.city }}, {{ option.zip }}, {{ option.country }}
             </div>
           </template>
         </RadioGroupInput>

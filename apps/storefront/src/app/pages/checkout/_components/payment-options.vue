@@ -20,15 +20,14 @@ const paymentOptions = [
       <RadioGroupInput
         v-model="cartStore.stateCheckoutNow.paymentType"
         :options="paymentOptions"
+        direction="horizontal"
       >
         <template #label="{ option }">
-          <div class="mb-6 flex w-full flex-col gap-1">
-            <div class="leading-0 font-semibold text-text-strong">
-              {{ option.label }}
-            </div>
-            <div class="font-normal text-text-muted">
-              {{ option.description }}
-            </div>
+          <div class="leading-0 font-semibold text-text-strong">
+            {{ option.label }}
+          </div>
+          <div class="font-normal text-text-muted">
+            {{ option.description }}
           </div>
         </template>
       </RadioGroupInput>

@@ -66,7 +66,7 @@ const cursorClass = computed(() => props.disabled ? 'cursor-not-allowed' : 'curs
         class="col-start-1 row-start-1 size-1.5 rounded-full bg-white"
       />
     </div>
-    <div :class="['ms-2 flex flex-col', cursorClass]">
+    <div :class="['ms-2.5 flex flex-col', cursorClass]">
       <slot
         v-if="slots.label"
         name="label"

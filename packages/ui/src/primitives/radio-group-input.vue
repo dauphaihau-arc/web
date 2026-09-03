@@ -77,8 +77,8 @@ const direction = computed(() => {
     <div
       :class="[
         direction === 'horizontal'
-          ? 'flex flex-row flex-wrap gap-x-4 gap-y-3'
-          : 'flex flex-col',
+          ? 'flex flex-row flex-wrap gap-x-8 gap-y-3'
+          : 'flex flex-col gap-3',
         props.ui?.container,
       ]"
     >

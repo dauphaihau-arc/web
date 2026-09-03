@@ -47,6 +47,7 @@ onUnmounted(() => {
       :steps="steps"
       :disabled="cartStore.stateCheckoutNow.isPendingCreateOrder"
     />
+
     <div class="grid grid-cols-12 gap-16">
       <div class="col-span-8">
         <UserAddressShipping
