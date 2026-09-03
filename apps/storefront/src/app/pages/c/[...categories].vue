@@ -5,21 +5,29 @@ import SubCategories from './_components/sub-categories.vue'
 import Filters from '~/app/components/product/filters/filters.vue'
 import SortProductsBy from '~/app/components/product/sort-products-by.vue'
 import { useGetProducts } from '~/domains/product/queries/products.query'
-import type { GetProductsRequest } from '~/domains/product/api/contracts/product.contract'
 
 definePageMeta({ layout: 'market' })
 
 const route = useRoute()
+const router = useRouter()
 const marketStore = useMarketStore()
 
 const limit = 16
-const page = ref(1)
+const page = ref(getRoutePage(route.query.page))
+
 const filterQueryKeys = new Set([
   'is_digital',
   'min_price',
   'max_price',
   'who_made',
 ])
+
+function getRoutePage(queryPage: typeof route.query.page): number {
+  const value = Array.isArray(queryPage) ? queryPage[0] : queryPage
+  const parsedPage = Number(value)
+
+  return Number.isInteger(parsedPage) && parsedPage > 0 ? parsedPage : 1
+}
 
 function normalizeRouteQuery(query: typeof route.query): Record<string, string | string[]> {
   const normalized: Record<string, string | string[]> = {}
@@ -47,15 +55,12 @@ const params = computed(() => {
   if (!category) {
     return undefined
   }
-  let defaultParams: GetProductsRequest = {
+  return {
+    ...normalizeRouteQuery(route.query),
     category_id: category.id,
     page: page.value,
     limit,
   }
-  if (route.query) {
-    defaultParams = { ...defaultParams, ...normalizeRouteQuery(route.query) }
-  }
-  return defaultParams
 })
 
 const hasActiveFilters = computed(() => {
@@ -81,9 +86,30 @@ const {
   isPending: isPendingGetProducts,
 } = useGetProducts(params)
 
-watch(() => page.value, () => {
+watch(() => route.query.page, (queryPage) => {
+  const routePage = getRoutePage(queryPage)
+
+  if (page.value !== routePage) {
+    page.value = routePage
+  }
+})
+
+watch(page, (currentPage) => {
+  if (currentPage !== getRoutePage(route.query.page)) {
+    const query = { ...route.query }
+
+    if (currentPage > 1) {
+      query.page = String(currentPage)
+    }
+    else {
+      delete query.page
+    }
+
+    void router.push({ query })
+  }
+
   window.scrollTo({ top: 0, behavior: 'smooth' })
-}, { immediate: true })
+})
 </script>
 
 <template>
