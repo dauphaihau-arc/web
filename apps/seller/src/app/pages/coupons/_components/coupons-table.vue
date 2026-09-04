@@ -7,7 +7,7 @@ import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import type { DropdownItem } from '#ui/types'
 import type { ListShopCouponsResponse } from '~/domains/shop/api/coupon/contracts/coupon.contract'
 import DataTable from '~/shared/ui/data-table/data-table.vue'
-import FixedPagination from '~/app/components/fixed-pagination.vue'
+import FixedPagination from '~/shared/ui/fixed-pagination.vue'
 import { useShopBulkDeleteCoupons } from '~/domains/shop/mutations/bulk-delete-coupons.mutation'
 import { useShopDeleteCoupon } from '~/domains/shop/mutations/delete-coupon.mutation'
 

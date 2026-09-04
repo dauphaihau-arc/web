@@ -12,7 +12,7 @@ import type {
 } from '~/domains/shop/api/product/contracts/read.contract'
 import { useShopBulkMutateProducts } from '~/domains/shop/mutations/bulk-mutate-products.mutation'
 import DataTable from '~/shared/ui/data-table/data-table.vue'
-import FixedPagination from '~/app/components/fixed-pagination.vue'
+import FixedPagination from '~/shared/ui/fixed-pagination.vue'
 import { routes } from '~/shared/navigation/routes'
 
 type ProductRow = {

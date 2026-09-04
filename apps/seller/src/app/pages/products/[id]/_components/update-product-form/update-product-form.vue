@@ -16,7 +16,7 @@ import VariantInput from './variant-input/variant-input.vue'
 import UpdateProductFormActions from './update-product-form-actions.vue'
 import { UPDATE_PRODUCT_FORM_SECTIONS } from './update-product-form.constants'
 import { useUpdateProductForm } from './use-update-product-form'
-import FormGroupCard from '~/app/components/wrapper-form-group-card.vue'
+import FormGroupCard from '~/shared/ui/wrapper-form-group-card.vue'
 
 const sections = UPDATE_PRODUCT_FORM_SECTIONS
 

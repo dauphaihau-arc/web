@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { FilterOption } from '~/app/components/filter/types'
+import type { FilterOption } from '~/shared/ui/data-filter/types'
 
 const props = defineProps<{
   options: FilterOption[]

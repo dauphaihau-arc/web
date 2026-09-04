@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
-import FixedPagination from '~/app/components/fixed-pagination.vue'
+import FixedPagination from '~/shared/ui/fixed-pagination.vue'
 import { routes } from '~/shared/navigation/routes'
 import type { NotificationItem } from '~/domains/me/api/notifications/contracts/notification.contract'
 import { useMarkAllMyNotificationsAsRead, useMarkMyNotificationAsRead } from '~/domains/me/mutations/notifications.mutation'

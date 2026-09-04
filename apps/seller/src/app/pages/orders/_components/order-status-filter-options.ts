@@ -1,5 +1,5 @@
 import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order';
-import type { FilterOption } from '~/app/components/filter/types';
+import type { FilterOption } from '~/shared/ui/data-filter/types';
 
 export const orderStatusFilterOptions: FilterOption[] = [
   { label: 'Awaiting payment', value: OrderStatuses.AWAITING_PAYMENT },

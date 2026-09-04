@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
-import DateFilterPanel from '../../../components/date-filter-panel/date-filter-panel.vue'
-import type { OrderDateFilterDraft } from '../../../components/date-filter-panel/order-filter.types'
+import type { CouponTypeFilter } from './coupon-type-filter-options'
+import DateFilterPanel from '~/shared/ui/date-filter/date-filter-panel.vue'
+import type { OrderDateFilterDraft } from '~/shared/ui/date-filter/filter-draft.types'
 import {
   getDefaultDateFilterTimezone,
   getNowInTimezone,
   toZonedDay,
-} from '../../../components/date-filter-panel/date-filter-timezone'
-import type { CouponTypeFilter } from './coupon-type-filter-options'
+} from '~/shared/ui/date-filter/date-filter-timezone'
 import type { ListShopCouponsRequest } from '~/domains/shop/api/coupon/contracts/coupon.contract'
-import FilterPopover from '~/app/components/filter/filter-popover.vue'
-import FilterToolbar from '~/app/components/filter/filter-toolbar.vue'
+import FilterPopover from '~/shared/ui/data-filter/filter-popover.vue'
+import FilterToolbar from '~/shared/ui/data-filter/filter-toolbar.vue'
 
 const emit = defineEmits<{
   change: [payload: Partial<ListShopCouponsRequest>]

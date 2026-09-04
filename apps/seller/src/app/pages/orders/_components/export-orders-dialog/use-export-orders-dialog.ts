@@ -18,7 +18,7 @@ import {
   UTC_TIMEZONE,
   formatTimezoneOptionLabel,
   getDefaultDateFilterTimezone,
-} from '~/app/components/date-filter-panel/date-filter-timezone';
+} from '~/shared/ui/date-filter/date-filter-timezone';
 import { resolveMyShopId } from '~/domains/shop/utils/resolve-my-shop-id';
 
 type ExportColumnPreset = NonNullable<ExportShopOrdersRequest['column_preset']>;

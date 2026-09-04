@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { CurrencyOption } from '@arc/utils'
-import type { OrderCurrencyFilterDraft } from '~/app/components/date-filter-panel/order-filter.types'
+import type { OrderCurrencyFilterDraft } from '~/shared/ui/date-filter/filter-draft.types'
 
 const props = defineProps<{
   currencyOptions: CurrencyOption[]

@@ -17,7 +17,7 @@ import CreateProductFormActions from './create-product-form-actions.vue'
 import CreateProductShippingSection from './create-product-shipping-section.vue'
 import { PRODUCT_FORM_SECTIONS } from './create-product-form.constants'
 import { useCreateProductForm } from './use-create-product-form'
-import FormGroupCard from '~/app/components/wrapper-form-group-card.vue'
+import FormGroupCard from '~/shared/ui/wrapper-form-group-card.vue'
 import { routes } from '~/shared/navigation/routes'
 
 const router = useRouter()

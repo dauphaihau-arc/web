@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { CreateProductShipping } from '~/domains/shop/api/product/contracts/form.contract'
-import FormGroupCard from '~/app/components/wrapper-form-group-card.vue'
+import FormGroupCard from '~/shared/ui/wrapper-form-group-card.vue'
 
 defineProps<{
   shipping?: CreateProductShipping

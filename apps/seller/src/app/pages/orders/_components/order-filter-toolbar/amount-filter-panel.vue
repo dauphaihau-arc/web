@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { OrderAmountFilterDraft } from '~/app/components/date-filter-panel/order-filter.types'
+import type { OrderAmountFilterDraft } from '~/shared/ui/date-filter/filter-draft.types'
 
 const model = defineModel<OrderAmountFilterDraft>({ required: true })
 

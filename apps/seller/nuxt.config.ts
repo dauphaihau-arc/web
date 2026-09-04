@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { APP_ICON_CLIENT_BUNDLE_ICONS, APP_ICON_COLLECTIONS } from '../../packages/ui/src/foundation/app-icon.constants'
 import { removePageComponents } from '../../packages/ui/src/foundation/nuxt-pages'
@@ -5,6 +6,7 @@ import pkg from './package.json'
 
 const packagesDir = fileURLToPath(new URL('../../packages/', import.meta.url))
 const uiPackageDir = `${packagesDir}ui/src`
+const appComponentsDir = fileURLToPath(new URL('./src/app/components', import.meta.url))
 
 const assetHost = process.env.ASSET_HOST || ''
 const awsHostBucketAlias = assetHost.replace(/\/+$/, '')
@@ -129,10 +131,12 @@ export default defineNuxtConfig({
   },
 
   components: [
-    {
-      path: 'app/components',
-      pathPrefix: false,
-    },
+    ...(existsSync(appComponentsDir)
+      ? [{
+          path: 'app/components',
+          pathPrefix: false,
+        }]
+      : []),
     {
       path: 'shared/ui',
       pathPrefix: false,

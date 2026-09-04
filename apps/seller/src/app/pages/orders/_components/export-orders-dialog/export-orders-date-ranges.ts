@@ -4,7 +4,7 @@ import utc from 'dayjs/plugin/utc';
 import type { ExportShopOrdersRequest } from '~/domains/shop/api/order/contracts/order.contract';
 import {
   getNowInTimezone,
-} from '~/app/components/date-filter-panel/date-filter-timezone';
+} from '~/shared/ui/date-filter/date-filter-timezone';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);

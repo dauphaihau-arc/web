@@ -1,4 +1,4 @@
-import type { FilterOption } from '~/app/components/filter/types';
+import type { FilterOption } from '~/shared/ui/data-filter/types';
 
 export type CouponTypeFilter = 'promo_code' | 'sale';
 

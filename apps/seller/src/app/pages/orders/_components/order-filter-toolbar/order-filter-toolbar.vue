@@ -7,7 +7,7 @@ import {
   orderFulfillmentFilterOptions,
   orderStatusFilterOptions,
 } from '../order-status-filter-options'
-import DateFilterPanel from '../../../../components/date-filter-panel/date-filter-panel.vue'
+import DateFilterPanel from '~/shared/ui/date-filter/date-filter-panel.vue'
 import AmountFilterPanel from './amount-filter-panel.vue'
 import CurrencyFilterPanel from './currency-filter-panel.vue'
 import StatusFilterPanel from './status-filter-panel.vue'
@@ -15,14 +15,14 @@ import {
   getDefaultDateFilterTimezone,
   getNowInTimezone,
   toZonedDay,
-} from '~/app/components/date-filter-panel/date-filter-timezone'
+} from '~/shared/ui/date-filter/date-filter-timezone'
 import type {
   OrderAmountFilterDraft,
   OrderCurrencyFilterDraft,
   OrderDateFilterDraft,
-} from '~/app/components/date-filter-panel/order-filter.types'
-import FilterPopover from '~/app/components/filter/filter-popover.vue'
-import FilterToolbar from '~/app/components/filter/filter-toolbar.vue'
+} from '~/shared/ui/date-filter/filter-draft.types'
+import FilterPopover from '~/shared/ui/data-filter/filter-popover.vue'
+import FilterToolbar from '~/shared/ui/data-filter/filter-toolbar.vue'
 import type { ListShopOrdersRequest } from '~/domains/shop/api/order/contracts/order.contract'
 import { useGetMarketplaceConfig } from '~/domains/market/queries/config.query'
 import { useGetMyShop } from '~/domains/shop/queries/my-shop.query'
