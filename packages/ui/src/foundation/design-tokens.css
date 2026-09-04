@@ -1,8 +1,10 @@
 :root {
   --surface-default: #ffffff;
   --surface-muted: #f7f8fa;
+  --surface-hover: #f1f3f5;
+  --surface-control: #eef1f4;
   --surface-subtle: #fcfcfd;
-  --surface-keycap: #eaeaea;
+  --surface-keycap: #e8ebef;
   --surface-accent: #f6f8fa;
   --surface-overlay: rgb(255 255 255 / 0.85);
   --surface-overlay-dark: rgb(0 0 0 / 0.75);

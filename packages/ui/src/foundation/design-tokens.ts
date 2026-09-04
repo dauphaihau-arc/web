@@ -16,8 +16,10 @@ export const designColors = {
   surface: {
     DEFAULT: '#FFFFFF',
     muted: '#F7F8FA',
+    hover: '#F1F3F5',
+    control: '#EEF1F4',
     subtle: '#FCFCFD',
-    keycap: '#EAEAEA',
+    keycap: '#E8EBEF',
     accent: '#F6F8FA',
     overlay: 'rgb(255 255 255 / 0.85)',
     overlayDark: 'rgb(0 0 0 / 0.75)',

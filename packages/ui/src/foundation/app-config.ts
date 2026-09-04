@@ -30,6 +30,16 @@ export const sharedAppConfig = {
     popover: {
       shadow: designTokenClasses.shadow.overlay,
     },
+    dropdown: {
+      item: {
+        active: 'bg-surface-hover text-text-strong',
+        inactive: 'text-text-subtle',
+        icon: {
+          active: 'text-text-muted',
+          inactive: 'text-text-muted',
+        },
+      },
+    },
     formGroup: {
       description: 'text-text-muted',
     },
@@ -66,6 +76,9 @@ export const sharedAppConfig = {
         white: {
           outline: 'shadow-sm ring-1 ring-inset ring-border-muted text-text-strong bg-surface hover:bg-surface focus-visible:ring-2 focus-visible:ring-primary-500',
         },
+        gray: {
+          ghost: 'text-text-subtle hover:text-text-strong hover:bg-surface-hover disabled:bg-transparent aria-disabled:bg-transparent focus-visible:ring-2 focus-visible:ring-primary-500',
+        },
       },
     },
     chip: {
@@ -83,7 +96,7 @@ export const sharedAppConfig = {
     },
     tabs: {
       list: {
-        background: 'bg-customGray-200/80',
+        background: 'bg-surface-control',
         rounded: 'rounded-lg',
         padding: 'p-1',
         width: 'w-full md:w-auto',
