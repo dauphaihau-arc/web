@@ -23,7 +23,7 @@ export const useCartStore = defineStore('cart', () => {
     currentStep: CheckoutNowSteps.ADDRESS_SHIPPING,
     countRefreshConvertCurrency: 0,
     isPendingCreateOrder: false,
-    paymentType: PaymentTypes.CASH,
+    paymentType: PaymentTypes.CARD,
     address: null,
     guestEmail: '',
   };
@@ -37,7 +37,7 @@ export const useCartStore = defineStore('cart', () => {
     currentStep: CheckoutCartSteps.ADDRESS_SHIPPING,
     countRefreshConvertCurrency: 0,
     isPendingCreateOrder: false,
-    paymentType: PaymentTypes.CASH,
+    paymentType: PaymentTypes.CARD,
     address: null,
     guestEmail: '',
   };
