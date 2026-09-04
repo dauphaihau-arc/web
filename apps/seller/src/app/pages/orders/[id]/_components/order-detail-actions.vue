@@ -179,7 +179,7 @@ const actionMenuGroups = computed<ActionMenuGroup[]>(() => {
               v-for="item in group.items"
               :key="item.label"
               type="button"
-              class="flex w-full items-center gap-3 rounded-xl px-3 py-1 text-left text-base text-text-strong transition-colors hover:bg-surface-muted"
+              class="flex w-full items-center gap-3 rounded-xl px-3 py-1 text-left text-base text-text-strong transition-colors hover:bg-surface-hover"
               :class="{ 'text-red-600 hover:bg-surface-accent': item.tone === 'danger' }"
               @click="runMenuAction(item.onClick)"
             >

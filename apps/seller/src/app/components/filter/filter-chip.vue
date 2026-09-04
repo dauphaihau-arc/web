@@ -16,7 +16,7 @@ defineEmits<{
     :class="
       props.active
         ? 'border-border-subtle text-text-strong shadow-sm'
-        : 'border-dashed border-border-muted text-text-strong hover:border-border-subtle hover:bg-surface-muted'
+        : 'border-dashed border-border-subtle text-text-strong hover:border-border-subtle hover:bg-surface-hover'
     "
   >
     <UButton

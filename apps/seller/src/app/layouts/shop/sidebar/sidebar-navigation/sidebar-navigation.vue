@@ -74,6 +74,6 @@ const itemsLinkSidebar: LinkItem[] = shopSidebarItems
 }
 
 .link-inactive {
-  @apply text-text-strong hover:bg-customGray-200/50;
+  @apply text-text-strong hover:bg-surface-hover;
 }
 </style>

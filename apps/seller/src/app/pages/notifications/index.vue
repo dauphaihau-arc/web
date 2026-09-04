@@ -138,7 +138,7 @@ async function handleNotificationClick(notification: NotificationItem) {
           v-for="notification in notifications"
           :key="notification.id"
           type="button"
-          class="w-full rounded-2xl border bg-surface p-4 text-left shadow-sm transition hover:bg-surface-muted"
+          class="w-full rounded-2xl border bg-surface p-4 text-left shadow-sm transition hover:bg-surface-hover"
           :class="notification.read_at ? 'border-border-subtle' : 'border-border-accent bg-surface-accent'"
           :disabled="isMarkingOne"
           @click="handleNotificationClick(notification)"

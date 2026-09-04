@@ -47,7 +47,7 @@ const {
         v-for="conversation in conversations"
         :key="conversation.id"
         type="button"
-        class="flex w-full flex-col gap-2 border-b border-border-subtle px-5 py-4 text-left transition hover:bg-surface-muted"
+        class="flex w-full flex-col gap-2 border-b border-border-subtle px-5 py-4 text-left transition hover:bg-surface-hover"
         :class="[
           selectedConversationId === conversation.id ? 'bg-surface-muted' : '',
         ]"

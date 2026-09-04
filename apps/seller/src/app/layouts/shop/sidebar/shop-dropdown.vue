@@ -45,7 +45,7 @@ const itemsShopDropdown: ShopDropdownItem[][] = [
   <UDropdown
     :items="itemsShopDropdown as DropdownItem[][]"
     :popper="{ placement: 'bottom-start', offsetDistance: 20, offsetSkid: -8 }"
-    class="mx-4 mb-6 mt-3 block w-auto rounded-md p-2 pr-3 duration-200 hover:bg-customGray-200/50"
+    class="mx-2 mb-6 mt-3 block w-auto rounded-md p-2 pr-3 duration-200 hover:bg-surface-hover"
   >
     <template #item="{ item }">
       <div class="flex items-center gap-2">

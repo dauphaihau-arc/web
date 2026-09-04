@@ -103,7 +103,7 @@ function isActive(path?: string) {
 }
 
 .link-inactive {
-  @apply text-text-strong hover:bg-customGray-200/50;
+  @apply text-text-strong hover:bg-surface-hover;
 }
 .slide-down-enter-active,
 .slide-down-leave-active {

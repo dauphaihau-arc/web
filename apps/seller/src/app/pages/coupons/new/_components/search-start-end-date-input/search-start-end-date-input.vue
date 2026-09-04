@@ -112,8 +112,8 @@ watch(state, () => {
               :key="idx"
             >
               <div
-                class="mx-1 cursor-pointer rounded-md px-2 py-1.5 hover:bg-customGray-200/50"
-                :class="[selectedHintDuration === idx && 'bg-customGray-200/50']"
+                class="mx-1 cursor-pointer rounded-md px-2 py-1.5 hover:bg-surface"
+                :class="[selectedHintDuration === idx && 'bg-surface']"
                 @click="() => onChangeDuration(idx)"
               >
                 {{ item.title }}

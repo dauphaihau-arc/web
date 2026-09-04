@@ -6,6 +6,7 @@ import Sidebar from './sidebar/sidebar.vue'
 <template>
   <div class="bg-layout-shop">
     <div class="fixed right-0 z-[1] h-full w-1/2 bg-white" />
+
     <div class="flex min-h-screen max-w-shop-layout xl:mx-auto">
       <Sidebar />
       <div class="h-full w-shop-layout-sidebar shrink-0" />
