@@ -7,8 +7,8 @@ import type {
   createProductInventoryFormSchema,
   createProductShippingFormSchema,
   updateVariantOptionsFormSchema,
-} from '~/app/pages/products/_schemes/product/create-product-form.schema';
-import type { updateProductFormSchema } from '~/app/pages/products/_schemes/product/update-product-form.schema';
+} from '~/domains/shop/schemas/product/create-product-form.schema';
+import type { updateProductFormSchema } from '~/domains/shop/schemas/product/update-product-form.schema';
 
 export type CreateProductShipping = z.infer<typeof createProductShippingFormSchema>;
 export type CreateProductInventory = z.infer<typeof createProductInventoryFormSchema>;

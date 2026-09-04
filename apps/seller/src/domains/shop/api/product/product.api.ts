@@ -24,7 +24,7 @@ import type {
   UpdateProductResponse,
 } from './contracts/update-product.contract';
 import type { ShopProductImportResponse } from './contracts/import.contract';
-import { apiClient } from '~/shared/lib/api-client';
+import { apiClient } from '~/domains/_shared/api-client';
 
 export const shopProductApi = {
   createDraft(shopId: string, payload: CreateDraftProductRequest) {

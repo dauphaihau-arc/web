@@ -8,7 +8,7 @@ import { PRODUCT_FORM_ERROR_PRIORITY } from './create-product-form.constants';
 import {
   createProductFormSchema,
   createProductInventoryFormSchema,
-} from '~/app/pages/products/_schemes/product/create-product-form.schema';
+} from '~/domains/shop/schemas/product/create-product-form.schema';
 import { toastCustom } from '~/shared/config/toast';
 import { useAuthClientConfig } from '~/domains/auth/queries/client-config.query';
 import { useGetMyShop } from '~/domains/shop/queries/my-shop.query';

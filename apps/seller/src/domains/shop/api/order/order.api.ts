@@ -8,7 +8,7 @@ import type {
   UpdateShopOrderShipmentRequest,
   UpdateShopOrderStatusRequest,
 } from './contracts/order.contract';
-import { apiClient } from '~/shared/lib/api-client';
+import { apiClient } from '~/domains/_shared/api-client';
 
 export const shopOrderApi = {
   list(shopId: string, query?: ListShopOrdersRequest) {

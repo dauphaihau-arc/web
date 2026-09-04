@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import type { RequestGetListParams } from '@arc/contracts/common';
 import { couponSchema } from '@arc/schemas/coupon.schema';
-import { createPromoCodeFormSchema } from '~/app/pages/coupons/_schemes/coupon/create-promo-code-form.schema';
-import { createSaleFormSchema } from '~/app/pages/coupons/_schemes/coupon/create-sale-form.schema';
+import { createPromoCodeFormSchema } from '~/domains/shop/schemas/coupon/create-promo-code-form.schema';
+import { createSaleFormSchema } from '~/domains/shop/schemas/coupon/create-sale-form.schema';
 
 export const shopCouponSchema = couponSchema;
 

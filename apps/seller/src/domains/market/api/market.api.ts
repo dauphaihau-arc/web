@@ -1,5 +1,5 @@
 import type { MarketConfigResponse } from './contracts/market.contract';
-import { apiClient } from '~/shared/lib/api-client';
+import { apiClient } from '~/domains/_shared/api-client';
 
 export const marketApi = {
   getMarketplaceConfig() {

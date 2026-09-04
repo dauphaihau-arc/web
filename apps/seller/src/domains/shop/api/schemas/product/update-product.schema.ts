@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { updateProductFormSchema } from '~/app/pages/products/_schemes/product/update-product-form.schema';
+import { updateProductFormSchema } from '~/domains/shop/schemas/product/update-product-form.schema';
 
 export const updateProductRequestBodySchema = updateProductFormSchema.extend({
   images: z.array(z.object({

@@ -13,7 +13,7 @@ import {
   useUpdateProductSubmit,
   type UpdateProductAction,
 } from './use-update-product-submit';
-import { updateProductFormSchema } from '~/app/pages/products/_schemes/product/update-product-form.schema';
+import { updateProductFormSchema } from '~/domains/shop/schemas/product/update-product-form.schema';
 import { useShopGetDetailProduct } from '~/domains/shop/queries/product/detail.query';
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types';
 import type {

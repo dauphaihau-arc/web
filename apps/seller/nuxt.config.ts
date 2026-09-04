@@ -128,7 +128,7 @@ export default defineNuxtConfig({
   ],
 
   imports: {
-    dirs: ['shared/composables', 'shared/utils', `${packagesDir}utils/src`, `${packagesDir}composables/src`],
+    dirs: ['shared/composables', 'shared/lib', 'shared/utils', `${packagesDir}utils/src`, `${packagesDir}composables/src`],
   },
 
   hooks: {

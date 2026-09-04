@@ -1,5 +1,5 @@
 import type { MyShop } from './shop.types';
-import { apiClient } from '~/shared/lib/api-client';
+import { apiClient } from '~/domains/_shared/api-client';
 
 export async function resolveMyShopId(queryClient: ReturnType<typeof useQueryClient>) {
   const cachedShop = queryClient.getQueryData<MyShop>(['my-shop']);

@@ -1,6 +1,6 @@
 import { RESOURCES } from '@arc/enums/resources';
 import { resolveMyShopId } from '../utils/resolve-my-shop-id';
-import { apiClient } from '~/shared/lib/api-client';
+import { apiClient } from '~/domains/_shared/api-client';
 
 export function useShopSetProductAttributes() {
   const queryClient = useQueryClient();

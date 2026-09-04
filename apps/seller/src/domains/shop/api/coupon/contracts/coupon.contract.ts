@@ -8,8 +8,8 @@ import type {
   listShopCouponsResponseSchema,
   shopCouponSchema,
 } from '~/domains/shop/api/schemas/coupon/coupon.schema';
-import type { createPromoCodeFormSchema } from '~/app/pages/coupons/_schemes/coupon/create-promo-code-form.schema';
-import type { createSaleFormSchema } from '~/app/pages/coupons/_schemes/coupon/create-sale-form.schema';
+import type { createPromoCodeFormSchema } from '~/domains/shop/schemas/coupon/create-promo-code-form.schema';
+import type { createSaleFormSchema } from '~/domains/shop/schemas/coupon/create-sale-form.schema';
 
 export type ShopCoupon = z.infer<typeof shopCouponSchema>;
 export type CreatePromoCodeBody = z.infer<typeof createPromoCodeFormSchema>;

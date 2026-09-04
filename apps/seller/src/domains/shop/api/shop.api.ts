@@ -3,7 +3,7 @@ import type {
   CreateShopResponse,
   MyShopResponse,
 } from './contracts/shop.contract';
-import { apiClient } from '~/shared/lib/api-client';
+import { apiClient } from '~/domains/_shared/api-client';
 
 export const shopApi = {
   create(payload: CreateShopRequest) {

@@ -2,7 +2,7 @@ import type {
   GetShopDashboardRequest,
   ShopDashboardResponse,
 } from './contracts/dashboard.contract';
-import { apiClient } from '~/shared/lib/api-client';
+import { apiClient } from '~/domains/_shared/api-client';
 
 export const shopDashboardApi = {
   get(shopId: string, query?: GetShopDashboardRequest) {

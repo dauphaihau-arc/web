@@ -7,7 +7,7 @@ import type {
   ListShopCouponsRequest,
   ListShopCouponsResponse,
 } from './contracts/coupon.contract';
-import { apiClient } from '~/shared/lib/api-client';
+import { apiClient } from '~/domains/_shared/api-client';
 
 export const shopCouponApi = {
   create(shopId: string, payload: CreateShopCouponRequest) {
