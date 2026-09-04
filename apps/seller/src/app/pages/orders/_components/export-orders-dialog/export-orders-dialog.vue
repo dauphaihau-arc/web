@@ -108,7 +108,7 @@ const {
               />
 
               <template #panel>
-                <VDatePicker
+                <DatePicker
                   v-model.range="customDateRange"
                   color="indigo"
                   mode="date"

@@ -61,7 +61,7 @@ function setTime(value: string | number) {
         />
 
         <template #panel="{ close }">
-          <VDatePicker
+          <DatePicker
             :model-value="model.date"
             color="indigo"
             mode="date"

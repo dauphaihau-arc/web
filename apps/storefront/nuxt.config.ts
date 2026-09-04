@@ -14,6 +14,26 @@ const debugEntry = require.resolve('debug/src/index.js')
 const assetHost = process.env.ASSET_HOST || ''
 const awsHostBucketAlias = assetHost.replace(/\/+$/, '')
 
+function manualChunks(id: string): string | undefined {
+  if (id.includes('/node_modules/.pnpm/@vue+') || id.includes('/node_modules/.pnpm/vue@') || id.includes('/node_modules/.pnpm/vue-router@')) {
+    return 'vue'
+  }
+
+  if (id.includes('/node_modules/.pnpm/@nuxt+ui@') || id.includes('/node_modules/.pnpm/@headlessui+vue@') || id.includes('/node_modules/.pnpm/@popperjs+core@') || id.includes('/node_modules/.pnpm/@tanstack+virtual-core@') || id.includes('/node_modules/.pnpm/@tanstack+vue-virtual@')) {
+    return 'ui'
+  }
+
+  if (id.includes('/node_modules/.pnpm/@nuxtjs+i18n@') || id.includes('/node_modules/.pnpm/vue-i18n@') || id.includes('/node_modules/.pnpm/@intlify+')) {
+    return 'i18n'
+  }
+
+  if (id.includes('/node_modules/.pnpm/@tanstack+query-core@') || id.includes('/node_modules/.pnpm/@tanstack+vue-query@') || id.includes('/node_modules/.pnpm/@hebilicious+vue-query-nuxt@')) {
+    return 'query'
+  }
+
+  return undefined
+}
+
 export default defineNuxtConfig({
   app: {
     head: {
@@ -72,7 +92,6 @@ export default defineNuxtConfig({
     'nuxt-security',
     '@formkit/auto-animate/nuxt',
     '@nuxt/image',
-    '@samk-dev/nuxt-vcalendar',
     '@hebilicious/vue-query-nuxt',
   ],
 
@@ -183,6 +202,16 @@ export default defineNuxtConfig({
   },
 
   css: ['~/app/assets/css/main.css'],
+
+  vite: {
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks,
+        },
+      },
+    },
+  },
 
   image: {
     provider: 'none',

@@ -52,7 +52,6 @@
     "@nuxt/test-utils": "3.14.4",
     "@nuxtjs/color-mode": "^3.3.2",
     "@nuxtjs/i18n": "^8.0.0",
-    "@samk-dev/nuxt-vcalendar": "^1.0.2",
     "@types/node": "^22.13.13",
     "@vitest/browser": "^3.2.6",
     "@vue/test-utils": "^2.4.3",

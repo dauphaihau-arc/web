@@ -65,7 +65,7 @@ watch(state, () => {
       />
 
       <template #panel="{ close }">
-        <VDatePicker
+        <DatePicker
           v-model="state.start_date"
           :color="selectedColor"
           :attributes="attrs"
@@ -86,7 +86,7 @@ watch(state, () => {
       />
 
       <template #panel="{ close }">
-        <VDatePicker
+        <DatePicker
           v-model="state.end_date"
           :color="selectedColor"
           :attributes="attrs"

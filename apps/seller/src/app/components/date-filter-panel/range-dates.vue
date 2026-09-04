@@ -78,7 +78,7 @@ function setEndTime(value: string | number) {
           />
 
           <template #panel="{ close }">
-            <VDatePicker
+            <DatePicker
               :model-value="model.startDate"
               color="indigo"
               :disabled-dates="startDateDisabledDates"
@@ -110,7 +110,7 @@ function setEndTime(value: string | number) {
           />
 
           <template #panel="{ close }">
-            <VDatePicker
+            <DatePicker
               :model-value="model.endDate"
               color="indigo"
               :disabled-dates="endDateDisabledDates"
