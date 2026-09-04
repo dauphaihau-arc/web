@@ -10,7 +10,7 @@ import type {
   UnregisterWebPushSubscriptionResponse,
   WebPushPublicKeyResponse,
 } from './contracts/notification.contract';
-import { apiClient } from '~/shared/lib/api-client';
+import { apiClient } from '~/domains/_shared/api-client';
 
 export const meNotificationApi = {
   list(params?: ListNotificationsRequest) {

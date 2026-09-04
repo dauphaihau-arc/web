@@ -11,7 +11,7 @@ import type {
   GetProductsResponse,
   RecordProductViewResponse,
 } from './contracts/product.contract';
-import { apiClient } from '~/shared/lib/api-client';
+import { apiClient } from '~/domains/_shared/api-client';
 
 export const productApi = {
   getDetailBySlug(

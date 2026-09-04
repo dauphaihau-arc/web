@@ -10,7 +10,7 @@ import type {
   GetOrderShopsByCheckoutSessionResponse,
   CreateOrderResponse,
 } from '../order/contracts/order.contract';
-import { apiClient } from '~/shared/lib/api-client';
+import { apiClient } from '~/domains/_shared/api-client';
 
 export const meCheckoutApi = {
   createQuoteForBuyNow(payload: CreateCheckoutQuoteForBuyNowRequest) {

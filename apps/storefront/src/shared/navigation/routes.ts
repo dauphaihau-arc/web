@@ -1,12 +1,10 @@
 import type { LocationQueryRaw, RouteLocationRaw } from 'vue-router';
-import type { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order';
 import {
   buildCategoryPath,
   buildOrderDetailPath,
   buildProductDetailPath,
   routePaths,
 } from './route-paths';
-import type { MyOrderListState } from '~/domains/me/api/order/contracts/order.contract';
 
 export { routePaths } from './route-paths';
 
@@ -33,9 +31,9 @@ export const routes = {
     ),
   orders: (query?: {
     search?: string
-    shippingStatus?: OrderShippingStatuses
-    status?: OrderStatuses
-    state?: MyOrderListState
+    shippingStatus?: string
+    status?: string
+    state?: string
   }) => createRoute(
     routePaths.orders,
     query

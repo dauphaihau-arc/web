@@ -10,7 +10,7 @@ import type {
   SendMyChatMessageRequest,
   SendMyChatMessageResponse,
 } from './contracts/chat.contract';
-import { apiClient } from '~/shared/lib/api-client';
+import { apiClient } from '~/domains/_shared/api-client';
 
 export const meChatApi = {
   createOrGetConversation(payload: CreateMyChatConversationRequest) {

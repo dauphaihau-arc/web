@@ -7,10 +7,8 @@ import {
 import type { ResponseGetOrderShopsProduct } from '~/domains/me/api/order/contracts/order.contract';
 import { toastCustom } from '~/shared/config/toast';
 import { uploadReviewImage } from '~/domains/me/mutations/product-reviews/upload-review-image.mutation';
-import {
-  resolveProductImageUrl,
-  resolveStorageKeyFromPublicUrl,
-} from '~/shared/utils/storage-public-url';
+import { resolveProductImageUrl } from '~/domains/product/utils/product-image-url';
+import { resolveStorageKeyFromPublicUrl } from '~/shared/utils/storage-public-url';
 
 type ProductReview = ResponseGetOrderShopsProduct['my_review'];
 

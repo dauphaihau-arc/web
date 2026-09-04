@@ -2,7 +2,7 @@ import { clearExpTokensInLS } from '../utils/token-storage';
 import { routes } from '~/shared/navigation/routes';
 import { toastCustom } from '~/shared/config/toast';
 import { authApi } from '~/domains/auth/api/auth.api';
-import { useWebPushNotifications } from '~/shared/composables/use-web-push-notifications';
+import { useWebPushNotifications } from '~/domains/me/composables/use-web-push-notifications';
 
 const storefrontUserScopedQueryKeys = [
   ['get-cart'],

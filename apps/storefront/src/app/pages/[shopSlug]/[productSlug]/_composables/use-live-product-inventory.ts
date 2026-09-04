@@ -4,8 +4,8 @@ import {
 } from 'vue';
 import { ProductVariantTypes } from '@arc/enums/product';
 import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract';
-import type { ProductInventoryUpdatedRealtimeEvent } from '~/shared/realtime/product-inventory-events';
-import { createProductInventoryEventsClient } from '~/shared/realtime/product-inventory-events.client';
+import type { ProductInventoryUpdatedRealtimeEvent } from '~/domains/product/realtime/product-inventory-events';
+import { createProductInventoryEventsClient } from '~/domains/product/realtime/product-inventory-events.client';
 import { getProductStockNotice } from '~/domains/product/utils/product-stock';
 
 type UseLiveProductInventoryReturn = {

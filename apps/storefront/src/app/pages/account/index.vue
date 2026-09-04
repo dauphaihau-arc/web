@@ -6,7 +6,7 @@ import { useUserPreferenceForm } from '~/domains/market/ui/preferences/use-user-
 import { useGetMarketConfig } from '~/domains/market/queries/config.query'
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
 import { toastCustom } from '~/shared/config/toast'
-import { useWebPushNotifications } from '~/shared/composables/use-web-push-notifications'
+import { useWebPushNotifications } from '~/domains/me/composables/use-web-push-notifications'
 import type { FormSubmitEvent } from '#ui/types'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })

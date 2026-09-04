@@ -2,7 +2,7 @@
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import type { GetPublicProductReviewImagesResponse } from '~/domains/product/api/contracts/product.contract'
 import { useGetPublicProductReviewImages } from '~/domains/product/queries/review-images.query'
-import { resolveProductImageUrl } from '~/shared/utils/storage-public-url'
+import { resolveProductImageUrl } from '~/domains/product/utils/product-image-url'
 
 type CarouselRef = {
   page?: number | { value?: number }

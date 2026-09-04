@@ -12,7 +12,7 @@ What does not belong here:
 - store-owned helpers
 - domain rules or feature utilities
 
-Example:
-- `api-client.ts` configures the shared API client used by storefront
+Examples:
+- `logger.ts` configures the app logger through `consola`
 
 Put market-owned helpers beside the market module instead of here.

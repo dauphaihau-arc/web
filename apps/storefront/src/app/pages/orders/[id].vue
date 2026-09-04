@@ -6,7 +6,7 @@ import { useGetOrderById } from '~/domains/me/queries/orders/order-shops.query'
 import {
   mergeOrderShopWithLiveUpdate,
   useOrderLiveUpdates,
-} from '~/shared/realtime/order-live-updates'
+} from '~/domains/me/realtime/order-live-updates'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 

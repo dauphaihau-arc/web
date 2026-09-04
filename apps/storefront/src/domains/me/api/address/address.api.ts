@@ -6,7 +6,7 @@ import type {
   UpdateUserAddressRequest,
   UpdateUserAddressResponse,
 } from './contracts/address.contract';
-import { apiClient } from '~/shared/lib/api-client';
+import { apiClient } from '~/domains/_shared/api-client';
 
 export const meAddressApi = {
   create(payload: CreateUserAddressRequest) {

@@ -11,7 +11,7 @@ import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/ord
 import {
   mergeOrderShopWithLiveUpdate,
   useOrderLiveUpdates,
-} from '~/shared/realtime/order-live-updates'
+} from '~/domains/me/realtime/order-live-updates'
 
 const props = withDefaults(defineProps<{
   orderShop: ElementType<GetOrderShopsResponse['order_shops']>

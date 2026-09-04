@@ -8,7 +8,7 @@ import type {
   UpdateCartRequest,
   UpdateCartResponse,
 } from './contracts/cart.contract';
-import { apiClient } from '~/shared/lib/api-client';
+import { apiClient } from '~/domains/_shared/api-client';
 
 export const cartApi = {
   add(payload: AddProductToCartRequest) {

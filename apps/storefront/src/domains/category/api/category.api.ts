@@ -4,7 +4,7 @@ import type {
   GetCategoriesResponse,
   GetCategorySuggestionsResponse,
 } from './contracts/category.contract';
-import { apiClient } from '~/shared/lib/api-client';
+import { apiClient } from '~/domains/_shared/api-client';
 
 export const categoryApi = {
   getAttributes(id: string) {

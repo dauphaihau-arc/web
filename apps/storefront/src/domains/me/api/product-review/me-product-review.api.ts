@@ -4,7 +4,7 @@ import type {
   MyProductReviewResponse,
   UpsertMyProductReviewRequest,
 } from './contracts/product-review.contract';
-import { apiClient } from '~/shared/lib/api-client';
+import { apiClient } from '~/domains/_shared/api-client';
 
 export const meProductReviewApi = {
   upsert(orderItemId: string, payload: UpsertMyProductReviewRequest) {

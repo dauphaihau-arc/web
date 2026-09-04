@@ -18,7 +18,7 @@ import type {
 import type {
   VerifyTokenResponse,
 } from './contracts/verify-token.contract';
-import { apiClient } from '~/shared/lib/api-client';
+import { apiClient } from '~/domains/_shared/api-client';
 
 export const authApi = {
   getClientConfig() {

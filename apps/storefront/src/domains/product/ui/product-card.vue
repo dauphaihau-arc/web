@@ -3,7 +3,7 @@ import { formatMinorCurrency } from '@arc/utils'
 import ProductCardImage from '~/domains/product/ui/product-card-image.vue'
 import type { GetProductsResponseItem } from '~/domains/product/api/contracts/product.contract'
 import { getProductStockNotice } from '~/domains/product/utils/product-stock'
-import { resolveProductImageUrl } from '~/shared/utils/storage-public-url'
+import { resolveProductImageUrl } from '~/domains/product/utils/product-image-url'
 import { routes } from '~/shared/navigation/routes'
 
 const props = withDefaults(defineProps<{

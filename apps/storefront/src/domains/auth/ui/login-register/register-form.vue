@@ -8,7 +8,7 @@ import { useAuthClientConfig } from '~/domains/auth/queries/client-config.query'
 import type { AuthPreferences } from '~/domains/auth/api/contracts/auth-user.contract'
 import { useRegister } from '~/domains/auth/mutations/register.mutation'
 import type { RegisterRequest as RegisterBody } from '~/domains/auth/api/contracts/register.contract'
-import { registerFormSchema } from '~/shared/schemas/api/auth/register.schema'
+import { registerFormSchema } from '~/domains/auth/api/schemas/register.schema'
 import { appendPasswordError } from '~/domains/auth/utils/password-policy'
 
 const invalidEmails: string[] = []

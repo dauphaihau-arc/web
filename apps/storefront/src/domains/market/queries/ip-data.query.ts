@@ -2,7 +2,7 @@ import type { UseQueryOptions } from '@tanstack/vue-query';
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import { consola } from 'consola';
 import type { IpDataResponse } from '~/domains/market/api/contracts/market.contract';
-import { apiClient } from '~/shared/lib/api-client';
+import { apiClient } from '~/domains/_shared/api-client';
 
 type QueryOptions<TData> = Omit<
   UseQueryOptions<TData, Error, TData, string[]>,

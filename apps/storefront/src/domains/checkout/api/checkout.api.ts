@@ -12,7 +12,7 @@ import type {
   GetGuestOrderLookupRequest,
   GetGuestOrderLookupResponse,
 } from './contracts/guest-orders.contract';
-import { apiClient } from '~/shared/lib/api-client';
+import { apiClient } from '~/domains/_shared/api-client';
 
 export const checkoutApi = {
   createQuoteFromCart(payload: CreateGuestCheckoutQuoteFromCartRequest) {

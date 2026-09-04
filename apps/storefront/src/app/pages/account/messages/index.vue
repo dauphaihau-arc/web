@@ -9,7 +9,7 @@ import {
   getConversationTimeLabel,
 } from '~/domains/me/ui/chat/storefront-chat-conversation.helpers'
 import { routes } from '~/shared/navigation/routes'
-import { createStorefrontChatEventsClient } from '~/shared/realtime/chat-events.client'
+import { createStorefrontChatEventsClient } from '~/domains/me/realtime/chat-events.client'
 import { useMyChatConversations } from '~/domains/me/queries/chat/conversations.query'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract'
-import { resolveProductImageUrl } from '~/shared/utils/storage-public-url'
+import { resolveProductImageUrl } from '~/domains/product/utils/product-image-url'
 
 const props = withDefaults(defineProps<{
   images?: GetDetailProductBySlugResponse['images']

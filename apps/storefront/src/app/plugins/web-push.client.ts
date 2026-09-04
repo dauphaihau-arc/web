@@ -1,5 +1,5 @@
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query';
-import { useWebPushNotifications } from '~/shared/composables/use-web-push-notifications';
+import { useWebPushNotifications } from '~/domains/me/composables/use-web-push-notifications';
 
 export default defineNuxtPlugin(() => {
   const currentUserQuery = useGetCurrentUser();
