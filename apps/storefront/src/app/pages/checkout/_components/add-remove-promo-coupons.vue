@@ -188,7 +188,6 @@ const disabledInput = computed(() => {
           <div class="relative">
             <UButton
               color="gray"
-              size="lg"
             >
               {{ code }}
             </UButton>
