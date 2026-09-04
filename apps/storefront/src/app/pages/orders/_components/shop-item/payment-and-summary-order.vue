@@ -90,7 +90,7 @@ const showMore = ref(false)
             </div>
             <div
               v-if="orderShop.shipping_minor === 0"
-              class="text-primary text-right font-normal"
+              class="text-right font-medium text-[var(--state-success-text)]"
             >
               FREE
             </div>
