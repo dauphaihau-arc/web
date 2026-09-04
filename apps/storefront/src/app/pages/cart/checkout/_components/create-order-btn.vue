@@ -12,6 +12,7 @@ import { useCreateGuestCheckoutQuoteFromCart } from '~/domains/checkout/mutation
 import { useCreateGuestOrderFromCart } from '~/domains/checkout/mutations/create-order-from-cart.mutation'
 import { useCreateCheckoutQuoteFromCart } from '~/domains/me/mutations/orders/create-checkout-quote-from-cart.mutation'
 import { useCreateOrderFromCart } from '~/domains/me/mutations/orders/create-order-from-cart.mutation'
+import { useCheckoutSessionReadiness } from '~/domains/me/composables/use-checkout-session-readiness'
 import { useCartStore } from '~/domains/cart/stores/cart.store'
 import type {
   CreateGuestCheckoutQuoteFromCartRequest,
@@ -46,6 +47,8 @@ const {
 const {
   mutateAsync: createGuestQuote,
 } = useCreateGuestCheckoutQuoteFromCart()
+
+const waitForCheckoutSessionUrl = useCheckoutSessionReadiness()
 
 const onCreateOrder = async () => {
   try {
@@ -113,14 +116,20 @@ const onCreateOrder = async () => {
         }
 
     if (orderBody.payment_type === PaymentTypes.CARD) {
-      const { checkout_session_url } = isAuthenticated
+      const result = isAuthenticated
         ? await createOrder(orderBody as CreateOrderFromCartRequest)
         : await createGuestOrder(orderBody as CreateGuestOrderFromCartRequest)
-      if (!checkout_session_url) {
-        consola.error('checkout_session_url be undefined', checkout_session_url)
+
+      const checkoutSessionUrl = result.checkout_session_url
+        ?? (isAuthenticated && result.checkout_pending
+          ? await waitForCheckoutSessionUrl(result.order_shops.map(orderShop => orderShop.id))
+          : undefined)
+
+      if (!checkoutSessionUrl) {
+        consola.error('checkout_session_url be undefined', checkoutSessionUrl)
         throw Error()
       }
-      navigateTo(checkout_session_url, {
+      navigateTo(checkoutSessionUrl, {
         external: true,
       })
     }

@@ -12,6 +12,7 @@ import { useCreateGuestCheckoutQuoteForBuyNow } from '~/domains/checkout/mutatio
 import { useCreateGuestOrderForBuyNow } from '~/domains/checkout/mutations/create-order-buy-now.mutation'
 import { useCreateCheckoutQuoteForBuyNow } from '~/domains/me/mutations/orders/create-checkout-quote-buy-now.mutation'
 import { useCreateOrderForBuyNow } from '~/domains/me/mutations/orders/create-order-buy-now.mutation'
+import { useCheckoutSessionReadiness } from '~/domains/me/composables/use-checkout-session-readiness'
 import { CheckoutNowSteps } from '~/domains/cart/stores/cart.store.types'
 import type {
   CreateGuestCheckoutQuoteForBuyNowRequest,
@@ -48,6 +49,8 @@ const {
 const {
   mutateAsync: createGuestQuote,
 } = useCreateGuestCheckoutQuoteForBuyNow()
+
+const waitForCheckoutSessionUrl = useCheckoutSessionReadiness()
 
 const onCreateOrder = async () => {
   try {
@@ -110,14 +113,20 @@ const onCreateOrder = async () => {
         }
 
     if (orderBody.payment_type === PaymentTypes.CARD) {
-      const { checkout_session_url } = isAuthenticated
+      const result = isAuthenticated
         ? await createOrder(orderBody as CreateOrderForBuyNowRequest)
         : await createGuestOrder(orderBody as CreateGuestOrderForBuyNowRequest)
-      if (!checkout_session_url) {
-        consola.error('checkout_session_url be undefined', checkout_session_url)
+
+      const checkoutSessionUrl = result.checkout_session_url
+        ?? (isAuthenticated && result.checkout_pending
+          ? await waitForCheckoutSessionUrl(result.order_shops.map(orderShop => orderShop.id))
+          : undefined)
+
+      if (!checkoutSessionUrl) {
+        consola.error('checkout_session_url be undefined', checkoutSessionUrl)
         throw new Error()
       }
-      navigateTo(checkout_session_url, {
+      navigateTo(checkoutSessionUrl, {
         external: true,
       })
     }

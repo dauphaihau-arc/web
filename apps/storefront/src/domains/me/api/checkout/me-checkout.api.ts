@@ -8,6 +8,7 @@ import type {
   CreateOrderFromCartRequest,
   CreateOrderFromCartResponse,
   GetOrderShopsByCheckoutSessionResponse,
+  CreateOrderResponse,
 } from '../order/contracts/order.contract';
 import { apiClient } from '~/shared/lib/api-client';
 
@@ -37,6 +38,15 @@ export const meCheckoutApi = {
     return apiClient.post<CreateOrderFromCartResponse>(
       '/me/checkout',
       payload,
+    );
+  },
+
+  getCheckoutSessionReadiness(orderIds: string[]) {
+    return apiClient.get<CreateOrderResponse>(
+      '/me/checkout/session/readiness',
+      { order_ids: orderIds.join(',') },
+      undefined,
+      { retryOnWakeUp: true },
     );
   },
 

@@ -5,6 +5,7 @@ export type CheckoutFailureKind =
   | 'cart_changed'
   | 'stock_unavailable'
   | 'reservation_unavailable'
+  | 'checkout_session_pending'
   | 'unknown';
 
 export function resolveCheckoutFailure(error: unknown): CheckoutFailureKind {
@@ -20,8 +21,7 @@ export function resolveCheckoutFailure(error: unknown): CheckoutFailureKind {
     case 'CHECKOUT_QUOTE_RESERVATION_UNAVAILABLE':
       return 'reservation_unavailable';
   }
-
-  const backendMessage = getBackendErrorMessage(error)?.toLowerCase() ?? '';
+  const backendMessage = (getBackendErrorMessage(error) ?? (error instanceof Error ? error.message : '')).toLowerCase();
 
   if (backendMessage.includes('checkout quote expired')) {
     return 'quote_expired';
@@ -34,6 +34,9 @@ export function resolveCheckoutFailure(error: unknown): CheckoutFailureKind {
   }
   if (backendMessage.includes('inventory reservation is no longer available')) {
     return 'reservation_unavailable';
+  }
+  if (backendMessage.includes('checkout session is still being prepared')) {
+    return 'checkout_session_pending';
   }
 
   return 'unknown';
@@ -63,6 +66,11 @@ export function getCheckoutFailureCopy(kind: CheckoutFailureKind): {
       return {
         title: 'Reserved stock was released',
         description: 'Your reserved inventory is no longer available. Review the refreshed checkout and try again.',
+      };
+    case 'checkout_session_pending':
+      return {
+        title: 'Checkout still preparing',
+        description: 'Your secure checkout session is taking longer than expected. Please try again.',
       };
     default:
       return {
