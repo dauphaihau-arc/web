@@ -47,6 +47,40 @@ const emit = defineEmits<{
 }>()
 
 const activeFilterIndex = computed(() => props.filters.findIndex(filter => filter.value === props.activeFilter))
+function formatNotificationTime(value: string) {
+  const createdAt = dayjs(value)
+  const now = dayjs()
+  const minutesAgo = now.diff(createdAt, 'minute')
+
+  if (minutesAgo < 1) {
+    return 'Just now'
+  }
+
+  if (minutesAgo < 60) {
+    return `${minutesAgo}m ago`
+  }
+
+  const hoursAgo = now.diff(createdAt, 'hour')
+
+  if (hoursAgo < 24) {
+    return `${hoursAgo}h ago`
+  }
+
+  if (createdAt.isSame(now.subtract(1, 'day'), 'day')) {
+    return 'Yesterday'
+  }
+
+  if (createdAt.isSame(now, 'year')) {
+    return createdAt.format('MMM DD')
+  }
+
+  return createdAt.format('MMM DD, YYYY')
+}
+
+function formatNotificationTitle(value: string) {
+  return dayjs(value).format('MMM DD, YYYY HH:mm')
+}
+
 
 function handleFilterChange(index: number) {
   const filter = props.filters[index]
@@ -60,8 +94,8 @@ function handleFilterChange(index: number) {
 </script>
 
 <template>
-  <div class="flex max-h-[min(32rem,calc(100vh-5rem))] w-[25rem] max-w-[calc(100vw-2rem)] flex-col p-3">
-    <div class="mb-3 flex items-center justify-between gap-3">
+  <div class="flex max-h-[min(32rem,calc(100vh-5rem))] w-[25rem] max-w-[calc(100vw-2rem)] flex-col py-3">
+    <div class="mb-3 flex items-center justify-between gap-3 px-3">
       <div>
         <div class="text-sm font-semibold">
           Notifications
@@ -84,29 +118,29 @@ function handleFilterChange(index: number) {
       </UButton>
     </div>
 
-    <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-      <UTabs
-        v-if="filters.length > 0"
-        class="mb-2 w-full"
-        :items="filters"
-        :model-value="activeFilterIndex"
-        :ui="{
-          list: {
-            width: 'w-full md:w-full',
-            height: 'h-9',
-            padding: 'p-1',
-            tab: {
-              base: 'flex-1 justify-center',
-              height: 'h-7',
-              padding: 'px-2',
-              size: 'text-xs',
-              icon: 'w-3.5 h-3.5 me-1',
-            },
+    <UTabs
+      v-if="filters.length > 0"
+      class="mb-3 w-full px-3"
+      :items="filters"
+      :model-value="activeFilterIndex"
+      :ui="{
+        list: {
+          width: 'w-full md:w-full',
+          height: 'h-9',
+          padding: 'p-1',
+          tab: {
+            base: 'flex-1 justify-center',
+            height: 'h-7',
+            padding: 'px-2',
+            size: 'text-xs',
+            icon: 'w-3.5 h-3.5 me-1',
           },
-        }"
-        @change="handleFilterChange"
-      />
+        },
+      }"
+      @change="handleFilterChange"
+    />
 
+    <div class="scrollbar-subtle min-h-0 flex-1 overflow-y-auto overscroll-contain border-y">
       <AppStateBlock
         v-if="loading"
         class="border-0 bg-transparent px-0 py-6 text-text-muted shadow-none"
@@ -131,13 +165,12 @@ function handleFilterChange(index: number) {
 
       <div
         v-else
-        class="space-y-2"
       >
         <button
           v-for="notification in notifications"
           :key="notification.id"
           type="button"
-          class="w-full border-b py-3 text-left"
+          class="w-full border-b px-3 py-3 text-left transition-colors hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-60"
           :disabled="isMarkingOne"
           @click="emit('itemClick', notification)"
         >
@@ -145,18 +178,21 @@ function handleFilterChange(index: number) {
             <div class="text-sm font-medium text-text-strong">
               {{ notification.title }}
             </div>
-            <div class="shrink-0 text-xs text-text-muted">
-              {{ dayjs(notification.created_at).format('MMM DD, HH:mm') }}
+            <div
+              class="shrink-0 text-xs text-text-muted"
+              :title="formatNotificationTitle(notification.created_at)"
+            >
+              {{ formatNotificationTime(notification.created_at) }}
             </div>
           </div>
-          <div class="text-sm text-text-subtle">
+          <div class="text-sm text-text-subtle mt-2">
             {{ notification.body }}
           </div>
         </button>
       </div>
     </div>
 
-    <div class="mt-3 flex justify-end">
+    <div class="mt-3 flex justify-end px-3">
       <UButton
         variant="ghost"
         size="xs"

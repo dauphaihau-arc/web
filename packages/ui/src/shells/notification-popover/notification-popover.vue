@@ -61,6 +61,7 @@ const isPopoverOpen = ref(false)
       :show="unreadCount > 0"
       size="lg"
       position="bottom-right"
+      class="group"
     >
       <UTooltip
         :text="tooltipText"
@@ -70,6 +71,7 @@ const isPopoverOpen = ref(false)
           color="gray"
           variant="ghost"
           square
+          class="group-hover:bg-surface-hover group-hover:text-text-strong"
         >
           <AppIcon name="bell" />
         </UButton>
