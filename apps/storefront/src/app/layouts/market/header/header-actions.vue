@@ -77,7 +77,7 @@ function navigateToSellerApp() {
 }
 
 async function showRegisterLoginDialog(): Promise<void> {
-  const dialog = await import('~/app/components/dialogs/login-register/register-login-dialog.vue')
+  const dialog = await import('~/domains/auth/ui/login-register/register-login-dialog.vue')
   modal.open(dialog.default)
 }
 

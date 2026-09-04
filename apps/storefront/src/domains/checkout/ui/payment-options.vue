@@ -1,9 +1,15 @@
 <script lang="ts" setup>
 import { PaymentTypes } from '@arc/enums/order'
 
-definePageMeta({ layout: 'market', middleware: ['auth'] })
+withDefaults(defineProps<{
+  direction?: 'horizontal' | 'vertical'
+  labelContentClass?: string
+}>(), {
+  direction: undefined,
+  labelContentClass: '',
+})
 
-const cartStore = useCartStore()
+const paymentType = defineModel<PaymentTypes>({ required: true })
 
 const paymentOptions = [
   { value: PaymentTypes.CARD, label: 'Credit / Debit Card', description: 'We support Mastercard, Visa and Stripe' },
@@ -18,16 +24,18 @@ const paymentOptions = [
         Payment options
       </legend>
       <RadioGroupInput
-        v-model="cartStore.stateCheckoutNow.paymentType"
+        v-model="paymentType"
         :options="paymentOptions"
-        direction="horizontal"
+        :direction="direction"
       >
         <template #label="{ option }">
-          <div class="leading-0 font-semibold text-text-strong">
-            {{ option.label }}
-          </div>
-          <div class="font-normal text-text-muted">
-            {{ option.description }}
+          <div :class="labelContentClass">
+            <div class="leading-0 font-semibold text-text-strong">
+              {{ option.label }}
+            </div>
+            <div class="font-normal text-text-muted">
+              {{ option.description }}
+            </div>
           </div>
         </template>
       </RadioGroupInput>

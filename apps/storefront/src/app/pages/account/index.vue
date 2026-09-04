@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import MarketPreferencesForm from '~/app/components/market-preferences/market-preferences-form.vue'
-import type { PreferenceState } from '~/app/components/market-preferences/preference-options'
-import { useUpdateMarketPreferences } from '~/app/components/market-preferences/use-update-market-preferences'
-import { useUserPreferenceForm } from '~/app/components/market-preferences/use-user-preference-form'
+import MarketPreferencesForm from '~/domains/market/ui/preferences/market-preferences-form.vue'
+import type { PreferenceState } from '~/domains/market/ui/preferences/preference-options'
+import { useUpdateMarketPreferences } from '~/domains/market/ui/preferences/use-update-market-preferences'
+import { useUserPreferenceForm } from '~/domains/market/ui/preferences/use-user-preference-form'
 import { useGetMarketConfig } from '~/domains/market/queries/config.query'
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
 import { toastCustom } from '~/shared/config/toast'

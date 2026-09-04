@@ -1,4 +1,4 @@
-import type { ProductFilterState } from '~/app/components/product/filters/product-filter.constants';
+import type { ProductFilterState } from '~/domains/product/ui/filters/product-filter.constants';
 
 export function useProductFilterState(defaultState: ProductFilterState) {
   const state = reactive<ProductFilterState>({ ...defaultState });

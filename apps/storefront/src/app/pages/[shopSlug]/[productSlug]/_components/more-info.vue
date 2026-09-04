@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import type { MyChatConversation } from '~/domains/me/api/chat/contracts/chat.contract'
-import ChatConversationPanel from '~/app/components/chat/chat-conversation-panel.vue'
-import RegisterLoginDialog from '~/app/components/dialogs/login-register/register-login-dialog.vue'
+import RegisterLoginDialog from '~/domains/auth/ui/login-register/register-login-dialog.vue'
+import ChatConversationPanel from '~/domains/me/ui/chat/chat-conversation-panel.vue'
 import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract'
 import { setPostAuthRedirect } from '~/domains/auth/utils/post-auth-redirect'
 import { useCreateOrGetMyChatConversation } from '~/domains/me/mutations/chat/create-conversation.mutation'

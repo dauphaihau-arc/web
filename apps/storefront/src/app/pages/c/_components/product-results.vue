@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ProductCard from '~/app/components/product/product-card.vue'
+import ProductCard from '~/domains/product/ui/product-card.vue'
 import type { GetProductsResponseItem } from '~/domains/product/api/contracts/product.contract'
 
 const page = defineModel<number>('page', { required: true })

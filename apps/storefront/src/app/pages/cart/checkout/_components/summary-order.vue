@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import SummaryOrderCard from '~/domains/cart/ui/summary-order-card.vue'
 import { useGetCart } from '~/domains/cart/queries/cart.query'
 
 const {

@@ -1,15 +1,11 @@
 <script lang="ts" setup>
-import { useCartStore } from '~/domains/cart/stores/cart.store'
-import { CheckoutNowSteps } from '~/domains/cart/stores/cart.store.types'
+import type { StateCheckoutCart, StateCheckoutNow } from '~/domains/cart/stores/cart.store.types'
 
-const cartStore = useCartStore()
-
-const changeUserAddress = () => {
-  cartStore.stateCheckoutNow.currentStep = CheckoutNowSteps.ADDRESS_SHIPPING
-}
-const changePayment = () => {
-  cartStore.stateCheckoutNow.currentStep = CheckoutNowSteps.PAYMENT
-}
+const props = defineProps<{
+  checkoutState: StateCheckoutCart | StateCheckoutNow
+  onChangeUserAddress: () => void
+  onChangePayment: () => void
+}>()
 </script>
 
 <template>
@@ -27,25 +23,25 @@ const changePayment = () => {
 
           <div class="my-2 flex flex-col">
             <div class="">
-              {{ cartStore.stateCheckoutNow.address?.full_name }}
+              {{ props.checkoutState.address?.full_name }}
             </div>
             <div class="">
-              {{ cartStore.stateCheckoutNow.address?.address_1 }}
+              {{ props.checkoutState.address?.address_1 }}
             </div>
             <div class="flex gap-2">
-              <div>{{ cartStore.stateCheckoutNow.address?.city }}</div>
-              <div>{{ cartStore.stateCheckoutNow.address?.zip }}</div>
+              <div>{{ props.checkoutState.address?.city }}</div>
+              <div>{{ props.checkoutState.address?.zip }}</div>
             </div>
             <div class="">
-              {{ cartStore.stateCheckoutNow.address?.country }}
+              {{ props.checkoutState.address?.country }}
             </div>
           </div>
 
           <UButton
             :padded="false"
             variant="link"
-            :disabled="cartStore.stateCheckoutNow.isPendingCreateOrder"
-            @click="changeUserAddress"
+            :disabled="props.checkoutState.isPendingCreateOrder"
+            @click="props.onChangeUserAddress"
           >
             Change
           </UButton>
@@ -57,15 +53,15 @@ const changePayment = () => {
           </div>
           <div class="my-2 flex flex-col gap-4">
             <div class="capitalize">
-              {{ cartStore.stateCheckoutNow.paymentType }}
+              {{ props.checkoutState.paymentType }}
             </div>
           </div>
 
           <UButton
             :padded="false"
             variant="link"
-            :disabled="cartStore.stateCheckoutNow.isPendingCreateOrder"
-            @click="changePayment"
+            :disabled="props.checkoutState.isPendingCreateOrder"
+            @click="props.onChangePayment"
           >
             Change
           </UButton>
@@ -74,7 +70,3 @@ const changePayment = () => {
     </div>
   </UCard>
 </template>
-
-<style scoped>
-
-</style>

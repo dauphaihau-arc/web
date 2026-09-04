@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import CreateOrderBtn from './_components/create-order-btn.vue'
-import PaymentOptions from './_components/payment-options.vue'
-import ReviewShippingAndPayment from './_components/review-shipping-and-payment.vue'
+import PaymentOptions from '~/domains/checkout/ui/payment-options.vue'
+import ReviewShippingAndPayment from '~/domains/checkout/ui/review-shipping-and-payment.vue'
 import ShopCart from './_components/shop-cart.vue'
-import UserAddressShipping from './_components/user-address-shipping.vue'
-import SummaryOrderCard from '~/app/components/summary-order-card.vue'
-import CheckoutStepper from '~/app/components/checkout-stepper.vue'
+import UserAddressShipping from '~/domains/checkout/ui/user-address-shipping.vue'
+import SummaryOrderCard from '~/domains/cart/ui/summary-order-card.vue'
+import CheckoutStepper from '~/domains/checkout/ui/checkout-stepper.vue'
 import { CheckoutNowSteps } from '~/domains/cart/stores/cart.store.types'
 import { useCartStore } from '~/domains/cart/stores/cart.store'
 import { useGetCart } from '~/domains/cart/queries/cart.query'
@@ -28,6 +28,14 @@ const steps = ['Billing Address', 'Payment', 'Review & Confirmation']
 onUnmounted(() => {
   cartStore.resetStateCheckoutNow()
 })
+
+const changeUserAddress = () => {
+  cartStore.stateCheckoutNow.currentStep = CheckoutNowSteps.ADDRESS_SHIPPING
+}
+
+const changePayment = () => {
+  cartStore.stateCheckoutNow.currentStep = CheckoutNowSteps.PAYMENT
+}
 </script>
 
 <template>
@@ -52,18 +60,28 @@ onUnmounted(() => {
       <div class="col-span-8">
         <UserAddressShipping
           v-show="cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.ADDRESS_SHIPPING"
+          v-model:address="cartStore.stateCheckoutNow.address"
+          v-model:guest-email="cartStore.stateCheckoutNow.guestEmail"
           class="mb-10"
+          :address-options-ui="{ container: 'space-y-3' }"
         />
 
         <PaymentOptions
           v-show="cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.PAYMENT"
+          v-model="cartStore.stateCheckoutNow.paymentType"
+          direction="horizontal"
         />
 
         <div
           v-show="cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.REVIEW_CONFIRMATION
             || cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.ORDER"
         >
-          <ReviewShippingAndPayment class="mb-12" />
+          <ReviewShippingAndPayment
+            :checkout-state="cartStore.stateCheckoutNow"
+            :on-change-user-address="changeUserAddress"
+            :on-change-payment="changePayment"
+            class="mb-12"
+          />
           <ShopCart />
         </div>
       </div>

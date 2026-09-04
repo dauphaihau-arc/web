@@ -1,12 +1,23 @@
 <script setup lang="ts">
-import { guestCheckoutFormSchema } from '@arc/schemas/guest-checkout.schema'
 import { ADDRESS_CONFIG } from '@arc/enums/address'
+import { guestCheckoutFormSchema } from '@arc/schemas/guest-checkout.schema'
+import type { CheckoutAddress } from '~/domains/cart/stores/cart.store.types'
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
 import { useGetCountries, useGetStatesByCountry } from '~/domains/location/queries/countries.query'
 import { useGetUserAddresses } from '~/domains/me/queries/address/addresses.query'
-import CreateUserAddressDialog from '~/app/components/dialogs/create-user-address-dialog.vue'
+import CreateUserAddressDialog from '~/domains/me/ui/address/create-user-address-dialog.vue'
 
-const cartStore = useCartStore()
+const props = withDefaults(defineProps<{
+  addressOptionsUi?: Record<string, string>
+  addressOptionContentClass?: string
+}>(), {
+  addressOptionsUi: undefined,
+  addressOptionContentClass: '',
+})
+
+const checkoutAddress = defineModel<CheckoutAddress | null>('address', { required: true })
+const guestEmail = defineModel<string>('guestEmail', { required: true })
+
 const dialog = useModal()
 const { data: dataUserAuth } = useGetCurrentUser()
 
@@ -23,7 +34,7 @@ const {
 } = useGetCountries()
 
 const guestState = reactive({
-  email: cartStore.stateCheckoutNow.guestEmail,
+  email: guestEmail.value,
   full_name: '',
   address_1: '',
   address_2: '',
@@ -57,20 +68,20 @@ const stateOptions = computed(() => {
 
 const addressIdSelected = ref()
 
-watch(dataUserAddress, () => {
-  if (isAuthenticated.value && addressRadioOptions.value && !cartStore.stateCheckoutNow.address) {
+watch(addressRadioOptions, () => {
+  if (isAuthenticated.value && addressRadioOptions.value && !checkoutAddress.value) {
     addressIdSelected.value = addressRadioOptions.value[0].id
   }
 }, { immediate: true })
 
 watch(() => addressIdSelected.value, () => {
   if (isAuthenticated.value && dataUserAddress.value) {
-    const address = dataUserAddress.value.results.find((item) => {
+    const selectedAddress = dataUserAddress.value.results.find((item) => {
       return item.id === addressIdSelected.value
     })
-    if (address) {
-      cartStore.stateCheckoutNow.address = address
-      cartStore.stateCheckoutNow.guestEmail = ''
+    if (selectedAddress) {
+      checkoutAddress.value = selectedAddress
+      guestEmail.value = ''
     }
   }
 }, { immediate: true })
@@ -95,7 +106,7 @@ watch(guestState, () => {
 
   const parsed = guestCheckoutFormSchema.safeParse(guestState)
   if (parsed.success) {
-    cartStore.stateCheckoutNow.address = {
+    checkoutAddress.value = {
       full_name: parsed.data.full_name,
       address_1: parsed.data.address_1,
       address_2: parsed.data.address_2,
@@ -105,11 +116,11 @@ watch(guestState, () => {
       zip: parsed.data.zip,
       phone: parsed.data.phone,
     }
-    cartStore.stateCheckoutNow.guestEmail = parsed.data.email
+    guestEmail.value = parsed.data.email
   }
   else {
-    cartStore.stateCheckoutNow.address = null
-    cartStore.stateCheckoutNow.guestEmail = guestState.email
+    checkoutAddress.value = null
+    guestEmail.value = guestState.email
   }
 }, { deep: true, immediate: true })
 
@@ -149,15 +160,17 @@ const showCreateDialog = () => {
           v-model="addressIdSelected"
           :options="addressRadioOptions"
           value-attribute="id"
-          :ui="{ container: 'space-y-3' }"
+          :ui="props.addressOptionsUi"
         >
           <template #label="{ option }">
-            <div class="text-sm font-medium text-text-subtle">
-              {{ option.full_name }} |
-              <span class="font-normal">{{ option.phone }}</span>
-            </div>
-            <div class="text-sm text-text-muted">
-              {{ option.address_1 }}, {{ option.city }}, {{ option.zip }}, {{ option.country }}
+            <div :class="props.addressOptionContentClass">
+              <div class="text-sm font-medium text-text-subtle">
+                {{ option.full_name }} |
+                <span class="font-normal">{{ option.phone }}</span>
+              </div>
+              <div class="text-sm text-text-muted">
+                {{ option.address_1 }}, {{ option.city }}, {{ option.zip }}, {{ option.country }}
+              </div>
             </div>
           </template>
         </RadioGroupInput>

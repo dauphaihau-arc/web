@@ -14,7 +14,7 @@ import {
   getConversationShopInitial,
   getConversationShopName,
   isConversationUnread,
-} from '~/app/components/chat/storefront-chat-conversation.helpers'
+} from '~/domains/me/ui/chat/storefront-chat-conversation.helpers'
 import { createStorefrontChatEventsClient } from '~/shared/realtime/chat-events.client'
 import {
   getRoutePath,

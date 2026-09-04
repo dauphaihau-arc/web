@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import type { Category } from '@arc/models/category'
-import AttributeFacets from '~/app/components/product/filters/attribute-facets.vue'
-import MinMaxPrice from '~/app/components/product/filters/min-max-price.vue'
+import AttributeFacets from '~/domains/product/ui/filters/attribute-facets.vue'
+import MinMaxPrice from '~/domains/product/ui/filters/min-max-price.vue'
 import {
   getPricePresetRanges,
   isDigitalOpts,
   productWhoMadeOpts,
   type PricePresetId,
-} from '~/app/components/product/filters/product-filter.constants'
+} from '~/domains/product/ui/filters/product-filter.constants'
 import {
   createDefaultFilterState,
   useProductFilterQuerySync,
-} from '~/app/components/product/filters/use-product-filter-query-sync'
-import { useProductFilterState } from '~/app/components/product/filters/use-product-filter-state'
+} from '~/domains/product/ui/filters/use-product-filter-query-sync'
+import { useProductFilterState } from '~/domains/product/ui/filters/use-product-filter-state'
 
 const route = useRoute()
 const marketStore = useMarketStore()

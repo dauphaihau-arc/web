@@ -2,8 +2,8 @@
 import CategoriesBreadcrumb from './_components/categories-breadcrumb.vue'
 import ProductResults from './_components/product-results.vue'
 import SubCategories from './_components/sub-categories.vue'
-import Filters from '~/app/components/product/filters/filters.vue'
-import SortProductsBy from '~/app/components/product/sort-products-by.vue'
+import Filters from '~/domains/product/ui/filters/product-filters.vue'
+import SortProductsBy from '~/domains/product/ui/sort-products-by.vue'
 import { useGetProducts } from '~/domains/product/queries/products.query'
 
 definePageMeta({ layout: 'market' })

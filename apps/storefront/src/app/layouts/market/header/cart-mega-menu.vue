@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import ProductCardImage from '~/domains/product/ui/product-card-image.vue'
 import { routes } from '~/shared/navigation/routes'
 import { useGetCart } from '~/domains/cart/queries/cart.query'
 

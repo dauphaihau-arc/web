@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { formatMinorCurrency } from '@arc/utils'
+import ProductCardImage from '~/domains/product/ui/product-card-image.vue'
 import type { GetProductsResponseItem } from '~/domains/product/api/contracts/product.contract'
 import { routes } from '~/shared/navigation/routes'
 import { resolveProductImageUrl } from '~/shared/utils/storage-public-url'

@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import CreateOrderBtn from './_components/create-order-btn.vue'
-import PaymentOptions from './_components/payment-options.vue'
-import ReviewShippingAndPayment from './_components/review-shipping-and-payment.vue'
+import PaymentOptions from '~/domains/checkout/ui/payment-options.vue'
+import ReviewShippingAndPayment from '~/domains/checkout/ui/review-shipping-and-payment.vue'
 import ShopCart from './_components/shop-cart.vue'
 import SummaryOrder from './_components/summary-order.vue'
-import UserAddressShipping from './_components/user-address-shipping.vue'
-import CheckoutStepper from '~/app/components/checkout-stepper.vue'
+import UserAddressShipping from '~/domains/checkout/ui/user-address-shipping.vue'
+import CheckoutStepper from '~/domains/checkout/ui/checkout-stepper.vue'
 import { useCartStore } from '~/domains/cart/stores/cart.store'
 import { CheckoutCartSteps } from '~/domains/cart/stores/cart.store.types'
 import { useGetCart } from '~/domains/cart/queries/cart.query'
@@ -28,6 +28,14 @@ onBeforeUnmount(() => {
 })
 
 const steps = ['Billing Address', 'Payment', 'Review & Confirmation']
+
+const changeUserAddress = () => {
+  cartStore.stateCheckoutCart.currentStep = CheckoutCartSteps.ADDRESS_SHIPPING
+}
+
+const changePayment = () => {
+  cartStore.stateCheckoutCart.currentStep = CheckoutCartSteps.PAYMENT
+}
 </script>
 
 <template>
@@ -51,17 +59,27 @@ const steps = ['Billing Address', 'Payment', 'Review & Confirmation']
       <div class="col-span-8">
         <UserAddressShipping
           v-show="cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.ADDRESS_SHIPPING"
+          v-model:address="cartStore.stateCheckoutCart.address"
+          v-model:guest-email="cartStore.stateCheckoutCart.guestEmail"
           class="mb-10"
+          address-option-content-class="mb-6 flex w-full flex-col gap-1 text-text-strong"
         />
         <PaymentOptions
           v-show="cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.PAYMENT"
+          v-model="cartStore.stateCheckoutCart.paymentType"
+          label-content-class="mb-6 flex w-full flex-col gap-1"
         />
 
         <div
           v-show="cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.REVIEW_CONFIRMATION
             || cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.ORDER"
         >
-          <ReviewShippingAndPayment class="mb-12" />
+          <ReviewShippingAndPayment
+            :checkout-state="cartStore.stateCheckoutCart"
+            :on-change-user-address="changeUserAddress"
+            :on-change-payment="changePayment"
+            class="mb-12"
+          />
           <div
             v-for="shopCart of dataGetCart.cart.shop_groups"
             :key="shopCart.shop.id"

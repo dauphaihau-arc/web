@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { formatMinorCurrency } from '@arc/utils'
+import SummaryOrderCard from '~/domains/cart/ui/summary-order-card.vue'
 import { useGetCart } from '~/domains/cart/queries/cart.query'
 import { routes } from '~/shared/navigation/routes'
 

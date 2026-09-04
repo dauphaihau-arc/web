@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Category } from '@arc/models/category'
-import type { AttributeFilter } from '~/app/components/product/filters/product-filter.constants'
+import type { AttributeFilter } from '~/domains/product/ui/filters/product-filter.constants'
 import { categoryApi } from '~/domains/category/api/category.api'
 import { normalizeCategory } from '~/domains/category/utils/category.normalizer'
 import { useGetProductFacets } from '~/domains/product/queries/products.query'

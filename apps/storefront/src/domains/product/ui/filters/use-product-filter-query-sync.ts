@@ -6,7 +6,7 @@ import {
   type AttributeFilter,
   type PricePresetId,
   type ProductFilterState,
-} from '~/app/components/product/filters/product-filter.constants';
+} from '~/domains/product/ui/filters/product-filter.constants';
 
 function parseQueryPriceValue(value: unknown) {
   return typeof value === 'string' && /^\d+$/.test(value)
