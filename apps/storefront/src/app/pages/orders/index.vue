@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
-import ShopItem from './_components/shop-item/shop-item.vue'
+import ShopItem from '~/domains/me/ui/order-shop/shop-item.vue'
 import type { MyOrderListState } from '~/domains/me/api/order/contracts/order.contract'
 import { routes } from '~/shared/navigation/routes'
 import { useGetOrderShops } from '~/domains/me/queries/orders/order-shops.query'
