@@ -84,7 +84,7 @@ const hasFooterActions = computed(() =>
       </div>
 
       <div
-        class="flex-1 overflow-y-auto px-6 py-4"
+        class="scrollbar-subtle flex-1 overflow-y-auto px-6 py-4"
         :class="{ 'pb-28': hasFooterActions }"
       >
         <div
