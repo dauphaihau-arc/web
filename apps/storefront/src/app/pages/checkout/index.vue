@@ -23,8 +23,6 @@ const {
   data: dataGetCart,
 } = useGetCart({ cart_id: tempCartId })
 
-const steps = ['Billing Address', 'Payment', 'Review & Confirmation']
-
 onUnmounted(() => {
   cartStore.resetStateCheckoutNow()
 })
@@ -51,8 +49,7 @@ const changePayment = () => {
   >
     <CheckoutStepper
       v-model="cartStore.stateCheckoutNow.currentStep"
-      class="mx-auto mb-24 max-w-[30rem]"
-      :steps="steps"
+      class="mx-auto mb-24 max-w-4xl"
       :disabled="cartStore.stateCheckoutNow.isPendingCreateOrder"
     />
 
@@ -63,7 +60,6 @@ const changePayment = () => {
           v-model:address="cartStore.stateCheckoutNow.address"
           v-model:guest-email="cartStore.stateCheckoutNow.guestEmail"
           class="mb-10"
-          :address-options-ui="{ container: 'space-y-3' }"
         />
 
         <PaymentOptions

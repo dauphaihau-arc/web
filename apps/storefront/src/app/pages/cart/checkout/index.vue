@@ -4,7 +4,7 @@ import CreateOrderBtn from './_components/create-order-btn.vue'
 import PaymentOptions from '~/domains/checkout/ui/payment-options.vue'
 import ReviewShippingAndPayment from '~/domains/checkout/ui/review-shipping-and-payment.vue'
 import ShopCart from './_components/shop-cart.vue'
-import SummaryOrder from './_components/summary-order.vue'
+import SummaryOrderCard from '~/domains/cart/ui/summary-order-card.vue'
 import UserAddressShipping from '~/domains/checkout/ui/user-address-shipping.vue'
 import CheckoutStepper from '~/domains/checkout/ui/checkout-stepper.vue'
 import { useCartStore } from '~/domains/cart/stores/cart.store'
@@ -27,8 +27,6 @@ onBeforeUnmount(() => {
   }
 })
 
-const steps = ['Billing Address', 'Payment', 'Review & Confirmation']
-
 const changeUserAddress = () => {
   cartStore.stateCheckoutCart.currentStep = CheckoutCartSteps.ADDRESS_SHIPPING
 }
@@ -45,14 +43,14 @@ const changePayment = () => {
   >
     <LoadingSvg :child-class="'!w-12 !h-12'" />
   </div>
+
   <div
     v-else-if="dataGetCart?.cart && dataGetCart.cart.shop_groups?.length > 0"
     class="py-16"
   >
     <CheckoutStepper
       v-model="cartStore.stateCheckoutCart.currentStep"
-      class="mx-auto mb-24 max-w-[30rem]"
-      :steps="steps"
+      class="mx-auto mb-24 max-w-4xl"
       :disabled="cartStore.stateCheckoutCart.isPendingCreateOrder"
     />
     <div class="grid grid-cols-12 gap-16">
@@ -62,12 +60,11 @@ const changePayment = () => {
           v-model:address="cartStore.stateCheckoutCart.address"
           v-model:guest-email="cartStore.stateCheckoutCart.guestEmail"
           class="mb-10"
-          address-option-content-class="mb-6 flex w-full flex-col gap-1 text-text-strong"
         />
         <PaymentOptions
           v-show="cartStore.stateCheckoutCart.currentStep === CheckoutCartSteps.PAYMENT"
           v-model="cartStore.stateCheckoutCart.paymentType"
-          label-content-class="mb-6 flex w-full flex-col gap-1"
+          direction="horizontal"
         />
 
         <div
@@ -90,7 +87,10 @@ const changePayment = () => {
       </div>
 
       <div class="col-span-4">
-        <SummaryOrder />
+        <SummaryOrderCard
+          :loading="isPendingGetCart"
+          :summary-order="dataGetCart?.summary"
+        />
         <CreateOrderBtn />
       </div>
     </div>

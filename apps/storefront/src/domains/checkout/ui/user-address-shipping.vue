@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<{
   addressOptionsUi?: Record<string, string>
   addressOptionContentClass?: string
 }>(), {
-  addressOptionsUi: undefined,
+  addressOptionsUi: () => ({ container: 'space-y-3' }),
   addressOptionContentClass: '',
 })
 

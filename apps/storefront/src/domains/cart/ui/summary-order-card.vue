@@ -22,7 +22,7 @@ const props = defineProps<{
       </div>
       <div
         v-else-if="props?.summaryOrder"
-        class="flex flex-col"
+        class="flex flex-col gap-2"
       >
         <div class="flex justify-between">
           <div class="title">
