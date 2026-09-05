@@ -1,4 +1,11 @@
 #!/usr/bin/env node
+/**
+ * Enforces web source ownership rules:
+ * - app source may not import another app's source
+ * - lower layers may not import higher layers (`shared` -> `domains` -> `app`)
+ * - storefront pages may not import another page's private `_components`
+ * - workspace packages may not import app source
+ */
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { dirname, extname, isAbsolute, join, normalize, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -58,6 +65,13 @@ function checkApp(appName) {
       if (isForbiddenSrcImport(fromLayer, toLayer)) {
         addViolation(file, imported.line, `${fromLayer}/ must not import ${toLayer}/ (${imported.specifier})`)
       }
+
+      if (appName === 'storefront') {
+        const pagePrivateOwner = getPagePrivateComponentOwner(srcRoot, target)
+        if (pagePrivateOwner && !isInsidePageOwner(srcRoot, file, pagePrivateOwner)) {
+          addViolation(file, imported.line, `must not import another page's private component (${imported.specifier})`)
+        }
+      }
     }
   }
 }
@@ -114,6 +128,29 @@ function getSrcLayer(srcRoot, file) {
   }
 
   return null
+}
+
+function getPagePrivateComponentOwner(srcRoot, file) {
+  const parts = relative(srcRoot, file).split(sep)
+  if (parts[0] !== 'app' || parts[1] !== 'pages') {
+    return null
+  }
+
+  const componentsIndex = parts.indexOf('_components')
+  if (componentsIndex < 0) {
+    return null
+  }
+
+  return parts.slice(2, componentsIndex)
+}
+
+function isInsidePageOwner(srcRoot, file, ownerParts) {
+  const parts = relative(srcRoot, file).split(sep)
+  if (parts[0] !== 'app' || parts[1] !== 'pages') {
+    return false
+  }
+
+  return ownerParts.every((part, index) => parts[index + 2] === part)
 }
 
 function resolveAppImport(appRoot, srcRoot, importerDir, specifier) {
