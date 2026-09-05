@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
+import ShopCartPromoCouponsUi from './shop-cart-promo-coupons-ui.vue'
 import { StatusCodes } from 'http-status-codes'
 import { FetchError } from 'ofetch'
 import { consola } from 'consola'
@@ -36,6 +36,8 @@ const {
   mutateAsync: updateCart,
   isPending: isPendingUpdateCart,
 } = useUpdateCart({ onError: undefined })
+
+const disabledAddBtn = computed(() => !state.code || isPendingUpdateCart.value)
 
 const addCoupon = async () => {
   state.errorMsg = ''
@@ -253,55 +255,15 @@ const toggleShowAddCouponInput = async () => {
 </script>
 
 <template>
-  <div>
-    <UButton
-      variant="ghost"
-      :icon="ICON_NAME_BY_ALIAS['ticket']"
-      color="gray"
-      class="mb-1 w-fit"
-      :disabled="isPendingUpdateCart"
-      @click="toggleShowAddCouponInput"
-    >
-      {{ state.showAddCouponCodeInput ? 'Remove promo code' : 'Add promo code' }}
-    </UButton>
-
-    <div v-if="state.showAddCouponCodeInput">
-      <div class="mb-2 flex gap-3">
-        <UInput
-          v-model="state.code"
-          maxlength="30"
-          placeholder="Promo code"
-          :disabled="isPendingUpdateCart"
-        />
-        <UButton
-          :disabled="!state.code || isPendingUpdateCart"
-          @click="addCoupon"
-        >
-          Apply
-        </UButton>
-      </div>
-      <div
-        v-if="state.errorMsg"
-        class="text-sm text-state-danger-text"
-      >
-        {{ state.errorMsg }}
-      </div>
-      <div
-        v-if="state.codes.length > 0"
-        class="mt-2 flex flex-wrap gap-3"
-      >
-        <UBadge
-          v-for="code in state.codes"
-          :key="code"
-          color="gray"
-          variant="subtle"
-          size="lg"
-          class="cursor-pointer"
-          @click="deleteCoupon(code)"
-        >
-          {{ code }}
-        </UBadge>
-      </div>
-    </div>
-  </div>
+  <ShopCartPromoCouponsUi
+    v-model:code="state.code"
+    v-model:show-input="state.showAddCouponCodeInput"
+    :codes="state.codes"
+    :error="state.errorMsg"
+    :disabled="isPendingUpdateCart"
+    :disabled-add="disabledAddBtn"
+    @apply="addCoupon"
+    @toggle="toggleShowAddCouponInput"
+    @remove-code="deleteCoupon"
+  />
 </template>

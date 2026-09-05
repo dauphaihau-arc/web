@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { ORDER_CONFIG } from '@arc/enums/order'
-import { ProductVariantTypes } from '@arc/enums/product'
-import { formatMinorCurrency } from '@arc/utils'
-import CheckoutAddRemovePromoCoupons from './add-remove-promo-coupons.vue'
-import ProductCardImage from '~/domains/product/ui/product-card-image.vue'
+import CheckoutNowPromoCoupons from './checkout-now-promo-coupons.vue'
+import ShopCartCard from '~/domains/cart/ui/shop-cart/shop-cart-card.vue'
+import ShopCartFooter from '~/domains/cart/ui/shop-cart/shop-cart-footer.vue'
+import ShopCartNoteUi from '~/domains/cart/ui/shop-cart/shop-cart-note-ui.vue'
+import ShopCartProduct from '~/domains/cart/ui/shop-cart/shop-cart-product.vue'
 import { useCartStore } from '~/domains/cart/stores/cart.store'
 import { useGetCart } from '~/domains/cart/queries/cart.query'
 import { useUpdateCart } from '~/domains/cart/mutations/update-cart.mutation'
 import type { GetCartResponse } from '~/domains/cart/api/contracts/cart.contract'
-import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 
 const cartStore = useCartStore()
 const queryClient = useQueryClient()
@@ -26,46 +25,8 @@ const {
 
 const shopCart = computed(() => dataGetCart.value?.cart && dataGetCart?.value?.cart.shop_groups[0])
 const productCart = computed(() => shopCart.value?.items[0])
-
-// const percentCoupon = computed(() => {
-//   const coupon = productCart.value?.percent_coupon;
-//   if (coupon) {
-//     return {
-//       ...coupon,
-//       endInDays: Math.abs(dayjs(coupon.start_date).diff(coupon?.end_date, 'day')),
-//     };
-//   }
-//   return undefined;
-// });
-
 const showNoteInput = ref(!!cartStore.stateCheckoutNow.note)
-
 const tempProductQty = ref(productCart.value?.quantity || 0)
-
-const displayAmount = computed(() => {
-  if (!productCart.value) {
-    return formatMinorCurrency(undefined, undefined)
-  }
-
-  return formatMinorCurrency(
-    productCart.value.inventory.amount_minor,
-    productCart.value.inventory.currency,
-  )
-})
-
-const compareAtAmount = computed(() =>
-  productCart.value?.inventory.original_amount_minor
-    ? formatMinorCurrency(
-        productCart.value.inventory.original_amount_minor,
-        productCart.value.inventory.currency,
-      )
-    : undefined,
-)
-
-const decreaseQty = () => {
-  if (tempProductQty.value === 1) return
-  tempProductQty.value--
-}
 
 watchDebounced(
   tempProductQty,
@@ -88,122 +49,33 @@ watchDebounced(
 </script>
 
 <template>
-  <UCard
+  <ShopCartCard
     v-if="shopCart && productCart"
-    :ui="{ base: 'overflow-visible' }"
-    class="mb-4"
+    :shop-name="shopCart?.shop?.name"
   >
-    <div class="flex flex-col">
-      <h3 class="mb-3 text-lg font-medium">
-        {{ shopCart?.shop?.name }}
-      </h3>
+    <ShopCartProduct
+      v-model:quantity="tempProductQty"
+      :product-cart="productCart"
+      :quantity-disabled="cartStore.stateCheckoutNow.isPendingCreateOrder"
+    />
 
-      <div class="mb-8 flex gap-4">
-        <ProductCardImage
-          :src="productCart?.product.image_url"
-          frame-class="w-[180px] shrink-0 cursor-pointer"
-          :frame-style="{ aspectRatio: '1 / 1' }"
-        />
+    <template #footer>
+      <ShopCartFooter>
+        <template #coupons>
+          <CheckoutNowPromoCoupons />
+        </template>
 
-        <div class="flex w-full justify-between">
-          <div class="space-y-2">
-            <h1 class="cursor-pointer text-xl font-semibold">
-              {{ productCart?.product.title }}
-            </h1>
-
-            <div
-              v-if="
-                (productCart.product.variant_type === ProductVariantTypes.SINGLE
-                  || productCart.product.variant_type === ProductVariantTypes.COMBINE)
-                  && productCart.inventory.variant_name
-              "
-              class="text-lg text-text-muted"
-            >
-              {{ productCart.inventory.variant_name }}
-            </div>
-
-            <div class="w-[45%]">
-              <UButtonGroup
-                size="lg"
-                orientation="horizontal"
-              >
-                <UButton
-                  :icon="ICON_NAME_BY_ALIAS['minus']"
-                  color="white"
-                  class="rounded-l-md rounded-r-none"
-                  :disabled="cartStore.stateCheckoutNow.isPendingCreateOrder"
-                  @click="decreaseQty"
-                />
-                <UInput
-                  v-model.number="tempProductQty"
-                  v-numeric
-                  v-max-number="productCart.inventory.stock"
-                  class="rounded-l-none"
-                  type="number"
-                  :disabled="cartStore.stateCheckoutNow.isPendingCreateOrder"
-                  :ui="{ base: 'text-center rounded-l-none' }"
-                />
-                <UButton
-                  :icon="ICON_NAME_BY_ALIAS['plus']"
-                  color="white"
-                  :disabled="cartStore.stateCheckoutNow.isPendingCreateOrder"
-                  class="rounded-l-none rounded-r-md"
-                  @click="() => tempProductQty++"
-                />
-              </UButtonGroup>
-            </div>
-          </div>
-
-          <div class="space-y-2 text-right">
-            <div v-if="compareAtAmount">
-              <div class="text-primary text-xl font-medium">
-                {{ displayAmount }}
-              </div>
-              <div class="text-sm text-text-muted">
-                <span class="line-through">
-                  {{ compareAtAmount }}
-                </span>
-              </div>
-            </div>
-            <div
-              v-else
-              class="text-xl font-medium text-text-strong"
-            >
-              {{ displayAmount }}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <UDivider />
-
-      <div class="mt-6 w-fit">
-        <CheckoutAddRemovePromoCoupons />
-
-        <div>
-          <UButton
-            variant="ghost"
-            :icon="ICON_NAME_BY_ALIAS['clipboardDocumentList']"
-            color="gray"
+        <template #note>
+          <ShopCartNoteUi
+            v-model:note="cartStore.stateCheckoutNow.note"
+            v-model:show-input="showNoteInput"
+            :shop-name="shopCart.shop.name"
             :disabled="cartStore.stateCheckoutNow.isPendingCreateOrder"
-            class="mb-2 w-fit"
-            @click="showNoteInput = !showNoteInput"
-          >
-            Add a note to {{ shopCart.shop.name }}
-          </UButton>
-
-          <UTextarea
-            v-if="showNoteInput"
-            v-model="cartStore.stateCheckoutNow.note"
-            autoresize
-            :maxlength="ORDER_CONFIG.MAX_CHAR_NOTE"
-            :rows="3"
-            size="lg"
           />
-        </div>
-      </div>
-    </div>
-  </UCard>
+        </template>
+      </ShopCartFooter>
+    </template>
+  </ShopCartCard>
 </template>
 
 <style scoped>

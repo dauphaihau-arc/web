@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { formatMinorCurrency } from '@arc/utils'
-import CartCheckboxOrderProduct from './checkbox-order-product.vue'
-import CartModifyQuantityProduct from './modify-quantity-product.vue'
+import CartCheckboxOrderProduct from '~/domains/cart/ui/shop-cart/checkbox-order-product.vue'
+import CartShopQuantity from '~/domains/cart/ui/shop-cart/cart-shop-quantity.vue'
 import CartVariantsProduct from './variants-product.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { routes } from '~/shared/navigation/routes'
@@ -117,7 +117,7 @@ const compareAtAmount = computed(() =>
           <CartVariantsProduct :product-cart="props.productCart" />
         </div>
 
-        <CartModifyQuantityProduct
+        <CartShopQuantity
           :key="props.productCart.quantity"
           :shop-id="shopId"
           :product-cart="props.productCart"

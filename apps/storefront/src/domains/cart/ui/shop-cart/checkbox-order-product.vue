@@ -63,6 +63,8 @@ watch(() => selectedCheckbox.value, async () => {
 <template>
   <UCheckbox
     v-model="selectedCheckbox"
+    size="xl"
     class="mb-2"
+    :ui="{ base: 'size-5', rounded: 'rounded-md' }"
   />
 </template>

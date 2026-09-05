@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
-import { ORDER_CONFIG } from '@arc/enums/order'
+import ShopCartNoteUi from './shop-cart-note-ui.vue'
 import type { CartShopGroup } from '~/domains/cart/api/cart.shared'
 
 const props = defineProps<{
@@ -49,31 +48,10 @@ watch(() => state.showNoteInput, () => {
 </script>
 
 <template>
-  <div>
-    <UButton
-      variant="ghost"
-      :icon="ICON_NAME_BY_ALIAS['clipboardDocumentList']"
-      color="gray"
-      class="mb-1 w-fit"
-      :disabled="cartStore.stateCheckoutCart.isPendingCreateOrder"
-      @click="state.showNoteInput = !state.showNoteInput"
-    >
-      Add a note to
-      {{ props?.shopCart.shop?.name }}
-    </UButton>
-
-    <UFormGroup
-      v-if="state.showNoteInput"
-      name="description"
-      required
-    >
-      <UTextarea
-        v-model="state.note"
-        autoresize
-        :maxlength="ORDER_CONFIG.MAX_CHAR_NOTE"
-        :rows="3"
-        size="lg"
-      />
-    </UFormGroup>
-  </div>
+  <ShopCartNoteUi
+    v-model:note="state.note"
+    v-model:show-input="state.showNoteInput"
+    :shop-name="props.shopCart.shop?.name"
+    :disabled="cartStore.stateCheckoutCart.isPendingCreateOrder"
+  />
 </template>

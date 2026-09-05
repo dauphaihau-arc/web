@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import { StatusCodes } from 'http-status-codes'
 import { FetchError } from 'ofetch'
 import { COUPON_CONFIG } from '@arc/enums/coupon'
 import { useCartStore } from '~/domains/cart/stores/cart.store'
 import { toastCustom } from '~/shared/config/toast'
 import { useUpdateCart } from '~/domains/cart/mutations/update-cart.mutation'
+import ShopCartPromoCouponsUi from '~/domains/cart/ui/shop-cart/shop-cart-promo-coupons-ui.vue'
 import type { GetCartResponse } from '~/domains/cart/api/contracts/cart.contract'
 
 const toast = useToast()
@@ -137,73 +137,16 @@ const disabledInput = computed(() => {
 </script>
 
 <template>
-  <div>
-    <UButton
-      variant="ghost"
-      :icon="ICON_NAME_BY_ALIAS['ticket']"
-      color="gray"
-      class="mb-2 w-fit"
-      :disabled="cartStore.stateCheckoutNow.isPendingCreateOrder"
-      @click="toggleShowAddCouponInput"
-    >
-      Apply shop coupon codes
-    </UButton>
-
-    <div
-      v-if="state.showAddCouponInput"
-      class="mb-4 flex gap-3"
-    >
-      <UFormGroup
-        required
-        name="code"
-        :error="state.errorMsg"
-      >
-        <UButtonGroup
-          orientation="horizontal"
-        >
-          <UInput
-            v-model="state.code"
-            v-uppercase
-            :disabled="disabledInput || cartStore.stateCheckoutNow.isPendingCreateOrder"
-          />
-          <UButton
-            color="gray"
-            variant="solid"
-            :disabled="disabledAddBtn || cartStore.stateCheckoutNow.isPendingCreateOrder"
-            @click="addCoupon"
-          >
-            Add
-          </UButton>
-        </UButtonGroup>
-      </UFormGroup>
-
-      <div
-        v-if="cartStore.stateCheckoutNow.promoCodes.length > 0"
-        class="flex gap-3"
-      >
-        <div
-          v-for="(code, index) of cartStore.stateCheckoutNow.promoCodes"
-          :key="index"
-        >
-          <div class="relative">
-            <UButton
-              color="gray"
-            >
-              {{ code }}
-            </UButton>
-            <UButton
-              class="absolute -right-2 -top-3 z-[1]"
-              size="2xs"
-              color="gray"
-              variant="solid"
-              :disabled="isPendingUpdateCart || cartStore.stateCheckoutNow.isPendingCreateOrder"
-              :icon="ICON_NAME_BY_ALIAS['xMarkSolid']"
-              :ui="{ rounded: 'rounded-full' }"
-              @click="() => deleteCoupon(code)"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <ShopCartPromoCouponsUi
+    v-model:code="state.code"
+    v-model:show-input="state.showAddCouponInput"
+    :codes="cartStore.stateCheckoutNow.promoCodes"
+    :error="state.errorMsg"
+    :disabled="isPendingUpdateCart || cartStore.stateCheckoutNow.isPendingCreateOrder"
+    :disabled-input="disabledInput"
+    :disabled-add="disabledAddBtn"
+    @apply="addCoupon"
+    @toggle="toggleShowAddCouponInput"
+    @remove-code="deleteCoupon"
+  />
 </template>

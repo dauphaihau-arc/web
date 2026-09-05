@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import AddRemoveCoupons from './add-remove-coupons.vue'
-import AddRemoveNote from './add-remove-note.vue'
-import Product from './cart-product/cart-product.vue'
-import ShippingSelect from './shipping-select.vue'
+import CartShopNote from '~/domains/cart/ui/shop-cart/cart-shop-note.vue'
+import CartShopPromoCoupons from '~/domains/cart/ui/shop-cart/cart-shop-promo-coupons.vue'
+import CartCheckboxOrderProduct from '~/domains/cart/ui/shop-cart/checkbox-order-product.vue'
+import CartShopQuantity from '~/domains/cart/ui/shop-cart/cart-shop-quantity.vue'
+import ShippingSelect from '~/domains/cart/ui/shop-cart/shipping-select.vue'
+import ShopCartCard from '~/domains/cart/ui/shop-cart/shop-cart-card.vue'
+import ShopCartFooter from '~/domains/cart/ui/shop-cart/shop-cart-footer.vue'
+import ShopCartProduct from '~/domains/cart/ui/shop-cart/shop-cart-product.vue'
+import ShopCartProductActions from '~/domains/cart/ui/shop-cart/shop-cart-product-actions.vue'
 import type { CartShopGroup } from '~/domains/cart/api/cart.shared'
 
 const props = defineProps<{
@@ -11,44 +16,54 @@ const props = defineProps<{
 </script>
 
 <template>
-  <UCard
+  <ShopCartCard
     v-if="props.shopCart.items.length > 0"
-    :ui="{ base: 'overflow-visible' }"
-    class="mb-10"
+    :shop-name="props.shopCart.shop?.name"
   >
-    <div class="flex flex-col">
-      <div class="-ml-1 mb-4 flex items-center gap-3">
-        <AppIcon
-          name="shop"
-          class="size-8"
-        />
-        <h3 class="text-lg font-medium">
-          {{ props.shopCart.shop?.name }}
-        </h3>
-      </div>
-      <div>
-        <div
-          v-for="(productCart) of props.shopCart.items"
-          :key="productCart.inventory.id"
-        >
-          <Product
-            :product-cart="productCart"
+    <ShopCartProduct
+      v-for="productCart of props.shopCart.items"
+      :key="productCart.inventory.id"
+      :product-cart="productCart"
+    >
+      <template #selection>
+        <div class="flex flex-col justify-center">
+          <CartCheckboxOrderProduct
             :shop-id="props.shopCart.shop?.id"
+            :checked="productCart.is_selected"
+            :inventory-id="productCart.inventory.id"
           />
         </div>
-      </div>
-
-      <UDivider />
-
-      <div class="mt-6 flex justify-between">
-        <div class="flex w-fit flex-col gap-1">
-          <AddRemoveCoupons :shop-id="props.shopCart.shop?.id" />
-          <AddRemoveNote :shop-cart="props.shopCart" />
-        </div>
-        <ShippingSelect
-          :shop-cart="props.shopCart"
+      </template>
+      <template #quantity>
+        <CartShopQuantity
+          :key="productCart.quantity"
+          :shop-id="props.shopCart.shop?.id"
+          :product-cart="productCart"
         />
-      </div>
-    </div>
-  </UCard>
+      </template>
+
+      <template #actions>
+        <ShopCartProductActions
+          :shop-id="props.shopCart.shop?.id"
+          :product-cart="productCart"
+        />
+      </template>
+    </ShopCartProduct>
+
+    <template #footer>
+      <ShopCartFooter>
+        <template #coupons>
+          <CartShopPromoCoupons :shop-id="props.shopCart.shop?.id" />
+        </template>
+
+        <template #note>
+          <CartShopNote :shop-cart="props.shopCart" />
+        </template>
+
+        <template #shipping>
+          <ShippingSelect :shop-cart="props.shopCart" />
+        </template>
+      </ShopCartFooter>
+    </template>
+  </ShopCartCard>
 </template>

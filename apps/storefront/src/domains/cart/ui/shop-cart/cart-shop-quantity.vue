@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
+import ShopCartQuantityUi from './shop-cart-quantity-ui.vue'
 import { watchDebounced } from '@vueuse/core'
 import { useCartStore } from '~/domains/cart/stores/cart.store'
 import { useUpdateCart } from '~/domains/cart/mutations/update-cart.mutation'
@@ -56,11 +56,6 @@ const {
   },
 })
 
-const decreaseQty = () => {
-  if (tempProductQty.value === 1) return
-  tempProductQty.value--
-}
-
 watchDebounced(
   tempProductQty,
   async () => {
@@ -88,31 +83,9 @@ watchDebounced(
 </script>
 
 <template>
-  <UButtonGroup
-    size="lg"
-    orientation="horizontal"
-  >
-    <UButton
-      :icon="ICON_NAME_BY_ALIAS['minus']"
-      color="white"
-      class="rounded-l-md rounded-r-none"
-      :disabled="cartStore.stateCheckoutCart.isPendingCreateOrder"
-      @click="decreaseQty"
-    />
-    <UInput
-      v-model.number="tempProductQty"
-      v-numeric
-      v-max-number="props.productCart.inventory.stock"
-      class="rounded-l-none"
-      :disabled="cartStore.stateCheckoutCart.isPendingCreateOrder"
-      :ui="{ base: 'text-center rounded-l-none' }"
-    />
-    <UButton
-      :icon="ICON_NAME_BY_ALIAS['plus']"
-      color="white"
-      class="rounded-l-none rounded-r-md"
-      :disabled="cartStore.stateCheckoutCart.isPendingCreateOrder"
-      @click="() => tempProductQty++"
-    />
-  </UButtonGroup>
+  <ShopCartQuantityUi
+    v-model:quantity="tempProductQty"
+    :stock="props.productCart.inventory.stock"
+    :disabled="cartStore.stateCheckoutCart.isPendingCreateOrder"
+  />
 </template>
