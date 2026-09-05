@@ -6,6 +6,7 @@ export default <Partial<Config>>{
   content: [
     './src/app/**/*.{vue,js,jsx,mjs,ts,tsx}',
     './src/shared/ui/**/*.{vue,js,jsx,mjs,ts,tsx}',
+    './src/domains/**/*.{vue,js,jsx,mjs,ts,tsx}',
     './src/shared/composables/**/*.{js,ts,mjs}',
     './src/shared/utils/**/*.{js,ts,mjs}',
     '../../packages/ui/src/**/*.{vue,js,jsx,mjs,ts,tsx}',

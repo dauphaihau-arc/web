@@ -32,25 +32,16 @@ watch(() => dataUserAuth.value?.user, () => {
 <template>
   <BaseDialog
     v-model="isOpen"
-    body-class="space-y-5 p-12"
-    width="w-full sm:max-w-[450px]"
     :ui="{
       modal: {
         margin: '!mb-72',
       },
     }"
+    width="w-full sm:max-w-[400px]"
   >
-    <div class="space-y-1.5">
-      <h1 class="text-3xl font-bold">
-        {{ isLoginForm ? 'Log in' : 'Create your account' }}
-      </h1>
-      <p class="text-base text-text-strong">
-        {{
-          isLoginForm
-            ? 'Enter your credentials to access your account.' : 'Registration is easy.'
-        }}
-      </p>
-    </div>
+    <h1 class="mb-4 text-3xl font-bold">
+      {{ isLoginForm ? 'Log in' : 'Create your account' }}
+    </h1>
 
     <LoginForm v-if="isLoginForm" />
     <RegisterForm v-else />

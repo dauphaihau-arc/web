@@ -56,7 +56,7 @@ const props = withDefaults(defineProps<{
   ui?: DialogUiConfig
 }>(), {
   width: 'w-full sm:max-w-xl',
-  bodyClass: 'min-h-0 flex-1 overflow-y-auto py-8 px-6',
+  bodyClass: 'min-h-0 flex-1 overflow-y-auto p-8',
   cardClass:
     'flex max-h-[calc(100vh-4rem)] min-h-0 flex-col overflow-hidden rounded-dialog border border-border-subtle bg-surface text-text-strong',
   actions: () => [],
