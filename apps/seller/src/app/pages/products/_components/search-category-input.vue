@@ -15,7 +15,7 @@ type SearchCategoryOption = {
 }
 
 const selected = ref<SearchCategoryOption>()
-const querySuggestion = ref(props.category?.name ?? '')
+const querySuggestion = ref('')
 const placeholder = ref('')
 const hideOptions = ref(false)
 
@@ -38,6 +38,18 @@ function normalizeCategoryOption(category: {
   }
 }
 
+function normalizeSelectedCategory(category?: Category | null): SearchCategoryOption | undefined {
+  if (!category) {
+    return undefined
+  }
+
+  return {
+    id: category.id,
+    label: category.name,
+    relatedCategories: [],
+  }
+}
+
 async function suggestCategories(q: Category['name']) {
   if (!q) return []
 
@@ -54,6 +66,24 @@ async function suggestCategories(q: Category['name']) {
 watch(selected, () => {
   model.value = selected.value?.id
 })
+
+watch(
+  () => props.category,
+  (category) => {
+    if (!category || selected.value?.id === category.id) {
+      return
+    }
+
+    if (model.value && model.value !== category.id) {
+      return
+    }
+
+    selected.value = normalizeSelectedCategory(category)
+    querySuggestion.value = category.name
+    model.value = category.id
+  },
+  { immediate: true },
+)
 
 watchDebounced(
   () => props.title,

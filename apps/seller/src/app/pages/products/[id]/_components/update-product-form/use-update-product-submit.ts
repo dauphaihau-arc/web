@@ -36,6 +36,7 @@ function buildDetailPayload(dataSubmit: UpdateProductBody) {
     'non_taxable',
     'variant_group_name',
     'variant_sub_group_name',
+    'category_id',
   ]);
 }
 

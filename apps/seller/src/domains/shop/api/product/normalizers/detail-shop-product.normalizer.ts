@@ -48,12 +48,12 @@ export function normalizeDetailShopProductResponse(
     variant_group_name: response.variant_group_name,
     variant_sub_group_name: response.variant_sub_group_name,
     tags: [],
-    category: response.category_id
+    category: response.category ?? (response.category_id
       ? {
         id: response.category_id,
         name: '',
       }
-      : null,
+      : null),
     images: response.images.map(image => ({
       id: image.id,
       relative_url: image.url,

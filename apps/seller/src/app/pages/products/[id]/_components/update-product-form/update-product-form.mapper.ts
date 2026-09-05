@@ -52,6 +52,15 @@ export function pruneUnchangedUpdateFields(
         return value !== detailProduct.category.id;
       }
 
+      if (key === 'attributes') {
+        return JSON.stringify(value ?? []) !== JSON.stringify(
+          detailProduct.attributes.map(attribute => ({
+            attribute_id: attribute.attribute,
+            selected: attribute.selected,
+          })),
+        );
+      }
+
       return JSON.stringify(value) !== JSON.stringify(detailProduct[key]);
     }),
   );

@@ -9,7 +9,7 @@ import { categoryApi } from '~/domains/category/api/category.api';
 export function useGetAttributesByCategory(id?: Category['id']) {
   return useQuery({
     enabled: !!id,
-    queryKey: ['get-attributes-by-category'],
+    queryKey: ['get-attributes-by-category', id],
     queryFn: async () => {
       const response = await categoryApi.getAttributes(id!);
 

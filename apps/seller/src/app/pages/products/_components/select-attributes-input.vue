@@ -8,12 +8,11 @@ type ProductAttributeSelection = {
   selected: string
 }
 
-const { category_id, attributesSelected } = defineProps<{
+const props = defineProps<{
   // eslint-disable-next-line vue/prop-name-casing
   category_id?: Category['id']
   attributesSelected?: ProductAttributeSelection[]
-}
->()
+}>()
 
 const attributesModel = defineModel<ReqAttributeOption[] | undefined>({
   default: [],
@@ -22,31 +21,36 @@ const attributesModel = defineModel<ReqAttributeOption[] | undefined>({
 
 const {
   data: dataGetAttributesByCategory,
-} = useGetAttributesByCategory(category_id)
+} = useGetAttributesByCategory(props.category_id)
 
 const state = reactive<Record<ReqAttributeOption['attribute_id'], ReqAttributeOption['selected']>>({})
 
 watch(() => dataGetAttributesByCategory.value, () => {
-  if (dataGetAttributesByCategory.value?.attributes) {
-    // case update, init data
-    if (attributesSelected) {
-      attributesSelected.forEach((attr) => {
-        const attribute = dataGetAttributesByCategory.value?.attributes.find(
-          item => item.id === attr.attribute,
-        )
-        const selectedOption = attribute?.options?.find(option =>
-          option.id === attr.selected || option.value === attr.selected,
-        )
+  Object.keys(state).forEach((key) => {
+    state[key] = ''
+  })
 
-        state[attr.attribute] = selectedOption?.id ?? attr.selected
-      })
-    }
-    else {
-      dataGetAttributesByCategory.value.attributes.forEach((attr) => {
-        state[attr.id] = ''
-      })
-    }
+  const attributes = dataGetAttributesByCategory.value?.attributes
+
+  if (!attributes) {
+    return
   }
+
+  props.attributesSelected?.forEach((attr) => {
+    const attribute = attributes.find(
+      item => item.id === attr.attribute,
+    )
+
+    if (!attribute) {
+      return
+    }
+
+    const selectedOption = attribute.options?.find(option =>
+      option.id === attr.selected || option.value === attr.selected,
+    )
+
+    state[attr.attribute] = selectedOption?.id ?? attr.selected
+  })
 }, { immediate: true })
 
 watch(() => state, () => {

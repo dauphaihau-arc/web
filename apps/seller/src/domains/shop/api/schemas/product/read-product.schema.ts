@@ -72,6 +72,10 @@ export const shopProductDetailApiResponseSchema = z.object({
   shop_public_id: z.string().optional(),
   state: z.nativeEnum(ProductStates),
   category_id: z.string().optional(),
+  category: z.object({
+    id: z.string(),
+    name: z.string(),
+  }).optional(),
   title: z.string(),
   slug: z.string(),
   description: z.string(),
