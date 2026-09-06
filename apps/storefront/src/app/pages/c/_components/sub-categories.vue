@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { consola } from 'consola'
+import { log } from '@arc/lib'
 import type { Category } from '@arc/models/category'
 import { useGetCategories } from '~/domains/category/queries/categories.query'
 
@@ -9,7 +9,7 @@ const marketStore = useMarketStore()
 const params = computed(() => {
   const category = marketStore.categoriesBreadcrumb.find((c: Category & { to: string }) => c.to === route.fullPath)
   if (!category) {
-    consola.error('params be undefined')
+    log.error('params be undefined')
     return undefined
   }
   return {

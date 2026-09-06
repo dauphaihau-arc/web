@@ -13,6 +13,6 @@ What does not belong here:
 - domain rules or feature utilities
 
 Examples:
-- `logger.ts` configures the app logger through `consola`
+- app-local external package adapters that are not shared across apps
 
 Put market-owned helpers beside the market module instead of here.

@@ -2,7 +2,7 @@
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import dayjs from 'dayjs'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
-import { consola } from 'consola'
+import { log } from '@arc/lib'
 
 dayjs.extend(isSameOrAfter)
 
@@ -73,14 +73,14 @@ function suggestBestDateOption(words: string[]): DateOption | undefined {
     dateOption = props.startDate
   }
 
-  consola.info('words', words)
+  log.info('words', words)
 
   for (let word of words) {
     word = word.toLowerCase()
 
     // case word is day ( 1 - 31 )
     if (!timeTypesWasSet.has('day') && isPositiveNumeric(word)) {
-      consola.info('case day')
+      log.info('case day')
       const day = Number(word)
       if (day <= currentDay) {
         dateOption = dateOption.add(1, 'month')
@@ -97,7 +97,7 @@ function suggestBestDateOption(words: string[]): DateOption | undefined {
       !timeTypesWasSet.has('month')
       && word.match(/^[a-zA-Z]+$/) && monthNames.findIndex(name => name.includes(word)) !== -1
     ) {
-      consola.info('case month name')
+      log.info('case month name')
       const foundMonthIndex = monthNames.findIndex(name => name.includes(word))
       dateOption = dateOption.month(foundMonthIndex)
       timeTypesWasSet.add('month')
@@ -108,7 +108,7 @@ function suggestBestDateOption(words: string[]): DateOption | undefined {
       !timeTypesWasSet.has('hour')
       && ((word.match(regexHoursAMPM) || word.match(regexHoursMinutesAMPM)) || word.match(regexHoursMinutes))
     ) {
-      consola.info('case hour')
+      log.info('case hour')
       const [hour, min] = word.split(':')
       let hourInt = parseInt(hour)
       if (word.includes('pm')) {
@@ -128,7 +128,7 @@ function suggestBestDateOption(words: string[]): DateOption | undefined {
 
     // word is year
     else if (!timeTypesWasSet.has('year') && isPositiveNumeric(word) && word.length === 4) {
-      consola.info('case year')
+      log.info('case year')
       dateOption = dateOption.year(Number(word))
       timeTypesWasSet.add('year')
     }
@@ -139,7 +139,7 @@ function suggestBestDateOption(words: string[]): DateOption | undefined {
     && dateOption.isSame(dayjs(), 'day') // second parameter 'day' will check day, month, and year.
     && !props.startDate
   ) {
-    consola.info('same day, month, year')
+    log.info('same day, month, year')
     return {
       hintTitle: 'Now',
       dateInputValueFormatted: dayjs().format(dateInputValueFormat),
@@ -149,18 +149,18 @@ function suggestBestDateOption(words: string[]): DateOption | undefined {
   }
 
   if (words.length > 2 && props.startDate && dateOption.isSame(props.startDate, 'day')) {
-    consola.info('have startDate, add 1 hour')
+    log.info('have startDate, add 1 hour')
     dateOption = dateOption.add(1, 'hour')
   }
 
   // case search words start by '1 Jan' or '1 Nov' ( ex current date is 11 Nov ), increase year
   if (dateOption.isBefore(dayjs(), 'day')) {
-    consola.info('add 1 year')
+    log.info('add 1 year')
     dateOption = dateOption.add(1, 'year')
   }
 
   if (props.startDate && dateOption.isBefore(props.startDate, 'day')) {
-    consola.info('have startDate, add 1 year')
+    log.info('have startDate, add 1 year')
     dateOption = dateOption.add(1, 'year')
   }
 

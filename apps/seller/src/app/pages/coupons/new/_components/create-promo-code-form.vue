@@ -2,6 +2,7 @@
 import {
   CouponAppliesTo, COUPON_CONFIG, CouponMinOrderTypes, CouponTypes,
 } from '@arc/enums/coupon'
+import { log } from '@arc/lib'
 import type { RequiredFields } from '@arc/contracts/utils'
 import { PRODUCT_CONFIG } from '@arc/enums/product'
 import RadioGroupInput from '@arc/ui/primitives/radio-group-input.vue'

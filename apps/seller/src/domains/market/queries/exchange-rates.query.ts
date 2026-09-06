@@ -1,6 +1,6 @@
 import type { UseQueryOptions } from '@tanstack/vue-query';
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
-import { consola } from 'consola';
+import { log } from '@arc/lib';
 import { MARKET_CONFIG } from '@arc/enums/market';
 import type { ExchangeRatesResponse } from '~/domains/market/api/contracts/market.contract';
 import { apiClient } from '~/domains/_shared/api-client';
@@ -26,7 +26,7 @@ export function useGetExchangeRates(
           baseURL: '',
           credentials: undefined,
           onResponseError: () => {
-            consola.error('get exchange rates failed');
+            log.error('get exchange rates failed');
           },
         },
       );

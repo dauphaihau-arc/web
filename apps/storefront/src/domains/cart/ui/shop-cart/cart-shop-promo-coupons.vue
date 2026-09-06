@@ -2,7 +2,7 @@
 import ShopCartPromoCouponsUi from './shop-cart-promo-coupons-ui.vue'
 import { StatusCodes } from 'http-status-codes'
 import { FetchError } from 'ofetch'
-import { consola } from 'consola'
+import { log } from '@arc/lib'
 import { type AdditionInfoShopCarts, useCartStore } from '~/domains/cart/stores/cart.store'
 import { useUpdateCart } from '~/domains/cart/mutations/update-cart.mutation'
 import { toastCustom } from '~/shared/config/toast'
@@ -53,7 +53,7 @@ const addCoupon = async () => {
 
   const tempAdditionInfoOrderShop = tempAdditionInfoShopCarts.get(shopId)
   if (!tempAdditionInfoOrderShop) {
-    consola.error('tempAdditionInfoOrderShop be undefined')
+    log.error('tempAdditionInfoOrderShop be undefined')
     return
   }
   tempAdditionInfoOrderShop.promoCodes.push(state.code)
@@ -129,7 +129,7 @@ const deleteCoupon = async (code: string) => {
   const tempAdditionInfoOrderShop = tempAdditionInfoShopCarts.get(shopId)
 
   if (!tempAdditionInfoOrderShop) {
-    consola.error('tempAdditionInfoOrderShop be undefined')
+    log.error('tempAdditionInfoOrderShop be undefined')
     return
   }
   tempAdditionInfoOrderShop.promoCodes = tempAdditionInfoOrderShop.promoCodes.filter(c => c !== code)
@@ -171,7 +171,7 @@ const deleteCoupon = async (code: string) => {
 
     const additionInfoOrderShop = tempAdditionInfoShopCarts.get(shopId)
     if (!additionInfoOrderShop) {
-      consola.error('additionInfoOrderShop be undefined', additionInfoOrderShop)
+      log.error('additionInfoOrderShop be undefined', additionInfoOrderShop)
       throw new Error()
     }
     cartStore.additionInfoShopCarts.set(shopId, additionInfoOrderShop)
@@ -194,7 +194,7 @@ const toggleShowAddCouponInput = async () => {
     const tempAdditionInfoOrderShop = tempAdditionInfoShopCarts.get(shopId)
 
     if (!tempAdditionInfoOrderShop) {
-      consola.error('tempAdditionInfoOrderShop be undefined')
+      log.error('tempAdditionInfoOrderShop be undefined')
       return
     }
     if (tempAdditionInfoOrderShop.promoCodes.length === 0) {
@@ -238,7 +238,7 @@ const toggleShowAddCouponInput = async () => {
       })
       const additionInfoOrderShop = tempAdditionInfoShopCarts.get(shopId)
       if (!additionInfoOrderShop) {
-        consola.error('additionInfoOrderShop be undefined', additionInfoOrderShop)
+        log.error('additionInfoOrderShop be undefined', additionInfoOrderShop)
         throw new Error()
       }
       cartStore.additionInfoShopCarts.set(shopId, additionInfoOrderShop)

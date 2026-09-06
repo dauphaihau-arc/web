@@ -1,4 +1,4 @@
-import { consola } from 'consola';
+import { log } from '@arc/lib';
 import { MARKET_CONFIG } from '@arc/enums/market';
 import { PaymentTypes } from '@arc/enums/order';
 import { FetchError } from 'ofetch';
@@ -114,7 +114,7 @@ export function useSubmitBuyNowCheckout() {
       const address = cartStore.stateCheckoutNow.address;
 
       if (!address) {
-        consola.error('addressId be undefined');
+        log.error('addressId be undefined');
         throw new Error();
       }
 
@@ -135,7 +135,7 @@ export function useSubmitBuyNowCheckout() {
             : undefined);
 
         if (!checkoutSessionUrl) {
-          consola.error('checkout_session_url be undefined', checkoutSessionUrl);
+          log.error('checkout_session_url be undefined', checkoutSessionUrl);
           throw new Error();
         }
 

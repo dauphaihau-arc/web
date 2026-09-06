@@ -1,4 +1,4 @@
-import { consola } from 'consola';
+import { log } from '@arc/lib';
 import { ProductStates } from '@arc/enums/product';
 import type { PickPartial } from '@arc/contracts/utils';
 import {
@@ -69,7 +69,7 @@ export function useCreateProductSubmit({
 
   async function uploadImage(productId: string) {
     if (fileImages.value.length === 0) {
-      consola.error('images is invalid');
+      log.error('images is invalid');
       return;
     }
 
@@ -119,12 +119,12 @@ export function useCreateProductSubmit({
       stateSubmit.state === ProductStates.ACTIVE
       && fileImages.value.length === 0
     ) {
-      consola.error('images is invalid');
+      log.error('images is invalid');
       return;
     }
 
     if (!shipping.value) {
-      consola.error('shipping be undefined');
+      log.error('shipping be undefined');
       return;
     }
 

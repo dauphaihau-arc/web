@@ -1,6 +1,6 @@
 import type { UseQueryOptions } from '@tanstack/vue-query';
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
-import { consola } from 'consola';
+import { log } from '@arc/lib';
 import type { IpDataResponse } from '~/domains/market/api/contracts/market.contract';
 import { apiClient } from '~/domains/_shared/api-client';
 
@@ -24,7 +24,7 @@ export function getIpData() {
       baseURL: '',
       credentials: undefined,
       onResponseError: () => {
-        consola.error('get data by IP failed');
+        log.error('get data by IP failed');
       },
     },
   );
@@ -46,7 +46,7 @@ export function useGetDataByIP(
           baseURL: '',
           credentials: undefined,
           onResponseError: () => {
-            consola.error('get data by IP failed');
+            log.error('get data by IP failed');
           },
         },
       );
