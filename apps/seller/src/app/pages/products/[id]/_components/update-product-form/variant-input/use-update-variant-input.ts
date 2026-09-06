@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { ProductVariantTypes } from '@arc/enums/product';
 import { productInventorySchema } from '@arc/schemas/product-inventory.schema';
 import { log } from '@arc/lib';
-import type { IOnChangeUpdateVariants } from '../update-product-form.types';
+import type { IOnChangeUpdateVariants } from '../use-update-product-form/update-product-form.types';
 import {
   DEFAULT_UPDATE_VARIANT_COLUMNS,
   DUPLICATE_ERROR,

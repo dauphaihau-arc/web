@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { IOnChangeUpdateVariants } from '../update-product-form.types'
+import type { IOnChangeUpdateVariants } from '../use-update-product-form/update-product-form.types'
 import type { VariantEditorProduct } from './update-variant-input.types'
 import { useUpdateVariantInput } from './use-update-variant-input'
 import VariantInventoryTable from '~/app/pages/products/_components/variant-input/variant-inventory-table.vue'

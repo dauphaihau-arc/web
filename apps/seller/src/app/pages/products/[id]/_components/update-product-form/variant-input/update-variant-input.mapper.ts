@@ -2,7 +2,7 @@
 // @ts-nocheck
 /* eslint-disable @typescript-eslint/naming-convention */
 import { ProductVariantTypes } from '@arc/enums/product';
-import type { VariantEditorSubmission } from '../update-product-form.types';
+import type { VariantEditorSubmission } from '../use-update-product-form/update-product-form.types';
 import type {
   UpdateVariantInputState,
   UpdateVariantTable,

@@ -8,7 +8,7 @@ import {
 import {
   buildVariantEditorSnapshot,
   buildVariantEditorSubmission,
-} from './variant-input/update-variant-input.mapper';
+} from '../variant-input/update-variant-input.mapper';
 
 describe('pruneUnchangedUpdateFields', () => {
   it('does not submit unchanged normalized product attributes', () => {

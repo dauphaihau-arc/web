@@ -134,52 +134,6 @@ type PersistedVariantRow = {
   currency?: string
 };
 
-function variantRowKey(optionValue1: string, optionValue2?: string) {
-  return JSON.stringify([optionValue1, optionValue2 ?? null]);
-}
-
-function flattenPersistedVariantRows(
-  product: DetailShopProductResponse['product'],
-): PersistedVariantRow[] {
-  if (product.variant_type === 'single') {
-    return product.variants.map(variant => ({
-      optionValue1: variant.variant_name,
-      productVariantId: variant.id,
-      inventoryId: variant.inventory?.id,
-      amount: variant.inventory?.amount,
-      stock: variant.inventory?.stock,
-      sku: variant.inventory?.sku,
-      currency: variant.inventory?.currency,
-    }));
-  }
-
-  return product.variants.flatMap(variant =>
-    (variant.variant_options ?? []).map(option => ({
-      optionValue1: variant.variant_name,
-      optionValue2: option.variant.variant_name,
-      productVariantId: option.id,
-      inventoryId: option.inventory.id,
-      amount: option.inventory.amount,
-      stock: option.inventory.stock,
-      sku: option.inventory.sku,
-      currency: option.inventory.currency,
-    })),
-  );
-}
-
-function hasVariantShapeChange(
-  currentRows: PersistedVariantRow[],
-  submission: VariantEditorSubmission,
-) {
-  return JSON.stringify(currentRows.map(row => [
-    row.optionValue1,
-    row.optionValue2 ?? null,
-  ])) !== JSON.stringify(submission.rows.map(row => [
-    row.optionValue1,
-    row.optionValue2 ?? null,
-  ]));
-}
-
 export async function saveVariantEditorSubmission({
   api = shopProductApi,
   detailProduct,
@@ -483,4 +437,50 @@ export function useUpdateProductSubmit({
     loadingSubmit,
     submit,
   };
+}
+
+function variantRowKey(optionValue1: string, optionValue2?: string) {
+  return JSON.stringify([optionValue1, optionValue2 ?? null]);
+}
+
+function flattenPersistedVariantRows(
+  product: DetailShopProductResponse['product'],
+): PersistedVariantRow[] {
+  if (product.variant_type === 'single') {
+    return product.variants.map(variant => ({
+      optionValue1: variant.variant_name,
+      productVariantId: variant.id,
+      inventoryId: variant.inventory?.id,
+      amount: variant.inventory?.amount,
+      stock: variant.inventory?.stock,
+      sku: variant.inventory?.sku,
+      currency: variant.inventory?.currency,
+    }));
+  }
+
+  return product.variants.flatMap(variant =>
+    (variant.variant_options ?? []).map(option => ({
+      optionValue1: variant.variant_name,
+      optionValue2: option.variant.variant_name,
+      productVariantId: option.id,
+      inventoryId: option.inventory.id,
+      amount: option.inventory.amount,
+      stock: option.inventory.stock,
+      sku: option.inventory.sku,
+      currency: option.inventory.currency,
+    })),
+  );
+}
+
+function hasVariantShapeChange(
+  currentRows: PersistedVariantRow[],
+  submission: VariantEditorSubmission,
+) {
+  return JSON.stringify(currentRows.map(row => [
+    row.optionValue1,
+    row.optionValue2 ?? null,
+  ])) !== JSON.stringify(submission.rows.map(row => [
+    row.optionValue1,
+    row.optionValue2 ?? null,
+  ]));
 }

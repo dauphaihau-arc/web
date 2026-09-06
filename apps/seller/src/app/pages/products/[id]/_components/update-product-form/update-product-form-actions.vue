@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { UpdateProductAction } from './use-update-product-submit'
+import type { UpdateProductAction } from './use-update-product-form/use-update-product-submit'
 import { routes } from '~/shared/navigation/routes'
 
 defineProps<{
