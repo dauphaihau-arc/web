@@ -11,14 +11,16 @@ import type {
 function normalizeInventory(
   inventory?: ShopProductDetailApiResponse['inventory'][number],
 ): DetailShopProductInventory {
-  if (!inventory || inventory.amount_minor == null || !inventory.currency) {
+  if (!inventory) {
     return {};
   }
 
   return {
     id: inventory.id,
-    amount: fromMinorUnits(inventory.amount_minor, inventory.currency),
-    original_price: inventory.original_amount_minor != null
+    amount: inventory.amount_minor != null && inventory.currency
+      ? fromMinorUnits(inventory.amount_minor, inventory.currency)
+      : undefined,
+    original_price: inventory.original_amount_minor != null && inventory.currency
       ? fromMinorUnits(inventory.original_amount_minor, inventory.currency)
       : undefined,
     stock: inventory.stock,
@@ -47,7 +49,7 @@ export function normalizeDetailShopProductResponse(
     variant_type: variantType,
     variant_group_name: response.variant_group_name,
     variant_sub_group_name: response.variant_sub_group_name,
-    tags: [],
+    tags: response.tags ?? [],
     category: response.category ?? (response.category_id
       ? {
         id: response.category_id,

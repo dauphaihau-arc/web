@@ -1,7 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
+import { z } from 'zod';
 import { ProductVariantTypes } from '@arc/enums/product';
 import { productInventorySchema } from '@arc/schemas/product-inventory.schema';
+import { log } from '@arc/lib';
 import type { IOnChangeUpdateVariants } from '../update-product-form.types';
 import {
   DEFAULT_UPDATE_VARIANT_COLUMNS,
@@ -12,7 +14,8 @@ import {
   VARIANT_GROUP_2_FALLBACK_LABEL,
 } from './update-variant-input.constants';
 import {
-  buildUpdateVariantChangePayload,
+  buildVariantEditorSnapshot,
+  buildVariantEditorSubmission,
   createDefaultUpdateVariantTable,
   generateUpdateVariantOptionId,
   hydrateUpdateVariantInput,
@@ -25,12 +28,23 @@ import type {
   VariantEditorProduct,
 } from './update-variant-input.types';
 
+const updateVariantInventorySchema = productInventorySchema
+  .pick({ amount: true, stock: true })
+  .extend({ sku: z.string().optional() })
+  .array();
+
 type UseUpdateVariantInputOptions = {
   countValidate: Ref<number>
-  product: VariantEditorProduct
+  product: Readonly<Ref<VariantEditorProduct>>
   emitChange: (value: IOnChangeUpdateVariants | null) => void
-  emitVariantsUpdated: (value: number) => void
+  emitVariantsUpdated: (value: boolean) => void
 };
+
+export function validateUpdateVariantInventoryRows(
+  rows: Pick<UpdateVariantTable, 'amount' | 'stock' | 'sku'>[],
+) {
+  return updateVariantInventorySchema.safeParse(rows);
+}
 
 export function useUpdateVariantInput({
   countValidate,
@@ -38,7 +52,7 @@ export function useUpdateVariantInput({
   emitChange,
   emitVariantsUpdated,
 }: UseUpdateVariantInputOptions) {
-  const countStateChange = ref(0);
+  const initialEditorSnapshot = ref<string>();
 
   const state = reactive<UpdateVariantInputState>({
     isActiveSubVariant: false,
@@ -290,10 +304,7 @@ export function useUpdateVariantInput({
       variantsTableForParse.push({ stock, amount, sku });
     });
 
-    const parsedVariantsTable = productInventorySchema
-      .pick({ amount: true, stock: true, sku: true })
-      .array()
-      .safeParse(variantsTableForParse);
+    const parsedVariantsTable = validateUpdateVariantInventoryRows(variantsTableForParse);
 
     if (!parsedVariantsTable.success) {
       parsedVariantsTable.error.issues.forEach((detail) => {
@@ -311,33 +322,76 @@ export function useUpdateVariantInput({
     return parsedVariantsTable.success;
   }
 
+  function canEmitEditorSubmission() {
+    const hasUniqueNames = (options: UpdateVariantOption[]) => {
+      const names = options.map(option => option.variant_name.trim());
+      return names.every(Boolean) && new Set(names).size === names.length;
+    };
+    const inventoryResult = validateUpdateVariantInventoryRows(variantsTable.value);
+    const checks = {
+      groupName: Boolean(state.variant_group_name?.trim()),
+      inventory: inventoryResult.success,
+      optionNames: hasUniqueNames(state.variants),
+      subGroupName: !state.isActiveSubVariant
+        || Boolean(state.variant_sub_group_name?.trim()),
+      subOptionNames: !state.isActiveSubVariant
+        || hasUniqueNames(state.subVariants),
+    };
+
+    log.info('[update-variant-input] validity checks', {
+      checks,
+      failedChecks: Object.entries(checks)
+        .filter(([, passed]) => !passed)
+        .map(([name]) => name),
+      inventoryIssues: inventoryResult.success ? [] : inventoryResult.error.issues,
+    });
+
+    return Object.values(checks).every(Boolean);
+  }
+
   function emitData() {
-    const payload = buildUpdateVariantChangePayload(state, variantsTable.value);
+    const variantSubmission = buildVariantEditorSubmission(state, variantsTable.value);
 
     if (state.isActiveSubVariant && state.variant_group_name && state.variant_sub_group_name) {
       emitChange({
         variant_type: ProductVariantTypes.COMBINE,
         variant_group_name: state.variant_group_name,
         variant_sub_group_name: state.variant_sub_group_name,
-        ...payload,
+        variantSubmission,
       });
     }
     else if (state.variant_group_name) {
       emitChange({
         variant_type: ProductVariantTypes.SINGLE,
         variant_group_name: state.variant_group_name,
-        ...payload,
+        variantSubmission,
       });
     }
   }
 
-  onMounted(() => {
-    if (product.variant_type === ProductVariantTypes.NONE) {
+  watch(product, async (currentProduct, _previousProduct, onCleanup) => {
+    let cancelled = false;
+    onCleanup(() => {
+      cancelled = true;
+    });
+    initialEditorSnapshot.value = undefined;
+    state.variantsCurrent.clear();
+    state.isActiveSubVariant = false;
+    state.subVariants = [];
+    columns.value = DEFAULT_UPDATE_VARIANT_COLUMNS.map(column => ({ ...column }));
+
+    if (currentProduct.variant_type === ProductVariantTypes.NONE) {
       return;
     }
 
-    variantsTable.value = hydrateUpdateVariantInput(product, state, openSubVariant);
-  });
+    variantsTable.value = hydrateUpdateVariantInput(currentProduct, state, openSubVariant);
+    await nextTick();
+    if (cancelled) {
+      return;
+    }
+    initialEditorSnapshot.value = buildVariantEditorSnapshot(state, variantsTable.value);
+    emitVariantsUpdated(false);
+  }, { immediate: true });
 
   watch(() => [state.variant_group_name, state.variant_sub_group_name], () => {
     columns.value[0].label = state.variant_group_name || VARIANT_GROUP_1_FALLBACK_LABEL;
@@ -371,11 +425,20 @@ export function useUpdateVariantInput({
   });
 
   watch(() => [state, variantsTable.value], () => {
-    countStateChange.value++;
-    if (countStateChange.value === 2) {
-      emitVariantsUpdated(countStateChange.value);
+    if (initialEditorSnapshot.value === undefined) {
+      return;
     }
-  }, { deep: true });
+
+    emitVariantsUpdated(
+      buildVariantEditorSnapshot(state, variantsTable.value) !== initialEditorSnapshot.value,
+    );
+    if (canEmitEditorSubmission()) {
+      emitData();
+    }
+    else {
+      emitChange(null);
+    }
+  }, { deep: true, flush: 'post' });
 
   watchDebounced(
     () => state.variantOption,

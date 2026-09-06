@@ -2,6 +2,7 @@
 // @ts-nocheck
 import type { QueryClient } from '@tanstack/vue-query';
 import type { Ref } from 'vue';
+import { toMinorUnits } from '@arc/utils';
 import pick from '@arc/utils/pick';
 import { toastCustom } from '~/shared/config/toast';
 import { shopProductApi } from '~/domains/shop/api/product/product.api';
@@ -13,9 +14,11 @@ import { useShopSetProductImagesByKeys } from '~/domains/shop/mutations/set-prod
 import { useShopUpdateProduct } from '~/domains/shop/mutations/update-product.mutation';
 import type { DetailShopProductResponse } from '~/domains/shop/api/product/contracts/read.contract';
 import type {
+  NoneVariant,
   ProductImageReference,
   UpdateProductBody,
 } from '~/domains/shop/api/product/contracts/form.contract';
+import type { VariantEditorSubmission } from './update-product-form.types';
 
 type UseUpdateProductSubmitInput = {
   productId: string
@@ -23,17 +26,19 @@ type UseUpdateProductSubmitInput = {
   dataDetailProduct: Ref<DetailShopProductResponse | undefined>
   fileImages: Ref<File[]>
   idsImageForDelete: Ref<Required<Pick<ProductImageReference, 'id'>>[]>
+  noneVariant: Partial<NoneVariant>
 };
 
 export type UpdateProductAction = 'save' | 'publish' | 'deactivate';
 
-function buildDetailPayload(dataSubmit: UpdateProductBody) {
+export function buildDetailPayload(dataSubmit: UpdateProductBody) {
   return pick(dataSubmit, [
     'title',
     'description',
     'who_made',
     'is_digital',
     'non_taxable',
+    'tags',
     'variant_group_name',
     'variant_sub_group_name',
     'category_id',
@@ -82,12 +87,188 @@ function toStorageKey(url: string | undefined, assetHost: string) {
   return url.replace(/^\/+/, '');
 }
 
+function hasNoneVariantInventoryChange(
+  noneVariant: Partial<NoneVariant>,
+  detailProduct: DetailShopProductResponse['product'] | undefined,
+) {
+  if (!detailProduct || detailProduct.variant_type !== 'none') {
+    return false;
+  }
+
+  return noneVariant.stock !== detailProduct.inventory.stock
+    || (noneVariant.sku ?? '') !== (detailProduct.inventory.sku ?? '');
+}
+
+function hasNoneVariantPricingChange(
+  noneVariant: Partial<NoneVariant>,
+  detailProduct: DetailShopProductResponse['product'] | undefined,
+) {
+  if (!detailProduct || detailProduct.variant_type !== 'none') {
+    return false;
+  }
+
+  return noneVariant.amount !== detailProduct.inventory.amount;
+}
+
+type VariantPersistenceApi = Pick<
+  typeof shopProductApi,
+  'detail' | 'setInventory' | 'setPricing' | 'setVariants'
+>;
+
+type SaveVariantEditorSubmissionInput = {
+  api?: VariantPersistenceApi
+  detailProduct: DetailShopProductResponse['product']
+  productId: string
+  shopId: string
+  submission: VariantEditorSubmission
+};
+
+type PersistedVariantRow = {
+  optionValue1: string
+  optionValue2?: string
+  productVariantId: string
+  inventoryId?: string
+  amount?: number
+  stock?: number
+  sku?: string
+  currency?: string
+};
+
+function variantRowKey(optionValue1: string, optionValue2?: string) {
+  return JSON.stringify([optionValue1, optionValue2 ?? null]);
+}
+
+function flattenPersistedVariantRows(
+  product: DetailShopProductResponse['product'],
+): PersistedVariantRow[] {
+  if (product.variant_type === 'single') {
+    return product.variants.map(variant => ({
+      optionValue1: variant.variant_name,
+      productVariantId: variant.id,
+      inventoryId: variant.inventory?.id,
+      amount: variant.inventory?.amount,
+      stock: variant.inventory?.stock,
+      sku: variant.inventory?.sku,
+      currency: variant.inventory?.currency,
+    }));
+  }
+
+  return product.variants.flatMap(variant =>
+    (variant.variant_options ?? []).map(option => ({
+      optionValue1: variant.variant_name,
+      optionValue2: option.variant.variant_name,
+      productVariantId: option.id,
+      inventoryId: option.inventory.id,
+      amount: option.inventory.amount,
+      stock: option.inventory.stock,
+      sku: option.inventory.sku,
+      currency: option.inventory.currency,
+    })),
+  );
+}
+
+function hasVariantShapeChange(
+  currentRows: PersistedVariantRow[],
+  submission: VariantEditorSubmission,
+) {
+  return JSON.stringify(currentRows.map(row => [
+    row.optionValue1,
+    row.optionValue2 ?? null,
+  ])) !== JSON.stringify(submission.rows.map(row => [
+    row.optionValue1,
+    row.optionValue2 ?? null,
+  ]));
+}
+
+export async function saveVariantEditorSubmission({
+  api = shopProductApi,
+  detailProduct,
+  productId,
+  shopId,
+  submission,
+}: SaveVariantEditorSubmissionInput) {
+  const initialRows = flattenPersistedVariantRows(detailProduct);
+  const initialRowsByKey = new Map(
+    initialRows.map(row => [variantRowKey(row.optionValue1, row.optionValue2), row]),
+  );
+  const shapeChanged = hasVariantShapeChange(initialRows, submission);
+  const inventoryChanged = shapeChanged || submission.rows.some((row) => {
+    const current = initialRowsByKey.get(variantRowKey(row.optionValue1, row.optionValue2));
+    return !current
+      || current.stock !== row.stock
+      || (current.sku ?? '') !== (row.sku ?? '');
+  });
+  const pricingChanged = shapeChanged || submission.rows.some((row) => {
+    const current = initialRowsByKey.get(variantRowKey(row.optionValue1, row.optionValue2));
+    return !current || current.amount !== row.amount;
+  });
+  const fallbackCurrency = initialRows.find(row => row.currency)?.currency ?? 'USD';
+  let persistedRows = initialRows;
+
+  if (shapeChanged) {
+    await api.setVariants(shopId, productId, {
+      variants: submission.rows.map(row => ({
+        option_value_1: row.optionValue1,
+        ...(row.optionValue2 ? { option_value_2: row.optionValue2 } : {}),
+      })),
+    });
+    persistedRows = flattenPersistedVariantRows(
+      (await api.detail(shopId, productId)).product,
+    );
+  }
+
+  if (inventoryChanged) {
+    const persistedRowsByKey = new Map(
+      persistedRows.map(row => [variantRowKey(row.optionValue1, row.optionValue2), row]),
+    );
+    await api.setInventory(shopId, productId, {
+      inventory: submission.rows.map((row) => {
+        const persisted = persistedRowsByKey.get(
+          variantRowKey(row.optionValue1, row.optionValue2),
+        );
+        if (!persisted) {
+          throw new Error('Updated product variant could not be resolved');
+        }
+        return {
+          product_variant_id: persisted.productVariantId,
+          stock: row.stock,
+          sku: row.sku,
+        };
+      }),
+    });
+    persistedRows = flattenPersistedVariantRows(
+      (await api.detail(shopId, productId)).product,
+    );
+  }
+
+  if (pricingChanged || inventoryChanged) {
+    const persistedRowsByKey = new Map(
+      persistedRows.map(row => [variantRowKey(row.optionValue1, row.optionValue2), row]),
+    );
+    await api.setPricing(shopId, productId, {
+      pricing: submission.rows.map((row) => {
+        const persisted = persistedRowsByKey.get(
+          variantRowKey(row.optionValue1, row.optionValue2),
+        );
+        if (!persisted?.inventoryId) {
+          throw new Error('Updated product inventory could not be resolved');
+        }
+        return {
+          inventory_id: persisted.inventoryId,
+          amount_minor: toMinorUnits(row.amount, persisted.currency ?? fallbackCurrency),
+        };
+      }),
+    });
+  }
+}
+
 export function useUpdateProductSubmit({
   productId,
   queryClient,
   dataDetailProduct,
   fileImages,
   idsImageForDelete,
+  noneVariant,
 }: UseUpdateProductSubmitInput) {
   const toast = useToast();
   const config = useRuntimeConfig();
@@ -164,6 +345,7 @@ export function useUpdateProductSubmit({
   async function submit(
     dataSubmit: UpdateProductBody,
     action: UpdateProductAction = 'save',
+    variantSubmission?: VariantEditorSubmission,
   ) {
     if (action === 'publish' && getNextImageCount() === 0) {
       toast.add({
@@ -185,6 +367,47 @@ export function useUpdateProductSubmit({
           ...detailPayload,
           id: productId,
         });
+      }
+
+      const detailProduct = dataDetailProduct.value?.product;
+      const shopId = await resolveMyShopId(queryClient);
+
+      if (variantSubmission && detailProduct) {
+        await saveVariantEditorSubmission({
+          detailProduct,
+          productId,
+          shopId,
+          submission: variantSubmission,
+        });
+      }
+
+      if (hasNoneVariantPricingChange(noneVariant, detailProduct)) {
+        await shopProductApi.setPricing(
+          shopId,
+          productId,
+          {
+            pricing: [{
+              inventory_id: detailProduct!.inventory.id!,
+              amount_minor: toMinorUnits(
+                noneVariant.amount!,
+                detailProduct!.inventory.currency ?? 'USD',
+              ),
+            }],
+          },
+        );
+      }
+
+      if (hasNoneVariantInventoryChange(noneVariant, detailProduct)) {
+        await shopProductApi.setInventory(
+          shopId,
+          productId,
+          {
+            inventory: [{
+              stock: noneVariant.stock!,
+              sku: noneVariant.sku,
+            }],
+          },
+        );
       }
 
       if (dataSubmit.attributes) {
@@ -219,8 +442,8 @@ export function useUpdateProductSubmit({
       }
 
       if (action === 'deactivate') {
-        const shopId = await resolveMyShopId(queryClient);
-        await shopProductApi.bulkMutate(shopId, {
+        const resolvedShopId = await resolveMyShopId(queryClient);
+        await shopProductApi.bulkMutate(resolvedShopId, {
           ids: [productId],
           action: 'deactivate',
         });

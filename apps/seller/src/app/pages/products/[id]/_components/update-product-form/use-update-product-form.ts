@@ -6,22 +6,28 @@ import {
 } from '@arc/enums/product';
 import {
   applyDetailProductToFormState,
-  hasRemovedAllImages,
+  hasUpdateProductFormChanges,
+  isUpdateProductSubmitDisabled,
   pruneUnchangedUpdateFields,
 } from './update-product-form.mapper';
 import {
   useUpdateProductSubmit,
   type UpdateProductAction,
 } from './use-update-product-submit';
+import { productInventorySchema } from '@arc/schemas/product-inventory.schema';
 import { updateProductFormSchema } from '~/domains/shop/schemas/product/update-product-form.schema';
 import { useShopGetDetailProduct } from '~/domains/shop/queries/product/detail.query';
+import { log } from '@arc/lib';
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types';
 import type {
   NoneVariant,
   ProductImageReference,
   UpdateProductBody,
 } from '~/domains/shop/api/product/contracts/form.contract';
-import type { IOnChangeUpdateVariants } from './update-product-form.types';
+import type {
+  IOnChangeUpdateVariants,
+  VariantEditorSubmission,
+} from './update-product-form.types';
 
 export function useUpdateProductForm() {
   const route = useRoute();
@@ -44,8 +50,8 @@ export function useUpdateProductForm() {
   const disabledButtonSubmit = ref(true);
   const isVariantInputValid = ref(true);
   const countValidate = ref(0);
-  const countValidateInputs = ref(0);
-  const countValidateVariantsInputs = ref(0);
+  const isVariantsDirty = ref(false);
+  const variantSubmission = ref<VariantEditorSubmission>();
   const fileImages = ref<File[]>([]);
   const idsImageForDelete = ref<Required<Pick<ProductImageReference, 'id'>>[]>([]);
   const pendingAction = ref<UpdateProductAction>('save');
@@ -60,6 +66,7 @@ export function useUpdateProductForm() {
     dataDetailProduct,
     fileImages,
     idsImageForDelete,
+    noneVariant,
   });
 
   const productState = computed(() => dataDetailProduct.value?.product.state);
@@ -114,22 +121,26 @@ export function useUpdateProductForm() {
 
   const onChangeVariants = (values: IOnChangeUpdateVariants) => {
     isVariantInputValid.value = Boolean(values);
+    variantSubmission.value = values?.variantSubmission;
     if (!values) return;
 
-    Object.keys(values).forEach((key) => {
-      if (!values[key]) {
-        return;
-      }
-      if (Array.isArray(values[key]) && values[key].length === 0) {
-        return;
-      }
-      stateSubmit[key] = values[key];
-    });
+    stateSubmit.variant_type = values.variant_type;
+    stateSubmit.variant_group_name = values.variant_group_name;
+
+    if (values.variant_sub_group_name) {
+      stateSubmit.variant_sub_group_name = values.variant_sub_group_name;
+    }
+    else {
+      delete stateSubmit.variant_sub_group_name;
+    }
   };
 
   const onChangeVariantType = () => {
     isVariantProduct.value = !isVariantProduct.value;
     stateSubmit.variant_type = isVariantProduct.value ? ProductVariantTypes.SINGLE : ProductVariantTypes.NONE;
+    if (!isVariantProduct.value) {
+      variantSubmission.value = undefined;
+    }
   };
 
   const validateForm = (values: UpdateProductBody): FormError[] => {
@@ -150,15 +161,16 @@ export function useUpdateProductForm() {
     return errors;
   };
 
-  async function onSubmit(event: FormSubmitEvent<UpdateProductBody>) {
+  async function onSubmit(_event: FormSubmitEvent<UpdateProductBody>) {
+    await nextTick();
     if (isVariantProduct.value && !isVariantInputValid.value) return;
 
     const dataSubmit = pruneUnchangedUpdateFields(
-      { ...event.data },
+      { ...stateSubmit },
       dataDetailProduct.value?.product,
     );
 
-    await submit(dataSubmit, pendingAction.value);
+    await submit(dataSubmit, pendingAction.value, variantSubmission.value);
     pendingAction.value = 'save';
   }
 
@@ -185,22 +197,67 @@ export function useUpdateProductForm() {
   });
 
   watchDebounced(
-    () => [stateSubmit, fileImages.value, idsImageForDelete.value, countValidateVariantsInputs.value],
+    () => [
+      stateSubmit,
+      noneVariant,
+      fileImages.value,
+      idsImageForDelete.value,
+      isVariantsDirty.value,
+      isVariantInputValid.value,
+    ],
     () => {
-      countValidateInputs.value++;
-
       const result = updateProductFormSchema.safeParse(stateSubmit);
 
-      const isEmptyImages = hasRemovedAllImages(
-        idsImageForDelete.value,
-        fileImages.value,
-        dataDetailProduct.value?.product,
-      );
+      const noneVariantResult = productInventorySchema
+        .pick({ amount: true, stock: true, sku: true })
+        .safeParse(noneVariant);
 
-      disabledButtonSubmit.value = countValidateInputs.value === 1
-        || !result.success
-        || isEmptyImages
-        || countValidateVariantsInputs.value === 1;
+      const detailProduct = dataDetailProduct.value?.product;
+
+      const changedFields = Object.keys(pruneUnchangedUpdateFields(
+        { ...stateSubmit },
+        detailProduct,
+      ));
+
+      const hasFormChanges = hasUpdateProductFormChanges({
+        isVariantsDirty: isVariantsDirty.value,
+        dataSubmit: { ...stateSubmit },
+        detailProduct,
+        fileImages: fileImages.value,
+        idsImageForDelete: idsImageForDelete.value,
+        noneVariant,
+      });
+
+      const checks = {
+        ready: Boolean(detailProduct),
+        changed: hasFormChanges,
+        formValid: result.success,
+        inventoryValid: isVariantProduct.value || noneVariantResult.success,
+        variantValid: !isVariantProduct.value || isVariantInputValid.value,
+      };
+
+      disabledButtonSubmit.value = isUpdateProductSubmitDisabled({
+        hasFormChanges,
+        isFormValid: result.success,
+        isNoneVariantValid: noneVariantResult.success,
+        isReady: checks.ready,
+        isVariantInputValid: isVariantInputValid.value,
+        isVariantProduct: isVariantProduct.value,
+      });
+
+      log.info('[update-product-form] submit button checks', {
+        changedFields,
+        checks,
+        disabled: disabledButtonSubmit.value,
+        failedChecks: Object.entries(checks)
+          .filter(([, passed]) => !passed)
+          .map(([name]) => name),
+        formIssues: result.success ? [] : result.error.issues,
+        inventoryIssues: isVariantProduct.value || noneVariantResult.success
+          ? []
+          : noneVariantResult.error.issues,
+        isVariantsDirty: isVariantsDirty.value,
+      });
     },
     { debounce: 500, maxWait: 1000, deep: true },
   );
@@ -210,7 +267,7 @@ export function useUpdateProductForm() {
     canDeactivateFromDetail,
     canPublishFromDetail,
     countValidate,
-    countValidateVariantsInputs,
+    isVariantsDirty,
     dataDetailProduct,
     disabledButtonSubmit,
     fileImages,

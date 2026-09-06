@@ -33,5 +33,47 @@ describe('normalizeDetailShopProductResponse', () => {
       id: 'category-1',
       name: 'Sneakers',
     });
+    expect(normalizeDetailShopProductResponse({
+      ...response,
+      tags: ['sneaker'],
+    }).product.tags).toEqual(['sneaker']);
+  });
+
+  it('preserves inventory identity before pricing is assigned', () => {
+    const response = {
+      id: 'product-1',
+      shop_id: 'shop-1',
+      state: ProductStates.DRAFT,
+      title: 'Sneaker',
+      slug: 'sneaker',
+      description: 'A sneaker.',
+      who_made: 'someone_else',
+      is_digital: false,
+      non_taxable: false,
+      variant_type: ProductVariantTypes.SINGLE,
+      variant_group_name: 'Color',
+      images: [],
+      attributes: [],
+      variants: [{
+        id: 'variant-1',
+        name: 'Blue',
+        option_value_1: 'Blue',
+        rank: 1,
+      }],
+      inventory: [{
+        id: 'inventory-1',
+        product_variant_id: 'variant-1',
+        stock: 4,
+        sku: 'BLUE-S',
+      }],
+    };
+
+    expect(
+      normalizeDetailShopProductResponse(response).product.variants[0].inventory,
+    ).toMatchObject({
+      id: 'inventory-1',
+      stock: 4,
+      sku: 'BLUE-S',
+    });
   });
 });

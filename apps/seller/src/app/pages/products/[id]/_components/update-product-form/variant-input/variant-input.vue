@@ -12,7 +12,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'onChange', value: IOnChangeUpdateVariants | null): void
-  (e: 'isVariantsUpdated', value: number): void
+  (e: 'isVariantsUpdated', value: boolean): void
 }>()
 
 const {
@@ -30,7 +30,7 @@ const {
   updateVariantName,
 } = useUpdateVariantInput({
   countValidate: toRef(props, 'countValidate'),
-  product: props.product,
+  product: toRef(props, 'product'),
   emitChange: value => emit('onChange', value),
   emitVariantsUpdated: value => emit('isVariantsUpdated', value),
 })

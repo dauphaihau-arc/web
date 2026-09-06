@@ -68,15 +68,58 @@ export function pruneUnchangedUpdateFields(
   return nextDataSubmit as UpdateProductBody;
 }
 
-export function hasRemovedAllImages(
-  idsImageForDelete: Required<Pick<ProductImageReference, 'id'>>[],
-  fileImages: File[],
+export function hasNoneVariantChanges(
+  noneVariant: Partial<NoneVariant>,
   detailProduct?: DetailProduct,
 ) {
-  if (!detailProduct) {
+  if (!detailProduct || detailProduct.variant_type !== ProductVariantTypes.NONE) {
     return false;
   }
 
-  return idsImageForDelete.length === detailProduct.images.length
-    && fileImages.length === 0;
+  return noneVariant.amount !== detailProduct.inventory.amount
+    || noneVariant.stock !== detailProduct.inventory.stock
+    || (noneVariant.sku ?? '') !== (detailProduct.inventory.sku ?? '');
+}
+
+export function hasUpdateProductFormChanges({
+  isVariantsDirty,
+  dataSubmit,
+  detailProduct,
+  fileImages,
+  idsImageForDelete,
+  noneVariant,
+}: {
+  isVariantsDirty: boolean
+  dataSubmit: UpdateProductBody
+  detailProduct?: DetailProduct
+  fileImages: File[]
+  idsImageForDelete: Required<Pick<ProductImageReference, 'id'>>[]
+  noneVariant: Partial<NoneVariant>
+}) {
+  return Object.keys(pruneUnchangedUpdateFields(dataSubmit, detailProduct)).length > 0
+    || hasNoneVariantChanges(noneVariant, detailProduct)
+    || fileImages.length > 0
+    || idsImageForDelete.length > 0
+    || isVariantsDirty;
+}
+
+export function isUpdateProductSubmitDisabled({
+  hasFormChanges,
+  isFormValid,
+  isNoneVariantValid,
+  isReady,
+  isVariantInputValid,
+  isVariantProduct,
+}: {
+  hasFormChanges: boolean
+  isFormValid: boolean
+  isNoneVariantValid: boolean
+  isReady: boolean
+  isVariantInputValid: boolean
+  isVariantProduct: boolean
+}) {
+  return !isReady
+    || !hasFormChanges
+    || !isFormValid
+    || (isVariantProduct ? !isVariantInputValid : !isNoneVariantValid);
 }

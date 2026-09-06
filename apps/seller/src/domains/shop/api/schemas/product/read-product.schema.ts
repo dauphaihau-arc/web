@@ -85,6 +85,7 @@ export const shopProductDetailApiResponseSchema = z.object({
   variant_type: z.nativeEnum(ProductVariantTypes).optional(),
   variant_group_name: z.string().optional(),
   variant_sub_group_name: z.string().optional(),
+  tags: z.array(z.string()).optional(),
   images: z.array(z.object({
     id: z.string(),
     url: z.string(),

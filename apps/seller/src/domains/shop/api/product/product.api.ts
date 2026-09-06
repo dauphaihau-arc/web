@@ -102,6 +102,55 @@ export const shopProductApi = {
     );
   },
 
+  setVariants(
+    shopId: string,
+    productId: string,
+    payload: {
+      variants: Array<{
+        option_value_1: string
+        option_value_2?: string
+      }>
+    },
+  ) {
+    return apiClient.put<undefined>(
+      `/shops/${shopId}/products/${productId}/variants`,
+      payload,
+    );
+  },
+
+  setInventory(
+    shopId: string,
+    productId: string,
+    payload: {
+      inventory: Array<{
+        product_variant_id?: string
+        sku?: string
+        stock: number
+      }>
+    },
+  ) {
+    return apiClient.put<undefined>(
+      `/shops/${shopId}/products/${productId}/inventory`,
+      payload,
+    );
+  },
+
+  setPricing(
+    shopId: string,
+    productId: string,
+    payload: {
+      pricing: Array<{
+        inventory_id: string
+        amount_minor: number
+      }>
+    },
+  ) {
+    return apiClient.put<undefined>(
+      `/shops/${shopId}/products/${productId}/pricing`,
+      payload,
+    );
+  },
+
   downloadImportTemplate(shopId: string) {
     return apiClient.get<Blob>(
       `/shops/${shopId}/products/imports/template`,

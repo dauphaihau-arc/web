@@ -25,7 +25,7 @@ const {
   canDeactivateFromDetail,
   canPublishFromDetail,
   countValidate,
-  countValidateVariantsInputs,
+  isVariantsDirty,
   dataDetailProduct,
   disabledButtonSubmit,
   fileImages,
@@ -145,7 +145,7 @@ const {
                 :product="dataDetailProduct.product"
                 :count-validate="countValidate"
                 @on-change="onChangeVariants"
-                @is-variants-updated="(count) => countValidateVariantsInputs = count"
+                @is-variants-updated="(isDirty) => isVariantsDirty = isDirty"
               />
               <NoneVariantInput
                 v-else

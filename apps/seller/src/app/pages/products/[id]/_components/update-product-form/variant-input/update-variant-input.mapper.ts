@@ -2,10 +2,7 @@
 // @ts-nocheck
 /* eslint-disable @typescript-eslint/naming-convention */
 import { ProductVariantTypes } from '@arc/enums/product';
-import type {
-  UpdateProductBody,
-  UpdateVariantOptions,
-} from '~/domains/shop/api/product/contracts/form.contract';
+import type { VariantEditorSubmission } from '../update-product-form.types';
 import type {
   UpdateVariantInputState,
   UpdateVariantTable,
@@ -141,106 +138,53 @@ export function mixUpdateVariantsTable(
   return newVariantsTable;
 }
 
-export function buildUpdateVariantChangePayload(
+export function buildVariantEditorSnapshot(
   state: UpdateVariantInputState,
   variantsTable: UpdateVariantTable[],
-): UpdateProductBody {
-  const variant_inventories: UpdateProductBody['variant_inventories'] = [];
-  const new_single_variants: UpdateProductBody['new_single_variants'] = [];
-  const update_variants: UpdateProductBody['update_variants'] = [];
-  let new_combine_variants: UpdateProductBody['new_combine_variants'] = [];
-
-  if (state.isActiveSubVariant) {
-    new_combine_variants = Object.entries<UpdateVariantOptions[]>(
-      variantsTable
-        .filter(variant => !variant.inventoryId)
-        .reduce((acc, variant) => {
-          const {
-            amount, sku, stock, variant_name: variantName, sub_variant_name: subVariantName, subVariantId,
-          } = variant;
-
-          if (!acc[variantName]) {
-            acc[variantName] = [];
-          }
-          acc[variantName].push({
-            amount,
-            sku,
-            stock,
-            variant: subVariantId,
-            variant_name: subVariantName,
-          });
-          return acc;
-        }, {}),
-    ).map(([variantName, variantOptions]) => ({
-      variant_name: variantName,
-      variant_options: variantOptions,
-    }));
-  }
-
-  variantsTable.forEach((variant) => {
-    const {
-      isUpdated, inventoryId, amount, stock, sku, variant_name: variantName,
-    } = variant;
-
-    if (!amount) {
-      return;
-    }
-
-    if (isUpdated && inventoryId) {
-      variant_inventories.push({
-        id: inventoryId,
-        amount,
-        stock,
-        sku: sku || '',
-      });
-    }
-    if (!state.isActiveSubVariant && !inventoryId) {
-      new_single_variants.push({
-        variant_name: variantName,
-        amount,
-        stock,
-        sku: sku || '',
-      });
-    }
+) {
+  return JSON.stringify({
+    isActiveSubVariant: state.isActiveSubVariant,
+    variantGroupName: state.variant_group_name ?? '',
+    variantSubGroupName: state.variant_sub_group_name ?? '',
+    variants: state.variants.map(({ id, variant_name: variantName }) => ({
+      id,
+      variantName,
+    })),
+    subVariants: state.subVariants.map(({ id, variant_name: variantName }) => ({
+      id,
+      variantName,
+    })),
+    variantIdsDelete: state.variantIdsDelete,
+    inventory: variantsTable.map(row => ({
+      id: row.id,
+      variantOptionId: row.variant_option_id,
+      subVariantOptionId: row.sub_variant_option_id,
+      inventoryId: row.inventoryId,
+      variantName: row.variant_name ?? '',
+      subVariantName: row.sub_variant_name ?? '',
+      amount: row.amount,
+      stock: row.stock,
+      sku: row.sku ?? '',
+    })),
   });
+}
 
-  state.variants.forEach((variant) => {
-    if (state.variantsCurrent.has(variant.id)) {
-      if (state.variantsCurrent.get(variant.id) !== variant.variant_name) {
-        update_variants.push({
-          id: variant.id,
-          variant_name: variant.variant_name,
-        });
-      }
-    }
-  });
-
-  if (state.isActiveSubVariant) {
-    state.subVariants.forEach((variant) => {
-      if (
-        state.variantsCurrent.has(variant.id)
-        && state.variantsCurrent.get(variant.id) !== variant.variant_name
-      ) {
-        update_variants.push({
-          id: variant.id,
-          variant_name: variant.variant_name,
-        });
-      }
-    });
-  }
-
-  if (state.variantIdsDelete.length > 0) {
-    state.variantIdsDelete.forEach((id) => {
-      if (state.variantsCurrent.has(id)) {
-        update_variants.push({ id });
-      }
-    });
-  }
-
+export function buildVariantEditorSubmission(
+  state: UpdateVariantInputState,
+  variantsTable: UpdateVariantTable[],
+): VariantEditorSubmission {
   return {
-    update_variants,
-    variant_inventories,
-    new_single_variants,
-    new_combine_variants,
+    variantType: state.isActiveSubVariant
+      ? ProductVariantTypes.COMBINE
+      : ProductVariantTypes.SINGLE,
+    rows: variantsTable.map(row => ({
+      optionValue1: row.variant_name ?? '',
+      optionValue2: state.isActiveSubVariant
+        ? row.sub_variant_name ?? ''
+        : undefined,
+      amount: row.amount!,
+      stock: row.stock!,
+      sku: row.sku || undefined,
+    })),
   };
 }
