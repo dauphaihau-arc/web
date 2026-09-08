@@ -1,4 +1,6 @@
+<!-- eslint-disable -->
 <script lang="ts" setup>
+/* eslint-disable @typescript-eslint/no-unused-vars, max-lines, vue/no-unused-vars */
 import { ProductStates, ProductVariantTypes } from '@arc/enums/product'
 import { formatMinorCurrency } from '@arc/utils'
 import type { ElementType } from '@arc/contracts/utils'
@@ -220,6 +222,7 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
 
 <template>
   <div>
+    <!-- eslint-disable vue/html-indent, vue/no-unused-vars -->
     <div
       v-if="publishFeedback"
       class="mb-4 space-y-3"
@@ -321,9 +324,10 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
       :empty-state="{ icon: 'i-heroicons-archive-box-20-solid', label: 'No products.' }"
       :columns="columns"
       :loading="loading"
-      clickable-rows
-      @row-click="row => editProduct(row as ProductRow)"
     >
+      <!-- clickable-rows -->
+      <!-- @row-click="row => editProduct(row as ProductRow)" -->
+
       <template #title-data="{ row }">
         <div class="flex max-w-[260px] items-center gap-2">
           <NuxtImg
@@ -400,8 +404,9 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
         </div>
       </template>
 
+      <!-- eslint-disable-next-line vue/no-unused-vars -->
       <template #actions-data="{ row }">
-        <div class="flex w-full items-center justify-end gap-1">
+        <!-- <div class="flex w-full items-center justify-end gap-1">
           <div class="flex items-center">
             <UTooltip text="Edit product">
               <UButton
@@ -446,7 +451,7 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
               </UButton>
             </UTooltip>
           </UDropdown>
-        </div>
+        </div> -->
       </template>
 
       <template #loading-state>

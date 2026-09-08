@@ -39,14 +39,17 @@ const {
 } = useShopGetProducts(params)
 
 const allProductsCountQuery = useShopGetProducts(productCountBaseParams)
+
 const activeProductsCountQuery = useShopGetProducts(computed(() => ({
   ...productCountBaseParams.value,
   state: ProductStates.ACTIVE,
 })))
+
 const inactiveProductsCountQuery = useShopGetProducts(computed(() => ({
   ...productCountBaseParams.value,
   state: ProductStates.INACTIVE,
 })))
+
 const draftProductsCountQuery = useShopGetProducts(computed(() => ({
   ...productCountBaseParams.value,
   state: ProductStates.DRAFT,
@@ -79,6 +82,7 @@ const totalProducts = computed(() => {
 
   return response?.items?.length ?? 0
 })
+
 const stateTabCounts = computed(() => {
   const counts = dataShopGetProducts.value?.state_counts
 
