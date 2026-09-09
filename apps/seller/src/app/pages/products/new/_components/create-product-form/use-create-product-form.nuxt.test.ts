@@ -4,10 +4,10 @@ import {
 import { defineComponent, h } from 'vue';
 import { mountSuspended } from '@nuxt/test-utils/runtime';
 import { ProductStates } from '@arc/enums/product';
-import { useCreateProductForm } from './use-create-product-form';
+import { useCreateProductForm } from './use-create-product-form/use-create-product-form';
 import CreateProductFormActions from './create-product-form-actions.vue';
 
-vi.mock('./use-create-product-submit', () => ({
+vi.mock('./use-create-product-form/use-create-product-submit', () => ({
   useCreateProductSubmit: () => ({ loadingSubmit: false, submit: vi.fn() }),
 }));
 vi.mock('~/domains/auth/queries/client-config.query', () => ({

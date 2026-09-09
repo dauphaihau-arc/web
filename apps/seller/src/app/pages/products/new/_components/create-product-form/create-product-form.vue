@@ -16,7 +16,7 @@ import VariantInput from './variant-input/variant-input.vue'
 import CreateProductFormActions from './create-product-form-actions.vue'
 import CreateProductShippingSection from './create-product-shipping-section.vue'
 import { PRODUCT_FORM_SECTIONS } from './create-product-form.constants'
-import { useCreateProductForm } from './use-create-product-form'
+import { useCreateProductForm } from './use-create-product-form/use-create-product-form'
 import {
   ADD_OPTIONS_LABEL,
   REMOVE_OPTIONS_LABEL,
