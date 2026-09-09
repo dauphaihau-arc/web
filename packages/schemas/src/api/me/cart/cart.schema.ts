@@ -1,5 +1,12 @@
 import { z } from 'zod'
 
+const selectedProductOptionSchema = z.object({
+  option_id: z.string().optional(),
+  option_name: z.string(),
+  value_id: z.string().optional(),
+  value: z.string(),
+})
+
 export const cartProductItemSchema = z.object({
   id: z.string(),
   quantity: z.number(),
@@ -12,9 +19,6 @@ export const cartProductItemSchema = z.object({
     shop: z.object({
       slug: z.string(),
     }),
-    variant_type: z.string().optional(),
-    variant_group_name: z.string().optional(),
-    variant_sub_group_name: z.string().optional(),
     image_url: z.string().optional(),
   }),
   inventory: z.object({
@@ -24,7 +28,7 @@ export const cartProductItemSchema = z.object({
     currency: z.string(),
     stock: z.number(),
     sku: z.string().optional(),
-    variant_name: z.string().optional(),
+    selected_options: z.array(selectedProductOptionSchema).default([]),
   }),
 })
 
@@ -66,7 +70,7 @@ export const cartRecentItemSchema = z.object({
     image_url: z.string().optional(),
   }),
   inventory: z.object({
-    variant_name: z.string().optional(),
+    selected_options: z.array(selectedProductOptionSchema).default([]),
   }),
   quantity: z.number(),
 })

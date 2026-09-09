@@ -5,7 +5,6 @@ import {
   PRODUCT_REGEX_NOT_URL,
   ProductWhoMade,
   PRODUCT_CONFIG,
-  ProductVariantTypes,
 } from '@arc/enums/product'
 import { idSchema } from '@arc/schemas/primitives/id.schema'
 
@@ -27,14 +26,38 @@ export const productAttributeSchema = z.object({
   selected: z.string(),
 })
 
+export const productOptionValueSchema = z.object({
+  id: idSchema,
+  value: z.string().min(1).max(PRODUCT_CONFIG.MAX_CHAR_VARIANT_NAME),
+  position: z.number().int().positive(),
+})
+
+export const productOptionSchema = z.object({
+  id: idSchema,
+  name: z.string().min(1).max(PRODUCT_CONFIG.MAX_CHAR_VARIANT_GROUP_NAME),
+  position: z.number().int().positive(),
+  values: z.array(productOptionValueSchema),
+})
+
+export const productVariantSelectionSchema = z.object({
+  option_id: idSchema,
+  value_id: idSchema,
+})
+
+export const productVariantConfigurationSchema = z.object({
+  id: idSchema,
+  selections: z.array(productVariantSelectionSchema),
+  lifecycle_state: z.enum(['active', 'inactive']).default('active'),
+  rank: z.number().int().positive().optional(),
+})
+
 export const baseProductSchema = z.object({
   id: idSchema,
   shop: idSchema,
   category: idSchema,
   shipping: idSchema,
-  variant_type: z
-    .nativeEnum(ProductVariantTypes)
-    .default(ProductVariantTypes.NONE),
+  options: z.array(productOptionSchema).default([]),
+  variants: z.array(productVariantConfigurationSchema).default([]),
   attributes: z.array(productAttributeSchema),
   title: z
     .string()
@@ -85,42 +108,8 @@ export const baseProductSchema = z.object({
   created_at: z.date(),
 })
 
-const noneVariantSchema = z.object({
-  variant_type: z.literal(ProductVariantTypes.NONE),
-  inventory: idSchema,
-})
 
-export const singleVariantSchema = z.object({
-  variant_type: z.literal(ProductVariantTypes.SINGLE),
-  variants: z.array(idSchema),
-  variant_group_name: z
-    .string()
-    .min(1)
-    .max(PRODUCT_CONFIG.MAX_CHAR_VARIANT_GROUP_NAME),
-})
-
-export const combineVariantSchema = z.object({
-  variant_type: z.literal(ProductVariantTypes.COMBINE),
-  variants: z.array(idSchema),
-  variant_group_name: z
-    .string()
-    .min(1)
-    .max(PRODUCT_CONFIG.MAX_CHAR_VARIANT_GROUP_NAME),
-  variant_sub_group_name: z
-    .string()
-    .min(1)
-    .max(PRODUCT_CONFIG.MAX_CHAR_VARIANT_GROUP_NAME),
-})
-
-const conditionVariantTypeSchema = z.discriminatedUnion(
-  'variant_type', [
-    noneVariantSchema,
-    singleVariantSchema,
-    combineVariantSchema,
-  ],
-)
-
-export const productSchema = z.intersection(conditionVariantTypeSchema, baseProductSchema)
+export const productSchema = baseProductSchema
 
 export const productStateUserCanModify = z.union([
   z.literal(ProductStates.ACTIVE),

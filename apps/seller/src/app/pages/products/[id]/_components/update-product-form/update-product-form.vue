@@ -14,6 +14,7 @@ import TagsInput from '../../../_components/tags-input.vue'
 import ImagesInput from './images-input.vue'
 import VariantInput from './variant-input/variant-input.vue'
 import UpdateProductFormActions from './update-product-form-actions.vue'
+import SectionStateAlert from './section-state-alert.vue'
 import { UPDATE_PRODUCT_FORM_SECTIONS } from './update-product-form.constants'
 import { useUpdateProductForm } from './use-update-product-form/use-update-product-form'
 import FormGroupCard from '~/shared/ui/wrapper-form-group-card.vue'
@@ -34,6 +35,7 @@ const {
   isVariantProduct,
   loadingAction,
   loadingSubmit,
+  loadingRefreshSection,
   noneVariant,
   onChangeVariants,
   onChangeVariantType,
@@ -41,9 +43,14 @@ const {
   onSubmit,
   productState,
   publishImageError,
+  reapplyConflictSection,
+  refreshProductState,
+  sectionStateLabel,
+  sectionStates,
   stateSubmit,
   stateTone,
   submitWithAction,
+  variantSubmission,
   validateForm,
 } = useUpdateProductForm()
 </script>
@@ -69,6 +76,14 @@ const {
             Basic info
           </template>
           <template #content>
+            <SectionStateAlert
+              :section-id="'product-basic-info'"
+              :state="sectionStates['product-basic-info']"
+              :label="sectionStateLabel(sectionStates['product-basic-info'])"
+              :loading-refresh="loadingRefreshSection === 'product-basic-info'"
+              @reapply="reapplyConflictSection('product-basic-info', stateSubmit)"
+              @refresh="refreshProductState('product-basic-info')"
+            />
             <div class="mb-4 flex items-center gap-3">
               <span class="text-sm text-text-muted">Status</span>
               <StatusBadge
@@ -130,6 +145,15 @@ const {
             Inventory and pricing
           </template>
           <template #content>
+            <SectionStateAlert
+              :section-id="'product-inventory'"
+              :state="sectionStates['product-inventory']"
+              :label="sectionStateLabel(sectionStates['product-inventory'])"
+              :loading-refresh="loadingRefreshSection === 'product-inventory'"
+              show-unavailable-reapply-refresh
+              @reapply="reapplyConflictSection('product-inventory', stateSubmit, variantSubmission ?? undefined)"
+              @refresh="refreshProductState('product-inventory')"
+            />
             <div class="">
               <UButton
                 class="mb-4"
@@ -137,18 +161,20 @@ const {
                 variant="solid"
                 @click="onChangeVariantType"
               >
-                {{ !isVariantProduct ? 'Add variations' : 'Remove variations' }}
+                {{ !isVariantProduct ? 'Add options' : 'Remove options' }}
               </UButton>
 
               <VariantInput
-                v-if="isVariantProduct && dataDetailProduct"
+                v-if="dataDetailProduct"
+                v-show="isVariantProduct"
                 :product="dataDetailProduct.product"
                 :count-validate="countValidate"
+                :sku-conflicts="sectionStates['product-inventory'].skuConflicts"
                 @on-change="onChangeVariants"
-                @is-variants-updated="(isDirty) => isVariantsDirty = isDirty"
+                @is-variants-updated="(isDirty) => { if (isVariantProduct) isVariantsDirty = isDirty }"
               />
               <NoneVariantInput
-                v-else
+                v-show="!isVariantProduct"
                 v-model:none-variant="noneVariant"
                 class="max-w-[40%]"
               />
@@ -171,6 +197,14 @@ const {
             to expect.
           </template>
           <template #content>
+            <SectionStateAlert
+              :section-id="'product-details'"
+              :state="sectionStates['product-details']"
+              :label="sectionStateLabel(sectionStates['product-details'])"
+              :loading-refresh="loadingRefreshSection === 'product-details'"
+              @reapply="reapplyConflictSection('product-details', stateSubmit)"
+              @refresh="refreshProductState('product-details')"
+            />
             <div class="grid grid-cols-4 gap-4">
               <UFormGroup
                 label="Who made it?"
@@ -196,7 +230,7 @@ const {
             <SelectAttributesInput
               :key="stateSubmit.category_id"
               v-model="stateSubmit.attributes"
-              :category_id="stateSubmit.category_id || dataDetailProduct?.product.category.id"
+              :category_id="stateSubmit.category_id || dataDetailProduct?.product.category?.id"
               :attributes-selected="dataDetailProduct?.product.attributes"
             />
 

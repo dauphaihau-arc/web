@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import {
   ProductShippingCharge,
-  ProductVariantTypes,
   ProductWhoMade,
 } from '@arc/enums/product';
 
@@ -16,10 +15,28 @@ export const createDraftProductRequestAttributeSchema = z.object({
   selected_text: z.string().optional(),
 });
 
+export const createDraftProductRequestOptionValueSchema = z.object({
+  client_ref: z.string(),
+  value: z.string(),
+  position: z.number().int().positive(),
+});
+
+export const createDraftProductRequestOptionSchema = z.object({
+  client_ref: z.string(),
+  name: z.string(),
+  position: z.number().int().positive(),
+  values: z.array(createDraftProductRequestOptionValueSchema),
+});
+
+export const createDraftProductRequestVariantSelectionSchema = z.object({
+  option_ref: z.string(),
+  value_ref: z.string(),
+});
+
 export const createDraftProductRequestVariantSchema = z.object({
-  client_key: z.string(),
-  option_value_1: z.string(),
-  option_value_2: z.string().optional(),
+  client_ref: z.string(),
+  selections: z.array(createDraftProductRequestVariantSelectionSchema),
+  lifecycle_state: z.enum(['active', 'inactive']),
 });
 
 export const createDraftProductRequestInventorySchema = z.object({
@@ -50,15 +67,14 @@ export const createDraftProductRequestShippingSchema = z.object({
 });
 
 export const createDraftProductRequestSchema = z.object({
+  idempotency_key: z.string().min(1),
   category_id: z.string(),
   title: z.string(),
   description: z.string(),
   who_made: z.nativeEnum(ProductWhoMade),
   is_digital: z.boolean(),
   non_taxable: z.boolean().optional(),
-  variant_type: z.nativeEnum(ProductVariantTypes),
-  variant_group_name: z.string().optional(),
-  variant_sub_group_name: z.string().optional(),
+  options: z.array(createDraftProductRequestOptionSchema),
   images: z.array(createDraftProductRequestImageSchema).optional(),
   attributes: z.array(createDraftProductRequestAttributeSchema).optional(),
   variants: z.array(createDraftProductRequestVariantSchema).optional(),
@@ -74,10 +90,17 @@ export const createDraftProductResponseSchema = z.object({
   title: z.string(),
   description: z.string(),
   who_made: z.nativeEnum(ProductWhoMade),
-  is_digital: z.boolean(),
-  variant_type: z.nativeEnum(ProductVariantTypes).optional(),
-  variant_group_name: z.string().optional(),
-  variant_sub_group_name: z.string().optional(),
+  product_version: z.number().int().nonnegative().optional(),
+  options: z.array(z.object({
+    id: z.string(),
+    name: z.string(),
+    position: z.number(),
+    values: z.array(z.object({
+      id: z.string(),
+      value: z.string(),
+      position: z.number(),
+    })),
+  })).optional(),
   images: z.array(z.object({
     id: z.string(),
     storage_key: z.string(),
@@ -92,9 +115,13 @@ export const createDraftProductResponseSchema = z.object({
   })),
   variants: z.array(z.object({
     id: z.string(),
-    name: z.string(),
-    option_value_1: z.string().optional(),
-    option_value_2: z.string().optional(),
+    selections: z.array(z.object({
+      option_id: z.string(),
+      value_id: z.string(),
+    })).optional(),
+    lifecycle_state: z.enum(['active', 'inactive']).optional(),
+    image_url: z.string().optional(),
+    removed_at: z.coerce.date().optional(),
     rank: z.number(),
   })),
   inventory: z.array(z.object({

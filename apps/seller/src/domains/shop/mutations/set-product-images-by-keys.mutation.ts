@@ -1,6 +1,6 @@
-import { RESOURCES } from '@arc/enums/resources';
 import { resolveMyShopId } from '../utils/resolve-my-shop-id';
-import { apiClient } from '~/domains/_shared/api-client';
+import { shopProductApi } from '~/domains/shop/api/product/product.api';
+import type { SetProductImagesByKeysRequestBody } from '~/domains/shop/api/product/contracts/update-product.contract';
 
 export function useShopSetProductImagesByKeys() {
   const queryClient = useQueryClient();
@@ -8,18 +8,13 @@ export function useShopSetProductImagesByKeys() {
     mutationKey: ['shop-set-product-images-by-keys'],
     mutationFn: async (body: {
       id: string
-      images: {
-        storage_key: string
-        rank: number
-      }[]
+      images: SetProductImagesByKeysRequestBody['images']
     }) => {
       const shopId = await resolveMyShopId(queryClient);
-      return apiClient.put<undefined>(
-        `${RESOURCES.SHOPS}/${shopId}${RESOURCES.PRODUCTS}/${body.id}/images-by-keys`,
-        {
-          images: body.images,
-        },
-      );
+      return shopProductApi.setImagesByKeys(shopId, body.id, {
+        images: body.images,
+        idempotency_key: crypto.randomUUID(),
+      });
     },
   });
 }

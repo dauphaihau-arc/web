@@ -15,6 +15,48 @@ export const listShopProductsRequestSchema = requestGetListParamsSchema.extend({
   category_id: z.string().uuid().optional(),
 });
 
+const shopProductInventoryApiSchema = z.object({
+  id: z.string(),
+  product_variant_id: z.string().optional(),
+  sku: z.string().optional(),
+  stock: z.number().optional(),
+  on_hand_quantity: z.number().optional(),
+  reserved_quantity: z.number().optional(),
+  available_quantity: z.number().optional(),
+  on_hand_version: z.number().int().nonnegative().optional(),
+  shortage: z.boolean().optional(),
+  amount_minor: z.number().int().nonnegative().optional(),
+  original_amount_minor: z.number().int().nonnegative().optional(),
+  currency: z.string().optional(),
+});
+
+const productOptionValueSchema = z.object({
+  id: z.string(),
+  value: z.string(),
+  position: z.number(),
+});
+
+const productOptionSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  position: z.number(),
+  values: z.array(productOptionValueSchema),
+});
+
+const productVariantSelectionSchema = z.object({
+  option_id: z.string(),
+  value_id: z.string(),
+});
+
+const productVariantApiSchema = z.object({
+  id: z.string(),
+  selections: z.array(productVariantSelectionSchema).optional(),
+  lifecycle_state: z.enum(['active', 'inactive']).optional(),
+  image_url: z.string().optional(),
+  removed_at: z.coerce.date().optional(),
+  rank: z.number(),
+});
+
 export const listShopProductsItemSchema = z.object({
   id: z.string(),
   slug: z.string(),
@@ -27,20 +69,12 @@ export const listShopProductsItemSchema = z.object({
     image_url: z.string().optional(),
     rank: z.number(),
   })),
-  variants: z.array(z.object({
-    id: z.string(),
-    name: z.string(),
-    option_value_1: z.string().optional(),
-    option_value_2: z.string().optional(),
-    rank: z.number(),
+  variants: z.array(productVariantApiSchema.extend({
+    name: z.string().optional(),
   })),
-  inventory: z.array(z.object({
-    id: z.string(),
-    product_variant_id: z.string().optional(),
-    sku: z.string().optional(),
-    stock: z.number(),
+  options: z.array(productOptionSchema).optional(),
+  inventory: z.array(shopProductInventoryApiSchema.extend({
     amount_minor: z.number().int().nonnegative(),
-    original_amount_minor: z.number().int().nonnegative().optional(),
     currency: z.string(),
   })),
 });
@@ -70,6 +104,9 @@ export const shopProductDetailApiResponseSchema = z.object({
   public_id: z.string().optional(),
   shop_id: z.string(),
   shop_public_id: z.string().optional(),
+  product_version: z.number().int().nonnegative().optional(),
+  published_at: z.coerce.date().optional(),
+  removed_at: z.coerce.date().optional(),
   state: z.nativeEnum(ProductStates),
   category_id: z.string().optional(),
   category: z.object({
@@ -85,6 +122,7 @@ export const shopProductDetailApiResponseSchema = z.object({
   variant_type: z.nativeEnum(ProductVariantTypes).optional(),
   variant_group_name: z.string().optional(),
   variant_sub_group_name: z.string().optional(),
+  options: z.array(productOptionSchema).optional(),
   tags: z.array(z.string()).optional(),
   images: z.array(z.object({
     id: z.string(),
@@ -111,23 +149,10 @@ export const shopProductDetailApiResponseSchema = z.object({
     selected_option_value: z.string().optional(),
     selected_text: z.string().optional(),
   })),
-  variants: z.array(z.object({
-    id: z.string(),
-    name: z.string(),
-    option_value_1: z.string().optional(),
-    option_value_2: z.string().optional(),
-    image_url: z.string().optional(),
-    rank: z.number(),
+  variants: z.array(productVariantApiSchema.extend({
+    name: z.string().optional(),
   })),
-  inventory: z.array(z.object({
-    id: z.string(),
-    product_variant_id: z.string().optional(),
-    sku: z.string().optional(),
-    stock: z.number(),
-    amount_minor: z.number().int().nonnegative().optional(),
-    original_amount_minor: z.number().int().nonnegative().optional(),
-    currency: z.string().optional(),
-  })),
+  inventory: z.array(shopProductInventoryApiSchema),
   shipping: z.object({
     id: z.string(),
     origin_country: z.string(),
@@ -148,10 +173,21 @@ export const detailShopProductInventorySchema = z.object({
   id: z.string().optional(),
   amount: z.number().optional(),
   stock: z.number().optional(),
+  onHandQuantity: z.number().optional(),
+  reservedQuantity: z.number().optional(),
+  availableQuantity: z.number().optional(),
+  onHandVersion: z.number().optional(),
+  shortage: z.boolean().optional(),
   sku: z.string().optional(),
   original_price: z.number().optional(),
   currency: z.string().optional(),
 });
+
+export const detailShopProductOptionValueSchema = productOptionValueSchema;
+
+export const detailShopProductOptionSchema = productOptionSchema;
+
+export const detailShopProductVariantSelectionSchema = productVariantSelectionSchema;
 
 export const detailShopProductVariantOptionSchema = z.object({
   id: z.string(),
@@ -159,12 +195,19 @@ export const detailShopProductVariantOptionSchema = z.object({
     id: z.string(),
     variant_name: z.string(),
   }),
+  selections: z.array(detailShopProductVariantSelectionSchema).default([]),
+  lifecycle_state: z.enum(['active', 'inactive']).default('active'),
   inventory: detailShopProductInventorySchema,
 });
 
 export const detailShopProductVariantSchema = z.object({
   id: z.string(),
   variant_name: z.string(),
+  selections: z.array(detailShopProductVariantSelectionSchema).default([]),
+  lifecycle_state: z.enum(['active', 'inactive']).default('active'),
+  image_url: z.string().optional(),
+  removed_at: z.coerce.date().optional(),
+  rank: z.number().optional(),
   inventory: detailShopProductInventorySchema.optional(),
   variant_options: z.array(detailShopProductVariantOptionSchema).optional(),
 });
@@ -172,6 +215,9 @@ export const detailShopProductVariantSchema = z.object({
 export const detailShopProductResponseSchema = z.object({
   product: z.object({
     id: z.string(),
+    productVersion: z.number(),
+    publishedAt: z.coerce.date().optional(),
+    removedAt: z.coerce.date().optional(),
     state: z.nativeEnum(ProductStates),
     title: z.string(),
     description: z.string(),
@@ -180,6 +226,7 @@ export const detailShopProductResponseSchema = z.object({
     variant_type: z.string(),
     variant_group_name: z.string().optional(),
     variant_sub_group_name: z.string().optional(),
+    options: z.array(detailShopProductOptionSchema),
     tags: z.array(z.string()),
     category: z.object({
       id: z.string(),
@@ -213,10 +260,6 @@ export const issueProductImageUploadUrlResponseSchema = z.object({
   method: z.literal('PUT').optional(),
 });
 
-export const removeProductRequestSchema = z.object({
-  id: z.string(),
-});
-
 export const bulkMutateShopProductsActionSchema = z.enum([
   'publish',
   'deactivate',
@@ -226,6 +269,7 @@ export const bulkMutateShopProductsActionSchema = z.enum([
 export const bulkMutateShopProductsRequestSchema = z.object({
   ids: z.array(z.string()).min(1),
   action: bulkMutateShopProductsActionSchema,
+  idempotency_key: z.string().optional(),
 });
 
 export const bulkMutateShopProductsResponseSchema = z.object({

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import ShopCartQuantityUi from './shop-cart-quantity-ui.vue'
-import { ProductVariantTypes } from '@arc/enums/product'
 import { formatMinorCurrency } from '@arc/utils'
 import type { CartProductItem } from '~/domains/cart/api/cart.shared'
 
@@ -12,6 +11,12 @@ const props = withDefaults(defineProps<{
   showQuantityControls: true,
   quantityDisabled: false,
 })
+
+const selectedOptionsLabel = computed(() =>
+  props.productCart.inventory.selected_options
+    .map(option => `${option.option_name}: ${option.value}`)
+    .join(', '),
+)
 const quantity = defineModel<number>('quantity', { default: 0 })
 
 const displayAmount = computed(() => formatMinorCurrency(
@@ -49,14 +54,10 @@ const compareAtAmount = computed(() =>
           </h1>
 
           <div
-            v-if="
-              (props.productCart.product.variant_type === ProductVariantTypes.SINGLE
-                || props.productCart.product.variant_type === ProductVariantTypes.COMBINE)
-                && props.productCart.inventory.variant_name
-            "
+            v-if="selectedOptionsLabel"
             class=" text-text-muted"
           >
-            {{ props.productCart.inventory.variant_name }}
+            {{ selectedOptionsLabel }}
           </div>
         </div>
 

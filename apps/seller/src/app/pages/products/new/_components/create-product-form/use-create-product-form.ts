@@ -1,3 +1,4 @@
+import { log } from '@arc/lib';
 import {
   ProductStates,
   ProductVariantTypes,
@@ -148,14 +149,35 @@ export function useCreateProductForm() {
   watchDebounced(
     () => [stateSubmit, noneVariant, fileImages.value, shipping],
     () => {
-      const baseParsed = createProductFormSchema.safeParse(stateSubmit);
-      const conditions = [baseParsed.success, shipping.value];
+      const baseParsed = createProductFormSchema.safeParse({ ...stateSubmit, state: ProductStates.DRAFT });
+      const inventoryParsed = stateSubmit.variant_type === ProductVariantTypes.NONE
+        ? createProductInventoryFormSchema.safeParse(noneVariant)
+        : undefined;
+      const checks = {
+        formValid: baseParsed.success,
+        shippingReady: Boolean(shipping.value),
+        inventoryValid: inventoryParsed?.success ?? true,
+        hasCategory: Boolean(stateSubmit.category_id),
+        hasImages: hasImages.value,
+      };
 
-      if (stateSubmit.variant_type === ProductVariantTypes.NONE) {
-        const resultParsed = createProductInventoryFormSchema.safeParse(noneVariant);
-        conditions.push(resultParsed.success);
-      }
-      enabledButtonSubmit.value = conditions.every(Boolean);
+      enabledButtonSubmit.value = checks.formValid && checks.shippingReady && checks.inventoryValid;
+
+      log.info('[create-product-form] submit button checks', {
+        checks,
+        disabled: {
+          saveDraft: !enabledButtonSubmit.value || loadingSubmit.value,
+          publish: !enabledButtonSubmit.value || !checks.hasCategory || !checks.hasImages || loadingSubmit.value,
+        },
+        failedChecks: Object.entries(checks)
+          .filter(([, passed]) => !passed)
+          .map(([name]) => name),
+        formIssues: baseParsed.success ? [] : baseParsed.error.issues,
+        inventoryIssues: !inventoryParsed || inventoryParsed.success
+          ? []
+          : inventoryParsed.error.issues,
+        loadingSubmit: loadingSubmit.value,
+      });
     },
     { debounce: 500, maxWait: 1000, deep: true },
   );

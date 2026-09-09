@@ -2,11 +2,11 @@ import type { ComputedRef, Ref } from 'vue';
 import {
   computed, onBeforeUnmount, ref, watch,
 } from 'vue';
-import { ProductVariantTypes } from '@arc/enums/product';
 import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract';
 import type { ProductInventoryUpdatedRealtimeEvent } from '~/domains/product/realtime/product-inventory-events';
 import { createProductInventoryEventsClient } from '~/domains/product/realtime/product-inventory-events.client';
 import { getProductStockNotice } from '~/domains/product/utils/product-stock';
+import { getProductOptionMode } from '~/domains/product/utils/product-options';
 
 type UseLiveProductInventoryReturn = {
   inventorySelected: Ref<GetDetailProductBySlugResponse['inventory'][number] | undefined>
@@ -52,14 +52,13 @@ export function useLiveProductInventory(
       return inventoryById;
     }
 
-    if (currentProduct.variant_type === ProductVariantTypes.NONE) {
+    if (getProductOptionMode(currentProduct) === 'none') {
       return currentProduct.inventory[0];
     }
 
-    return currentProduct.inventory.find((inventory) => {
-      return inventory.option_value_1 === currentSelection.option_value_1
-        && inventory.option_value_2 === currentSelection.option_value_2;
-    });
+    return currentProduct.inventory.find(inventory =>
+      inventory.product_variant_id === currentSelection.product_variant_id,
+    );
   }
 
   const selectedInventory = computed<GetDetailProductBySlugResponse['inventory'][number] | undefined>(() => {
@@ -69,7 +68,7 @@ export function useLiveProductInventory(
       return resolvedInventory;
     }
 
-    if (product.value?.variant_type === ProductVariantTypes.NONE) {
+    if (product.value && getProductOptionMode(product.value) === 'none') {
       return product.value.inventory[0];
     }
 

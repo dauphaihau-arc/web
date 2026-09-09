@@ -36,6 +36,6 @@ describe('SearchCategoryInput', () => {
     });
     await flushPromises();
 
-    expect((wrapper.get('input[name="category"]').element as HTMLInputElement).value).toBe('Sneakers');
+    expect((wrapper.get('input[role="combobox"]').element as HTMLInputElement).value).toBe('Sneakers');
   });
 });

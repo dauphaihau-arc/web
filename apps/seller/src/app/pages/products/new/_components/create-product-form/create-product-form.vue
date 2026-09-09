@@ -212,6 +212,7 @@ function onPublishProduct() {
               <SearchCategoryInput
                 v-model="stateSubmit.category_id"
                 :title="stateSubmit.title"
+                :required="false"
               />
 
               <SelectAttributesInput
@@ -279,6 +280,7 @@ function onPublishProduct() {
     <CreateProductFormActions
       :enabled-button-submit="enabledButtonSubmit"
       :has-images="hasImages"
+      :has-category="!!stateSubmit.category_id"
       :loading-submit="loadingSubmit"
       :product-state="stateSubmit.state"
       @cancel="onCancel"

@@ -1,7 +1,5 @@
-<!-- eslint-disable -->
 <script lang="ts" setup>
-/* eslint-disable @typescript-eslint/no-unused-vars, max-lines, vue/no-unused-vars */
-import { ProductStates, ProductVariantTypes } from '@arc/enums/product'
+import { ProductStates } from '@arc/enums/product'
 import { formatMinorCurrency } from '@arc/utils'
 import type { ElementType } from '@arc/contracts/utils'
 import AppIcon from '@arc/ui/primitives/app-icon.vue'
@@ -24,8 +22,9 @@ type ProductRow = {
   state?: ProductStates
   imageUrl?: string
   variants: ListShopProductsItem['variants']
+  options: ListShopProductsItem['options']
   inventory: ListShopProductsItem['inventory']
-  variantType: ProductVariantTypes
+  hasOptions: boolean
 }
 
 type ProductVariantRow = ProductRow['variants'][number]
@@ -84,8 +83,9 @@ const rows = computed<ProductRow[]>(() => {
     state: product.state,
     imageUrl: product.image_url,
     variants: product.variants,
+    options: product.options,
     inventory: product.inventory,
-    variantType: product.variant_type ?? ProductVariantTypes.NONE,
+    hasOptions: (product.options?.length ?? 0) > 0,
     actions: { class: 'text-right' },
   }))
 })
@@ -93,6 +93,24 @@ const rows = computed<ProductRow[]>(() => {
 const selectedIds = computed(() => selected.value.map(row => row.id))
 const selectedCount = computed(() => selectedIds.value.length)
 const hasSelectedProducts = computed(() => selectedCount.value > 0)
+
+function variantDisplayName(
+  variant: ProductVariantRow | undefined,
+  options: ListShopProductsItem['options'],
+) {
+  if (!variant) {
+    return '-'
+  }
+  const displayName = (variant.selections ?? [])
+    .map((selection) => {
+      const option = options?.find(item => item.id === selection.option_id)
+      return option?.values.find(value => value.id === selection.value_id)?.value
+    })
+    .filter((value): value is string => Boolean(value))
+    .join(', ')
+
+  return displayName || variant.name || '-'
+}
 
 watch(products, () => {
   selected.value = []
@@ -222,7 +240,6 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
 
 <template>
   <div>
-    <!-- eslint-disable vue/html-indent, vue/no-unused-vars -->
     <div
       v-if="publishFeedback"
       class="mb-4 space-y-3"
@@ -324,10 +341,9 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
       :empty-state="{ icon: 'i-heroicons-archive-box-20-solid', label: 'No products.' }"
       :columns="columns"
       :loading="loading"
+      clickable-rows
+      @row-click="row => editProduct(row as ProductRow)"
     >
-      <!-- clickable-rows -->
-      <!-- @row-click="row => editProduct(row as ProductRow)" -->
-
       <template #title-data="{ row }">
         <div class="flex max-w-[260px] items-center gap-2">
           <NuxtImg
@@ -366,7 +382,7 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
       </template>
 
       <template #variant-data="{ row }">
-        <div v-if="row.variantType === ProductVariantTypes.NONE">
+        <div v-if="!row.hasOptions">
           None
         </div>
         <div v-else>
@@ -375,8 +391,10 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
             :key="index"
           >
             {{
-              row.variants.find((variant: ProductVariantRow) => variant.id === inv.product_variant_id)?.name?.replaceAll('-', ', ')
-                || '-'
+              variantDisplayName(
+                row.variants.find((variant: ProductVariantRow) => variant.id === inv.product_variant_id),
+                row.options,
+              )
             }}
           </div>
         </div>
@@ -404,9 +422,8 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
         </div>
       </template>
 
-      <!-- eslint-disable-next-line vue/no-unused-vars -->
       <template #actions-data="{ row }">
-        <!-- <div class="flex w-full items-center justify-end gap-1">
+        <div class="flex w-full items-center justify-end gap-1">
           <div class="flex items-center">
             <UTooltip text="Edit product">
               <UButton
@@ -451,7 +468,7 @@ const itemsDropdownWithRow = (row: ElementType<typeof rows.value>): DropdownItem
               </UButton>
             </UTooltip>
           </UDropdown>
-        </div> -->
+        </div>
       </template>
 
       <template #loading-state>

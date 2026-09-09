@@ -8,6 +8,7 @@ export type VariantInputOption = {
 export type VariantInputColumn = {
   key: string
   label: string
+  class?: string
 };
 
 export type VariantInputTableRow = {
@@ -21,4 +22,5 @@ export type VariantInputTableRow = {
   sku?: string
   errorAmount: string
   errorStock: string
+  errorSku?: string
 };

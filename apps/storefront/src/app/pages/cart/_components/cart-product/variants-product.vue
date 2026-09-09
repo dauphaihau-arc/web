@@ -2,13 +2,19 @@
 import type { CartProductItem } from '~/domains/cart/api/cart.shared'
 
 const props = defineProps<{ productCart: CartProductItem }>()
+
+const selectedOptionsLabel = computed(() =>
+  props.productCart.inventory.selected_options
+    .map(option => `${option.option_name}: ${option.value}`)
+    .join(', '),
+)
 </script>
 
 <template>
   <div
-    v-if="props.productCart.inventory.variant_name"
+    v-if="selectedOptionsLabel"
     class="text-lg text-text-muted"
   >
-    {{ props.productCart.inventory.variant_name }}
+    {{ selectedOptionsLabel }}
   </div>
 </template>

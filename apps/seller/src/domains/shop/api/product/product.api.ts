@@ -15,22 +15,53 @@ import type {
   IssueProductImageUploadUrlResponse,
   ListShopProductsRequest,
   ListShopProductsResponse,
-  RemoveProductResponse,
   ShopProductDetailApiResponse,
 } from './contracts/read.contract';
 import { normalizeDetailShopProductResponse } from './normalizers/detail-shop-product.normalizer';
 import type {
-  UpdateProductRequestBody,
+  SetProductAttributesRequestBody,
+  SetProductImagesByKeysRequestBody,
+  UpdateProductDetailsRequestBody,
   UpdateProductResponse,
 } from './contracts/update-product.contract';
+import type { SetProductVariantConfigurationRequestBody } from './contracts/variant-configuration.contract';
 import type { ShopProductImportResponse } from './contracts/import.contract';
 import { apiClient } from '~/domains/_shared/api-client';
 
+function normalizeProductMutationResponse(response: unknown): DetailShopProductResponse {
+  return normalizeDetailShopProductResponse(response as ShopProductDetailApiResponse);
+}
+
+type ProductMutationBody = {
+  idempotency_key?: string
+};
+
+function splitIdempotency<TBody extends ProductMutationBody>(payload: TBody) {
+  const {
+    idempotency_key: idempotencyKey,
+    ...body
+  } = payload;
+
+  return {
+    body,
+    options: idempotencyKey
+      ? {
+        headers: {
+          'Idempotency-Key': idempotencyKey,
+        },
+      }
+      : undefined,
+  };
+}
+
 export const shopProductApi = {
   createDraft(shopId: string, payload: CreateDraftProductRequest) {
+    const { body, options } = splitIdempotency(payload);
+
     return apiClient.post<CreateDraftProductResponse>(
       `/shops/${shopId}/products/drafts`,
-      payload,
+      body,
+      options,
     );
   },
 
@@ -78,77 +109,71 @@ export const shopProductApi = {
     );
   },
 
-  remove(shopId: string, productId: string) {
-    return apiClient.delete<RemoveProductResponse>(
-      `/shops/${shopId}/products/${productId}`,
-    );
-  },
-
   bulkMutate(shopId: string, payload: BulkMutateShopProductsRequest) {
+    const { body, options } = splitIdempotency(payload);
+
     return apiClient.post<BulkMutateShopProductsResponse>(
       `/shops/${shopId}/products/bulk-mutate`,
-      payload,
+      body,
+      options,
     );
   },
 
-  update(
+  updateDetails(
     shopId: string,
     productId: string,
-    payload: UpdateProductRequestBody,
-  ) {
-    return apiClient.patch<UpdateProductResponse>(
-      `/shops/${shopId}/products/${productId}`,
-      payload,
-    );
+    payload: UpdateProductDetailsRequestBody,
+  ): Promise<UpdateProductResponse> {
+    const { body, options } = splitIdempotency(payload);
+
+    return apiClient.patch(
+      `/shops/${shopId}/products/${productId}/details`,
+      body,
+      options,
+    ).then(normalizeProductMutationResponse);
   },
 
-  setVariants(
+  setVariantConfiguration(
     shopId: string,
     productId: string,
-    payload: {
-      variants: Array<{
-        option_value_1: string
-        option_value_2?: string
-      }>
-    },
-  ) {
-    return apiClient.put<undefined>(
-      `/shops/${shopId}/products/${productId}/variants`,
-      payload,
-    );
+    payload: SetProductVariantConfigurationRequestBody,
+  ): Promise<UpdateProductResponse> {
+    const { body, options } = splitIdempotency(payload);
+
+    return apiClient.put(
+      `/shops/${shopId}/products/${productId}/variant-configuration`,
+      body,
+      options,
+    ).then(normalizeProductMutationResponse);
   },
 
-  setInventory(
+
+  setImagesByKeys(
     shopId: string,
     productId: string,
-    payload: {
-      inventory: Array<{
-        product_variant_id?: string
-        sku?: string
-        stock: number
-      }>
-    },
-  ) {
-    return apiClient.put<undefined>(
-      `/shops/${shopId}/products/${productId}/inventory`,
-      payload,
-    );
+    payload: SetProductImagesByKeysRequestBody,
+  ): Promise<UpdateProductResponse> {
+    const { body, options } = splitIdempotency(payload);
+
+    return apiClient.put(
+      `/shops/${shopId}/products/${productId}/images-by-keys`,
+      body,
+      options,
+    ).then(normalizeProductMutationResponse);
   },
 
-  setPricing(
+  setAttributes(
     shopId: string,
     productId: string,
-    payload: {
-      pricing: Array<{
-        inventory_id: string
-        amount_minor: number
-      }>
-    },
-  ) {
-    return apiClient.put<undefined>(
-      `/shops/${shopId}/products/${productId}/pricing`,
-      payload,
-    );
+    payload: SetProductAttributesRequestBody,
+  ): Promise<UpdateProductResponse> {
+    const { body, options } = splitIdempotency(payload);
+
+    return apiClient.put(
+      `/shops/${shopId}/products/${productId}/attributes`,
+      body,
+      options,
+    ).then(normalizeProductMutationResponse);
   },
 
   downloadImportTemplate(shopId: string) {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { IOnChangeUpdateVariants } from '../use-update-product-form/update-product-form.types'
+import type { ProductSkuConflict } from '../use-update-product-form/use-update-product-submit/product-section-state'
 import type { VariantEditorProduct } from './update-variant-input.types'
 import { useUpdateVariantInput } from './use-update-variant-input'
 import VariantInventoryTable from '~/app/pages/products/_components/variant-input/variant-inventory-table.vue'
@@ -8,6 +9,7 @@ import VariantOptionGroup from '~/app/pages/products/_components/variant-input/v
 const props = defineProps<{
   countValidate: number
   product: VariantEditorProduct
+  skuConflicts?: ProductSkuConflict[]
 }>()
 
 const emit = defineEmits<{
@@ -31,6 +33,7 @@ const {
 } = useUpdateVariantInput({
   countValidate: toRef(props, 'countValidate'),
   product: toRef(props, 'product'),
+  skuConflicts: toRef(props, 'skuConflicts'),
   emitChange: value => emit('onChange', value),
   emitVariantsUpdated: value => emit('isVariantsUpdated', value),
 })
@@ -42,7 +45,6 @@ const {
       <VariantOptionGroup
         v-model:group-name="state.variant_group_name"
         v-model:option-name="state.variantOption"
-        title="Group variant 1"
         :error-group-name="state.errorVariantGroupName"
         :error-option="state.errorVariantOption"
         :options="state.variants"
@@ -63,7 +65,6 @@ const {
       <VariantOptionGroup
         v-model:group-name="state.variant_sub_group_name"
         v-model:option-name="state.subVariantOption"
-        title="Group variant 2"
         group-name-field-name="variant_sub_group_name"
         show-open-button
         show-close-button

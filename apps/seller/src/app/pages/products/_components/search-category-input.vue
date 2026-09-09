@@ -2,7 +2,9 @@
 import type { Category } from '@arc/models/category'
 import { useGetSuggestCategories } from '~/domains/category/mutations/suggest-categories.mutation'
 
-const props = defineProps<{ title?: string, category?: Category | null }>()
+const props = withDefaults(defineProps<{ title?: string, category?: Category | null, required?: boolean }>(), {
+  required: true,
+})
 
 const model = defineModel<string | undefined>({
   required: true,
@@ -111,9 +113,9 @@ watch(querySuggestion, () => {
 <template>
   <UFormGroup
     label="Category"
-    name="category"
+    name="category_id"
     class="form-field-constrained mb-4"
-    required
+    :required="props.required"
     description="Type a two- or three-word description of your product
              to get category suggestions that will help more shoppers find it."
   >

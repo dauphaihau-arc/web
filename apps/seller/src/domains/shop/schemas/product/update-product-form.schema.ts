@@ -1,10 +1,9 @@
 import { z } from 'zod';
 import { idSchema } from '@arc/schemas/primitives/id.schema';
+import { ProductVariantTypes, PRODUCT_CONFIG } from '@arc/enums/product';
 import {
   baseProductSchema,
-  combineVariantSchema,
   productStateUserCanModify,
-  singleVariantSchema,
 } from '@arc/schemas/product.schema';
 
 
@@ -12,7 +11,6 @@ export const updateProductFormSchema = baseProductSchema
   .pick({
     title: true,
     description: true,
-    variant_type: true,
     is_digital: true,
     who_made: true,
   })
@@ -20,6 +18,7 @@ export const updateProductFormSchema = baseProductSchema
     z.object({
       tags: baseProductSchema.shape.tags.default([]).optional(),
       state: productStateUserCanModify,
+      variant_type: z.nativeEnum(ProductVariantTypes),
       category_id: idSchema,
       attributes: z.array(
         z.object({
@@ -27,8 +26,8 @@ export const updateProductFormSchema = baseProductSchema
           selected: z.string(),
         }),
       ).optional(),
-      variant_group_name: singleVariantSchema.shape.variant_group_name.optional(),
-      variant_sub_group_name: combineVariantSchema.shape.variant_sub_group_name.optional(),
+      variant_group_name: z.string().min(1).max(PRODUCT_CONFIG.MAX_CHAR_VARIANT_GROUP_NAME).optional(),
+      variant_sub_group_name: z.string().min(1).max(PRODUCT_CONFIG.MAX_CHAR_VARIANT_GROUP_NAME).optional(),
     }),
   )
   .partial();

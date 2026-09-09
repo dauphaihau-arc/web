@@ -5,6 +5,7 @@ import { ProductVariantTypes } from '@arc/enums/product';
 import { productInventorySchema } from '@arc/schemas/product-inventory.schema';
 import { log } from '@arc/lib';
 import type { IOnChangeUpdateVariants } from '../use-update-product-form/update-product-form.types';
+import type { ProductSkuConflict } from '../use-update-product-form/use-update-product-submit/product-section-state';
 import {
   DEFAULT_UPDATE_VARIANT_COLUMNS,
   DUPLICATE_ERROR,
@@ -18,8 +19,10 @@ import {
   buildVariantEditorSubmission,
   createDefaultUpdateVariantTable,
   generateUpdateVariantOptionId,
+  generateExpandedSku,
   hydrateUpdateVariantInput,
   mixUpdateVariantsTable,
+  trackDeletedVariantOption,
 } from './update-variant-input.mapper';
 import type {
   UpdateVariantInputState,
@@ -36,6 +39,7 @@ const updateVariantInventorySchema = productInventorySchema
 type UseUpdateVariantInputOptions = {
   countValidate: Ref<number>
   product: Readonly<Ref<VariantEditorProduct>>
+  skuConflicts?: Readonly<Ref<ProductSkuConflict[] | undefined>>
   emitChange: (value: IOnChangeUpdateVariants | null) => void
   emitVariantsUpdated: (value: boolean) => void
 };
@@ -51,6 +55,7 @@ export function useUpdateVariantInput({
   product,
   emitChange,
   emitVariantsUpdated,
+  skuConflicts,
 }: UseUpdateVariantInputOptions) {
   const initialEditorSnapshot = ref<string>();
 
@@ -69,6 +74,21 @@ export function useUpdateVariantInput({
   });
 
   const variantsTable = ref<UpdateVariantTable[]>([createDefaultUpdateVariantTable()]);
+  const rowsBeforeSubVariantOpen = ref<UpdateVariantTable[]>();
+
+  function cloneVariantRows(rows: UpdateVariantTable[]) {
+    return rows.map(row => ({ ...row }));
+  }
+
+  function restoreRowsBeforeSubVariantOpen() {
+    if (!rowsBeforeSubVariantOpen.value) {
+      return false;
+    }
+
+    variantsTable.value = cloneVariantRows(rowsBeforeSubVariantOpen.value);
+    rowsBeforeSubVariantOpen.value = undefined;
+    return true;
+  }
   const columnsRef = ref(DEFAULT_UPDATE_VARIANT_COLUMNS.map(column => ({ ...column })));
 
   const columns = computed({
@@ -86,6 +106,26 @@ export function useUpdateVariantInput({
     variantsTable.value = mixUpdateVariantsTable(state, variantsTable.value);
   }
 
+  function collapseMixedVariantsTable() {
+    variantsTable.value = state.variants.map((variant, index) => {
+      const source = variantsTable.value.find(row =>
+        row.variant_option_id === variant.id || row.variant_name === variant.variant_name,
+      );
+
+      return createDefaultUpdateVariantTable({
+        id: index + 1,
+        variant_option_id: variant.id,
+        variant_name: variant.variant_name,
+        productVariantId: null,
+        optionId1: source?.optionId1,
+        optionValueId1: source?.optionValueId1,
+        inventoryId: null,
+        currency: source?.currency,
+        sourceSku: source?.sourceSku,
+      });
+    });
+  }
+
   const addVariant = () => {
     const variantOption = {
       id: generateUpdateVariantOptionId(),
@@ -96,17 +136,27 @@ export function useUpdateVariantInput({
     state.variants.push(variantOption);
 
     if (variantsTable.value.length === 1 && !variantsTable.value[0].variant_name) {
+      const source = variantsTable.value[0];
       variantsTable.value[0].variant_option_id = variantOption.id;
       variantsTable.value[0].variant_name = state.variantOption;
+      variantsTable.value[0].stock = 0;
+      variantsTable.value[0].sku = generateExpandedSku(source.sourceSku ?? source.sku, state.variantOption);
+      variantsTable.value[0].sourceSku = source.sourceSku ?? source.sku;
       state.variantOption = '';
       return;
     }
 
     if (!state.subVariants.length) {
+      const source = variantsTable.value[0];
       const newVariantTable = createDefaultUpdateVariantTable({
         id: variantsTable.value.length + 1,
         variant_option_id: variantOption.id,
         variant_name: state.variantOption,
+        amount: source.amount,
+        stock: 0,
+        sku: generateExpandedSku(source.sourceSku ?? source.sku, state.variantOption),
+        sourceSku: source.sourceSku ?? source.sku,
+        currency: source.currency,
       });
 
       if (state.isActiveSubVariant) {
@@ -130,7 +180,7 @@ export function useUpdateVariantInput({
 
     state.subVariants.push(subVariantOption);
 
-    if (!variantsTable.value[0].sub_variant_name && variantsTable.value.length === 1) {
+    if (!variantsTable.value[0].sub_variant_name && variantsTable.value.length === 1 && !state.variants.length) {
       variantsTable.value[0].sub_variant_option_id = subVariantOption.id;
       variantsTable.value[0].sub_variant_name = state.subVariantOption;
       state.subVariantOption = '';
@@ -154,7 +204,7 @@ export function useUpdateVariantInput({
   };
 
   const removeVariant = ({ id, variant_name: variantName }: UpdateVariantOption) => {
-    state.variantIdsDelete.push(id);
+    trackDeletedVariantOption(state, id);
     state.variants = state.variants.filter(variant => variant.id !== id);
     variantsTable.value = variantsTable.value.filter((variant) => {
       if (variant.variant_option_id) {
@@ -165,8 +215,15 @@ export function useUpdateVariantInput({
   };
 
   const removeSubVariant = ({ id, variant_name: variantName }: UpdateVariantOption) => {
-    state.variantIdsDelete.push(id);
+    trackDeletedVariantOption(state, id);
     state.subVariants = state.subVariants.filter(variant => variant.id !== id);
+
+    if (!state.subVariants.length && restoreRowsBeforeSubVariantOpen()) {
+      state.isActiveSubVariant = false;
+      columns.value = columns.value.filter(col => col.key !== 'sub_variant_name');
+      delete state.variant_sub_group_name;
+      return;
+    }
     variantsTable.value = variantsTable.value.filter((variant) => {
       if (variant.sub_variant_option_id) {
         return variant.sub_variant_option_id !== id;
@@ -222,10 +279,16 @@ export function useUpdateVariantInput({
     if (row.id) {
       variantsTable.value[row.id - 1][name] = value;
       variantsTable.value[row.id - 1].isUpdated = true;
+      if (name === 'sku') {
+        variantsTable.value[row.id - 1].errorSku = '';
+      }
     }
   };
 
   function openSubVariant() {
+    if (!state.isActiveSubVariant) {
+      rowsBeforeSubVariantOpen.value = cloneVariantRows(variantsTable.value);
+    }
     state.isActiveSubVariant = true;
 
     columns.value = [
@@ -239,9 +302,21 @@ export function useUpdateVariantInput({
 
     if (state.variants.length) {
       variantsTable.value = state.variants.map((variant) => {
+        const source = variantsTable.value.find(row =>
+          row.variant_option_id === variant.id || row.variant_name === variant.variant_name,
+        );
+
         return createDefaultUpdateVariantTable({
           variant_option_id: variant.id,
           variant_name: variant.variant_name,
+          optionId1: source?.optionId1,
+          optionValueId1: source?.optionValueId1,
+          inventoryId: source?.inventoryId,
+          amount: source?.amount,
+          stock: source?.stock ?? 0,
+          sku: source?.sku,
+          sourceSku: source?.sourceSku ?? source?.sku,
+          currency: source?.currency,
           sub_variant_name: '',
         });
       });
@@ -256,14 +331,12 @@ export function useUpdateVariantInput({
 
     columns.value = columns.value.filter(col => col.key !== 'sub_variant_name');
 
+    if (restoreRowsBeforeSubVariantOpen()) {
+      return;
+    }
+
     if (state.variants.length) {
-      variantsTable.value = state.variants.map((variant, index) => {
-        return createDefaultUpdateVariantTable({
-          id: index + 1,
-          variant_option_id: variant.id,
-          variant_name: variant.variant_name,
-        });
-      });
+      collapseMixedVariantsTable();
     }
     else {
       variantsTable.value[0].variant_name = '';
@@ -318,8 +391,26 @@ export function useUpdateVariantInput({
         }
       });
     }
-
     return parsedVariantsTable.success;
+  }
+
+  function applySkuConflicts(conflicts: ProductSkuConflict[] = []) {
+    variantsTable.value.forEach((row, index) => {
+      row.errorSku = '';
+      const clientRef = row.productVariantId ? undefined : `variant-${index + 1}`;
+      const rowSku = row.sku?.trim().toLocaleLowerCase();
+      const hasConflict = conflicts.some((conflict) => {
+        const conflictSku = conflict.sku?.trim().toLocaleLowerCase();
+        return (conflict.inventoryId && conflict.inventoryId === row.inventoryId)
+          || (conflict.variantId && conflict.variantId === row.productVariantId)
+          || (conflict.clientRef && conflict.clientRef === clientRef)
+          || (conflictSku && conflictSku === rowSku);
+      });
+
+      if (hasConflict) {
+        row.errorSku = 'SKU already used';
+      }
+    });
   }
 
   function canEmitEditorSubmission() {
@@ -379,19 +470,25 @@ export function useUpdateVariantInput({
     state.isActiveSubVariant = false;
     state.subVariants = [];
     columns.value = DEFAULT_UPDATE_VARIANT_COLUMNS.map(column => ({ ...column }));
+    rowsBeforeSubVariantOpen.value = undefined;
 
-    if (currentProduct.variant_type === ProductVariantTypes.NONE) {
-      return;
-    }
 
     variantsTable.value = hydrateUpdateVariantInput(currentProduct, state, openSubVariant);
+    rowsBeforeSubVariantOpen.value = undefined;
     await nextTick();
+    applySkuConflicts(skuConflicts?.value);
     if (cancelled) {
       return;
     }
     initialEditorSnapshot.value = buildVariantEditorSnapshot(state, variantsTable.value);
     emitVariantsUpdated(false);
   }, { immediate: true });
+
+  watch(
+    () => skuConflicts?.value,
+    conflicts => applySkuConflicts(conflicts),
+    { immediate: true },
+  );
 
   watch(() => [state.variant_group_name, state.variant_sub_group_name], () => {
     columns.value[0].label = state.variant_group_name || VARIANT_GROUP_1_FALLBACK_LABEL;

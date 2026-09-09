@@ -1,7 +1,7 @@
 import { computed, reactive, watch } from 'vue';
-import { ProductVariantTypes } from '@arc/enums/product';
 import type { FormError } from '#ui/types';
 import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract';
+import { getProductOptionMode } from '~/domains/product/utils/product-options';
 
 interface StateSubmit {
   quantity: number
@@ -12,8 +12,16 @@ interface StateSubmit {
 type Inventory = GetDetailProductBySlugResponse['inventory'][number];
 type AddToCartProduct = Pick<
   GetDetailProductBySlugResponse,
-  'inventory' | 'variant_type' | 'variant_group_name' | 'variant_sub_group_name'
+  'inventory' | 'options' | 'variants'
 >;
+type ProductOption = AddToCartProduct['options'][number];
+type ProductOptionValue = ProductOption['values'][number];
+
+interface VariantSelectOption {
+  label: string
+  value: string
+  disabled: boolean
+}
 
 interface UseAddToCartFormOptions {
   product: Ref<AddToCartProduct>
@@ -30,28 +38,69 @@ export function useAddToCartForm({
     variantSubOption: '',
   });
 
+  const optionMode = computed(() => getProductOptionMode(product.value));
+
+  function hasInventoryStock(variantId: string) {
+    return product.value.inventory.some(inventory =>
+      inventory.product_variant_id === variantId && inventory.stock > 0,
+    );
+  }
+
+  function variantIncludesSelection(variant: AddToCartProduct['variants'][number], option: ProductOption, value: ProductOptionValue) {
+    return variant.selections.some(selection =>
+      selection.option_id === option.id && selection.value_id === value.id,
+    );
+  }
+
+  function hasAvailableVariant(option: ProductOption, value: ProductOptionValue, pairedOption: ProductOption | undefined, pairedValueName: string) {
+    const pairedValue = pairedOption?.values.find(item => item.value === pairedValueName);
+
+    return product.value.variants.some((variant) => {
+      if (!variantIncludesSelection(variant, option, value) || !hasInventoryStock(variant.id)) {
+        return false;
+      }
+
+      if (!pairedOption || !pairedValue) {
+        return true;
+      }
+
+      return variantIncludesSelection(variant, pairedOption, pairedValue);
+    });
+  }
+
+  function buildSelectOptions(option: ProductOption | undefined, pairedOption: ProductOption | undefined, pairedValueName: string): VariantSelectOption[] {
+    if (!option) {
+      return [];
+    }
+
+    return option.values.map((value) => {
+      const disabled = !hasAvailableVariant(option, value, pairedOption, pairedValueName);
+
+      return {
+        label: disabled ? `${value.value} (Unavailable)` : value.value,
+        value: value.value,
+        disabled,
+      };
+    });
+  }
+
   const variantOptions = computed(() => {
-    return Array.from(
-      new Set(
-        product.value.inventory
-          .map(inventory => inventory.option_value_1)
-          .filter((value): value is string => Boolean(value)),
-      ),
+    return buildSelectOptions(
+      product.value.options[0],
+      optionMode.value === 'combine' ? product.value.options[1] : undefined,
+      stateSubmit.variantSubOption,
     );
   });
 
   const subVariantOptions = computed(() => {
-    if (product.value.variant_type !== ProductVariantTypes.COMBINE || !stateSubmit.variantOption) {
+    if (optionMode.value !== 'combine') {
       return [];
     }
 
-    return Array.from(
-      new Set(
-        product.value.inventory
-          .filter(inventory => inventory.option_value_1 === stateSubmit.variantOption)
-          .map(inventory => inventory.option_value_2)
-          .filter((value): value is string => Boolean(value)),
-      ),
+    return buildSelectOptions(
+      product.value.options[1],
+      product.value.options[0],
+      stateSubmit.variantOption,
     );
   });
 
@@ -68,13 +117,13 @@ export function useAddToCartForm({
       return inventoryById;
     }
 
-    if (product.value.variant_type === ProductVariantTypes.NONE) {
+    if (optionMode.value === 'none') {
       return product.value.inventory[0];
     }
 
     return product.value.inventory.find((inventory) => {
-      return inventory.option_value_1 === currentSelection.option_value_1
-        && inventory.option_value_2 === currentSelection.option_value_2;
+      const variant = product.value.variants.find(item => item.id === inventory.product_variant_id);
+      return variant?.id === currentSelection.product_variant_id;
     });
   }
 
@@ -85,25 +134,29 @@ export function useAddToCartForm({
       return resolvedFromCurrentProduct;
     }
 
-    if (product.value.variant_type === ProductVariantTypes.NONE) {
+    if (optionMode.value === 'none') {
       return product.value.inventory[0];
     }
 
-    if (product.value.variant_type === ProductVariantTypes.SINGLE) {
-      return product.value.inventory.find(
-        inventory => inventory.option_value_1 === stateSubmit.variantOption,
-      );
-    }
+    const primaryOption = product.value.options[0];
+    const secondaryOption = product.value.options[1];
+    const selectedPrimaryValue = primaryOption?.values.find(value => value.value === stateSubmit.variantOption);
+    const selectedSecondaryValue = secondaryOption?.values.find(value => value.value === stateSubmit.variantSubOption);
 
-    if (product.value.variant_type === ProductVariantTypes.COMBINE) {
-      return product.value.inventory.find(
-        inventory =>
-          inventory.option_value_1 === stateSubmit.variantOption
-          && inventory.option_value_2 === stateSubmit.variantSubOption,
-      );
-    }
+    return product.value.inventory.find((inventory) => {
+      const variant = product.value.variants.find(item => item.id === inventory.product_variant_id);
+      if (!variant || !primaryOption || !selectedPrimaryValue) return false;
 
-    return undefined;
+      const hasPrimary = variant.selections.some(selection =>
+        selection.option_id === primaryOption.id && selection.value_id === selectedPrimaryValue.id,
+      );
+      const hasSecondary = optionMode.value !== 'combine'
+        || Boolean(secondaryOption && selectedSecondaryValue && variant.selections.some(selection =>
+          selection.option_id === secondaryOption.id && selection.value_id === selectedSecondaryValue.id,
+        ));
+
+      return hasPrimary && hasSecondary;
+    });
   });
 
   const maxQuantity = computed(() => {
@@ -136,7 +189,7 @@ export function useAddToCartForm({
   const validateForm = (stateValidate: StateSubmit): FormError[] => {
     const errors: FormError[] = [];
 
-    if (product.value.variant_type !== ProductVariantTypes.NONE) {
+    if (optionMode.value !== 'none') {
       if (!stateValidate.variantOption) {
         errors.push({
           path: 'variantOption',
@@ -144,7 +197,7 @@ export function useAddToCartForm({
         });
       }
 
-      if (product.value.variant_type === ProductVariantTypes.COMBINE && !stateValidate.variantSubOption) {
+      if (optionMode.value === 'combine' && !stateValidate.variantSubOption) {
         errors.push({
           path: 'variantSubOption',
           message: 'Required',
@@ -159,15 +212,6 @@ export function useAddToCartForm({
     () => stateSubmit.variantOption,
     () => {
       stateSubmit.quantity = 1;
-      inventorySelectedModel.value = undefined;
-
-      if (
-        product.value.variant_type === ProductVariantTypes.COMBINE
-        && stateSubmit.variantSubOption
-        && !subVariantOptions.value.includes(stateSubmit.variantSubOption)
-      ) {
-        stateSubmit.variantSubOption = '';
-      }
     },
   );
 
@@ -175,24 +219,21 @@ export function useAddToCartForm({
     () => stateSubmit.variantSubOption,
     () => {
       stateSubmit.quantity = 1;
-      inventorySelectedModel.value = undefined;
     },
   );
 
   watch(
     resolvedInventorySelected,
     (inventory) => {
-      if (inventory) {
-        inventorySelectedModel.value = inventory;
-      }
+      inventorySelectedModel.value = inventory;
     },
     { immediate: true },
   );
 
   watch(
-    () => product.value.variant_type,
+    optionMode,
     (variantType) => {
-      if (variantType === ProductVariantTypes.NONE) {
+      if (variantType === 'none') {
         inventorySelectedModel.value = product.value.inventory[0];
       }
     },
@@ -236,6 +277,7 @@ export function useAddToCartForm({
     resolvedInventorySelected,
     stateSubmit,
     subVariantOptions,
+    optionMode,
     validateForm,
     variantOptions,
   };

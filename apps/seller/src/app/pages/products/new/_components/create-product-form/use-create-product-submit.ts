@@ -144,7 +144,11 @@ export function useCreateProductSubmit({
 
     try {
       const productDraft = await createProduct(
-        buildCreateProductPayload(bodyData, unwrap(shopCurrency) || 'USD'),
+        buildCreateProductPayload(
+          bodyData,
+          unwrap(shopCurrency) || 'USD',
+          crypto.randomUUID(),
+        ),
       );
 
       if (fileImages.value.length > 0) {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ProductStates, ProductVariantTypes } from '@arc/enums/product'
+import { ProductStates } from '@arc/enums/product'
 import { productSchema } from './product.schema'
 
 const baseProduct = {
@@ -23,32 +23,50 @@ const baseProduct = {
 }
 
 describe('productSchema', () => {
-  it('accepts products without variants when inventory is provided', () => {
+  it('accepts default-variant products without option rows', () => {
     const parsed = productSchema.parse({
       ...baseProduct,
-      variant_type: ProductVariantTypes.NONE,
-      inventory: '00000000-0000-4000-8000-000000000006',
+      variants: [{
+        id: '00000000-0000-4000-8000-000000000006',
+        selections: [],
+        lifecycle_state: 'active',
+      }],
     })
 
-    expect(parsed.variant_type).toBe(ProductVariantTypes.NONE)
+    expect(parsed.options).toEqual([])
+    expect(parsed.variants[0].selections).toEqual([])
     expect(parsed.state).toBe(ProductStates.ACTIVE)
   })
 
-  it('requires variant group data for single variants', () => {
-    const result = productSchema.safeParse({
+  it('accepts normalized option selections for variant products', () => {
+    const parsed = productSchema.parse({
       ...baseProduct,
-      variant_type: ProductVariantTypes.SINGLE,
-      variants: ['00000000-0000-4000-8000-000000000007'],
+      options: [{
+        id: '00000000-0000-4000-8000-000000000007',
+        name: 'Size',
+        position: 1,
+        values: [{
+          id: '00000000-0000-4000-8000-000000000008',
+          value: 'Small',
+          position: 1,
+        }],
+      }],
+      variants: [{
+        id: '00000000-0000-4000-8000-000000000009',
+        selections: [{
+          option_id: '00000000-0000-4000-8000-000000000007',
+          value_id: '00000000-0000-4000-8000-000000000008',
+        }],
+      }],
     })
 
-    expect(result.success).toBe(false)
+    expect(parsed.options[0].name).toBe('Size')
+    expect(parsed.variants[0].lifecycle_state).toBe('active')
   })
 
   it('rejects absolute product image URLs', () => {
     const result = productSchema.safeParse({
       ...baseProduct,
-      variant_type: ProductVariantTypes.NONE,
-      inventory: '00000000-0000-4000-8000-000000000006',
       images: [
         {
           id: '00000000-0000-4000-8000-000000000005',

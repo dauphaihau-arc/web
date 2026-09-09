@@ -77,7 +77,6 @@ function toRecentProductView(input: NonNullable<typeof productData.value>): GetP
             : undefined,
         }
       : undefined,
-    variant_type: input.variant_type,
     pricing: amountValues.length > 0
       ? {
           min_amount_minor: Math.min(...amountValues),

@@ -29,7 +29,7 @@ export function applyDetailProductToFormState(
     stateSubmit[key] = base[key];
   });
 
-  stateSubmit.category_id = detailProduct.category.id;
+  stateSubmit.category_id = detailProduct.category?.id;
 
   if (detailProduct.variant_type === ProductVariantTypes.NONE) {
     noneVariant.amount = detailProduct.inventory.amount;
@@ -49,7 +49,7 @@ export function pruneUnchangedUpdateFields(
   const nextDataSubmit = Object.fromEntries(
     Object.entries(dataSubmit).filter(([key, value]) => {
       if (key === 'category_id') {
-        return value !== detailProduct.category.id;
+        return value !== detailProduct.category?.id;
       }
 
       if (key === 'attributes') {

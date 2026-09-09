@@ -10,17 +10,20 @@ import type {
 import type { DetailShopProductResponse } from '~/domains/shop/api/product/contracts/read.contract';
 import { updateProductFormSchema } from '~/domains/shop/schemas/product/update-product-form.schema';
 import {
-  hasUpdateProductFormChanges,
   isUpdateProductSubmitDisabled,
   pruneUnchangedUpdateFields,
-} from './update-product-form.mapper';
-import type { VariantEditorSubmission } from './update-product-form.types';
+} from '../update-product-form.mapper';
+import type { VariantEditorSubmission } from '../update-product-form.types';
 import type { UpdateProductAction } from './use-update-product-submit';
+import type { ProductFormSectionStates } from './product-section-state';
+import { syncDirtyProductSectionStates } from './product-section-state';
+import { getDirtyProductSectionIds } from './product-section-dirty';
 
 type SubmitUpdateProduct = (
   dataSubmit: UpdateProductBody,
   action: UpdateProductAction,
   variantSubmission?: VariantEditorSubmission,
+  isVariantsDirty?: boolean,
 ) => Promise<void>;
 
 type UseUpdateProductSubmitStateInput = {
@@ -33,6 +36,7 @@ type UseUpdateProductSubmitStateInput = {
   isVariantsDirty: Ref<boolean>
   noneVariant: Partial<NoneVariant>
   stateSubmit: UpdateProductBody
+  sectionStates: ProductFormSectionStates
   submit: SubmitUpdateProduct
   variantSubmission: Ref<VariantEditorSubmission | undefined>
 };
@@ -48,6 +52,7 @@ export function useUpdateProductSubmitState({
   noneVariant,
   stateSubmit,
   submit,
+  sectionStates,
   variantSubmission,
 }: UseUpdateProductSubmitStateInput) {
   const disabledButtonSubmit = ref(true);
@@ -62,7 +67,7 @@ export function useUpdateProductSubmitState({
       dataDetailProduct.value?.product,
     );
 
-    await submit(dataSubmit, pendingAction.value, variantSubmission.value);
+    await submit(dataSubmit, pendingAction.value, isVariantProduct.value ? variantSubmission.value : undefined, isVariantsDirty.value);
     pendingAction.value = 'save';
   }
 
@@ -94,7 +99,7 @@ export function useUpdateProductSubmitState({
         detailProduct,
       ));
 
-      const hasFormChanges = hasUpdateProductFormChanges({
+      const dirtySectionIds = getDirtyProductSectionIds({
         isVariantsDirty: isVariantsDirty.value,
         dataSubmit: { ...stateSubmit },
         detailProduct,
@@ -102,6 +107,8 @@ export function useUpdateProductSubmitState({
         idsImageForDelete: idsImageForDelete.value,
         noneVariant,
       });
+      const hasFormChanges = dirtySectionIds.length > 0;
+      syncDirtyProductSectionStates(sectionStates, dirtySectionIds, detailProduct?.productVersion);
 
       const checks = {
         ready: Boolean(detailProduct),

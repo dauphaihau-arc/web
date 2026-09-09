@@ -4,37 +4,20 @@
  */
 import type { ResponseGetOrderShopsProduct } from '~/domains/me/api/order/contracts/order.contract'
 
-const { productOrder } = defineProps<{
+const props = defineProps<{
   productOrder: ResponseGetOrderShopsProduct
 }>()
 
-const state = reactive({
-  v1: '',
-  v2: '',
-})
-
-onMounted(() => {
-  if (productOrder.inventory.variant) {
-    const [v1, v2] = productOrder.inventory.variant.split('-')
-    state.v1 = v1
-    state.v2 = v2
-  }
-})
+const selectedOptions = computed(() => props.productOrder.inventory.selected_options)
 </script>
 
 <template>
   <div>
     <div
-      v-if="productOrder.product.variant_group_name"
-      class=""
+      v-for="option in selectedOptions"
+      :key="`${option.option_id ?? option.option_name}:${option.value_id ?? option.value}`"
     >
-      {{ productOrder.product.variant_group_name }}: {{ state.v1 }}
-    </div>
-    <div
-      v-if="productOrder.product.variant_sub_group_name"
-      class=""
-    >
-      {{ productOrder.product.variant_sub_group_name }}: {{ state.v2 }}
+      {{ option.option_name }}: {{ option.value }}
     </div>
   </div>
 </template>

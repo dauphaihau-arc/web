@@ -11,6 +11,12 @@ export function useShopPublishProduct() {
       const shopId = await resolveMyShopId(queryClient);
       return apiClient.post<CreateDraftProductResponse>(
         `${RESOURCES.SHOPS}/${shopId}${RESOURCES.PRODUCTS}/${id}/publish`,
+        undefined,
+        {
+          headers: {
+            'Idempotency-Key': crypto.randomUUID(),
+          },
+        },
       );
     },
   });

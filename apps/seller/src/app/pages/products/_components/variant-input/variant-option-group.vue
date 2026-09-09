@@ -16,7 +16,7 @@ const props = defineProps<{
   showCloseButton?: boolean
   showInlineOptionError?: boolean
   showOpenButton?: boolean
-  title: string
+  title?: string
 }>()
 
 const emit = defineEmits<{
@@ -51,7 +51,7 @@ async function handleAdd() {
       variant="solid"
       @click="$emit('open')"
     >
-      Add a variation
+      Add another option
     </UButton>
 
     <div v-else>
@@ -65,9 +65,16 @@ async function handleAdd() {
         @click="$emit('close')"
       />
 
+      <h4
+        v-if="title"
+        class="text-text mb-3 text-sm font-medium"
+      >
+        {{ title }}
+      </h4>
+
       <UFormGroup
         class="mb-4"
-        :label="title"
+        label="Option name"
         required
         :name="groupNameFieldName"
         :error="errorGroupName ?? ''"
@@ -87,7 +94,7 @@ async function handleAdd() {
 
       <UFormGroup
         class="mb-4"
-        label="Name the option"
+        label="Add option value"
         required
         :error="errorOption ?? ''"
       >
@@ -106,6 +113,7 @@ async function handleAdd() {
             ref="optionNameInputRef"
             v-model="optionName"
             :maxlength="limitOptionName === false ? undefined : PRODUCT_CONFIG.MAX_CHAR_VARIANT_NAME"
+            placeholder="Enter a value"
             @keydown.enter.prevent="handleAdd"
           />
           <template v-if="showInlineOptionError">

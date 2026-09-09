@@ -1,8 +1,10 @@
 import { ProductVariantTypes } from '@arc/enums/product';
 import { applyDetailProductToFormState } from './update-product-form.mapper';
 import { useUpdateProductStateMeta } from './use-update-product-state-meta';
-import { useUpdateProductSubmitState } from './use-update-product-submit-state';
-import { useUpdateProductSubmit } from './use-update-product-submit';
+import {
+  useUpdateProductSubmit,
+  useUpdateProductSubmitState,
+} from './use-update-product-submit';
 import { useUpdateProductVariantState } from './use-update-product-variant-state';
 import { updateProductFormSchema } from '~/domains/shop/schemas/product/update-product-form.schema';
 import { useShopGetDetailProduct } from '~/domains/shop/queries/product/detail.query';
@@ -21,6 +23,7 @@ export function useUpdateProductForm() {
 
   const {
     data: dataDetailProduct,
+    refetch: refetchDetailProduct,
   } = useShopGetDetailProduct(productId);
 
   const noneVariant = reactive<Partial<NoneVariant>>({
@@ -32,10 +35,14 @@ export function useUpdateProductForm() {
   const countValidate = ref(0);
   const fileImages = ref<File[]>([]);
   const idsImageForDelete = ref<Required<Pick<ProductImageReference, 'id'>>[]>([]);
+  const loadingRefreshSection = shallowRef<string | null>(null);
 
   const {
     loadingAction,
     loadingSubmit,
+    reapplyConflictSection,
+    sectionStateLabel,
+    sectionStates,
     submit,
   } = useUpdateProductSubmit({
     productId,
@@ -45,6 +52,8 @@ export function useUpdateProductForm() {
     idsImageForDelete,
     noneVariant,
   });
+
+  const hydratedProductId = ref<string>();
 
   const {
     canDeactivateFromDetail,
@@ -86,6 +95,7 @@ export function useUpdateProductForm() {
     stateSubmit,
     submit,
     variantSubmission,
+    sectionStates,
   });
 
   const validateForm = (values: UpdateProductBody): FormError[] => {
@@ -112,10 +122,39 @@ export function useUpdateProductForm() {
     element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
-  watch(() => dataDetailProduct.value, () => {
-    const detailProduct = dataDetailProduct.value?.product;
-    if (detailProduct) {
+  async function refreshProductState(sectionId: keyof typeof sectionStates) {
+    loadingRefreshSection.value = sectionId;
+
+    try {
+      const refreshed = await refetchDetailProduct();
+      const detailProduct = refreshed.data?.product ?? dataDetailProduct.value?.product;
+
+      if (!detailProduct) {
+        return;
+      }
+
       applyDetailProductToFormState(detailProduct, stateSubmit, noneVariant);
+      fileImages.value = [];
+      idsImageForDelete.value = [];
+      hydratedProductId.value = detailProduct.id;
+      sectionStates[sectionId].status = 'idle';
+      sectionStates[sectionId].productVersion = undefined;
+      sectionStates[sectionId].error = undefined;
+      sectionStates[sectionId].errorMessage = undefined;
+      sectionStates[sectionId].errorTitle = undefined;
+      sectionStates[sectionId].skuConflicts = undefined;
+      sectionStates[sectionId].conflict = undefined;
+    }
+    finally {
+      loadingRefreshSection.value = null;
+    }
+  }
+
+  watch(() => dataDetailProduct.value?.product.id, (nextProductId) => {
+    const detailProduct = dataDetailProduct.value?.product;
+    if (detailProduct && hydratedProductId.value !== nextProductId) {
+      applyDetailProductToFormState(detailProduct, stateSubmit, noneVariant);
+      hydratedProductId.value = nextProductId;
     }
   }, { immediate: true });
 
@@ -137,6 +176,7 @@ export function useUpdateProductForm() {
     isVariantProduct,
     loadingAction,
     loadingSubmit,
+    loadingRefreshSection,
     noneVariant,
     onChangeVariants,
     onChangeVariantType,
@@ -144,9 +184,14 @@ export function useUpdateProductForm() {
     onSubmit,
     productState,
     publishImageError,
+    reapplyConflictSection,
+    refreshProductState,
+    sectionStateLabel,
+    sectionStates,
     stateSubmit,
     stateTone,
     submitWithAction,
+    variantSubmission,
     validateForm,
   };
 }

@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { PRODUCT_CONFIG } from '@arc/enums/product'
 import type { VariantInputColumn, VariantInputTableRow } from './variant-input.types'
 
-defineProps<{
+const props = defineProps<{
   columns: VariantInputColumn[]
   currency?: string
   rows: VariantInputTableRow[]
@@ -12,26 +13,39 @@ defineProps<{
 defineEmits<{
   rowInput: [event: Event, row: VariantInputTableRow]
 }>()
+
+const INVENTORY_COLUMN_WIDTHS: Partial<Record<VariantInputColumn['key'], string>> = {
+  amount: 'w-44 min-w-44',
+  stock: 'w-32 min-w-32',
+  sku: 'w-[23rem] min-w-[23rem]',
+}
+
+const inventoryColumns = computed(() =>
+  props.columns.map(column => ({
+    ...column,
+    class: [column.class, INVENTORY_COLUMN_WIDTHS[column.key]].filter(Boolean).join(' ') || undefined,
+  })),
+)
 </script>
 
 <template>
   <UTable
     :rows="rows"
-    :columns="columns"
+    :columns="inventoryColumns"
     class="mt-5"
     :ui="{
-      th: { base: 'max-w-28 truncate' },
+      th: { base: 'truncate' },
       td: { base: 'py-4 align-top' },
     }"
   >
     <template #variant_name-data="{ row }">
-      <div class="min-w-44 max-w-44 truncate">
+      <div class="min-w-44 max-w-44 truncate px-2">
         {{ row.variant_name || '-' }}
       </div>
     </template>
 
     <template #sub_variant_name-data="{ row }">
-      <div class="min-w-44 max-w-44 truncate">
+      <div class="min-w-44 max-w-44 truncate px-2">
         {{ row.sub_variant_name || '-' }}
       </div>
     </template>
@@ -81,7 +95,9 @@ defineEmits<{
     </template>
 
     <template #sku-data="{ row }">
-      <UFormGroup>
+      <UFormGroup
+        :error="row.errorSku ?? ''"
+      >
         <UInput
           v-if="uppercaseSku"
           v-model="row.sku"
@@ -89,6 +105,7 @@ defineEmits<{
           v-uppercase
           :maxlength="PRODUCT_CONFIG.MAX_CHAR_SKU"
           name="sku"
+          :color="row.errorSku ? 'red' : undefined"
           size="lg"
           @input="(event: Event) => $emit('rowInput', event, row)"
         />
@@ -99,6 +116,7 @@ defineEmits<{
           :maxlength="PRODUCT_CONFIG.MAX_CHAR_SKU"
           name="sku"
           size="lg"
+          :color="row.errorSku ? 'red' : undefined"
           :ui="{ base: 'uppercase' }"
           @input="(event: Event) => $emit('rowInput', event, row)"
         />

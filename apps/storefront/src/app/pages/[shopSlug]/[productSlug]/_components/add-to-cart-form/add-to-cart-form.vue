@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ProductVariantTypes } from '@arc/enums/product'
 import { FetchError } from 'ofetch'
 import { useAddToCartForm } from './use-add-to-cart-form'
 import type { FormSubmitEvent } from '#ui/types'
@@ -15,7 +14,7 @@ import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 type Inventory = GetDetailProductBySlugResponse['inventory'][number]
 type AddToCartProduct = Pick<
   GetDetailProductBySlugResponse,
-  'inventory' | 'variant_type' | 'variant_group_name' | 'variant_sub_group_name'
+  'inventory' | 'options' | 'variants'
 >
 
 const props = defineProps<{
@@ -41,9 +40,8 @@ const state = reactive({
 
 const fallbackProduct: AddToCartProduct = {
   inventory: [],
-  variant_type: ProductVariantTypes.NONE,
-  variant_group_name: '',
-  variant_sub_group_name: '',
+  options: [],
+  variants: [],
 }
 
 const product = computed<AddToCartProduct>(() => props.product ?? fallbackProduct)
@@ -56,6 +54,7 @@ const {
   resolvedInventorySelected,
   stateSubmit,
   subVariantOptions,
+  optionMode,
   validateForm,
   variantOptions,
 } = useAddToCartForm({
@@ -174,29 +173,33 @@ async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
   >
     <div class="mb-6 flex w-1/3 flex-col gap-4">
       <UFormGroup
-        v-if="product.variant_type === ProductVariantTypes.SINGLE
-          || product.variant_type === ProductVariantTypes.COMBINE"
-        :label="product.variant_group_name"
+        v-if="optionMode === 'single'
+          || optionMode === 'combine'"
+        :label="product.options[0]?.name"
         name="variantOption"
       >
         <USelectMenu
           v-model="stateSubmit.variantOption"
-          :placeholder="`Select a ${product.variant_group_name}`"
+          :placeholder="`Select a ${product.options[0]?.name ?? 'variant'}`"
           size="lg"
           :options="variantOptions"
+          value-attribute="value"
+          option-attribute="label"
         />
       </UFormGroup>
 
       <UFormGroup
-        v-if="product.variant_type === ProductVariantTypes.COMBINE"
-        :label="product.variant_sub_group_name"
+        v-if="optionMode === 'combine'"
+        :label="product.options[1]?.name"
         name="variantSubOption"
       >
         <USelectMenu
           v-model="stateSubmit.variantSubOption"
-          :placeholder="`Select a ${product.variant_sub_group_name}`"
+          :placeholder="`Select a ${product.options[1]?.name ?? 'variant'}`"
           size="lg"
           :options="subVariantOptions"
+          value-attribute="value"
+          option-attribute="label"
         />
       </UFormGroup>
 

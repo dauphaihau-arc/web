@@ -36,7 +36,10 @@ export function useShopBulkMutateProducts() {
     mutationKey: ['shop-bulk-mutate-products'],
     mutationFn: async (payload: BulkMutateShopProductsRequest) => {
       const shopId = await resolveMyShopId(queryClient);
-      return shopProductApi.bulkMutate(shopId, payload);
+      return shopProductApi.bulkMutate(shopId, {
+        ...payload,
+        idempotency_key: crypto.randomUUID(),
+      });
     },
     onSuccess(result, variables) {
       queryClient.invalidateQueries({ queryKey: ['shop-get-products'] });

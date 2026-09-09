@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ProductVariantTypes } from '@arc/enums/product'
 import { formatMinorCurrency } from '@arc/utils'
 import type { ElementType } from '@arc/contracts/utils'
 import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract'
 
 type SummaryProduct = Pick<
   GetDetailProductBySlugResponse,
-  'inventory' | 'variant_type' | 'review_summary' | 'title'
+  'inventory' | 'options' | 'review_summary' | 'title'
 >
 
 const props = defineProps<{
@@ -18,7 +17,7 @@ const props = defineProps<{
 
 const fallbackProduct: SummaryProduct = {
   inventory: [],
-  variant_type: ProductVariantTypes.NONE,
+  options: [],
   review_summary: {
     average: 0,
     count: 0,
@@ -41,7 +40,7 @@ const sortedInventory = computed(() => {
 const highestPrice = computed(() => {
   if (
     !props.inventorySelected
-    && product.value.variant_type !== ProductVariantTypes.NONE
+    && product.value.options.length > 0
     && sortedInventory.value.length > 1
   ) {
     const lowestInventory = sortedInventory.value[0]

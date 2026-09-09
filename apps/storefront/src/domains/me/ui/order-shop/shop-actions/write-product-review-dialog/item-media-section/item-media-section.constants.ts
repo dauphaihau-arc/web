@@ -4,7 +4,9 @@ export const MAX_REVIEW_IMAGES = 5;
 export const MAX_REVIEW_IMAGE_BYTES = 8 * 1024 * 1024;
 
 export function buildProductLabel(product: ResponseGetOrderShopsProduct) {
-  const variant = product.inventory.variant?.trim();
+  const variant = product.inventory.selected_options
+    .map(option => `${option.option_name}: ${option.value}`)
+    .join(', ');
 
   if (!variant) {
     return product.title;

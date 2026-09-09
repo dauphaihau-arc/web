@@ -84,7 +84,7 @@ const rowsDialog = computed<ProductCouponRow[]>(() => {
             inventory[inventory.length - 1].currency,
           )
         : 0,
-      stock: inventory.reduce((acc, next) => acc + next.stock, 0),
+      stock: inventory.reduce((acc, next) => acc + (next.stock ?? 0), 0),
     }
   })
 })

@@ -69,7 +69,6 @@ export const getProductsResponseItemSchema = z.object({
   title: z.string(),
   slug: z.string(),
   image: publicProductImageSchema.optional(),
-  variant_type: z.string().optional(),
   pricing: publicProductListPricingSchema.optional(),
   availability: publicProductListAvailabilitySchema,
   variant_count: z.number().int().nonnegative(),
@@ -150,20 +149,36 @@ export const publicProductDetailImageSchema = z.object({
   })).optional(),
 })
 
-export const publicProductDetailVariantSchema = z.object({
+export const publicProductOptionValueSchema = z.object({
+  id: z.string(),
+  value: z.string(),
+  position: z.number(),
+})
+
+export const publicProductOptionSchema = z.object({
   id: z.string(),
   name: z.string(),
-  option_value_1: z.string().optional(),
-  option_value_2: z.string().optional(),
+  position: z.number(),
+  values: z.array(publicProductOptionValueSchema),
+})
+
+export const publicProductVariantSelectionSchema = z.object({
+  option_id: z.string(),
+  value_id: z.string(),
+})
+
+export const publicProductDetailVariantSchema = z.object({
+  id: z.string(),
+  selections: z.array(publicProductVariantSelectionSchema).default([]),
+  lifecycle_state: z.enum(['active', 'inactive']).default('active'),
   image_url: z.string().optional(),
+  removed_at: z.coerce.date().optional(),
   rank: z.number(),
 })
 
 export const publicProductDetailInventorySchema = z.object({
   id: z.string(),
-  product_variant_id: z.string().optional(),
-  option_value_1: z.string().optional(),
-  option_value_2: z.string().optional(),
+  product_variant_id: z.string(),
   sku: z.string().optional(),
   stock: z.number(),
   amount_minor: z.number().int().nonnegative(),
@@ -277,9 +292,7 @@ export const getDetailProductBySlugResponseSchema = z.object({
   description: z.string(),
   who_made: z.string(),
   is_digital: z.boolean(),
-  variant_type: z.string().optional(),
-  variant_group_name: z.string().optional(),
-  variant_sub_group_name: z.string().optional(),
+  options: z.array(publicProductOptionSchema).default([]),
   stock_notice_threshold: z.coerce.number().int().nonnegative(),
   review_summary: z.object({
     average: z.coerce.number().min(0).max(5),

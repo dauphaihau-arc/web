@@ -75,8 +75,9 @@ const remainProductCart = computed(() => {
                       class="text-[15px] text-text-muted"
                     >
                       {{
-                        productCart.inventory
-                          .variant_name
+                        productCart.inventory.selected_options
+                          .map(option => `${option.option_name}: ${option.value}`)
+                          .join(', ')
                       }}
                     </div>
                     <div

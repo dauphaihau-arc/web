@@ -77,17 +77,25 @@ export function mapAttributes(
 export function mapInventoryAndVariants(
   bodyData: CreateProductSubmitBody,
   currency: string,
-): Pick<RequestCreateProductDraftBody, 'inventory' | 'pricing' | 'variants'> {
+): Pick<RequestCreateProductDraftBody, 'inventory' | 'options' | 'pricing' | 'variants'> {
   if (bodyData.variant_type === ProductVariantTypes.NONE) {
     return {
+      options: [],
+      variants: [{
+        client_ref: 'default',
+        selections: [],
+        lifecycle_state: 'active',
+      }],
       inventory: [
         {
+          variant_client_key: 'default',
           sku: bodyData.sku,
           stock: bodyData.stock,
         },
       ],
       pricing: [
         {
+          variant_client_key: 'default',
           amount_minor: toMinorUnits(bodyData.amount!, currency),
           currency,
         },
@@ -96,12 +104,18 @@ export function mapInventoryAndVariants(
   }
 
   if (bodyData.variant_type === ProductVariantTypes.SINGLE) {
+    const optionRef = 'option-1';
+    const optionValues = bodyData.variant_options.map((variant, index) => ({
+      client_ref: `option-1-value-${index + 1}`,
+      value: variant.variant_name!,
+      position: index + 1,
+    }));
     const variants = bodyData.variant_options.map((variant, index) => {
       const clientKey = `variant-${index + 1}`;
 
       return {
         client_key: clientKey,
-        option_value_1: variant.variant_name,
+        value_ref: optionValues[index].client_ref,
         inventory: {
           variant_client_key: clientKey,
           sku: variant.sku,
@@ -116,23 +130,49 @@ export function mapInventoryAndVariants(
     });
 
     return {
+      options: [{
+        client_ref: optionRef,
+        name: bodyData.variant_group_name ?? 'Option',
+        position: 1,
+        values: optionValues,
+      }],
       variants: variants.map(variant => ({
-        client_key: variant.client_key,
-        option_value_1: variant.option_value_1,
+        client_ref: variant.client_key,
+        selections: [{ option_ref: optionRef, value_ref: variant.value_ref }],
+        lifecycle_state: 'active',
       })),
       inventory: variants.map(variant => variant.inventory),
       pricing: variants.map(variant => variant.pricing),
     };
   }
 
+  const primaryOptionRef = 'option-1';
+  const secondaryOptionRef = 'option-2';
+  const primaryValues = bodyData.variant_options.map((variant, index) => ({
+    client_ref: `option-1-value-${index + 1}`,
+    value: variant.variant_name!,
+    position: index + 1,
+  }));
+  const secondaryNames = orderedUniqueValues(
+    bodyData.variant_options.flatMap(variant =>
+      variant.variant_options.map(subVariant => subVariant.variant_name!),
+    ),
+  );
+  const secondaryValues = secondaryNames.map((value, index) => ({
+    client_ref: `option-2-value-${index + 1}`,
+    value,
+    position: index + 1,
+  }));
+  const primaryValueRefByName = new Map(primaryValues.map(value => [value.value, value.client_ref]));
+  const secondaryValueRefByName = new Map(secondaryValues.map(value => [value.value, value.client_ref]));
   const variants = bodyData.variant_options.flatMap((variant, parentIndex) => {
     return variant.variant_options.map((subVariant, childIndex) => {
       const clientKey = `variant-${parentIndex + 1}-${childIndex + 1}`;
 
       return {
         client_key: clientKey,
-        option_value_1: variant.variant_name,
-        option_value_2: subVariant.variant_name,
+        primary_value_ref: primaryValueRefByName.get(variant.variant_name!)!,
+        secondary_value_ref: secondaryValueRefByName.get(subVariant.variant_name!)!,
         inventory: {
           variant_client_key: clientKey,
           sku: subVariant.sku,
@@ -148,10 +188,27 @@ export function mapInventoryAndVariants(
   });
 
   return {
+    options: [
+      {
+        client_ref: primaryOptionRef,
+        name: bodyData.variant_group_name ?? 'Option',
+        position: 1,
+        values: primaryValues,
+      },
+      {
+        client_ref: secondaryOptionRef,
+        name: bodyData.variant_sub_group_name ?? 'Option 2',
+        position: 2,
+        values: secondaryValues,
+      },
+    ],
     variants: variants.map(variant => ({
-      client_key: variant.client_key,
-      option_value_1: variant.option_value_1,
-      option_value_2: variant.option_value_2,
+      client_ref: variant.client_key,
+      selections: [
+        { option_ref: primaryOptionRef, value_ref: variant.primary_value_ref },
+        { option_ref: secondaryOptionRef, value_ref: variant.secondary_value_ref },
+      ],
+      lifecycle_state: 'active',
     })),
     inventory: variants.map(variant => variant.inventory),
     pricing: variants.map(variant => variant.pricing),
@@ -177,23 +234,16 @@ export function mapShipping(
 export function buildCreateProductPayload(
   bodyData: CreateProductSubmitBody,
   currency: string,
+  idempotencyKey: string,
 ): RequestCreateProductDraftBody {
   return {
+    idempotency_key: idempotencyKey,
     category_id: bodyData.category_id,
     title: bodyData.title,
     description: bodyData.description,
     who_made: bodyData.who_made,
     is_digital: bodyData.is_digital,
     non_taxable: false,
-    variant_type: bodyData.variant_type,
-    variant_group_name:
-      bodyData.variant_type === ProductVariantTypes.NONE
-        ? undefined
-        : bodyData.variant_group_name,
-    variant_sub_group_name:
-      bodyData.variant_type === ProductVariantTypes.COMBINE
-        ? bodyData.variant_sub_group_name
-        : undefined,
     attributes: bodyData.attributes?.length
       ? mapAttributes(bodyData.attributes)
       : undefined,
@@ -246,4 +296,18 @@ const CURRENCY_DECIMALS: Record<string, number> = {
 function toMinorUnits(amount: number, currency: string) {
   const decimals = CURRENCY_DECIMALS[currency] ?? 2;
   return Math.round(amount * 10 ** decimals);
+}
+
+function orderedUniqueValues(values: string[]) {
+  const seen = new Set<string>();
+  const result: string[] = [];
+
+  for (const value of values) {
+    const key = value.trim().toLocaleLowerCase();
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    result.push(value.trim());
+  }
+
+  return result;
 }

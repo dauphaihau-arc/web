@@ -61,6 +61,13 @@ export const createOrderResponseSchema = z.object({
   })),
 })
 
+
+const selectedProductOptionSchema = z.object({
+  option_id: z.string().optional(),
+  option_name: z.string(),
+  value_id: z.string().optional(),
+  value: z.string(),
+})
 export const checkoutQuoteItemSchema = z.object({
   inventory_id: z.string(),
   title: z.string(),
@@ -78,9 +85,6 @@ export const checkoutQuoteItemSchema = z.object({
   fx_rate: z.string().optional(),
   fx_source: z.string().optional(),
   fx_effective_at: z.coerce.date().optional(),
-  variant_name: z.string().optional(),
-  variant_group_name: z.string().optional(),
-  variant_sub_group_name: z.string().optional(),
 })
 
 export const checkoutQuoteResponseSchema = z.object({
@@ -133,12 +137,10 @@ export const orderShopProductSchema = z.object({
     shop: z.object({
       slug: z.string(),
     }),
-    variant_group_name: z.string().optional(),
-    variant_sub_group_name: z.string().optional(),
     shipping: z.record(z.unknown()),
   }),
   inventory: z.object({
-    variant: z.string().optional(),
+    selected_options: z.array(selectedProductOptionSchema).default([]),
   }),
   percent_coupon: z.object({
     percent_off: z.number(),

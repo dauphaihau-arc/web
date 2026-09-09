@@ -4,6 +4,7 @@ import { ProductStates } from '@arc/enums/product'
 defineProps<{
   enabledButtonSubmit: boolean
   hasImages: boolean
+  hasCategory: boolean
   loadingSubmit: boolean
   productState?: ProductStates
 }>()
@@ -36,7 +37,7 @@ defineEmits<{
       Save draft
     </UButton>
     <UButton
-      :disabled="!enabledButtonSubmit || !hasImages || loadingSubmit"
+      :disabled="!enabledButtonSubmit || !hasCategory || !hasImages || loadingSubmit"
       :loading="loadingSubmit && productState === ProductStates.ACTIVE"
       size="md"
       type="submit"

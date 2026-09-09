@@ -48,7 +48,6 @@ const {
       <VariantOptionGroup
         v-model:group-name="state.variant_group_name"
         v-model:option-name="state.variantOption"
-        title="Group variant 1"
         :error-group-name="state.errorVariantGroupName"
         :error-option="state.errorVariantOption"
         :options="state.variants"
@@ -69,7 +68,6 @@ const {
       <VariantOptionGroup
         v-model:group-name="state.variant_sub_group_name"
         v-model:option-name="state.subVariantOption"
-        title="Group variant 2"
         group-name-field-name="variant_sub_group_name"
         show-open-button
         show-close-button

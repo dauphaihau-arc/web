@@ -9,7 +9,6 @@ import type {
   listShopProductsItemSchema,
   listShopProductsRequestSchema,
   listShopProductsResponseSchema,
-  removeProductRequestSchema,
   bulkMutateShopProductsActionSchema,
   bulkMutateShopProductsRequestSchema,
   bulkMutateShopProductsResponseSchema,
@@ -28,8 +27,6 @@ export type DetailShopProductResponse = z.infer<typeof detailShopProductResponse
 
 export type IssueProductImageUploadUrlRequest = z.infer<typeof issueProductImageUploadUrlRequestSchema>;
 export type IssueProductImageUploadUrlResponse = z.infer<typeof issueProductImageUploadUrlResponseSchema>;
-export type RemoveProductRequest = z.infer<typeof removeProductRequestSchema>;
-export type RemoveProductResponse = undefined;
 export type BulkMutateShopProductsAction = z.infer<typeof bulkMutateShopProductsActionSchema>;
 export type BulkMutateShopProductsRequest = z.infer<typeof bulkMutateShopProductsRequestSchema>;
 export type BulkMutateShopProductsResponse = z.infer<typeof bulkMutateShopProductsResponseSchema>;
