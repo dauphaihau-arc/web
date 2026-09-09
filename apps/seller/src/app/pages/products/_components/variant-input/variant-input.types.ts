@@ -5,6 +5,20 @@ export type VariantInputOption = {
   errorMsg: string
 };
 
+export type VariantInputState = {
+  isActiveSubVariant: boolean
+  variantOption: string
+  subVariantOption: string
+  errorVariantOption: string
+  errorSubVariantOption: string
+  errorVariantGroupName: string
+  errorVariantSubGroupName: string
+  variants: VariantInputOption[]
+  subVariants: VariantInputOption[]
+  variant_group_name?: string
+  variant_sub_group_name?: string
+};
+
 export type VariantInputColumn = {
   key: string
   label: string

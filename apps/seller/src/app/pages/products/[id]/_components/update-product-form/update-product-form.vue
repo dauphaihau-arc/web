@@ -17,6 +17,10 @@ import UpdateProductFormActions from './update-product-form-actions.vue'
 import SectionStateAlert from './section-state-alert.vue'
 import { UPDATE_PRODUCT_FORM_SECTIONS } from './update-product-form.constants'
 import { useUpdateProductForm } from './use-update-product-form/use-update-product-form'
+import {
+  ADD_OPTIONS_LABEL,
+  REMOVE_OPTIONS_LABEL,
+} from '~/app/pages/products/_components/variant-input/variant-input.constants'
 import FormGroupCard from '~/shared/ui/wrapper-form-group-card.vue'
 
 const sections = UPDATE_PRODUCT_FORM_SECTIONS
@@ -161,7 +165,7 @@ const {
                 variant="solid"
                 @click="onChangeVariantType"
               >
-                {{ !isVariantProduct ? 'Add options' : 'Remove options' }}
+                {{ !isVariantProduct ? ADD_OPTIONS_LABEL : REMOVE_OPTIONS_LABEL }}
               </UButton>
 
               <VariantInput

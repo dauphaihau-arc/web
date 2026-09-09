@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import { PRODUCT_CONFIG } from '@arc/enums/product'
+import {
+  ADD_ANOTHER_OPTION_LABEL,
+  ADD_OPTION_VALUE_LABEL,
+  OPTION_NAME_LABEL,
+} from './variant-input.constants'
 import type { VariantInputOption } from './variant-input.types'
 
 const groupName = defineModel<string | undefined>('groupName')
@@ -51,7 +56,7 @@ async function handleAdd() {
       variant="solid"
       @click="$emit('open')"
     >
-      Add another option
+      {{ ADD_ANOTHER_OPTION_LABEL }}
     </UButton>
 
     <div v-else>
@@ -74,7 +79,7 @@ async function handleAdd() {
 
       <UFormGroup
         class="mb-4"
-        label="Option name"
+        :label="OPTION_NAME_LABEL"
         required
         :name="groupNameFieldName"
         :error="errorGroupName ?? ''"
@@ -94,7 +99,7 @@ async function handleAdd() {
 
       <UFormGroup
         class="mb-4"
-        label="Add option value"
+        :label="ADD_OPTION_VALUE_LABEL"
         required
         :error="errorOption ?? ''"
       >

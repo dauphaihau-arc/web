@@ -17,6 +17,10 @@ import CreateProductFormActions from './create-product-form-actions.vue'
 import CreateProductShippingSection from './create-product-shipping-section.vue'
 import { PRODUCT_FORM_SECTIONS } from './create-product-form.constants'
 import { useCreateProductForm } from './use-create-product-form'
+import {
+  ADD_OPTIONS_LABEL,
+  REMOVE_OPTIONS_LABEL,
+} from '~/app/pages/products/_components/variant-input/variant-input.constants'
 import FormGroupCard from '~/shared/ui/wrapper-form-group-card.vue'
 import { routes } from '~/shared/navigation/routes'
 
@@ -243,7 +247,7 @@ function onPublishProduct() {
                 variant="solid"
                 @click="() => isProductHaveVariants = !isProductHaveVariants"
               >
-                {{ isProductHaveVariants ? 'Remove variantions' : 'Add variantions' }}
+                {{ isProductHaveVariants ? REMOVE_OPTIONS_LABEL : ADD_OPTIONS_LABEL }}
               </UButton>
               <VariantInput
                 v-if="isProductHaveVariants"

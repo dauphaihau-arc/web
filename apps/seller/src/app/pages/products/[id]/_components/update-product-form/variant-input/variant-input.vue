@@ -3,8 +3,7 @@ import type { IOnChangeUpdateVariants } from '../use-update-product-form/update-
 import type { ProductSkuConflict } from '../use-update-product-form/use-update-product-submit/product-section-state'
 import type { VariantEditorProduct } from './update-variant-input.types'
 import { useUpdateVariantInput } from './use-update-variant-input'
-import VariantInventoryTable from '~/app/pages/products/_components/variant-input/variant-inventory-table.vue'
-import VariantOptionGroup from '~/app/pages/products/_components/variant-input/variant-option-group.vue'
+import ProductVariantInput from '~/app/pages/products/_components/variant-input/product-variant-input.vue'
 
 const props = defineProps<{
   countValidate: number
@@ -40,62 +39,19 @@ const {
 </script>
 
 <template>
-  <div>
-    <div class="flex gap-20">
-      <VariantOptionGroup
-        v-model:group-name="state.variant_group_name"
-        v-model:option-name="state.variantOption"
-        :error-group-name="state.errorVariantGroupName"
-        :error-option="state.errorVariantOption"
-        :options="state.variants"
-        show-inline-option-error
-        @add="addVariant"
-        @remove="removeVariant"
-        @update-name="updateVariantName"
-      />
-
-      <div class="flex justify-center">
-        <UDivider
-          color="gray"
-          orientation="vertical"
-          class="w-fit"
-        />
-      </div>
-
-      <VariantOptionGroup
-        v-model:group-name="state.variant_sub_group_name"
-        v-model:option-name="state.subVariantOption"
-        group-name-field-name="variant_sub_group_name"
-        show-open-button
-        show-close-button
-        :is-active="state.isActiveSubVariant"
-        :error-group-name="state.errorVariantSubGroupName"
-        :error-option="state.errorSubVariantOption"
-        :limit-option-name="false"
-        :options="state.subVariants"
-        @add="addSubVariant"
-        @close="closeSubVariant"
-        @open="openSubVariant"
-        @remove="removeSubVariant"
-        @update-name="updateSubVariantName"
-      />
-    </div>
-
-    <VariantInventoryTable
-      :rows="rowsTable"
-      :columns="columns"
-      uppercase-sku
-      @row-input="onChangeInputTable"
-    />
-  </div>
+  <ProductVariantInput
+    v-model:state="state"
+    :rows="rowsTable"
+    :columns="columns"
+    uppercase-sku
+    @add-variant="addVariant"
+    @remove-variant="removeVariant"
+    @update-variant-name="updateVariantName"
+    @add-sub-variant="addSubVariant"
+    @close-sub-variant="closeSubVariant"
+    @open-sub-variant="openSubVariant"
+    @remove-sub-variant="removeSubVariant"
+    @update-sub-variant-name="updateSubVariantName"
+    @row-input="onChangeInputTable"
+  />
 </template>
-
-<style scoped lang="postcss">
-:deep(.hint-text-input) {
-  @apply text-text-muted text-xs;
-}
-
-:deep(.error-message) {
-  @apply mt-2 text-state-danger-text text-sm h-[18px];
-}
-</style>

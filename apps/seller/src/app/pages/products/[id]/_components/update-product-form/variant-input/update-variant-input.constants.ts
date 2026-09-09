@@ -1,10 +1,20 @@
+import {
+  DUPLICATE_ERROR,
+  REQUIRED_ERROR,
+  REQUIRED_VARIANT_ERROR,
+  VARIANT_GROUP_1_FALLBACK_LABEL,
+  VARIANT_GROUP_2_FALLBACK_LABEL,
+  VARIANT_INVENTORY_COLUMNS,
+} from '~/app/pages/products/_components/variant-input/variant-input.constants';
 import type { UpdateVariantTable } from './update-variant-input.types';
 
-export const VARIANT_GROUP_1_FALLBACK_LABEL = 'Variant';
-export const VARIANT_GROUP_2_FALLBACK_LABEL = 'Variant';
-export const REQUIRED_ERROR = 'Required';
-export const DUPLICATE_ERROR = 'Duplicate';
-export const REQUIRED_VARIANT_ERROR = 'Required at least 1 variant';
+export {
+  DUPLICATE_ERROR,
+  REQUIRED_ERROR,
+  REQUIRED_VARIANT_ERROR,
+  VARIANT_GROUP_1_FALLBACK_LABEL,
+  VARIANT_GROUP_2_FALLBACK_LABEL,
+};
 
 export const DEFAULT_UPDATE_VARIANT_TABLE: UpdateVariantTable = {
   id: 1,
@@ -18,21 +28,4 @@ export const DEFAULT_UPDATE_VARIANT_TABLE: UpdateVariantTable = {
   isUpdated: false,
 };
 
-export const DEFAULT_UPDATE_VARIANT_COLUMNS = [
-  {
-    key: 'variant_name',
-    label: VARIANT_GROUP_1_FALLBACK_LABEL,
-  },
-  {
-    key: 'amount',
-    label: 'Price',
-  },
-  {
-    key: 'stock',
-    label: 'Stock',
-  },
-  {
-    key: 'sku',
-    label: 'SKU',
-  },
-];
+export const DEFAULT_UPDATE_VARIANT_COLUMNS = [...VARIANT_INVENTORY_COLUMNS];
