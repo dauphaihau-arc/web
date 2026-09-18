@@ -2,7 +2,6 @@
 import type { CartShopGroup } from '~/domains/cart/api/cart.shared'
 import CartShopNote from '~/domains/cart/ui/shop-cart/cart-shop-note.vue'
 import CartShopPromoCoupons from '~/domains/cart/ui/shop-cart/cart-shop-promo-coupons.vue'
-import CartShopQuantity from '~/domains/cart/ui/shop-cart/cart-shop-quantity.vue'
 import ShippingSelect from '~/domains/cart/ui/shop-cart/shipping-select.vue'
 import ShopCartCard from '~/domains/cart/ui/shop-cart/shop-cart-card.vue'
 import ShopCartFooter from '~/domains/cart/ui/shop-cart/shop-cart-footer.vue'
@@ -24,15 +23,8 @@ const selectedItems = computed(() => props.shopCart.items.filter(prod => !!prod.
       v-for="productCart of selectedItems"
       :key="productCart?.inventory?.id"
       :product-cart="productCart"
-    >
-      <template #quantity>
-        <CartShopQuantity
-          :key="productCart.quantity"
-          :shop-id="props.shopCart?.shop?.id"
-          :product-cart="productCart"
-        />
-      </template>
-    </ShopCartProduct>
+      :show-quantity-controls="false"
+    />
 
     <template #footer>
       <ShopCartFooter>
