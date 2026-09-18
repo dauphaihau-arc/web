@@ -160,10 +160,14 @@ const activeIndex = computed(() => {
 const hasPrev = computed(() => activeIndex.value > 0)
 const hasNext = computed(() => activeIndex.value < props.items.length - 1)
 
+/*
+  `isolate` keeps the trigger's z-10 inside this root's stacking context so it
+  can never paint above page chrome (fixed header sits at z-[3]).
+ */
 const rootClasses = computed(() => {
   return props.orientation === 'horizontal'
-    ? ['flex flex-col gap-4', props.ui?.root, attrs.class]
-    : ['flex gap-4', props.ui?.root, attrs.class]
+    ? ['isolate flex flex-col gap-4', props.ui?.root, attrs.class]
+    : ['isolate flex gap-4', props.ui?.root, attrs.class]
 })
 
 const headerClasses = computed(() => {
