@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import CartShopNote from '~/domains/cart/ui/shop-cart/cart-shop-note.vue'
 import CartShopPromoCoupons from '~/domains/cart/ui/shop-cart/cart-shop-promo-coupons.vue'
 import CartCheckboxOrderProduct from '~/domains/cart/ui/shop-cart/checkbox-order-product.vue'
 import CartShopQuantity from '~/domains/cart/ui/shop-cart/cart-shop-quantity.vue'
@@ -54,10 +53,6 @@ const props = defineProps<{
       <ShopCartFooter>
         <template #coupons>
           <CartShopPromoCoupons :shop-id="props.shopCart.shop?.id" />
-        </template>
-
-        <template #note>
-          <CartShopNote :shop-cart="props.shopCart" />
         </template>
 
         <template #shipping>
