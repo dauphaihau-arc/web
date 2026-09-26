@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-import { OrderShippingStatuses } from '@arc/enums/order'
 import AppIcon from '@arc/ui/primitives/app-icon.vue'
 import SellerCancelOrderDialog from '../../_components/seller-cancel-order-dialog.vue'
 import SellerRefundOrderDialog from '../../_components/seller-refund-order-dialog.vue'
 import { useOrderActions } from '~/app/pages/orders/[id]/_components/order-detail-content/use-order-actions'
 import { useShopGetOrderDetail } from '~/domains/shop/queries/order/detail.query'
-import { useShopUpdateOrderShipment } from '~/domains/shop/mutations/update-shipment.mutation'
 
 const props = defineProps<{
   orderId: string
@@ -15,9 +13,8 @@ const dialog = useModal()
 const actionsMenuOpen = ref(false)
 
 const { data } = useShopGetOrderDetail(props.orderId)
-const { mutateAsync: updateShipment } = useShopUpdateOrderShipment()
 const order = computed(() => data.value?.order)
-const { canTransitionTo, canRefund, canCancel, canRetryRefund } = useOrderActions(order)
+const { canRefund, canCancel, canRetryRefund } = useOrderActions(order)
 
 function openRefundDialog(isRetry = false) {
   if (!order.value) return
@@ -33,17 +30,6 @@ function openCancelDialog() {
 
   dialog.open(SellerCancelOrderDialog, {
     orderId: order.value.id,
-  })
-}
-
-async function saveShipment(status: OrderShippingStatuses) {
-  if (!order.value || !canTransitionTo(status)) return
-
-  await updateShipment({
-    orderId: order.value.id,
-    body: {
-      shipping_status: status,
-    },
   })
 }
 
@@ -66,38 +52,6 @@ async function runMenuAction(handler: () => void | Promise<void>) {
 
 const actionMenuGroups = computed<ActionMenuGroup[]>(() => {
   const groups: ActionMenuGroup[] = []
-  const shipmentActions: ActionMenuItem[] = []
-
-  if (canTransitionTo(OrderShippingStatuses.IN_TRANSIT)) {
-    shipmentActions.push({
-      label: 'Mark in transit',
-      icon: 'i-heroicons-truck-20-solid',
-      onClick: () => saveShipment(OrderShippingStatuses.IN_TRANSIT),
-    })
-  }
-
-  if (canTransitionTo(OrderShippingStatuses.SHIPPED)) {
-    shipmentActions.push({
-      label: 'Mark shipped',
-      icon: 'i-heroicons-arrow-up-on-square-20-solid',
-      onClick: () => saveShipment(OrderShippingStatuses.SHIPPED),
-    })
-  }
-
-  if (canTransitionTo(OrderShippingStatuses.DELIVERED)) {
-    shipmentActions.push({
-      label: 'Mark delivered',
-      icon: 'i-heroicons-check-circle-20-solid',
-      onClick: () => saveShipment(OrderShippingStatuses.DELIVERED),
-    })
-  }
-
-  if (shipmentActions.length) {
-    groups.push({
-      label: 'Shipment update',
-      items: shipmentActions,
-    })
-  }
 
   if (canCancel.value) {
     groups.push({
@@ -206,8 +160,9 @@ const actionMenuGroups = computed<ActionMenuGroup[]>(() => {
       >
         <template #leading>
           <AppIcon
-            name="moreHorizontal"
+            name="ellipsisHorizontal"
             size="sm"
+            class="text-text-strong"
           />
         </template>
       </UButton>

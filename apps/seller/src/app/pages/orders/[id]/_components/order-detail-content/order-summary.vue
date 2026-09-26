@@ -2,10 +2,43 @@
 import dayjs from 'dayjs'
 import { formatMinorCurrency } from '@arc/utils'
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail'
+import DataTable from '@arc/ui/primitives/data-table/data-table.vue'
 
 const props = defineProps<{
   order: ShopOrder
 }>()
+
+type OrderSummaryRow = {
+  id: string
+  title: string
+  variant?: string
+  imageUrl?: string
+  quantity: number
+  unitPrice: string
+  amount: string
+}
+
+const columns = [
+  { key: 'items', label: 'Items' },
+  { key: 'qty', label: 'Qty', class: 'w-20 text-center' },
+  { key: 'unit', label: 'Unit price', class: 'w-40 text-right' },
+  { key: 'amount', label: 'Amount', class: 'w-40 text-right' },
+]
+
+const emptyState = {
+  icon: 'i-heroicons-shopping-bag-20-solid',
+  label: 'No items in this order.',
+}
+
+const rows = computed<OrderSummaryRow[]>(() => props.order.products.map(product => ({
+  id: product.id,
+  title: product.title,
+  variant: product.inventory.variant,
+  imageUrl: product.image_url,
+  quantity: product.quantity,
+  unitPrice: formatAmountWithShortLabel(product.amount_minor),
+  amount: formatAmountWithShortLabel(product.amount_minor * product.quantity),
+})))
 
 function formatAmountWithShortLabel(amountMinor: number) {
   return formatMinorCurrency(amountMinor, props.order.currency)
@@ -19,64 +52,58 @@ function formatAmountWithShortLabel(amountMinor: number) {
       Order summary
     </div>
 
-    <div class="mt-5 hidden border-y border-border-subtle py-3 text-xs font-semibold uppercase tracking-[0.14em] text-text-muted md:grid md:grid-cols-[minmax(0,1fr)_72px_168px_168px] md:gap-4">
-      <div>Items</div>
-      <div class="text-center">
-        Qty
-      </div>
-      <div class="text-right">
-        Unit price
-      </div>
-      <div class="text-right">
-        Amount
-      </div>
-    </div>
-
-    <div class="divide-y divide-border-subtle">
-      <div
-        v-for="product in order.products"
-        :key="product.id"
-        class="grid gap-4 py-5 md:grid-cols-[minmax(0,1fr)_72px_168px_168px] md:items-center"
-      >
+    <DataTable
+      class="mt-5"
+      by="id"
+      :rows="rows"
+      :columns="columns"
+      :selectable="false"
+      :empty-state="emptyState"
+    >
+      <template #items-data="{ row }">
         <div class="flex min-w-0 items-start gap-4">
           <NuxtImg
-            v-if="product.image_url"
-            :src="product.image_url"
+            v-if="row.imageUrl"
+            :src="row.imageUrl"
             width="72"
             height="72"
             class="rounded-xl border border-border-subtle object-cover"
           />
           <div class="min-w-0 space-y-1">
-            <div class="font-medium text-text-strong">
-              {{ product.title }}
+            <div
+              class="truncate font-medium text-text-strong"
+              :title="row.title"
+            >
+              {{ row.title }}
             </div>
             <div
-              v-if="product.inventory.variant"
+              v-if="row.variant"
               class="text-sm text-text-muted"
             >
-              Variant: {{ product.inventory.variant }}
-            </div>
-            <div class="text-sm text-text-muted md:hidden">
-              Unit price: {{ formatAmountWithShortLabel(product.amount_minor) }}
+              Variant: {{ row.variant }}
             </div>
           </div>
         </div>
+      </template>
 
-        <div class="text-sm text-text-muted md:text-center">
-          {{ product.quantity }}
+      <template #qty-data="{ row }">
+        <div class="text-center text-sm text-text-muted">
+          {{ row.quantity }}
         </div>
+      </template>
 
-        <div class="hidden text-right text-text-subtle md:block">
-          {{ formatAmountWithShortLabel(product.amount_minor) }}
+      <template #unit-data="{ row }">
+        <div class="text-right text-text-subtle">
+          {{ row.unitPrice }}
         </div>
+      </template>
 
-        <div class="text-left md:text-right">
-          <div class="font-medium text-text-strong">
-            {{ formatAmountWithShortLabel(product.amount_minor * product.quantity) }}
-          </div>
+      <template #amount-data="{ row }">
+        <div class="text-right font-medium text-text-strong">
+          {{ row.amount }}
         </div>
-      </div>
-    </div>
+      </template>
+    </DataTable>
 
     <div class="mt-2 border-t border-border-subtle pt-5">
       <div class="ml-auto w-full max-w-md space-y-3 text-sm text-text-subtle">
@@ -102,7 +129,7 @@ function formatAmountWithShortLabel(amountMinor: number) {
           <span>{{ formatAmountWithShortLabel(order.discount_minor) }}</span>
         </div>
         <div class="flex items-center justify-between gap-4">
-          <span>Shipping fee</span>
+          <span>Shipping charge</span>
           <span>{{ formatAmountWithShortLabel(order.shipping_minor) }}</span>
         </div>
         <div class="border-t border-border-subtle pt-3" />

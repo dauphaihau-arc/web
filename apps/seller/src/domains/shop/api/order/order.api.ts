@@ -5,10 +5,27 @@ import type {
   ShopOrderExportResponse,
   ShopOrderDetailResponse,
   UpdateShopOrderRefundRequest,
-  UpdateShopOrderShipmentRequest,
   UpdateShopOrderStatusRequest,
+  PrepareFulfillmentShipmentRequest,
+  AmendFulfillmentShipmentRequest,
+  UpdateShipmentJourneyRequest,
+  ReconcileOrderFulfillmentRequest,
+  FulfillmentMutationResponse,
 } from './contracts/order.contract';
 import { apiClient } from '~/domains/_shared/api-client';
+
+/**
+ * Fulfillment writes are idempotent commands: a retried request must not create a
+ * second consignment, void/amend twice, or dispatch twice. The API requires an
+ * idempotency key for these endpoints.
+ */
+function idempotentOptions() {
+  return {
+    headers: {
+      'Idempotency-Key': crypto.randomUUID(),
+    },
+  };
+}
 
 export const shopOrderApi = {
   list(shopId: string, query?: ListShopOrdersRequest) {
@@ -64,14 +81,66 @@ export const shopOrderApi = {
     );
   },
 
-  updateShipment(
+  prepareFulfillmentShipment(
     shopId: string,
     orderId: string,
-    payload: UpdateShopOrderShipmentRequest,
+    payload: PrepareFulfillmentShipmentRequest,
   ) {
-    return apiClient.patch<ShopOrderDetailResponse>(
-      `/shops/${shopId}/orders/${orderId}/shipment`,
+    return apiClient.post<FulfillmentMutationResponse>(
+      `/shops/${shopId}/orders/${orderId}/fulfillment/shipments`,
       payload,
+      idempotentOptions(),
+    );
+  },
+
+  amendFulfillmentShipment(
+    shopId: string,
+    orderId: string,
+    shipmentId: string,
+    payload: AmendFulfillmentShipmentRequest,
+  ) {
+    return apiClient.patch<FulfillmentMutationResponse>(
+      `/shops/${shopId}/orders/${orderId}/fulfillment/shipments/${shipmentId}`,
+      payload,
+      idempotentOptions(),
+    );
+  },
+
+  voidFulfillmentShipment(
+    shopId: string,
+    orderId: string,
+    shipmentId: string,
+  ) {
+    return apiClient.delete<FulfillmentMutationResponse>(
+      `/shops/${shopId}/orders/${orderId}/fulfillment/shipments/${shipmentId}`,
+      undefined,
+      undefined,
+      idempotentOptions(),
+    );
+  },
+
+  updateShipmentJourney(
+    shopId: string,
+    orderId: string,
+    shipmentId: string,
+    payload: UpdateShipmentJourneyRequest,
+  ) {
+    return apiClient.post<FulfillmentMutationResponse>(
+      `/shops/${shopId}/orders/${orderId}/fulfillment/shipments/${shipmentId}/journey`,
+      payload,
+      idempotentOptions(),
+    );
+  },
+
+  reconcileOrderFulfillment(
+    shopId: string,
+    orderId: string,
+    payload: ReconcileOrderFulfillmentRequest,
+  ) {
+    return apiClient.post<FulfillmentMutationResponse>(
+      `/shops/${shopId}/orders/${orderId}/fulfillment/reconciliation`,
+      payload,
+      idempotentOptions(),
     );
   },
 

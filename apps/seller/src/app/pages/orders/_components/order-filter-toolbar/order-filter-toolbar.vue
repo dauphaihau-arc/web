@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
+import type { FulfillmentAggregateStatuses } from '@arc/enums/fulfillment'
 import { MarketCurrencies } from '@arc/enums/market'
-import type { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
+import type { OrderStatuses } from '@arc/enums/order'
 import { currencyOptions, toCurrencyOption, toMinorUnits } from '@arc/utils'
 import {
   orderFulfillmentFilterOptions,
@@ -77,8 +78,8 @@ const amountFilterDraft = ref<OrderAmountFilterDraft>(createDefaultAmountFilter(
 const appliedAmountFilter = ref<OrderAmountFilterDraft | null>(null)
 const currencyFilterDraft = ref<OrderCurrencyFilterDraft>(createDefaultCurrencyFilter(defaultAmountCurrency.value))
 const appliedCurrencyFilter = ref<OrderCurrencyFilterDraft | null>(null)
-const fulfillmentFilterDraft = ref<OrderShippingStatuses[]>([])
-const appliedFulfillmentFilter = ref<OrderShippingStatuses[]>([])
+const fulfillmentFilterDraft = ref<FulfillmentAggregateStatuses[]>([])
+const appliedFulfillmentFilter = ref<FulfillmentAggregateStatuses[]>([])
 const statusFilterDraft = ref<OrderStatuses[]>([...appliedStatusFilter.value])
 const openFilter = ref<'search' | 'date' | 'amount' | 'currency' | 'fulfillment' | 'status' | null>(null)
 
@@ -149,7 +150,7 @@ const fulfillmentFilterSummary = computed(() => {
   }
 
   return fulfillmentOptions
-    .filter(option => appliedFulfillmentFilter.value.includes(option.value as OrderShippingStatuses))
+    .filter(option => appliedFulfillmentFilter.value.includes(option.value as FulfillmentAggregateStatuses))
     .map(option => option.label)
     .join(', ')
 })
@@ -185,7 +186,7 @@ const query = computed<Partial<ListShopOrdersRequest>>(() => {
   }
 
   if (appliedFulfillmentFilter.value.length > 0) {
-    nextQuery.shipping_status = [...appliedFulfillmentFilter.value]
+    nextQuery.fulfillment_status = [...appliedFulfillmentFilter.value]
   }
 
   if (appliedAmountFilter.value) {

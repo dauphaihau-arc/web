@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
-import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
+import { FulfillmentAggregateStatuses } from '@arc/enums/fulfillment'
+import { OrderStatuses } from '@arc/enums/order'
 import { formatMinorCurrency } from '@arc/utils'
 import AppIcon from '@arc/ui/primitives/app-icon.vue'
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
@@ -49,7 +50,7 @@ const rows = computed<OrderTableRow[]>(() => {
     order: order.order_number,
     status: order.status.replaceAll('_', ' '),
     customer: order.customer.full_name,
-    shipping: order.shipping.shipping_status.replaceAll('_', ' '),
+    shipping: order.fulfillment.status.replaceAll('_', ' '),
     total: formatMinorCurrency(order.total_minor, order.currency),
     created_at: dayjs(order.created_at).format('MMM DD, YYYY'),
     raw: order,
@@ -86,15 +87,20 @@ const itemsDropdownWithRow = (row: OrderTableRow): DropdownItem[][] => [
   ],
 ]
 
-function shippingTone(status: OrderShippingStatuses) {
+function shippingTone(status: FulfillmentAggregateStatuses) {
   switch (status) {
-    case OrderShippingStatuses.DELIVERED:
-    case OrderShippingStatuses.SHIPPED:
+    case FulfillmentAggregateStatuses.DELIVERED:
+    case FulfillmentAggregateStatuses.PARTIALLY_DELIVERED:
       return 'green'
-    case OrderShippingStatuses.IN_TRANSIT:
+    case FulfillmentAggregateStatuses.PARTIALLY_SHIPPED:
+    case FulfillmentAggregateStatuses.SHIPPED:
+    case FulfillmentAggregateStatuses.DISPATCHED:
+    case FulfillmentAggregateStatuses.IN_TRANSIT:
       return 'blue'
-    case OrderShippingStatuses.PRE_TRANSIT:
+    case FulfillmentAggregateStatuses.PREPARED:
       return 'yellow'
+    case FulfillmentAggregateStatuses.UNFULFILLED:
+    case FulfillmentAggregateStatuses.CANCELED:
     default:
       return 'gray'
   }
@@ -179,10 +185,10 @@ function formatAmountWithShortLabel(amountMinor: number, currency: string) {
 
       <template #shipping-data="{ row }">
         <StatusBadge
-          :color="shippingTone(row.raw.shipping.shipping_status)"
+          :color="shippingTone(row.raw.fulfillment.status)"
           class="capitalize"
         >
-          {{ row.raw.shipping.shipping_status.replaceAll('_', ' ') }}
+          {{ row.raw.fulfillment.status.replaceAll('_', ' ') }}
         </StatusBadge>
       </template>
 

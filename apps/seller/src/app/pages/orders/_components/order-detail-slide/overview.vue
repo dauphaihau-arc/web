@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
-import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
+import { FulfillmentAggregateStatuses } from '@arc/enums/fulfillment'
+import { OrderStatuses } from '@arc/enums/order'
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail'
 
 const props = defineProps<{
@@ -9,7 +10,7 @@ const props = defineProps<{
 
 const createdLabel = computed(() => dayjs(props.order.created_at).format('MMM D, YYYY [at] h:mma'))
 const orderStatusLabel = computed(() => props.order.status.replaceAll('_', ' '))
-const shippingStatusLabel = computed(() => props.order.shipping.shipping_status.replaceAll('_', ' '))
+const fulfillmentStatusLabel = computed(() => props.order.fulfillment.status.replaceAll('_', ' '))
 
 function orderStatusTone(status: ShopOrder['status']) {
   switch (status) {
@@ -28,15 +29,20 @@ function orderStatusTone(status: ShopOrder['status']) {
   }
 }
 
-function shippingStatusTone(status: ShopOrder['shipping']['shipping_status']) {
+function fulfillmentStatusTone(status: FulfillmentAggregateStatuses) {
   switch (status) {
-    case OrderShippingStatuses.DELIVERED:
-    case OrderShippingStatuses.SHIPPED:
+    case FulfillmentAggregateStatuses.DELIVERED:
+    case FulfillmentAggregateStatuses.PARTIALLY_DELIVERED:
       return 'green'
-    case OrderShippingStatuses.IN_TRANSIT:
+    case FulfillmentAggregateStatuses.PARTIALLY_SHIPPED:
+    case FulfillmentAggregateStatuses.SHIPPED:
+    case FulfillmentAggregateStatuses.DISPATCHED:
+    case FulfillmentAggregateStatuses.IN_TRANSIT:
       return 'blue'
-    case OrderShippingStatuses.PRE_TRANSIT:
+    case FulfillmentAggregateStatuses.PREPARED:
       return 'yellow'
+    case FulfillmentAggregateStatuses.UNFULFILLED:
+    case FulfillmentAggregateStatuses.CANCELED:
     default:
       return 'gray'
   }
@@ -74,10 +80,10 @@ function shippingStatusTone(status: ShopOrder['shipping']['shipping_status']) {
       </div>
       <div>
         <StatusBadge
-          :color="shippingStatusTone(order.shipping.shipping_status)"
+          :color="fulfillmentStatusTone(order.fulfillment.status)"
           class="capitalize"
         >
-          {{ shippingStatusLabel }}
+          {{ fulfillmentStatusLabel }}
         </StatusBadge>
       </div>
     </div>

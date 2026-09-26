@@ -4,6 +4,7 @@ import Customer from './customer.vue'
 import OrderDetails from './order-details.vue'
 import OrderSummary from './order-summary.vue'
 import OrderTimeline from './order-timeline.vue'
+import Shipments from './shipments.vue'
 import ShippingAddress from './shipping-address.vue'
 import { useShopGetOrderDetail } from '~/domains/shop/queries/order/detail.query'
 
@@ -39,11 +40,11 @@ const timeline = computed(() => data.value?.timeline ?? [])
         :order="order"
         :asset-host="assetHost"
       />
+      <Shipments :order="order" />
       <OrderTimeline
         :order="order"
         :timeline="timeline"
       />
-      <!--      <ShipmentUpdate :order="order" /> -->
     </div>
 
     <div class="col-span-12 space-y-6 xl:col-span-3">

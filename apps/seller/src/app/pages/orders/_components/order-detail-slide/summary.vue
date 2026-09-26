@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { formatMinorCurrency } from '@arc/utils'
+import { formatMinorCurrency, formatShippingEstimateRange } from '@arc/utils'
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail'
 
 const props = defineProps<{
@@ -9,6 +9,10 @@ const props = defineProps<{
 function formatAmountWithShortLabel(amountMinor: number) {
   return formatMinorCurrency(amountMinor, props.order.currency)
 }
+
+const estimateLabel = computed(
+  () => formatShippingEstimateRange(props.order.shipping?.estimate),
+)
 </script>
 
 <template>
@@ -38,11 +42,30 @@ function formatAmountWithShortLabel(amountMinor: number) {
 
       <div class="flex items-center justify-between gap-4">
         <div class="text-text-muted">
-          Shipping cost:
+          Shipping charge:
         </div>
         <div class="text-text-strong">
           {{ formatAmountWithShortLabel(order.shipping_minor) }}
         </div>
+      </div>
+
+      <div
+        v-if="estimateLabel"
+        class="flex items-center justify-between gap-4"
+      >
+        <div class="text-text-muted">
+          Estimated delivery:
+        </div>
+        <div class="text-text-strong">
+          {{ estimateLabel }}
+        </div>
+      </div>
+
+      <div
+        v-if="estimateLabel"
+        class="text-right text-xs text-text-muted"
+      >
+        Seller estimate, not a carrier guarantee.
       </div>
 
       <div class="border-t border-border-subtle" />

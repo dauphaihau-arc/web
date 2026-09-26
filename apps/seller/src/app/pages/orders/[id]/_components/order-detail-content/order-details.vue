@@ -15,9 +15,9 @@ defineProps<{
         <span class="capitalize">{{ order.payment.type }}</span>
       </DetailInfoItem>
 
-      <DetailInfoItem label="Shipping">
+      <DetailInfoItem label="Fulfillment">
         <div class="capitalize">
-          {{ order.shipping.shipping_status.replaceAll('_', ' ') }}
+          {{ order.fulfillment.status.replaceAll('_', ' ') }}
         </div>
       </DetailInfoItem>
     </div>

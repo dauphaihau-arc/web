@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs'
-import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
+import { FulfillmentAggregateStatuses } from '@arc/enums/fulfillment'
+import { OrderStatuses } from '@arc/enums/order'
 import StatusBadge from '@arc/ui/primitives/status-badge.vue'
 import OrderDetailActions from './_components/order-detail-actions.vue'
-import SellerOrderDetailContent from '~/app/pages/orders/[id]/_components/order-detail-content/order-detail-content.vue'
+import OrderDetailContent from '~/app/pages/orders/[id]/_components/order-detail-content/order-detail-content.vue'
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import { routes } from '~/shared/navigation/routes'
@@ -23,7 +24,7 @@ const createdLabel = computed(() => {
 })
 
 const orderStatusLabel = computed(() => order.value?.status.replaceAll('_', ' ') ?? '')
-const shippingStatusLabel = computed(() => order.value?.shipping.shipping_status.replaceAll('_', ' ') ?? '')
+const fulfillmentStatusLabel = computed(() => order.value?.fulfillment.status.replaceAll('_', ' ') ?? '')
 
 function orderStatusTone(status?: ShopOrder['status']) {
   switch (status) {
@@ -42,15 +43,20 @@ function orderStatusTone(status?: ShopOrder['status']) {
   }
 }
 
-function shippingStatusTone(status?: ShopOrder['shipping']['shipping_status']) {
+function fulfillmentStatusTone(status?: FulfillmentAggregateStatuses) {
   switch (status) {
-    case OrderShippingStatuses.DELIVERED:
-    case OrderShippingStatuses.SHIPPED:
+    case FulfillmentAggregateStatuses.DELIVERED:
+    case FulfillmentAggregateStatuses.PARTIALLY_DELIVERED:
       return 'green'
-    case OrderShippingStatuses.IN_TRANSIT:
+    case FulfillmentAggregateStatuses.PARTIALLY_SHIPPED:
+    case FulfillmentAggregateStatuses.SHIPPED:
+    case FulfillmentAggregateStatuses.DISPATCHED:
+    case FulfillmentAggregateStatuses.IN_TRANSIT:
       return 'blue'
-    case OrderShippingStatuses.PRE_TRANSIT:
+    case FulfillmentAggregateStatuses.PREPARED:
       return 'yellow'
+    case FulfillmentAggregateStatuses.UNFULFILLED:
+    case FulfillmentAggregateStatuses.CANCELED:
     default:
       return 'gray'
   }
@@ -75,10 +81,10 @@ function shippingStatusTone(status?: ShopOrder['shipping']['shipping_status']) {
         </StatusBadge>
         <StatusBadge
           v-if="order"
-          :color="shippingStatusTone(order.shipping.shipping_status)"
+          :color="fulfillmentStatusTone(order.fulfillment.status)"
           class="capitalize"
         >
-          {{ shippingStatusLabel }}
+          {{ fulfillmentStatusLabel }}
         </StatusBadge>
       </span>
     </template>
@@ -92,7 +98,7 @@ function shippingStatusTone(status?: ShopOrder['shipping']['shipping_status']) {
       <OrderDetailActions :order-id="orderId" />
     </template>
     <template #content>
-      <SellerOrderDetailContent
+      <OrderDetailContent
         :key="orderId"
         :order-id="orderId"
       />

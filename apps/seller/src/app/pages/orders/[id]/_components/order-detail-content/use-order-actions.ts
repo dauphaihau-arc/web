@@ -1,18 +1,22 @@
 import { computed, type MaybeRefOrGetter, toValue } from 'vue';
-import { OrderShippingStatuses, OrderStatuses, PaymentTypes } from '@arc/enums/order';
-import { useOrderShipmentState } from './use-order-shipment-state';
+import { OrderStatuses, PaymentTypes } from '@arc/enums/order';
+import { FulfillmentAggregateStatuses } from '@arc/enums/fulfillment';
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail';
+
+const NOTHING_DISPATCHED_STATUSES = [
+  FulfillmentAggregateStatuses.UNFULFILLED,
+  FulfillmentAggregateStatuses.PREPARED,
+];
 
 export function useOrderActions(orderSource: MaybeRefOrGetter<ShopOrder | undefined>) {
   const order = computed(() => toValue(orderSource));
-  const { allowedShipmentTransitions, canTransitionTo } = useOrderShipmentState(order);
 
   const canRefund = computed(() =>
     !!order.value
     && order.value.payment.type === PaymentTypes.CARD
     && [undefined, 'failed'].includes(order.value.payment.refund_status)
     && (
-      (order.value.status === OrderStatuses.PAID && order.value.shipping.shipping_status !== OrderShippingStatuses.PRE_TRANSIT)
+      (order.value.status === OrderStatuses.PAID && hasDispatchedQuantities(order.value))
       || order.value.status === OrderStatuses.COMPLETED
     ),
   );
@@ -20,7 +24,7 @@ export function useOrderActions(orderSource: MaybeRefOrGetter<ShopOrder | undefi
   const canCancel = computed(() =>
     !!order.value
     && [OrderStatuses.PAID, OrderStatuses.PENDING].includes(order.value.status)
-    && order.value.shipping.shipping_status === OrderShippingStatuses.PRE_TRANSIT,
+    && nothingHasBeenDispatched(order.value),
   );
 
   const canRetryRefund = computed(() =>
@@ -30,34 +34,25 @@ export function useOrderActions(orderSource: MaybeRefOrGetter<ShopOrder | undefi
     && [OrderStatuses.CANCELED, OrderStatuses.PAID, OrderStatuses.COMPLETED].includes(order.value.status),
   );
 
-  const primaryShipmentAction = computed(() => {
-    const candidates = [
-      {
-        status: OrderShippingStatuses.DELIVERED,
-        label: 'Mark delivered',
-        icon: 'i-heroicons-check-circle-20-solid',
-      },
-      {
-        status: OrderShippingStatuses.SHIPPED,
-        label: 'Mark shipped',
-        icon: 'i-heroicons-arrow-up-on-square-20-solid',
-      },
-      {
-        status: OrderShippingStatuses.IN_TRANSIT,
-        label: 'Mark in transit',
-        icon: 'i-heroicons-truck-20-solid',
-      },
-    ] as const;
-
-    return candidates.find(candidate => canTransitionTo(candidate.status));
-  });
-
   return {
-    allowedShipmentTransitions,
     canCancel,
     canRefund,
     canRetryRefund,
-    canTransitionTo,
-    primaryShipmentAction,
   };
+}
+
+function hasLegacyOrderShipping(order: ShopOrder): boolean {
+  return order.fulfillment.groups.length === 0;
+}
+
+function hasDispatchedQuantities(order: ShopOrder): boolean {
+  if (hasLegacyOrderShipping(order)) {
+    return order.fulfillment.legacy_shipping.status !== 'pre_transit';
+  }
+
+  return !NOTHING_DISPATCHED_STATUSES.includes(order.fulfillment.status);
+}
+
+function nothingHasBeenDispatched(order: ShopOrder): boolean {
+  return !hasDispatchedQuantities(order);
 }

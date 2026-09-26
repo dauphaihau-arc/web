@@ -36,13 +36,11 @@ const {
   canCancel,
   canRefund,
   canRetryRefund,
-  primaryShipmentAction,
 } = useOrderActions(order)
 
 const title = computed(() => order.value?.order_number ?? props.orderNumber ?? 'Order detail')
 const hasFooterActions = computed(() =>
-  !!primaryShipmentAction.value
-  || canRefund.value
+  canRefund.value
   || canRetryRefund.value
   || canCancel.value,
 )

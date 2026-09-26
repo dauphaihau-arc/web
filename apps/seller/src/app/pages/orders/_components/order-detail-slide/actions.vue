@@ -4,34 +4,17 @@ import SellerCancelOrderDialog from '../seller-cancel-order-dialog.vue'
 import SellerRefundOrderDialog from '../seller-refund-order-dialog.vue'
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail'
 import { useOrderActions } from '~/app/pages/orders/[id]/_components/order-detail-content/use-order-actions'
-import { useShopUpdateOrderShipment } from '~/domains/shop/mutations/update-shipment.mutation'
 
 const props = defineProps<{
   order: ShopOrder
 }>()
 
 const dialog = useModal()
-const { mutateAsync: updateShipment, isPending: isShipmentPending } = useShopUpdateOrderShipment()
 const {
   canCancel,
   canRefund,
   canRetryRefund,
-  canTransitionTo,
-  primaryShipmentAction,
 } = useOrderActions(() => props.order)
-
-async function handleShipmentAction() {
-  if (!primaryShipmentAction.value || !canTransitionTo(primaryShipmentAction.value.status)) {
-    return
-  }
-
-  await updateShipment({
-    orderId: props.order.id,
-    body: {
-      shipping_status: primaryShipmentAction.value.status,
-    },
-  })
-}
 
 function openRefundDialog(isRetry = false) {
   dialog.open(SellerRefundOrderDialog, {
@@ -47,7 +30,6 @@ function openCancelDialog() {
 }
 
 const visibleActionCount = computed(() => [
-  !!primaryShipmentAction.value,
   canRefund.value || canRetryRefund.value,
   canCancel.value,
 ].filter(Boolean).length)
@@ -71,21 +53,6 @@ const refundLabel = computed(() => canRetryRefund.value ? 'Retry refund' : 'Refu
     class="grid gap-3"
     :class="actionsGridClass"
   >
-    <UButton
-      v-if="primaryShipmentAction"
-      color="primary"
-      class="justify-center gap-2"
-      :loading="isShipmentPending"
-      size="md"
-      @click="handleShipmentAction"
-    >
-      <AppIcon
-        :name="primaryShipmentAction.icon"
-        size="sm"
-      />
-      {{ primaryShipmentAction.label }}
-    </UButton>
-
     <UButton
       v-if="canRefund || canRetryRefund"
       color="red"

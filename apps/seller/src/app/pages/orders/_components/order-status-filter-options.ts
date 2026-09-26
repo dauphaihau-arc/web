@@ -1,4 +1,5 @@
-import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order';
+import { FulfillmentAggregateStatuses } from '@arc/enums/fulfillment';
+import { OrderStatuses } from '@arc/enums/order';
 import type { FilterOption } from '~/shared/ui/data-filter/types';
 
 export const orderStatusFilterOptions: FilterOption[] = [
@@ -22,8 +23,14 @@ export const orderStatusTabOptions = orderStatusFilterOptions.filter(option =>
 );
 
 export const orderFulfillmentFilterOptions: FilterOption[] = [
-  { label: 'Pre transit', value: OrderShippingStatuses.PRE_TRANSIT },
-  { label: 'In transit', value: OrderShippingStatuses.IN_TRANSIT },
-  { label: 'Shipped', value: OrderShippingStatuses.SHIPPED },
-  { label: 'Delivered', value: OrderShippingStatuses.DELIVERED },
+  { label: 'Unfulfilled', value: FulfillmentAggregateStatuses.UNFULFILLED },
+  { label: 'Prepared', value: FulfillmentAggregateStatuses.PREPARED },
+  { label: 'Partially shipped', value: FulfillmentAggregateStatuses.PARTIALLY_SHIPPED },
+  { label: 'Shipped', value: FulfillmentAggregateStatuses.SHIPPED },
+  { label: 'Partially delivered', value: FulfillmentAggregateStatuses.PARTIALLY_DELIVERED },
+  { label: 'Delivered', value: FulfillmentAggregateStatuses.DELIVERED },
+  { label: 'Canceled', value: FulfillmentAggregateStatuses.CANCELED },
+  // Legacy order-level projection values retained for pre-cutover Orders.
+  { label: 'Dispatched (legacy)', value: FulfillmentAggregateStatuses.DISPATCHED },
+  { label: 'In transit (legacy)', value: FulfillmentAggregateStatuses.IN_TRANSIT },
 ];

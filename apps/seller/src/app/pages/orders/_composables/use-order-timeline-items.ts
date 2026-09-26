@@ -1,12 +1,12 @@
 import dayjs from 'dayjs';
-import { OrderShippingStatuses, OrderStatuses, PaymentTypes } from '@arc/enums/order';
+import { OrderStatuses, PaymentTypes } from '@arc/enums/order';
+import { ShipmentStatuses } from '@arc/enums/fulfillment';
 import type { AppIconAlias } from '@arc/ui/foundation/app-icon.constants';
 import type { TimelineItem } from '@arc/ui/primitives/timeline.vue';
 import type { ShopOrder, ShopOrderTimelineEvent } from '~/domains/shop/order/types/shop-order-detail';
 
 type OrderTimelineMilestone = TimelineItem & {
   occurredAt?: Date
-  expectedAt?: Date
   icon: AppIconAlias
 };
 
@@ -20,12 +20,10 @@ function formatLabel(value?: string | null) {
     .replace(/\b\w/g, char => char.toUpperCase());
 }
 
-function metaLabel(milestone: { occurredAt?: Date, expectedAt?: Date }) {
+function metaLabel(milestone: { occurredAt?: Date }) {
   return milestone.occurredAt
     ? dayjs(milestone.occurredAt).format('MMM D, YYYY, h:mm A')
-    : milestone.expectedAt
-      ? dayjs(milestone.expectedAt).format('MMM D, YYYY')
-      : '';
+    : '';
 }
 
 export function useOrderTimelineItems(order: MaybeRefOrGetter<ShopOrder>, timeline: MaybeRefOrGetter<ShopOrderTimelineEvent[]>) {
@@ -36,54 +34,131 @@ export function useOrderTimelineItems(order: MaybeRefOrGetter<ShopOrder>, timeli
     return resolvedTimeline.value.find(event => event.type === type);
   }
 
-  function buildShippingDescription() {
-    const parts = [
-      resolvedOrder.value.shipping.shipping_carrier
-        ? `Carrier: ${resolvedOrder.value.shipping.shipping_carrier}`
-        : '',
-      resolvedOrder.value.shipping.tracking_number
-        ? `Tracking: ${resolvedOrder.value.shipping.tracking_number}`
-        : '',
-      resolvedOrder.value.shipping.shipment_note ?? '',
-    ].filter(Boolean);
-
-    return parts.join(' • ');
-  }
-
   const paymentConfirmedAt = computed(() => findEvent('payment_succeeded')?.occurred_at);
   const paymentExpiredAt = computed(() => findEvent('payment_expired')?.occurred_at);
   const refundRequestedAt = computed(() => findEvent('refund_requested')?.occurred_at);
 
-  const currentStageKey = computed(() => {
-    if (resolvedOrder.value.status === OrderStatuses.REFUNDED) {
-      return 'refunded';
-    }
-
-    if (
-      resolvedOrder.value.status === OrderStatuses.CANCELED
-      || resolvedOrder.value.status === OrderStatuses.EXPIRED
-      || resolvedOrder.value.status === OrderStatuses.ARCHIVED
-    ) {
-      return 'canceled';
-    }
-
-    switch (resolvedOrder.value.shipping.shipping_status) {
-      case OrderShippingStatuses.DELIVERED:
-        return 'delivered';
-      case OrderShippingStatuses.SHIPPED:
-        return 'shipped';
-      case OrderShippingStatuses.IN_TRANSIT:
-        return 'in_transit';
-      case OrderShippingStatuses.PRE_TRANSIT:
-      default:
-        return 'payment';
-    }
-  });
-
   const milestones = computed<OrderTimelineMilestone[]>(() => {
     const items: OrderTimelineMilestone[] = [];
-    const shippingDescription = buildShippingDescription();
     const paymentIsCard = resolvedOrder.value.payment.type === PaymentTypes.CARD;
+    const isLegacy = resolvedOrder.value.fulfillment.groups.length === 0;
+    const legacy = resolvedOrder.value.fulfillment.legacy_shipping;
+
+    items.push({
+      key: 'created',
+      title: 'Order created',
+      description: `${formatLabel(resolvedOrder.value.payment.type)} payment order was created.`,
+      occurredAt: resolvedOrder.value.created_at,
+      state: 'completed',
+      icon: 'orders',
+    });
+
+    items.push({
+      key: 'payment',
+      title: paymentIsCard
+        ? (
+          resolvedOrder.value.status === OrderStatuses.AWAITING_PAYMENT
+          || resolvedOrder.value.status === OrderStatuses.EXPIRED
+            ? 'Awaiting payment'
+            : 'Payment confirmed'
+        )
+        : 'Order confirmed',
+      description: paymentIsCard
+        ? (
+          resolvedOrder.value.status === OrderStatuses.AWAITING_PAYMENT
+            ? 'Waiting for customer payment confirmation.'
+            : resolvedOrder.value.status === OrderStatuses.EXPIRED
+              ? 'Checkout session expired before payment completed.'
+              : `Payment status: ${formatLabel(resolvedOrder.value.status)}`
+        )
+        : 'Cash order accepted and ready for shipment handling.',
+      occurredAt: paymentIsCard
+        ? paymentConfirmedAt.value ?? paymentExpiredAt.value
+        : resolvedOrder.value.created_at,
+      state: paymentIsCard && resolvedOrder.value.status === OrderStatuses.EXPIRED
+        ? 'failed'
+        : 'completed',
+      icon: 'payment',
+    });
+
+    if (isLegacy) {
+      if (legacy.shipped_at) {
+        items.push({
+          key: 'legacy_shipped',
+          title: 'Shipped',
+          description: buildLegacyShippingDescription(legacy),
+          occurredAt: legacy.shipped_at,
+          state: legacy.delivered_at ? 'completed' : 'current',
+          icon: 'shipping',
+        });
+      }
+
+      if (legacy.delivered_at) {
+        items.push({
+          key: 'legacy_delivered',
+          title: 'Delivered',
+          description: buildLegacyShippingDescription(legacy),
+          occurredAt: legacy.delivered_at,
+          state: 'current',
+          icon: 'delivered',
+        });
+      }
+    }
+    else {
+      const shipmentUpdateEvents = resolvedOrder.value.fulfillment.groups
+        .flatMap(group =>
+          group.shipments.flatMap(shipment =>
+            shipment.updates.map(update => ({
+              key: `shipment-${shipment.id}-update-${update.id}`,
+              title: shipmentUpdateTitle(update.status),
+              description: shipmentUpdateDescription(update, shipment),
+              occurredAt: new Date(update.occurred_at),
+              icon: shipmentUpdateIcon(update.status),
+            })),
+          ),
+        )
+        .sort((a, b) => a.occurredAt.getTime() - b.occurredAt.getTime());
+
+      for (const event of shipmentUpdateEvents) {
+        items.push({
+          ...event,
+          state: 'completed',
+        });
+      }
+
+      const activeShipment = resolvedOrder.value.fulfillment.groups
+        .flatMap(group => group.shipments)
+        .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())[0];
+
+      if (activeShipment) {
+        const currentKey = `shipment-${activeShipment.id}-${activeShipment.status}`;
+        const existing = items.find(item => item.key === currentKey);
+        if (existing) {
+          existing.state = 'current';
+        }
+        else if (activeShipment.status === ShipmentStatuses.VOIDED) {
+          items.push({
+            key: currentKey,
+            title: 'Shipment voided',
+            description: 'A prepared shipment was voided.',
+            occurredAt: activeShipment.voided_at,
+            state: 'current',
+            icon: 'xCircle',
+          });
+        }
+      }
+    }
+
+    if (refundRequestedAt.value && resolvedOrder.value.payment.refund_status === 'pending') {
+      items.push({
+        key: 'refund_requested',
+        title: 'Refund requested',
+        description: 'Refund request is pending review or processor completion.',
+        occurredAt: refundRequestedAt.value,
+        state: 'current',
+        icon: 'refund',
+      });
+    }
 
     if (resolvedOrder.value.status === OrderStatuses.REFUNDED) {
       items.push({
@@ -117,107 +192,6 @@ export function useOrderTimelineItems(order: MaybeRefOrGetter<ShopOrder>, timeli
       });
     }
 
-    items.push({
-      key: 'delivered',
-      title: 'Delivered',
-      description: 'Shipment delivered successfully.',
-      occurredAt: resolvedOrder.value.shipping.delivered_at,
-      expectedAt: resolvedOrder.value.shipping.delivered_at
-        ? undefined
-        : resolvedOrder.value.shipping.estimated_delivery,
-      state: currentStageKey.value === 'delivered'
-        ? 'current'
-        : resolvedOrder.value.shipping.shipping_status === OrderShippingStatuses.DELIVERED
-          ? 'completed'
-          : 'upcoming',
-      icon: 'delivered',
-    });
-
-    items.push({
-      key: 'shipped',
-      title: 'Shipped',
-      description: shippingDescription || 'Shipment left the seller and is on the delivery route.',
-      occurredAt: resolvedOrder.value.shipping.shipped_at,
-      state: currentStageKey.value === 'shipped'
-        ? 'current'
-        : [OrderShippingStatuses.SHIPPED, OrderShippingStatuses.DELIVERED].includes(resolvedOrder.value.shipping.shipping_status)
-          ? 'completed'
-          : 'upcoming',
-      icon: 'shipping',
-    });
-
-    items.push({
-      key: 'in_transit',
-      title: 'In transit',
-      description: shippingDescription || 'Shipment is moving through the delivery network.',
-      occurredAt: resolvedOrder.value.shipping.shipping_status === OrderShippingStatuses.IN_TRANSIT
-        ? resolvedOrder.value.shipping.updated_at
-        : undefined,
-      expectedAt: resolvedOrder.value.shipping.shipping_status === OrderShippingStatuses.IN_TRANSIT
-        ? resolvedOrder.value.shipping.estimated_delivery
-        : undefined,
-      state: currentStageKey.value === 'in_transit'
-        ? 'current'
-        : [OrderShippingStatuses.IN_TRANSIT, OrderShippingStatuses.SHIPPED, OrderShippingStatuses.DELIVERED].includes(resolvedOrder.value.shipping.shipping_status)
-          ? 'completed'
-          : 'upcoming',
-      icon: 'transit',
-    });
-
-    items.push({
-      key: 'payment',
-      title: paymentIsCard
-        ? (
-          resolvedOrder.value.status === OrderStatuses.AWAITING_PAYMENT
-          || resolvedOrder.value.status === OrderStatuses.EXPIRED
-            ? 'Awaiting payment'
-            : 'Summary confirmed'
-        )
-        : 'Order confirmed',
-      description: paymentIsCard
-        ? (
-          resolvedOrder.value.status === OrderStatuses.AWAITING_PAYMENT
-            ? 'Waiting for customer payment confirmation.'
-            : resolvedOrder.value.status === OrderStatuses.EXPIRED
-              ? 'Checkout session expired before payment completed.'
-              : `Payment status: ${formatLabel(resolvedOrder.value.status)}`
-        )
-        : 'Cash order accepted and ready for shipment handling.',
-      occurredAt: paymentIsCard
-        ? paymentConfirmedAt.value ?? paymentExpiredAt.value
-        : resolvedOrder.value.created_at,
-      state: currentStageKey.value === 'payment'
-        ? (resolvedOrder.value.status === OrderStatuses.EXPIRED ? 'failed' : 'current')
-        : (
-          paymentIsCard
-            ? [OrderStatuses.PAID, OrderStatuses.COMPLETED, OrderStatuses.CANCELED, OrderStatuses.REFUNDED, OrderStatuses.ARCHIVED].includes(resolvedOrder.value.status)
-            : true
-        )
-          ? 'completed'
-          : 'upcoming',
-      icon: 'payment',
-    });
-
-    items.push({
-      key: 'created',
-      title: 'Order created',
-      description: `${formatLabel(resolvedOrder.value.payment.type)} payment order was created.`,
-      occurredAt: resolvedOrder.value.created_at,
-      state: 'completed',
-      icon: 'orders',
-    });
-
-    if (refundRequestedAt.value && resolvedOrder.value.payment.refund_status === 'pending') {
-      items.unshift({
-        key: 'refund_requested',
-        title: 'Refund requested',
-        description: 'Refund request is pending review or processor completion.',
-        occurredAt: refundRequestedAt.value,
-        state: 'current',
-        icon: 'refund',
-      });
-    }
-
     return items;
   });
 
@@ -230,4 +204,62 @@ export function useOrderTimelineItems(order: MaybeRefOrGetter<ShopOrder>, timeli
     badge: milestone.badge,
     meta: metaLabel(milestone),
   })));
+}
+
+function buildLegacyShippingDescription(legacy: ShopOrder['fulfillment']['legacy_shipping']) {
+  const parts = [
+    legacy.carrier ? `Carrier: ${legacy.carrier}` : '',
+    legacy.tracking_number ? `Tracking: ${legacy.tracking_number}` : '',
+    legacy.note ?? '',
+  ].filter(Boolean);
+
+  return parts.join(' • ') || 'Legacy fulfillment record.';
+}
+
+function shipmentUpdateTitle(status: ShipmentStatuses) {
+  switch (status) {
+    case ShipmentStatuses.PREPARED:
+      return 'Shipment prepared';
+    case ShipmentStatuses.DISPATCHED:
+      return 'Shipment dispatched';
+    case ShipmentStatuses.IN_TRANSIT:
+      return 'Shipment in transit';
+    case ShipmentStatuses.DELIVERED:
+      return 'Shipment delivered';
+    case ShipmentStatuses.VOIDED:
+      return 'Shipment voided';
+    default:
+      return 'Shipment updated';
+  }
+}
+
+function shipmentUpdateIcon(status: ShipmentStatuses): AppIconAlias {
+  switch (status) {
+    case ShipmentStatuses.DELIVERED:
+      return 'delivered';
+    case ShipmentStatuses.IN_TRANSIT:
+      return 'transit';
+    case ShipmentStatuses.DISPATCHED:
+      return 'shipping';
+    case ShipmentStatuses.VOIDED:
+      return 'xCircle';
+    case ShipmentStatuses.PREPARED:
+    default:
+      return 'shipping';
+  }
+}
+
+function shipmentUpdateDescription(
+  update: ShopOrder['fulfillment']['groups'][number]['shipments'][number]['updates'][number],
+  shipment: ShopOrder['fulfillment']['groups'][number]['shipments'][number],
+) {
+  const parts = [
+    `By ${update.actor_type}`,
+    `via ${update.source}`,
+    shipment.carrier ? `Carrier: ${shipment.carrier}` : '',
+    shipment.tracking_number ? `Tracking: ${shipment.tracking_number}` : '',
+    update.note ?? '',
+  ].filter(Boolean);
+
+  return parts.join(' • ');
 }
