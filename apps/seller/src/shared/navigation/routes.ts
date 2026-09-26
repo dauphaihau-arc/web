@@ -23,6 +23,8 @@ export const routePaths = {
   orders: '/orders',
   messages: '/messages',
   notifications: '/notifications',
+  settings: '/settings',
+  shippingSettings: '/settings/shipping',
 } as const;
 
 export const routes = {
@@ -47,6 +49,8 @@ export const routes = {
   orderDetail: (id: string) => createRoute(`${routePaths.orders}/${id}`),
   couponsNew: (type: CreateCouponPageTypes) =>
     createRoute(`${routePaths.coupons}/new`, { type }),
+  settings: () => createRoute(routePaths.settings),
+  shippingSettings: () => createRoute(routePaths.shippingSettings),
   storefrontProductDetail: (shopSlug: string, productSlug: string) =>
     createRoute(`/${shopSlug}/${productSlug}`),
 } as const;

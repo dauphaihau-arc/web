@@ -57,6 +57,19 @@ export const shopSidebarItems: LinkItem[] = [
     ],
   },
   {
+    title: 'Settings',
+    icon: 'settings',
+    matchPath: routePaths.settings,
+    sub: [
+      {
+        title: 'Shipping Profiles',
+        icon: 'shipping',
+        to: routes.shippingSettings(),
+        matchPath: routePaths.shippingSettings,
+      },
+    ],
+  },
+  {
     title: 'Finances',
     icon: 'revenue',
     to: { path: '/finances' },
