@@ -1,11 +1,23 @@
 <script setup lang="ts">
 import CheckoutNowPromoCoupons from './checkout-now-promo-coupons.vue'
+import CheckoutShopSummary from '~/domains/cart/ui/shop-cart/checkout-shop-summary.vue'
 import ShopCartCard from '~/domains/cart/ui/shop-cart/shop-cart-card.vue'
 import ShopCartFooter from '~/domains/cart/ui/shop-cart/shop-cart-footer.vue'
 import ShopCartNoteUi from '~/domains/cart/ui/shop-cart/shop-cart-note-ui.vue'
-import ShopCartProduct from '~/domains/cart/ui/shop-cart/shop-cart-product.vue'
+import OrderItemsTable from '~/domains/me/ui/order-shop/order-items-table.vue'
 import { useCartStore } from '~/domains/cart/stores/cart.store'
 import { useGetCart } from '~/domains/cart/queries/cart.query'
+import type { CheckoutQuoteShop } from '~/domains/me/api/order/contracts/order.contract'
+
+const props = withDefaults(defineProps<{
+  quoteShop?: CheckoutQuoteShop
+  checkoutCurrency?: string
+  isPendingQuote?: boolean
+}>(), {
+  quoteShop: undefined,
+  checkoutCurrency: undefined,
+  isPendingQuote: false,
+})
 
 const cartStore = useCartStore()
 const route = useRoute()
@@ -19,6 +31,18 @@ const {
 const shopCart = computed(() => dataGetCart.value?.cart && dataGetCart?.value?.cart.shop_groups[0])
 const productCart = computed(() => shopCart.value?.items[0])
 const showNoteInput = ref(!!cartStore.stateCheckoutNow.note)
+
+const itemRows = computed(() => (shopCart.value?.items ?? []).map(item => ({
+  id: item.inventory.id,
+  title: item.product.title,
+  imageUrl: item.product.image_url,
+  variantLabels: item.inventory.selected_options
+    .map(option => `${option.option_name}: ${option.value}`),
+  quantity: item.quantity,
+  unitPriceMinor: item.inventory.amount_minor,
+  originalUnitPriceMinor: item.inventory.original_amount_minor,
+  currency: item.inventory.currency,
+})))
 </script>
 
 <template>
@@ -26,10 +50,7 @@ const showNoteInput = ref(!!cartStore.stateCheckoutNow.note)
     v-if="shopCart && productCart"
     :shop-name="shopCart?.shop?.name"
   >
-    <ShopCartProduct
-      :product-cart="productCart"
-      :show-quantity-controls="false"
-    />
+    <OrderItemsTable :rows="itemRows" />
 
     <template #footer>
       <ShopCartFooter>
@@ -43,6 +64,15 @@ const showNoteInput = ref(!!cartStore.stateCheckoutNow.note)
             v-model:show-input="showNoteInput"
             :shop-name="shopCart.shop.name"
             :disabled="cartStore.stateCheckoutNow.isPendingCreateOrder"
+          />
+        </template>
+
+        <template #shipping>
+          <CheckoutShopSummary
+            :shop-cart="shopCart"
+            :quote-shop="props.quoteShop"
+            :checkout-currency="props.checkoutCurrency"
+            :is-pending="props.isPendingQuote"
           />
         </template>
       </ShopCartFooter>

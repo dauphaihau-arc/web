@@ -5,10 +5,8 @@ import type { CartProductItem } from '~/domains/cart/api/cart.shared'
 
 const props = withDefaults(defineProps<{
   productCart: CartProductItem
-  showQuantityControls?: boolean
   quantityDisabled?: boolean
 }>(), {
-  showQuantityControls: true,
   quantityDisabled: false,
 })
 
@@ -62,10 +60,7 @@ const compareAtAmount = computed(() =>
         </div>
 
         <div class="space-y-3">
-          <div
-            v-if="props.showQuantityControls"
-            :class="$slots.quantity ? 'w-fit' : 'w-[45%]'"
-          >
+          <div :class="$slots.quantity ? 'w-fit' : 'w-[45%]'">
             <slot name="quantity">
               <ShopCartQuantityUi
                 v-model:quantity="quantity"

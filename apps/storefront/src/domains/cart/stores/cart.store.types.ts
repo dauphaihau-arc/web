@@ -1,5 +1,6 @@
 import type { PaymentTypes } from '@arc/enums/order';
 import type { GuestCheckoutAddress } from '@arc/schemas/guest-checkout.schema';
+import type { CheckoutQuoteResponse } from '~/domains/me/api/order/contracts/order.contract';
 import type { GetUserAddressesResponse } from '~/domains/me/api/address/contracts/address.contract';
 
 type UserAddress = GetUserAddressesResponse['results'][number];
@@ -25,6 +26,9 @@ export type StateCheckoutNow = {
   address: CheckoutAddress | null
   guestEmail: string
   isPendingCreateOrder: boolean
+  /** Server-computed quote accepted by the buyer at review. */
+  quote: CheckoutQuoteResponse | null
+  isPendingQuote: boolean
 };
 
 export enum CheckoutCartSteps {
@@ -42,4 +46,7 @@ export type StateCheckoutCart = {
   address: CheckoutAddress | null
   guestEmail: string
   isPendingCreateOrder: boolean
+  /** Server-computed quote accepted by the buyer at review. */
+  quote: CheckoutQuoteResponse | null
+  isPendingQuote: boolean
 };

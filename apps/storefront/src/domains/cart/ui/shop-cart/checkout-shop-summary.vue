@@ -1,0 +1,113 @@
+<script setup lang="ts">
+import { formatMinorCurrency, formatShippingEstimateRange } from '@arc/utils'
+import type { CartShopGroup } from '~/domains/cart/api/cart.shared'
+import type { CheckoutQuoteShop } from '~/domains/me/api/order/contracts/order.contract'
+
+/**
+ * Per-shop money in the checkout review. The page's Summary Order card already
+ * carries the basket breakdown, so this card keeps only what the buyer cannot
+ * read off that card: the discount applied to this shop, the seller's accepted
+ * Shipping Charge, and the total accepted for this shop.
+ */
+const props = withDefaults(defineProps<{
+  shopCart: CartShopGroup
+  /**
+   * Server-computed shop quote accepted at review. It carries the seller's
+   * Shipping Charge and Processing/Delivery estimate; the browser never
+   * calculates either.
+   */
+  quoteShop?: CheckoutQuoteShop
+  /**
+   * Checkout currency the server accepted for this basket. Every per-shop
+   * amount is already denominated in it, so the review never formats accepted
+   * money with a seller's shipping source currency.
+   */
+  checkoutCurrency?: string
+  isPending?: boolean
+}>(), {
+  quoteShop: undefined,
+  checkoutCurrency: undefined,
+  isPending: false,
+})
+
+const displayCurrency = computed(
+  () => props.checkoutCurrency
+    ?? props.quoteShop?.shipping?.currency
+    ?? props.shopCart.currency,
+)
+
+const discountMinor = computed(() => props.quoteShop?.discount_minor ?? 0)
+
+const shippingMinor = computed(
+  () => (props.isPending ? undefined : props.quoteShop?.shipping_minor),
+)
+
+/**
+ * Accepted quote total when the server has priced this shop, the cart's own
+ * merchandise total before that. The cart is merchandise-only, so it never
+ * implies a charge the server has not accepted.
+ */
+const totalMinor = computed(
+  () => props.quoteShop?.total_minor ?? props.shopCart.total_minor,
+)
+
+const estimateLabel = computed(() => formatShippingEstimateRange(props.quoteShop?.shipping?.estimate))
+</script>
+
+<template>
+  <div class="w-2/5">
+    <div class="flex justify-between">
+      <div class="title">
+        <div>Shop discount</div>
+        <div>Shipping</div>
+      </div>
+      <div class="price">
+        <div>
+          {{ formatMinorCurrency(discountMinor, displayCurrency) }}
+        </div>
+        <div
+          v-if="isPending"
+          class="text-text-muted"
+        >
+          Calculating...
+        </div>
+        <div
+          v-else-if="typeof shippingMinor === 'number'"
+        >
+          {{ formatMinorCurrency(shippingMinor, displayCurrency) }}
+        </div>
+        <div
+          v-else
+          class="text-text-muted"
+        >
+          Calculated at checkout
+        </div>
+      </div>
+    </div>
+    <div
+      v-if="estimateLabel"
+      class="mt-1 text-sm text-text-muted"
+    >
+      Estimated delivery: {{ estimateLabel }}
+    </div>
+    <UDivider class="my-3" />
+    <div class="flex justify-between">
+      <div class="font-semibold">
+        Total
+      </div>
+      <div class="font-semibold">
+        {{ formatMinorCurrency(totalMinor, displayCurrency) }}
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped lang="postcss">
+.title {
+  @apply font-normal
+}
+
+.price {
+  @apply text-right
+}
+</style>

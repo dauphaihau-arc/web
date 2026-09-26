@@ -1,17 +1,37 @@
 <script setup lang="ts">
+import CheckoutShopSummary from '~/domains/cart/ui/shop-cart/checkout-shop-summary.vue'
 import type { CartShopGroup } from '~/domains/cart/api/cart.shared'
 import CartShopNote from '~/domains/cart/ui/shop-cart/cart-shop-note.vue'
 import CartShopPromoCoupons from '~/domains/cart/ui/shop-cart/cart-shop-promo-coupons.vue'
-import ShippingSelect from '~/domains/cart/ui/shop-cart/shipping-select.vue'
 import ShopCartCard from '~/domains/cart/ui/shop-cart/shop-cart-card.vue'
 import ShopCartFooter from '~/domains/cart/ui/shop-cart/shop-cart-footer.vue'
-import ShopCartProduct from '~/domains/cart/ui/shop-cart/shop-cart-product.vue'
+import OrderItemsTable from '~/domains/me/ui/order-shop/order-items-table.vue'
+import type { CheckoutQuoteShop } from '~/domains/me/api/order/contracts/order.contract'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   shopCart: CartShopGroup
-}>()
+  quoteShop?: CheckoutQuoteShop
+  checkoutCurrency?: string
+  isPendingQuote?: boolean
+}>(), {
+  quoteShop: undefined,
+  checkoutCurrency: undefined,
+  isPendingQuote: false,
+})
 
 const selectedItems = computed(() => props.shopCart.items.filter(prod => !!prod.is_selected))
+
+const itemRows = computed(() => selectedItems.value.map(item => ({
+  id: item.inventory.id,
+  title: item.product.title,
+  imageUrl: item.product.image_url,
+  variantLabels: item.inventory.selected_options
+    .map(option => `${option.option_name}: ${option.value}`),
+  quantity: item.quantity,
+  unitPriceMinor: item.inventory.amount_minor,
+  originalUnitPriceMinor: item.inventory.original_amount_minor,
+  currency: item.inventory.currency,
+})))
 </script>
 
 <template>
@@ -19,12 +39,7 @@ const selectedItems = computed(() => props.shopCart.items.filter(prod => !!prod.
     v-if="selectedItems.length > 0"
     :shop-name="props.shopCart?.shop?.name"
   >
-    <ShopCartProduct
-      v-for="productCart of selectedItems"
-      :key="productCart?.inventory?.id"
-      :product-cart="productCart"
-      :show-quantity-controls="false"
-    />
+    <OrderItemsTable :rows="itemRows" />
 
     <template #footer>
       <ShopCartFooter>
@@ -37,7 +52,12 @@ const selectedItems = computed(() => props.shopCart.items.filter(prod => !!prod.
         </template>
 
         <template #shipping>
-          <ShippingSelect :shop-cart="props.shopCart" />
+          <CheckoutShopSummary
+            :shop-cart="props.shopCart"
+            :quote-shop="props.quoteShop"
+            :checkout-currency="props.checkoutCurrency"
+            :is-pending="props.isPendingQuote"
+          />
         </template>
       </ShopCartFooter>
     </template>

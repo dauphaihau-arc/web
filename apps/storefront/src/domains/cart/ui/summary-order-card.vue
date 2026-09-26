@@ -1,11 +1,30 @@
 <script setup lang="ts">
 import { formatMinorCurrency } from '@arc/utils'
 import type { CartSummary } from '~/domains/cart/api/cart.shared'
+import type { CheckoutQuoteResponse } from '~/domains/me/api/order/contracts/order.contract'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   loading: boolean
   summaryOrder?: CartSummary
-}>()
+  /**
+   * Server-computed checkout quote. When present it is the accepted money the
+   * buyer reviews; the cart summary is merchandise-only until then.
+   */
+  quote?: CheckoutQuoteResponse
+}>(), {
+  summaryOrder: undefined,
+  quote: undefined,
+})
+
+const currency = computed(() => props.quote?.checkout_currency ?? props.summaryOrder?.currency ?? '')
+const merchandiseSubtotalMinor = computed(
+  () => props.quote?.subtotal_minor ?? props.summaryOrder?.subtotal_minor ?? 0,
+)
+const discountMinor = computed(() => props.quote?.discount_minor ?? props.summaryOrder?.discount_minor ?? 0)
+const subtotalAfterDiscountMinor = computed(() => merchandiseSubtotalMinor.value - discountMinor.value)
+const shippingMinor = computed(() => props.quote?.shipping_minor)
+const totalMinor = computed(() => props.quote?.total_minor ?? props.summaryOrder?.total_minor ?? 0)
+const selectedQuantity = computed(() => props.summaryOrder?.total_selected_quantity ?? 0)
 </script>
 
 <template>
@@ -21,7 +40,7 @@ const props = defineProps<{
         <LoadingSvg :child-class="'!w-9 !h-9'" />
       </div>
       <div
-        v-else-if="props?.summaryOrder"
+        v-else
         class="flex flex-col gap-2"
       >
         <div class="flex justify-between">
@@ -31,10 +50,10 @@ const props = defineProps<{
           </div>
           <div class="price">
             <div>
-              {{ formatMinorCurrency(props.summaryOrder?.subtotal_minor, props.summaryOrder?.currency) }}
+              {{ formatMinorCurrency(merchandiseSubtotalMinor, currency) }}
             </div>
             <div class="text-right">
-              {{ formatMinorCurrency(props?.summaryOrder?.discount_minor, props.summaryOrder?.currency) }}
+              {{ formatMinorCurrency(discountMinor, currency) }}
             </div>
           </div>
         </div>
@@ -46,30 +65,29 @@ const props = defineProps<{
           </div>
           <div class="price">
             <div>
-              {{ formatMinorCurrency(props?.summaryOrder?.subtotal_after_discount_minor, props.summaryOrder?.currency) }}
+              {{ formatMinorCurrency(subtotalAfterDiscountMinor, currency) }}
             </div>
             <div
-              v-if="props.summaryOrder?.shipping_minor === 0
-                && props.summaryOrder.total_selected_quantity"
-              class="text-right font-medium text-[var(--state-success-text)]"
+              v-if="typeof shippingMinor === 'number'"
+              class="text-right"
             >
-              FREE
+              {{ formatMinorCurrency(shippingMinor, currency) }}
             </div>
             <div
               v-else
-              class="text-right"
+              class="text-right text-text-muted"
             >
-              {{ formatMinorCurrency(props?.summaryOrder?.shipping_minor, props.summaryOrder?.currency) }}
+              Calculated at checkout
             </div>
           </div>
         </div>
         <UDivider class="my-3" />
         <div class="flex justify-between gap-3">
           <div class="text-lg font-medium">
-            Total ({{ props.summaryOrder?.total_selected_quantity }} {{ props.summaryOrder?.total_selected_quantity > 1 ? 'products' : 'product' }})
+            Total ({{ selectedQuantity }} {{ selectedQuantity > 1 ? 'products' : 'product' }})
           </div>
-          <div :class="['price', props.summaryOrder?.total_minor > 0 && 'text-text-strong']">
-            {{ formatMinorCurrency(props.summaryOrder?.total_minor, props.summaryOrder?.currency) }}
+          <div :class="['price', totalMinor > 0 && 'text-text-strong']">
+            {{ formatMinorCurrency(totalMinor, currency) }}
           </div>
         </div>
       </div>

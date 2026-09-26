@@ -7,6 +7,7 @@ import { useGetCart } from '~/domains/cart/queries/cart.query';
 import { useCreateGuestCheckoutQuoteForBuyNow } from '~/domains/checkout/mutations/create-checkout-quote-buy-now.mutation';
 import { useCreateGuestOrderForBuyNow } from '~/domains/checkout/mutations/create-order-buy-now.mutation';
 import { getCheckoutFailureCopy, resolveCheckoutFailure } from '~/domains/checkout/utils/checkout-error';
+import { buildBuyNowQuoteBody } from '~/domains/checkout/utils/checkout-quote-body';
 import { useMarketStore } from '~/domains/market/stores/market.store';
 import { useCheckoutSessionReadiness } from '~/domains/me/composables/use-checkout-session-readiness';
 import { useCreateCheckoutQuoteForBuyNow } from '~/domains/me/mutations/orders/create-checkout-quote-buy-now.mutation';
@@ -56,35 +57,14 @@ export function useSubmitBuyNowCheckout() {
   const waitForCheckoutSessionUrl = useCheckoutSessionReadiness();
 
   function createQuoteBody(isAuthenticated: boolean, address: CheckoutAddress): BuyNowCheckoutQuoteBody {
-    const quoteBody: BuyNowCheckoutQuoteBody = isAuthenticated
-      ? {
-        cart_id: tempCartId,
-        user_address_id: 'id' in address ? address.id : '',
-      }
-      : {
-        cart_id: tempCartId,
-        shipping_address: {
-          full_name: address.full_name,
-          address_1: address.address_1,
-          address_2: address.address_2,
-          city: address.city,
-          country: address.country,
-          state: address.state,
-          zip: address.zip,
-          phone: address.phone,
-        },
-        presentment_currency: marketStore.guestPreferences?.currency || MARKET_CONFIG.BASE_CURRENCY,
-      };
-
-    if (cartStore.stateCheckoutNow.promoCodes.length > 0) {
-      quoteBody.promo_codes = cartStore.stateCheckoutNow.promoCodes;
-    }
-
-    if (cartStore.stateCheckoutNow.note) {
-      quoteBody.note = cartStore.stateCheckoutNow.note;
-    }
-
-    return quoteBody;
+    return buildBuyNowQuoteBody({
+      isAuthenticated,
+      address,
+      guestCurrency: marketStore.guestPreferences?.currency || MARKET_CONFIG.BASE_CURRENCY,
+      tempCartId,
+      promoCodes: cartStore.stateCheckoutNow.promoCodes,
+      note: cartStore.stateCheckoutNow.note,
+    });
   }
 
 
@@ -119,11 +99,14 @@ export function useSubmitBuyNowCheckout() {
       }
 
       const isAuthenticated = !!dataUserAuth.value?.user;
-      const quoteBody = createQuoteBody(isAuthenticated, address);
-      const quote = isAuthenticated
-        ? await createQuote(quoteBody as CreateCheckoutQuoteForBuyNowRequest)
-        : await createGuestQuote(quoteBody as CreateGuestCheckoutQuoteForBuyNowRequest);
-      const orderBody = createOrderBody(isAuthenticated, quote.quote_id);
+      const acceptedQuote = cartStore.stateCheckoutNow.quote;
+      const quoteId = acceptedQuote
+        ? acceptedQuote.quote_id
+        : (await (isAuthenticated
+          ? createQuote(createQuoteBody(isAuthenticated, address) as CreateCheckoutQuoteForBuyNowRequest)
+          : createGuestQuote(createQuoteBody(isAuthenticated, address) as CreateGuestCheckoutQuoteForBuyNowRequest)
+        )).quote_id;
+      const orderBody = createOrderBody(isAuthenticated, quoteId);
       const result = isAuthenticated
         ? await createOrder(orderBody as CreateOrderForBuyNowRequest)
         : await createGuestOrder(orderBody as CreateGuestOrderForBuyNowRequest);

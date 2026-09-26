@@ -7,6 +7,7 @@ import { useGetCart } from '~/domains/cart/queries/cart.query';
 import { useCreateGuestCheckoutQuoteFromCart } from '~/domains/checkout/mutations/create-checkout-quote-from-cart.mutation';
 import { useCreateGuestOrderFromCart } from '~/domains/checkout/mutations/create-order-from-cart.mutation';
 import { getCheckoutFailureCopy, resolveCheckoutFailure } from '~/domains/checkout/utils/checkout-error';
+import { buildCartQuoteBody } from '~/domains/checkout/utils/checkout-quote-body';
 import { useMarketStore } from '~/domains/market/stores/market.store';
 import { useCheckoutSessionReadiness } from '~/domains/me/composables/use-checkout-session-readiness';
 import { useCreateCheckoutQuoteFromCart } from '~/domains/me/mutations/orders/create-checkout-quote-from-cart.mutation';
@@ -55,40 +56,12 @@ export function useSubmitCartCheckout() {
   const waitForCheckoutSessionUrl = useCheckoutSessionReadiness();
 
   function createQuoteBody(isAuthenticated: boolean, address: CheckoutAddress): CartCheckoutQuoteBody {
-    const quoteBody: CartCheckoutQuoteBody = isAuthenticated
-      ? {
-        user_address_id: 'id' in address ? address.id : '',
-      }
-      : {
-        shipping_address: {
-          full_name: address.full_name,
-          address_1: address.address_1,
-          address_2: address.address_2,
-          city: address.city,
-          country: address.country,
-          state: address.state,
-          zip: address.zip,
-          phone: address.phone,
-        },
-        presentment_currency: marketStore.guestPreferences?.currency || MARKET_CONFIG.BASE_CURRENCY,
-      };
-
-    const additionInfoShopCarts = Array
-      .from(cartStore.additionInfoShopCarts)
-      .map(([shopId, value]) => ({
-        shop_id: shopId,
-        promo_codes: value.promoCodes,
-        note: value.note,
-      }))
-      .filter((item) => {
-        return item.note || item.promo_codes.length > 0;
-      });
-
-    if (additionInfoShopCarts.length > 0) {
-      quoteBody.addition_info_shop_carts = additionInfoShopCarts;
-    }
-
-    return quoteBody;
+    return buildCartQuoteBody({
+      isAuthenticated,
+      address,
+      guestCurrency: marketStore.guestPreferences?.currency || MARKET_CONFIG.BASE_CURRENCY,
+      additionInfoShopCarts: cartStore.additionInfoShopCarts,
+    });
   }
 
   function createOrderBody(isAuthenticated: boolean, quoteId: string): CartOrderBody {
@@ -120,13 +93,16 @@ export function useSubmitCartCheckout() {
       }
 
       const isAuthenticated = !!dataUserAuth.value?.user;
-      const quoteBody = createQuoteBody(isAuthenticated, address);
 
-      const quote = isAuthenticated
-        ? await createQuote(quoteBody as CreateCheckoutQuoteFromCartRequest)
-        : await createGuestQuote(quoteBody as CreateGuestCheckoutQuoteFromCartRequest);
+      const acceptedQuote = cartStore.stateCheckoutCart.quote;
+      const quoteId = acceptedQuote
+        ? acceptedQuote.quote_id
+        : (await (isAuthenticated
+          ? createQuote(createQuoteBody(isAuthenticated, address) as CreateCheckoutQuoteFromCartRequest)
+          : createGuestQuote(createQuoteBody(isAuthenticated, address) as CreateGuestCheckoutQuoteFromCartRequest)
+        )).quote_id;
 
-      const orderBody = createOrderBody(isAuthenticated, quote.quote_id);
+      const orderBody = createOrderBody(isAuthenticated, quoteId);
 
       const result = isAuthenticated
         ? await createOrder(orderBody as CreateOrderFromCartRequest)

@@ -26,6 +26,8 @@ export const useCartStore = defineStore('cart', () => {
     paymentType: PaymentTypes.CARD,
     address: null,
     guestEmail: '',
+    quote: null,
+    isPendingQuote: false,
   };
   const stateCheckoutNow = reactive<StateCheckoutNow>({ ...initStateCheckoutNow });
   function resetStateCheckoutNow() {
@@ -40,6 +42,8 @@ export const useCartStore = defineStore('cart', () => {
     paymentType: PaymentTypes.CARD,
     address: null,
     guestEmail: '',
+    quote: null,
+    isPendingQuote: false,
   };
   const stateCheckoutCart = reactive<StateCheckoutCart>({ ...initStateCheckoutCart });
 

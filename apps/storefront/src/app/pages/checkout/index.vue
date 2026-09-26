@@ -10,11 +10,14 @@ import CheckoutStepper from '~/domains/checkout/ui/checkout-stepper.vue'
 import { CheckoutNowSteps } from '~/domains/cart/stores/cart.store.types'
 import { useCartStore } from '~/domains/cart/stores/cart.store'
 import { useGetCart } from '~/domains/cart/queries/cart.query'
+import { useRequestCheckoutQuote } from '~/domains/checkout/composables/use-request-checkout-quote'
+import { toastCustom } from '~/shared/config/toast'
 
 definePageMeta({ layout: 'market', middleware: ['checkout'] })
 
 const route = useRoute()
 const cartStore = useCartStore()
+const toast = useToast()
 
 const tempCartId = route.query['c'] as string
 
@@ -23,11 +26,71 @@ const {
   data: dataGetCart,
 } = useGetCart({ cart_id: tempCartId })
 
+const {
+  quote,
+  isPendingQuote,
+  requestQuote,
+  clearQuote,
+} = useRequestCheckoutQuote({ mode: 'buy-now', tempCartId })
+
+const quoteShopByShopId = computed(() => new Map(
+  (quote.value?.shops ?? []).map(shop => [shop.shop_id, shop]),
+))
+
+const checkoutShopId = computed(() => dataGetCart.value?.cart?.shop_groups[0]?.shop.id)
+
+const hasCheckoutCartItems = computed(
+  () => (dataGetCart.value?.cart?.shop_groups?.length ?? 0) > 0,
+)
+
+const quoteInputKey = computed(() => JSON.stringify({
+  address: cartStore.stateCheckoutNow.address,
+  promoCodes: cartStore.stateCheckoutNow.promoCodes,
+  note: cartStore.stateCheckoutNow.note,
+  merchandise: dataGetCart.value?.summary?.total_minor ?? null,
+}))
+
+async function refreshQuote() {
+  if (!cartStore.stateCheckoutNow.address) {
+    return
+  }
+
+  try {
+    await requestQuote()
+  }
+  catch {
+    // Submitting the order clears the cart, which ends the review. A quote that
+    // fails because there is nothing left to quote is not a buyer error.
+    if (!hasCheckoutCartItems.value || cartStore.stateCheckoutNow.isPendingCreateOrder) {
+      return
+    }
+
+    toast.add({
+      ...toastCustom.error,
+      title: 'Could not load shipping and totals',
+      description: 'Please review your address and try again.',
+    })
+  }
+}
+
+watch(
+  [() => cartStore.stateCheckoutNow.currentStep, quoteInputKey],
+  ([step]) => {
+    if (step !== CheckoutNowSteps.REVIEW_CONFIRMATION || !hasCheckoutCartItems.value) {
+      return
+    }
+
+    void refreshQuote()
+  },
+  { immediate: true },
+)
+
 onUnmounted(() => {
   cartStore.resetStateCheckoutNow()
 })
 
 const changeUserAddress = () => {
+  clearQuote()
   cartStore.stateCheckoutNow.currentStep = CheckoutNowSteps.ADDRESS_SHIPPING
 }
 
@@ -78,7 +141,11 @@ const changePayment = () => {
             :on-change-payment="changePayment"
             class="mb-12"
           />
-          <ShopCart />
+          <ShopCart
+            :quote-shop="checkoutShopId ? quoteShopByShopId.get(checkoutShopId) : undefined"
+            :checkout-currency="quote?.checkout_currency"
+            :is-pending-quote="isPendingQuote"
+          />
         </div>
       </div>
 
@@ -86,6 +153,7 @@ const changePayment = () => {
         <SummaryOrderCard
           :loading="isPendingGetCart"
           :summary-order="dataGetCart?.summary"
+          :quote="quote ?? undefined"
         />
         <CreateOrderBtn />
       </div>

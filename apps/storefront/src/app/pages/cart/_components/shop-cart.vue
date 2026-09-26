@@ -2,7 +2,7 @@
 import CartShopPromoCoupons from '~/domains/cart/ui/shop-cart/cart-shop-promo-coupons.vue'
 import CartCheckboxOrderProduct from '~/domains/cart/ui/shop-cart/checkbox-order-product.vue'
 import CartShopQuantity from '~/domains/cart/ui/shop-cart/cart-shop-quantity.vue'
-import ShippingSelect from '~/domains/cart/ui/shop-cart/shipping-select.vue'
+import ShopCartSummary from '~/domains/cart/ui/shop-cart/shop-cart-summary.vue'
 import ShopCartCard from '~/domains/cart/ui/shop-cart/shop-cart-card.vue'
 import ShopCartFooter from '~/domains/cart/ui/shop-cart/shop-cart-footer.vue'
 import ShopCartProduct from '~/domains/cart/ui/shop-cart/shop-cart-product.vue'
@@ -56,7 +56,7 @@ const props = defineProps<{
         </template>
 
         <template #shipping>
-          <ShippingSelect :shop-cart="props.shopCart" />
+          <ShopCartSummary :shop-cart="props.shopCart" />
         </template>
       </ShopCartFooter>
     </template>
