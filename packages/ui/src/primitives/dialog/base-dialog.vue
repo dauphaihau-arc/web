@@ -216,7 +216,7 @@ onUnmounted(() => {
             </h1>
             <p
               v-if="description"
-              class="text-sm leading-6 text-text-muted"
+              class="text-sm  text-text-muted"
             >
               {{ description }}
             </p>

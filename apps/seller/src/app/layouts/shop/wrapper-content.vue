@@ -16,7 +16,7 @@ const slots = useSlots()
 
 <template>
   <div>
-    <div class="mb-6 flex justify-between">
+    <div class="mb-6 flex items-start justify-between">
       <div>
         <div
           v-if="backLabel || slots.preTitle"
