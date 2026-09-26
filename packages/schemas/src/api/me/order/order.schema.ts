@@ -1,5 +1,8 @@
 import { z } from 'zod'
-import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
+import { OrderStatuses } from '@arc/enums/order'
+import { FulfillmentAggregateStatuses } from '@arc/enums/fulfillment'
+import { acceptedShippingFieldsSchema } from '@arc/schemas/shipping-quote.schema'
+import { orderFulfillmentSchema } from '../../fulfillment/fulfillment.schema'
 
 export const myOrderListStateSchema = z.enum([
   'awaiting_payment',
@@ -87,6 +90,19 @@ export const checkoutQuoteItemSchema = z.object({
   fx_effective_at: z.coerce.date().optional(),
 })
 
+export const checkoutQuoteShopSchema = z.object({
+  shop_id: z.string(),
+  shop_name: z.string(),
+  shop_slug: z.string(),
+  subtotal_minor: z.number(),
+  discount_minor: z.number(),
+  shipping_minor: z.number(),
+  total_minor: z.number(),
+  note: z.string().optional(),
+  promo_codes: z.array(z.string()),
+  origin_countries: z.array(z.string()),
+}).extend(acceptedShippingFieldsSchema.shape)
+
 export const checkoutQuoteResponseSchema = z.object({
   quote_id: z.string(),
   presentment_currency: z.string().optional(),
@@ -98,6 +114,8 @@ export const checkoutQuoteResponseSchema = z.object({
   shipping_minor: z.number(),
   discount_minor: z.number(),
   total_minor: z.number(),
+  shipping_anchor_at: z.coerce.date().optional(),
+  shops: z.array(checkoutQuoteShopSchema),
   expires_at: z.coerce.date(),
   items: z.array(checkoutQuoteItemSchema),
 })
@@ -138,9 +156,10 @@ export const orderShopProductSchema = z.object({
       slug: z.string(),
     }),
     shipping: z.record(z.unknown()),
+    selected_options: z.array(selectedProductOptionSchema).default([]),
   }),
   inventory: z.object({
-    selected_options: z.array(selectedProductOptionSchema).default([]),
+    sku: z.string().optional(),
   }),
   percent_coupon: z.object({
     percent_off: z.number(),
@@ -153,19 +172,6 @@ export const orderShopProductSchema = z.object({
   original_amount_minor: z.number().nullable().optional(),
   currency: z.string(),
   my_review: orderShopProductReviewSchema.optional(),
-})
-
-export const orderShopShippingSchema = z.object({
-  shipping_status: z.nativeEnum(OrderShippingStatuses),
-  updated_at: z.coerce.date(),
-  to_country: z.string(),
-  from_countries: z.array(z.string()),
-  estimated_delivery: z.coerce.date(),
-  tracking_number: z.string().optional(),
-  shipping_carrier: z.string().optional(),
-  shipment_note: z.string().optional(),
-  shipped_at: z.coerce.date().optional(),
-  delivered_at: z.coerce.date().optional(),
 })
 
 export const orderCancelRequestSchema = z.object({
@@ -191,7 +197,7 @@ export const orderShopResourceSchema = z.object({
     id: z.string(),
     code: z.string(),
   })),
-  shipping: orderShopShippingSchema,
+  fulfillment: orderFulfillmentSchema,
   currency: z.string(),
   subtotal_minor: z.number(),
   shipping_minor: z.number(),
@@ -203,13 +209,13 @@ export const orderShopResourceSchema = z.object({
   customer_support_note: z.string().optional(),
   cancel_requested_at: z.coerce.date().optional(),
   created_at: z.coerce.date(),
-})
+}).extend(acceptedShippingFieldsSchema.shape)
 
 export const getOrderShopsRequestSchema = z.object({
   page: z.number().optional(),
   limit: z.number().optional(),
   status: z.nativeEnum(OrderStatuses).optional(),
-  shipping_status: z.nativeEnum(OrderShippingStatuses).optional(),
+  fulfillment_status: z.nativeEnum(FulfillmentAggregateStatuses).optional(),
   search: z.string().optional(),
   state: myOrderListStateSchema.optional(),
 })

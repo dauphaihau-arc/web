@@ -1,11 +1,14 @@
 import { z } from 'zod'
-import { OrderShippingStatuses, OrderStatuses, PaymentTypes } from '@arc/enums/order'
+import { OrderStatuses, PaymentTypes } from '@arc/enums/order'
+import { FulfillmentAggregateStatuses } from '@arc/enums/fulfillment'
+import { acceptedShippingFieldsSchema } from '@arc/schemas/shipping-quote.schema'
+import { orderFulfillmentSchema } from '../../fulfillment/fulfillment.schema'
 
 export const listShopOrdersRequestSchema = z.object({
   page: z.number().optional(),
   limit: z.number().optional(),
   status: z.array(z.nativeEnum(OrderStatuses)).optional(),
-  shipping_status: z.array(z.nativeEnum(OrderShippingStatuses)).optional(),
+  fulfillment_status: z.array(z.nativeEnum(FulfillmentAggregateStatuses)).optional(),
   created_from: z.string().optional(),
   created_to: z.string().optional(),
   amount_min: z.number().optional(),
@@ -99,19 +102,6 @@ export const shopOrderTimelineEventSchema = z.object({
   payload: z.record(z.string(), z.unknown()).optional(),
 })
 
-export const shopOrderShippingSchema = z.object({
-  shipping_status: z.nativeEnum(OrderShippingStatuses),
-  updated_at: z.coerce.date(),
-  to_country: z.string(),
-  from_countries: z.array(z.string()),
-  estimated_delivery: z.coerce.date(),
-  tracking_number: z.string().optional(),
-  shipping_carrier: z.string().optional(),
-  shipment_note: z.string().optional(),
-  shipped_at: z.coerce.date().optional(),
-  delivered_at: z.coerce.date().optional(),
-})
-
 export const shopOrderSummarySchema = z.object({
   id: z.string(),
   order_number: z.string(),
@@ -136,7 +126,7 @@ export const shopOrderSummarySchema = z.object({
     id: z.string(),
     code: z.string(),
   })),
-  shipping: shopOrderShippingSchema,
+  fulfillment: orderFulfillmentSchema,
   currency: z.string(),
   subtotal_minor: z.number(),
   shipping_minor: z.number(),
@@ -148,7 +138,7 @@ export const shopOrderSummarySchema = z.object({
   customer_support_note: z.string().optional(),
   cancel_requested_at: z.coerce.date().optional(),
   created_at: z.coerce.date(),
-})
+}).extend(acceptedShippingFieldsSchema.shape)
 
 export const shopOrderStatusCountsSchema = z.object({
   all: z.number(),
@@ -193,12 +183,12 @@ export const updateShopOrderStatusRequestSchema = z.object({
   cancel_reason: z.string().max(1000).optional(),
 })
 
-export const updateShopOrderShipmentRequestSchema = z.object({
-  shipping_status: z.nativeEnum(OrderShippingStatuses).optional(),
-  tracking_number: z.string().max(255).optional(),
-  shipping_carrier: z.string().max(255).optional(),
-  shipment_note: z.string().max(5000).optional(),
-})
+export {
+  amendFulfillmentShipmentRequestSchema as amendFulfillmentShipmentRequestSchema,
+  prepareFulfillmentShipmentRequestSchema as prepareFulfillmentShipmentRequestSchema,
+  reconcileOrderFulfillmentRequestSchema as reconcileOrderFulfillmentRequestSchema,
+  updateShipmentJourneyRequestSchema as updateShipmentJourneyRequestSchema,
+} from '../../fulfillment/fulfillment.schema'
 
 export const updateShopOrderRefundRequestSchema = z.object({
   action: z.enum(['request', 'retry']),

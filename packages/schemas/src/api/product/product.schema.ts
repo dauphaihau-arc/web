@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { shippingDestinationScopeSchema } from '@arc/schemas/shipping-profile.schema'
 
 const requestGetListParamsSchema = z.object({
   page: z.union([z.number(), z.any()]).optional(),
@@ -72,7 +73,6 @@ export const getProductsResponseItemSchema = z.object({
   pricing: publicProductListPricingSchema.optional(),
   availability: publicProductListAvailabilitySchema,
   variant_count: z.number().int().nonnegative(),
-  has_free_shipping: z.boolean().optional(),
   created_at: z.union([z.string(), z.date()]),
 })
 
@@ -187,17 +187,11 @@ export const publicProductDetailInventorySchema = z.object({
 })
 
 export const publicProductShippingDestinationSchema = z.object({
-  id: z.string(),
-  country_code: z.string(),
-  delivery_time_label: z.string(),
-  service: z.string(),
-  charge_type: z.string(),
-  rank: z.number(),
+  destination_scope: shippingDestinationScopeSchema,
+  destination_country: z.string().optional(),
 })
 
 export const publicProductShippingSchema = z.object({
-  origin_country: z.string(),
-  process_time_label: z.string(),
   destinations: z.array(publicProductShippingDestinationSchema),
 })
 
