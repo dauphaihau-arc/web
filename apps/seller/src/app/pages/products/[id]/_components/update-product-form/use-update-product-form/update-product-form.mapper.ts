@@ -23,6 +23,7 @@ export function applyDetailProductToFormState(
     'who_made',
     'tags',
     'variant_type',
+    'shipping_profile_id',
   ]);
 
   Object.keys(base).forEach((key) => {
@@ -61,7 +62,7 @@ export function pruneUnchangedUpdateFields(
         );
       }
 
-      return JSON.stringify(value) !== JSON.stringify(detailProduct[key]);
+      return JSON.stringify(value) !== JSON.stringify(detailProduct[key as keyof typeof detailProduct]);
     }),
   );
 

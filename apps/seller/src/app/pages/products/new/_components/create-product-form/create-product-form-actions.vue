@@ -6,6 +6,7 @@ defineProps<{
   hasImages: boolean
   hasCategory: boolean
   loadingSubmit: boolean
+  isShippingReadyForPublish: boolean
   productState?: ProductStates
 }>()
 
@@ -37,7 +38,7 @@ defineEmits<{
       Save draft
     </UButton>
     <UButton
-      :disabled="!enabledButtonSubmit || !hasCategory || !hasImages || loadingSubmit"
+      :disabled="!enabledButtonSubmit || !hasCategory || !hasImages || !isShippingReadyForPublish || loadingSubmit"
       :loading="loadingSubmit && productState === ProductStates.ACTIVE"
       size="md"
       type="submit"

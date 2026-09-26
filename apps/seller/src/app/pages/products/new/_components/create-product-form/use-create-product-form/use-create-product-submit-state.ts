@@ -11,7 +11,6 @@ import {
 import type { FormError, FormSubmitEvent } from '#ui/types';
 import type {
   CreateProductBody,
-  CreateProductShipping,
   StateNoneVariant,
   StateSubmit,
 } from '~/domains/shop/api/product/contracts/form.contract';
@@ -23,7 +22,7 @@ type UseCreateProductSubmitStateInput = {
   hasImages: Ref<boolean> | { value: boolean }
   loadingSubmit: Ref<boolean> | { value: boolean }
   noneVariant: StateNoneVariant
-  shipping: Ref<CreateProductShipping | undefined>
+  shippingProfileId: Ref<string | undefined>
   stateSubmit: StateSubmit
   submit: SubmitCreateProduct
 };
@@ -33,7 +32,7 @@ export function useCreateProductSubmitState({
   hasImages,
   loadingSubmit,
   noneVariant,
-  shipping,
+  shippingProfileId,
   stateSubmit,
   submit,
 }: UseCreateProductSubmitStateInput) {
@@ -62,7 +61,7 @@ export function useCreateProductSubmitState({
   }
 
   watchDebounced(
-    () => [stateSubmit, noneVariant, fileImages.value, shipping],
+    () => [stateSubmit, noneVariant, fileImages.value, shippingProfileId.value],
     () => {
       const baseParsed = createProductFormSchema.safeParse({ ...stateSubmit, state: ProductStates.DRAFT });
       const inventoryParsed = stateSubmit.variant_type === ProductVariantTypes.NONE
@@ -70,13 +69,13 @@ export function useCreateProductSubmitState({
         : undefined;
       const checks = {
         formValid: baseParsed.success,
-        shippingReady: Boolean(shipping.value),
+        shippingAssigned: Boolean(stateSubmit.is_digital || shippingProfileId.value),
         inventoryValid: inventoryParsed?.success ?? true,
         hasCategory: Boolean(stateSubmit.category_id),
         hasImages: hasImages.value,
       };
 
-      enabledButtonSubmit.value = checks.formValid && checks.shippingReady && checks.inventoryValid;
+      enabledButtonSubmit.value = checks.formValid && checks.shippingAssigned && checks.inventoryValid;
 
       log.info('[create-product-form] submit button checks', {
         checks,

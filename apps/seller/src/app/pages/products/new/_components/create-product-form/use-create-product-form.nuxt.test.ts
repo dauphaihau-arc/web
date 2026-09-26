@@ -30,13 +30,12 @@ describe('create product draft action', () => {
           description: 'A handmade cotton shirt with a comfortable everyday fit.',
         });
         form.noneVariant.amount = 15;
-        form.shipping.value = {
-          country: 'US', zip: '10001', process_time: '1-3', standard_shipping: [],
-        } as never;
+        form.shippingProfileId.value = '4eb9fb0a-fd36-43c1-bae1-162eef13666c';
         return () => h(CreateProductFormActions, {
           enabledButtonSubmit: form.enabledButtonSubmit.value,
           hasCategory: Boolean(form.stateSubmit.category_id),
           hasImages: true,
+          isShippingReadyForPublish: true,
           loadingSubmit: false,
           productState: form.stateSubmit.state,
           onSaveDraft: () => {

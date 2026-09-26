@@ -5,9 +5,9 @@ import type {
   createDraftProductRequestInventorySchema,
   createDraftProductRequestPricingSchema,
   createDraftProductRequestSchema,
-  createDraftProductRequestShippingSchema,
   createDraftProductRequestVariantSchema,
   createDraftProductResponseSchema,
+  createDraftProductResponseShippingSchema,
 } from '~/domains/shop/api/schemas/product/create-draft.schema';
 
 export type CreateDraftProductRequestImage = z.infer<typeof createDraftProductRequestImageSchema>;
@@ -15,6 +15,6 @@ export type CreateDraftProductRequestAttribute = z.infer<typeof createDraftProdu
 export type CreateDraftProductRequestVariant = z.infer<typeof createDraftProductRequestVariantSchema>;
 export type CreateDraftProductRequestInventory = z.infer<typeof createDraftProductRequestInventorySchema>;
 export type CreateDraftProductRequestPricing = z.infer<typeof createDraftProductRequestPricingSchema>;
-export type CreateDraftProductRequestShipping = z.infer<typeof createDraftProductRequestShippingSchema>;
+export type CreateDraftProductResponseShipping = z.infer<typeof createDraftProductResponseShippingSchema>;
 export type CreateDraftProductRequest = z.infer<typeof createDraftProductRequestSchema>;
 export type CreateDraftProductResponse = z.infer<typeof createDraftProductResponseSchema>;

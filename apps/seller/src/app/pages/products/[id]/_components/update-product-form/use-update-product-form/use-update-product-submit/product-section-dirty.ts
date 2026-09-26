@@ -52,6 +52,20 @@ export function hasNoneVariantPricingChange(
   return noneVariant.amount !== detailProduct.inventory.amount;
 }
 
+export function hasShippingProfileChange(
+  dataSubmit: UpdateProductBody,
+  detailProduct: DetailShopProductResponse['product'] | undefined,
+) {
+  // `submit` receives the pruned body, so an omitted key means "not edited",
+  // not "cleared". Comparing an absent key against the saved id would mark the
+  // section dirty and PUT `shipping_profile_id: null`.
+  if (!detailProduct || dataSubmit.shipping_profile_id === undefined) {
+    return false;
+  }
+
+  return dataSubmit.shipping_profile_id !== detailProduct.shipping_profile_id;
+}
+
 export function getDirtyProductSectionIds({
   dataSubmit,
   detailProduct,
@@ -107,6 +121,10 @@ export function getDirtyProductSectionIds({
 
   if (DETAILS_FIELDS.some(field => changedFields.has(field))) {
     dirtySections.push('product-details');
+  }
+
+  if (hasShippingProfileChange(dataSubmit, detailProduct)) {
+    dirtySections.push('product-shipping');
   }
 
   return dirtySections;

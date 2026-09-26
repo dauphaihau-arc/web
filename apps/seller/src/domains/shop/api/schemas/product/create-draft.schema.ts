@@ -1,8 +1,6 @@
 import { z } from 'zod';
-import {
-  ProductShippingCharge,
-  ProductWhoMade,
-} from '@arc/enums/product';
+import { shippingRateSchema } from '@arc/schemas/shipping-profile.schema';
+import { ProductWhoMade } from '@arc/enums/product';
 
 export const createDraftProductRequestImageSchema = z.object({
   storage_key: z.string(),
@@ -52,18 +50,17 @@ export const createDraftProductRequestPricingSchema = z.object({
   currency: z.string(),
 });
 
-export const createDraftProductRequestShippingDestinationSchema = z.object({
-  country_code: z.string(),
-  delivery_time_label: z.string(),
-  service: z.string(),
-  charge_type: z.nativeEnum(ProductShippingCharge),
-});
-
-export const createDraftProductRequestShippingSchema = z.object({
-  origin_country: z.string(),
-  origin_zip: z.string(),
-  process_time_label: z.string(),
-  destinations: z.array(createDraftProductRequestShippingDestinationSchema),
+export const createDraftProductResponseShippingSchema = z.object({
+  profile_id: z.string(),
+  profile_name: z.string(),
+  profile_status: z.enum(['draft', 'active', 'archived']),
+  profile_version: z.number().int().nonnegative(),
+  currency: z.string().optional(),
+  ship_from_country: z.string().optional(),
+  ship_from_postal: z.string().optional(),
+  checkout_ready: z.boolean(),
+  readiness_issues: z.array(z.string()),
+  rates: z.array(shippingRateSchema),
 });
 
 export const createDraftProductRequestSchema = z.object({
@@ -80,7 +77,7 @@ export const createDraftProductRequestSchema = z.object({
   variants: z.array(createDraftProductRequestVariantSchema).optional(),
   inventory: z.array(createDraftProductRequestInventorySchema),
   pricing: z.array(createDraftProductRequestPricingSchema),
-  shipping: createDraftProductRequestShippingSchema,
+  shipping_profile_id: z.string().uuid().optional(),
 });
 
 export const createDraftProductResponseSchema = z.object({
@@ -133,18 +130,5 @@ export const createDraftProductResponseSchema = z.object({
     original_amount_minor: z.number().int().nonnegative().optional(),
     currency: z.string(),
   })),
-  shipping: z.object({
-    id: z.string(),
-    origin_country: z.string(),
-    origin_zip: z.string(),
-    process_time_label: z.string(),
-    destinations: z.array(z.object({
-      id: z.string(),
-      country_code: z.string(),
-      delivery_time_label: z.string(),
-      service: z.string(),
-      charge_type: z.nativeEnum(ProductShippingCharge),
-      rank: z.number(),
-    })),
-  }).optional(),
+  shipping: createDraftProductResponseShippingSchema.optional(),
 });

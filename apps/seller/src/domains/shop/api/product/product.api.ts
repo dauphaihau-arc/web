@@ -19,6 +19,7 @@ import type {
 } from './contracts/read.contract';
 import { normalizeDetailShopProductResponse } from './normalizers/detail-shop-product.normalizer';
 import type {
+  AssignShippingProfileBody,
   SetProductAttributesRequestBody,
   SetProductImagesByKeysRequestBody,
   UpdateProductDetailsRequestBody,
@@ -174,6 +175,20 @@ export const shopProductApi = {
       body,
       options,
     ).then(normalizeProductMutationResponse);
+  },
+
+  assignShippingProfile(
+    shopId: string,
+    productId: string,
+    payload: AssignShippingProfileBody,
+  ): Promise<void> {
+    const { body, options } = splitIdempotency(payload);
+
+    return apiClient.put(
+      `/shops/${shopId}/products/${productId}/shipping-profile`,
+      { shipping_profile_id: body.shippingProfileId },
+      options,
+    );
   },
 
   downloadImportTemplate(shopId: string) {

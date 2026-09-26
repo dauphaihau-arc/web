@@ -5,12 +5,14 @@ import type { RequestGetListParams } from '@arc/contracts/common';
 import type {
   createProductFormSchema,
   createProductInventoryFormSchema,
-  createProductShippingFormSchema,
   updateVariantOptionsFormSchema,
 } from '~/domains/shop/schemas/product/create-product-form.schema';
 import type { updateProductFormSchema } from '~/domains/shop/schemas/product/update-product-form.schema';
 
-export type CreateProductShipping = z.infer<typeof createProductShippingFormSchema>;
+export type CreateProductShipping = {
+  shipping_profile_id?: string
+};
+
 export type CreateProductInventory = z.infer<typeof createProductInventoryFormSchema>;
 export type CreateProductBody = z.infer<typeof createProductFormSchema>;
 export type UpdateProductBody = z.infer<typeof updateProductFormSchema>;

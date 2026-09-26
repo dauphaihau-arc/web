@@ -22,8 +22,14 @@ import {
   REMOVE_OPTIONS_LABEL,
 } from '~/app/pages/products/_components/variant-input/variant-input.constants'
 import FormGroupCard from '~/shared/ui/wrapper-form-group-card.vue'
+import ProductShippingProfileSection from '~/domains/shop/ui/shipping-profile/product-shipping-profile-section.vue'
+import ShippingProfileEditorDialog from '~/domains/shop/ui/shipping-profile/shipping-profile-editor-dialog.vue'
+import type { ShippingProfileResource } from '~/domains/shop/api/shipping-profile/contracts/shipping-profile.contract'
+import { useGetMyShop } from '~/domains/shop/queries/my-shop.query'
 
 const sections = UPDATE_PRODUCT_FORM_SECTIONS
+const modal = useModal()
+const { data: myShop } = useGetMyShop()
 
 const {
   btnSubmit,
@@ -57,6 +63,16 @@ const {
   variantSubmission,
   validateForm,
 } = useUpdateProductForm()
+
+function openShippingProfileEditor(profile?: ShippingProfileResource) {
+  modal.open(ShippingProfileEditorDialog, {
+    profile,
+    shopCurrency: myShop.value?.currency,
+    onSaved(savedProfile) {
+      stateSubmit.shipping_profile_id = savedProfile.id
+    },
+  })
+}
 </script>
 
 <template>
@@ -242,6 +258,26 @@ const {
           </template>
         </FormGroupCard>
       </section>
+
+      <ProductShippingProfileSection
+        v-if="!stateSubmit.is_digital"
+        v-model="stateSubmit.shipping_profile_id"
+        :disabled="loadingSubmit"
+        :fallback-profile-name="dataDetailProduct?.product.shipping?.profile_name"
+        @create="openShippingProfileEditor()"
+        @edit="openShippingProfileEditor"
+      >
+        <template #before-content>
+          <SectionStateAlert
+            :section-id="'product-shipping'"
+            :state="sectionStates['product-shipping']"
+            :label="sectionStateLabel(sectionStates['product-shipping'])"
+            :loading-refresh="loadingRefreshSection === 'product-shipping'"
+            @reapply="reapplyConflictSection('product-shipping', stateSubmit)"
+            @refresh="refreshProductState('product-shipping')"
+          />
+        </template>
+      </ProductShippingProfileSection>
 
       <button
         ref="btnSubmit"

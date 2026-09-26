@@ -1,14 +1,13 @@
 import type { Ref } from 'vue';
 import type { DetailShopProductResponse } from '~/domains/shop/api/product/contracts/read.contract';
 
-
 export type ProductSkuConflict = {
   sku?: string
   inventoryId?: string
   variantId?: string
   clientRef?: string
 };
-export type ProductFormSectionId = 'product-basic-info' | 'product-inventory' | 'product-details';
+export type ProductFormSectionId = 'product-basic-info' | 'product-inventory' | 'product-details' | 'product-shipping';
 export type ProductFormSectionStatus = 'idle' | 'dirty' | 'pending' | 'success' | 'error' | 'conflict';
 
 export type ProductFormSectionState = {
@@ -32,6 +31,7 @@ export const PRODUCT_FORM_SECTION_IDS: ProductFormSectionId[] = [
   'product-basic-info',
   'product-inventory',
   'product-details',
+  'product-shipping',
 ];
 
 export function createUpdateProductSectionStates(): ProductFormSectionStates {
@@ -39,6 +39,7 @@ export function createUpdateProductSectionStates(): ProductFormSectionStates {
     'product-basic-info': { status: 'idle' },
     'product-inventory': { status: 'idle' },
     'product-details': { status: 'idle' },
+    'product-shipping': { status: 'idle' },
   };
 }
 

@@ -32,3 +32,12 @@ export type SetProductAttributesRequestBody = ProductMutationVersionBody & {
     selected_text?: string
   }>
 };
+
+/**
+ * Assignment payload in internal camelCase; the API client maps it to the
+ * snake_case `shipping_profile_id` wire field.
+ */
+export type AssignShippingProfileBody = {
+  idempotency_key: string
+  shippingProfileId: string | null
+};

@@ -115,6 +115,8 @@ export function normalizeDetailShopProductResponse(
       attribute: attribute.category_attribute_id,
       selected: attribute.selected_option_id ?? attribute.selected_text ?? '',
     })),
+    shipping_profile_id: response.shipping?.profile_id,
+    shipping: response.shipping,
   };
 
   if (variantType === ProductVariantTypes.NONE) {

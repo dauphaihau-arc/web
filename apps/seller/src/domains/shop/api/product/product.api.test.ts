@@ -33,17 +33,7 @@ describe('shopProductApi.createDraft', () => {
       variants: [{ client_ref: 'default', selections: [], lifecycle_state: 'active' }],
       inventory: [{ variant_client_key: 'default', stock: 1 }],
       pricing: [{ variant_client_key: 'default', amount_minor: 19900, currency: 'USD' }],
-      shipping: {
-        origin_country: 'DZ',
-        origin_zip: '700000',
-        process_time_label: '1d',
-        destinations: [{
-          country_code: 'DZ',
-          delivery_time_label: '6-13d',
-          service: 'other',
-          charge_type: 'free_shipping',
-        }],
-      },
+      shipping_profile_id: '4eb9fb0a-fd36-43c1-bae1-162eef13666c',
     } as CreateDraftProductRequest;
 
     await shopProductApi.createDraft('shop-1', payload);
@@ -61,17 +51,7 @@ describe('shopProductApi.createDraft', () => {
         variants: [{ client_ref: 'default', selections: [], lifecycle_state: 'active' }],
         inventory: [{ variant_client_key: 'default', stock: 1 }],
         pricing: [{ variant_client_key: 'default', amount_minor: 19900, currency: 'USD' }],
-        shipping: {
-          origin_country: 'DZ',
-          origin_zip: '700000',
-          process_time_label: '1d',
-          destinations: [{
-            country_code: 'DZ',
-            delivery_time_label: '6-13d',
-            service: 'other',
-            charge_type: 'free_shipping',
-          }],
-        },
+        shipping_profile_id: '4eb9fb0a-fd36-43c1-bae1-162eef13666c',
       },
       {
         headers: {
@@ -187,6 +167,29 @@ describe('shopProductApi.setImagesByKeys', () => {
       {
         headers: {
           'Idempotency-Key': 'images-key-1',
+        },
+      },
+    );
+  });
+});
+
+describe('shopProductApi.assignShippingProfile', () => {
+  it('sends the profile assignment idempotency key as a header', async () => {
+    vi.mocked(apiClient.put).mockResolvedValue(undefined);
+
+    await shopProductApi.assignShippingProfile('shop-1', 'product-1', {
+      idempotency_key: 'shipping-key-1',
+      shippingProfileId: '4eb9fb0a-fd36-43c1-bae1-162eef13666c',
+    });
+
+    expect(apiClient.put).toHaveBeenCalledWith(
+      '/shops/shop-1/products/product-1/shipping-profile',
+      {
+        shipping_profile_id: '4eb9fb0a-fd36-43c1-bae1-162eef13666c',
+      },
+      {
+        headers: {
+          'Idempotency-Key': 'shipping-key-1',
         },
       },
     );

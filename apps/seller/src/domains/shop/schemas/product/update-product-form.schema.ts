@@ -6,7 +6,6 @@ import {
   productStateUserCanModify,
 } from '@arc/schemas/product.schema';
 
-
 export const updateProductFormSchema = baseProductSchema
   .pick({
     title: true,
@@ -20,6 +19,7 @@ export const updateProductFormSchema = baseProductSchema
       state: productStateUserCanModify,
       variant_type: z.nativeEnum(ProductVariantTypes),
       category_id: idSchema,
+      shipping_profile_id: idSchema.optional(),
       attributes: z.array(
         z.object({
           attribute_id: idSchema,

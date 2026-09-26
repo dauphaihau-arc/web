@@ -22,6 +22,11 @@ import type { VariantEditorSubmission } from '../update-product-form.types';
 import type { DetailShopProductResponse } from '~/domains/shop/api/product/contracts/read.contract';
 import type { UpdateProductBody } from '~/domains/shop/api/product/contracts/form.contract';
 
+/** The submit hook surface these cases drive directly, without a mount-level form submit. */
+type UpdateProductSubmitHarness = {
+  onSubmit: (event: unknown) => Promise<void>
+};
+
 function buildApi() {
   return {
     setVariantConfiguration: vi.fn().mockImplementation(async (_shopId, _productId, payload) => ({
@@ -399,6 +404,46 @@ describe('actual update submit chain', () => {
       'save',
       undefined,
       true,
+    );
+  });
+
+  it('submits a newly selected shipping profile instead of dropping it to null', async () => {
+    const submit = vi.fn();
+    const harness = defineComponent({
+      setup(_, { expose }) {
+        const editor = useUpdateProductSubmitState({
+          btnSubmit: ref(),
+          dataDetailProduct: ref({
+            product: { ...baseProduct, shipping_profile_id: 'profile-current' },
+          }),
+          fileImages: ref([]),
+          idsImageForDelete: ref([]),
+          isVariantInputValid: ref(true),
+          isVariantProduct: computed(() => false),
+          isVariantsDirty: ref(false),
+          noneVariant: reactive({}),
+          stateSubmit: reactive({ shipping_profile_id: 'profile-next' }),
+          sectionStates: reactive(createUpdateProductSectionStates()),
+          submit,
+          variantSubmission: ref<VariantEditorSubmission | undefined>(),
+        });
+        const exposed: UpdateProductSubmitHarness = {
+          onSubmit: event => editor.onSubmit(event as never),
+        };
+        expose(exposed);
+        return () => h('form');
+      },
+    });
+    const wrapper = mount(harness);
+    await flushPromises();
+
+    await (wrapper.vm as unknown as UpdateProductSubmitHarness).onSubmit({});
+
+    expect(submit).toHaveBeenCalledWith(
+      { shipping_profile_id: 'profile-next' },
+      'save',
+      undefined,
+      false,
     );
   });
 

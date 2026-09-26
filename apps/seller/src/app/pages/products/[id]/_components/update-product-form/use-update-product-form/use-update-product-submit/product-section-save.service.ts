@@ -117,6 +117,16 @@ export async function saveUpdateProductSections({
         });
       }
 
+      if (sectionId === 'product-shipping') {
+        currentDetail = await saveShippingSection({
+          api,
+          currentDetail,
+          dataSubmit,
+          idempotencyKey,
+          shopId,
+        });
+      }
+
       sectionStates[sectionId].productVersion = undefined;
       sectionStates[sectionId].status = 'success';
       onSectionSaved?.(currentDetail);
@@ -318,6 +328,30 @@ async function saveDetailsSection({
   }
 
   return currentDetail;
+}
+
+async function saveShippingSection({
+  api,
+  currentDetail,
+  dataSubmit,
+  idempotencyKey,
+  shopId,
+}: {
+  api: typeof shopProductApi
+  currentDetail: DetailShopProductResponse
+  dataSubmit: UpdateProductBody
+  idempotencyKey: () => string
+  shopId: string
+}) {
+  const product = currentDetail.product;
+
+  await api.assignShippingProfile(shopId, product.id, {
+    idempotency_key: idempotencyKey(),
+    shippingProfileId: dataSubmit.shipping_profile_id ?? null,
+  });
+
+  const refreshed = await api.detail(shopId, product.id);
+  return refreshed;
 }
 
 function resolveSectionProductVersion(

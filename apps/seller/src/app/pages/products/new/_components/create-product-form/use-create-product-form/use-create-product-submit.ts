@@ -15,7 +15,6 @@ import { useShopSetProductImagesByKeys } from '~/domains/shop/mutations/set-prod
 import { useIssueProductImageUploadUrl } from '~/domains/shop/mutations/issue-product-image-upload-url.mutation';
 import type {
   CreateProductBody,
-  CreateProductShipping,
   StateCombineVariant,
   StateNoneVariant,
   StateSingleVariant,
@@ -24,7 +23,7 @@ import type {
 
 type UseCreateProductSubmitInput = {
   fileImages: Ref<File[]>
-  shipping: Ref<CreateProductShipping | undefined>
+  shippingProfileId: Ref<string | undefined>
   shopCurrency: Ref<string> | { value: string } | string
   noneVariant: Ref<StateNoneVariant> | { value: StateNoneVariant } | StateNoneVariant
   singleVariant: Ref<StateSingleVariant> | { value: StateSingleVariant } | StateSingleVariant
@@ -40,7 +39,7 @@ function unwrap<T>(value: Ref<T> | { value: T } | T): T {
 
 export function useCreateProductSubmit({
   fileImages,
-  shipping,
+  shippingProfileId,
   shopCurrency,
   noneVariant,
   singleVariant,
@@ -123,14 +122,14 @@ export function useCreateProductSubmit({
       return;
     }
 
-    if (!shipping.value) {
-      log.error('shipping be undefined');
+    if (!stateSubmit.is_digital && !shippingProfileId.value) {
+      log.error('shipping profile is required');
       return;
     }
 
     const bodyData = buildCreateProductSubmitBody(
       dataSubmit,
-      shipping.value,
+      shippingProfileId.value,
       unwrap(noneVariant),
       unwrap(singleVariant),
       unwrap(combineVariant),

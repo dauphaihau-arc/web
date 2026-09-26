@@ -10,11 +10,11 @@ import SearchCategoryInput from '../../../_components/search-category-input.vue'
 import SelectAttributesInput from '../../../_components/select-attributes-input.vue'
 import TagsInput from '../../../_components/tags-input.vue'
 import ProductFormSectionNav from '../../../_components/product-form-section-nav.vue'
-import CreateShippingProductDialog from './create-shipping-product-dialog/create-shipping-product-dialog.vue'
+import ShippingProfileEditorDialog from '~/domains/shop/ui/shipping-profile/shipping-profile-editor-dialog.vue'
 import ImagesInput from './images-input.vue'
 import VariantInput from './variant-input/variant-input.vue'
 import CreateProductFormActions from './create-product-form-actions.vue'
-import CreateProductShippingSection from './create-product-shipping-section.vue'
+import ProductShippingProfileSection from '~/domains/shop/ui/shipping-profile/product-shipping-profile-section.vue'
 import { PRODUCT_FORM_SECTIONS } from './create-product-form.constants'
 import { useCreateProductForm } from './use-create-product-form/use-create-product-form'
 import {
@@ -23,6 +23,7 @@ import {
 } from '~/app/pages/products/_components/variant-input/variant-input.constants'
 import FormGroupCard from '~/shared/ui/wrapper-form-group-card.vue'
 import { routes } from '~/shared/navigation/routes'
+import type { ShippingProfileResource } from '~/domains/shop/api/shipping-profile/contracts/shipping-profile.contract'
 
 const router = useRouter()
 const modal = useModal()
@@ -39,12 +40,13 @@ const {
   hasImages,
   isAiDescriptionEnabled,
   isProductHaveVariants,
+  isShippingReadyForPublish,
   loadingSubmit,
   noneVariant,
   onErrorFrom,
   onGenerateDescription,
   onSubmit,
-  shipping,
+  shippingProfileId,
   shopCurrency,
   singleVariant,
   stateSubmit,
@@ -52,11 +54,12 @@ const {
   validateForm,
 } = useCreateProductForm()
 
-const showCreateShippingProductDialog = () => {
-  modal.open(CreateShippingProductDialog, {
-    initData: shipping.value,
-    onApply(val) {
-      shipping.value = val
+function openShippingProfileEditor(profile?: ShippingProfileResource) {
+  modal.open(ShippingProfileEditorDialog, {
+    profile,
+    shopCurrency: shopCurrency.value,
+    onSaved(profile) {
+      shippingProfileId.value = profile.id
     },
   })
 }
@@ -269,9 +272,12 @@ function onPublishProduct() {
         </FormGroupCard>
       </section>
 
-      <CreateProductShippingSection
-        :shipping="shipping"
-        @edit="showCreateShippingProductDialog"
+      <ProductShippingProfileSection
+        v-if="!stateSubmit.is_digital"
+        v-model="shippingProfileId"
+        :disabled="loadingSubmit"
+        @create="openShippingProfileEditor()"
+        @edit="openShippingProfileEditor"
       />
 
       <button
@@ -284,6 +290,7 @@ function onPublishProduct() {
     <CreateProductFormActions
       :enabled-button-submit="enabledButtonSubmit"
       :has-images="hasImages"
+      :is-shipping-ready-for-publish="isShippingReadyForPublish"
       :has-category="!!stateSubmit.category_id"
       :loading-submit="loadingSubmit"
       :product-state="stateSubmit.state"

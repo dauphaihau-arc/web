@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { idSchema } from '@arc/schemas/primitives/id.schema';
 import { productInventorySchema } from '@arc/schemas/product-inventory.schema';
-import { productShippingSchema } from '@arc/schemas/product-shipping.schema';
 import { productVariantOptSchema, productVariantSchema } from '@arc/schemas/product-variant.schema';
 import { ProductStates, ProductVariantTypes } from '@arc/enums/product';
 import {
@@ -13,13 +12,6 @@ export const createProductInventoryFormSchema = productInventorySchema.pick({
   amount: true,
   sku: true,
   stock: true,
-});
-
-export const createProductShippingFormSchema = productShippingSchema.pick({
-  country: true,
-  zip: true,
-  process_time: true,
-  standard_shipping: true,
 });
 
 export const createProductFormSchema = baseProductSchema

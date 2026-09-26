@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { shippingRateSchema } from '@arc/schemas/shipping-profile.schema';
 import { ProductStates, ProductVariantTypes } from '@arc/enums/product';
 
 const requestGetListParamsSchema = z.object({
@@ -55,6 +56,19 @@ const productVariantApiSchema = z.object({
   image_url: z.string().optional(),
   removed_at: z.coerce.date().optional(),
   rank: z.number(),
+});
+
+export const shopProductShippingApiSchema = z.object({
+  profile_id: z.string(),
+  profile_name: z.string(),
+  profile_status: z.enum(['draft', 'active', 'archived']),
+  profile_version: z.number().int().nonnegative(),
+  currency: z.string().optional(),
+  ship_from_country: z.string().optional(),
+  ship_from_postal: z.string().optional(),
+  checkout_ready: z.boolean(),
+  readiness_issues: z.array(z.string()),
+  rates: z.array(shippingRateSchema),
 });
 
 export const listShopProductsItemSchema = z.object({
@@ -153,20 +167,7 @@ export const shopProductDetailApiResponseSchema = z.object({
     name: z.string().optional(),
   })),
   inventory: z.array(shopProductInventoryApiSchema),
-  shipping: z.object({
-    id: z.string(),
-    origin_country: z.string(),
-    origin_zip: z.string(),
-    process_time_label: z.string(),
-    destinations: z.array(z.object({
-      id: z.string(),
-      country_code: z.string(),
-      delivery_time_label: z.string(),
-      service: z.string(),
-      charge_type: z.string(),
-      rank: z.number(),
-    })),
-  }).optional(),
+  shipping: shopProductShippingApiSchema.optional(),
 });
 
 export const detailShopProductInventorySchema = z.object({
@@ -245,6 +246,8 @@ export const detailShopProductResponseSchema = z.object({
     })),
     inventory: detailShopProductInventorySchema,
     variants: z.array(detailShopProductVariantSchema),
+    shipping_profile_id: z.string().optional(),
+    shipping: shopProductShippingApiSchema.optional(),
   }),
 });
 

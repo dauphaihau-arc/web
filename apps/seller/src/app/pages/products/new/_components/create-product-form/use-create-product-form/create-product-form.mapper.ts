@@ -4,8 +4,10 @@ import { MarketCurrencies } from '@arc/enums/market';
 import { ProductVariantTypes } from '@arc/enums/product';
 import type { PickPartial } from '@arc/contracts/utils';
 import type {
+  CombineVariant,
   CreateProductBody,
-  CreateProductShipping,
+  NoneVariant,
+  SingleVariant,
   StateCombineVariant,
   StateNoneVariant,
   StateSingleVariant,
@@ -13,7 +15,7 @@ import type {
 import type { CreateDraftProductRequest as RequestCreateProductDraftBody } from '~/domains/shop/api/product/contracts/create-draft.contract';
 
 export type CreateProductSubmitBody = {
-  shipping: CreateProductShipping
+  shippingProfileId?: string
 } & PickPartial<CreateProductBody, 'attributes' | 'tags'> & (
   NoneVariant
   | SingleVariant
@@ -38,14 +40,14 @@ export function pruneEmptyCreateProductFields(
 
 export function buildCreateProductSubmitBody(
   dataSubmit: PickPartial<CreateProductBody, 'attributes' | 'tags'>,
-  shipping: CreateProductShipping,
+  shippingProfileId: string | undefined,
   noneVariant: StateNoneVariant,
   singleVariant: StateSingleVariant,
   combineVariant: StateCombineVariant,
 ): CreateProductSubmitBody | null {
   let bodyData: CreateProductSubmitBody = {
     ...dataSubmit,
-    shipping,
+    shippingProfileId,
   } as CreateProductSubmitBody;
 
   switch (bodyData.variant_type) {
@@ -215,21 +217,6 @@ export function mapInventoryAndVariants(
   };
 }
 
-export function mapShipping(
-  data: CreateProductShipping,
-): RequestCreateProductDraftBody['shipping'] {
-  return {
-    origin_country: data.country,
-    origin_zip: data.zip,
-    process_time_label: data.process_time,
-    destinations: data.standard_shipping.map(destination => ({
-      country_code: destination.country,
-      delivery_time_label: destination.delivery_time,
-      service: destination.service,
-      charge_type: destination.charge,
-    })),
-  };
-}
 
 export function buildCreateProductPayload(
   bodyData: CreateProductSubmitBody,
@@ -248,7 +235,7 @@ export function buildCreateProductPayload(
       ? mapAttributes(bodyData.attributes)
       : undefined,
     ...mapInventoryAndVariants(bodyData, currency),
-    shipping: mapShipping(bodyData.shipping),
+    shipping_profile_id: bodyData.is_digital ? undefined : bodyData.shippingProfileId,
   };
 }
 

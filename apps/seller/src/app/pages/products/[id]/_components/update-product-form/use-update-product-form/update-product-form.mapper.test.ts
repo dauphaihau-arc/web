@@ -53,6 +53,26 @@ describe('pruneUnchangedUpdateFields', () => {
       title: 'Edited draft',
     }, detailProduct as never)).toEqual({ title: 'Edited draft' });
   });
+
+  it('keeps a newly selected shipping profile so the assignment call can send it', () => {
+    const detailProduct = {
+      shipping_profile_id: 'profile-current',
+    };
+
+    expect(pruneUnchangedUpdateFields({
+      shipping_profile_id: 'profile-next',
+    }, detailProduct as never)).toEqual({ shipping_profile_id: 'profile-next' });
+  });
+
+  it('drops the shipping profile when the selection still matches the persisted assignment', () => {
+    const detailProduct = {
+      shipping_profile_id: 'profile-current',
+    };
+
+    expect(pruneUnchangedUpdateFields({
+      shipping_profile_id: 'profile-current',
+    }, detailProduct as never)).toEqual({});
+  });
 });
 
 describe('hasNoneVariantChanges', () => {
