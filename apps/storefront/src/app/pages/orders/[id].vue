@@ -84,6 +84,7 @@ const shippingAddressLines = computed(() => {
         <ShopItem
           :order-shop="displayOrderShop"
           :show-detail-link="false"
+          fulfillment-display="detail"
           :allow-post-purchase-actions="true"
           :show-review-cta="true"
         />

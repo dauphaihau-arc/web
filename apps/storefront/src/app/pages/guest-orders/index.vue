@@ -177,6 +177,7 @@ async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zi
           :order-shop="orderShop"
           :allow-post-purchase-actions="false"
           :show-detail-link="false"
+          fulfillment-display="detail"
         />
       </div>
     </div>

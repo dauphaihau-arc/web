@@ -89,12 +89,8 @@ const showMore = ref(false)
               {{ formatMinorCurrency(orderShop.subtotal_minor - orderShop.discount_minor, orderShop.currency) }}
             </div>
             <div
-              v-if="orderShop.shipping_minor === 0"
-              class="text-right font-medium text-[var(--state-success-text)]"
+              class="text-right"
             >
-              FREE
-            </div>
-            <div v-else>
               {{ formatMinorCurrency(orderShop.shipping_minor, orderShop.currency) }}
             </div>
           </div>

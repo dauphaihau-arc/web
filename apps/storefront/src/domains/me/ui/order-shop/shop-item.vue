@@ -3,11 +3,12 @@ import dayjs from 'dayjs'
 import type { ElementType } from '@arc/contracts/utils'
 import { formatMinorCurrency } from '@arc/utils'
 import NoteAndPromoCoupons from './note-and-promo-coupons.vue'
+import OrderItemsTable from './order-items-table.vue'
 import PaymentAndSummaryOrder from './payment-and-summary-order.vue'
 import ShopActions from './shop-actions/shop-actions.vue'
-import ShopProduct from './shop-product.vue'
 import ShopShippingInfo from './shop-shipping-info.vue'
 import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract'
+import { routes } from '~/shared/navigation/routes'
 import {
   mergeOrderShopWithLiveUpdate,
   useOrderLiveUpdates,
@@ -16,10 +17,12 @@ import {
 const props = withDefaults(defineProps<{
   orderShop: ElementType<GetOrderShopsResponse['order_shops']>
   allowPostPurchaseActions?: boolean
+  fulfillmentDisplay?: 'summary' | 'detail'
   showDetailLink?: boolean
   showReviewCta?: boolean
 }>(), {
   allowPostPurchaseActions: true,
+  fulfillmentDisplay: 'summary',
   showDetailLink: true,
   showReviewCta: true,
 })
@@ -39,12 +42,32 @@ const displayOrderShop = computed(() =>
     getUpdate(props.orderShop.id),
   ),
 )
+
+const itemRows = computed(() => displayOrderShop.value.products.map(product => ({
+  id: product.id,
+  title: product.title,
+  imageUrl: product.image_url,
+  variantLabels: product.product.selected_options
+    .map(option => `${option.option_name}: ${option.value}`),
+  quantity: product.quantity,
+  unitPriceMinor: product.amount_minor,
+  originalUnitPriceMinor: product.original_amount_minor,
+  percentOff: product.percent_coupon?.percent_off ?? null,
+  currency: displayOrderShop.value.currency,
+})))
+
+const productLinkByItemId = computed(() => new Map(
+  displayOrderShop.value.products.map(product => [
+    product.id,
+    routes.productDetail(product.product.shop.slug, product.product.slug),
+  ]),
+))
 </script>
 
 <template>
   <div class="mb-16 grid grid-cols-12 gap-16">
     <div class="col-span-8">
-      <UCard class="relative">
+      <UCard class="relative pt-10">
         <div class="absolute -left-1 -top-4 flex w-[101%] items-center justify-between rounded-md border border-border-subtle bg-surface-muted px-4 py-3 text-text-muted shadow-border">
           <div>
             <div class="text-xs font-medium uppercase tracking-[0.14em] text-text-muted">
@@ -63,12 +86,18 @@ const displayOrderShop = computed(() =>
           </div>
         </div>
 
-        <div
-          v-for="(product, idx) of displayOrderShop.products"
-          :key="idx"
-        >
-          <ShopProduct :product-order="product" />
-        </div>
+        <OrderItemsTable :rows="itemRows">
+          <template #row-actions="{ row }">
+            <UButton
+              :to="productLinkByItemId.get(row.id)"
+              variant="link"
+              :padded="false"
+              size="sm"
+            >
+              Buy this again
+            </UButton>
+          </template>
+        </OrderItemsTable>
 
         <UDivider
           class="mb-3 mt-6"
@@ -79,7 +108,10 @@ const displayOrderShop = computed(() =>
     </div>
 
     <div class="col-span-3 -mt-4 w-5/6">
-      <ShopShippingInfo :order-shop="displayOrderShop" />
+      <ShopShippingInfo
+        :order-shop="displayOrderShop"
+        :display="props.fulfillmentDisplay"
+      />
       <ShopActions
         v-if="props.allowPostPurchaseActions"
         :order-shop="displayOrderShop"

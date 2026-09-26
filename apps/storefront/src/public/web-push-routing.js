@@ -14,6 +14,7 @@ export function getNotificationTargetPath(data) {
 
   switch (data.type) {
     case 'order.canceled':
+    case 'order.fulfillment.updated':
     case 'order.shipping.pre_transit':
     case 'order.shipping.in_transit':
     case 'order.shipping.shipped':

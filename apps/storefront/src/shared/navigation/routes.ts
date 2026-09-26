@@ -31,7 +31,7 @@ export const routes = {
     ),
   orders: (query?: {
     search?: string
-    shippingStatus?: string
+    fulfillmentStatus?: string
     status?: string
     state?: string
   }) => createRoute(
@@ -39,7 +39,7 @@ export const routes = {
     query
       ? {
         ...(query.search ? { search: query.search } : {}),
-        ...(query.shippingStatus ? { shipping_status: query.shippingStatus } : {}),
+        ...(query.fulfillmentStatus ? { fulfillment_status: query.fulfillmentStatus } : {}),
         ...(query.status ? { status: query.status } : {}),
         ...(query.state ? { state: query.state } : {}),
       }

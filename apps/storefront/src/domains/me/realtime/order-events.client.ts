@@ -86,8 +86,13 @@ async function handleOrderUpdated(
   payload: OrderUpdatedRealtimeEvent,
 ): Promise<void> {
   useOrderLiveUpdates().applyUpdate(payload);
-  patchOrderShopsCache(queryClient, payload);
-  patchOrderDetailCache(queryClient, payload);
+
+  const hasFulfillmentChange = payload.changed.includes('fulfillment');
+
+  if (!hasFulfillmentChange) {
+    patchOrderShopsCache(queryClient, payload);
+    patchOrderDetailCache(queryClient, payload);
+  }
 
   await queryClient.invalidateQueries({ queryKey: ['get-order-shops'] });
   await queryClient.invalidateQueries({ queryKey: ['get-order-by-id', payload.orderId] });

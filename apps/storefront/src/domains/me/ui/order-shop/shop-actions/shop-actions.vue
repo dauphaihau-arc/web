@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { OrderShippingStatuses, OrderStatuses } from '@arc/enums/order'
+import { FulfillmentAggregateStatuses } from '@arc/enums/fulfillment'
+import { OrderStatuses } from '@arc/enums/order'
 import type { ElementType } from '@arc/contracts/utils'
 import WriteProductReviewDialog from './write-product-review-dialog/write-product-review-dialog.vue'
 import OrderCancelRequestDialog from './order-cancel-request-dialog.vue'
 import OrderSupportRequestDialog from './order-support-request-dialog.vue'
 import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract'
+import { routes } from '~/shared/navigation/routes'
 
 const props = withDefaults(defineProps<{
   orderShop: ElementType<GetOrderShopsResponse['order_shops']>
@@ -19,7 +21,7 @@ const dialog = useModal()
 
 const canCancelOrder = computed(() =>
   [OrderStatuses.PAID, OrderStatuses.PENDING].includes(props.orderShop.status)
-  && props.orderShop.shipping.shipping_status === OrderShippingStatuses.PRE_TRANSIT,
+  && [FulfillmentAggregateStatuses.UNFULFILLED, FulfillmentAggregateStatuses.PREPARED].includes(props.orderShop.fulfillment.status),
 )
 
 const canWriteReview = computed(() =>
@@ -29,7 +31,7 @@ const canWriteReview = computed(() =>
   && props.orderShop.status !== OrderStatuses.REFUNDED
   && (
     props.orderShop.status === OrderStatuses.COMPLETED
-    || props.orderShop.shipping.shipping_status === OrderShippingStatuses.DELIVERED
+    || props.orderShop.fulfillment.status === FulfillmentAggregateStatuses.DELIVERED
   ),
 )
 const hasReviewedAllProducts = computed(() =>
@@ -63,6 +65,15 @@ function openReviewDialog() {
 <template>
   <div>
     <div class="mt-4 flex flex-col gap-4">
+      <UButton
+        v-if="props.showViewOrderLink"
+        block
+        size="md"
+        color="gray"
+        :to="routes.orderDetail(props.orderShop.id)"
+      >
+        View order
+      </UButton>
       <UButton
         v-if="canWriteReview"
         block
