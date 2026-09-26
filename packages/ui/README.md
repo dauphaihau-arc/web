@@ -39,6 +39,7 @@ Examples:
 - `dialog-actions.vue`
 - `fixed-form-actions.vue`
 - `base-dialog.vue`
+- `data-table/data-table.vue` (Nuxt UI `UTable` wrapper with row-click, hover actions, and per-column data slots)
 
 Rules:
 
@@ -131,6 +132,7 @@ At the time of writing, the shared layer covers:
 - design tokens and layout utilities
 - Nuxt UI theme defaults
 - panel/state/header/dialog primitives
+- data table wrapper (`primitives/data-table/data-table.vue`)
 - fixed form action bars
 - notification popover shell
 - conversation inbox shell

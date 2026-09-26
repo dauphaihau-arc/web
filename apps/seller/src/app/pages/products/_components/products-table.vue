@@ -11,7 +11,7 @@ import type {
   ListShopProductsItem,
 } from '~/domains/shop/api/product/contracts/read.contract'
 import { useShopBulkMutateProducts } from '~/domains/shop/mutations/bulk-mutate-products.mutation'
-import DataTable from '~/shared/ui/data-table/data-table.vue'
+import DataTable from '@arc/ui/primitives/data-table/data-table.vue'
 import FixedPagination from '~/shared/ui/fixed-pagination.vue'
 import { routes } from '~/shared/navigation/routes'
 

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ProductImportPreviewRow } from '../../product-import-preview'
-import DataTable from '~/shared/ui/data-table/data-table.vue'
+import DataTable from '@arc/ui/primitives/data-table/data-table.vue'
 
 type PreviewTableRow = ProductImportPreviewRow & { id: string }
 

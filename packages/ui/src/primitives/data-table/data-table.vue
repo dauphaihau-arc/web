@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
-import { useRowInteraction } from '~/shared/ui/data-table/use-row-interaction'
+import { useRowInteraction } from './use-row-interaction'
 
 type TableRow = { id: string, [key: string]: unknown }
 type TableColumn = { key: string, [key: string]: unknown }
