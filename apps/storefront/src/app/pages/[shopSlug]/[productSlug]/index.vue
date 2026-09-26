@@ -96,9 +96,6 @@ function toRecentProductView(input: NonNullable<typeof productData.value>): GetP
       stock_total: totalStock,
     },
     variant_count: input.variants.length,
-    has_free_shipping: input.shipping?.destinations.some(
-      destination => destination.charge_type === 'free_shipping',
-    ),
     created_at: new Date().toISOString(),
   }
 }

@@ -127,15 +127,6 @@ const hasDiscount = computed(() => {
           {{ props.product?.shop.shop_name }}
         </p>
       </div>
-      <div v-if="props.product.has_free_shipping">
-        <UBadge
-          color="green"
-          variant="solid"
-          size="xs"
-        >
-          FREE ship
-        </UBadge>
-      </div>
       <p
         v-if="stockNotice"
         class="text-[13px] text-state-danger-text"

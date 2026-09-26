@@ -7,6 +7,7 @@ import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contr
 import { setPostAuthRedirect } from '~/domains/auth/utils/post-auth-redirect'
 import { useCreateOrGetMyChatConversation } from '~/domains/me/mutations/chat/create-conversation.mutation'
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
+import { useGetCountries } from '~/domains/location/queries/countries.query'
 
 const props = defineProps<{
   product?: GetDetailProductBySlugResponse
@@ -39,7 +40,7 @@ const items = computed(() => [
     id: 'shipping',
     label: 'Shipping and return policies',
     defaultOpen: true,
-    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed neque elit, tristique placerat feugiat ac, facilisis vitae arcu. Proin eget egestas augue. Praesent ut sem nec arcu pellentesque aliquet. Duis dapibus diam vel metus tempus vulputate.',
+    content: '',
   },
   {
     id: 'seller',
@@ -49,12 +50,41 @@ const items = computed(() => [
   },
 ])
 
-const processTime = computed(() => {
-  if (props.product?.shipping?.process_time_label) {
-    return props.product.shipping.process_time_label
+const countryNameByIso2 = computed(() => new Map(
+  (countriesResponse.value?.data ?? [])
+    .filter(country => country.Iso2)
+    .map(country => [country.Iso2!.toUpperCase(), country.name]),
+))
+
+function countryLabel(iso2?: string) {
+  if (!iso2) {
+    return ''
   }
-  return ''
+
+  return countryNameByIso2.value.get(iso2.toUpperCase()) ?? iso2
+}
+
+const shippingCoverage = computed(() => {
+  const destinations = props.product?.shipping?.destinations ?? []
+  if (destinations.length === 0) {
+    return []
+  }
+
+  const labels = destinations.map((destination) => {
+    switch (destination.destination_scope) {
+      case 'everywhere_else':
+        return 'Ships worldwide'
+      case 'country':
+        return destination.destination_country ? `Ships to ${countryLabel(destination.destination_country)}` : ''
+      default:
+        return ''
+    }
+  }).filter(label => label.length > 0)
+
+  return [...new Set(labels)]
 })
+
+const { data: countriesResponse } = useGetCountries()
 
 const shouldAutoOpenChat = computed(() => route.query.open_chat === '1')
 
@@ -160,13 +190,22 @@ watch(
           v-else-if="item.id === 'shipping'"
           class="space-y-2.5 px-1"
         >
-          <div class="flex gap-2">
-            <UIcon name="i-material-symbols:calendar-month-rounded" />
-            Ships out within {{ processTime }} business days
-          </div>
-          <div class="flex gap-2">
+          <template v-if="shippingCoverage.length > 0">
+            <div
+              v-for="line in shippingCoverage"
+              :key="line"
+              class="flex gap-2"
+            >
+              <UIcon name="i-material-symbols:location-on-outline" />
+              {{ line }}
+            </div>
+          </template>
+          <div
+            v-else
+            class="flex gap-2 text-text-subtle"
+          >
             <UIcon name="i-material-symbols:location-on-outline" />
-            Ship from {{ props.product?.shipping?.origin_country }}
+            Shipping coverage not available
           </div>
         </div>
 
