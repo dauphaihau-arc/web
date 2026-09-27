@@ -4,7 +4,7 @@ import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import ShortcutHint from '@arc/ui/primitives/shortcut-hint.vue'
 import ProductsFilterToolbar from './_components/products-filter-toolbar.vue'
 import ProductsStateTabs from './_components/products-state-tabs.vue'
-import ProductsTable from './_components/products-table.vue'
+import ProductsTable from './_components/products-table/products-table.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import { routes } from '~/shared/navigation/routes'
 import type {
@@ -153,6 +153,7 @@ watch(stateFilter, () => {
         :page-count="pageCount"
         :total="totalProducts"
         :shop-slug="dataMyShop?.slug"
+        :show-state-column="!stateFilter"
         @update:page="page = $event"
       />
     </template>
