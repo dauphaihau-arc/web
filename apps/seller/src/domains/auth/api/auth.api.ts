@@ -58,10 +58,16 @@ export const authApi = {
   },
 
   register(payload: RegisterRequest) {
+    // The API requires an idempotency key for registration; it rejects the
+    // request with 409 when neither the header nor the body carries one.
     return apiClient.post<RegisterResponse>(
       '/auth/register',
       payload,
-      undefined,
+      {
+        headers: {
+          'Idempotency-Key': crypto.randomUUID(),
+        },
+      },
       { retryOnUnauthorized: false },
     );
   },
