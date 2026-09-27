@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ProductStates, ProductVariantTypes } from '@arc/enums/product';
+import { ProductStates, ProductVariantTypes, ProductWhoMade } from '@arc/enums/product';
 import { pruneUnchangedUpdateFields } from '../update-product-form.mapper';
 import { getDirtyProductSectionIds } from './product-section-dirty';
 import type { DetailShopProductResponse } from '~/domains/shop/api/product/contracts/read.contract';
@@ -39,7 +39,7 @@ describe('getDirtyProductSectionIds', () => {
     const stateSubmit: UpdateProductBody = {
       title: 'Test product',
       description: 'Edited description',
-      who_made: 'i_did',
+      who_made: ProductWhoMade.I_DID,
       is_digital: false,
       shipping_profile_id: 'profile-current',
     };
