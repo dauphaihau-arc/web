@@ -272,7 +272,7 @@ export const bulkMutateShopProductsActionSchema = z.enum([
 export const bulkMutateShopProductsRequestSchema = z.object({
   ids: z.array(z.string()).min(1),
   action: bulkMutateShopProductsActionSchema,
-  idempotency_key: z.string().optional(),
+  idempotency_key: z.string().min(1),
 });
 
 export const bulkMutateShopProductsResponseSchema = z.object({

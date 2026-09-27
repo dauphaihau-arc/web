@@ -34,7 +34,7 @@ function normalizeProductMutationResponse(response: unknown): DetailShopProductR
 }
 
 type ProductMutationBody = {
-  idempotency_key?: string
+  idempotency_key: string
 };
 
 function splitIdempotency<TBody extends ProductMutationBody>(payload: TBody) {
@@ -45,13 +45,11 @@ function splitIdempotency<TBody extends ProductMutationBody>(payload: TBody) {
 
   return {
     body,
-    options: idempotencyKey
-      ? {
-        headers: {
-          'Idempotency-Key': idempotencyKey,
-        },
-      }
-      : undefined,
+    options: {
+      headers: {
+        'Idempotency-Key': idempotencyKey,
+      },
+    },
   };
 }
 
