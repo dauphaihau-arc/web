@@ -8,6 +8,7 @@ import type { DropdownItem } from '#ui/types'
 import type { ListShopCouponsResponse } from '~/domains/shop/api/coupon/contracts/coupon.contract'
 import DataTable from '@arc/ui/primitives/data-table/data-table.vue'
 import FixedPagination from '~/shared/ui/fixed-pagination.vue'
+import SelectionActionBar from '~/shared/ui/selection-action-bar.vue'
 import { useShopBulkDeleteCoupons } from '~/domains/shop/mutations/bulk-delete-coupons.mutation'
 import { useShopDeleteCoupon } from '~/domains/shop/mutations/delete-coupon.mutation'
 
@@ -63,7 +64,6 @@ const rows = computed<CouponRow[]>(() => {
 
 const selectedIds = computed(() => selected.value.map(row => row.id))
 const selectedCount = computed(() => selectedIds.value.length)
-const hasSelectedCoupons = computed(() => selectedCount.value > 0)
 
 watch(coupons, () => {
   selected.value = []
@@ -108,34 +108,19 @@ const itemsDropdownWithRow = (row: { id: string }): DropdownItem[][] => [
 
 <template>
   <div>
-    <UCard
-      v-if="hasSelectedCoupons"
-      class="sticky top-4 z-[3] mb-4"
+    <SelectionActionBar
+      :count="selectedCount"
+      @clear="selected = []"
     >
-      <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div class="text-sm text-text-subtle">
-          {{ selectedCount }} coupon<span v-if="selectedCount > 1">s</span> selected
-        </div>
-        <div class="flex flex-wrap items-center gap-2">
-          <UButton
-            color="red"
-            variant="soft"
-            :loading="isBulkDeletingCoupons"
-            @click="runBulkDelete()"
-          >
-            Delete selected
-          </UButton>
-          <UButton
-            color="gray"
-            variant="ghost"
-            :disabled="isBulkDeletingCoupons"
-            @click="selected = []"
-          >
-            Clear
-          </UButton>
-        </div>
-      </div>
-    </UCard>
+      <UButton
+        color="red"
+        variant="soft"
+        :loading="isBulkDeletingCoupons"
+        @click="runBulkDelete()"
+      >
+        Delete
+      </UButton>
+    </SelectionActionBar>
 
     <DataTable
       v-model="selected"
