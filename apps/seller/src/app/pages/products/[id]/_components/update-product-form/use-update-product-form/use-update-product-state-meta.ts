@@ -1,5 +1,6 @@
 import { ProductStates } from '@arc/enums/product';
 import type { Ref } from 'vue';
+import { productStateLabel, productStateTone } from '~/domains/shop/ui/product/product-state-display';
 import type { ProductImageReference } from '~/domains/shop/api/product/contracts/form.contract';
 import type { DetailShopProductResponse } from '~/domains/shop/api/product/contracts/read.contract';
 
@@ -43,33 +44,12 @@ export function useUpdateProductStateMeta({
       : '',
   );
 
-  function stateTone(state?: ProductStates) {
-    switch (state) {
-      case ProductStates.ACTIVE:
-        return 'green';
-      case ProductStates.INACTIVE:
-        return 'yellow';
-      case ProductStates.DRAFT:
-        return 'gray';
-      default:
-        return 'gray';
-    }
-  }
-
-  function formatStateLabel(state?: ProductStates) {
-    if (!state) {
-      return 'Unknown';
-    }
-
-    return state.charAt(0).toUpperCase() + state.slice(1);
-  }
-
   return {
     canDeactivateFromDetail,
     canPublishFromDetail,
-    formatStateLabel,
+    formatStateLabel: productStateLabel,
     productState,
     publishImageError,
-    stateTone,
+    stateTone: productStateTone,
   };
 }
