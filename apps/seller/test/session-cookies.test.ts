@@ -2,7 +2,7 @@ import {
   describe, expect, it, vi,
 } from 'vitest';
 import {
-  isExpiredAccessToken, parseCookies, shouldRefreshSession,
+  isExpiredAccessToken, parseCookieHeader, shouldRefreshSession,
 } from '../src/server/utils/session-cookies';
 
 function encode(value: unknown) {
@@ -13,16 +13,16 @@ function tokenWithExpiry(exp: number) {
   return `${encode({ alg: 'HS256', typ: 'JWT' })}.${encode({ sub: 'user-1', exp })}.signature`;
 }
 
-describe('parseCookies', () => {
+describe('parseCookieHeader', () => {
   it('reads cookie pairs and drops malformed segments', () => {
-    expect(parseCookies('accessToken=abc; refreshToken=def=ghi; broken; =empty')).toEqual({
+    expect(parseCookieHeader('accessToken=abc; refreshToken=def=ghi; broken; =empty')).toEqual({
       accessToken: 'abc',
       refreshToken: 'def=ghi',
     });
   });
 
   it('returns no cookies for a missing header', () => {
-    expect(parseCookies(undefined)).toEqual({});
+    expect(parseCookieHeader(undefined)).toEqual({});
   });
 });
 

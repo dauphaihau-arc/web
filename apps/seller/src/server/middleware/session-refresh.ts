@@ -1,4 +1,4 @@
-import { parseCookies, shouldRefreshSession } from '../utils/session-cookies';
+import { parseCookieHeader, shouldRefreshSession } from '../utils/session-cookies';
 
 const REFRESH_PATH = '/v1/auth/refresh';
 
@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const cookieHeader = getHeader(event, 'cookie');
-  const cookies = parseCookies(cookieHeader);
+  const cookies = parseCookieHeader(cookieHeader);
 
   if (!shouldRefreshSession(cookies)) {
     return;

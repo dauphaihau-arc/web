@@ -1,7 +1,7 @@
 const ACCESS_COOKIE_NAME = 'accessToken';
 const REFRESH_COOKIE_NAME = 'refreshToken';
 
-export function parseCookies(cookieHeader: string | undefined) {
+export function parseCookieHeader(cookieHeader: string | undefined) {
   return (cookieHeader ?? '')
     .split(';')
     .map(segment => segment.trim())
