@@ -50,6 +50,8 @@ Sources:
 - Package directory: `apps/seller`
 - Config file: `apps/seller/netlify.toml`
 
+The seller `netlify.toml` sets `NODE_OPTIONS=--max-old-space-size=4096`. The Nitro `netlify` preset bundles the SSR server (server rollup plus node-file-trace) and peaks around 2.3 GB of heap, above Netlify's default Node old-space ceiling (~2 GB), where the build aborts with `Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory`. Do not remove that setting, and do not port it to the storefront site, which prerenders with `nuxt generate` and needs no server bundle.
+
 ## Ignore rules
 
 Each site now has an app-local `ignore` command in `netlify.toml`.
