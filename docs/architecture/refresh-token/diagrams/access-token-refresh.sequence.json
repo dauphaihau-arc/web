@@ -1,0 +1,230 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "Access-Token Refresh",
+    "locale": "en",
+    "output": "docs/architecture/refresh-token/diagrams/access-token-refresh.html",
+    "quality_profile": "showcase",
+    "column_fit": "spread",
+    "viewBox": [
+      1050,
+      568
+    ],
+    "views": [
+      {
+        "id": "detect",
+        "label": "Detect and decide",
+        "focus": [
+          "caller",
+          "entry",
+          "api"
+        ],
+        "note": "Only ACCESS_TOKEN_EXPIRED and ACCESS_TOKEN_MISSING reach the refresh call; every other 401 or 403 ends as a guest."
+      },
+      {
+        "id": "rotate",
+        "label": "Rotate the session",
+        "focus": [
+          "caller",
+          "entry",
+          "api"
+        ],
+        "note": "Concurrent browser requests share one refresh promise instead of firing one rotation each."
+      },
+      {
+        "id": "replay",
+        "label": "Replay once",
+        "focus": [
+          "caller",
+          "entry",
+          "api"
+        ],
+        "note": "The original request is retried a single time with the rotated cookies; a rejected refresh rethrows the first error."
+      }
+    ]
+  },
+  "participants": [
+    {
+      "id": "caller",
+      "type": "frontend",
+      "label": "API Client",
+      "sublabel": "createApiClient in the browser"
+    },
+    {
+      "id": "entry",
+      "type": "backend",
+      "label": "Request Entry",
+      "sublabel": "proxy or direct API origin"
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "Auth API",
+      "sublabel": "/v1/auth/*"
+    }
+  ],
+  "segments": [
+    {
+      "from": 130,
+      "to": 280,
+      "label": "Detect"
+    },
+    {
+      "from": 292,
+      "to": 368,
+      "label": "Rotate"
+    },
+    {
+      "from": 380,
+      "to": 500,
+      "label": "Replay"
+    }
+  ],
+  "messages": [
+    {
+      "from": "caller",
+      "to": "entry",
+      "y": 160,
+      "label": "GET /auth/me",
+      "variant": "emphasis"
+    },
+    {
+      "from": "entry",
+      "to": "api",
+      "y": 192,
+      "label": "cookie: accessToken"
+    },
+    {
+      "from": "api",
+      "to": "entry",
+      "y": 224,
+      "label": "401 ACCESS_TOKEN_EXPIRED",
+      "variant": "return"
+    },
+    {
+      "from": "entry",
+      "to": "caller",
+      "y": 256,
+      "label": "401 + error code",
+      "variant": "return"
+    },
+    {
+      "from": "caller",
+      "to": "entry",
+      "y": 288,
+      "label": "POST /auth/refresh",
+      "variant": "emphasis"
+    },
+    {
+      "from": "entry",
+      "to": "api",
+      "y": 320,
+      "label": "cookie: refreshToken"
+    },
+    {
+      "from": "api",
+      "to": "entry",
+      "y": 352,
+      "label": "200 + rotated Set-Cookie pair",
+      "variant": "return"
+    },
+    {
+      "from": "caller",
+      "to": "entry",
+      "y": 384,
+      "label": "replay GET /auth/me",
+      "variant": "emphasis"
+    },
+    {
+      "from": "entry",
+      "to": "api",
+      "y": 416,
+      "label": "cookie: fresh accessToken"
+    },
+    {
+      "from": "api",
+      "to": "entry",
+      "y": 448,
+      "label": "200 current user",
+      "variant": "return"
+    },
+    {
+      "from": "entry",
+      "to": "caller",
+      "y": 480,
+      "label": "200 current user",
+      "variant": "return"
+    }
+  ],
+  "activations": [
+    {
+      "participant": "caller",
+      "from": 150,
+      "to": 280,
+      "type": "frontend"
+    },
+    {
+      "participant": "entry",
+      "from": 184,
+      "to": 276,
+      "type": "backend"
+    },
+    {
+      "participant": "api",
+      "from": 216,
+      "to": 234,
+      "type": "backend"
+    },
+    {
+      "participant": "caller",
+      "from": 296,
+      "to": 496,
+      "type": "frontend"
+    },
+    {
+      "participant": "entry",
+      "from": 328,
+      "to": 484,
+      "type": "backend"
+    },
+    {
+      "participant": "api",
+      "from": 360,
+      "to": 378,
+      "type": "backend"
+    },
+    {
+      "participant": "api",
+      "from": 440,
+      "to": 458,
+      "type": "backend"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Recoverable Codes Only",
+      "items": [
+        "Refresh runs only for ACCESS_TOKEN_EXPIRED and ACCESS_TOKEN_MISSING",
+        "Any other 401 and every 403 go straight to the guest result"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Single Flight in the Browser",
+      "items": [
+        "Concurrent browser requests await one shared refresh promise",
+        "Server clients never share refresh work across users"
+      ]
+    },
+    {
+      "dot": "orange",
+      "title": "Where the Cookies Live",
+      "items": [
+        "The API rotates the HttpOnly pair as Set-Cookie",
+        "Storefront calls the API origin directly with credentials: include"
+      ]
+    }
+  ]
+}

@@ -66,6 +66,16 @@ pnpm lint:packages
 pnpm lint:packages:fix
 ```
 
+## Authentication
+
+Seller and storefront do not store token expiry timestamps in localStorage.
+The shared API client sends credentials with requests and, when enabled,
+attempts session refresh after a recoverable `401` before retrying the original
+request once. Only the API codes `ACCESS_TOKEN_EXPIRED` and
+`ACCESS_TOKEN_MISSING` are recoverable; every other `401` (bad credentials,
+invalid signature, revoked session) and any `403` is returned to the caller
+without a refresh attempt.
+
 ## CI/CD
 
 ### CI

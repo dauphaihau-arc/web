@@ -11,6 +11,14 @@ A ecommerce marketplace web application  where people come together to make, sel
 - [Zod](https://zod.dev/) - TypeScript-first schema declaration and validation
 - [Vitest](https://vitest.dev/) - Testing Framework
 
+## Rendering and session recovery
+
+- Home uses one-hour ISR; other public routes retain the five-minute ISR default.
+- Category listings (`/c/**`) and search use uncached SSR so market and filter results are not shared through ISR.
+- Success, guest orders, cart, checkout, account, orders, and password reset remain client-rendered with ISR and Nitro caching explicitly disabled.
+- Both current-user API methods enable refresh/retry in the browser. Recoverable access-token errors use the shared API client's cookie refresh flow before retrying the lookup; rejected refreshes leave the guest lookup unauthenticated.
+- Current-user requests do not refresh during SSR. This does not add server-side session rotation or cookie forwarding.
+
 ## Installation Guide
 
 1. **Clone the GitHub repository**

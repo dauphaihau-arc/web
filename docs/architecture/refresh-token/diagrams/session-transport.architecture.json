@@ -1,0 +1,218 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Session Transport and Refresh Ownership",
+    "locale": "en",
+    "output": "docs/architecture/refresh-token/diagrams/session-transport.html",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1340,
+      700
+    ],
+    "views": [
+      {
+        "id": "browser-refresh",
+        "label": "Browser refresh",
+        "focus": [
+          "sellerBrowser",
+          "nitro",
+          "api",
+          "jar"
+        ],
+        "note": "A same-origin /api call carries the cookies; a recoverable 401 triggers the refresh and a single replay."
+      },
+      {
+        "id": "ssr-refresh",
+        "label": "Server-render refresh",
+        "focus": [
+          "sellerBrowser",
+          "nitro",
+          "middleware",
+          "api"
+        ],
+        "note": "Seller renders an authenticated page on the server, so the middleware rotates before the render."
+      },
+      {
+        "id": "storefront-direct",
+        "label": "Storefront direct",
+        "focus": [
+          "storefrontBrowser",
+          "api",
+          "jar"
+        ],
+        "note": "Storefront has no /api proxy and no refresh middleware; the browser talks to the API origin directly."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "sellerBrowser",
+      "type": "frontend",
+      "label": "Seller Browser",
+      "sublabel": "SPA + hydrated SSR",
+      "pos": [
+        40,
+        300
+      ],
+      "size": [
+        160,
+        68
+      ]
+    },
+    {
+      "id": "nitro",
+      "type": "backend",
+      "label": "Seller Nitro",
+      "sublabel": "SSR + /api proxy",
+      "pos": [
+        300,
+        300
+      ],
+      "size": [
+        160,
+        68
+      ]
+    },
+    {
+      "id": "middleware",
+      "type": "security",
+      "label": "session-refresh",
+      "sublabel": "GET/HEAD render only",
+      "pos": [
+        560,
+        470
+      ],
+      "size": [
+        170,
+        68
+      ]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "Arc API",
+      "sublabel": "/v1/auth/*",
+      "pos": [
+        840,
+        300
+      ],
+      "size": [
+        160,
+        68
+      ]
+    },
+    {
+      "id": "jar",
+      "type": "database",
+      "label": "HttpOnly Cookies",
+      "sublabel": "accessToken + refreshToken",
+      "pos": [
+        840,
+        110
+      ],
+      "size": [
+        160,
+        68
+      ]
+    },
+    {
+      "id": "storefrontBrowser",
+      "type": "frontend",
+      "label": "Storefront Browser",
+      "sublabel": "client-rendered session",
+      "pos": [
+        1090,
+        300
+      ],
+      "size": [
+        160,
+        68
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Seller server",
+      "wraps": [
+        "nitro",
+        "middleware"
+      ]
+    },
+    {
+      "kind": "security-group",
+      "label": "Cookie store, HttpOnly",
+      "wraps": [
+        "jar"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "seller-api-proxy",
+      "from": "sellerBrowser",
+      "to": "nitro",
+      "label": "same-origin /api/**",
+      "variant": "emphasis"
+    },
+    {
+      "id": "nitro-entries",
+      "from": "nitro",
+      "to": "api",
+      "label": "proxy, forwards cookie",
+      "variant": "emphasis"
+    },
+    {
+      "id": "ssr-rotate",
+      "from": "middleware",
+      "to": "api",
+      "label": "POST /v1/auth/refresh",
+      "variant": "security",
+      "fromSide": "right",
+      "toSide": "bottom"
+    },
+    {
+      "id": "api-issue-cookies",
+      "from": "api",
+      "to": "jar",
+      "label": "Set-Cookie pair",
+      "variant": "security"
+    },
+    {
+      "id": "storefront-direct",
+      "from": "storefrontBrowser",
+      "to": "api",
+      "label": "direct API origin",
+      "variant": "dashed",
+      "fromSide": "left",
+      "toSide": "right"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "One Refresh Implementation",
+      "items": [
+        "createApiClient in packages/lib owns detection, single-flight, and replay",
+        "Both apps configure the same /auth/refresh endpoint"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Two Refresh Triggers",
+      "items": [
+        "Browser: 401 with a recoverable error code",
+        "Seller SSR: expired or absent access token on a rendered GET/HEAD"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Transport Differences",
+      "items": [
+        "Seller proxies browser calls through /api/** so cookies stay same-origin",
+        "Storefront keeps authenticated routes client-rendered"
+      ]
+    }
+  ]
+}

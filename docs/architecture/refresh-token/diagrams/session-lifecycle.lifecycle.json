@@ -1,0 +1,228 @@
+{
+  "schema_version": 1,
+  "diagram_type": "lifecycle",
+  "meta": {
+    "title": "Session Lifecycle Under Token Rotation",
+    "locale": "en",
+    "output": "docs/architecture/refresh-token/diagrams/session-lifecycle.html",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1075,
+      630
+    ],
+    "views": [
+      {
+        "id": "main",
+        "label": "Main lifecycle",
+        "focus": [
+          "anonymous",
+          "active",
+          "expired",
+          "refreshing",
+          "rotated"
+        ],
+        "note": "A session walks from login to rotation and back to active without the user noticing."
+      },
+      {
+        "id": "rotation",
+        "label": "Rotation loop",
+        "focus": [
+          "active",
+          "expired",
+          "refreshing",
+          "rotated"
+        ],
+        "note": "Expiry is recoverable while the refresh token is still valid."
+      },
+      {
+        "id": "exits",
+        "label": "Terminal exits",
+        "focus": [
+          "expired",
+          "refreshing",
+          "guest",
+          "active",
+          "signedOut"
+        ],
+        "note": "A rejected rotation and an explicit logout both end the session; no path returns from either."
+      }
+    ]
+  },
+  "lanes": [
+    {
+      "id": "main",
+      "label": "Session state"
+    },
+    {
+      "id": "terminal",
+      "label": "Terminal exits"
+    }
+  ],
+  "states": [
+    {
+      "id": "anonymous",
+      "type": "start",
+      "label": "Anonymous",
+      "sublabel": "no session cookies",
+      "lane": "main",
+      "col": 0,
+      "step": "01",
+      "tag": "entry"
+    },
+    {
+      "id": "active",
+      "type": "active",
+      "label": "Session Active",
+      "sublabel": "access + refresh valid",
+      "lane": "main",
+      "col": 1,
+      "step": "02",
+      "tag": "normal"
+    },
+    {
+      "id": "expired",
+      "type": "waiting",
+      "label": "Access Expired",
+      "sublabel": "refresh still valid",
+      "lane": "main",
+      "col": 2,
+      "step": "03",
+      "tag": "recoverable"
+    },
+    {
+      "id": "refreshing",
+      "type": "active",
+      "label": "Refreshing",
+      "sublabel": "single-flight rotation",
+      "lane": "main",
+      "col": 3,
+      "step": "04",
+      "tag": "in flight"
+    },
+    {
+      "id": "rotated",
+      "type": "success",
+      "label": "Session Rotated",
+      "sublabel": "fresh pair stored",
+      "lane": "main",
+      "col": 4,
+      "step": "05",
+      "tag": "done"
+    },
+    {
+      "id": "guest",
+      "type": "failure",
+      "label": "Guest",
+      "sublabel": "session gone, no refresh",
+      "lane": "terminal",
+      "col": 0,
+      "tag": "terminal"
+    },
+    {
+      "id": "signedOut",
+      "type": "failure",
+      "label": "Signed Out",
+      "sublabel": "cookies cleared",
+      "lane": "terminal",
+      "col": 2,
+      "tag": "terminal"
+    }
+  ],
+  "transitions": [
+    {
+      "id": "login",
+      "from": "anonymous",
+      "to": "active",
+      "label": "login",
+      "variant": "emphasis"
+    },
+    {
+      "id": "access-expires",
+      "from": "active",
+      "to": "expired",
+      "label": "access token expires",
+      "variant": "default",
+      "labelDy": 55
+    },
+    {
+      "id": "refresh-call",
+      "from": "expired",
+      "to": "refreshing",
+      "label": "POST /v1/auth/refresh",
+      "variant": "emphasis",
+      "labelDy": 55
+    },
+    {
+      "id": "refresh-ok",
+      "from": "refreshing",
+      "to": "rotated",
+      "label": "200 + Set-Cookie",
+      "variant": "emphasis",
+      "labelDy": 55
+    },
+    {
+      "id": "replay",
+      "from": "rotated",
+      "to": "active",
+      "label": "replay original request",
+      "variant": "emphasis",
+      "route": "top-channel"
+    },
+    {
+      "id": "no-refresh-token",
+      "from": "expired",
+      "to": "guest",
+      "label": "no refresh token",
+      "variant": "security",
+      "route": "straight",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 44
+    },
+    {
+      "id": "refresh-rejected",
+      "from": "refreshing",
+      "to": "guest",
+      "label": "refresh rejected",
+      "variant": "security",
+      "fromSide": "bottom",
+      "toSide": "right"
+    },
+    {
+      "id": "logout",
+      "from": "active",
+      "to": "signedOut",
+      "label": "logout",
+      "variant": "security",
+      "route": "bottom-channel",
+      "fromSide": "bottom",
+      "toSide": "bottom"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Recoverable vs Terminal",
+      "items": [
+        "Expiry is recoverable",
+        "Rejected refresh or logout ends the session"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Who Starts the Rotation",
+      "items": [
+        "Browser: recoverable 401",
+        "Seller SSR: expiry before render"
+      ]
+    },
+    {
+      "dot": "orange",
+      "title": "Rotation Writes the Pair",
+      "items": [
+        "The API issues both cookies",
+        "SSR mirrors Set-Cookie"
+      ]
+    }
+  ]
+}

@@ -14,7 +14,22 @@ Each site should:
 - use the app-local `netlify.toml`
 - publish the app-qualified Netlify output path, for example `apps/storefront/dist`
 
-Because both apps have `ssr: false` in their Nuxt config, static generation is the correct Netlify target.
+The two sites use different Netlify targets:
+
+- **Storefront** (`ssr: true` with prerendered routes) builds with `nuxt generate` and is served as static assets.
+- **Seller** builds with `nuxt build` and runs on the Nitro server runtime. The seller site needs a runtime for its `/api/**` proxy rule (`nuxt.config.ts`), which forwards browser and SSR requests to `API_BASE_URL`. Static generation cannot serve that proxy, so the seller site must not revert to `nuxt generate`.
+
+Seller routes are server-rendered per route, listed in `routeRules` (`apps/seller/nuxt.config.ts`): the auth pages plus the seller surfaces (`/dashboard`, `/orders`, `/orders/*`, `/products`, `/products/*`, `/coupons`, `/notifications`, `/settings/shipping`). Editor and realtime flows (`/products/new`, `/products/import`, `/messages`) stay client-rendered, and `'/**': { ssr: false }` keeps everything else as-is.
+
+Because `accessToken` lives for 15 minutes while `refreshToken` lives for days, a server-rendered page would otherwise read an expired access token as a signed-out seller. `apps/seller/src/server/middleware/session-refresh.ts` rotates the session before the render: it refreshes when the access cookie is expired and a refresh cookie is present, relays the rotated cookies to the browser, and rewrites the request cookies so this render uses the fresh token.
+
+In the browser, the shared API client deduplicates overlapping refresh attempts for recoverable 401s (`ACCESS_TOKEN_EXPIRED` or `ACCESS_TOKEN_MISSING`). Requests on the same client await one refresh, then each retries once. The promise is cleared after success or failure. This coordination is browser-only: server requests do not share refresh state between users, and seller's SSR middleware is unchanged. Separate tabs and 401s arriving after refresh completes are not coordinated.
+
+Because the seller app serves the API through its own origin, the API session cookies must be readable by the seller origin:
+
+- `AUTH_COOKIE_DOMAIN` must be set to the shared parent domain (for example `.arc.com`) in production so the browser sends `accessToken`/`refreshToken` to the seller origin.
+- Websocket (`/ws`) and server-sent event (`/v1/me/events`) clients bypass the proxy and connect to `API_ORIGIN` directly; they rely on the same shared cookie domain and on `api.arc.com` being a same-site subdomain.
+- Leave `AUTH_COOKIE_DOMAIN` unset for local development; cookies ignore ports, so `localhost:4000` and `localhost:4002` already share them.
 
 Sources:
 
