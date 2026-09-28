@@ -55,7 +55,7 @@ describe('guest global middleware', () => {
 
     expect(refetch).toHaveBeenCalledTimes(1);
     expect(refetch).toHaveBeenCalledWith({ throwOnError: true });
-    expect(mockNavigateTo).toHaveBeenCalledWith({ path: '/products' });
+    expect(mockNavigateTo).toHaveBeenCalledWith({ path: '/dashboard' });
   });
 
   it('redirects an already resolved seller away from the login and register pages', async () => {
@@ -69,7 +69,7 @@ describe('guest global middleware', () => {
       await middleware({ path } as never, {} as never);
 
       expect(refetch).not.toHaveBeenCalled();
-      expect(mockNavigateTo).toHaveBeenCalledWith({ path: '/products' });
+      expect(mockNavigateTo).toHaveBeenCalledWith({ path: '/dashboard' });
     }
   });
 
@@ -100,6 +100,6 @@ describe('guest global middleware', () => {
     await middleware({ path: '/sell' } as never, {} as never);
 
     expect(refetch).not.toHaveBeenCalled();
-    expect(mockNavigateTo).toHaveBeenCalledWith({ path: '/products' });
+    expect(mockNavigateTo).toHaveBeenCalledWith({ path: '/dashboard' });
   });
 });
