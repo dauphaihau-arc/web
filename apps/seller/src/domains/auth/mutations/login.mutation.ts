@@ -1,5 +1,4 @@
-import { clearExpTokensInLS } from '../utils/token-storage';
-import { consumePostAuthRedirect } from '../utils/post-auth-redirect';
+import { resolvePostAuthRedirect } from '../utils/post-auth-redirect';
 import type { LoginRequest } from '~/domains/auth/api/contracts/login.contract';
 import { authApi } from '~/domains/auth/api/auth.api';
 import { routes } from '~/shared/navigation/routes';
@@ -10,6 +9,7 @@ import {
 
 export function useLogin() {
   const queryClient = useQueryClient();
+  const route = useRoute();
 
   return useMutation({
     mutationKey: ['login'],
@@ -24,14 +24,13 @@ export function useLogin() {
       }
 
       await authApi.logout().catch(() => undefined);
-      clearExpTokensInLS();
       throw new SellerAccessRequiredError();
     },
     onSuccess: async (data) => {
       if (data?.user) {
         queryClient.setQueryData(['current-user'], { user: data.user });
 
-        const redirectPath = consumePostAuthRedirect();
+        const redirectPath = resolvePostAuthRedirect(route.query.redirect);
         if (redirectPath) {
           await navigateTo(redirectPath);
           return;

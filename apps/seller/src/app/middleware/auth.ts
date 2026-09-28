@@ -1,8 +1,6 @@
 import { isBackendWakeUpError } from '@arc/lib';
 import { routes } from '~/shared/navigation/routes';
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query';
-import { setPostAuthRedirect } from '~/domains/auth/utils/post-auth-redirect';
-import { clearExpTokensInLS } from '~/domains/auth/utils/token-storage';
 import { hasSellerAccess } from '~/domains/auth/utils/seller-access';
 
 export default defineNuxtRouteMiddleware(async (to) => {
@@ -29,9 +27,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     }
 
     queryClient.setQueryData(['current-user'], { user: null });
-    clearExpTokensInLS();
-    setPostAuthRedirect(to.fullPath);
-    return navigateTo(routes.login());
+    return navigateTo(routes.login({ redirect: to.fullPath }));
   }
 
   try {
@@ -39,9 +35,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
     if (!hasSellerAccess(response.data?.user)) {
       queryClient.setQueryData(['current-user'], { user: null });
-      clearExpTokensInLS();
-      setPostAuthRedirect(to.fullPath);
-      return navigateTo(routes.login());
+      return navigateTo(routes.login({ redirect: to.fullPath }));
     }
   }
   catch (error) {
@@ -50,7 +44,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
       return;
     }
 
-    setPostAuthRedirect(to.fullPath);
-    return navigateTo(routes.login());
+    return navigateTo(routes.login({ redirect: to.fullPath }));
   }
 });

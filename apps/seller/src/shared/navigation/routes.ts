@@ -29,7 +29,7 @@ export const routePaths = {
 
 export const routes = {
   home: () => createRoute(routePaths.home),
-  login: () => createRoute(routePaths.login),
+  login: (query?: LocationQueryRaw) => createRoute(routePaths.login, query),
   register: () => createRoute(routePaths.register),
   sell: () => createRoute(routePaths.sell),
   reset: (query?: { v?: string | number }) => createRoute(routePaths.reset, query),

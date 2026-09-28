@@ -1,4 +1,3 @@
-import { consumePostAuthRedirect } from '../utils/post-auth-redirect';
 import type { RegisterRequest } from '~/domains/auth/api/contracts/register.contract';
 import { authApi } from '~/domains/auth/api/auth.api';
 import { routes } from '~/shared/navigation/routes';
@@ -15,7 +14,6 @@ export function useRegister() {
       if (data?.user) {
         queryClient.setQueryData(['current-user'], { user: data.user });
 
-        consumePostAuthRedirect();
         await navigateTo(routes.sell());
       }
     },
