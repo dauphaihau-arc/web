@@ -1,6 +1,5 @@
 import { createApiClient, isBackendWakeUpError } from '@arc/lib';
 import { RESOURCES } from '@arc/enums/resources';
-import { clearExpTokensInLS } from '~/domains/auth/utils/token-storage';
 
 function getApiBaseURL() {
   const config = useRuntimeConfig();
@@ -9,7 +8,16 @@ function getApiBaseURL() {
 
 export const apiClient = createApiClient({
   getBaseURL: getApiBaseURL,
-  clearUnauthorizedState: clearExpTokensInLS,
+  // Server requests reach the API through the Nitro proxy, and a plain $fetch does
+  // not carry the incoming request's headers; without this the SSR pass cannot see
+  // the session and every server-side guard decides as a guest.
+  getDefaultHeaders: () => {
+    if (import.meta.client) {
+      return undefined;
+    }
+    const { cookie } = useRequestHeaders(['cookie']);
+    return cookie ? { cookie } : undefined;
+  },
   isWakeUpError: isBackendWakeUpError,
   lifecycle: {
     markWaking: () => useBackendStatus().markWaking(),

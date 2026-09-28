@@ -6,12 +6,9 @@ import { apiClient } from '~/domains/_shared/api-client';
 export const meApi = {
   async getCurrentOrGuest() {
     try {
-      return await apiClient.get<CurrentUser>(
-        '/auth/me',
-        undefined,
-        undefined,
-        { retryOnUnauthorized: false },
-      );
+      return await apiClient.get<CurrentUser>('/auth/me', undefined, undefined, {
+        retryOnUnauthorized: import.meta.client,
+      });
     }
     catch (error) {
       if (isUnauthorizedError(error)) {
@@ -20,14 +17,6 @@ export const meApi = {
 
       throw error;
     }
-  },
-  getCurrent() {
-    return apiClient.get<CurrentUser>(
-      '/auth/me',
-      undefined,
-      undefined,
-      { retryOnUnauthorized: false },
-    );
   },
   updateCurrent(payload: UpdateMeRequest) {
     return apiClient.patch<UpdateMeResponse>(

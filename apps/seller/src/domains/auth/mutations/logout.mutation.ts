@@ -1,4 +1,3 @@
-import { clearExpTokensInLS } from '../utils/token-storage';
 import { routes } from '~/shared/navigation/routes';
 import { toastCustom } from '~/shared/config/toast';
 import { authApi } from '~/domains/auth/api/auth.api';
@@ -32,7 +31,6 @@ export function useLogout() {
       }
 
       queryClient.setQueryData(['current-user'], { user: null });
-      clearExpTokensInLS();
       navigateTo(routes.login());
     },
     onError() {

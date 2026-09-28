@@ -10,7 +10,7 @@ export const meApi = {
         '/auth/me',
         undefined,
         undefined,
-        { retryOnUnauthorized: false },
+        { retryOnUnauthorized: import.meta.client },
       );
     }
     catch (error) {
@@ -20,14 +20,6 @@ export const meApi = {
 
       throw error;
     }
-  },
-  getCurrent() {
-    return apiClient.get<CurrentUser>(
-      '/auth/me',
-      undefined,
-      undefined,
-      { retryOnUnauthorized: false },
-    );
   },
   updateCurrent(payload: UpdateMeRequest) {
     return apiClient.patch<UpdateMeResponse>(

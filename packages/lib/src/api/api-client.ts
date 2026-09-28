@@ -18,8 +18,7 @@ type RefreshSessionConfig = {
 
 export type CreateApiClientConfig = {
   getBaseURL: () => string
-  getDefaultHeaders?: () => Record<string, string | undefined>
-  clearUnauthorizedState?: () => void
+  getDefaultHeaders?: () => Record<string, string | undefined> | undefined
   isWakeUpError?: (error: unknown) => boolean
   lifecycle?: RequestLifecycle
   refreshSession?: RefreshSessionConfig
@@ -37,6 +36,15 @@ export function getStatusCode(error: unknown) {
 
 export function isUnauthorizedError(error: unknown) {
   return getStatusCode(error) === 401
+}
+
+// The API only issues these codes when the session can be rotated: an expired
+// access token, or a missing one while the refresh token is still present.
+// Every other 401 (bad credentials, invalid signature, revoked session) and any
+// 403 means a refresh cannot help, so the client must not attempt one.
+const RECOVERABLE_AUTH_ERROR_CODES: Record<string, true> = {
+  ACCESS_TOKEN_EXPIRED: true,
+  ACCESS_TOKEN_MISSING: true,
 }
 
 export function createApiClient(config: CreateApiClientConfig) {
@@ -91,10 +99,6 @@ export function createApiClient(config: CreateApiClientConfig) {
       return response
     }
     catch (error) {
-      if (getStatusCode(error) === 401) {
-        config.clearUnauthorizedState?.()
-      }
-
       if (
         !behavior?.retryOnWakeUp
         || !config.isWakeUpError?.(error)
@@ -133,6 +137,23 @@ export function createApiClient(config: CreateApiClientConfig) {
     )
   }
 
+  let browserRefreshPromise: Promise<void> | undefined
+
+  const refreshSessionSingleFlight = () => {
+    // Server clients can span users; only browser requests share refresh work.
+    if (typeof window === 'undefined') {
+      return refreshSession()
+    }
+
+    if (!browserRefreshPromise) {
+      browserRefreshPromise = refreshSession().finally(() => {
+        browserRefreshPromise = undefined
+      })
+    }
+
+    return browserRefreshPromise
+  }
+
   const requestWithAuthRecovery = async <T>(
     request: () => Promise<T>,
     behavior?: RequestBehavior,
@@ -141,16 +162,18 @@ export function createApiClient(config: CreateApiClientConfig) {
       return await requestWithWakeUpRecovery(request, behavior)
     }
     catch (error) {
-      if (!isUnauthorizedError(error) || behavior?.retryOnUnauthorized === false) {
+      if (
+        !isRecoverableAuthError(error)
+        || behavior?.retryOnUnauthorized === false
+      ) {
         throw error
       }
 
       try {
-        await refreshSession()
+        await refreshSessionSingleFlight()
         return await requestWithWakeUpRecovery(request, behavior)
       }
       catch {
-        config.clearUnauthorizedState?.()
         throw error
       }
     }
@@ -223,4 +246,20 @@ export function createApiClient(config: CreateApiClientConfig) {
       )
     },
   }
+}
+
+export function isRecoverableAuthError(error: unknown) {
+  if (!isUnauthorizedError(error)) {
+    return false
+  }
+
+  const fetchError = error as {
+    data?: { code?: unknown }
+    response?: { _data?: { code?: unknown }; data?: { code?: unknown } }
+  }
+  const code = fetchError.data?.code
+    ?? fetchError.response?._data?.code
+    ?? fetchError.response?.data?.code
+
+  return typeof code === 'string' && RECOVERABLE_AUTH_ERROR_CODES[code] === true
 }
