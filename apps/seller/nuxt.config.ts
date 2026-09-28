@@ -10,6 +10,7 @@ const appComponentsDir = fileURLToPath(new URL('./src/app/components', import.me
 
 const assetHost = process.env.ASSET_HOST || ''
 const awsHostBucketAlias = assetHost.replace(/\/+$/, '')
+const apiOrigin = (process.env.API_ORIGIN || process.env.API_BASE_URL || 'http://localhost:4000').replace(/\/+$/, '')
 
 export default defineNuxtConfig({
   app: {
@@ -51,7 +52,36 @@ export default defineNuxtConfig({
     pages: 'app/pages',
     plugins: 'app/plugins',
   },
-  ssr: false,
+
+  ssr: true,
+  routeRules: {
+    // Routes stay client-rendered until each one is migrated to SSR individually.
+    '/**': { ssr: false },
+
+    // Auth pages render on the server so a request carrying a session is
+    // redirected before any HTML is sent.
+    '/login': { ssr: true },
+    '/register': { ssr: true },
+
+    // Seller surfaces render their shell on the server so a deep link resolves
+    // to real HTML in one round trip instead of a client-side auth waterfall.
+    '/dashboard': { ssr: true },
+    '/orders': { ssr: true },
+    '/orders/*': { ssr: true },
+    '/notifications': { ssr: true },
+    '/coupons': { ssr: true },
+    '/settings/shipping': { ssr: true },
+    '/products': { ssr: true },
+    '/products/*': { ssr: true },
+
+    // Long-lived editor and import flows stay client-rendered.
+    '/products/new': { ssr: false },
+    '/products/import': { ssr: false },
+
+    // Browser and SSR requests share the web origin; Nitro forwards them to the API.
+    '/api/**': { proxy: { to: `${apiOrigin}/**` } },
+  },
+
   devtools: { enabled: true },
 
   modules: [
@@ -99,7 +129,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBaseURL: process.env.API_BASE_URL,
+      apiBaseURL: '/api',
+      apiOrigin,
       apiVersion: process.env.API_VERSION,
       assetHost: process.env.ASSET_HOST,
       storefrontAppURL: process.env.STOREFRONT_APP_URL || 'http://localhost:4001',
@@ -150,6 +181,13 @@ export default defineNuxtConfig({
   css: ['~/app/assets/css/main.css'],
 
   vite: {
+    ssr: {
+      // Dev only: the `@arc/lib` barrel re-exports the browser socket client, so the
+      // SSR module graph pulls in socket.io-client, and vite-node misresolves debug's
+      // CJS `require('./node.js')`. Node resolves both, but declaring them external
+      // for the build too forces their dependency trees into the server bundle.
+      external: process.env.NODE_ENV === 'production' ? [] : ['socket.io-client', 'debug'],
+    },
     build: {
       rollupOptions: {
         output: {

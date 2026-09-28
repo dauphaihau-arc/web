@@ -19,7 +19,8 @@ export function createProductImportEventsClient(
   }
 
   const config = useRuntimeConfig();
-  const baseUrl = `${config.public.apiBaseURL.replace(/\/+$/, '')}/v${config.public.apiVersion}`;
+  // Server-sent events stay off the Nitro proxy to avoid serverless stream time limits.
+  const baseUrl = `${config.public.apiOrigin.replace(/\/+$/, '')}/v${config.public.apiVersion}`;
   const eventSource = new EventSource(`${baseUrl}/me/events`, {
     withCredentials: true,
   });

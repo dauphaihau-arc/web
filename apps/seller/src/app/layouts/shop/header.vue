@@ -103,14 +103,16 @@ function onGlobalKeydown(event: KeyboardEvent) {
   }
 }
 
-onKeyStroke(
-  true,
-  event => onGlobalKeydown(event),
-  {
-    target: document,
-    dedupe: true,
-  },
-)
+if (import.meta.client) {
+  onKeyStroke(
+    true,
+    event => onGlobalKeydown(event),
+    {
+      target: document,
+      dedupe: true,
+    },
+  )
+}
 
 onMounted(() => {
   onScroll()

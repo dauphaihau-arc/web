@@ -11,7 +11,8 @@ import type {
 
 function buildChatSocketUrl(): string {
   const config = useRuntimeConfig();
-  return `${config.public.apiBaseURL.replace(/\/+$/, '')}/ws`;
+  // Websocket upgrades are not proxied by Nitro, so the socket targets the API origin directly.
+  return `${config.public.apiOrigin.replace(/\/+$/, '')}/ws`;
 }
 
 function createRealtimeChatMessage(

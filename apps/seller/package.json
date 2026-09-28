@@ -4,7 +4,6 @@
   "type": "module",
   "description": "Seller app for arc built with Nuxt 3, TypeScript, Pinia, and Nuxt UI",
   "scripts": {
-    "generate": "nuxt generate",
     "preview": "nuxt preview",
     "dev": "nuxt dev",
     "build": "nuxt build",
