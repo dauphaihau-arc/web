@@ -13,7 +13,7 @@ belongs.
 
 Within each Nuxt app:
 
-- `src/app/` owns Nuxt app surface: pages, layouts, middleware, plugins, app-shell components, assets, and locales.
+- `src/app/` owns Nuxt app surface: pages, layouts, middleware, plugins, app-shell components, and assets.
 - `src/domains/` owns business-facing client modules such as API clients, queries, mutations, stores, domain utilities, and domain-owned UI.
 - `src/shared/` owns app-local primitives that are generic within that app.
 - `src/server/` owns Nuxt server routes and server-only adapters.

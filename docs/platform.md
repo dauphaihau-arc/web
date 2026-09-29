@@ -1,12 +1,11 @@
 # Platform
 
-Arc Web uses Nuxt 3 as the frontend application platform for Storefront, Seller, and future Admin applications. The platform standardizes application setup, state management, data fetching, localization, UI foundations, assets, and bundle behavior across apps.
+Arc Web uses Nuxt 3 as the frontend application platform for Storefront, Seller, and future Admin applications. The platform standardizes application setup, state management, data fetching, UI foundations, assets, and bundle behavior across apps.
 
 ## Goals
 
 - Keep Nuxt application setup consistent across apps.
 - Provide shared state and server-state patterns.
-- Support localized product experiences.
 - Keep UI foundations reusable without coupling product workflows.
 - Configure assets, images, and bundle splitting consistently.
 - Keep app-specific platform behavior explicit in each app.
@@ -22,7 +21,6 @@ src/app/
   middleware/
   plugins/
   components/
-  locales/
   assets/
 ```
 
@@ -44,11 +42,15 @@ Use Vue Query for API-backed data that needs request lifecycle handling, caching
 
 Keep server-state access inside composables or domain modules so pages stay thin.
 
-## Internationalization
+## Language
 
-Apps support localization through Nuxt i18n with lazy-loaded locale files.
+Apps ship a single locale (`en`). The Nuxt i18n module was removed once it became clear no
+translations were wired: its config pointed at a missing `i18n.config.ts`, its locale files were
+unused stubs, and nothing rendered translated strings.
 
-Locale files should stay app-owned unless translations or locale utilities become reusable across multiple apps.
+Language-bearing request headers come from the market preferences store, typed by
+`MarketLanguages` in `packages/enums/src/market.ts`. Reintroduce a localization layer only when a
+second locale actually needs to render.
 
 ## UI Foundation
 

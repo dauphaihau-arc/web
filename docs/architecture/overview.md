@@ -44,7 +44,6 @@ Arc Web uses:
 - Nuxt 3 for the application framework.
 - Pinia for shared state patterns.
 - Vue Query for server-state fetching.
-- Nuxt i18n for localization.
 - Shared UI packages and design tokens for consistent interface behavior.
 - App-specific rendering rules for SSR, CSR, ISR, and static generation.
 
