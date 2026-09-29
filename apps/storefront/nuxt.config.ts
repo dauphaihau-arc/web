@@ -69,7 +69,6 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxt/ui',
     '@vueuse/nuxt',
-    '@nuxtjs/i18n',
     'nuxt-security',
     '@formkit/auto-animate/nuxt',
     '@nuxt/image',
@@ -165,19 +164,9 @@ export default defineNuxtConfig({
     prerender: {
       ignore: [
         '/search',
-        '/fr/search',
-        '/la/search',
         '/success',
-        '/fr/success',
-        '/la/success',
       ],
     },
-  },
-
-  i18n: {
-    locales: [{ code: 'en', language: 'en-US' }],
-    defaultLocale: 'en',
-    vueI18n: './i18n.config.ts',
   },
 
   colorMode: {
@@ -212,10 +201,6 @@ function manualChunks(id: string): string | undefined {
 
   if (id.includes('/node_modules/.pnpm/@nuxt+ui@') || id.includes('/node_modules/.pnpm/@headlessui+vue@') || id.includes('/node_modules/.pnpm/@popperjs+core@') || id.includes('/node_modules/.pnpm/@tanstack+virtual-core@') || id.includes('/node_modules/.pnpm/@tanstack+vue-virtual@')) {
     return 'ui'
-  }
-
-  if (id.includes('/node_modules/.pnpm/@nuxtjs+i18n@') || id.includes('/node_modules/.pnpm/vue-i18n@') || id.includes('/node_modules/.pnpm/@intlify+')) {
-    return 'i18n'
   }
 
   if (id.includes('/node_modules/.pnpm/@tanstack+query-core@') || id.includes('/node_modules/.pnpm/@tanstack+vue-query@') || id.includes('/node_modules/.pnpm/@hebilicious+vue-query-nuxt@')) {

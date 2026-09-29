@@ -22,17 +22,10 @@ const REGION_TO_LOCALE_REGION: Record<MarketRegions, string> = {
   Vietnam: 'VN',
 };
 
-function resolveLocaleLanguage(): string {
-  const nuxtApp = useNuxtApp();
-  const locale = nuxtApp.$i18n?.locale.value;
-
-  if (typeof locale === 'string' && locale.trim()) {
-    return locale.trim().toLowerCase();
-  }
-
+function resolveLocaleLanguage(): MarketLanguages {
   const marketStore = useMarketStore();
 
-  return (marketStore.activePreferences?.language ?? MARKET_CONFIG.BASE_LANGUAGE) as MarketLanguages;
+  return marketStore.activePreferences?.language ?? MARKET_CONFIG.BASE_LANGUAGE;
 }
 
 export function getRequestMarketHeaders(): Record<string, string> {
