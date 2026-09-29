@@ -14,6 +14,12 @@ const props = defineProps<{
   optionAttribute?: keyof TOption
   row?: boolean
   direction?: 'horizontal' | 'vertical'
+  /**
+   * Forces vertical spacing between options. When omitted, spacing is added
+   * only if at least one option carries a description, since multi-line rows
+   * need the breathing room while single-line rows read better tight.
+   */
+  gap?: boolean
   name?: string
   ui?: {
     fieldset?: string
@@ -58,11 +64,24 @@ function optionToLabel(opt: TOption) {
 }
 
 function optionToHelp(opt: TOption) {
-  if (typeof opt === 'object' && Object.hasOwn(opt, 'help')) {
-    return String(opt.help ?? '')
+  if (typeof opt === 'object') {
+    if (Object.hasOwn(opt, 'description')) {
+      return String(opt.description ?? '')
+    }
+    if (Object.hasOwn(opt, 'help')) {
+      return String(opt.help ?? '')
+    }
   }
   return ''
 }
+
+const hasDescription = computed(() => {
+  return props.options.some(opt => optionToHelp(opt) !== '')
+})
+
+// `props.gap` is `false` whenever the attribute is omitted (Vue boolean casting),
+// so this must OR rather than nullish-coalesce.
+const hasVerticalGap = computed(() => props.gap || hasDescription.value)
 
 const direction = computed(() => {
   if (props.direction) {
@@ -78,7 +97,7 @@ const direction = computed(() => {
       :class="[
         direction === 'horizontal'
           ? 'flex flex-row flex-wrap gap-x-8 gap-y-3'
-          : 'flex flex-col',
+          : ['flex flex-col', hasVerticalGap && 'gap-3'],
         props.ui?.container,
       ]"
     >
