@@ -1,7 +1,5 @@
 import { PaymentTypes } from '@arc/enums/order';
-import {
-  CheckoutNowSteps, CheckoutCartSteps, type StateCheckoutNow, type StateCheckoutCart,
-} from '~/domains/cart/stores/cart.store.types';
+import type { StateCheckoutNow, StateCheckoutCart } from '~/domains/cart/stores/cart.store.types';
 import { routePaths } from '~/shared/navigation/routes';
 import type { CreateOrderResponse } from '~/domains/me/api/order/contracts/order.contract';
 
@@ -20,7 +18,6 @@ export const useCartStore = defineStore('cart', () => {
     promoCodes: [],
     note: '',
     invalidCodes: new Map<string, string>(),
-    currentStep: CheckoutNowSteps.ADDRESS_SHIPPING,
     countRefreshConvertCurrency: 0,
     isPendingCreateOrder: false,
     paymentType: PaymentTypes.CARD,
@@ -36,7 +33,6 @@ export const useCartStore = defineStore('cart', () => {
 
   const initStateCheckoutCart: StateCheckoutCart = {
     invalidCodes: new Map<string, string>(),
-    currentStep: CheckoutCartSteps.ADDRESS_SHIPPING,
     countRefreshConvertCurrency: 0,
     isPendingCreateOrder: false,
     paymentType: PaymentTypes.CARD,

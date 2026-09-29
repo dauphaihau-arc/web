@@ -1,13 +1,9 @@
 <script lang="ts" setup>
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import CreateOrderBtn from './_components/create-order-btn.vue'
-import PaymentOptions from '~/domains/checkout/ui/payment-options.vue'
 import ReviewShippingAndPayment from '~/domains/checkout/ui/review-shipping-and-payment.vue'
 import ShopCart from './_components/shop-cart.vue'
-import UserAddressShipping from '~/domains/checkout/ui/user-address-shipping.vue'
 import SummaryOrderCard from '~/domains/cart/ui/summary-order-card.vue'
-import CheckoutStepper from '~/domains/checkout/ui/checkout-stepper.vue'
-import { CheckoutNowSteps } from '~/domains/cart/stores/cart.store.types'
 import { useCartStore } from '~/domains/cart/stores/cart.store'
 import { useGetCart } from '~/domains/cart/queries/cart.query'
 import { useRequestCheckoutQuote } from '~/domains/checkout/composables/use-request-checkout-quote'
@@ -73,10 +69,15 @@ async function refreshQuote() {
   }
 }
 
+// A quote is accepted for one address, so changing the address invalidates it.
+watch(() => cartStore.stateCheckoutNow.address, () => {
+  clearQuote()
+})
+
 watch(
-  [() => cartStore.stateCheckoutNow.currentStep, quoteInputKey],
-  ([step]) => {
-    if (step !== CheckoutNowSteps.REVIEW_CONFIRMATION || !hasCheckoutCartItems.value) {
+  quoteInputKey,
+  () => {
+    if (!hasCheckoutCartItems.value) {
       return
     }
 
@@ -88,15 +89,6 @@ watch(
 onUnmounted(() => {
   cartStore.resetStateCheckoutNow()
 })
-
-const changeUserAddress = () => {
-  clearQuote()
-  cartStore.stateCheckoutNow.currentStep = CheckoutNowSteps.ADDRESS_SHIPPING
-}
-
-const changePayment = () => {
-  cartStore.stateCheckoutNow.currentStep = CheckoutNowSteps.PAYMENT
-}
 </script>
 
 <template>
@@ -110,43 +102,17 @@ const changePayment = () => {
     v-else-if="dataGetCart?.cart"
     class="py-16"
   >
-    <CheckoutStepper
-      v-model="cartStore.stateCheckoutNow.currentStep"
-      class="mx-auto mb-24 max-w-4xl"
-      :disabled="cartStore.stateCheckoutNow.isPendingCreateOrder"
-    />
-
     <div class="grid grid-cols-12 gap-16">
       <div class="col-span-8">
-        <UserAddressShipping
-          v-show="cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.ADDRESS_SHIPPING"
-          v-model:address="cartStore.stateCheckoutNow.address"
-          v-model:guest-email="cartStore.stateCheckoutNow.guestEmail"
-          class="mb-10"
+        <ReviewShippingAndPayment
+          v-model:checkout-state="cartStore.stateCheckoutNow"
+          class="mb-12"
         />
-
-        <PaymentOptions
-          v-show="cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.PAYMENT"
-          v-model="cartStore.stateCheckoutNow.paymentType"
-          direction="horizontal"
+        <ShopCart
+          :quote-shop="checkoutShopId ? quoteShopByShopId.get(checkoutShopId) : undefined"
+          :checkout-currency="quote?.checkout_currency"
+          :is-pending-quote="isPendingQuote"
         />
-
-        <div
-          v-show="cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.REVIEW_CONFIRMATION
-            || cartStore.stateCheckoutNow.currentStep === CheckoutNowSteps.ORDER"
-        >
-          <ReviewShippingAndPayment
-            :checkout-state="cartStore.stateCheckoutNow"
-            :on-change-user-address="changeUserAddress"
-            :on-change-payment="changePayment"
-            class="mb-12"
-          />
-          <ShopCart
-            :quote-shop="checkoutShopId ? quoteShopByShopId.get(checkoutShopId) : undefined"
-            :checkout-currency="quote?.checkout_currency"
-            :is-pending-quote="isPendingQuote"
-          />
-        </div>
       </div>
 
       <div class="col-span-4">

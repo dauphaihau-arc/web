@@ -18,27 +18,20 @@ const paymentOptions = [
 </script>
 
 <template>
-  <UCard>
-    <div class="flex flex-col gap-4">
-      <legend class="mb-1 text-xl font-bold text-text-subtle">
-        Payment options
-      </legend>
-      <RadioGroupInput
-        v-model="paymentType"
-        :options="paymentOptions"
-        :direction="direction"
-      >
-        <template #label="{ option }">
-          <div :class="labelContentClass">
-            <div class="leading-0 font-semibold text-text-strong">
-              {{ option.label }}
-            </div>
-            <div class="font-normal text-text-muted">
-              {{ option.description }}
-            </div>
-          </div>
-        </template>
-      </RadioGroupInput>
-    </div>
-  </UCard>
+  <RadioGroupInput
+    v-model="paymentType"
+    :options="paymentOptions"
+    :direction="direction"
+  >
+    <template #label="{ option }">
+      <div :class="labelContentClass">
+        <div class="font-semibold text-text-strong">
+          {{ option.label }}
+        </div>
+        <div class="font-normal text-text-muted">
+          {{ option.description }}
+        </div>
+      </div>
+    </template>
+  </RadioGroupInput>
 </template>

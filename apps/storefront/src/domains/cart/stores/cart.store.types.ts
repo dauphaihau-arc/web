@@ -8,16 +8,8 @@ type CouponCode = string;
 type CartId = string;
 export type CheckoutAddress = UserAddress | GuestCheckoutAddress;
 
-export enum CheckoutNowSteps {
-  ADDRESS_SHIPPING,
-  PAYMENT,
-  REVIEW_CONFIRMATION,
-  ORDER,
-}
-
 export type StateCheckoutNow = {
   tempCartId?: CartId
-  currentStep: CheckoutNowSteps
   promoCodes: CouponCode[]
   note: string
   invalidCodes: Map<CouponCode, string>
@@ -31,15 +23,7 @@ export type StateCheckoutNow = {
   isPendingQuote: boolean
 };
 
-export enum CheckoutCartSteps {
-  ADDRESS_SHIPPING,
-  PAYMENT,
-  REVIEW_CONFIRMATION,
-  ORDER,
-}
-
 export type StateCheckoutCart = {
-  currentStep: CheckoutCartSteps
   invalidCodes: Map<CouponCode, string>
   countRefreshConvertCurrency: number
   paymentType: PaymentTypes
