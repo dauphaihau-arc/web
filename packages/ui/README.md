@@ -35,6 +35,7 @@ Examples:
 
 - `app-panel.vue`
 - `app-state-block.vue`
+- `callout.vue` (Nuxt UI v4 `Callout` port: color variants, optional icon, optional link)
 - `section-header.vue`
 - `dialog-actions.vue`
 - `fixed-form-actions.vue`
@@ -132,6 +133,7 @@ At the time of writing, the shared layer covers:
 - design tokens and layout utilities
 - Nuxt UI theme defaults
 - panel/state/header/dialog primitives
+- callout primitive (`primitives/callout.vue`)
 - data table wrapper (`primitives/data-table/data-table.vue`)
 - fixed form action bars
 - notification popover shell

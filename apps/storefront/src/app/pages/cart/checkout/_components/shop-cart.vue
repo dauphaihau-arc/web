@@ -44,7 +44,10 @@ const itemRows = computed(() => selectedItems.value.map(item => ({
     <template #footer>
       <ShopCartFooter>
         <template #coupons>
-          <CartShopPromoCoupons :shop-id="props.shopCart?.shop?.id" />
+          <CartShopPromoCoupons
+            :shop-id="props.shopCart?.shop?.id"
+            :shop-name="props.shopCart?.shop?.name"
+          />
         </template>
 
         <template #note>

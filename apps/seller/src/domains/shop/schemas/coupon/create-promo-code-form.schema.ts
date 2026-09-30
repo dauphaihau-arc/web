@@ -12,6 +12,7 @@ const baseCreateCouponBodySchema = baseCouponSchema.pick({
   type: true,
   min_order_type: true,
   applies_to: true,
+  visibility: true,
 });
 
 export const createPromoCodeFormSchema = baseCreateCouponBodySchema

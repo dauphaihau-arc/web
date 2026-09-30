@@ -70,6 +70,7 @@ export default defineNuxtConfig({
     '/orders/*': { ssr: true },
     '/notifications': { ssr: true },
     '/coupons': { ssr: true },
+    '/sales': { ssr: true },
     '/settings/shipping': { ssr: true },
     '/products': { ssr: true },
     '/products/*': { ssr: true },

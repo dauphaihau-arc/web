@@ -49,6 +49,12 @@ export const shopSidebarItems: LinkItem[] = [
       //   disabled: true,
       // },
       {
+        title: 'Sales',
+        icon: 'i-heroicons-tag',
+        to: routes.sales(),
+        matchPath: routePaths.sales,
+      },
+      {
         title: 'Coupons',
         icon: 'i-heroicons-ticket',
         to: routes.coupons(),
@@ -93,10 +99,11 @@ export const shopHeaderCreateItems: ShopHeaderCreateItem[] = [
     sequence: ['c', 'c'],
     to: routes.couponsNew(CreateCouponPageTypes.PROMO_CODE),
   },
-  // {
-  //   label: 'Run Sale',
-  //   icon: 'i-hugeicons:sale-tag-01',
-  //   shortcuts: ['S'],
-  //   to: routes.couponsNew(CreateCouponPageTypes.SALE),
-  // },
+  {
+    label: 'Run Sale',
+    icon: 'ticket',
+    shortcuts: ['c s'],
+    sequence: ['c', 's'],
+    to: routes.salesNew(),
+  },
 ];

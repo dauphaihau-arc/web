@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import {
-  CouponAppliesTo, COUPON_CONFIG, CouponMinOrderTypes, CouponTypes,
+  CouponAppliesTo, COUPON_CONFIG, CouponMinOrderTypes, CouponTypes, CouponVisibility,
 } from '@arc/enums/coupon'
 import { log } from '@arc/lib'
 import type { RequiredFields } from '@arc/contracts/utils'
 import { PRODUCT_CONFIG } from '@arc/enums/product'
 import RadioGroupInput from '@arc/ui/primitives/radio-group-input.vue'
-import ApplyCouponOnProduct from './apply-coupon-on-product.vue'
+import ApplyProductTargets from '~/domains/shop/ui/apply-product-targets.vue'
 import SearchStartEndDateInput from './search-start-end-date-input/search-start-end-date-input.vue'
 import { createPromoCodeFormSchema } from '~/domains/shop/schemas/coupon/create-promo-code-form.schema'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
@@ -14,9 +14,10 @@ import WrapperFormGroupCard from '~/shared/ui/wrapper-form-group-card.vue'
 import { routes } from '~/shared/navigation/routes'
 import { toastCustom } from '~/shared/config/toast'
 import { useShopCreateCoupon } from '~/domains/shop/mutations/create-coupon.mutation'
+import { useGetMyShop } from '~/domains/shop/queries/my-shop.query'
 import type { CreatePromoCodeBody } from '~/domains/shop/api/coupon/contracts/coupon.contract'
 
-type StateSubmit = RequiredFields<Partial<CreatePromoCodeBody>, 'type' | 'applies_to' | 'min_order_type'>
+type StateSubmit = RequiredFields<Partial<CreatePromoCodeBody>, 'type' | 'applies_to' | 'min_order_type' | 'visibility'>
 
 const router = useRouter()
 const toast = useToast()
@@ -25,6 +26,9 @@ const {
   mutateAsync: createCoupon,
   isPending: isPendingCreateCoupon,
 } = useShopCreateCoupon()
+
+const { data: myShop } = useGetMyShop()
+const shopCurrency = computed(() => myShop.value?.currency ?? 'USD')
 
 const couponTypeOptions = [
   { value: CouponTypes.PERCENTAGE, label: 'Percentage off' },
@@ -43,10 +47,16 @@ const couponAppliesToOptions = [
   { value: CouponAppliesTo.SPECIFIC, label: 'Select products' },
 ]
 
+const couponVisibilityOptions = [
+  { value: CouponVisibility.PUBLIC, label: 'Show to shoppers' },
+  { value: CouponVisibility.CODE_ONLY, label: 'Share via coupon code' },
+]
+
 const state = reactive<StateSubmit>({
   type: CouponTypes.PERCENTAGE,
   min_order_type: CouponMinOrderTypes.NONE,
   applies_to: CouponAppliesTo.ALL,
+  visibility: CouponVisibility.PUBLIC,
 })
 
 const formRef = ref()
@@ -189,7 +199,7 @@ function onError(event: FormErrorEvent) {
                     class="w-1/2"
                   >
                     <template #trailing>
-                      <span class="text-xs text-text-muted">USD</span>
+                      <span class="text-xs text-text-muted">{{ shopCurrency }}</span>
                     </template>
                   </UInput>
                 </UFormGroup>
@@ -251,7 +261,7 @@ function onError(event: FormErrorEvent) {
                     size="lg"
                   >
                     <template #trailing>
-                      <span class="text-xs text-text-muted">USD</span>
+                      <span class="text-xs text-text-muted">{{ shopCurrency }}</span>
                     </template>
                   </UInput>
                 </UFormGroup>
@@ -304,8 +314,23 @@ function onError(event: FormErrorEvent) {
               />
             </UFormGroup>
 
+            <UFormGroup
+              class="grid grid-cols-4 gap-10"
+              description="Public coupons can appear in checkout for eligible shoppers. Code-only coupons are applied only when a shopper enters the code."
+              label="Coupon visibility"
+              name="visibility"
+              :ui="{ container: 'col-span-2' }"
+            >
+              <RadioGroupInput
+                v-model="state.visibility"
+                :options="couponVisibilityOptions"
+                :disabled="isPendingCreateCoupon"
+                row
+              />
+            </UFormGroup>
+
             <div v-if="state.applies_to === CouponAppliesTo.SPECIFIC">
-              <ApplyCouponOnProduct v-model="state.applies_product_ids" />
+              <ApplyProductTargets v-model="state.applies_product_ids" />
               <div
                 v-if="formRef.getErrors('applies_product_ids')[0]?.message"
                 class="mt-2 text-state-danger-text"

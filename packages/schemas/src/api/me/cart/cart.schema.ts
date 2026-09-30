@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { CouponAppliesTo, CouponIneligibleReason, CouponMinOrderTypes, CouponTypes } from '@arc/enums/coupon'
 
 const selectedProductOptionSchema = z.object({
   option_id: z.string().optional(),
@@ -120,4 +121,53 @@ export const addProductToCartRequestSchema = z.object({
 
 export const deleteCartProductRequestSchema = z.object({
   inventory_id: z.string(),
+})
+
+/**
+ * Minimal shop coupon display item returned by the public coupon endpoint.
+ * Money fields are major units already resolved in the buyer's checkout
+ * currency, so consumers must format them with the shared currency helpers
+ * instead of scaling minor units.
+ *
+ * The endpoint lists both coupons the buyer can use now and coupons the buyer
+ * cannot use yet. `is_eligible` marks the latter and `ineligible_reason`
+ * explains why, so callers render a disabled card instead of filtering.
+ */
+export const cartCouponItemSchema = z.object({
+  code: z.string(),
+  type: z.nativeEnum(CouponTypes),
+  applies_to: z.nativeEnum(CouponAppliesTo),
+  amount_off: z.number().nullable().optional(),
+  percent_off: z.number().nullable().optional(),
+  min_order_type: z.nativeEnum(CouponMinOrderTypes),
+  min_order_value: z.number().nullable().optional(),
+  min_products: z.number().nullable().optional(),
+  end_date: z.string(),
+  currency: z.string(),
+  is_eligible: z.boolean(),
+  ineligible_reason: z.nativeEnum(CouponIneligibleReason).nullable(),
+})
+
+export const getCartCouponsRequestSchema = z.object({
+  cart_id: z.string().optional(),
+  shop_id: z.string(),
+})
+
+export const getCartCouponsResponseSchema = z.object({
+  coupons: z.array(cartCouponItemSchema),
+})
+
+export const applyCartCouponRequestSchema = z.object({
+  cart_id: z.string().optional(),
+  shop_id: z.string(),
+  code: z.string(),
+  promo_codes: z.array(z.string()),
+})
+
+export const applyCartCouponResponseSchema = z.object({
+  promo_codes: z.array(z.string()),
+  applied_coupons: z.array(z.object({
+    code: z.string(),
+    type: z.nativeEnum(CouponTypes),
+  })),
 })

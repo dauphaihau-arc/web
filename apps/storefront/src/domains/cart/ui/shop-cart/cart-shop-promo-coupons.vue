@@ -1,255 +1,123 @@
 <script setup lang="ts">
-import ShopCartPromoCouponsUi from './shop-cart-promo-coupons-ui.vue'
-import { StatusCodes } from 'http-status-codes'
-import { FetchError } from 'ofetch'
-import { log } from '@arc/lib'
-import { type AdditionInfoShopCarts, useCartStore } from '~/domains/cart/stores/cart.store'
 import { useUpdateCart } from '~/domains/cart/mutations/update-cart.mutation'
-import { toastCustom } from '~/shared/config/toast'
+import { useCartStore } from '~/domains/cart/stores/cart.store'
+import { resolveCouponErrorMessage } from '~/domains/cart/utils/coupon-error'
 import type { GetCartResponse } from '~/domains/cart/api/contracts/cart.contract'
+import ShopCartPromoCouponsUi from './shop-cart-promo-coupons-ui.vue'
 
-const { shopId } = defineProps<{
+const props = defineProps<{
   shopId: string
+  shopName?: string
 }>()
 
 const cartStore = useCartStore()
 const queryClient = useQueryClient()
-const toast = useToast()
-
-const state = reactive({
-  showAddCouponCodeInput: false,
-  code: '',
-  codes: [] as string[],
-  invalidCodes: [] as string[],
-  errorMsg: '',
-})
-
-onMounted(() => {
-  const additionInfoOrderShop = cartStore.additionInfoShopCarts.get(shopId)
-  if (additionInfoOrderShop && additionInfoOrderShop.promoCodes.length > 0) {
-    state.codes = additionInfoOrderShop.promoCodes
-    state.showAddCouponCodeInput = true
-  }
-})
 
 const {
   mutateAsync: updateCart,
   isPending: isPendingUpdateCart,
 } = useUpdateCart({ onError: undefined })
 
-const disabledAddBtn = computed(() => !state.code || isPendingUpdateCart.value)
+const state = reactive({
+  open: false,
+  code: '',
+  panelError: '',
+})
 
-const addCoupon = async () => {
-  state.errorMsg = ''
+const appliedCodes = computed(() => cartStore.additionInfoShopCarts.get(props.shopId)?.promoCodes ?? [])
+const isBusy = computed(() => isPendingUpdateCart.value)
+const disabledAddBtn = computed(() => !state.code.trim() || isBusy.value)
 
-  if (state.invalidCodes.length > 0 && state.invalidCodes.includes(state.code)) {
-    state.errorMsg = 'Coupon code not found'
-    return
+// The inline panel alert is only meaningful while the popover is open, so a
+// dismissed popover clears the previous failure instead of showing it stale.
+watch(() => state.open, (isOpen) => {
+  if (!isOpen) {
+    state.panelError = ''
   }
+})
 
-  const tempAdditionInfoShopCarts = new Map<AdditionInfoShopCarts['key'], AdditionInfoShopCarts['value']>(
-    JSON.parse(JSON.stringify([...cartStore.additionInfoShopCarts])),
-  )
+/**
+ * Rebuilds the per-shop adjustment body from the store so a coupon change on
+ * one shop never drops sibling shop selections. The shop being changed is
+ * replaced with the code selection the API validated.
+ */
+function buildShopCarts(shopPromoCodes: string[]) {
+  const next = new Map(cartStore.additionInfoShopCarts)
+  next.set(props.shopId, {
+    promoCodes: shopPromoCodes,
+    note: next.get(props.shopId)?.note ?? '',
+  })
 
-  const tempAdditionInfoOrderShop = tempAdditionInfoShopCarts.get(shopId)
-  if (!tempAdditionInfoOrderShop) {
-    log.error('tempAdditionInfoOrderShop be undefined')
-    return
-  }
-  tempAdditionInfoOrderShop.promoCodes.push(state.code)
-
-  const addition_info_shop_carts = Array.from(tempAdditionInfoShopCarts)
+  return Array.from(next)
     .map(([keyShopId, value]) => ({
       shop_id: keyShopId,
       promo_codes: value.promoCodes,
     }))
     .filter(item => item.promo_codes.length > 0)
+}
+
+/**
+ * Persists the accepted selection only after the pricing call succeeded, then
+ * mirrors the authoritative shipping and summary the server returned.
+ */
+function commitSelection(promo_codes: string[], data: GetCartResponse) {
+  queryClient.setQueryData<GetCartResponse>(['get-cart', 'my-cart'], (oldData) => {
+    if (!oldData?.cart) return oldData
+    if (!data.cart) return { ...oldData, cart: data.cart }
+
+    const foundShopCart = data.cart.shop_groups.find(sc => sc.shop.id === props.shopId)
+    if (!foundShopCart) return oldData
+
+    return {
+      ...oldData,
+      cart: {
+        ...oldData.cart,
+        shop_groups: oldData.cart.shop_groups.map(sc => sc.shop.id === props.shopId
+          ? { ...sc, shipping_minor: foundShopCart.shipping_minor }
+          : sc),
+      },
+      summary: data.summary,
+    }
+  })
+
+  cartStore.additionInfoShopCarts.set(props.shopId, {
+    promoCodes: [...promo_codes],
+    note: cartStore.additionInfoShopCarts.get(props.shopId)?.note ?? '',
+  })
+}
+
+/**
+ * Persists the accepted pending set for the shop in one pricing call. The API
+ * validates the whole set, so a rejected combination leaves the cart untouched.
+ */
+async function acceptCodes(codes: string[]) {
+  state.panelError = ''
 
   try {
-    const data = await updateCart({
-      addition_info_shop_carts,
-    })
+    const data = await updateCart({ addition_info_shop_carts: buildShopCarts(codes) })
 
-    queryClient.setQueryData<GetCartResponse>(['get-cart', 'my-cart'], (oldData) => {
-      if (!oldData || !oldData.cart) return oldData
-      if (!data.cart) return { ...oldData, cart: data.cart }
-      const foundShopCart = data.cart.shop_groups.find(sc => sc.shop.id === shopId)
-      if (!foundShopCart) return oldData
-
-      const shopGroupsUpdated = oldData.cart.shop_groups.map((sc) => {
-        if (sc.shop.id === shopId) {
-          return {
-            ...sc,
-            shipping_minor: foundShopCart.shipping_minor,
-          }
-        }
-        return sc
-      })
-      return {
-        ...oldData,
-        cart: {
-          ...oldData.cart,
-          shop_groups: shopGroupsUpdated,
-        },
-        summary: data.summary,
-      }
-    })
-
-    cartStore.additionInfoShopCarts.set(shopId, tempAdditionInfoOrderShop)
-    state.codes = tempAdditionInfoOrderShop.promoCodes
+    commitSelection(codes, data)
     state.code = ''
+    state.open = false
   }
   catch (error) {
-    if (error instanceof FetchError) {
-      switch (error.status) {
-        case StatusCodes.NOT_FOUND:
-          state.errorMsg = 'Coupon code not found'
-          state.invalidCodes.push(state.code)
-          break
-        case StatusCodes.UNPROCESSABLE_ENTITY:
-          toast.add({
-            ...toastCustom.error,
-            title: error.data.message,
-          })
-          break
-        default:
-          toast.add({
-            ...toastCustom.error,
-            title: 'Add coupon failed',
-          })
-      }
-    }
+    // Failure keeps the staged selection and surfaces the reason in the panel.
+    state.panelError = resolveCouponErrorMessage(error)
   }
 }
 
-const deleteCoupon = async (code: string) => {
-  const tempAdditionInfoShopCarts = new Map<AdditionInfoShopCarts['key'], AdditionInfoShopCarts['value']>(
-    JSON.parse(JSON.stringify([...cartStore.additionInfoShopCarts])),
-  )
-  const tempAdditionInfoOrderShop = tempAdditionInfoShopCarts.get(shopId)
-
-  if (!tempAdditionInfoOrderShop) {
-    log.error('tempAdditionInfoOrderShop be undefined')
-    return
-  }
-  tempAdditionInfoOrderShop.promoCodes = tempAdditionInfoOrderShop.promoCodes.filter(c => c !== code)
-
-  const addition_info_shop_carts = Array.from(tempAdditionInfoShopCarts).map(([keyShopId, value]) => ({
-    shop_id: keyShopId,
-    promo_codes: value.promoCodes,
-  }))
-
+async function removeCode(code: string) {
+  const nextCodes = appliedCodes.value.filter(appliedCode => appliedCode !== code)
   try {
-    const data = await updateCart({
-      addition_info_shop_carts,
-    })
-
-    queryClient.setQueryData<GetCartResponse>(['get-cart', 'my-cart'], (oldData) => {
-      if (!oldData || !oldData.cart) return oldData
-      if (!data.cart) return { ...oldData, cart: data.cart }
-      const foundShopCart = data.cart.shop_groups.find(sc => sc.shop.id === shopId)
-      if (!oldData || !foundShopCart) return oldData
-
-      const shopGroupsUpdated = oldData.cart.shop_groups.map((sc) => {
-        if (sc.shop.id === shopId) {
-          return {
-            ...sc,
-            shipping_minor: foundShopCart.shipping_minor,
-          }
-        }
-        return sc
-      })
-      return {
-        ...oldData,
-        cart: {
-          ...oldData.cart,
-          shop_groups: shopGroupsUpdated,
-        },
-        summary: data.summary,
-      }
-    })
-
-    const additionInfoOrderShop = tempAdditionInfoShopCarts.get(shopId)
-    if (!additionInfoOrderShop) {
-      log.error('additionInfoOrderShop be undefined', additionInfoOrderShop)
-      throw new Error()
-    }
-    cartStore.additionInfoShopCarts.set(shopId, additionInfoOrderShop)
-    state.codes = tempAdditionInfoOrderShop.promoCodes
+    const data = await updateCart({ addition_info_shop_carts: buildShopCarts(nextCodes) })
+    commitSelection(nextCodes, data)
+    state.panelError = ''
   }
   catch {
-    toast.add({
-      ...toastCustom.error,
-      title: 'Delete coupon failed',
-    })
-  }
-}
-
-const toggleShowAddCouponInput = async () => {
-  state.showAddCouponCodeInput = !state.showAddCouponCodeInput
-  if (!state.showAddCouponCodeInput) {
-    const tempAdditionInfoShopCarts = new Map<AdditionInfoShopCarts['key'], AdditionInfoShopCarts['value']>(
-      JSON.parse(JSON.stringify([...cartStore.additionInfoShopCarts])),
-    )
-    const tempAdditionInfoOrderShop = tempAdditionInfoShopCarts.get(shopId)
-
-    if (!tempAdditionInfoOrderShop) {
-      log.error('tempAdditionInfoOrderShop be undefined')
-      return
-    }
-    if (tempAdditionInfoOrderShop.promoCodes.length === 0) {
-      return
-    }
-    tempAdditionInfoOrderShop.promoCodes = []
-
-    const addition_info_shop_carts = Array.from(tempAdditionInfoShopCarts).map(([keyShopId, value]) => ({
-      shop_id: keyShopId,
-      promo_codes: value.promoCodes,
-    }))
-
-    try {
-      const data = await updateCart({
-        addition_info_shop_carts,
-      })
-
-      queryClient.setQueryData<GetCartResponse>(['get-cart', 'my-cart'], (oldData) => {
-        if (!oldData || !oldData.cart) return oldData
-        if (!data.cart) return { ...oldData, cart: data.cart }
-        const foundShopCart = data.cart.shop_groups.find(sc => sc.shop.id === shopId)
-        if (!oldData || !foundShopCart) return oldData
-
-        const shopGroupsUpdated = oldData.cart.shop_groups.map((sc) => {
-          if (sc.shop.id === shopId) {
-            return {
-              ...sc,
-              shipping_minor: foundShopCart.shipping_minor,
-            }
-          }
-          return sc
-        })
-        return {
-          ...oldData,
-          cart: {
-            ...oldData.cart,
-            shop_groups: shopGroupsUpdated,
-          },
-          summary: data.summary,
-        }
-      })
-      const additionInfoOrderShop = tempAdditionInfoShopCarts.get(shopId)
-      if (!additionInfoOrderShop) {
-        log.error('additionInfoOrderShop be undefined', additionInfoOrderShop)
-        throw new Error()
-      }
-      cartStore.additionInfoShopCarts.set(shopId, additionInfoOrderShop)
-      state.codes = []
-    }
-    catch {
-      toast.add({
-        ...toastCustom.error,
-        title: 'Delete all coupons failed',
-      })
-    }
+    // Surface the failure in the picker panel instead of a floating toast, and
+    // open it so the message is actually visible where the coupon lives.
+    state.panelError = 'Delete coupon failed'
+    state.open = true
   }
 }
 </script>
@@ -257,13 +125,15 @@ const toggleShowAddCouponInput = async () => {
 <template>
   <ShopCartPromoCouponsUi
     v-model:code="state.code"
-    v-model:show-input="state.showAddCouponCodeInput"
-    :codes="state.codes"
-    :error="state.errorMsg"
-    :disabled="isPendingUpdateCart"
+    v-model:open="state.open"
+    :shop-id="props.shopId"
+    :shop-name="props.shopName"
+    :codes="appliedCodes"
+    :panel-error="state.panelError"
+    :disabled="isBusy"
     :disabled-add="disabledAddBtn"
-    @apply="addCoupon"
-    @toggle="toggleShowAddCouponInput"
-    @remove-code="deleteCoupon"
+    :is-applying="isBusy"
+    @accept="acceptCodes"
+    @remove-code="removeCode"
   />
 </template>

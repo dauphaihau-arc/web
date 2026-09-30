@@ -5,12 +5,20 @@ import {
   CouponTypes,
   CouponMinOrderTypes,
   COUPON_CONFIG,
+  CouponVisibility,
 } from '@arc/enums/coupon'
 import { idSchema } from '@arc/schemas/primitives/id.schema'
 
 export const baseCouponSchema = z.object({
   id: idSchema,
   shop: idSchema,
+  /**
+   * Canonical currency snapshot of the owning shop at creation time. Fixed
+   * amount and minimum spend are stored as major units in this currency and the
+   * seller cannot override it, so responses must format money with this value
+   * instead of the current shop or buyer currency.
+   */
+  currency: z.string(),
   code: z
     .string()
     .min(COUPON_CONFIG.MIN_CHAR_CODE,
@@ -56,6 +64,9 @@ export const baseCouponSchema = z.object({
     .boolean()
     .default(false)
     .optional(),
+  visibility: z
+    .nativeEnum(CouponVisibility)
+    .default(CouponVisibility.CODE_ONLY),
   created_at: z.date(),
   updated_at: z.date(),
 })

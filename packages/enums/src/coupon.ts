@@ -32,3 +32,23 @@ export enum CouponStatus {
   ACTIVE = 'active',
   EXPIRED = 'expired',
 }
+
+export enum CouponVisibility {
+  PUBLIC = 'public',
+  CODE_ONLY = 'code_only',
+}
+
+/**
+ * Why a listed shop coupon cannot be applied to the buyer's current cart.
+ * `null` on the wire means the coupon is eligible.
+ */
+export enum CouponIneligibleReason {
+  NOT_STARTED = 'not_started',
+  EXPIRED = 'expired',
+  INACTIVE = 'inactive',
+  USAGE_LIMIT_REACHED = 'usage_limit_reached',
+  USER_USAGE_LIMIT_REACHED = 'user_usage_limit_reached',
+  PRODUCT_SCOPE = 'product_scope',
+  MIN_ORDER_VALUE = 'min_order_value',
+  MIN_PRODUCTS = 'min_products',
+}

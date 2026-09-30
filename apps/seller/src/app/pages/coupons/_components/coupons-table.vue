@@ -165,7 +165,7 @@ const itemsDropdownWithRow = (row: { id: string }): DropdownItem[][] => [
           v-if="row.type === CouponTypes.FIXED_AMOUNT"
           class="text-center"
         >
-          {{ formatCurrency(row.amount_off) }}
+          {{ formatCurrency(row.amount_off, row.currency) }}
         </div>
       </template>
 

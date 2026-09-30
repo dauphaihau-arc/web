@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import {
-  CouponAppliesTo, COUPON_CONFIG, CouponMinOrderTypes, CouponTypes,
+  CouponAppliesTo, COUPON_CONFIG, CouponMinOrderTypes, CouponTypes, CouponVisibility,
 } from '@arc/enums/coupon'
 import { log } from '@arc/lib'
 import type { RequiredFields } from '@arc/contracts/utils'
 import RadioGroupInput from '@arc/ui/primitives/radio-group-input.vue'
-import ApplyCouponOnProduct from './apply-coupon-on-product.vue'
+import ApplyProductTargets from '~/domains/shop/ui/apply-product-targets.vue'
 import SearchStartEndDateInput from './search-start-end-date-input/search-start-end-date-input.vue'
 import { createSaleFormSchema } from '~/domains/shop/schemas/coupon/create-sale-form.schema'
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types'
 import WrapperFormGroupCard from '~/shared/ui/wrapper-form-group-card.vue'
 import { routes } from '~/shared/navigation/routes'
 import { useShopCreateCoupon } from '~/domains/shop/mutations/create-coupon.mutation'
+import { useGetMyShop } from '~/domains/shop/queries/my-shop.query'
 import { toastCustom } from '~/shared/config/toast'
 import type { CreateSaleBody } from '~/domains/shop/api/coupon/contracts/coupon.contract'
 
@@ -23,7 +24,10 @@ const {
   isPending: isPendingRunSale,
 } = useShopCreateCoupon()
 
-type StateSubmit = RequiredFields<Partial<CreateSaleBody>, 'type' | 'applies_to' | 'min_order_type' | 'is_auto_sale'>
+const { data: myShop } = useGetMyShop()
+const shopCurrency = computed(() => myShop.value?.currency ?? 'USD')
+
+type StateSubmit = RequiredFields<Partial<CreateSaleBody>, 'type' | 'applies_to' | 'min_order_type' | 'is_auto_sale' | 'visibility'>
 
 const couponTypeOptions = [
   {
@@ -47,11 +51,17 @@ const couponAppliesToOptions = [
   { value: CouponAppliesTo.SPECIFIC, label: 'Select products' },
 ]
 
+const couponVisibilityOptions = [
+  { value: CouponVisibility.PUBLIC, label: 'Show to shoppers' },
+  { value: CouponVisibility.CODE_ONLY, label: 'Share via coupon code' },
+]
+
 const state = reactive<StateSubmit>({
   type: CouponTypes.PERCENTAGE,
   min_order_type: CouponMinOrderTypes.NONE,
   applies_to: CouponAppliesTo.ALL,
   is_auto_sale: true,
+  visibility: CouponVisibility.PUBLIC,
 })
 
 const formRef = ref()
@@ -233,7 +243,7 @@ function onError(event: FormErrorEvent) {
                     size="lg"
                   >
                     <template #trailing>
-                      <span class="text-xs text-text-muted">USD</span>
+                      <span class="text-xs text-text-muted">{{ shopCurrency }}</span>
                     </template>
                   </UInput>
                 </UFormGroup>
@@ -287,8 +297,22 @@ function onError(event: FormErrorEvent) {
               />
             </UFormGroup>
 
+            <UFormGroup
+              class="mb-4"
+              label="Coupon visibility"
+              description="Public coupons can appear in checkout for eligible shoppers. Code-only coupons are applied only when a shopper enters the code."
+              name="visibility"
+            >
+              <RadioGroupInput
+                v-model="state.visibility"
+                :options="couponVisibilityOptions"
+                :disabled="isPendingRunSale"
+                row
+              />
+            </UFormGroup>
+
             <div v-if="state.applies_to === CouponAppliesTo.SPECIFIC">
-              <ApplyCouponOnProduct v-model="state.applies_product_ids" />
+              <ApplyProductTargets v-model="state.applies_product_ids" />
               <div
                 v-if="formRef.getErrors('applies_product_ids')[0]?.message"
                 class="mt-2 text-state-danger-text"

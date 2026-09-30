@@ -11,6 +11,7 @@ type ProductCouponRow = ListShopProductsItem & {
   lowestPrice: number
   highestPrice: number
   stock: number
+  currency: string | undefined
 }
 
 const productIdsModel = defineModel<string[]>()
@@ -85,6 +86,7 @@ const rowsDialog = computed<ProductCouponRow[]>(() => {
           )
         : 0,
       stock: inventory.reduce((acc, next) => acc + (next.stock ?? 0), 0),
+      currency: inventory[0]?.currency,
     }
   })
 })
@@ -152,8 +154,8 @@ watchDebounced(
       >
         <template #price-data="{ row }">
           <div>
-            {{ formatCurrency(row.lowestPrice) }}
-            {{ row.highestPrice > 0 ? `- ${formatCurrency(row.highestPrice)}` : '' }}
+            {{ formatCurrency(row.lowestPrice, row.currency) }}
+            {{ row.highestPrice > 0 ? `- ${formatCurrency(row.highestPrice, row.currency)}` : '' }}
           </div>
         </template>
         <template #stock-data="{ row }">
@@ -190,8 +192,8 @@ watchDebounced(
       >
         <template #price-data="{ row }">
           <div>
-            {{ formatCurrency(row.lowestPrice) }}
-            {{ row.highestPrice > 0 ? `- ${formatCurrency(row.highestPrice)}` : '' }}
+            {{ formatCurrency(row.lowestPrice, row.currency) }}
+            {{ row.highestPrice > 0 ? `- ${formatCurrency(row.highestPrice, row.currency)}` : '' }}
           </div>
         </template>
 

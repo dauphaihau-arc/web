@@ -71,6 +71,7 @@ export const ICON_NAME_BY_ALIAS = {
   ratingExcellent: 'lucide:laugh',
   import: 'iconoir:import',
   export: 'ph:export',
+  externalLink: 'lucide:external-link',
   downloadTray: 'i-heroicons-arrow-down-tray',
   loading: 'eos-icons:loading',
 } as const
@@ -171,6 +172,7 @@ export const APP_ICON_CLIENT_BUNDLE_ICONS = [
   'lucide:laugh',
   'iconoir:import',
   'ph:export',
+  'lucide:external-link',
   'heroicons:arrow-down-tray',
   'eos-icons:loading',
 ] as const

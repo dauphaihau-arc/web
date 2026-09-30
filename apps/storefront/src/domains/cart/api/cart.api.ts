@@ -1,8 +1,12 @@
 import type {
   AddProductToCartRequest,
   AddProductToCartResponse,
+  ApplyCartCouponRequest,
+  ApplyCartCouponResponse,
   DeleteCartProductRequest,
   DeleteCartProductResponse,
+  GetCartCouponsRequest,
+  GetCartCouponsResponse,
   GetCartRequest,
   GetCartResponse,
   UpdateCartRequest,
@@ -22,6 +26,20 @@ export const cartApi = {
     return apiClient.get<GetCartResponse>(
       '/cart',
       params,
+    );
+  },
+
+  getCoupons(params: GetCartCouponsRequest) {
+    return apiClient.get<GetCartCouponsResponse>(
+      '/cart/coupons',
+      params,
+    );
+  },
+
+  applyCoupon(payload: ApplyCartCouponRequest) {
+    return apiClient.post<ApplyCartCouponResponse>(
+      '/cart/coupons/apply',
+      payload,
     );
   },
 
