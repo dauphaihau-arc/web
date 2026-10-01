@@ -1,21 +1,36 @@
 <script setup lang="ts">
 import type { RouteLocationRaw } from 'vue-router'
 
-withDefaults(defineProps<{
+type PageSize = 'wide' | 'form'
+
+const PAGE_SIZE_CLASS: Record<PageSize, string | undefined> = {
+  wide: undefined,
+  form: 'mx-auto w-full max-w-xl',
+}
+
+const props = withDefaults(defineProps<{
   backLabel?: string
   backTo?: RouteLocationRaw
   contentClass?: string
+  /**
+   * Page width preset. `wide` fills the layout, `form` centers a narrow
+   * single-column page (title, description and content together).
+   */
+  size?: PageSize
 }>(), {
   backLabel: '',
   backTo: undefined,
   contentClass: '',
+  size: 'wide',
 })
+
+const rootClass = computed(() => PAGE_SIZE_CLASS[props.size])
 
 const slots = useSlots()
 </script>
 
 <template>
-  <div>
+  <div :class="rootClass">
     <div class="mb-6 flex items-start justify-between">
       <div>
         <div

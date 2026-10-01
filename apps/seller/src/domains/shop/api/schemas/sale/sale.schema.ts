@@ -49,3 +49,21 @@ export const listShopSalesResponseSchema = z.object({
   total_pages: z.number().int(),
   total_results: z.number().int(),
 });
+
+export const shopSaleStopResponseSchema = z.object({
+  sale: shopSaleSchema,
+});
+
+export const bulkStopShopSalesRequestSchema = z.object({
+  ids: z.array(idSchema),
+});
+
+export const bulkStopShopSalesResponseSchema = z.object({
+  results: z.array(shopSaleSchema),
+  succeeded_ids: z.array(idSchema),
+  failed: z.array(z.object({
+    id: idSchema,
+    code: z.string(),
+    reason: z.string(),
+  })),
+});

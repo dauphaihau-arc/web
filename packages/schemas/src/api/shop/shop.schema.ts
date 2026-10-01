@@ -9,6 +9,11 @@ export const myShopResponseSchema = z.object({
   slug: z.string(),
   status: z.string(),
   currency: z.nativeEnum(MarketCurrencies),
+  timezone: z.string(),
+})
+
+export const updateShopSettingsRequestSchema = z.object({
+  timezone: z.string().min(1),
 })
 
 export const createShopRequestSchema = z.object({

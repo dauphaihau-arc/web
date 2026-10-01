@@ -68,6 +68,12 @@ export const shopSidebarItems: LinkItem[] = [
     matchPath: routePaths.settings,
     sub: [
       {
+        title: 'General',
+        icon: 'shop',
+        to: routes.generalSettings(),
+        matchPath: routePaths.generalSettings,
+      },
+      {
         title: 'Shipping Profiles',
         icon: 'shipping',
         to: routes.shippingSettings(),

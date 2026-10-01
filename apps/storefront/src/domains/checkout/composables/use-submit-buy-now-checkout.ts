@@ -87,6 +87,34 @@ export function useSubmitBuyNowCheckout() {
   }
 
 
+  /**
+   * The server refused to commit a quote whose totals no longer match current
+   * prices. The stale acceptance is dropped and the review is re-quoted from
+   * the refreshed prices, so the buyer sees the new total and has to confirm
+   * the order again instead of being charged a silently different amount.
+   */
+  async function refreshAcceptedQuote() {
+    const address = cartStore.stateCheckoutNow.address;
+
+    cartStore.stateCheckoutNow.quote = null;
+    await getCart();
+
+    if (!address) {
+      return;
+    }
+
+    const isAuthenticated = !!dataUserAuth.value?.user;
+
+    try {
+      cartStore.stateCheckoutNow.quote = isAuthenticated
+        ? await createQuote(createQuoteBody(isAuthenticated, address) as CreateCheckoutQuoteForBuyNowRequest)
+        : await createGuestQuote(createQuoteBody(isAuthenticated, address) as CreateGuestCheckoutQuoteForBuyNowRequest);
+    }
+    catch {
+      cartStore.stateCheckoutNow.quote = null;
+    }
+  }
+
   async function submitBuyNowCheckout() {
     try {
       cartStore.stateCheckoutNow.isPendingCreateOrder = true;
@@ -146,7 +174,10 @@ export function useSubmitBuyNowCheckout() {
       const checkoutFailure = resolveCheckoutFailure(error);
       const checkoutFailureCopy = getCheckoutFailureCopy(checkoutFailure);
 
-      if (checkoutFailure !== 'unknown') {
+      if (checkoutFailure === 'prices_changed') {
+        await refreshAcceptedQuote();
+      }
+      else if (checkoutFailure !== 'unknown') {
         await getCart();
       }
 

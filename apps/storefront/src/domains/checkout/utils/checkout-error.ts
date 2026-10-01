@@ -3,6 +3,7 @@ import { getBackendErrorCode, getBackendErrorMessage } from '~/shared/utils/back
 export type CheckoutFailureKind =
   | 'quote_expired'
   | 'cart_changed'
+  | 'prices_changed'
   | 'stock_unavailable'
   | 'reservation_unavailable'
   | 'checkout_session_pending'
@@ -16,6 +17,8 @@ export function resolveCheckoutFailure(error: unknown): CheckoutFailureKind {
       return 'quote_expired';
     case 'CHECKOUT_QUOTE_CART_CHANGED':
       return 'cart_changed';
+    case 'CHECKOUT_QUOTE_PRICES_CHANGED':
+      return 'prices_changed';
     case 'CHECKOUT_QUOTE_RESERVATION_OUT_OF_STOCK':
       return 'stock_unavailable';
     case 'CHECKOUT_QUOTE_RESERVATION_UNAVAILABLE':
@@ -28,6 +31,9 @@ export function resolveCheckoutFailure(error: unknown): CheckoutFailureKind {
   }
   if (backendMessage.includes('no longer matches the selected cart items')) {
     return 'cart_changed';
+  }
+  if (backendMessage.includes('checkout totals changed')) {
+    return 'prices_changed';
   }
   if (backendMessage.includes('insufficient stock to reserve')) {
     return 'stock_unavailable';
@@ -56,6 +62,11 @@ export function getCheckoutFailureCopy(kind: CheckoutFailureKind): {
       return {
         title: 'Cart changed',
         description: 'Your items or totals changed since review. We refreshed checkout for you.',
+      };
+    case 'prices_changed':
+      return {
+        title: 'Prices changed',
+        description: 'The prices in your cart changed since you reviewed them, so we refreshed your totals. Review the new total and confirm your order again.',
       };
     case 'stock_unavailable':
       return {
