@@ -1,0 +1,183 @@
+import {
+  computed, nextTick, reactive, ref, watch,
+} from 'vue';
+import { PromotionProductScope } from '@arc/enums/promotion';
+import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types';
+import { toastCustom } from '~/shared/config/toast';
+import { readApiError } from '~/shared/lib/api-error';
+import { PROMO_CODE_ERROR_MESSAGES } from '~/domains/shop/api/promo-code/promo-code-error-messages';
+import { routes } from '~/shared/navigation/routes';
+import { useShopCreatePromoCode } from '~/domains/shop/mutations/create-promo-code.mutation';
+import {
+  buildCreatePromoCodePayload,
+  createPromoCodeFormSchema,
+  type CreatePromoCodeFormState,
+} from '~/domains/shop/schemas/promo-code/create-promo-code-form.schema';
+import { isAmbiguousLocalTime } from '~/domains/shop/schemas/sale/create-sale-form.schema';
+import { parseLocalDateTime } from '~/domains/shop/utils/zoned-local-date-time';
+import { useSaleScheduleTimezone } from '~/app/pages/sales/new/_components/use-sale-schedule-timezone';
+
+export const CREATE_PROMO_CODE_FORM_ID = 'create-promo-code-form';
+
+/** The slice of `UForm`'s exposed API this form drives from its submit handler. */
+type PromoCodeFormRef = {
+  clear: (path?: string) => void
+  setErrors: (errors: FormError[]) => void
+};
+
+/**
+ * Owns the Create-a-promo-code form: its state, validation, and submit that
+ * turns a completed form into a Promo Code.
+ *
+ * The scheduling timezone is delegated to `useSaleScheduleTimezone` and then
+ * mirrored into the form state, so the zod schema stays the single validator
+ * and the timezone field reports its error like every other field.
+ */
+export function useCreatePromoCodeForm() {
+  const router = useRouter();
+  const toast = useToast();
+
+  // The server owns code uniqueness, so its verdict is reported on the Code
+  // field itself rather than as a toast that names no field.
+  const formRef = ref<PromoCodeFormRef | null>(null);
+  const codeFieldRef = ref<{ $el?: HTMLElement | null } | null>(null);
+
+  const { mutateAsync: createPromoCode, isPending: isPendingCreatePromoCode } = useShopCreatePromoCode();
+
+  const {
+    storeTimezone,
+    timezone,
+    isPickerOpen,
+    isStoreTimezone,
+    openPicker,
+  } = useSaleScheduleTimezone();
+
+  const state = reactive<CreatePromoCodeFormState>({
+    name: '',
+    code: '',
+    percent_off: 10,
+    visibility: 'public',
+    product_scope: PromotionProductScope.ALL,
+    product_ids: [],
+    timezone: '',
+    start_mode: 'now',
+    start_local: '',
+    end_local: '',
+    start_occurrence: undefined,
+    end_occurrence: undefined,
+  });
+
+  const timezoneOptions = Intl.supportedValuesOf('timeZone');
+
+  watch(timezone, (value) => {
+    state.timezone = value;
+  }, { immediate: true });
+
+  // The server's verdict on a code stops being true the moment the seller
+  // changes the code, so the field error does not outlive the value it judged.
+  watch(() => state.code, () => {
+    formRef.value?.clear('code');
+  });
+
+  const startIsAmbiguous = computed(() => {
+    if (state.start_mode !== 'scheduled') {
+      return false;
+    }
+    const parts = parseLocalDateTime(state.start_local);
+    return parts ? isAmbiguousLocalTime(parts, state.timezone) : false;
+  });
+
+  const endIsAmbiguous = computed(() => {
+    const parts = parseLocalDateTime(state.end_local);
+    return parts ? isAmbiguousLocalTime(parts, state.timezone) : false;
+  });
+
+  function validate(values: CreatePromoCodeFormState): FormError[] {
+    const result = createPromoCodeFormSchema.safeParse(values);
+
+    if (result.success) {
+      return [];
+    }
+
+    return result.error.issues.map(issue => ({
+      path: typeof issue.path.at(-1) === 'string' ? String(issue.path.at(-1)) : '',
+      message: issue.message,
+    }));
+  }
+
+  async function onSubmit(event: FormSubmitEvent<CreatePromoCodeFormState>) {
+    try {
+      await createPromoCode(buildCreatePromoCodePayload(event.data));
+      await router.push(routes.promoCodes());
+      toast.add({
+        ...toastCustom.success,
+        title: 'Promo code created',
+      });
+    }
+    catch (error) {
+      const { code, message } = readApiError(error);
+      const fieldMessage = code && PROMO_CODE_ERROR_MESSAGES[code];
+
+      // A code collision belongs under the Code field: it is the only thing
+      // that has to change, and the form scrolls it into view.
+      if (code === 'PROMO_CODE_ALREADY_EXISTS') {
+        await showCodeError(fieldMessage ?? message);
+        return;
+      }
+
+      toast.add({
+        ...toastCustom.error,
+        title: 'Could not create the promo code',
+        description: fieldMessage || message,
+      });
+    }
+  }
+
+  /**
+   * Reports a server verdict on the Code field and brings it into view. The
+   * error is cleared as soon as the seller edits the code, because that edit is
+   * the one thing the server was rejecting.
+   */
+  async function showCodeError(message: string | undefined) {
+    if (!message) {
+      return;
+    }
+
+    formRef.value?.clear('code');
+    formRef.value?.setErrors([{ path: 'code', message }]);
+    await nextTick();
+
+    const element = codeFieldRef.value?.$el;
+    element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    element?.querySelector('input')?.focus();
+  }
+
+  function onError(event: FormErrorEvent) {
+    const element = document.getElementById(event.errors[0]?.id ?? '');
+    element?.focus();
+    element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function cancel() {
+    router.push(routes.promoCodes());
+  }
+
+  return {
+    formRef,
+    codeFieldRef,
+    state,
+    validate,
+    onSubmit,
+    onError,
+    cancel,
+    isPendingCreatePromoCode,
+    startIsAmbiguous,
+    endIsAmbiguous,
+    changeTimezone: openPicker,
+    timezone,
+    timezoneOptions,
+    storeTimezone,
+    isPickerOpen,
+    isStoreTimezone,
+  };
+}

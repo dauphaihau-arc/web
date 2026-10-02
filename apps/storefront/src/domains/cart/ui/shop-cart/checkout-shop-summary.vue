@@ -36,7 +36,17 @@ const displayCurrency = computed(
     ?? props.shopCart.currency,
 )
 
+const merchandiseSubtotalMinor = computed(
+  () => props.quoteShop?.subtotal_minor ?? props.shopCart.total_minor,
+)
+
+const saleDiscountMinor = computed(() => props.quoteShop?.sale_discount_minor ?? 0)
+
 const discountMinor = computed(() => props.quoteShop?.discount_minor ?? 0)
+
+const subtotalAfterDiscountMinor = computed(
+  () => merchandiseSubtotalMinor.value - discountMinor.value,
+)
 
 const shippingMinor = computed(
   () => (props.isPending ? undefined : props.quoteShop?.shipping_minor),
@@ -58,12 +68,33 @@ const estimateLabel = computed(() => formatShippingEstimateRange(props.quoteShop
   <div class="w-2/5">
     <div class="flex justify-between">
       <div class="title">
-        <div>Shop discount</div>
+        <div>Product(s) total</div>
+        <div v-if="saleDiscountMinor > 0">
+          Sale savings
+        </div>
+        <div>Code savings</div>
+      </div>
+      <div class="price">
+        <div>
+          {{ formatMinorCurrency(merchandiseSubtotalMinor, displayCurrency) }}
+        </div>
+        <div v-if="saleDiscountMinor > 0">
+          {{ formatMinorCurrency(saleDiscountMinor, displayCurrency) }}
+        </div>
+        <div>
+          {{ formatMinorCurrency(discountMinor, displayCurrency) }}
+        </div>
+      </div>
+    </div>
+    <UDivider class="my-3" />
+    <div class="flex justify-between">
+      <div class="title">
+        <div>Subtotal</div>
         <div>Shipping</div>
       </div>
       <div class="price">
         <div>
-          {{ formatMinorCurrency(discountMinor, displayCurrency) }}
+          {{ formatMinorCurrency(subtotalAfterDiscountMinor, displayCurrency) }}
         </div>
         <div
           v-if="isPending"

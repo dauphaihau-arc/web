@@ -50,13 +50,16 @@ export const shopSidebarItems: LinkItem[] = [
       // },
       {
         title: 'Sales',
-        icon: 'i-heroicons-tag',
         to: routes.sales(),
         matchPath: routePaths.sales,
       },
       {
+        title: 'Promo codes',
+        to: routes.promoCodes(),
+        matchPath: routePaths.promoCodes,
+      },
+      {
         title: 'Coupons',
-        icon: 'i-heroicons-ticket',
         to: routes.coupons(),
         matchPath: routePaths.coupons,
       },

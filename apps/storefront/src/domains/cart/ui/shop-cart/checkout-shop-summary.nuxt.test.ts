@@ -25,6 +25,7 @@ function buildQuoteShop(overrides?: { shippingMinor?: number }): CheckoutQuoteSh
     shop_name: 'Ceramics Studio',
     shop_slug: 'ceramics-studio',
     subtotal_minor: 2500,
+    sale_discount_minor: 400,
     discount_minor: 300,
     shipping_minor: shippingMinor,
     total_minor: 2500 - 300 + shippingMinor,
@@ -50,21 +51,24 @@ function render(quoteShop?: CheckoutQuoteShop, isPending = false, checkoutCurren
 }
 
 describe('checkout shop summary', () => {
-  it('shows only the per-shop money the page summary cannot express', () => {
+  it('shows the per-shop sale and code savings, shipping, and total', () => {
     const text = render(buildQuoteShop()).text();
 
-    expect(text).toContain('Shop discount');
+    expect(text).toContain('Product(s) total');
+    expect(text).toContain('Sale savings');
+    expect(text).toContain('Code savings');
+    expect(text).toContain('Subtotal');
     expect(text).toContain('Shipping');
     expect(text).toContain('Total');
-    // The page's Summary Order card owns the basket-wide breakdown.
-    expect(text).not.toContain('Product(s) total');
-    expect(text).not.toContain('Subtotal');
   });
 
   it('renders the accepted per-shop money, Shipping Charge, and seller estimate', () => {
     const text = render(buildQuoteShop()).text();
 
+    expect(text).toContain(formatMinorCurrency(2500, 'USD'));
+    expect(text).toContain(formatMinorCurrency(400, 'USD'));
     expect(text).toContain(formatMinorCurrency(300, 'USD'));
+    expect(text).toContain(formatMinorCurrency(2200, 'USD'));
     expect(text).toContain(formatMinorCurrency(999, 'USD'));
     // Total is the accepted charge the buyer will pay, not a re-derived sum.
     expect(text).toContain(formatMinorCurrency(3199, 'USD'));

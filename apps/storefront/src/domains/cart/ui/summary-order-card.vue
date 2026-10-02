@@ -20,6 +20,7 @@ const currency = computed(() => props.quote?.checkout_currency ?? props.summaryO
 const merchandiseSubtotalMinor = computed(
   () => props.quote?.subtotal_minor ?? props.summaryOrder?.subtotal_minor ?? 0,
 )
+const saleDiscountMinor = computed(() => props.quote?.sale_discount_minor ?? 0)
 const discountMinor = computed(() => props.quote?.discount_minor ?? props.summaryOrder?.discount_minor ?? 0)
 const subtotalAfterDiscountMinor = computed(() => merchandiseSubtotalMinor.value - discountMinor.value)
 const shippingMinor = computed(() => props.quote?.shipping_minor)
@@ -46,11 +47,20 @@ const selectedQuantity = computed(() => props.summaryOrder?.total_selected_quant
         <div class="flex justify-between">
           <div class="title">
             <div>Product(s) total</div>
-            <div>Shop discount</div>
+            <div v-if="saleDiscountMinor > 0">
+              Sale savings
+            </div>
+            <div>Code savings</div>
           </div>
           <div class="price">
             <div>
               {{ formatMinorCurrency(merchandiseSubtotalMinor, currency) }}
+            </div>
+            <div
+              v-if="saleDiscountMinor > 0"
+              class="text-right"
+            >
+              {{ formatMinorCurrency(saleDiscountMinor, currency) }}
             </div>
             <div class="text-right">
               {{ formatMinorCurrency(discountMinor, currency) }}

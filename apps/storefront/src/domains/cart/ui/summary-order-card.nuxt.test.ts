@@ -26,6 +26,7 @@ function buildQuote(shippingMinor: number): CheckoutQuoteResponse {
     checkout_currency: 'USD',
     subtotal_minor: 5000,
     shipping_minor: shippingMinor,
+    sale_discount_minor: 400,
     discount_minor: 500,
     total_minor: 4500 + shippingMinor,
     shops: [
@@ -34,6 +35,7 @@ function buildQuote(shippingMinor: number): CheckoutQuoteResponse {
         shop_name: 'Ceramics Studio',
         shop_slug: 'ceramics-studio',
         subtotal_minor: 5000,
+        sale_discount_minor: 400,
         discount_minor: 500,
         shipping_minor: shippingMinor,
         total_minor: 4500 + shippingMinor,
@@ -56,6 +58,10 @@ describe('summary order card', () => {
   it('shows the combined checkout shipping total and total from the accepted quote', () => {
     const text = render(buildQuote(1400)).text();
 
+    expect(text).toContain('Sale savings');
+    expect(text).toContain('Code savings');
+    expect(text).toContain(formatMinorCurrency(400, 'USD'));
+    expect(text).toContain(formatMinorCurrency(500, 'USD'));
     expect(text).toContain(formatMinorCurrency(1400, 'USD'));
     expect(text).toContain(formatMinorCurrency(5900, 'USD'));
     expect(text).not.toContain('Calculated at checkout');

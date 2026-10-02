@@ -29,6 +29,7 @@ function buildQuoteShop(overrides?: { shippingMinor?: number, chargeTotalMinor?:
     shop_name: 'Ceramics Studio',
     shop_slug: 'ceramics-studio',
     subtotal_minor: 2500,
+    sale_discount_minor: 400,
     discount_minor: 0,
     shipping_minor: overrides?.shippingMinor ?? chargeTotalMinor,
     total_minor: 2500 + (overrides?.shippingMinor ?? chargeTotalMinor),
@@ -101,11 +102,13 @@ describe('shop cart summary', () => {
     const text = wrapper.text();
 
     expect(text).toContain('Product(s) total');
-    expect(text).toContain('Shop discount');
+    expect(text).toContain('Sale savings');
+    expect(text).toContain('Code savings');
     expect(text).toContain('Subtotal');
     expect(text).toContain('Shipping');
     expect(text).toContain('Total');
     expect(text).toContain(formatMinorCurrency(2500, 'USD'));
+    expect(text).toContain(formatMinorCurrency(400, 'USD'));
     expect(text).toContain(formatMinorCurrency(999, 'USD'));
     // Total is the accepted charge the buyer will pay, not a re-derived sum.
     expect(text).toContain(formatMinorCurrency(3499, 'USD'));
