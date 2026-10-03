@@ -55,6 +55,7 @@ const INELIGIBLE_REASON_MESSAGE: Record<CouponIneligibleReason, string> = {
   [CouponIneligibleReason.PRODUCT_SCOPE]: 'Not applicable to items in this cart',
   [CouponIneligibleReason.MIN_ORDER_VALUE]: 'Add more to use this coupon',
   [CouponIneligibleReason.MIN_PRODUCTS]: 'Add more items to use this coupon',
+  [CouponIneligibleReason.ZERO_BENEFIT]: 'No saving on this cart',
 };
 
 /**

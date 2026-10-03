@@ -51,4 +51,5 @@ export enum CouponIneligibleReason {
   PRODUCT_SCOPE = 'product_scope',
   MIN_ORDER_VALUE = 'min_order_value',
   MIN_PRODUCTS = 'min_products',
+  ZERO_BENEFIT = 'zero_benefit',
 }
