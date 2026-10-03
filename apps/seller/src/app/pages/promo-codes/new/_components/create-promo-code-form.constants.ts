@@ -11,6 +11,7 @@ export { PROMO_CODE_CODE_MAX_LENGTH } from '~/domains/shop/schemas/promo-code/cr
 export const PROMO_CODE_BENEFIT_OPTIONS = [
   { value: PromotionBenefitType.PERCENTAGE, label: 'Percentage off' },
   { value: PromotionBenefitType.FIXED_AMOUNT, label: 'Fixed amount off' },
+  { value: PromotionBenefitType.FREE_SHIPPING, label: 'Free shipping' },
 ];
 
 /** The mutually exclusive qualifying conditions a Promo Code can require. */

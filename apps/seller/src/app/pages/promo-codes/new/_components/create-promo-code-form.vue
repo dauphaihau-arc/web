@@ -97,7 +97,7 @@ const {
             <UFormGroup
               label="Discount type"
               name="benefit_type"
-              description="Choose whether the code reduces eligible prices by a percentage or by a fixed amount."
+              description="Choose whether the code reduces eligible prices by a percentage or a fixed amount, or waives the shop's shipping charge."
               class="grid grid-cols-4 gap-10"
               required
             >
@@ -134,7 +134,7 @@ const {
             </UFormGroup>
 
             <UFormGroup
-              v-else
+              v-else-if="state.benefit_type === PromotionBenefitType.FIXED_AMOUNT"
               label="Amount off"
               name="amount_off"
               description="The code subtracts this amount once per order from the eligible merchandise total at checkout, never more than that total."
@@ -239,7 +239,7 @@ const {
         </template>
       </WrapperFormGroupCard>
 
-      <WrapperFormGroupCard>
+      <WrapperFormGroupCard v-if="state.benefit_type !== PromotionBenefitType.FREE_SHIPPING">
         <template #title>
           Products
         </template>

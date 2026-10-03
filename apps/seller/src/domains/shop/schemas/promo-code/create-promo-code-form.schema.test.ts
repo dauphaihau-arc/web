@@ -47,6 +47,17 @@ describe('create promo code form schema', () => {
     expect(result.success).toBe(true);
   });
 
+  it('accepts a shop-wide free-shipping promo code with a minimum spend', () => {
+    const result = createPromoCodeFormSchema.safeParse({
+      ...base,
+      benefit_type: PromotionBenefitType.FREE_SHIPPING,
+      product_scope: PromotionProductScope.ALL,
+      min_order_type: PromotionMinOrderType.ORDER_TOTAL,
+      min_order_value: 100,
+    });
+    expect(result.success).toBe(true);
+  });
+
   it('rejects a fixed amount that is not positive', () => {
     const result = createPromoCodeFormSchema.safeParse({
       ...base,
@@ -173,6 +184,32 @@ describe('buildCreatePromoCodePayload', () => {
       amount_off: 12.5,
       min_order_type: 'purchase_quantity',
       min_purchase_quantity: 3,
+      visibility: 'public',
+      product_scope: 'all',
+      timezone: 'America/New_York',
+      start_now: true,
+      end_local: '2026-12-31T23:59',
+      end_offset_minutes: -300,
+    });
+  });
+
+  it('builds a shop-wide free-shipping benefit without a benefit value', () => {
+    const payload = buildCreatePromoCodePayload({
+      ...base,
+      benefit_type: PromotionBenefitType.FREE_SHIPPING,
+      // Even a retained Product Scope cannot make free shipping targeted.
+      product_scope: PromotionProductScope.SPECIFIC,
+      product_ids: ['product-1'],
+      min_order_type: PromotionMinOrderType.ORDER_TOTAL,
+      min_order_value: 100,
+    });
+
+    expect(payload).toEqual({
+      name: 'Holiday promo',
+      code: 'HOLIDAY20',
+      benefit_type: 'free_shipping',
+      min_order_type: 'order_total',
+      min_order_value: 100,
       visibility: 'public',
       product_scope: 'all',
       timezone: 'America/New_York',

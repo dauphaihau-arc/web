@@ -93,6 +93,15 @@ export function useCreatePromoCodeForm() {
     formRef.value?.clear('code');
   });
 
+  // Free shipping is always shop-wide, so a previously selected Product Scope
+  // does not survive switching the benefit to free shipping.
+  watch(() => state.benefit_type, (benefitType) => {
+    if (benefitType === PromotionBenefitType.FREE_SHIPPING) {
+      state.product_scope = PromotionProductScope.ALL;
+      state.product_ids = [];
+    }
+  });
+
   const startIsAmbiguous = computed(() => {
     if (state.start_mode !== 'scheduled') {
       return false;

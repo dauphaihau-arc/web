@@ -123,7 +123,11 @@ export const createPromoCodeFormSchema = z
       }
     }
 
-    if (state.product_scope === PromotionProductScope.SPECIFIC && state.product_ids.length === 0) {
+    if (
+      state.benefit_type !== PromotionBenefitType.FREE_SHIPPING
+      && state.product_scope === PromotionProductScope.SPECIFIC
+      && state.product_ids.length === 0
+    ) {
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['product_ids'],
@@ -250,12 +254,20 @@ export function buildCreatePromoCodePayload(
 
   const end = toSaleScheduleInstant(values.end_local, values.timezone, values.end_occurrence);
 
+  // Free shipping is inherently shop-wide: it waives the owning shop's
+  // Shipping Charge, so it never carries a Product Scope or a benefit value.
+  const productScope = values.benefit_type === PromotionBenefitType.FREE_SHIPPING
+    ? PromotionProductScope.ALL
+    : values.product_scope;
+
   const benefit: Pick<
     CreateShopPromoCodeRequestBody,
     'benefit_type' | 'percent_off' | 'amount_off'
   > = values.benefit_type === PromotionBenefitType.FIXED_AMOUNT
     ? { benefit_type: PromotionBenefitType.FIXED_AMOUNT, amount_off: values.amount_off }
-    : { benefit_type: PromotionBenefitType.PERCENTAGE, percent_off: values.percent_off };
+    : (values.benefit_type === PromotionBenefitType.FREE_SHIPPING
+      ? { benefit_type: PromotionBenefitType.FREE_SHIPPING }
+      : { benefit_type: PromotionBenefitType.PERCENTAGE, percent_off: values.percent_off });
 
   const minimum: Pick<
     CreateShopPromoCodeRequestBody,
@@ -275,11 +287,11 @@ export function buildCreatePromoCodePayload(
     ...benefit,
     ...minimum,
     visibility: values.visibility,
-    product_scope: values.product_scope,
+    product_scope: productScope,
     timezone: values.timezone,
     end_local: end.local,
     end_offset_minutes: end.offsetMinutes,
-    ...(values.product_scope === PromotionProductScope.SPECIFIC
+    ...(productScope === PromotionProductScope.SPECIFIC
       ? { product_ids: values.product_ids }
       : {}),
     ...(start

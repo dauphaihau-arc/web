@@ -35,7 +35,11 @@ export const shopPromoCodeSchema = z.object({
 export const createShopPromoCodeRequestSchema = z.object({
   name: z.string().min(1).max(255),
   code: z.string().min(1).max(32),
-  benefit_type: z.enum([PromotionBenefitType.PERCENTAGE, PromotionBenefitType.FIXED_AMOUNT]),
+  benefit_type: z.enum([
+    PromotionBenefitType.PERCENTAGE,
+    PromotionBenefitType.FIXED_AMOUNT,
+    PromotionBenefitType.FREE_SHIPPING,
+  ]),
   percent_off: z.number().int().min(1).max(99).optional(),
   amount_off: z.number().positive().optional(),
   visibility: z.enum(['public', 'code_only']),
