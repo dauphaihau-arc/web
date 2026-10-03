@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { PromotionProductScope } from '@arc/enums/promotion';
+import {
+  PromotionBenefitType,
+  PromotionMinOrderType,
+  PromotionProductScope,
+} from '@arc/enums/promotion';
 import {
   localDateTimeCandidates,
   parseLocalDateTime,
@@ -52,6 +56,18 @@ export const createPromoCodeFormSchema = z
       .int('Enter a whole percentage between 1 and 99.')
       .min(1, 'Enter a percentage between 1 and 99.')
       .max(99, 'Enter a percentage between 1 and 99.'),
+    benefit_type: z.nativeEnum(PromotionBenefitType),
+    amount_off: z
+      .number({ invalid_type_error: 'Enter an amount.' })
+      .finite('Enter a valid amount.'),
+    min_order_type: z.nativeEnum(PromotionMinOrderType),
+    min_order_value: z
+      .number({ invalid_type_error: 'Enter an amount.' })
+      .finite('Enter a valid amount.'),
+    min_purchase_quantity: z
+      .number({ invalid_type_error: 'Enter a quantity.' })
+      .int('Enter a whole quantity.')
+      .finite('Enter a valid quantity.'),
     visibility: z.enum(['public', 'code_only']),
     product_scope: z.nativeEnum(PromotionProductScope),
     product_ids: z.array(z.string()),
@@ -63,6 +79,50 @@ export const createPromoCodeFormSchema = z
     end_occurrence: z.enum(['earlier', 'later']).optional(),
   })
   .superRefine((state, context) => {
+    if (state.benefit_type === PromotionBenefitType.FIXED_AMOUNT) {
+      if (!(state.amount_off > 0)) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['amount_off'],
+          message: 'Enter an amount greater than zero.',
+        });
+      }
+      else if (Math.round(state.amount_off * 100) !== state.amount_off * 100) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['amount_off'],
+          message: 'Enter an amount with at most two decimal places.',
+        });
+      }
+    }
+
+    if (state.min_order_type === PromotionMinOrderType.ORDER_TOTAL) {
+      if (!(state.min_order_value > 0)) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['min_order_value'],
+          message: 'Enter a minimum spend greater than zero.',
+        });
+      }
+      else if (Math.round(state.min_order_value * 100) !== state.min_order_value * 100) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['min_order_value'],
+          message: 'Enter an amount with at most two decimal places.',
+        });
+      }
+    }
+
+    if (state.min_order_type === PromotionMinOrderType.PURCHASE_QUANTITY) {
+      if (!(state.min_purchase_quantity >= 1)) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['min_purchase_quantity'],
+          message: 'Enter a quantity of at least 1.',
+        });
+      }
+    }
+
     if (state.product_scope === PromotionProductScope.SPECIFIC && state.product_ids.length === 0) {
       context.addIssue({
         code: z.ZodIssueCode.custom,
@@ -190,10 +250,30 @@ export function buildCreatePromoCodePayload(
 
   const end = toSaleScheduleInstant(values.end_local, values.timezone, values.end_occurrence);
 
+  const benefit: Pick<
+    CreateShopPromoCodeRequestBody,
+    'benefit_type' | 'percent_off' | 'amount_off'
+  > = values.benefit_type === PromotionBenefitType.FIXED_AMOUNT
+    ? { benefit_type: PromotionBenefitType.FIXED_AMOUNT, amount_off: values.amount_off }
+    : { benefit_type: PromotionBenefitType.PERCENTAGE, percent_off: values.percent_off };
+
+  const minimum: Pick<
+    CreateShopPromoCodeRequestBody,
+    'min_order_type' | 'min_order_value' | 'min_purchase_quantity'
+  > = values.min_order_type === PromotionMinOrderType.ORDER_TOTAL
+    ? { min_order_type: PromotionMinOrderType.ORDER_TOTAL, min_order_value: values.min_order_value }
+    : (values.min_order_type === PromotionMinOrderType.PURCHASE_QUANTITY
+      ? {
+        min_order_type: PromotionMinOrderType.PURCHASE_QUANTITY,
+        min_purchase_quantity: values.min_purchase_quantity,
+      }
+      : { min_order_type: PromotionMinOrderType.NONE });
+
   return {
     name: values.name.trim(),
     code: values.code.trim().toUpperCase(),
-    percent_off: values.percent_off,
+    ...benefit,
+    ...minimum,
     visibility: values.visibility,
     product_scope: values.product_scope,
     timezone: values.timezone,

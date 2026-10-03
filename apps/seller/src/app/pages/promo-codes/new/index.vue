@@ -16,8 +16,8 @@ definePageMeta({ layout: 'shop', middleware: ['auth'] })
       Create a promo code
     </template>
     <template #description>
-      A promo code gives buyers a percentage off eligible products at checkout.
-      Shoppers enter the code during checkout to apply the discount.
+      A promo code gives buyers a percentage or fixed amount off eligible products
+      at checkout. Shoppers enter the code during checkout to apply the discount.
     </template>
     <template #content>
       <CreatePromoCodeForm />

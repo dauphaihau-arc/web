@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import PromoCodesTable from './_components/promo-codes-table.vue'
+import PromoCodesTable from './_components/promo-codes-table/promo-codes-table.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import { routes } from '~/shared/navigation/routes'
 

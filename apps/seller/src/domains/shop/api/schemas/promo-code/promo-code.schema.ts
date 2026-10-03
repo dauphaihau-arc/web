@@ -1,17 +1,27 @@
 import { z } from 'zod';
 import { idSchema } from '@arc/schemas/primitives/id.schema';
-import { PromotionProductScope, PromotionStatus } from '@arc/enums/promotion';
+import {
+  PromotionBenefitType,
+  PromotionMinOrderType,
+  PromotionProductScope,
+  PromotionStatus,
+} from '@arc/enums/promotion';
 
 export const shopPromoCodeSchema = z.object({
   id: idSchema,
   shop: idSchema,
   name: z.string(),
   code: z.string(),
+  benefit_type: z.nativeEnum(PromotionBenefitType),
   percent_off: z.number().int(),
+  amount_off: z.number().nullable(),
   currency: z.string(),
   visibility: z.enum(['public', 'code_only']),
   product_scope: z.nativeEnum(PromotionProductScope),
   product_ids: z.array(idSchema),
+  min_order_type: z.nativeEnum(PromotionMinOrderType),
+  min_order_value: z.number(),
+  min_purchase_quantity: z.number().int(),
   start_at: z.coerce.date(),
   end_at: z.coerce.date(),
   timezone: z.string(),
@@ -25,10 +35,15 @@ export const shopPromoCodeSchema = z.object({
 export const createShopPromoCodeRequestSchema = z.object({
   name: z.string().min(1).max(255),
   code: z.string().min(1).max(32),
-  percent_off: z.number().int().min(1).max(99),
+  benefit_type: z.enum([PromotionBenefitType.PERCENTAGE, PromotionBenefitType.FIXED_AMOUNT]),
+  percent_off: z.number().int().min(1).max(99).optional(),
+  amount_off: z.number().positive().optional(),
   visibility: z.enum(['public', 'code_only']),
   product_scope: z.nativeEnum(PromotionProductScope),
   product_ids: z.array(idSchema).optional(),
+  min_order_type: z.nativeEnum(PromotionMinOrderType),
+  min_order_value: z.number().positive().optional(),
+  min_purchase_quantity: z.number().int().positive().optional(),
   timezone: z.string().min(1),
   start_now: z.boolean().optional(),
   start_local: z.string().optional(),

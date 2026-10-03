@@ -1,13 +1,18 @@
 import {
   computed, nextTick, reactive, ref, watch,
 } from 'vue';
-import { PromotionProductScope } from '@arc/enums/promotion';
+import {
+  PromotionBenefitType,
+  PromotionMinOrderType,
+  PromotionProductScope,
+} from '@arc/enums/promotion';
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types';
 import { toastCustom } from '~/shared/config/toast';
 import { readApiError } from '~/shared/lib/api-error';
 import { PROMO_CODE_ERROR_MESSAGES } from '~/domains/shop/api/promo-code/promo-code-error-messages';
 import { routes } from '~/shared/navigation/routes';
 import { useShopCreatePromoCode } from '~/domains/shop/mutations/create-promo-code.mutation';
+import { useGetMyShop } from '~/domains/shop/queries/my-shop.query';
 import {
   buildCreatePromoCodePayload,
   createPromoCodeFormSchema,
@@ -43,6 +48,10 @@ export function useCreatePromoCodeForm() {
   const codeFieldRef = ref<{ $el?: HTMLElement | null } | null>(null);
 
   const { mutateAsync: createPromoCode, isPending: isPendingCreatePromoCode } = useShopCreatePromoCode();
+  const { data: myShop } = useGetMyShop();
+
+  /** The Promotion Currency a fixed-amount benefit or minimum spend is authored in. */
+  const shopCurrency = computed(() => myShop.value?.currency ?? 'USD');
 
   const {
     storeTimezone,
@@ -55,7 +64,12 @@ export function useCreatePromoCodeForm() {
   const state = reactive<CreatePromoCodeFormState>({
     name: '',
     code: '',
+    benefit_type: PromotionBenefitType.PERCENTAGE,
     percent_off: 10,
+    amount_off: 5,
+    min_order_type: PromotionMinOrderType.NONE,
+    min_order_value: 50,
+    min_purchase_quantity: 2,
     visibility: 'public',
     product_scope: PromotionProductScope.ALL,
     product_ids: [],
@@ -171,6 +185,7 @@ export function useCreatePromoCodeForm() {
     onError,
     cancel,
     isPendingCreatePromoCode,
+    shopCurrency,
     startIsAmbiguous,
     endIsAmbiguous,
     changeTimezone: openPicker,

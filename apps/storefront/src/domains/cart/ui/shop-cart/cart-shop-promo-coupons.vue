@@ -2,6 +2,7 @@
 import { useUpdateCart } from '~/domains/cart/mutations/update-cart.mutation'
 import { useCartStore } from '~/domains/cart/stores/cart.store'
 import { resolveCouponErrorMessage } from '~/domains/cart/utils/coupon-error'
+import { applyPricedCartUpdate } from '~/domains/cart/utils/apply-priced-cart-update'
 import type { GetCartResponse } from '~/domains/cart/api/contracts/cart.contract'
 import ShopCartPromoCouponsUi from './shop-cart-promo-coupons-ui.vue'
 
@@ -61,24 +62,10 @@ function buildShopCarts(shopPromoCodes: string[]) {
  * mirrors the authoritative shipping and summary the server returned.
  */
 function commitSelection(promo_codes: string[], data: GetCartResponse) {
-  queryClient.setQueryData<GetCartResponse>(['get-cart', 'my-cart'], (oldData) => {
-    if (!oldData?.cart) return oldData
-    if (!data.cart) return { ...oldData, cart: data.cart }
-
-    const foundShopCart = data.cart.shop_groups.find(sc => sc.shop.id === props.shopId)
-    if (!foundShopCart) return oldData
-
-    return {
-      ...oldData,
-      cart: {
-        ...oldData.cart,
-        shop_groups: oldData.cart.shop_groups.map(sc => sc.shop.id === props.shopId
-          ? { ...sc, shipping_minor: foundShopCart.shipping_minor }
-          : sc),
-      },
-      summary: data.summary,
-    }
-  })
+  queryClient.setQueryData<GetCartResponse>(
+    ['get-cart', 'my-cart'],
+    oldData => applyPricedCartUpdate(oldData, data),
+  )
 
   cartStore.additionInfoShopCarts.set(props.shopId, {
     promoCodes: [...promo_codes],

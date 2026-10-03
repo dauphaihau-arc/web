@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { PromotionProductScope } from '@arc/enums/promotion';
+import {
+  PromotionBenefitType,
+  PromotionMinOrderType,
+  PromotionProductScope,
+} from '@arc/enums/promotion';
 import {
   buildCreatePromoCodePayload,
   createPromoCodeFormSchema,
@@ -10,7 +14,12 @@ describe('create promo code form schema', () => {
   const base = {
     name: 'Holiday promo',
     code: 'HOLIDAY20',
+    benefit_type: PromotionBenefitType.PERCENTAGE,
     percent_off: 20,
+    amount_off: 5,
+    min_order_type: PromotionMinOrderType.NONE,
+    min_order_value: 50,
+    min_purchase_quantity: 2,
     visibility: promoCodeVisibility.PUBLIC,
     product_scope: PromotionProductScope.ALL,
     product_ids: [],
@@ -25,6 +34,53 @@ describe('create promo code form schema', () => {
   it('accepts a valid start-now promo code', () => {
     const result = createPromoCodeFormSchema.safeParse(base);
     expect(result.success).toBe(true);
+  });
+
+  it('accepts a fixed-amount promo code with a minimum spend', () => {
+    const result = createPromoCodeFormSchema.safeParse({
+      ...base,
+      benefit_type: PromotionBenefitType.FIXED_AMOUNT,
+      amount_off: 12.5,
+      min_order_type: PromotionMinOrderType.ORDER_TOTAL,
+      min_order_value: 100,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects a fixed amount that is not positive', () => {
+    const result = createPromoCodeFormSchema.safeParse({
+      ...base,
+      benefit_type: PromotionBenefitType.FIXED_AMOUNT,
+      amount_off: 0,
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues.map(issue => issue.path)).toContainEqual(['amount_off']);
+    }
+  });
+
+  it('rejects a minimum spend that is not positive', () => {
+    const result = createPromoCodeFormSchema.safeParse({
+      ...base,
+      min_order_type: PromotionMinOrderType.ORDER_TOTAL,
+      min_order_value: 0,
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues.map(issue => issue.path)).toContainEqual(['min_order_value']);
+    }
+  });
+
+  it('rejects a minimum quantity below one', () => {
+    const result = createPromoCodeFormSchema.safeParse({
+      ...base,
+      min_order_type: PromotionMinOrderType.PURCHASE_QUANTITY,
+      min_purchase_quantity: 0,
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues.map(issue => issue.path)).toContainEqual(['min_purchase_quantity']);
+    }
   });
 
   it('rejects a scheduled start without a local time', () => {
@@ -66,7 +122,12 @@ describe('buildCreatePromoCodePayload', () => {
   const base = {
     name: '  Holiday promo  ',
     code: '  holiday20  ',
+    benefit_type: PromotionBenefitType.PERCENTAGE,
     percent_off: 20,
+    amount_off: 5,
+    min_order_type: PromotionMinOrderType.NONE,
+    min_order_value: 50,
+    min_purchase_quantity: 2,
     visibility: promoCodeVisibility.PUBLIC,
     product_scope: PromotionProductScope.ALL,
     product_ids: [] as string[],
@@ -84,7 +145,34 @@ describe('buildCreatePromoCodePayload', () => {
     expect(payload).toEqual({
       name: 'Holiday promo',
       code: 'HOLIDAY20',
+      benefit_type: 'percentage',
       percent_off: 20,
+      min_order_type: 'none',
+      visibility: 'public',
+      product_scope: 'all',
+      timezone: 'America/New_York',
+      start_now: true,
+      end_local: '2026-12-31T23:59',
+      end_offset_minutes: -300,
+    });
+  });
+
+  it('builds a fixed-amount benefit with a minimum quantity', () => {
+    const payload = buildCreatePromoCodePayload({
+      ...base,
+      benefit_type: PromotionBenefitType.FIXED_AMOUNT,
+      amount_off: 12.5,
+      min_order_type: PromotionMinOrderType.PURCHASE_QUANTITY,
+      min_purchase_quantity: 3,
+    });
+
+    expect(payload).toEqual({
+      name: 'Holiday promo',
+      code: 'HOLIDAY20',
+      benefit_type: 'fixed_amount',
+      amount_off: 12.5,
+      min_order_type: 'purchase_quantity',
+      min_purchase_quantity: 3,
       visibility: 'public',
       product_scope: 'all',
       timezone: 'America/New_York',
@@ -107,7 +195,9 @@ describe('buildCreatePromoCodePayload', () => {
     expect(payload).toEqual({
       name: 'Holiday promo',
       code: 'HOLIDAY20',
+      benefit_type: 'percentage',
       percent_off: 20,
+      min_order_type: 'none',
       visibility: 'code_only',
       product_scope: 'specific',
       product_ids: ['product-1', 'product-2'],

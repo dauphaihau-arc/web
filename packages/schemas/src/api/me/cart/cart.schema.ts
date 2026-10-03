@@ -41,6 +41,8 @@ export const cartShopGroupSchema = z.object({
   items: z.array(cartProductItemSchema),
   currency: z.string(),
   total_minor: z.number(),
+  discount_minor: z.number().default(0),
+  sale_discount_minor: z.number().default(0),
   shipping_minor: z.number(),
 })
 

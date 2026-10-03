@@ -13,6 +13,8 @@ function buildShopCart(): CartShopGroup {
     items: [],
     currency: 'USD',
     total_minor: 2500,
+    discount_minor: 0,
+    sale_discount_minor: 0,
     shipping_minor: 0,
   };
 }

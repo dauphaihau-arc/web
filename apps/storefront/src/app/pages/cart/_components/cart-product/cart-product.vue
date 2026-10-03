@@ -86,7 +86,6 @@ const compareAtAmount = computed(() =>
       class="flex flex-col justify-center"
     >
       <CartCheckboxOrderProduct
-        :shop-id="shopId"
         :checked="props.productCart.is_selected"
         :inventory-id="props.productCart.inventory.id"
       />

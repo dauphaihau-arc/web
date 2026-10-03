@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useUpdateCart } from '~/domains/cart/mutations/update-cart.mutation'
+import { applyPricedCartUpdate } from '~/domains/cart/utils/apply-priced-cart-update'
 import type { GetCartResponse } from '~/domains/cart/api/contracts/cart.contract'
 
-const { checked, inventoryId, shopId } = defineProps<{
+const { checked, inventoryId } = defineProps<{
   checked: boolean
   inventoryId: string
-  shopId: string
 }>()
 
 const queryClient = useQueryClient()
@@ -16,39 +16,10 @@ const {
   mutate: updateProductCart,
 } = useUpdateCart({
   onSuccess(data) {
-    queryClient.setQueryData<GetCartResponse>(['get-cart', 'my-cart'], (oldData) => {
-      if (!oldData || !oldData.cart) return oldData
-      if (!data.cart) return { ...oldData, cart: data.cart }
-
-      const foundShopCart = data.cart.shop_groups.find(sc => sc.shop.id === shopId)
-      if (!foundShopCart) return oldData
-
-      const newShopGroups = oldData.cart.shop_groups.map((sc) => {
-        if (sc.shop.id === shopId) {
-          const newItems = sc.items.map((prod) => {
-            if (prod.inventory.id === inventoryId) {
-              return { ...prod, is_selected: selectedCheckbox.value }
-            }
-            return prod
-          })
-          return {
-            ...sc,
-            items: newItems,
-            shipping_minor: foundShopCart.shipping_minor,
-          }
-        }
-        return sc
-      })
-
-      return {
-        ...oldData,
-        cart: {
-          ...oldData.cart,
-          shop_groups: newShopGroups,
-        },
-        summary: data.summary,
-      }
-    })
+    queryClient.setQueryData<GetCartResponse>(
+      ['get-cart', 'my-cart'],
+      oldData => applyPricedCartUpdate(oldData, data),
+    )
   },
 })
 

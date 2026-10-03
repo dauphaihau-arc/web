@@ -3,6 +3,7 @@ import ShopCartQuantityUi from './shop-cart-quantity-ui.vue'
 import { watchDebounced } from '@vueuse/core'
 import { useCartStore } from '~/domains/cart/stores/cart.store'
 import { useUpdateCart } from '~/domains/cart/mutations/update-cart.mutation'
+import { applyPricedCartUpdate } from '~/domains/cart/utils/apply-priced-cart-update'
 import type { CartProductItem } from '~/domains/cart/api/cart.shared'
 import type { GetCartResponse, UpdateCartRequest } from '~/domains/cart/api/contracts/cart.contract'
 
@@ -20,39 +21,10 @@ const {
   mutate: updateCart,
 } = useUpdateCart({
   onSuccess: (data) => {
-    queryClient.setQueryData<GetCartResponse>(['get-cart', 'my-cart'], (oldData) => {
-      if (!oldData || !oldData.cart) return oldData
-      if (data.cart === null) return { ...oldData, cart: null }
-      const foundShopCart = data.cart.shop_groups.find(sc => sc.shop.id === props.shopId)
-      if (!foundShopCart) return oldData
-
-      const newShopGroups = oldData.cart.shop_groups.map((sc) => {
-        if (sc.shop.id === props.shopId) {
-          const newItems = sc.items.map((pc) => {
-            if (pc.inventory.id === props.productCart.inventory.id) {
-              return { ...pc, quantity: tempProductQty.value }
-            }
-            return pc
-          })
-          return {
-            ...sc,
-            items: newItems,
-            shipping_minor: foundShopCart.shipping_minor,
-          }
-        }
-        return sc
-      })
-
-      return {
-        ...oldData,
-        cart: {
-          ...oldData.cart,
-          recent_items: data.cart.recent_items,
-          shop_groups: newShopGroups,
-        },
-        summary: data.summary,
-      }
-    })
+    queryClient.setQueryData<GetCartResponse>(
+      ['get-cart', 'my-cart'],
+      oldData => applyPricedCartUpdate(oldData, data),
+    )
   },
 })
 

@@ -17,6 +17,8 @@ function buildShopCart(): CartShopGroup {
     items: [],
     currency: 'USD',
     total_minor: 2500,
+    discount_minor: 0,
+    sale_discount_minor: 0,
     shipping_minor: 0,
   };
 }
@@ -142,6 +144,20 @@ describe('shop cart summary', () => {
     // both the product total and the total until the server prices shipping.
     expect(text).toContain(formatMinorCurrency(2500, 'USD'));
     expect(text).not.toContain('FREE');
+  });
+
+  it('shows the cart shop group Code savings before any quote prices the shop', () => {
+    const wrapper = mount(ShopCartSummary, {
+      props: {
+        shopCart: { ...buildShopCart(), discount_minor: 1250 },
+      },
+    });
+    const text = wrapper.text();
+
+    expect(text).toContain('Code savings');
+    // The applied code's saving is shown against the shop total, and the
+    // subtotal is reduced by it, matching the overall Summary Order.
+    expect(text).toContain(formatMinorCurrency(1250, 'USD'));
   });
 
   it('shows a pending state while the server computes the charge', () => {

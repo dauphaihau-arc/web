@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PromotionProductScope, PromotionStatus } from '@arc/enums/promotion'
+import { PromotionProductScope } from '@arc/enums/promotion'
 import DataTable from '@arc/ui/primitives/data-table/data-table.vue'
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import StatusBadge from '@arc/ui/primitives/status-badge.vue'
@@ -7,6 +7,12 @@ import FixedPagination from '~/shared/ui/fixed-pagination.vue'
 import { useShopGetPromoCodes } from '~/domains/shop/queries/promo-codes.query'
 import type { ShopPromoCode } from '~/domains/shop/api/promo-code/contracts/promo-code.contract'
 import { formatScheduleRange } from '~/domains/shop/utils/format-schedule-range'
+import {
+  formatPromoBenefit,
+  promoCodeStatusLabels,
+  promoCodeStatusTones,
+  type PromotionStatusTone,
+} from './promo-codes-table.helpers'
 
 type PromoCodeRow = ShopPromoCode & {
   benefit: string
@@ -30,22 +36,6 @@ const {
   refetch: refetchPromoCodes,
 } = useShopGetPromoCodes(params)
 
-const statusLabels: Record<PromotionStatus, string> = {
-  [PromotionStatus.SCHEDULED]: 'Scheduled',
-  [PromotionStatus.ACTIVE]: 'Active',
-  [PromotionStatus.ENDED]: 'Ended',
-  [PromotionStatus.CANCELLED]: 'Cancelled',
-}
-
-type PromotionStatusTone = 'blue' | 'green' | 'gray' | 'red'
-
-const statusTones: Record<PromotionStatus, PromotionStatusTone> = {
-  [PromotionStatus.SCHEDULED]: 'blue',
-  [PromotionStatus.ACTIVE]: 'green',
-  [PromotionStatus.ENDED]: 'gray',
-  [PromotionStatus.CANCELLED]: 'red',
-}
-
 const columns = [
   { key: 'name', label: 'Name' },
   { key: 'code', label: 'Code' },
@@ -58,13 +48,13 @@ const columns = [
 const rows = computed<PromoCodeRow[]>(() =>
   (promoCodesData.value?.results ?? []).map(promoCode => ({
     ...promoCode,
-    benefit: `${promoCode.percent_off}%`,
+    benefit: formatPromoBenefit(promoCode),
     scope: promoCode.product_scope === PromotionProductScope.ALL
       ? 'All products'
       : `${promoCode.product_ids.length} ${promoCode.product_ids.length === 1 ? 'product' : 'products'}`,
     schedule: formatScheduleRange(promoCode.start_at, promoCode.end_at, promoCode.timezone),
-    statusLabel: statusLabels[promoCode.status] ?? promoCode.status,
-    statusTone: statusTones[promoCode.status],
+    statusLabel: promoCodeStatusLabels[promoCode.status] ?? promoCode.status,
+    statusTone: promoCodeStatusTones[promoCode.status],
   })),
 )
 

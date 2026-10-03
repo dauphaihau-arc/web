@@ -27,7 +27,6 @@ const props = defineProps<{
       <template #selection>
         <div class="flex flex-col justify-center">
           <CartCheckboxOrderProduct
-            :shop-id="props.shopCart.shop?.id"
             :checked="productCart.is_selected"
             :inventory-id="productCart.inventory.id"
           />

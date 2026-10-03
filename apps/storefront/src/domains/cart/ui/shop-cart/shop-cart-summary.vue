@@ -39,9 +39,13 @@ const merchandiseSubtotalMinor = computed(
   () => props.quoteShop?.subtotal_minor ?? props.shopCart.total_minor,
 )
 
-const saleDiscountMinor = computed(() => props.quoteShop?.sale_discount_minor ?? 0)
+const saleDiscountMinor = computed(
+  () => props.quoteShop?.sale_discount_minor ?? props.shopCart.sale_discount_minor,
+)
 
-const discountMinor = computed(() => props.quoteShop?.discount_minor ?? 0)
+const discountMinor = computed(
+  () => props.quoteShop?.discount_minor ?? props.shopCart.discount_minor,
+)
 
 const subtotalAfterDiscountMinor = computed(
   () => merchandiseSubtotalMinor.value - discountMinor.value,

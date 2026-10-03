@@ -15,6 +15,8 @@ export const PROMO_CODE_ERROR_MESSAGES: Record<string, string> = {
     'That start or end time happens twice in the selected timezone. Choose which occurrence to use.',
   PROMO_CODE_TIMEZONE_INVALID: 'Choose a valid timezone.',
   PROMO_CODE_SCHEDULE_INVALID: 'Check the start and end times and try again.',
+  PROMO_CODE_BENEFIT_INVALID: 'Check the discount: choose a percentage or a fixed amount, but not both.',
+  PROMO_CODE_CONDITION_INVALID: 'Check the minimum: choose no minimum, a minimum spend, or a minimum quantity, but not more than one.',
   PROMO_CODE_PRODUCT_SCOPE_INVALID:
     'Check the selected products: each must belong to your shop and be selected once.',
   SHOP_NOT_FOUND: 'We could not find your shop. Reload the page and try again.',

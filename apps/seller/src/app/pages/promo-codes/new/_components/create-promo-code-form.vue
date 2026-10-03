@@ -1,11 +1,17 @@
 <script setup lang="ts">
-import { PromotionProductScope } from '@arc/enums/promotion'
+import {
+  PromotionBenefitType,
+  PromotionMinOrderType,
+  PromotionProductScope,
+} from '@arc/enums/promotion'
 import RadioGroupInput from '@arc/ui/primitives/radio-group-input.vue'
 import ApplyProductTargets from '~/domains/shop/ui/apply-product-targets.vue'
 import WrapperFormGroupCard from '~/shared/ui/wrapper-form-group-card.vue'
 import FixedFormActions from '~/shared/ui/fixed-form-actions.vue'
 import SaleScheduleOccurrenceField from '~/app/pages/sales/new/_components/sale-schedule-occurrence-field.vue'
 import {
+  PROMO_CODE_BENEFIT_OPTIONS,
+  PROMO_CODE_MINIMUM_OPTIONS,
   PROMO_CODE_PRODUCT_SCOPE_OPTIONS,
   PROMO_CODE_VISIBILITY_OPTIONS,
   PROMO_CODE_START_MODE_OPTIONS,
@@ -22,6 +28,7 @@ const {
   onError,
   cancel,
   isPendingCreatePromoCode,
+  shopCurrency,
   startIsAmbiguous,
   endIsAmbiguous,
   changeTimezone,
@@ -88,9 +95,25 @@ const {
             </UFormGroup>
 
             <UFormGroup
+              label="Discount type"
+              name="benefit_type"
+              description="Choose whether the code reduces eligible prices by a percentage or by a fixed amount."
+              class="grid grid-cols-4 gap-10"
+              required
+            >
+              <RadioGroupInput
+                v-model="state.benefit_type"
+                :options="PROMO_CODE_BENEFIT_OPTIONS"
+                :disabled="isPendingCreatePromoCode"
+                row
+              />
+            </UFormGroup>
+
+            <UFormGroup
+              v-if="state.benefit_type === PromotionBenefitType.PERCENTAGE"
               label="Percentage off"
               name="percent_off"
-              description="Every eligible product’s current regular price is reduced by this percentage at checkout."
+              description="Every eligible product’s price after any sale is reduced by this percentage at checkout."
               class="grid grid-cols-4 items-center gap-10"
               required
             >
@@ -100,11 +123,35 @@ const {
                 v-max-number="99"
                 :disabled="isPendingCreatePromoCode"
                 type="number"
+                step="any"
                 size="lg"
                 class="w-32"
               >
                 <template #trailing>
                   <span class="text-xs text-text-muted">%</span>
+                </template>
+              </UInput>
+            </UFormGroup>
+
+            <UFormGroup
+              v-else
+              label="Amount off"
+              name="amount_off"
+              description="The code subtracts this amount once per order from the eligible merchandise total at checkout, never more than that total."
+              class="grid grid-cols-4 items-center gap-10"
+              required
+            >
+              <UInput
+                v-model.number="state.amount_off"
+                v-numeric
+                :disabled="isPendingCreatePromoCode"
+                type="number"
+                step="any"
+                size="lg"
+                class="w-32"
+              >
+                <template #trailing>
+                  <span class="text-xs text-text-muted">{{ shopCurrency }}</span>
                 </template>
               </UInput>
             </UFormGroup>
@@ -122,6 +169,71 @@ const {
                 :disabled="isPendingCreatePromoCode"
                 row
               />
+            </UFormGroup>
+          </div>
+        </template>
+      </WrapperFormGroupCard>
+
+      <WrapperFormGroupCard>
+        <template #title>
+          Minimum requirements
+        </template>
+        <template #content>
+          <div class="space-y-5">
+            <UFormGroup
+              label="Do buyers need to meet a minimum?"
+              name="min_order_type"
+              description="A minimum counts only this code’s eligible products, after any sale and before the code’s own discount. Shipping and other products never count toward it."
+            >
+              <RadioGroupInput
+                v-model="state.min_order_type"
+                :options="PROMO_CODE_MINIMUM_OPTIONS"
+                :disabled="isPendingCreatePromoCode"
+                row
+              />
+            </UFormGroup>
+
+            <UFormGroup
+              v-if="state.min_order_type === PromotionMinOrderType.ORDER_TOTAL"
+              label="Minimum spend"
+              name="min_order_value"
+              class="grid grid-cols-4 items-center gap-10"
+              required
+            >
+              <UInput
+                v-model.number="state.min_order_value"
+                v-numeric
+                :disabled="isPendingCreatePromoCode"
+                type="number"
+                step="any"
+                size="lg"
+                class="w-32"
+              >
+                <template #trailing>
+                  <span class="text-xs text-text-muted">{{ shopCurrency }}</span>
+                </template>
+              </UInput>
+            </UFormGroup>
+
+            <UFormGroup
+              v-if="state.min_order_type === PromotionMinOrderType.PURCHASE_QUANTITY"
+              label="Minimum quantity"
+              name="min_purchase_quantity"
+              class="grid grid-cols-4 items-center gap-10"
+              required
+            >
+              <UInput
+                v-model.number="state.min_purchase_quantity"
+                v-numeric
+                :disabled="isPendingCreatePromoCode"
+                type="number"
+                size="lg"
+                class="w-32"
+              >
+                <template #trailing>
+                  <span class="text-xs text-text-muted">items</span>
+                </template>
+              </UInput>
             </UFormGroup>
           </div>
         </template>
