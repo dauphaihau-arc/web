@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
-import { COUPON_CONFIG } from '@arc/enums/coupon'
+import { PROMO_CODE_CONFIG } from '@arc/enums/promotion'
 import { useCartStore } from '~/domains/cart/stores/cart.store'
-import { resolveCouponErrorMessage } from '~/domains/cart/utils/coupon-error'
+import { resolvePromoCodeErrorMessage } from '~/domains/cart/utils/promo-code-error'
 import { useUpdateCart } from '~/domains/cart/mutations/update-cart.mutation'
-import ShopCartPromoCouponsUi from '~/domains/cart/ui/shop-cart/shop-cart-promo-coupons-ui.vue'
+import ShopCartPromoCodesUi from '~/domains/cart/ui/shop-cart/shop-cart-promo-codes-ui.vue'
 import type { GetCartResponse } from '~/domains/cart/api/contracts/cart.contract'
 
 const props = defineProps<{
@@ -49,7 +49,7 @@ function dismissRemovalNotices() {
   cartStore.promoCodeRemovalNotices.delete(props.shopId)
 }
 
-const disabledInput = computed(() => appliedCodes.value.length >= COUPON_CONFIG.MAX_USE_PER_ORDER)
+const disabledInput = computed(() => appliedCodes.value.length >= PROMO_CODE_CONFIG.MAX_USE_PER_ORDER)
 
 // The inline panel alert is only meaningful while the popover is open, so a
 // dismissed popover clears the previous failure instead of showing it stale.
@@ -89,7 +89,7 @@ async function acceptCodes(codes: string[]) {
   }
   catch (error) {
     // Failure keeps the staged selection and surfaces the reason in the panel.
-    state.panelError = resolveCouponErrorMessage(error)
+    state.panelError = resolvePromoCodeErrorMessage(error)
   }
 }
 
@@ -109,8 +109,8 @@ async function removeCode(code: string) {
   }
   catch {
     // Surface the failure in the picker panel instead of a floating toast, and
-    // open it so the message is actually visible where the coupon lives.
-    state.panelError = 'Delete coupon failed'
+    // open it so the message is actually visible where the promo code lives.
+    state.panelError = 'Delete promo code failed'
     state.open = true
   }
 }
@@ -131,7 +131,7 @@ async function removeCode(code: string) {
       @close="dismissRemovalNotices"
     />
 
-    <ShopCartPromoCouponsUi
+    <ShopCartPromoCodesUi
       v-model:code="state.code"
       v-model:open="state.open"
       :shop-id="props.shopId"

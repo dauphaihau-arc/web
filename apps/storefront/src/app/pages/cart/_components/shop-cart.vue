@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CartShopPromoCoupons from '~/domains/cart/ui/shop-cart/cart-shop-promo-coupons.vue'
+import CartShopPromoCodes from '~/domains/cart/ui/shop-cart/cart-shop-promo-codes.vue'
 import CartCheckboxOrderProduct from '~/domains/cart/ui/shop-cart/checkbox-order-product.vue'
 import CartShopQuantity from '~/domains/cart/ui/shop-cart/cart-shop-quantity.vue'
 import ShopCartSummary from '~/domains/cart/ui/shop-cart/shop-cart-summary.vue'
@@ -50,8 +50,8 @@ const props = defineProps<{
 
     <template #footer>
       <ShopCartFooter>
-        <template #coupons>
-          <CartShopPromoCoupons
+        <template #promo-codes>
+          <CartShopPromoCodes
             :shop-id="props.shopCart.shop?.id"
             :shop-name="props.shopCart.shop?.name"
           />

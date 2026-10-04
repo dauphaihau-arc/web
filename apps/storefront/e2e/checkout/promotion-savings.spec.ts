@@ -52,7 +52,6 @@ const orderShop = {
         shipping: {},
       },
       inventory: { sku: 'SKU-1' },
-      percent_coupon: null,
       id: 'item-e2e-1',
       title: 'E2E Product',
       quantity: 1,
@@ -62,7 +61,7 @@ const orderShop = {
       currency: 'USD',
     },
   ],
-  promo_coupons: [
+  promo_codes: [
     { id: 'SAVE10', code: 'SAVE10' },
     { id: 'FREESHIP', code: 'FREESHIP' },
   ],

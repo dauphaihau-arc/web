@@ -2,7 +2,7 @@
 import dayjs from 'dayjs'
 import type { ElementType } from '@arc/contracts/utils'
 import { formatMinorCurrency } from '@arc/utils'
-import NoteAndPromoCoupons from './note-and-promo-coupons.vue'
+import NoteAndPromoCodes from './note-and-promo-codes.vue'
 import OrderItemsTable from './order-items-table.vue'
 import PaymentAndSummaryOrder from './payment-and-summary-order.vue'
 import ShopActions from './shop-actions/shop-actions.vue'
@@ -43,18 +43,26 @@ const displayOrderShop = computed(() =>
   ),
 )
 
-const itemRows = computed(() => displayOrderShop.value.products.map(product => ({
-  id: product.id,
-  title: product.title,
-  imageUrl: product.image_url,
-  variantLabels: product.product.selected_options
-    .map(option => `${option.option_name}: ${option.value}`),
-  quantity: product.quantity,
-  unitPriceMinor: product.amount_minor,
-  originalUnitPriceMinor: product.original_amount_minor,
-  percentOff: product.percent_coupon?.percent_off ?? null,
-  currency: displayOrderShop.value.currency,
-})))
+const itemRows = computed(() => displayOrderShop.value.products.map((product) => {
+  const originalUnitPriceMinor = product.original_amount_minor
+  const unitPriceMinor = product.amount_minor
+  const percentOff = originalUnitPriceMinor != null && originalUnitPriceMinor > 0
+    ? Math.round(((originalUnitPriceMinor - unitPriceMinor) / originalUnitPriceMinor) * 100)
+    : null
+
+  return {
+    id: product.id,
+    title: product.title,
+    imageUrl: product.image_url,
+    variantLabels: product.product.selected_options
+      .map(option => `${option.option_name}: ${option.value}`),
+    quantity: product.quantity,
+    unitPriceMinor,
+    originalUnitPriceMinor,
+    percentOff,
+    currency: displayOrderShop.value.currency,
+  }
+}))
 
 const productLinkByItemId = computed(() => new Map(
   displayOrderShop.value.products.map(product => [
@@ -102,7 +110,7 @@ const productLinkByItemId = computed(() => new Map(
         <UDivider
           class="mb-3 mt-6"
         />
-        <NoteAndPromoCoupons :order-shop="displayOrderShop" />
+        <NoteAndPromoCodes :order-shop="displayOrderShop" />
         <PaymentAndSummaryOrder :order-shop="displayOrderShop" />
       </UCard>
     </div>

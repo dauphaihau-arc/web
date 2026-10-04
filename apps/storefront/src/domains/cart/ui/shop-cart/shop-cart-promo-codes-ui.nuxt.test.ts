@@ -1,52 +1,55 @@
 import {
-  CouponAppliesTo, CouponIneligibleReason, CouponMinOrderTypes, CouponTypes,
-} from '@arc/enums/coupon';
+  PromoCodeIneligibleReason,
+  PromotionBenefitType,
+  PromotionMinOrderType,
+  PromotionProductScope,
+} from '@arc/enums/promotion';
 import {
   DOMWrapper, flushPromises, mount, type VueWrapper,
 } from '@vue/test-utils';
 import {
   beforeEach, describe, expect, it, vi,
 } from 'vitest';
-import type { ApplyCartCouponRequest, CartCouponItem } from '~/domains/cart/api/contracts/cart.contract';
+import type { ApplyCartPromoCodeRequest, CartPromoCodeItem } from '~/domains/cart/api/contracts/cart.contract';
 import { nextTick } from 'vue';
-import ShopCartPromoCouponsUi from './shop-cart-promo-coupons-ui.vue';
+import ShopCartPromoCodesUi from './shop-cart-promo-codes-ui.vue';
 
-const couponsFixture = vi.hoisted(() => ({ coupons: [] as unknown[] }));
-const applyCouponFixture = vi.hoisted(() => ({
-  handler: null as null | ((body: ApplyCartCouponRequest) => unknown),
-  calls: [] as ApplyCartCouponRequest[],
+const promoCodesFixture = vi.hoisted(() => ({ promo_codes: [] as unknown[] }));
+const applyPromoCodeFixture = vi.hoisted(() => ({
+  handler: null as null | ((body: ApplyCartPromoCodeRequest) => unknown),
+  calls: [] as ApplyCartPromoCodeRequest[],
 }));
 
-vi.mock('~/domains/cart/queries/cart-coupons.query', async () => {
+vi.mock('~/domains/cart/queries/cart-promo-codes.query', async () => {
   const { ref } = await import('vue');
 
   return {
-    useGetCartCoupons: () => ({
-      data: ref({ coupons: couponsFixture.coupons }),
+    useGetCartPromoCodes: () => ({
+      data: ref({ promo_codes: promoCodesFixture.promo_codes }),
       isPending: ref(false),
       isError: ref(false),
     }),
   };
 });
 
-vi.mock('~/domains/cart/mutations/apply-cart-coupon.mutation', async () => {
+vi.mock('~/domains/cart/mutations/apply-cart-promo-code.mutation', async () => {
   const { ref } = await import('vue');
 
   return {
-    useApplyCartCoupon: () => ({
-      mutateAsync: async (body: ApplyCartCouponRequest) => {
-        applyCouponFixture.calls.push(body);
+    useApplyCartPromoCode: () => ({
+      mutateAsync: async (body: ApplyCartPromoCodeRequest) => {
+        applyPromoCodeFixture.calls.push(body);
 
-        if (applyCouponFixture.handler) return applyCouponFixture.handler(body);
+        if (applyPromoCodeFixture.handler) return applyPromoCodeFixture.handler(body);
 
         const codes = [...new Set([...body.promo_codes, body.code])];
-        const fixture = couponsFixture.coupons as CartCouponItem[];
+        const fixture = promoCodesFixture.promo_codes as CartPromoCodeItem[];
 
         return {
           promo_codes: codes,
-          applied_coupons: codes.map(code => ({
+          applied_promo_codes: codes.map(code => ({
             code,
-            type: fixture.find(coupon => coupon.code === code)?.type ?? 'percentage',
+            benefit_type: fixture.find(promoCode => promoCode.code === code)?.benefit_type ?? PromotionBenefitType.PERCENTAGE,
           })),
         };
       },
@@ -55,57 +58,57 @@ vi.mock('~/domains/cart/mutations/apply-cart-coupon.mutation', async () => {
   };
 });
 
-const DISCOUNT_COUPON: CartCouponItem = {
+const DISCOUNT_PROMO_CODE: CartPromoCodeItem = {
   code: 'SAVE10',
-  type: CouponTypes.PERCENTAGE,
-  applies_to: CouponAppliesTo.ALL,
+  benefit_type: PromotionBenefitType.PERCENTAGE,
+  product_scope: PromotionProductScope.ALL,
   percent_off: 10,
-  min_order_type: CouponMinOrderTypes.NONE,
+  min_order_type: PromotionMinOrderType.NONE,
   end_date: '2027-01-01T00:00:00.000Z',
   currency: 'USD',
   is_eligible: true,
   ineligible_reason: null,
 };
 
-const FIXED_COUPON: CartCouponItem = {
+const FIXED_PROMO_CODE: CartPromoCodeItem = {
   code: 'FLAT5',
-  type: CouponTypes.FIXED_AMOUNT,
-  applies_to: CouponAppliesTo.ALL,
+  benefit_type: PromotionBenefitType.FIXED_AMOUNT,
+  product_scope: PromotionProductScope.ALL,
   amount_off: 5,
-  min_order_type: CouponMinOrderTypes.NONE,
+  min_order_type: PromotionMinOrderType.NONE,
   end_date: '2027-01-01T00:00:00.000Z',
   currency: 'USD',
   is_eligible: true,
   ineligible_reason: null,
 };
 
-const SHIPPING_COUPON: CartCouponItem = {
+const SHIPPING_PROMO_CODE: CartPromoCodeItem = {
   code: 'FREESHIP',
-  type: CouponTypes.FREE_SHIP,
-  applies_to: CouponAppliesTo.ALL,
-  min_order_type: CouponMinOrderTypes.NONE,
+  benefit_type: PromotionBenefitType.FREE_SHIPPING,
+  product_scope: PromotionProductScope.ALL,
+  min_order_type: PromotionMinOrderType.NONE,
   end_date: '2027-01-01T00:00:00.000Z',
   currency: 'USD',
   is_eligible: true,
   ineligible_reason: null,
 };
 
-const SCOPED_COUPON: CartCouponItem = {
+const SCOPED_PROMO_CODE: CartPromoCodeItem = {
   code: 'MUGONLY',
-  type: CouponTypes.PERCENTAGE,
-  applies_to: CouponAppliesTo.SPECIFIC,
+  benefit_type: PromotionBenefitType.PERCENTAGE,
+  product_scope: PromotionProductScope.SPECIFIC,
   percent_off: 5,
-  min_order_type: CouponMinOrderTypes.NONE,
+  min_order_type: PromotionMinOrderType.NONE,
   end_date: '2027-01-01T00:00:00.000Z',
   currency: 'USD',
   is_eligible: false,
-  ineligible_reason: CouponIneligibleReason.PRODUCT_SCOPE,
+  ineligible_reason: PromoCodeIneligibleReason.PRODUCT_SCOPE,
 };
 
 beforeEach(() => {
-  couponsFixture.coupons = [DISCOUNT_COUPON, FIXED_COUPON, SHIPPING_COUPON, SCOPED_COUPON];
-  applyCouponFixture.handler = null;
-  applyCouponFixture.calls = [];
+  promoCodesFixture.promo_codes = [DISCOUNT_PROMO_CODE, FIXED_PROMO_CODE, SHIPPING_PROMO_CODE, SCOPED_PROMO_CODE];
+  applyPromoCodeFixture.handler = null;
+  applyPromoCodeFixture.calls = [];
 });
 
 /**
@@ -119,7 +122,7 @@ async function render(input: {
   disabled?: boolean
   isApplying?: boolean
 } = {}) {
-  const wrapper = mount(ShopCartPromoCouponsUi, {
+  const wrapper = mount(ShopCartPromoCodesUi, {
     props: {
       shopId: 'shop-1',
       shopName: 'Ceramics Studio',
@@ -157,7 +160,7 @@ function commitButton(wrapper: VueWrapper) {
   return new DOMWrapper(cancel!.element.parentElement!).findAll('button')[1];
 }
 
-const HINT = 'Apply up to 2 coupons per shop: 1 shipping coupon and 1 order discount coupon.';
+const HINT = 'Apply up to 2 promo codes per shop: 1 free-shipping code and 1 product-discount code.';
 
 /**
  * The tooltip trigger sits next to the counter; the icon itself does not render
@@ -170,42 +173,42 @@ function hintTrigger(wrapper: VueWrapper) {
   return counter.exists() ? counter.element.nextElementSibling : null;
 }
 
-describe('shop cart promo coupons picker', () => {
-  it('stages a selected coupon without applying or closing the picker', async () => {
+describe('shop cart promo codes picker', () => {
+  it('stages a selected promo code without applying or closing the picker', async () => {
     const wrapper = await render();
-    const couponRow = buttonWithText(wrapper, 'SAVE10');
+    const promoCodeRow = buttonWithText(wrapper, 'SAVE10');
 
-    await couponRow?.trigger('click');
+    await promoCodeRow?.trigger('click');
 
-    expect(wrapper.text()).toContain('1 coupon selected');
-    expect(couponRow?.attributes('aria-pressed')).toBe('true');
+    expect(wrapper.text()).toContain('1 promo code selected');
+    expect(promoCodeRow?.attributes('aria-pressed')).toBe('true');
     expect(wrapper.emitted('accept')).toBeUndefined();
     expect(wrapper.emitted('update:open')).toBeUndefined();
   });
 
-  it('toggles a staged coupon back off', async () => {
+  it('toggles a staged promo code back off', async () => {
     const wrapper = await render();
-    const couponRow = buttonWithText(wrapper, 'SAVE10');
+    const promoCodeRow = buttonWithText(wrapper, 'SAVE10');
 
-    await couponRow?.trigger('click');
-    expect(wrapper.text()).toContain('1 coupon selected');
+    await promoCodeRow?.trigger('click');
+    expect(wrapper.text()).toContain('1 promo code selected');
 
-    await couponRow?.trigger('click');
-    expect(wrapper.text()).not.toContain('coupon selected');
+    await promoCodeRow?.trigger('click');
+    expect(wrapper.text()).not.toContain('promo code selected');
   });
 
-  it('keeps ineligible coupons disabled and unstaged', async () => {
+  it('keeps ineligible promo codes disabled and unstaged', async () => {
     const wrapper = await render();
-    const couponRow = buttonWithText(wrapper, 'MUGONLY');
+    const promoCodeRow = buttonWithText(wrapper, 'MUGONLY');
 
-    expect(couponRow?.attributes('disabled')).toBeDefined();
+    expect(promoCodeRow?.attributes('disabled')).toBeDefined();
 
-    await couponRow?.trigger('click');
+    await promoCodeRow?.trigger('click');
 
-    expect(wrapper.text()).not.toContain('coupon selected');
+    expect(wrapper.text()).not.toContain('promo code selected');
   });
 
-  it('blocks a second coupon of the same slot but allows the other slot', async () => {
+  it('blocks a second promo code of the same slot but allows the other slot', async () => {
     const wrapper = await render();
 
     await buttonWithText(wrapper, 'SAVE10')?.trigger('click');
@@ -217,10 +220,10 @@ describe('shop cart promo coupons picker', () => {
     expect(freeShipRow?.attributes('disabled')).toBeUndefined();
 
     await flatRow?.trigger('click');
-    expect(wrapper.text()).toContain('1 coupon selected');
+    expect(wrapper.text()).toContain('1 promo code selected');
 
     await freeShipRow?.trigger('click');
-    expect(wrapper.text()).toContain('2 coupons selected');
+    expect(wrapper.text()).toContain('2 promo codes selected');
   });
 
   it('shows the combination hint tooltip next to the counter only when both slots are selectable', async () => {
@@ -246,7 +249,7 @@ describe('shop cart promo coupons picker', () => {
     expect(bubble?.classes()).not.toContain('truncate');
     expect(bubble?.classes()).toContain('whitespace-normal');
 
-    couponsFixture.coupons = [DISCOUNT_COUPON, FIXED_COUPON, SCOPED_COUPON];
+    promoCodesFixture.promo_codes = [DISCOUNT_PROMO_CODE, FIXED_PROMO_CODE, SCOPED_PROMO_CODE];
     const discountOnly = await render();
     await buttonWithText(discountOnly, 'SAVE10')?.trigger('click');
     expect(hintTrigger(discountOnly)).toBeNull();
@@ -258,7 +261,7 @@ describe('shop cart promo coupons picker', () => {
     await wrapper.setProps({ codes: ['SAVE10'] });
     await flushPromises();
 
-    expect(wrapper.text()).toContain('1 coupon selected');
+    expect(wrapper.text()).toContain('1 promo code selected');
     expect(buttonWithText(wrapper, 'SAVE10')?.attributes('aria-pressed')).toBe('true');
   });
 
@@ -269,7 +272,7 @@ describe('shop cart promo coupons picker', () => {
     await addButton(wrapper).trigger('click');
 
     expect(wrapper.text()).toContain('SAVE5');
-    expect(wrapper.text()).toContain('1 coupon selected');
+    expect(wrapper.text()).toContain('1 promo code selected');
     expect(wrapper.emitted('accept')).toBeUndefined();
     expect(wrapper.emitted('removeCode')).toBeUndefined();
     expect((wrapper.find('input').element as HTMLInputElement).value).toBe('');
@@ -285,7 +288,7 @@ describe('shop cart promo coupons picker', () => {
     await addButton(wrapper).trigger('click');
     await flushPromises();
 
-    expect(applyCouponFixture.calls.at(-1)).toEqual({
+    expect(applyPromoCodeFixture.calls.at(-1)).toEqual({
       shop_id: 'shop-1',
       cart_id: undefined,
       code: 'SAVE5',
@@ -295,9 +298,9 @@ describe('shop cart promo coupons picker', () => {
   });
 
   it('reports a same-slot collision instead of staging the typed code', async () => {
-    applyCouponFixture.handler = () => ({
+    applyPromoCodeFixture.handler = () => ({
       promo_codes: ['FLAT5'],
-      applied_coupons: [{ code: 'FLAT5', type: 'fixed_amount' }],
+      applied_promo_codes: [{ code: 'FLAT5', benefit_type: PromotionBenefitType.FIXED_AMOUNT }],
     });
     const wrapper = await render({ codes: ['SAVE10'] });
 
@@ -305,8 +308,8 @@ describe('shop cart promo coupons picker', () => {
     await addButton(wrapper).trigger('click');
     await flushPromises();
 
-    expect(wrapper.text()).toContain('Only one discount coupon per shop');
-    expect(wrapper.text()).not.toContain('2 coupons selected');
+    expect(wrapper.text()).toContain('Only one discount promo code per shop');
+    expect(wrapper.text()).not.toContain('2 promo codes selected');
   });
 
   it('blocks the same-slot rows for a code staged from the input', async () => {
@@ -329,7 +332,7 @@ describe('shop cart promo coupons picker', () => {
     const chipRemove = chip?.element.parentElement?.querySelectorAll('button')[1];
     await new DOMWrapper(chipRemove!).trigger('click');
 
-    expect(wrapper.text()).not.toContain('coupon selected');
+    expect(wrapper.text()).not.toContain('promo code selected');
     expect(wrapper.emitted('removeCode')).toBeUndefined();
   });
 
@@ -341,25 +344,25 @@ describe('shop cart promo coupons picker', () => {
     await wrapper.find('input').setValue('SAVE5');
     await addButton(wrapper).trigger('click');
 
-    expect(wrapper.text()).toContain('Coupon code already applied');
-    expect(wrapper.text()).toContain('1 coupon selected');
+    expect(wrapper.text()).toContain('Promo code already applied');
+    expect(wrapper.text()).toContain('1 promo code selected');
   });
 
-  it('does not add a chip for a coupon picked from the list', async () => {
+  it('does not add a chip for a promo code picked from the list', async () => {
     const wrapper = await render();
 
     await buttonWithText(wrapper, 'SAVE10')?.trigger('click');
 
     expect(wrapper.findAll('button').filter(button => button.text().trim() === 'SAVE10')).toHaveLength(0);
-    expect(wrapper.text()).toContain('1 coupon selected');
+    expect(wrapper.text()).toContain('1 promo code selected');
   });
 
   it('marks the trigger as active while the picker is open', async () => {
     const closed = await render({ open: false });
-    expect(buttonWithText(closed, 'Apply shop coupon codes')?.classes()).not.toContain('bg-surface-hover');
+    expect(buttonWithText(closed, 'Apply shop promo codes')?.classes()).not.toContain('bg-surface-hover');
 
     const opened = await render({ open: true });
-    expect(buttonWithText(opened, 'Apply shop coupon codes')?.classes()).toContain('bg-surface-hover');
+    expect(buttonWithText(opened, 'Apply shop promo codes')?.classes()).toContain('bg-surface-hover');
   });
 
   it('disables the code input and its Apply button while an apply is in flight', async () => {
@@ -390,23 +393,23 @@ describe('shop cart promo coupons picker', () => {
     expect(wrapper.emitted('update:open')?.at(-1)).toEqual([false]);
   });
 
-  it('counts an already applied coupon as selected and lets it be toggled off', async () => {
+  it('counts an already applied promo code as selected and lets it be toggled off', async () => {
     const wrapper = await render({ codes: ['SAVE10'] });
-    const couponRow = buttonWithText(wrapper, 'SAVE10');
+    const promoCodeRow = buttonWithText(wrapper, 'SAVE10');
 
-    expect(wrapper.text()).toContain('1 coupon selected');
-    expect(couponRow?.attributes('disabled')).toBeUndefined();
+    expect(wrapper.text()).toContain('1 promo code selected');
+    expect(promoCodeRow?.attributes('disabled')).toBeUndefined();
 
-    await couponRow?.trigger('click');
-    expect(wrapper.text()).not.toContain('coupon selected');
+    await promoCodeRow?.trigger('click');
+    expect(wrapper.text()).not.toContain('promo code selected');
 
     await commitButton(wrapper).trigger('click');
     expect(wrapper.emitted('accept')?.[0]).toEqual([[]]);
   });
 
   it('shows the shared panel error instead of relying on a toast', async () => {
-    const wrapper = await render({ panelError: 'Delete coupon failed' });
+    const wrapper = await render({ panelError: 'Delete promo code failed' });
 
-    expect(wrapper.text()).toContain('Delete coupon failed');
+    expect(wrapper.text()).toContain('Delete promo code failed');
   });
 });

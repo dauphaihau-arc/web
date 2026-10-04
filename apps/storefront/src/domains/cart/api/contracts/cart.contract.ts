@@ -1,9 +1,8 @@
 import type { z } from 'zod';
 import type {
   addProductToCartRequestSchema,
-  applyCartCouponRequestSchema,
-  applyCartCouponResponseSchema,
-  cartCouponItemSchema,
+  applyCartPromoCodeRequestSchema,
+  applyCartPromoCodeResponseSchema,
   cartProductItemSchema,
   cartRecentItemSchema,
   cartResourceSchema,
@@ -11,9 +10,10 @@ import type {
   cartShopGroupSchema,
   cartSummarySchema,
   deleteCartProductRequestSchema,
-  getCartCouponsRequestSchema,
-  getCartCouponsResponseSchema,
+  getCartPromoCodesRequestSchema,
+  getCartPromoCodesResponseSchema,
   getCartRequestSchema,
+  promoCodeOfferItemSchema,
   updateCartRequestSchema,
 } from '@arc/schemas/api/me/cart/cart.schema';
 
@@ -24,11 +24,11 @@ export type CartRecentItem = z.infer<typeof cartRecentItemSchema>;
 export type CartResource = z.infer<typeof cartResourceSchema>;
 export type CartResponse = z.infer<typeof cartResponseSchema>;
 
-export type CartCouponItem = z.infer<typeof cartCouponItemSchema>;
-export type GetCartCouponsRequest = z.infer<typeof getCartCouponsRequestSchema>;
-export type GetCartCouponsResponse = z.infer<typeof getCartCouponsResponseSchema>;
-export type ApplyCartCouponRequest = z.infer<typeof applyCartCouponRequestSchema>;
-export type ApplyCartCouponResponse = z.infer<typeof applyCartCouponResponseSchema>;
+export type CartPromoCodeItem = z.infer<typeof promoCodeOfferItemSchema>;
+export type GetCartPromoCodesRequest = z.infer<typeof getCartPromoCodesRequestSchema>;
+export type GetCartPromoCodesResponse = z.infer<typeof getCartPromoCodesResponseSchema>;
+export type ApplyCartPromoCodeRequest = z.infer<typeof applyCartPromoCodeRequestSchema>;
+export type ApplyCartPromoCodeResponse = z.infer<typeof applyCartPromoCodeResponseSchema>;
 
 export type GetCartRequest = z.infer<typeof getCartRequestSchema>;
 export type GetCartResponse = CartResponse;

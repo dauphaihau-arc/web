@@ -7,7 +7,7 @@ export const MARKET_SENSITIVE_QUERY_KEYS = new Set([
   'get-root-categories',
   'get-attributes-by-category',
   'get-cart',
-  'get-cart-coupons',
+  'get-cart-promo-codes',
   'guest-checkout-session',
 ]);
 

@@ -9,7 +9,7 @@ export enum ROUTES {
   SEARCH = '/search',
   CART = '/cart',
   PRODUCTS = '/products',
-  COUPONS = '/coupons',
+  PROMO_CODES = '/promo-codes',
   SALES = '/sales',
   ORDERS = '/orders',
   CHECKOUT = '/checkout',

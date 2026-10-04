@@ -82,9 +82,6 @@ export const shopOrderProductSchema = z.object({
     variant_group_name: z.string().optional(),
     variant_sub_group_name: z.string().optional(),
   }),
-  percent_coupon: z.object({
-    percent_off: z.number(),
-  }).nullable(),
 })
 
 export const shopOrderDetailProductSchema = shopOrderProductSchema.omit({
@@ -123,7 +120,7 @@ export const shopOrderSummarySchema = z.object({
   }),
   status: z.nativeEnum(OrderStatuses),
   products: z.array(shopOrderProductSchema),
-  promo_coupons: z.array(z.object({
+  promo_codes: z.array(z.object({
     id: z.string(),
     code: z.string(),
   })),

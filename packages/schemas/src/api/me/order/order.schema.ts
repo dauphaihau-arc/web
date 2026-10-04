@@ -164,9 +164,6 @@ export const orderShopProductSchema = z.object({
   inventory: z.object({
     sku: z.string().optional(),
   }),
-  percent_coupon: z.object({
-    percent_off: z.number(),
-  }).nullable(),
   id: z.string(),
   title: z.string(),
   image_url: z.string().optional(),
@@ -197,7 +194,7 @@ export const orderShopResourceSchema = z.object({
   payment: paymentSchema,
   status: z.nativeEnum(OrderStatuses),
   products: z.array(orderShopProductSchema),
-  promo_coupons: z.array(z.object({
+  promo_codes: z.array(z.object({
     id: z.string(),
     code: z.string(),
   })),

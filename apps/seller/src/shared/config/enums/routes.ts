@@ -9,7 +9,6 @@ export const ROUTES = {
   SEARCH: '/search',
   CART: '/cart',
   PRODUCTS: '/products',
-  COUPONS: '/coupons',
   SALES: '/sales',
   ORDERS: '/orders',
   CHECKOUT: '/checkout',

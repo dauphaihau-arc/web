@@ -5,7 +5,7 @@ const slots = useSlots()
 <template>
   <div class="mt-6 flex justify-between gap-10">
     <div class="flex-1 space-y-3">
-      <slot name="coupons" />
+      <slot name="promo-codes" />
       <slot name="note" />
     </div>
 

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { CouponAppliesTo, CouponMinOrderTypes } from '@arc/enums/coupon'
+import { PromotionMinOrderType, PromotionProductScope } from '@arc/enums/promotion'
 import { idSchema } from '@arc/schemas/primitives/id.schema'
 import {
   shippingDestinationScopeSchema,
@@ -87,17 +87,17 @@ export const checkoutShippingQuoteSchema = z.object({
 
 /** Provenance of a free-shipping waiver applied to the calculated charge. */
 export const shippingDiscountSchema = z.object({
-  coupon_id: idSchema,
+  promotion_id: idSchema,
   code: z.string(),
-  type: z.literal('free_ship'),
-  applies_to: z.nativeEnum(CouponAppliesTo),
-  applies_product_ids: z.array(idSchema),
-  min_order_type: z.nativeEnum(CouponMinOrderTypes),
+  benefit_type: z.literal('free_shipping'),
+  product_scope: z.nativeEnum(PromotionProductScope),
+  product_ids: z.array(idSchema),
+  min_order_type: z.nativeEnum(PromotionMinOrderType),
   min_order_value: z.number(),
-  min_products: z.number(),
-  max_uses: z.number(),
-  max_uses_per_user: z.number(),
-  uses_count: z.number(),
+  min_purchase_quantity: z.number(),
+  max_redemptions: z.number(),
+  max_redemptions_per_buyer: z.number(),
+  redemption_count: z.number(),
   waived_minor: z.number().int().nonnegative(),
   currency: z.string(),
 })

@@ -9,7 +9,7 @@ const PRODUCT_ID = '00000000-0000-4000-8000-000000000002'
 const INVENTORY_ID = '00000000-0000-4000-8000-000000000003'
 const PROFILE_ID = '00000000-0000-4000-8000-000000000004'
 const RATE_ID = '00000000-0000-4000-8000-000000000005'
-const COUPON_ID = '00000000-0000-4000-8000-000000000006'
+const PROMOTION_ID = '00000000-0000-4000-8000-000000000006'
 
 /** The frozen snake_case snapshot the API returns per shop for quotes/orders. */
 function buildQuote() {
@@ -107,17 +107,17 @@ describe('acceptedShippingFieldsSchema', () => {
       shipping_discount_minor: 999,
       shipping_discounts: [
         {
-          coupon_id: COUPON_ID,
+          promotion_id: PROMOTION_ID,
           code: 'FREESHIP',
-          type: 'free_ship',
-          applies_to: 'all',
-          applies_product_ids: [],
+          benefit_type: 'free_shipping',
+          product_scope: 'all',
+          product_ids: [],
           min_order_type: 'order_total',
           min_order_value: 5000,
-          min_products: 0,
-          max_uses: 100,
-          max_uses_per_user: 1,
-          uses_count: 7,
+          min_purchase_quantity: 0,
+          max_redemptions: 100,
+          max_redemptions_per_buyer: 1,
+          redemption_count: 7,
           waived_minor: 999,
           currency: 'USD',
         },

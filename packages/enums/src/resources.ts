@@ -6,7 +6,7 @@ export enum RESOURCES {
   UPLOAD = '/upload',
   USER = '/user',
   CART = '/cart',
-  COUPONS = '/coupons',
+  PROMO_CODES = '/promo-codes',
   ORDERS = '/orders',
   CATEGORIES = '/categories',
   ATTRIBUTES = '/attributes',

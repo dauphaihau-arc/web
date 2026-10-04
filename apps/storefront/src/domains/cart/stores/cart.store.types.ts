@@ -4,15 +4,15 @@ import type { CheckoutQuoteResponse } from '~/domains/me/api/order/contracts/ord
 import type { GetUserAddressesResponse } from '~/domains/me/api/address/contracts/address.contract';
 
 type UserAddress = GetUserAddressesResponse['results'][number];
-type CouponCode = string;
+type PromoCode = string;
 type CartId = string;
 export type CheckoutAddress = UserAddress | GuestCheckoutAddress;
 
 export type StateCheckoutNow = {
   tempCartId?: CartId
-  promoCodes: CouponCode[]
+  promoCodes: PromoCode[]
   note: string
-  invalidCodes: Map<CouponCode, string>
+  invalidCodes: Map<PromoCode, string>
   countRefreshConvertCurrency: number
   paymentType: PaymentTypes
   address: CheckoutAddress | null
@@ -24,7 +24,7 @@ export type StateCheckoutNow = {
 };
 
 export type StateCheckoutCart = {
-  invalidCodes: Map<CouponCode, string>
+  invalidCodes: Map<PromoCode, string>
   countRefreshConvertCurrency: number
   paymentType: PaymentTypes
   address: CheckoutAddress | null

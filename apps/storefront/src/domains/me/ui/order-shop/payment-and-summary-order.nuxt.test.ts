@@ -16,7 +16,7 @@ function buildOrderShop(overrides?: Partial<OrderShop>): OrderShop {
     payment: { type: 'card', card_brand: 'visa', card_last4: 1234 },
     status: 'paid',
     products: [],
-    promo_coupons: [],
+    promo_codes: [],
     fulfillment: {
       status: 'unfulfilled',
       requires_reconciliation: false,

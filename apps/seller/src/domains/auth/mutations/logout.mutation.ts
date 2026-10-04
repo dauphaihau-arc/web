@@ -13,7 +13,6 @@ const sellerUserScopedQueryKeys = [
   ['shop-order-detail'],
   ['shop-get-products'],
   ['shop-get-detail-product'],
-  ['shop-get-coupons'],
 ] as const;
 
 export function useLogout() {

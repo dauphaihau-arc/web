@@ -1,5 +1,4 @@
 import type { LocationQueryRaw, RouteLocationRaw } from 'vue-router';
-import type { CreateCouponPageTypes } from '@arc/enums/shop';
 
 function createRoute(
   path: string,
@@ -19,7 +18,6 @@ export const routePaths = {
   reset: '/reset',
   dashboard: '/dashboard',
   products: '/products',
-  coupons: '/coupons',
   sales: '/sales',
   promoCodes: '/promo-codes',
   orders: '/orders',
@@ -41,7 +39,6 @@ export const routes = {
   productsImport: () => createRoute(`${routePaths.products}/import`),
   productsNew: () => createRoute(`${routePaths.products}/new`),
   productDetail: (id: string) => createRoute(`${routePaths.products}/${id}`),
-  coupons: () => createRoute(routePaths.coupons),
   sales: () => createRoute(routePaths.sales),
   salesNew: () => createRoute(`${routePaths.sales}/new`),
   promoCodes: () => createRoute(routePaths.promoCodes),
@@ -54,8 +51,6 @@ export const routes = {
     ),
   notifications: () => createRoute(routePaths.notifications),
   orderDetail: (id: string) => createRoute(`${routePaths.orders}/${id}`),
-  couponsNew: (type: CreateCouponPageTypes) =>
-    createRoute(`${routePaths.coupons}/new`, { type }),
   settings: () => createRoute(routePaths.settings),
   shippingSettings: () => createRoute(routePaths.shippingSettings),
   generalSettings: () => createRoute(routePaths.generalSettings),

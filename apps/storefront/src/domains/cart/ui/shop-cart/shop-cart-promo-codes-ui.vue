@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
-import type { CartCouponItem } from '~/domains/cart/api/contracts/cart.contract'
-import { useGetCartCoupons } from '~/domains/cart/queries/cart-coupons.query'
-import { formatCouponDiscount, formatCouponExpiration, formatCouponIneligibleReason, formatCouponMinimum } from '~/domains/cart/utils/coupon-display'
-import { useCouponSelection } from './use-coupon-selection'
+import type { CartPromoCodeItem } from '~/domains/cart/api/contracts/cart.contract'
+import { useGetCartPromoCodes } from '~/domains/cart/queries/cart-promo-codes.query'
+import { formatPromoCodeDiscount, formatPromoCodeExpiration, formatPromoCodeIneligibleReason, formatPromoCodeMinimum } from '~/domains/cart/utils/promo-code-display'
+import { usePromoCodeSelection } from './use-promo-code-selection'
 
 const props = withDefaults(defineProps<{
   shopId: string
@@ -34,19 +34,19 @@ const code = defineModel<string>('code', { required: true })
 const open = defineModel<boolean>('open', { required: true })
 
 const {
-  data: dataCoupons,
-  isPending: isPendingCoupons,
-  isError: isErrorCoupons,
-} = useGetCartCoupons({
+  data: dataPromoCodes,
+  isPending: isPendingPromoCodes,
+  isError: isErrorPromoCodes,
+} = useGetCartPromoCodes({
   shop_id: () => props.shopId,
   cart_id: () => props.cartId,
   enabled: () => open.value,
 })
 
-const coupons = computed<CartCouponItem[]>(() => dataCoupons.value?.coupons ?? [])
+const promoCodes = computed<CartPromoCodeItem[]>(() => dataPromoCodes.value?.promo_codes ?? [])
 
 const COMBINATION_HINT
-  = 'Apply up to 2 coupons per shop: 1 shipping coupon and 1 order discount coupon.'
+  = 'Apply up to 2 promo codes per shop: 1 free-shipping code and 1 product-discount code.'
 
 const {
   isValidating,
@@ -54,16 +54,16 @@ const {
   inputError,
   selectedCount,
   canAccept,
-  canSelectTwoCoupons,
+  canSelectTwoPromoCodes,
   isStaged,
   isSelectable,
   toggleCode,
   stageTypedCode,
   removeInputCode,
   pendingCodes,
-} = useCouponSelection({
+} = usePromoCodeSelection({
   appliedCodes: toRef(props, 'codes'),
-  coupons,
+  promoCodes,
   code,
   isOpen: open,
   shopId: () => props.shopId,
@@ -93,13 +93,13 @@ function accept() {
         :class="['mb-2 w-fit', open && 'bg-surface-hover text-text-strong']"
         :disabled="props.disabled"
       >
-        Apply shop coupon codes
+        Apply shop promo codes
       </UButton>
 
       <template #panel>
         <div class="w-[min(92vw,380px)] p-4">
           <div class="mb-4 text-sm font-semibold text-text-strong">
-            {{ props.shopName ? `${props.shopName} Coupon` : 'Coupon' }}
+            {{ props.shopName ? `${props.shopName} Promo Code` : 'Promo Code' }}
           </div>
 
           <UAlert
@@ -114,7 +114,7 @@ function accept() {
           <UFormGroup
             name="code"
             :error="inputError"
-            label="Code coupon"
+            label="Promo code"
           >
             <UButtonGroup orientation="horizontal">
               <UInput
@@ -161,50 +161,50 @@ function accept() {
 
           <div class="mt-4 flex min-h-32 flex-col justify-center">
             <div
-              v-if="isPendingCoupons"
+              v-if="isPendingPromoCodes"
               class="py-4 text-center text-xs text-text-muted"
             >
-              Loading coupons...
+              Loading promo codes...
             </div>
             <div
-              v-else-if="isErrorCoupons"
+              v-else-if="isErrorPromoCodes"
               class="py-4 text-center text-xs text-state-danger-text"
             >
-              Could not load coupons for this shop.
+              Could not load promo codes for this shop.
             </div>
             <div
-              v-else-if="coupons.length === 0"
+              v-else-if="promoCodes.length === 0"
               class="py-4 text-center text-xs text-text-muted"
             >
-              No coupons available for this shop.
+              No promo codes available for this shop.
             </div>
             <div
               v-else
               class="scrollbar-subtle -mr-3 max-h-64 space-y-2 overflow-y-auto pr-2"
             >
               <button
-                v-for="coupon of coupons"
-                :key="coupon.code"
+                v-for="promoCode of promoCodes"
+                :key="promoCode.code"
                 type="button"
                 class="flex w-full items-start justify-between gap-3 rounded border p-3 text-left transition-colors aria-disabled:cursor-not-allowed aria-disabled:border-dashed aria-disabled:opacity-60 aria-disabled:hover:bg-transparent"
-                :class="isStaged(coupon) ? 'border-primary bg-surface-hover' : 'border-border-subtle hover:bg-surface-hover'"
-                :disabled="props.disabled || props.isApplying || !isSelectable(coupon)"
-                :aria-disabled="!isSelectable(coupon) || undefined"
-                :aria-pressed="isStaged(coupon)"
-                @click="toggleCode(coupon)"
+                :class="isStaged(promoCode) ? 'border-primary bg-surface-hover' : 'border-border-subtle hover:bg-surface-hover'"
+                :disabled="props.disabled || props.isApplying || !isSelectable(promoCode)"
+                :aria-disabled="!isSelectable(promoCode) || undefined"
+                :aria-pressed="isStaged(promoCode)"
+                @click="toggleCode(promoCode)"
               >
                 <span class="text-sm font-semibold uppercase text-text-strong">
-                  {{ coupon.code }}
+                  {{ promoCode.code }}
                 </span>
                 <span class="flex flex-col items-end gap-1 text-right text-xs text-text-muted">
-                  <span>{{ formatCouponDiscount(coupon) }}</span>
-                  <span>{{ formatCouponMinimum(coupon) }}</span>
-                  <span>{{ formatCouponExpiration(coupon) }}</span>
+                  <span>{{ formatPromoCodeDiscount(promoCode) }}</span>
+                  <span>{{ formatPromoCodeMinimum(promoCode) }}</span>
+                  <span>{{ formatPromoCodeExpiration(promoCode) }}</span>
                   <span
-                    v-if="formatCouponIneligibleReason(coupon.ineligible_reason)"
+                    v-if="formatPromoCodeIneligibleReason(promoCode.ineligible_reason)"
                     class="text-state-warning-text"
                   >
-                    {{ formatCouponIneligibleReason(coupon.ineligible_reason) }}
+                    {{ formatPromoCodeIneligibleReason(promoCode.ineligible_reason) }}
                   </span>
                 </span>
               </button>
@@ -219,11 +219,11 @@ function accept() {
               class="text-xs text-text-muted"
               aria-live="polite"
             >
-              {{ selectedCount === 1 ? '1 coupon selected' : `${selectedCount} coupons selected` }}
+              {{ selectedCount === 1 ? '1 promo code selected' : `${selectedCount} promo codes selected` }}
             </p>
 
             <UTooltip
-              v-if="canSelectTwoCoupons"
+              v-if="canSelectTwoPromoCodes"
               :text="COMBINATION_HINT"
               :popper="{ placement: 'top-start' }"
               :ui="{

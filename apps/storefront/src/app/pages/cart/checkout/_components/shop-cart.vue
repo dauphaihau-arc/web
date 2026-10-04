@@ -2,7 +2,7 @@
 import CheckoutShopSummary from '~/domains/cart/ui/shop-cart/checkout-shop-summary.vue'
 import type { CartShopGroup } from '~/domains/cart/api/cart.shared'
 import CartShopNote from '~/domains/cart/ui/shop-cart/cart-shop-note.vue'
-import CartShopPromoCoupons from '~/domains/cart/ui/shop-cart/cart-shop-promo-coupons.vue'
+import CartShopPromoCodes from '~/domains/cart/ui/shop-cart/cart-shop-promo-codes.vue'
 import ShopCartCard from '~/domains/cart/ui/shop-cart/shop-cart-card.vue'
 import ShopCartFooter from '~/domains/cart/ui/shop-cart/shop-cart-footer.vue'
 import OrderItemsTable from '~/domains/me/ui/order-shop/order-items-table.vue'
@@ -43,8 +43,8 @@ const itemRows = computed(() => selectedItems.value.map(item => ({
 
     <template #footer>
       <ShopCartFooter>
-        <template #coupons>
-          <CartShopPromoCoupons
+        <template #promo-codes>
+          <CartShopPromoCodes
             :shop-id="props.shopCart?.shop?.id"
             :shop-name="props.shopCart?.shop?.name"
           />

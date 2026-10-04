@@ -2,10 +2,10 @@
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import { useUpdateCart } from '~/domains/cart/mutations/update-cart.mutation'
 import { useCartStore } from '~/domains/cart/stores/cart.store'
-import { resolveCouponErrorMessage } from '~/domains/cart/utils/coupon-error'
+import { resolvePromoCodeErrorMessage } from '~/domains/cart/utils/promo-code-error'
 import { applyPricedCartUpdate } from '~/domains/cart/utils/apply-priced-cart-update'
 import type { GetCartResponse } from '~/domains/cart/api/contracts/cart.contract'
-import ShopCartPromoCouponsUi from './shop-cart-promo-coupons-ui.vue'
+import ShopCartPromoCodesUi from './shop-cart-promo-codes-ui.vue'
 
 const props = defineProps<{
   shopId: string
@@ -53,8 +53,8 @@ watch(() => state.open, (isOpen) => {
 })
 
 /**
- * Rebuilds the per-shop adjustment body from the store so a coupon change on
- * one shop never drops sibling shop selections. The shop being changed is
+ * Rebuilds the per-shop adjustment body from the store so a promo code change
+ * on one shop never drops sibling shop selections. The shop being changed is
  * replaced with the code selection the API validated.
  */
 function buildShopCarts(shopPromoCodes: string[]) {
@@ -104,7 +104,7 @@ async function acceptCodes(codes: string[]) {
   }
   catch (error) {
     // Failure keeps the staged selection and surfaces the reason in the panel.
-    state.panelError = resolveCouponErrorMessage(error)
+    state.panelError = resolvePromoCodeErrorMessage(error)
   }
 }
 
@@ -117,8 +117,8 @@ async function removeCode(code: string) {
   }
   catch {
     // Surface the failure in the picker panel instead of a floating toast, and
-    // open it so the message is actually visible where the coupon lives.
-    state.panelError = 'Delete coupon failed'
+    // open it so the message is actually visible where the promo code lives.
+    state.panelError = 'Delete promo code failed'
     state.open = true
   }
 }
@@ -139,7 +139,7 @@ async function removeCode(code: string) {
       @close="dismissRemovalNotices"
     />
 
-    <ShopCartPromoCouponsUi
+    <ShopCartPromoCodesUi
       v-model:code="state.code"
       v-model:open="state.open"
       :shop-id="props.shopId"

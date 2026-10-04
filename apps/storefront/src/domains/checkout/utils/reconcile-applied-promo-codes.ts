@@ -1,6 +1,6 @@
 /**
  * A Promo Code the buyer had applied which a refreshed checkout quote no longer
- * accepts, and the line explaining its removal in the shop's coupon section.
+ * accepts, and the line explaining its removal in the shop's promo code section.
  */
 export type PromoCodeRemovalNotice = {
   code: string

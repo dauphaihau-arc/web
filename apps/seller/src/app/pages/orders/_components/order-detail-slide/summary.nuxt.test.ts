@@ -15,7 +15,7 @@ function buildOrder(overrides: Partial<ShopOrder> = {}): ShopOrder {
     payment: { type: PaymentTypes.CARD },
     status: OrderStatuses.PAID,
     products: [],
-    promo_coupons: [],
+    promo_codes: [],
     fulfillment: {
       status: FulfillmentAggregateStatuses.UNFULFILLED,
       requires_reconciliation: false,

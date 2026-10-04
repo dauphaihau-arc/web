@@ -7,7 +7,7 @@ import type {
   ListShopProductsRequest,
 } from '~/domains/shop/api/product/contracts/read.contract'
 
-type ProductCouponRow = ListShopProductsItem & {
+type ProductTargetRow = ListShopProductsItem & {
   lowestPrice: number
   highestPrice: number
   stock: number
@@ -17,7 +17,7 @@ type ProductCouponRow = ListShopProductsItem & {
 const productIdsModel = defineModel<string[]>()
 
 const isOpen = ref(false)
-const selectedRows = ref<ProductCouponRow[]>([])
+const selectedRows = ref<ProductTargetRow[]>([])
 const page = ref(1)
 const search = ref()
 
@@ -65,7 +65,7 @@ const columnsPreviewTable = [
   },
 ]
 
-const rowsDialog = computed<ProductCouponRow[]>(() => {
+const rowsDialog = computed<ProductTargetRow[]>(() => {
   if (!dataShopGetProducts.value) {
     return []
   }

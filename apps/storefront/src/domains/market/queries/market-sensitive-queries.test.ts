@@ -30,7 +30,7 @@ describe('invalidateMarketSensitiveQueries', () => {
     expect(options.predicate?.(queryWithKey(['get-products']))).toBe(true);
     expect(options.predicate?.(queryWithKey(['get-detail-product-by-slug']))).toBe(true);
     expect(options.predicate?.(queryWithKey(['get-cart']))).toBe(true);
-    expect(options.predicate?.(queryWithKey(['get-cart-coupons']))).toBe(true);
+    expect(options.predicate?.(queryWithKey(['get-cart-promo-codes']))).toBe(true);
     expect(options.predicate?.(queryWithKey(['guest-checkout-session']))).toBe(true);
     expect(options.predicate?.(queryWithKey(['current-user']))).toBe(false);
   });

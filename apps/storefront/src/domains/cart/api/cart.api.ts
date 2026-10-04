@@ -1,12 +1,12 @@
 import type {
   AddProductToCartRequest,
   AddProductToCartResponse,
-  ApplyCartCouponRequest,
-  ApplyCartCouponResponse,
+  ApplyCartPromoCodeRequest,
+  ApplyCartPromoCodeResponse,
   DeleteCartProductRequest,
   DeleteCartProductResponse,
-  GetCartCouponsRequest,
-  GetCartCouponsResponse,
+  GetCartPromoCodesRequest,
+  GetCartPromoCodesResponse,
   GetCartRequest,
   GetCartResponse,
   UpdateCartRequest,
@@ -29,16 +29,16 @@ export const cartApi = {
     );
   },
 
-  getCoupons(params: GetCartCouponsRequest) {
-    return apiClient.get<GetCartCouponsResponse>(
-      '/cart/coupons',
+  getPromoCodes(params: GetCartPromoCodesRequest) {
+    return apiClient.get<GetCartPromoCodesResponse>(
+      '/cart/promo-codes',
       params,
     );
   },
 
-  applyCoupon(payload: ApplyCartCouponRequest) {
-    return apiClient.post<ApplyCartCouponResponse>(
-      '/cart/coupons/apply',
+  applyPromoCode(payload: ApplyCartPromoCodeRequest) {
+    return apiClient.post<ApplyCartPromoCodeResponse>(
+      '/cart/promo-codes/apply',
       payload,
     );
   },

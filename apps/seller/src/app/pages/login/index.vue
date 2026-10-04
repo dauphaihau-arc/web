@@ -20,7 +20,7 @@ useSeoMeta({
             Arc Seller
           </p>
           <h1 class="max-w-md text-4xl font-bold leading-tight">
-            Sign in to manage your catalog, coupons, and orders.
+            Sign in to manage your catalog, promotions, and orders.
           </h1>
           <p class="max-w-md text-base leading-7 text-customGray-300">
             Use your seller account to access products, pricing, inventory, and fulfillment tools.
@@ -38,7 +38,7 @@ useSeoMeta({
           </div>
           <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
             <p class="text-sm font-medium text-white">
-              Coupons
+              Promo codes
             </p>
             <p class="mt-1 text-sm text-customGray-300">
               Launch promo codes and sales.

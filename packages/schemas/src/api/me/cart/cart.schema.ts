@@ -1,5 +1,10 @@
 import { z } from 'zod'
-import { CouponAppliesTo, CouponIneligibleReason, CouponMinOrderTypes, CouponTypes } from '@arc/enums/coupon'
+import {
+  PromoCodeIneligibleReason,
+  PromotionBenefitType,
+  PromotionMinOrderType,
+  PromotionProductScope,
+} from '@arc/enums/promotion'
 
 const selectedProductOptionSchema = z.object({
   option_id: z.string().optional(),
@@ -126,50 +131,50 @@ export const deleteCartProductRequestSchema = z.object({
 })
 
 /**
- * Minimal shop coupon display item returned by the public coupon endpoint.
- * Money fields are major units already resolved in the buyer's checkout
- * currency, so consumers must format them with the shared currency helpers
- * instead of scaling minor units.
+ * Minimal Promo Code offer returned by the public discovery endpoint. Money
+ * fields are major units already resolved in the buyer's checkout currency, so
+ * consumers must format them with the shared currency helpers instead of
+ * scaling minor units.
  *
- * The endpoint lists both coupons the buyer can use now and coupons the buyer
- * cannot use yet. `is_eligible` marks the latter and `ineligible_reason`
+ * The endpoint lists both offers the buyer can redeem now and offers the buyer
+ * cannot redeem yet. `is_eligible` marks the latter and `ineligible_reason`
  * explains why, so callers render a disabled card instead of filtering.
  */
-export const cartCouponItemSchema = z.object({
+export const promoCodeOfferItemSchema = z.object({
   code: z.string(),
-  type: z.nativeEnum(CouponTypes),
-  applies_to: z.nativeEnum(CouponAppliesTo),
+  benefit_type: z.nativeEnum(PromotionBenefitType),
+  product_scope: z.nativeEnum(PromotionProductScope),
   amount_off: z.number().nullable().optional(),
   percent_off: z.number().nullable().optional(),
-  min_order_type: z.nativeEnum(CouponMinOrderTypes),
+  min_order_type: z.nativeEnum(PromotionMinOrderType),
   min_order_value: z.number().nullable().optional(),
-  min_products: z.number().nullable().optional(),
+  min_purchase_quantity: z.number().nullable().optional(),
   end_date: z.string(),
   currency: z.string(),
   is_eligible: z.boolean(),
-  ineligible_reason: z.nativeEnum(CouponIneligibleReason).nullable(),
+  ineligible_reason: z.nativeEnum(PromoCodeIneligibleReason).nullable(),
 })
 
-export const getCartCouponsRequestSchema = z.object({
+export const getCartPromoCodesRequestSchema = z.object({
   cart_id: z.string().optional(),
   shop_id: z.string(),
 })
 
-export const getCartCouponsResponseSchema = z.object({
-  coupons: z.array(cartCouponItemSchema),
+export const getCartPromoCodesResponseSchema = z.object({
+  promo_codes: z.array(promoCodeOfferItemSchema),
 })
 
-export const applyCartCouponRequestSchema = z.object({
+export const applyCartPromoCodeRequestSchema = z.object({
   cart_id: z.string().optional(),
   shop_id: z.string(),
   code: z.string(),
   promo_codes: z.array(z.string()),
 })
 
-export const applyCartCouponResponseSchema = z.object({
+export const applyCartPromoCodeResponseSchema = z.object({
   promo_codes: z.array(z.string()),
-  applied_coupons: z.array(z.object({
+  applied_promo_codes: z.array(z.object({
     code: z.string(),
-    type: z.nativeEnum(CouponTypes),
+    benefit_type: z.nativeEnum(PromotionBenefitType),
   })),
 })

@@ -102,10 +102,9 @@ function buildOrderShop(input: {
         currency: 'USD',
         inventory: {},
         product: { id: 'product-1', slug: 'mug', shop: { slug: 'shop' } },
-        percent_coupon: null,
       },
     ],
-    promo_coupons: [],
+    promo_codes: [],
     fulfillment: {
       status: input.status ?? (input.groups.length > 0 ? 'delivered' : 'unfulfilled'),
       requires_reconciliation: false,

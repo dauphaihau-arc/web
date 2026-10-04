@@ -41,7 +41,7 @@ useSeoMeta({
               Promotions
             </p>
             <p class="mt-1 text-sm text-customGray-300">
-              Configure coupons and campaigns.
+              Configure promotions and campaigns.
             </p>
           </div>
           <div class="rounded-2xl border border-white/10 bg-white/5 p-4">

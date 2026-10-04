@@ -1,5 +1,4 @@
 import type { RouteLocationRaw } from 'vue-router';
-import { CreateCouponPageTypes } from '@arc/enums/shop';
 import type { AppIconAlias } from '@arc/ui/foundation/app-icon.constants';
 import type { LinkItem } from './sidebar.types';
 import { routePaths, routes } from '~/shared/navigation/routes';
@@ -58,11 +57,6 @@ export const shopSidebarItems: LinkItem[] = [
         to: routes.promoCodes(),
         matchPath: routePaths.promoCodes,
       },
-      {
-        title: 'Coupons',
-        to: routes.coupons(),
-        matchPath: routePaths.coupons,
-      },
     ],
   },
   {
@@ -102,11 +96,11 @@ export const shopHeaderCreateItems: ShopHeaderCreateItem[] = [
     to: routes.productsNew(),
   },
   {
-    label: 'Create Coupon',
+    label: 'Create promo code',
     icon: 'ticket',
     shortcuts: ['c c'],
     sequence: ['c', 'c'],
-    to: routes.couponsNew(CreateCouponPageTypes.PROMO_CODE),
+    to: routes.promoCodesNew(),
   },
   {
     label: 'Run Sale',

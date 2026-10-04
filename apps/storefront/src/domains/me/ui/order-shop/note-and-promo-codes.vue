@@ -9,7 +9,7 @@ defineProps<{
 
 <template>
   <div
-    v-if="orderShop.note || orderShop.promo_coupons.length > 0"
+    v-if="orderShop.note || orderShop.promo_codes.length > 0"
     class="mb-6 flex gap-12"
   >
     <div
@@ -22,21 +22,21 @@ defineProps<{
       </div>
     </div>
 
-    <div v-if="orderShop.promo_coupons.length > 0">
+    <div v-if="orderShop.promo_codes.length > 0">
       <div class="mb-1">
         Promo Codes
       </div>
       <div class="flex gap-4">
         <div
-          v-for="coupon in orderShop.promo_coupons"
-          :key="coupon.id"
+          v-for="promoCode in orderShop.promo_codes"
+          :key="promoCode.id"
         >
           <UBadge
             color="gray"
             variant="solid"
             size="lg"
           >
-            {{ coupon.code }}
+            {{ promoCode.code }}
           </UBadge>
         </div>
       </div>

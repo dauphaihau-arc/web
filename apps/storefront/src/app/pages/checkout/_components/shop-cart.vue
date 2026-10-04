@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CheckoutNowPromoCoupons from './checkout-now-promo-coupons.vue'
+import CheckoutNowPromoCodes from './checkout-now-promo-codes.vue'
 import CheckoutShopSummary from '~/domains/cart/ui/shop-cart/checkout-shop-summary.vue'
 import ShopCartCard from '~/domains/cart/ui/shop-cart/shop-cart-card.vue'
 import ShopCartFooter from '~/domains/cart/ui/shop-cart/shop-cart-footer.vue'
@@ -54,8 +54,8 @@ const itemRows = computed(() => (shopCart.value?.items ?? []).map(item => ({
 
     <template #footer>
       <ShopCartFooter>
-        <template #coupons>
-          <CheckoutNowPromoCoupons
+        <template #promo-codes>
+          <CheckoutNowPromoCodes
             :shop-id="shopCart.shop.id"
             :shop-name="shopCart.shop.name"
           />

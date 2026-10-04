@@ -1,26 +1,26 @@
 import type { MutationOptions } from '@tanstack/vue-query';
 import type { FetchError } from 'ofetch';
 import { cartApi } from '~/domains/cart/api/cart.api';
-import type { ApplyCartCouponRequest, ApplyCartCouponResponse } from '~/domains/cart/api/contracts/cart.contract';
+import type { ApplyCartPromoCodeRequest, ApplyCartPromoCodeResponse } from '~/domains/cart/api/contracts/cart.contract';
 import { toastCustom } from '~/shared/config/toast';
 
 /**
- * Applies one coupon for one shop and returns the validated promo code
+ * Applies one promo code for one shop and returns the validated promo code
  * selection the server accepted. The response is authoritative: callers must
  * persist the returned codes instead of the codes they guessed locally.
  */
-export function useApplyCartCoupon(
-  options?: MutationOptions<ApplyCartCouponResponse, FetchError, ApplyCartCouponRequest>,
+export function useApplyCartPromoCode(
+  options?: MutationOptions<ApplyCartPromoCodeResponse, FetchError, ApplyCartPromoCodeRequest>,
 ) {
   const toast = useToast();
   return useMutation({
     onError() {
       toast.add({
         ...toastCustom.error,
-        title: 'Apply coupon failed',
+        title: 'Apply promo code failed',
       });
     },
     ...options,
-    mutationFn: (body: ApplyCartCouponRequest) => cartApi.applyCoupon(body),
+    mutationFn: (body: ApplyCartPromoCodeRequest) => cartApi.applyPromoCode(body),
   });
 }
