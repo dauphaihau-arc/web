@@ -48,6 +48,28 @@ export function resolveCheckoutFailure(error: unknown): CheckoutFailureKind {
   return 'unknown';
 }
 
+/**
+ * The toast copy for a commitment refused because the refreshed quote dropped
+ * applied Promo Codes. It reads as a removed code rather than the generic
+ * "prices changed", so the buyer knows what went and why the total moved.
+ */
+export function getDroppedPromoCodesToast(
+  codes: readonly string[],
+): { title: string, description: string } | undefined {
+  if (codes.length === 0) {
+    return undefined;
+  }
+
+  const isPlural = codes.length > 1;
+
+  return {
+    title: isPlural ? 'Promo codes removed' : 'Promo code removed',
+    description: `${codes.join(', ')} ${isPlural ? 'were' : 'was'} removed because ${
+      isPlural ? 'they are' : 'it is'
+    } no longer available. Review the updated total and confirm your order again.`,
+  };
+}
+
 export function getCheckoutFailureCopy(kind: CheckoutFailureKind): {
   title: string
   description?: string

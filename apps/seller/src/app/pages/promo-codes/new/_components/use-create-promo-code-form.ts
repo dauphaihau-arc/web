@@ -70,6 +70,8 @@ export function useCreatePromoCodeForm() {
     min_order_type: PromotionMinOrderType.NONE,
     min_order_value: 50,
     min_purchase_quantity: 2,
+    max_redemptions: '',
+    max_redemptions_per_buyer: '',
     visibility: 'public',
     product_scope: PromotionProductScope.ALL,
     product_ids: [],

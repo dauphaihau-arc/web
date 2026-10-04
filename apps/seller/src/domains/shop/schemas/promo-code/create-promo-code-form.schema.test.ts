@@ -20,6 +20,8 @@ describe('create promo code form schema', () => {
     min_order_type: PromotionMinOrderType.NONE,
     min_order_value: 50,
     min_purchase_quantity: 2,
+    max_redemptions: '',
+    max_redemptions_per_buyer: '',
     visibility: promoCodeVisibility.PUBLIC,
     product_scope: PromotionProductScope.ALL,
     product_ids: [],
@@ -56,6 +58,38 @@ describe('create promo code form schema', () => {
       min_order_value: 100,
     });
     expect(result.success).toBe(true);
+  });
+
+  it('accepts positive whole-number redemption limits and blank as unlimited', () => {
+    expect(createPromoCodeFormSchema.safeParse({
+      ...base,
+      max_redemptions: '3',
+      max_redemptions_per_buyer: '1',
+    }).success).toBe(true);
+    expect(createPromoCodeFormSchema.safeParse({
+      ...base,
+      max_redemptions: '',
+      max_redemptions_per_buyer: '',
+    }).success).toBe(true);
+  });
+
+  it('accepts a redemption limit bound as a number, as a numeric input produces', () => {
+    expect(createPromoCodeFormSchema.safeParse({
+      ...base,
+      max_redemptions: 3,
+      max_redemptions_per_buyer: 1,
+    }).success).toBe(true);
+  });
+
+  it('rejects a redemption limit that is not a whole number of at least 1', () => {
+    expect(createPromoCodeFormSchema.safeParse({
+      ...base,
+      max_redemptions: '0',
+    }).success).toBe(false);
+    expect(createPromoCodeFormSchema.safeParse({
+      ...base,
+      max_redemptions_per_buyer: 'two',
+    }).success).toBe(false);
   });
 
   it('rejects a fixed amount that is not positive', () => {
@@ -139,6 +173,8 @@ describe('buildCreatePromoCodePayload', () => {
     min_order_type: PromotionMinOrderType.NONE,
     min_order_value: 50,
     min_purchase_quantity: 2,
+    max_redemptions: '',
+    max_redemptions_per_buyer: '',
     visibility: promoCodeVisibility.PUBLIC,
     product_scope: PromotionProductScope.ALL,
     product_ids: [] as string[],
@@ -166,6 +202,24 @@ describe('buildCreatePromoCodePayload', () => {
       end_local: '2026-12-31T23:59',
       end_offset_minutes: -300,
     });
+  });
+
+  it('includes configured redemption limits and omits blank ones', () => {
+    expect(buildCreatePromoCodePayload({
+      ...base,
+      max_redemptions: '3',
+      max_redemptions_per_buyer: '1',
+    })).toMatchObject({ max_redemptions: 3, max_redemptions_per_buyer: 1 });
+
+    expect(buildCreatePromoCodePayload({
+      ...base,
+      max_redemptions: 3,
+      max_redemptions_per_buyer: 1,
+    })).toMatchObject({ max_redemptions: 3, max_redemptions_per_buyer: 1 });
+
+    const unlimited = buildCreatePromoCodePayload(base);
+    expect(unlimited).not.toHaveProperty('max_redemptions');
+    expect(unlimited).not.toHaveProperty('max_redemptions_per_buyer');
   });
 
   it('builds a fixed-amount benefit with a minimum quantity', () => {

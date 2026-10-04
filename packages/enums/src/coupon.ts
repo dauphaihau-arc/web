@@ -48,6 +48,7 @@ export enum CouponIneligibleReason {
   INACTIVE = 'inactive',
   USAGE_LIMIT_REACHED = 'usage_limit_reached',
   USER_USAGE_LIMIT_REACHED = 'user_usage_limit_reached',
+  AUTHENTICATION_REQUIRED = 'authentication_required',
   PRODUCT_SCOPE = 'product_scope',
   MIN_ORDER_VALUE = 'min_order_value',
   MIN_PRODUCTS = 'min_products',

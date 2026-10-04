@@ -54,7 +54,7 @@ const itemRows = computed(() => selectedItems.value.map(item => ({
           <CartShopNote :shop-cart="props.shopCart" />
         </template>
 
-        <template #shipping>
+        <template #summary>
           <CheckoutShopSummary
             :shop-cart="props.shopCart"
             :quote-shop="props.quoteShop"

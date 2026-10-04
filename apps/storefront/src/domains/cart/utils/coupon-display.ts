@@ -52,6 +52,7 @@ const INELIGIBLE_REASON_MESSAGE: Record<CouponIneligibleReason, string> = {
   [CouponIneligibleReason.INACTIVE]: 'Unavailable',
   [CouponIneligibleReason.USAGE_LIMIT_REACHED]: 'Fully redeemed',
   [CouponIneligibleReason.USER_USAGE_LIMIT_REACHED]: 'You have used this coupon',
+  [CouponIneligibleReason.AUTHENTICATION_REQUIRED]: 'Sign in to use this coupon',
   [CouponIneligibleReason.PRODUCT_SCOPE]: 'Not applicable to items in this cart',
   [CouponIneligibleReason.MIN_ORDER_VALUE]: 'Add more to use this coupon',
   [CouponIneligibleReason.MIN_PRODUCTS]: 'Add more items to use this coupon',

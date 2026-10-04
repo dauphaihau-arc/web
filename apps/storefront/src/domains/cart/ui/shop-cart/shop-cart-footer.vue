@@ -3,16 +3,17 @@ const slots = useSlots()
 </script>
 
 <template>
-  <div class="mt-6 flex justify-between">
-    <div class="w-fit space-y-3">
+  <div class="mt-6 flex justify-between gap-10">
+    <div class="flex-1 space-y-3">
       <slot name="coupons" />
-
       <slot name="note" />
     </div>
 
-    <slot
-      v-if="slots.shipping"
-      name="shipping"
-    />
+    <div
+      v-if="slots.summary"
+      class="w-2/5"
+    >
+      <slot name="summary" />
+    </div>
   </div>
 </template>

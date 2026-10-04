@@ -68,6 +68,12 @@ export const createPromoCodeFormSchema = z
       .number({ invalid_type_error: 'Enter a quantity.' })
       .int('Enter a whole quantity.')
       .finite('Enter a valid quantity.'),
+    // Optional redemption limits: an empty value means the dimension is
+    // unlimited. A blank field is distinguishable from a deliberate `0`, and
+    // both a string and a number model are accepted so a numeric input binding
+    // cannot turn a blank field into an invalid value.
+    max_redemptions: z.union([z.string().trim(), z.number()]),
+    max_redemptions_per_buyer: z.union([z.string().trim(), z.number()]),
     visibility: z.enum(['public', 'code_only']),
     product_scope: z.nativeEnum(PromotionProductScope),
     product_ids: z.array(z.string()),
@@ -119,6 +125,22 @@ export const createPromoCodeFormSchema = z
           code: z.ZodIssueCode.custom,
           path: ['min_purchase_quantity'],
           message: 'Enter a quantity of at least 1.',
+        });
+      }
+    }
+
+    for (const field of ['max_redemptions', 'max_redemptions_per_buyer'] as const) {
+      const raw = String(state[field]);
+
+      if (raw === '') {
+        continue;
+      }
+
+      if (!/^\d+$/.test(raw) || Number(raw) < 1) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: [field],
+          message: 'Enter a whole number of at least 1, or leave blank for unlimited.',
         });
       }
     }
@@ -281,11 +303,24 @@ export function buildCreatePromoCodePayload(
       }
       : { min_order_type: PromotionMinOrderType.NONE });
 
+  const redemptionLimits: Pick<
+    CreateShopPromoCodeRequestBody,
+    'max_redemptions' | 'max_redemptions_per_buyer'
+  > = {
+    ...(String(values.max_redemptions) === ''
+      ? {}
+      : { max_redemptions: Number(values.max_redemptions) }),
+    ...(String(values.max_redemptions_per_buyer) === ''
+      ? {}
+      : { max_redemptions_per_buyer: Number(values.max_redemptions_per_buyer) }),
+  };
+
   return {
     name: values.name.trim(),
     code: values.code.trim().toUpperCase(),
     ...benefit,
     ...minimum,
+    ...redemptionLimits,
     visibility: values.visibility,
     product_scope: productScope,
     timezone: values.timezone,

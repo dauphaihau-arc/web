@@ -6,8 +6,13 @@ import { useCartStore } from '~/domains/cart/stores/cart.store';
 import { useGetCart } from '~/domains/cart/queries/cart.query';
 import { useCreateGuestCheckoutQuoteForBuyNow } from '~/domains/checkout/mutations/create-checkout-quote-buy-now.mutation';
 import { useCreateGuestOrderForBuyNow } from '~/domains/checkout/mutations/create-order-buy-now.mutation';
-import { getCheckoutFailureCopy, resolveCheckoutFailure } from '~/domains/checkout/utils/checkout-error';
+import {
+  getCheckoutFailureCopy,
+  getDroppedPromoCodesToast,
+  resolveCheckoutFailure,
+} from '~/domains/checkout/utils/checkout-error';
 import { buildBuyNowQuoteBody } from '~/domains/checkout/utils/checkout-quote-body';
+import { buildPromoCodeRemovalNotices } from '~/domains/checkout/utils/reconcile-applied-promo-codes';
 import { useMarketStore } from '~/domains/market/stores/market.store';
 import { useCheckoutSessionReadiness } from '~/domains/me/composables/use-checkout-session-readiness';
 import { useCreateCheckoutQuoteForBuyNow } from '~/domains/me/mutations/orders/create-checkout-quote-buy-now.mutation';
@@ -23,6 +28,7 @@ import type {
   CreateGuestOrderForBuyNowRequest,
 } from '~/domains/checkout/api/contracts/checkout.contract';
 import type {
+  CheckoutQuoteResponse,
   CreateCheckoutQuoteForBuyNowRequest,
   CreateOrderForBuyNowRequest,
 } from '~/domains/me/api/order/contracts/order.contract';
@@ -93,26 +99,59 @@ export function useSubmitBuyNowCheckout() {
    * the refreshed prices, so the buyer sees the new total and has to confirm
    * the order again instead of being charged a silently different amount.
    */
-  async function refreshAcceptedQuote() {
+  async function refreshAcceptedQuote(): Promise<string[]> {
     const address = cartStore.stateCheckoutNow.address;
 
     cartStore.stateCheckoutNow.quote = null;
+    cartStore.promoCodeRemovalNotices.clear();
+
     await getCart();
 
     if (!address) {
-      return;
+      return [];
     }
 
     const isAuthenticated = !!dataUserAuth.value?.user;
 
+    let refreshedQuote: CheckoutQuoteResponse;
+
     try {
-      cartStore.stateCheckoutNow.quote = isAuthenticated
+      refreshedQuote = isAuthenticated
         ? await createQuote(createQuoteBody(isAuthenticated, address) as CreateCheckoutQuoteForBuyNowRequest)
         : await createGuestQuote(createQuoteBody(isAuthenticated, address) as CreateGuestCheckoutQuoteForBuyNowRequest);
     }
     catch {
       cartStore.stateCheckoutNow.quote = null;
+      return [];
     }
+
+    cartStore.stateCheckoutNow.quote = refreshedQuote;
+
+    // Buy-now quotes one shop, so a code survives if any accepted shop kept it.
+    // The quote silently drops a code it can no longer accept, so the applied
+    // set is reconciled to what it accepted rather than left showing a discount
+    // the totals no longer include.
+    const acceptedCodes = new Set(
+      refreshedQuote.shops.flatMap(shop => shop.promo_codes),
+    );
+    const droppedCodes = cartStore.stateCheckoutNow.promoCodes.filter(
+      code => !acceptedCodes.has(code),
+    );
+
+    cartStore.stateCheckoutNow.promoCodes = cartStore.stateCheckoutNow.promoCodes.filter(
+      code => acceptedCodes.has(code),
+    );
+
+    const noticeShopId = refreshedQuote.shops[0]?.shop_id;
+
+    if (droppedCodes.length > 0 && noticeShopId) {
+      cartStore.promoCodeRemovalNotices.set(
+        noticeShopId,
+        buildPromoCodeRemovalNotices(droppedCodes),
+      );
+    }
+
+    return droppedCodes;
   }
 
   async function submitBuyNowCheckout() {
@@ -174,19 +213,22 @@ export function useSubmitBuyNowCheckout() {
       const checkoutFailure = resolveCheckoutFailure(error);
       const checkoutFailureCopy = getCheckoutFailureCopy(checkoutFailure);
 
-      if (checkoutFailure === 'prices_changed') {
-        await refreshAcceptedQuote();
-      }
-      else if (checkoutFailure !== 'unknown') {
+      const droppedPromoCodes = checkoutFailure === 'prices_changed'
+        ? await refreshAcceptedQuote()
+        : [];
+
+      if (checkoutFailure !== 'unknown' && checkoutFailure !== 'prices_changed') {
         await getCart();
       }
 
       const backendMessage = getBackendErrorMessage(error);
 
+      const droppedPromoCodesCopy = getDroppedPromoCodesToast(droppedPromoCodes);
+
       toast.add({
         ...toastCustom.error,
-        title: checkoutFailureCopy.title,
-        description: checkoutFailureCopy.description ??
+        title: droppedPromoCodesCopy?.title ?? checkoutFailureCopy.title,
+        description: droppedPromoCodesCopy?.description ?? checkoutFailureCopy.description ??
           (error instanceof FetchError && !backendMessage
             ? `Request failed with status ${error.status ?? 'unknown'}`
             : undefined),

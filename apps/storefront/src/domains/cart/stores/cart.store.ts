@@ -2,6 +2,7 @@ import { PaymentTypes } from '@arc/enums/order';
 import type { StateCheckoutNow, StateCheckoutCart } from '~/domains/cart/stores/cart.store.types';
 import { routePaths } from '~/shared/navigation/routes';
 import type { CreateOrderResponse } from '~/domains/me/api/order/contracts/order.contract';
+import type { PromoCodeRemovalNotice } from '~/domains/checkout/utils/reconcile-applied-promo-codes';
 
 export type AdditionInfoShopCarts = {
   key: string
@@ -50,6 +51,9 @@ export const useCartStore = defineStore('cart', () => {
   // use in cart page, checkout cart page
   const additionInfoShopCarts = ref(new Map<AdditionInfoShopCarts['key'], AdditionInfoShopCarts['value']>());
 
+  // Removed Promo Codes waiting to be explained, keyed by shop.
+  const promoCodeRemovalNotices = ref(new Map<string, PromoCodeRemovalNotice[]>());
+
   // use for checkout by cash
   const orderShops = ref<CreateOrderResponse['order_shops']>([]);
 
@@ -62,6 +66,10 @@ export const useCartStore = defineStore('cart', () => {
     ) {
       additionInfoShopCarts.value.clear();
     }
+
+    if (!activeCheckoutPaths.includes(router.currentRoute.value.path)) {
+      promoCodeRemovalNotices.value.clear();
+    }
   });
 
   return {
@@ -69,6 +77,7 @@ export const useCartStore = defineStore('cart', () => {
     stateCheckoutNow,
     stateCheckoutCart,
     additionInfoShopCarts,
+    promoCodeRemovalNotices,
     resetStateCheckoutCart,
     resetStateCheckoutNow,
   };

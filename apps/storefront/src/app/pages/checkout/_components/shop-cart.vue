@@ -70,7 +70,7 @@ const itemRows = computed(() => (shopCart.value?.items ?? []).map(item => ({
           />
         </template>
 
-        <template #shipping>
+        <template #summary>
           <CheckoutShopSummary
             :shop-cart="shopCart"
             :quote-shop="props.quoteShop"

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import { COUPON_CONFIG } from '@arc/enums/coupon'
 import { useCartStore } from '~/domains/cart/stores/cart.store'
 import { resolveCouponErrorMessage } from '~/domains/cart/utils/coupon-error'
@@ -33,6 +34,21 @@ const {
 const appliedCodes = computed(() => cartStore.stateCheckoutNow.promoCodes)
 const isBusy = computed(() => isPendingUpdateCart.value)
 const disabledAddBtn = computed(() => isBusy.value || !state.code.trim())
+
+/**
+ * Codes a refreshed checkout quote no longer accepted. They are gone from the
+ * applied set, so this is the only place the buyer can still see them and learn
+ * why the total changed.
+ */
+const removalNotices = computed(() => cartStore.promoCodeRemovalNotices.get(props.shopId) ?? [])
+
+const removalNoticeText = computed(() =>
+  removalNotices.value.map(notice => notice.message).join(' '))
+
+function dismissRemovalNotices() {
+  cartStore.promoCodeRemovalNotices.delete(props.shopId)
+}
+
 const disabledInput = computed(() => appliedCodes.value.length >= COUPON_CONFIG.MAX_USE_PER_ORDER)
 
 // The inline panel alert is only meaningful while the popover is open, so a
@@ -101,19 +117,34 @@ async function removeCode(code: string) {
 </script>
 
 <template>
-  <ShopCartPromoCouponsUi
-    v-model:code="state.code"
-    v-model:open="state.open"
-    :shop-id="props.shopId"
-    :shop-name="props.shopName"
-    :cart-id="tempCartId"
-    :codes="appliedCodes"
-    :panel-error="state.panelError"
-    :disabled="isBusy || cartStore.stateCheckoutNow.isPendingCreateOrder"
-    :disabled-input="disabledInput"
-    :disabled-add="disabledAddBtn"
-    :is-applying="isBusy"
-    @accept="acceptCodes"
-    @remove-code="removeCode"
-  />
+  <div>
+    <UAlert
+      v-if="removalNotices.length > 0"
+      class="mb-2"
+      color="amber"
+      variant="subtle"
+      :ui="{ variant: { subtle: 'bg-state-warning-surface text-state-warning-text ring-1 ring-inset ring-state-warning-border' } }"
+      :close-button="{
+        icon: ICON_NAME_BY_ALIAS.xMarkSolid, color: 'gray', variant: 'link', padded: false,
+      }"
+      :description="removalNoticeText"
+      @close="dismissRemovalNotices"
+    />
+
+    <ShopCartPromoCouponsUi
+      v-model:code="state.code"
+      v-model:open="state.open"
+      :shop-id="props.shopId"
+      :shop-name="props.shopName"
+      :cart-id="tempCartId"
+      :codes="appliedCodes"
+      :panel-error="state.panelError"
+      :disabled="isBusy || cartStore.stateCheckoutNow.isPendingCreateOrder"
+      :disabled-input="disabledInput"
+      :disabled-add="disabledAddBtn"
+      :is-applying="isBusy"
+      @accept="acceptCodes"
+      @remove-code="removeCode"
+    />
+  </div>
 </template>

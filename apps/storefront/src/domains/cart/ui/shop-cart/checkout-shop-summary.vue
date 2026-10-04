@@ -65,7 +65,7 @@ const estimateLabel = computed(() => formatShippingEstimateRange(props.quoteShop
 </script>
 
 <template>
-  <div class="w-2/5">
+  <div>
     <div class="flex justify-between">
       <div class="title">
         <div>Product(s) total</div>

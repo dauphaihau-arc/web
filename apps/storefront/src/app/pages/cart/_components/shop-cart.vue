@@ -57,7 +57,7 @@ const props = defineProps<{
           />
         </template>
 
-        <template #shipping>
+        <template #summary>
           <ShopCartSummary :shop-cart="props.shopCart" />
         </template>
       </ShopCartFooter>
