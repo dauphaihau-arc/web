@@ -33,3 +33,22 @@ export function formatPromoBenefit(promoCode: ShopPromoCode): string {
 
   return `${promoCode.percent_off}%`;
 }
+
+/**
+ * The allowance consumed against the configured total. It is deliberately a
+ * separate reading from the lifecycle Status column: an Active Promo Code may
+ * be fully redeemed, and an Ended one keeps the count it consumed.
+ *
+ * An exhausted code shows only its Exhausted badge: the ratio is redundant once
+ * the limit is reached, and a count past the limit would read as a bug. The
+ * column header already says Redemptions, so the values carry no suffix.
+ */
+export function formatPromoAllowance(promoCode: ShopPromoCode): string {
+  if (promoCode.exhausted) {
+    return '';
+  }
+
+  return promoCode.max_redemptions == null
+    ? `${promoCode.redemption_count}`
+    : `${promoCode.redemption_count} / ${promoCode.max_redemptions}`;
+}

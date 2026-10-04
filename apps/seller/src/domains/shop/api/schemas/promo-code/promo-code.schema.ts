@@ -78,3 +78,21 @@ export const listShopPromoCodesResponseSchema = z.object({
   total_pages: z.number().int(),
   total_results: z.number().int(),
 });
+
+export const shopPromoCodeStopResponseSchema = z.object({
+  promo_code: shopPromoCodeSchema,
+});
+
+export const bulkStopShopPromoCodesRequestSchema = z.object({
+  ids: z.array(idSchema),
+});
+
+export const bulkStopShopPromoCodesResponseSchema = z.object({
+  results: z.array(shopPromoCodeSchema),
+  succeeded_ids: z.array(idSchema),
+  failed: z.array(z.object({
+    id: idSchema,
+    code: z.string(),
+    reason: z.string(),
+  })),
+});
