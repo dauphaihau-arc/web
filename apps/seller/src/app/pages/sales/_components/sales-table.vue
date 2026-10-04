@@ -153,7 +153,7 @@ function handlePageChange(nextPage: number) {
         :disabled="stoppableSelected.length === 0"
         @click="openBulkStop()"
       >
-        Cancel / end selected ({{ stoppableSelected.length }})
+        Cancel sale
       </UButton>
     </SelectionActionBar>
 
