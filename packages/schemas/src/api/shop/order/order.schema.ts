@@ -68,6 +68,7 @@ export const shopOrderProductSchema = z.object({
   quantity: z.number(),
   amount_minor: z.number(),
   original_amount_minor: z.number().nullable().optional(),
+  promo_discount_minor: z.number().int().nonnegative().default(0),
   currency: z.string(),
   inventory: z.object({
     variant: z.string().optional(),
@@ -131,6 +132,7 @@ export const shopOrderSummarySchema = z.object({
   subtotal_minor: z.number(),
   shipping_minor: z.number(),
   discount_minor: z.number(),
+  sale_discount_minor: z.number().int().nonnegative().default(0),
   total_minor: z.number(),
   note: z.string().optional(),
   canceled_at: z.coerce.date().optional(),

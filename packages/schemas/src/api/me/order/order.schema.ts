@@ -83,6 +83,7 @@ export const checkoutQuoteItemSchema = z.object({
   unit_price_checkout_minor: z.number(),
   line_total_checkout_minor: z.number(),
   original_amount_minor: z.number().optional(),
+  promo_discount_minor: z.number().int().nonnegative().default(0),
   currency: z.string(),
   source_type: z.enum(['market_override', 'base_native', 'base_fx']).optional(),
   fx_rate: z.string().optional(),
@@ -172,6 +173,7 @@ export const orderShopProductSchema = z.object({
   quantity: z.number(),
   amount_minor: z.number(),
   original_amount_minor: z.number().nullable().optional(),
+  promo_discount_minor: z.number().int().nonnegative().default(0),
   currency: z.string(),
   my_review: orderShopProductReviewSchema.optional(),
 })
@@ -204,6 +206,7 @@ export const orderShopResourceSchema = z.object({
   subtotal_minor: z.number(),
   shipping_minor: z.number(),
   discount_minor: z.number(),
+  sale_discount_minor: z.number().int().nonnegative().default(0),
   total_minor: z.number(),
   note: z.string().optional(),
   canceled_at: z.coerce.date().optional(),
