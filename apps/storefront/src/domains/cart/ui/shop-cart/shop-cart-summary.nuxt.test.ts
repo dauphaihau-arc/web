@@ -23,8 +23,10 @@ function buildShopCart(): CartShopGroup {
   };
 }
 
-function buildQuoteShop(overrides?: { shippingMinor?: number, chargeTotalMinor?: number }): CheckoutQuoteShop {
+function buildQuoteShop(overrides?: { shippingMinor?: number, chargeTotalMinor?: number, shippingDiscountMinor?: number }): CheckoutQuoteShop {
   const chargeTotalMinor = overrides?.chargeTotalMinor ?? 999;
+  const shippingMinor = overrides?.shippingMinor ?? chargeTotalMinor;
+  const shippingDiscountMinor = overrides?.shippingDiscountMinor ?? 0;
 
   return {
     shop_id: SHOP_ID,
@@ -33,8 +35,9 @@ function buildQuoteShop(overrides?: { shippingMinor?: number, chargeTotalMinor?:
     subtotal_minor: 2500,
     sale_discount_minor: 400,
     discount_minor: 0,
-    shipping_minor: overrides?.shippingMinor ?? chargeTotalMinor,
-    total_minor: 2500 + (overrides?.shippingMinor ?? chargeTotalMinor),
+    shipping_minor: shippingMinor,
+    shipping_discount_minor: shippingDiscountMinor,
+    total_minor: 2500 + shippingMinor,
     promo_codes: [],
     origin_countries: ['US'],
     shipping: {
@@ -109,9 +112,12 @@ describe('shop cart summary', () => {
     expect(text).toContain('Subtotal');
     expect(text).toContain('Shipping');
     expect(text).toContain('Total');
-    expect(text).toContain(formatMinorCurrency(2500, 'USD'));
+    // Regular merchandise = quoteShop.subtotal_minor + sale_discount_minor = 2900.
+    expect(text).toContain(formatMinorCurrency(2900, 'USD'));
     expect(text).toContain(formatMinorCurrency(400, 'USD'));
     expect(text).toContain(formatMinorCurrency(999, 'USD'));
+    // Subtotal = regular - sale - code = 2500.
+    expect(text).toContain(formatMinorCurrency(2500, 'USD'));
     // Total is the accepted charge the buyer will pay, not a re-derived sum.
     expect(text).toContain(formatMinorCurrency(3499, 'USD'));
     expect(text).toMatch(/Estimated delivery: Sep 26 - 30(?:, \d{4})?/);
@@ -132,6 +138,8 @@ describe('shop cart summary', () => {
   it('shows a real zero charge without asserting free shipping on its own', () => {
     const text = render(buildQuoteShop({ shippingMinor: 0, chargeTotalMinor: 0 })).text();
 
+    expect(text).toContain(formatMinorCurrency(2900, 'USD'));
+    expect(text).toContain(formatMinorCurrency(2500, 'USD'));
     expect(text).toContain(formatMinorCurrency(0, 'USD'));
     expect(text).not.toContain('FREE');
   });
@@ -170,9 +178,23 @@ describe('shop cart summary', () => {
     const wrapper = render(buildQuoteShop({ chargeTotalMinor: 215646 }), false, 'VND');
     const text = wrapper.text();
 
+    expect(text).toContain(formatMinorCurrency(2900, 'VND'));
     expect(text).toContain(formatMinorCurrency(215646, 'VND'));
-    expect(text).toContain(formatMinorCurrency(2500, 'VND'));
     expect(text).not.toContain(formatMinorCurrency(215646, 'USD'));
-    expect(text).not.toContain(formatMinorCurrency(2500, 'USD'));
+    expect(text).not.toContain(formatMinorCurrency(2900, 'USD'));
+  });
+
+  it('renders free-shipping savings and subtracts sale savings exactly once', () => {
+    const text = render(buildQuoteShop({ shippingMinor: 0, chargeTotalMinor: 0, shippingDiscountMinor: 700 })).text();
+
+    expect(text).toContain('Shipping savings');
+    expect(text).toContain(formatMinorCurrency(700, 'USD'));
+    // Net shipping charge remains visible.
+    expect(text).toContain(formatMinorCurrency(0, 'USD'));
+    // Regular merchandise = 2500 + 400; subtotal = 2900 - 400 - 0.
+    expect(text).toContain(formatMinorCurrency(2900, 'USD'));
+    expect(text).toContain(formatMinorCurrency(2500, 'USD'));
+    // Total accepted by the server equals the subtotal when shipping is fully waived.
+    expect(text).toContain(formatMinorCurrency(2500, 'USD'));
   });
 });

@@ -18,11 +18,21 @@ const props = withDefaults(defineProps<{
 
 const currency = computed(() => props.quote?.checkout_currency ?? props.summaryOrder?.currency ?? '')
 const merchandiseSubtotalMinor = computed(
-  () => props.quote?.subtotal_minor ?? props.summaryOrder?.subtotal_minor ?? 0,
+  () => props.quote
+    ? props.quote.subtotal_minor + (props.quote.sale_discount_minor ?? 0)
+    : (props.summaryOrder?.subtotal_minor ?? 0),
 )
 const saleDiscountMinor = computed(() => props.quote?.sale_discount_minor ?? 0)
 const discountMinor = computed(() => props.quote?.discount_minor ?? props.summaryOrder?.discount_minor ?? 0)
-const subtotalAfterDiscountMinor = computed(() => merchandiseSubtotalMinor.value - discountMinor.value)
+const subtotalAfterDiscountMinor = computed(
+  () => merchandiseSubtotalMinor.value - saleDiscountMinor.value - discountMinor.value,
+)
+const shippingDiscountMinor = computed(
+  () => props.quote?.shops.reduce(
+    (sum, shop) => sum + (shop.shipping_discount_minor ?? 0),
+    0,
+  ) ?? 0,
+)
 const shippingMinor = computed(() => props.quote?.shipping_minor)
 const totalMinor = computed(() => props.quote?.total_minor ?? props.summaryOrder?.total_minor ?? 0)
 const selectedQuantity = computed(() => props.summaryOrder?.total_selected_quantity ?? 0)
@@ -72,6 +82,9 @@ const selectedQuantity = computed(() => props.summaryOrder?.total_selected_quant
           <div class="title">
             <div>Subtotal</div>
             <div>Shipping</div>
+            <div v-if="shippingDiscountMinor > 0">
+              Shipping savings
+            </div>
           </div>
           <div class="price">
             <div>
@@ -88,6 +101,12 @@ const selectedQuantity = computed(() => props.summaryOrder?.total_selected_quant
               class="text-right text-text-muted"
             >
               Calculated at checkout
+            </div>
+            <div
+              v-if="shippingDiscountMinor > 0"
+              class="text-right"
+            >
+              {{ formatMinorCurrency(shippingDiscountMinor, currency) }}
             </div>
           </div>
         </div>

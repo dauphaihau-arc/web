@@ -36,11 +36,13 @@ const displayCurrency = computed(
  * implies a charge the server has not accepted.
  */
 const merchandiseSubtotalMinor = computed(
-  () => props.quoteShop?.subtotal_minor ?? props.shopCart.total_minor,
+  () => props.quoteShop
+    ? props.quoteShop.subtotal_minor + (props.quoteShop.sale_discount_minor ?? 0)
+    : props.shopCart.total_minor,
 )
 
 const saleDiscountMinor = computed(
-  () => props.quoteShop?.sale_discount_minor ?? props.shopCart.sale_discount_minor,
+  () => props.quoteShop?.sale_discount_minor ?? 0,
 )
 
 const discountMinor = computed(
@@ -48,8 +50,10 @@ const discountMinor = computed(
 )
 
 const subtotalAfterDiscountMinor = computed(
-  () => merchandiseSubtotalMinor.value - discountMinor.value,
+  () => merchandiseSubtotalMinor.value - saleDiscountMinor.value - discountMinor.value,
 )
+
+const shippingDiscountMinor = computed(() => props.quoteShop?.shipping_discount_minor ?? 0)
 
 const shippingMinor = computed(
   () => (props.isPending ? undefined : props.quoteShop?.shipping_minor),
@@ -89,6 +93,9 @@ const estimateLabel = computed(() => formatShippingEstimateRange(props.quoteShop
       <div class="title">
         <div>Subtotal</div>
         <div>Shipping</div>
+        <div v-if="shippingDiscountMinor > 0">
+          Shipping savings
+        </div>
       </div>
       <div class="price">
         <div>
@@ -111,6 +118,9 @@ const estimateLabel = computed(() => formatShippingEstimateRange(props.quoteShop
           class="text-text-muted"
         >
           Calculated at checkout
+        </div>
+        <div v-if="shippingDiscountMinor > 0">
+          {{ formatMinorCurrency(shippingDiscountMinor, displayCurrency) }}
         </div>
       </div>
     </div>

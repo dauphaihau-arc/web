@@ -20,7 +20,10 @@ function buildSummary(): CartSummary {
   };
 }
 
-function buildQuote(shippingMinor: number): CheckoutQuoteResponse {
+function buildQuote(overrides?: { shippingMinor?: number, shippingDiscountMinor?: number }): CheckoutQuoteResponse {
+  const shippingMinor = overrides?.shippingMinor ?? 999;
+  const shippingDiscountMinor = overrides?.shippingDiscountMinor ?? 0;
+
   return {
     quote_id: 'quote-1',
     checkout_currency: 'USD',
@@ -38,6 +41,7 @@ function buildQuote(shippingMinor: number): CheckoutQuoteResponse {
         sale_discount_minor: 400,
         discount_minor: 500,
         shipping_minor: shippingMinor,
+        shipping_discount_minor: shippingDiscountMinor,
         total_minor: 4500 + shippingMinor,
         promo_codes: [],
         origin_countries: ['US'],
@@ -55,21 +59,27 @@ function render(quote?: CheckoutQuoteResponse) {
 }
 
 describe('summary order card', () => {
-  it('shows the combined checkout shipping total and total from the accepted quote', () => {
-    const text = render(buildQuote(1400)).text();
+  it('shows the regular merchandise total and subtracts sale and code savings once', () => {
+    const text = render(buildQuote({ shippingMinor: 1400 })).text();
 
+    // Regular merchandise = quote.subtotal_minor + sale_discount_minor = 5400.
+    expect(text).toContain(formatMinorCurrency(5400, 'USD'));
     expect(text).toContain('Sale savings');
     expect(text).toContain('Code savings');
     expect(text).toContain(formatMinorCurrency(400, 'USD'));
     expect(text).toContain(formatMinorCurrency(500, 'USD'));
+    // Subtotal = regular - sale - code = 4500.
+    expect(text).toContain(formatMinorCurrency(4500, 'USD'));
     expect(text).toContain(formatMinorCurrency(1400, 'USD'));
     expect(text).toContain(formatMinorCurrency(5900, 'USD'));
     expect(text).not.toContain('Calculated at checkout');
   });
 
   it('shows a real combined zero charge without free-shipping language', () => {
-    const text = render(buildQuote(0)).text();
+    const text = render(buildQuote({ shippingMinor: 0 })).text();
 
+    expect(text).toContain(formatMinorCurrency(5400, 'USD'));
+    expect(text).toContain(formatMinorCurrency(4500, 'USD'));
     expect(text).toContain(formatMinorCurrency(0, 'USD'));
     expect(text).not.toContain('FREE');
   });
@@ -80,5 +90,18 @@ describe('summary order card', () => {
     expect(text).toContain('Calculated at checkout');
     expect(text).toContain(formatMinorCurrency(4500, 'USD'));
     expect(text).not.toContain('FREE');
+  });
+
+  it('renders free-shipping savings and keeps the net shipping charge visible', () => {
+    const text = render(buildQuote({ shippingMinor: 0, shippingDiscountMinor: 1500 })).text();
+
+    expect(text).toContain('Shipping savings');
+    expect(text).toContain(formatMinorCurrency(1500, 'USD'));
+    // Shipping is still shown as the accepted net charge.
+    expect(text).toContain(formatMinorCurrency(0, 'USD'));
+    // Sale and code are subtracted exactly once from the regular merchandise value.
+    expect(text).toContain(formatMinorCurrency(5400, 'USD'));
+    expect(text).toContain(formatMinorCurrency(4500, 'USD'));
+    expect(text).toContain(formatMinorCurrency(4500, 'USD'));
   });
 });
