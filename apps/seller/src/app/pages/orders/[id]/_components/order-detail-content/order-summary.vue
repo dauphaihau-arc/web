@@ -43,6 +43,18 @@ const rows = computed<OrderSummaryRow[]>(() => props.order.products.map(product 
 function formatAmountWithShortLabel(amountMinor: number) {
   return formatMinorCurrency(amountMinor, props.order.currency)
 }
+
+const regularMerchandiseMinor = computed(
+  () => props.order.subtotal_minor + props.order.sale_discount_minor,
+)
+
+const subtotalAfterDiscountsMinor = computed(
+  () => regularMerchandiseMinor.value - props.order.sale_discount_minor - props.order.discount_minor,
+)
+
+const shippingDiscountMinor = computed(
+  () => props.order.shipping_discount_minor ?? 0,
+)
 </script>
 
 <template>
@@ -121,16 +133,37 @@ function formatAmountWithShortLabel(amountMinor: number) {
           {{ order.payment.refund_failed_reason }}
         </div>
         <div class="flex items-center justify-between gap-4">
-          <span>Subtotal</span>
-          <span>{{ formatAmountWithShortLabel(order.subtotal_minor) }}</span>
+          <span>Product(s) total</span>
+          <span>{{ formatAmountWithShortLabel(regularMerchandiseMinor) }}</span>
+        </div>
+        <div
+          v-if="order.sale_discount_minor > 0"
+          class="flex items-center justify-between gap-4"
+        >
+          <span>Sale savings</span>
+          <span>{{ formatAmountWithShortLabel(order.sale_discount_minor) }}</span>
+        </div>
+        <div
+          v-if="order.discount_minor > 0"
+          class="flex items-center justify-between gap-4"
+        >
+          <span>Code savings</span>
+          <span>{{ formatAmountWithShortLabel(order.discount_minor) }}</span>
         </div>
         <div class="flex items-center justify-between gap-4">
-          <span>Discount</span>
-          <span>{{ formatAmountWithShortLabel(order.discount_minor) }}</span>
+          <span>Subtotal</span>
+          <span>{{ formatAmountWithShortLabel(subtotalAfterDiscountsMinor) }}</span>
         </div>
         <div class="flex items-center justify-between gap-4">
           <span>Shipping charge</span>
           <span>{{ formatAmountWithShortLabel(order.shipping_minor) }}</span>
+        </div>
+        <div
+          v-if="shippingDiscountMinor > 0"
+          class="flex items-center justify-between gap-4"
+        >
+          <span>Shipping savings</span>
+          <span>{{ formatAmountWithShortLabel(shippingDiscountMinor) }}</span>
         </div>
         <div class="border-t border-border-subtle pt-3" />
         <div class="flex items-center justify-between gap-4 text-base font-semibold text-text-strong">

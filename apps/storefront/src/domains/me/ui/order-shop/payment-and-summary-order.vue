@@ -5,11 +5,19 @@ import { PaymentTypes } from '@arc/enums/order'
 import { formatMinorCurrency } from '@arc/utils'
 import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract'
 
-defineProps<{
+const props = defineProps<{
   orderShop: ElementType<GetOrderShopsResponse['order_shops']>
 }>()
 
 const showMore = ref(false)
+
+const regularMerchandiseMinor = computed(() => props.orderShop.subtotal_minor + props.orderShop.sale_discount_minor)
+const saleDiscountMinor = computed(() => props.orderShop.sale_discount_minor)
+const codeDiscountMinor = computed(() => props.orderShop.discount_minor)
+const shippingDiscountMinor = computed(() => props.orderShop.shipping_discount_minor ?? 0)
+const subtotalAfterDiscountsMinor = computed(
+  () => regularMerchandiseMinor.value - saleDiscountMinor.value - codeDiscountMinor.value,
+)
 </script>
 
 <template>
@@ -67,14 +75,22 @@ const showMore = ref(false)
         <div class="flex justify-between">
           <div class="title">
             <div>Product(s) total</div>
-            <div>Shop discount</div>
+            <div v-if="saleDiscountMinor > 0">
+              Sale savings
+            </div>
+            <div v-if="codeDiscountMinor > 0">
+              Code savings
+            </div>
           </div>
           <div class="price">
             <div>
-              {{ formatMinorCurrency(orderShop.subtotal_minor, orderShop.currency) }}
+              {{ formatMinorCurrency(regularMerchandiseMinor, orderShop.currency) }}
             </div>
-            <div>
-              {{ formatMinorCurrency(orderShop.discount_minor, orderShop.currency) }}
+            <div v-if="saleDiscountMinor > 0">
+              {{ formatMinorCurrency(saleDiscountMinor, orderShop.currency) }}
+            </div>
+            <div v-if="codeDiscountMinor > 0">
+              {{ formatMinorCurrency(codeDiscountMinor, orderShop.currency) }}
             </div>
           </div>
         </div>
@@ -83,15 +99,19 @@ const showMore = ref(false)
           <div class="title">
             <div>Subtotal</div>
             <div>Shipping</div>
+            <div v-if="shippingDiscountMinor > 0">
+              Shipping savings
+            </div>
           </div>
           <div class="price">
             <div>
-              {{ formatMinorCurrency(orderShop.subtotal_minor - orderShop.discount_minor, orderShop.currency) }}
+              {{ formatMinorCurrency(subtotalAfterDiscountsMinor, orderShop.currency) }}
             </div>
-            <div
-              class="text-right"
-            >
+            <div>
               {{ formatMinorCurrency(orderShop.shipping_minor, orderShop.currency) }}
+            </div>
+            <div v-if="shippingDiscountMinor > 0">
+              {{ formatMinorCurrency(shippingDiscountMinor, orderShop.currency) }}
             </div>
           </div>
         </div>

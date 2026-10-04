@@ -13,6 +13,18 @@ function formatAmountWithShortLabel(amountMinor: number) {
 const estimateLabel = computed(
   () => formatShippingEstimateRange(props.order.shipping?.estimate),
 )
+
+const regularMerchandiseMinor = computed(
+  () => props.order.subtotal_minor + props.order.sale_discount_minor,
+)
+
+const subtotalAfterDiscountsMinor = computed(
+  () => regularMerchandiseMinor.value - props.order.sale_discount_minor - props.order.discount_minor,
+)
+
+const shippingDiscountMinor = computed(
+  () => props.order.shipping_discount_minor ?? 0,
+)
 </script>
 
 <template>
@@ -24,19 +36,43 @@ const estimateLabel = computed(
     <div class="mt-4 space-y-3 text-sm">
       <div class="flex items-center justify-between gap-4">
         <div class="text-text-muted">
-          Subtotal:
+          Product(s) total:
         </div>
         <div class="text-text-strong">
-          {{ formatAmountWithShortLabel(order.subtotal_minor) }}
+          {{ formatAmountWithShortLabel(regularMerchandiseMinor) }}
+        </div>
+      </div>
+
+      <div
+        v-if="order.sale_discount_minor > 0"
+        class="flex items-center justify-between gap-4"
+      >
+        <div class="text-text-muted">
+          Sale savings:
+        </div>
+        <div class="text-text-strong">
+          {{ formatAmountWithShortLabel(order.sale_discount_minor) }}
+        </div>
+      </div>
+
+      <div
+        v-if="order.discount_minor > 0"
+        class="flex items-center justify-between gap-4"
+      >
+        <div class="text-text-muted">
+          Code savings:
+        </div>
+        <div class="text-text-strong">
+          {{ formatAmountWithShortLabel(order.discount_minor) }}
         </div>
       </div>
 
       <div class="flex items-center justify-between gap-4">
         <div class="text-text-muted">
-          Discount:
+          Subtotal:
         </div>
         <div class="text-text-strong">
-          {{ formatAmountWithShortLabel(order.discount_minor) }}
+          {{ formatAmountWithShortLabel(subtotalAfterDiscountsMinor) }}
         </div>
       </div>
 
@@ -46,6 +82,18 @@ const estimateLabel = computed(
         </div>
         <div class="text-text-strong">
           {{ formatAmountWithShortLabel(order.shipping_minor) }}
+        </div>
+      </div>
+
+      <div
+        v-if="shippingDiscountMinor > 0"
+        class="flex items-center justify-between gap-4"
+      >
+        <div class="text-text-muted">
+          Shipping savings:
+        </div>
+        <div class="text-text-strong">
+          {{ formatAmountWithShortLabel(shippingDiscountMinor) }}
         </div>
       </div>
 
