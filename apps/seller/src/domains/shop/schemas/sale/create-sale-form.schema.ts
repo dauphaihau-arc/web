@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { PromotionProductScope } from '@arc/enums/promotion';
+import { promotionProductFields, promotionScheduleFields } from '../promotion-form-fields';
 import {
   localDateTimeCandidates,
   offsetMinutesForInstant,
@@ -19,14 +20,8 @@ export const createSaleFormSchema = z
       .int('Enter a whole percentage between 1 and 99.')
       .min(1, 'Enter a percentage between 1 and 99.')
       .max(99, 'Enter a percentage between 1 and 99.'),
-    product_scope: z.nativeEnum(PromotionProductScope),
-    product_ids: z.array(z.string()),
-    timezone: z.string().min(1, 'Choose a timezone.'),
-    start_mode: z.enum(['now', 'scheduled']),
-    start_local: z.string(),
-    end_local: z.string(),
-    start_occurrence: z.enum(['earlier', 'later']).optional(),
-    end_occurrence: z.enum(['earlier', 'later']).optional(),
+    ...promotionProductFields,
+    ...promotionScheduleFields,
   })
   .superRefine((state, context) => {
     if (state.product_scope === PromotionProductScope.SPECIFIC && state.product_ids.length === 0) {

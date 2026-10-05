@@ -4,6 +4,7 @@ import {
   PromotionMinOrderType,
   PromotionProductScope,
 } from '@arc/enums/promotion';
+import { promotionProductFields, promotionScheduleFields } from '../promotion-form-fields';
 import {
   localDateTimeCandidates,
   parseLocalDateTime,
@@ -22,18 +23,6 @@ export type PromoCodeVisibility = typeof promoCodeVisibility[keyof typeof promoC
 export const PROMO_CODE_VISIBILITY_OPTIONS = [
   { value: promoCodeVisibility.PUBLIC, label: 'Show to shoppers' },
   { value: promoCodeVisibility.CODE_ONLY, label: 'Share via promo code' },
-];
-
-/** The two Product Scopes a Promo Code can be created with. */
-export const PROMO_CODE_PRODUCT_SCOPE_OPTIONS = [
-  { value: PromotionProductScope.ALL, label: 'All products' },
-  { value: PromotionProductScope.SPECIFIC, label: 'Select products' },
-];
-
-/** Whether the Promo Code starts immediately or at a chosen local time. */
-export const PROMO_CODE_START_MODE_OPTIONS = [
-  { value: 'now', label: 'Start now' },
-  { value: 'scheduled', label: 'Schedule for later' },
 ];
 
 /** The persisted Promo Code identity is at most 32 characters. */
@@ -75,14 +64,8 @@ export const createPromoCodeFormSchema = z
     max_redemptions: z.union([z.string().trim(), z.number()]),
     max_redemptions_per_buyer: z.union([z.string().trim(), z.number()]),
     visibility: z.enum(['public', 'code_only']),
-    product_scope: z.nativeEnum(PromotionProductScope),
-    product_ids: z.array(z.string()),
-    timezone: z.string().min(1, 'Choose a timezone.'),
-    start_mode: z.enum(['now', 'scheduled']),
-    start_local: z.string(),
-    end_local: z.string(),
-    start_occurrence: z.enum(['earlier', 'later']).optional(),
-    end_occurrence: z.enum(['earlier', 'later']).optional(),
+    ...promotionProductFields,
+    ...promotionScheduleFields,
   })
   .superRefine((state, context) => {
     if (state.benefit_type === PromotionBenefitType.FIXED_AMOUNT) {

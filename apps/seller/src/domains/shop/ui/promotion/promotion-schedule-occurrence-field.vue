@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SALE_OCCURRENCE_OPTIONS } from './create-sale-form.constants'
+import { PROMOTION_OCCURRENCE_OPTIONS } from './promotion.constants'
 
 defineProps<{
   /** The field this resolves, used as the select's accessible name. */
@@ -16,7 +16,7 @@ const occurrence = defineModel<'earlier' | 'later' | undefined>()
     </p>
     <USelectMenu
       v-model="occurrence"
-      :options="SALE_OCCURRENCE_OPTIONS"
+      :options="PROMOTION_OCCURRENCE_OPTIONS"
       value-attribute="value"
       name-attribute="label"
       size="lg"

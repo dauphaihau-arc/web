@@ -12,7 +12,7 @@ import {
 } from '~/domains/shop/schemas/sale/create-sale-form.schema';
 import { parseLocalDateTime } from '~/domains/shop/utils/zoned-local-date-time';
 import type { CreateShopSaleRequestBody } from '~/domains/shop/api/sale/contracts/sale.contract';
-import { useSaleScheduleTimezone } from './use-sale-schedule-timezone';
+import { usePromotionScheduleTimezone } from '~/domains/shop/ui/promotion/use-promotion-schedule-timezone';
 
 export const CREATE_SALE_FORM_ID = 'create-sale-form';
 
@@ -20,9 +20,9 @@ export const CREATE_SALE_FORM_ID = 'create-sale-form';
  * Owns the Run-a-sale form: its state, its validation, and the submit that
  * turns a completed form into a Sale.
  *
- * The scheduling timezone is delegated to `useSaleScheduleTimezone` and then
- * mirrored into the form state, so the zod schema stays the single validator
- * and the timezone field reports its error like every other field.
+ * The scheduling timezone is delegated to `usePromotionScheduleTimezone` and
+ * then mirrored into the form state, so the zod schema stays the single
+ * validator and the timezone field reports its error like every other field.
  */
 export function useCreateSaleForm() {
   const router = useRouter();
@@ -36,7 +36,7 @@ export function useCreateSaleForm() {
     isPickerOpen,
     isStoreTimezone,
     openPicker,
-  } = useSaleScheduleTimezone();
+  } = usePromotionScheduleTimezone();
 
   const state = reactive<CreateSaleFormState>({
     name: '',

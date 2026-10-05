@@ -2,7 +2,7 @@ import {
   describe, expect, it, vi,
 } from 'vitest';
 import { nextTick, ref, type Ref } from 'vue';
-import { useSaleScheduleTimezone } from './use-sale-schedule-timezone';
+import { usePromotionScheduleTimezone } from './use-promotion-schedule-timezone';
 
 /**
  * The store's own timezone, chosen so it can never coincide with the timezone
@@ -25,21 +25,21 @@ function setStoreTimezone(timezone: string | undefined) {
     : undefined;
 }
 
-describe('useSaleScheduleTimezone', () => {
+describe('usePromotionScheduleTimezone', () => {
   it('defaults to the store timezone instead of the browser timezone', () => {
     setStoreTimezone(storeTimezone);
 
-    const subject = useSaleScheduleTimezone();
+    const subject = usePromotionScheduleTimezone();
 
     expect(storeTimezone).not.toBe(browserTimezone);
     expect(subject.timezone.value).toBe(storeTimezone);
     expect(subject.isStoreTimezone.value).toBe(true);
   });
 
-  it('keeps a per-sale override once the seller chooses one', () => {
+  it('keeps a per-promotion override once the seller chooses one', () => {
     setStoreTimezone(storeTimezone);
 
-    const subject = useSaleScheduleTimezone();
+    const subject = usePromotionScheduleTimezone();
     subject.openPicker();
     subject.timezone.value = 'America/New_York';
 
@@ -50,7 +50,7 @@ describe('useSaleScheduleTimezone', () => {
   it('does not overwrite a chosen override when the store timezone changes', async () => {
     setStoreTimezone(storeTimezone);
 
-    const subject = useSaleScheduleTimezone();
+    const subject = usePromotionScheduleTimezone();
     subject.openPicker();
     subject.timezone.value = 'America/New_York';
     setStoreTimezone('Europe/Paris');
@@ -63,7 +63,7 @@ describe('useSaleScheduleTimezone', () => {
   it('follows a store timezone change while no override was chosen', async () => {
     setStoreTimezone(storeTimezone);
 
-    const subject = useSaleScheduleTimezone();
+    const subject = usePromotionScheduleTimezone();
     setStoreTimezone('Europe/Paris');
     await nextTick();
 

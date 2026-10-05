@@ -1,15 +1,15 @@
 import { useGetMyShop } from '~/domains/shop/queries/my-shop.query';
 
 /**
- * Owns the timezone a new Sale is scheduled in.
+ * Owns the timezone a new Promotion is scheduled in.
  *
- * A Sale defaults to the store's configured timezone, never the timezone of the
- * device that happens to be signed in, so a seller travelling or a staff member
- * elsewhere still schedules against the store's own clock. The selector stays
- * hidden behind an explicit override action; once the seller opens it their
- * choice wins and the store default stops being applied.
+ * A Promotion defaults to the store's configured timezone, never the timezone of
+ * the device that happens to be signed in, so a seller travelling or a staff
+ * member elsewhere still schedules against the store's own clock. The selector
+ * stays hidden behind an explicit override action; once the seller opens it
+ * their choice wins and the store default stops being applied.
  */
-export function useSaleScheduleTimezone() {
+export function usePromotionScheduleTimezone() {
   const { data: myShop } = useGetMyShop();
 
   const storeTimezone = computed(() => myShop.value?.timezone ?? '');

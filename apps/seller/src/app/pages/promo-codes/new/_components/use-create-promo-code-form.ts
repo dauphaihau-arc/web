@@ -20,7 +20,7 @@ import {
 } from '~/domains/shop/schemas/promo-code/create-promo-code-form.schema';
 import { isAmbiguousLocalTime } from '~/domains/shop/schemas/sale/create-sale-form.schema';
 import { parseLocalDateTime } from '~/domains/shop/utils/zoned-local-date-time';
-import { useSaleScheduleTimezone } from '~/app/pages/sales/new/_components/use-sale-schedule-timezone';
+import { usePromotionScheduleTimezone } from '~/domains/shop/ui/promotion/use-promotion-schedule-timezone';
 
 export const CREATE_PROMO_CODE_FORM_ID = 'create-promo-code-form';
 
@@ -34,18 +34,23 @@ type PromoCodeFormRef = {
  * Owns the Create-a-promo-code form: its state, validation, and submit that
  * turns a completed form into a Promo Code.
  *
- * The scheduling timezone is delegated to `useSaleScheduleTimezone` and then
- * mirrored into the form state, so the zod schema stays the single validator
- * and the timezone field reports its error like every other field.
+ * The scheduling timezone is delegated to `usePromotionScheduleTimezone` and
+ * then mirrored into the form state, so the zod schema stays the single
+ * validator and the timezone field reports its error like every other field.
+ *
+ * The Code field lives in a child component, so its element is resolved through
+ * the caller's `getCodeElement` when a server verdict has to be shown on it.
  */
-export function useCreatePromoCodeForm() {
+export function useCreatePromoCodeForm(options: {
+  /** Resolves the Code field's element, so a server verdict can be reported on it. */
+  getCodeElement: () => HTMLElement | null
+}) {
   const router = useRouter();
   const toast = useToast();
 
   // The server owns code uniqueness, so its verdict is reported on the Code
   // field itself rather than as a toast that names no field.
   const formRef = ref<PromoCodeFormRef | null>(null);
-  const codeFieldRef = ref<{ $el?: HTMLElement | null } | null>(null);
 
   const { mutateAsync: createPromoCode, isPending: isPendingCreatePromoCode } = useShopCreatePromoCode();
   const { data: myShop } = useGetMyShop();
@@ -59,7 +64,7 @@ export function useCreatePromoCodeForm() {
     isPickerOpen,
     isStoreTimezone,
     openPicker,
-  } = useSaleScheduleTimezone();
+  } = usePromotionScheduleTimezone();
 
   const state = reactive<CreatePromoCodeFormState>({
     name: '',
@@ -172,7 +177,7 @@ export function useCreatePromoCodeForm() {
     formRef.value?.setErrors([{ path: 'code', message }]);
     await nextTick();
 
-    const element = codeFieldRef.value?.$el;
+    const element = options.getCodeElement();
     element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     element?.querySelector('input')?.focus();
   }
@@ -189,7 +194,6 @@ export function useCreatePromoCodeForm() {
 
   return {
     formRef,
-    codeFieldRef,
     state,
     validate,
     onSubmit,
