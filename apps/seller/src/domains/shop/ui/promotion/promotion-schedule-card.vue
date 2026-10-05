@@ -35,6 +35,8 @@ const timezone = defineModel<string>('timezone', { required: true })
         <UFormGroup
           :label="`When should the ${subject} start?`"
           name="start_mode"
+          class="grid grid-cols-4 gap-10"
+          :ui="{ container: 'col-span-3' }"
         >
           <RadioGroupInput
             v-model="startMode"
@@ -49,6 +51,8 @@ const timezone = defineModel<string>('timezone', { required: true })
           label="Start"
           name="start_local"
           required
+          class="grid grid-cols-4 gap-10"
+          :ui="{ container: 'col-span-3' }"
         >
           <UInput
             v-model="startLocal"
@@ -68,6 +72,8 @@ const timezone = defineModel<string>('timezone', { required: true })
           name="end_local"
           :description="`The ${subject} is active up to, but not including, this local time.`"
           required
+          class="grid grid-cols-4 gap-10"
+          :ui="{ container: 'col-span-3' }"
         >
           <UInput
             v-model="endLocal"
@@ -86,6 +92,8 @@ const timezone = defineModel<string>('timezone', { required: true })
           label="Timezone"
           name="timezone"
           required
+          class="grid grid-cols-4 gap-10"
+          :ui="{ container: 'col-span-3' }"
         >
           <div class="flex flex-wrap items-center gap-2">
             <span class="text-sm">

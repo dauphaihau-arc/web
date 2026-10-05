@@ -26,6 +26,8 @@ const productIds = defineModel<string[]>('productIds', { required: true })
           :label="question"
           name="product_scope"
           description="Selecting a product includes every one of its purchasable variants."
+          class="grid grid-cols-4 gap-10"
+          :ui="{ container: 'col-span-3' }"
         >
           <RadioGroupInput
             v-model="productScope"

@@ -51,7 +51,7 @@ const rows = computed(() => {
       <div
         v-for="row in rows"
         :key="row.id"
-        class="flex items-center justify-between text-sm"
+        class=" grid grid-cols-4 text-sm"
       >
         <span>{{ row.title }}</span>
         <span class="space-x-3">
