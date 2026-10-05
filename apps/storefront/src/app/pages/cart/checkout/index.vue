@@ -21,7 +21,6 @@ const {
 
 const {
   quote,
-  isPendingQuote,
   requestQuote,
   clearQuote,
 } = useRequestCheckoutQuote({ mode: 'cart' })
@@ -119,7 +118,6 @@ watch(
             :shop-cart="shopCart"
             :quote-shop="quoteShopByShopId.get(shopCart.shop.id)"
             :checkout-currency="quote?.checkout_currency"
-            :is-pending-quote="isPendingQuote"
           />
         </div>
       </div>

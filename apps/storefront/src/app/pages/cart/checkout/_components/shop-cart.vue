@@ -12,11 +12,9 @@ const props = withDefaults(defineProps<{
   shopCart: CartShopGroup
   quoteShop?: CheckoutQuoteShop
   checkoutCurrency?: string
-  isPendingQuote?: boolean
 }>(), {
   quoteShop: undefined,
   checkoutCurrency: undefined,
-  isPendingQuote: false,
 })
 
 const selectedItems = computed(() => props.shopCart.items.filter(prod => !!prod.is_selected))
@@ -59,7 +57,6 @@ const itemRows = computed(() => selectedItems.value.map(item => ({
             :shop-cart="props.shopCart"
             :quote-shop="props.quoteShop"
             :checkout-currency="props.checkoutCurrency"
-            :is-pending="props.isPendingQuote"
           />
         </template>
       </ShopCartFooter>

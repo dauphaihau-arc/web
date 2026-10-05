@@ -4,11 +4,10 @@ import type { CartSummary } from '~/domains/cart/api/cart.shared'
 import type { CheckoutQuoteResponse } from '~/domains/me/api/order/contracts/order.contract'
 
 /**
- * The card is the basket-level mirror of the per-shop summaries. Without an
- * accepted quote it mirrors those cards: the merchandise breakdown appears
- * only when a shop carries code savings, otherwise only the total does. With
- * an accepted quote it carries the checkout review's money breakdown,
- * including the seller's charge.
+ * The basket-level mirror of the per-shop summaries: the merchandise breakdown
+ * appears only when the basket carries code savings, otherwise only the total
+ * does. An accepted quote replaces the cart's merchandise-only figures with the
+ * money the server accepted.
  */
 const props = withDefaults(defineProps<{
   loading: boolean
@@ -25,22 +24,9 @@ const props = withDefaults(defineProps<{
 
 const currency = computed(() => props.quote?.checkout_currency ?? props.summaryOrder?.currency ?? '')
 const merchandiseSubtotalMinor = computed(
-  () => props.quote
-    ? props.quote.subtotal_minor + (props.quote.sale_discount_minor ?? 0)
-    : (props.summaryOrder?.subtotal_minor ?? 0),
+  () => props.quote?.subtotal_minor ?? props.summaryOrder?.subtotal_minor ?? 0,
 )
-const saleDiscountMinor = computed(() => props.quote?.sale_discount_minor ?? 0)
 const discountMinor = computed(() => props.quote?.discount_minor ?? props.summaryOrder?.discount_minor ?? 0)
-const subtotalAfterDiscountMinor = computed(
-  () => merchandiseSubtotalMinor.value - saleDiscountMinor.value - discountMinor.value,
-)
-const shippingDiscountMinor = computed(
-  () => props.quote?.shops.reduce(
-    (sum, shop) => sum + (shop.shipping_discount_minor ?? 0),
-    0,
-  ) ?? 0,
-)
-const shippingMinor = computed(() => props.quote?.shipping_minor)
 const totalMinor = computed(() => props.quote?.total_minor ?? props.summaryOrder?.total_minor ?? 0)
 const selectedQuantity = computed(() => props.summaryOrder?.total_selected_quantity ?? 0)
 </script>
@@ -61,60 +47,7 @@ const selectedQuantity = computed(() => props.summaryOrder?.total_selected_quant
         v-else
         class="flex flex-col gap-2"
       >
-        <template v-if="props.quote">
-          <div class="flex justify-between">
-            <div class="title">
-              <div>Product(s) total</div>
-              <div v-if="saleDiscountMinor > 0">
-                Sale savings
-              </div>
-              <div>Code savings</div>
-            </div>
-            <div class="price">
-              <div>
-                {{ formatMinorCurrency(merchandiseSubtotalMinor, currency) }}
-              </div>
-              <div
-                v-if="saleDiscountMinor > 0"
-                class="text-right"
-              >
-                {{ formatMinorCurrency(saleDiscountMinor, currency) }}
-              </div>
-              <div class="text-right">
-                {{ formatMinorCurrency(discountMinor, currency) }}
-              </div>
-            </div>
-          </div>
-          <UDivider class="my-3" />
-          <div class="flex justify-between gap-3">
-            <div class="title">
-              <div>Subtotal</div>
-              <div>Shipping</div>
-              <div v-if="shippingDiscountMinor > 0">
-                Shipping savings
-              </div>
-            </div>
-            <div class="price">
-              <div>
-                {{ formatMinorCurrency(subtotalAfterDiscountMinor, currency) }}
-              </div>
-              <div
-                v-if="typeof shippingMinor === 'number'"
-                class="text-right"
-              >
-                {{ formatMinorCurrency(shippingMinor, currency) }}
-              </div>
-              <div
-                v-if="shippingDiscountMinor > 0"
-                class="text-right"
-              >
-                {{ formatMinorCurrency(shippingDiscountMinor, currency) }}
-              </div>
-            </div>
-          </div>
-          <UDivider class="my-3" />
-        </template>
-        <template v-else-if="discountMinor > 0">
+        <template v-if="discountMinor > 0">
           <div class="flex justify-between">
             <div class="title">
               <div>Product(s) total</div>

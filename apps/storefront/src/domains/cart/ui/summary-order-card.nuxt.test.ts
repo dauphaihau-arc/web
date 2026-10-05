@@ -21,9 +21,9 @@ function buildSummary(overrides?: Partial<CartSummary>): CartSummary {
   };
 }
 
-function buildQuote(overrides?: { shippingMinor?: number, shippingDiscountMinor?: number }): CheckoutQuoteResponse {
+function buildQuote(overrides?: { shippingMinor?: number, discountMinor?: number }): CheckoutQuoteResponse {
   const shippingMinor = overrides?.shippingMinor ?? 999;
-  const shippingDiscountMinor = overrides?.shippingDiscountMinor ?? 0;
+  const discountMinor = overrides?.discountMinor ?? 500;
 
   return {
     quote_id: 'quote-1',
@@ -31,8 +31,8 @@ function buildQuote(overrides?: { shippingMinor?: number, shippingDiscountMinor?
     subtotal_minor: 5000,
     shipping_minor: shippingMinor,
     sale_discount_minor: 400,
-    discount_minor: 500,
-    total_minor: 4500 + shippingMinor,
+    discount_minor: discountMinor,
+    total_minor: 5000 - discountMinor + shippingMinor,
     shops: [
       {
         shop_id: SHOP_ID,
@@ -40,10 +40,10 @@ function buildQuote(overrides?: { shippingMinor?: number, shippingDiscountMinor?
         shop_slug: 'ceramics-studio',
         subtotal_minor: 5000,
         sale_discount_minor: 400,
-        discount_minor: 500,
+        discount_minor: discountMinor,
         shipping_minor: shippingMinor,
-        shipping_discount_minor: shippingDiscountMinor,
-        total_minor: 4500 + shippingMinor,
+        shipping_discount_minor: 0,
+        total_minor: 5000 - discountMinor + shippingMinor,
         promo_codes: [],
         origin_countries: ['US'],
       },
@@ -60,32 +60,37 @@ function render(quote?: CheckoutQuoteResponse, summaryOrder = buildSummary()) {
 }
 
 describe('summary order card', () => {
-  it('shows the regular merchandise total and subtracts sale and code savings once', () => {
+  it('shows the accepted basket merchandise, code saving, and total only', () => {
     const text = render(buildQuote({ shippingMinor: 1400 })).text();
 
-    // Regular merchandise = quote.subtotal_minor + sale_discount_minor = 5400.
-    expect(text).toContain(formatMinorCurrency(5400, 'USD'));
-    expect(text).toContain('Sale savings');
+    expect(text).toContain('2 products');
+    expect(text).toContain('Product(s) total');
     expect(text).toContain('Code savings');
-    expect(text).toContain(formatMinorCurrency(400, 'USD'));
+    expect(text).toContain(formatMinorCurrency(5000, 'USD'));
     expect(text).toContain(formatMinorCurrency(500, 'USD'));
-    // Subtotal = regular - sale - code = 4500.
-    expect(text).toContain(formatMinorCurrency(4500, 'USD'));
-    expect(text).toContain(formatMinorCurrency(1400, 'USD'));
     expect(text).toContain(formatMinorCurrency(5900, 'USD'));
+    // Reduced to the cart's fields: no sale, charge, or shipping breakdown.
+    expect(text).not.toContain('Sale savings');
+    expect(text).not.toContain('Subtotal');
+    expect(text).not.toContain('Shipping');
     expect(text).not.toContain('Calculated at checkout');
   });
 
-  it('shows a real combined zero charge without free-shipping language', () => {
-    const text = render(buildQuote({ shippingMinor: 0 })).text();
+  it('shows only the aggregate total when the basket carries no code saving', () => {
+    const text = render(undefined, buildSummary({
+      subtotal_minor: 4500,
+      discount_minor: 0,
+      subtotal_after_discount_minor: 4500,
+    })).text();
 
-    expect(text).toContain(formatMinorCurrency(5400, 'USD'));
+    expect(text).toContain('2 products');
     expect(text).toContain(formatMinorCurrency(4500, 'USD'));
-    expect(text).toContain(formatMinorCurrency(0, 'USD'));
-    expect(text).not.toContain('FREE');
+    expect(text).not.toContain('Product(s) total');
+    expect(text).not.toContain('Code savings');
+    expect(text).not.toContain('Shipping');
   });
 
-  it('mirrors a shop code saving with the merchandise total and savings rows', () => {
+  it('mirrors the cart merchandise and savings before a quote exists', () => {
     const text = render().text();
 
     expect(text).toContain('2 products');
@@ -95,35 +100,13 @@ describe('summary order card', () => {
     expect(text).toContain(formatMinorCurrency(500, 'USD'));
     expect(text).toContain(formatMinorCurrency(4500, 'USD'));
     expect(text).not.toContain('Shipping');
-    expect(text).not.toContain('Calculated at checkout');
   });
 
-  it('shows only the aggregate cart total when no shop carries code savings', () => {
-    const text = render(undefined, buildSummary({
-      subtotal_minor: 4500,
-      discount_minor: 0,
-      subtotal_after_discount_minor: 4500,
-    })).text();
+  it('formats accepted money in the checkout currency', () => {
+    const quote = { ...buildQuote(), checkout_currency: 'VND' } as CheckoutQuoteResponse;
+    const text = render(quote).text();
 
-    expect(text).toContain('2 products');
-    expect(text).toContain(formatMinorCurrency(4500, 'USD'));
-    // No duplicate breakdown rows, and shipping is never rendered before priced.
-    expect(text).not.toContain('Product(s) total');
-    expect(text).not.toContain('Code savings');
-    expect(text).not.toContain('Shipping');
-    expect(text).not.toContain('Calculated at checkout');
-  });
-
-  it('renders free-shipping savings and keeps the net shipping charge visible', () => {
-    const text = render(buildQuote({ shippingMinor: 0, shippingDiscountMinor: 1500 })).text();
-
-    expect(text).toContain('Shipping savings');
-    expect(text).toContain(formatMinorCurrency(1500, 'USD'));
-    // Shipping is still shown as the accepted net charge.
-    expect(text).toContain(formatMinorCurrency(0, 'USD'));
-    // Sale and code are subtracted exactly once from the regular merchandise value.
-    expect(text).toContain(formatMinorCurrency(5400, 'USD'));
-    expect(text).toContain(formatMinorCurrency(4500, 'USD'));
-    expect(text).toContain(formatMinorCurrency(4500, 'USD'));
+    expect(text).toContain(formatMinorCurrency(5000, 'VND'));
+    expect(text).not.toContain(formatMinorCurrency(5000, 'USD'));
   });
 });

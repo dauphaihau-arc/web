@@ -24,7 +24,6 @@ const {
 
 const {
   quote,
-  isPendingQuote,
   requestQuote,
   clearQuote,
 } = useRequestCheckoutQuote({ mode: 'buy-now', tempCartId })
@@ -111,7 +110,6 @@ onUnmounted(() => {
         <ShopCart
           :quote-shop="checkoutShopId ? quoteShopByShopId.get(checkoutShopId) : undefined"
           :checkout-currency="quote?.checkout_currency"
-          :is-pending-quote="isPendingQuote"
         />
       </div>
 

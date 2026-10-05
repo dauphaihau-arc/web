@@ -11,7 +11,7 @@ const slots = useSlots()
 
     <div
       v-if="slots.summary"
-      class="w-2/5"
+      class="w-[30%]"
     >
       <slot name="summary" />
     </div>

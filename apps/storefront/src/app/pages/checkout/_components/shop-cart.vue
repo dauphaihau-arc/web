@@ -12,11 +12,9 @@ import type { CheckoutQuoteShop } from '~/domains/me/api/order/contracts/order.c
 const props = withDefaults(defineProps<{
   quoteShop?: CheckoutQuoteShop
   checkoutCurrency?: string
-  isPendingQuote?: boolean
 }>(), {
   quoteShop: undefined,
   checkoutCurrency: undefined,
-  isPendingQuote: false,
 })
 
 const cartStore = useCartStore()
@@ -75,7 +73,6 @@ const itemRows = computed(() => (shopCart.value?.items ?? []).map(item => ({
             :shop-cart="shopCart"
             :quote-shop="props.quoteShop"
             :checkout-currency="props.checkoutCurrency"
-            :is-pending="props.isPendingQuote"
           />
         </template>
       </ShopCartFooter>
