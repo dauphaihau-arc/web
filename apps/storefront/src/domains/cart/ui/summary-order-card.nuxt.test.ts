@@ -7,7 +7,7 @@ import SummaryOrderCard from './summary-order-card.vue';
 
 const SHOP_ID = '00000000-0000-4000-8000-000000000001';
 
-function buildSummary(): CartSummary {
+function buildSummary(overrides?: Partial<CartSummary>): CartSummary {
   return {
     currency: 'USD',
     subtotal_minor: 5000,
@@ -17,6 +17,7 @@ function buildSummary(): CartSummary {
     total_minor: 4500,
     total_selected_quantity: 2,
     total_quantity: 2,
+    ...overrides,
   };
 }
 
@@ -52,9 +53,9 @@ function buildQuote(overrides?: { shippingMinor?: number, shippingDiscountMinor?
   } as unknown as CheckoutQuoteResponse;
 }
 
-function render(quote?: CheckoutQuoteResponse) {
+function render(quote?: CheckoutQuoteResponse, summaryOrder = buildSummary()) {
   return mount(SummaryOrderCard, {
-    props: { loading: false, summaryOrder: buildSummary(), quote },
+    props: { loading: false, summaryOrder, quote },
   });
 }
 
@@ -84,12 +85,33 @@ describe('summary order card', () => {
     expect(text).not.toContain('FREE');
   });
 
-  it('defers shipping to checkout before a quote exists', () => {
+  it('mirrors a shop code saving with the merchandise total and savings rows', () => {
     const text = render().text();
 
-    expect(text).toContain('Calculated at checkout');
+    expect(text).toContain('2 products');
+    expect(text).toContain('Product(s) total');
+    expect(text).toContain('Code savings');
+    expect(text).toContain(formatMinorCurrency(5000, 'USD'));
+    expect(text).toContain(formatMinorCurrency(500, 'USD'));
     expect(text).toContain(formatMinorCurrency(4500, 'USD'));
-    expect(text).not.toContain('FREE');
+    expect(text).not.toContain('Shipping');
+    expect(text).not.toContain('Calculated at checkout');
+  });
+
+  it('shows only the aggregate cart total when no shop carries code savings', () => {
+    const text = render(undefined, buildSummary({
+      subtotal_minor: 4500,
+      discount_minor: 0,
+      subtotal_after_discount_minor: 4500,
+    })).text();
+
+    expect(text).toContain('2 products');
+    expect(text).toContain(formatMinorCurrency(4500, 'USD'));
+    // No duplicate breakdown rows, and shipping is never rendered before priced.
+    expect(text).not.toContain('Product(s) total');
+    expect(text).not.toContain('Code savings');
+    expect(text).not.toContain('Shipping');
+    expect(text).not.toContain('Calculated at checkout');
   });
 
   it('renders free-shipping savings and keeps the net shipping charge visible', () => {

@@ -3,6 +3,13 @@ import { formatMinorCurrency } from '@arc/utils'
 import type { CartSummary } from '~/domains/cart/api/cart.shared'
 import type { CheckoutQuoteResponse } from '~/domains/me/api/order/contracts/order.contract'
 
+/**
+ * The card is the basket-level mirror of the per-shop summaries. Without an
+ * accepted quote it mirrors those cards: the merchandise breakdown appears
+ * only when a shop carries code savings, otherwise only the total does. With
+ * an accepted quote it carries the checkout review's money breakdown,
+ * including the seller's charge.
+ */
 const props = withDefaults(defineProps<{
   loading: boolean
   summaryOrder?: CartSummary
@@ -54,63 +61,76 @@ const selectedQuantity = computed(() => props.summaryOrder?.total_selected_quant
         v-else
         class="flex flex-col gap-2"
       >
-        <div class="flex justify-between">
-          <div class="title">
-            <div>Product(s) total</div>
-            <div v-if="saleDiscountMinor > 0">
-              Sale savings
+        <template v-if="props.quote">
+          <div class="flex justify-between">
+            <div class="title">
+              <div>Product(s) total</div>
+              <div v-if="saleDiscountMinor > 0">
+                Sale savings
+              </div>
+              <div>Code savings</div>
             </div>
-            <div>Code savings</div>
-          </div>
-          <div class="price">
-            <div>
-              {{ formatMinorCurrency(merchandiseSubtotalMinor, currency) }}
-            </div>
-            <div
-              v-if="saleDiscountMinor > 0"
-              class="text-right"
-            >
-              {{ formatMinorCurrency(saleDiscountMinor, currency) }}
-            </div>
-            <div class="text-right">
-              {{ formatMinorCurrency(discountMinor, currency) }}
-            </div>
-          </div>
-        </div>
-        <UDivider class="my-3" />
-        <div class="flex justify-between gap-3">
-          <div class="title">
-            <div>Subtotal</div>
-            <div>Shipping</div>
-            <div v-if="shippingDiscountMinor > 0">
-              Shipping savings
+            <div class="price">
+              <div>
+                {{ formatMinorCurrency(merchandiseSubtotalMinor, currency) }}
+              </div>
+              <div
+                v-if="saleDiscountMinor > 0"
+                class="text-right"
+              >
+                {{ formatMinorCurrency(saleDiscountMinor, currency) }}
+              </div>
+              <div class="text-right">
+                {{ formatMinorCurrency(discountMinor, currency) }}
+              </div>
             </div>
           </div>
-          <div class="price">
-            <div>
-              {{ formatMinorCurrency(subtotalAfterDiscountMinor, currency) }}
+          <UDivider class="my-3" />
+          <div class="flex justify-between gap-3">
+            <div class="title">
+              <div>Subtotal</div>
+              <div>Shipping</div>
+              <div v-if="shippingDiscountMinor > 0">
+                Shipping savings
+              </div>
             </div>
-            <div
-              v-if="typeof shippingMinor === 'number'"
-              class="text-right"
-            >
-              {{ formatMinorCurrency(shippingMinor, currency) }}
-            </div>
-            <div
-              v-else
-              class="text-right text-text-muted"
-            >
-              Calculated at checkout
-            </div>
-            <div
-              v-if="shippingDiscountMinor > 0"
-              class="text-right"
-            >
-              {{ formatMinorCurrency(shippingDiscountMinor, currency) }}
+            <div class="price">
+              <div>
+                {{ formatMinorCurrency(subtotalAfterDiscountMinor, currency) }}
+              </div>
+              <div
+                v-if="typeof shippingMinor === 'number'"
+                class="text-right"
+              >
+                {{ formatMinorCurrency(shippingMinor, currency) }}
+              </div>
+              <div
+                v-if="shippingDiscountMinor > 0"
+                class="text-right"
+              >
+                {{ formatMinorCurrency(shippingDiscountMinor, currency) }}
+              </div>
             </div>
           </div>
-        </div>
-        <UDivider class="my-3" />
+          <UDivider class="my-3" />
+        </template>
+        <template v-else-if="discountMinor > 0">
+          <div class="flex justify-between">
+            <div class="title">
+              <div>Product(s) total</div>
+              <div>Code savings</div>
+            </div>
+            <div class="price">
+              <div>
+                {{ formatMinorCurrency(merchandiseSubtotalMinor, currency) }}
+              </div>
+              <div class="text-right">
+                {{ formatMinorCurrency(discountMinor, currency) }}
+              </div>
+            </div>
+          </div>
+          <UDivider class="my-3" />
+        </template>
         <div class="flex justify-between gap-3">
           <div class="text-lg font-medium">
             Total ({{ selectedQuantity }} {{ selectedQuantity > 1 ? 'products' : 'product' }})
