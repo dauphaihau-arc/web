@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
-import WrapperFormGroupCard from '~/shared/ui/wrapper-form-group-card.vue'
+import WrapperFormRow from '~/shared/ui/wrapper-form-row.vue'
+import WrapperFormRows from '~/shared/ui/wrapper-form-rows.vue'
 import { useGetMyShop } from '~/domains/shop/queries/my-shop.query'
 import { useUpdateShopSettings } from '~/domains/shop/mutations/update-shop-settings.mutation'
 import { supportedTimeZones } from '~/domains/shop/utils/zoned-local-date-time'
@@ -15,29 +16,33 @@ const { mutateAsync: saveSettings, isPending: isSaving } = useUpdateShopSettings
 const timezoneOptions = supportedTimeZones()
 const timezone = ref<string>()
 const savedTimezone = computed(() => myShop.value?.timezone ?? 'UTC')
-const isDirty = computed(() => Boolean(timezone.value) && timezone.value !== savedTimezone.value)
 
 /**
  * The stored value is the source of truth, so it also resets the field after a
- * successful save.
+ * successful save and after a failed one.
  */
 watch(savedTimezone, (value) => {
   timezone.value = value
 }, { immediate: true })
 
-async function save() {
-  if (!timezone.value) {
+/**
+ * Selecting a timezone saves immediately. The select is disabled while the
+ * request is in flight so responses cannot land out of order.
+ */
+async function onTimezoneChange(value: string) {
+  if (!value || value === savedTimezone.value) {
     return
   }
 
   try {
-    await saveSettings({ timezone: timezone.value })
+    await saveSettings({ timezone: value })
     toast.add({
       ...toastCustom.success,
       title: 'Store timezone updated',
     })
   }
   catch (error) {
+    timezone.value = savedTimezone.value
     toast.add({
       ...toastCustom.error,
       title: 'Could not update the store timezone',
@@ -56,34 +61,23 @@ async function save() {
       General settings that apply to your whole store.
     </template>
     <template #content>
-      <WrapperFormGroupCard>
-        <template #title>
-          Timezone
-        </template>
-        <template #content>
-          <UFormGroup
-            label="Store timezone"
-            name="timezone"
-            description="New sales default to this timezone instead of the timezone of whoever is signed in. Each sale keeps the timezone it was created with, so changing this never reschedules a sale you already created."
-          >
-            <USelectMenu
-              v-model="timezone"
-              :options="timezoneOptions"
-              searchable
-              size="lg"
-              class="w-96"
-            />
-          </UFormGroup>
-          <UButton
-            class="mt-5"
+      <WrapperFormRows>
+        <WrapperFormRow
+          label="Shop timezone"
+          description="Set the timezone new sales are created in."
+        >
+          <USelectMenu
+            v-model="timezone"
+            :options="timezoneOptions"
+            :disabled="isSaving"
             :loading="isSaving"
-            :disabled="!isDirty || isSaving"
-            @click="save"
-          >
-            Save timezone
-          </UButton>
-        </template>
-      </WrapperFormGroupCard>
+            searchable
+            size="lg"
+            class="w-full md:ms-auto md:max-w-52"
+            @update:model-value="onTimezoneChange"
+          />
+        </WrapperFormRow>
+      </WrapperFormRows>
     </template>
   </LayoutShopWrapperContent>
 </template>
