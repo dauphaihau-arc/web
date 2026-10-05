@@ -6,10 +6,11 @@ import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import StatusBadge from '@arc/ui/primitives/status-badge.vue'
 import type { DropdownItem } from '#ui/types'
 import FixedPagination from '~/shared/ui/fixed-pagination.vue'
+import ScheduleCell from '~/shared/ui/schedule-cell.vue'
 import SelectionActionBar from '~/shared/ui/selection-action-bar.vue'
 import { useShopGetSales } from '~/domains/shop/queries/sales.query'
 import type { ShopSale } from '~/domains/shop/api/sale/contracts/sale.contract'
-import { formatScheduleRange } from '~/domains/shop/utils/format-schedule-range'
+import { formatScheduleDateRange, formatScheduleDateTime } from '~/domains/shop/utils/format-schedule-range'
 import StopSaleDialog from './stop-sale-dialog.vue'
 import BulkStopSalesDialog from './bulk-stop-sales-dialog.vue'
 
@@ -17,6 +18,8 @@ type SaleRow = ShopSale & {
   discount: string
   products: string
   schedule: string
+  scheduleStart: string
+  scheduleEnd: string
   statusLabel: string
   statusTone: PromotionStatusTone
   /** Whether this Sale still has an action to offer. */
@@ -64,7 +67,6 @@ const columns = [
   { key: 'discount', label: 'Discount', class: 'text-center', rowClass: 'text-center' },
   { key: 'products', label: 'Products', class: 'text-center', rowClass: 'text-center' },
   { key: 'schedule', label: 'Schedule' },
-  { key: 'timezone', label: 'Timezone' },
   { key: 'status', label: 'Status', class: 'text-center', rowClass: 'text-center' },
   { key: 'actions' },
 ]
@@ -85,7 +87,9 @@ const rows = computed<SaleRow[]>(() =>
     products: sale.product_scope === PromotionProductScope.ALL
       ? 'All products'
       : `${sale.product_ids.length} ${sale.product_ids.length === 1 ? 'product' : 'products'}`,
-    schedule: formatScheduleRange(sale.start_at, sale.end_at, sale.timezone),
+    schedule: formatScheduleDateRange(sale.start_at, sale.end_at, sale.timezone),
+    scheduleStart: formatScheduleDateTime(sale.start_at, sale.timezone),
+    scheduleEnd: formatScheduleDateTime(sale.end_at, sale.timezone),
     statusLabel: statusLabels[sale.status] ?? sale.status,
     statusTone: statusTones[sale.status],
     stoppable: isStoppable(sale.status),
@@ -165,6 +169,15 @@ function handlePageChange(nextPage: number) {
       :columns="columns"
       :loading="isPendingSales"
     >
+      <template #schedule-data="{ row }">
+        <ScheduleCell
+          :schedule="row.schedule"
+          :start="row.scheduleStart"
+          :end="row.scheduleEnd"
+          :timezone="row.timezone"
+        />
+      </template>
+
       <template #status-data="{ row }">
         <StatusBadge
           :color="row.statusTone"

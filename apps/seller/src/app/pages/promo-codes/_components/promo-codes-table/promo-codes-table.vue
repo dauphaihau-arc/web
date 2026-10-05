@@ -6,10 +6,11 @@ import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import StatusBadge from '@arc/ui/primitives/status-badge.vue'
 import type { DropdownItem } from '#ui/types'
 import FixedPagination from '~/shared/ui/fixed-pagination.vue'
+import ScheduleCell from '~/shared/ui/schedule-cell.vue'
 import SelectionActionBar from '~/shared/ui/selection-action-bar.vue'
 import { useShopGetPromoCodes } from '~/domains/shop/queries/promo-codes.query'
 import type { ShopPromoCode } from '~/domains/shop/api/promo-code/contracts/promo-code.contract'
-import { formatScheduleRange } from '~/domains/shop/utils/format-schedule-range'
+import { formatScheduleDateRange, formatScheduleDateTime } from '~/domains/shop/utils/format-schedule-range'
 import StopPromoCodeDialog from './stop-promo-code-dialog.vue'
 import BulkStopPromoCodesDialog from './bulk-stop-promo-codes-dialog.vue'
 import {
@@ -25,6 +26,8 @@ type PromoCodeRow = ShopPromoCode & {
   scope: string
   allowance: string
   schedule: string
+  scheduleStart: string
+  scheduleEnd: string
   statusLabel: string
   statusTone: PromotionStatusTone
   /** Whether this Promo Code still has an action to offer. */
@@ -54,7 +57,6 @@ const columns = [
   { key: 'scope', label: 'Scope', class: 'text-center', rowClass: 'text-center' },
   { key: 'allowance', label: 'Redemptions', class: 'text-center', rowClass: 'text-center' },
   { key: 'schedule', label: 'Schedule' },
-  { key: 'timezone', label: 'Timezone' },
   { key: 'status', label: 'Status', class: 'text-center', rowClass: 'text-center' },
   { key: 'actions' },
 ]
@@ -76,7 +78,9 @@ const rows = computed<PromoCodeRow[]>(() =>
       ? 'All products'
       : `${promoCode.product_ids.length} ${promoCode.product_ids.length === 1 ? 'product' : 'products'}`,
     allowance: formatPromoAllowance(promoCode),
-    schedule: formatScheduleRange(promoCode.start_at, promoCode.end_at, promoCode.timezone),
+    schedule: formatScheduleDateRange(promoCode.start_at, promoCode.end_at, promoCode.timezone),
+    scheduleStart: formatScheduleDateTime(promoCode.start_at, promoCode.timezone),
+    scheduleEnd: formatScheduleDateTime(promoCode.end_at, promoCode.timezone),
     statusLabel: promoCodeStatusLabels[promoCode.status] ?? promoCode.status,
     statusTone: promoCodeStatusTones[promoCode.status],
     stoppable: isStoppable(promoCode.status),
@@ -165,6 +169,15 @@ function handlePageChange(nextPage: number) {
             label="Exhausted"
           />
         </div>
+      </template>
+
+      <template #schedule-data="{ row }">
+        <ScheduleCell
+          :schedule="row.schedule"
+          :start="row.scheduleStart"
+          :end="row.scheduleEnd"
+          :timezone="row.timezone"
+        />
       </template>
 
       <template #status-data="{ row }">

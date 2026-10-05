@@ -1,9 +1,9 @@
 import {
   afterEach, beforeEach, describe, expect, it, vi,
 } from 'vitest';
-import { formatScheduleRange } from './format-schedule-range';
+import { formatScheduleDateRange, formatScheduleDateTime } from './format-schedule-range';
 
-describe('format-schedule-range', () => {
+describe('format-schedule-date-range', () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-06-01T00:00:00.000Z'));
@@ -13,83 +13,74 @@ describe('format-schedule-range', () => {
     vi.useRealTimers();
   });
 
-  it('hoists the month, year and time when both ends share them', () => {
+  it('hoists the month when both ends share it in the current year', () => {
     expect(
-      formatScheduleRange(
+      formatScheduleDateRange(
         '2026-10-15T04:59:00.000Z',
         '2026-10-23T04:59:00.000Z',
         'Asia/Saigon',
       ),
-    ).toBe('Oct 15 – 23, 11:59');
+    ).toBe('Oct 15 – 23');
   });
 
-  it('prints one date and both times when the ends fall on the same day', () => {
+  it('prints one date when both ends fall on the same day', () => {
     expect(
-      formatScheduleRange(
+      formatScheduleDateRange(
         '2026-10-15T04:59:00.000Z',
         '2026-10-15T16:59:00.000Z',
         'Asia/Saigon',
       ),
-    ).toBe('Oct 15, 11:59 – 23:59');
+    ).toBe('Oct 15');
   });
 
-  it('keeps both times when the ends differ in time of day', () => {
+  it('hoists the year when the ends span months in a past year', () => {
     expect(
-      formatScheduleRange(
+      formatScheduleDateRange(
+        '2025-10-15T04:59:00.000Z',
+        '2025-11-03T04:59:00.000Z',
+        'Asia/Saigon',
+      ),
+    ).toBe('Oct 15 – Nov 3, 2025');
+  });
+
+  it('shows a date range without the time of day', () => {
+    expect(
+      formatScheduleDateRange(
         '2026-10-15T04:59:00.000Z',
         '2026-10-23T16:59:00.000Z',
         'Asia/Saigon',
       ),
-    ).toBe('Oct 15, 11:59 – 23, 23:59');
-  });
-
-  it('hoists the year when the ends span months but share the time', () => {
-    expect(
-      formatScheduleRange(
-        '2026-10-15T04:59:00.000Z',
-        '2026-11-03T04:59:00.000Z',
-        'Asia/Saigon',
-      ),
-    ).toBe('Oct 15 – Nov 3, 11:59');
-  });
-
-  it('keeps both dates when the ends span months and differ in time', () => {
-    expect(
-      formatScheduleRange(
-        '2026-10-15T04:59:00.000Z',
-        '2026-11-03T16:59:00.000Z',
-        'Asia/Saigon',
-      ),
-    ).toBe('Oct 15, 11:59 – Nov 3, 23:59');
+    ).toBe('Oct 15 – 23');
   });
 
   it('shows both years when the ends fall in different years', () => {
     expect(
-      formatScheduleRange(
-        '2025-12-30T04:59:00.000Z',
-        '2026-01-02T04:59:00.000Z',
-        'Asia/Saigon',
+      formatScheduleDateRange(
+        '2026-10-04T13:57:00.000Z',
+        '2027-01-04T13:57:00.000Z',
+        'America/New_York',
       ),
-    ).toBe('Dec 30, 2025, 11:59 – Jan 2, 2026, 11:59');
-  });
-
-  it('shows the year for a schedule outside the current year', () => {
-    expect(
-      formatScheduleRange(
-        '2025-10-15T04:59:00.000Z',
-        '2025-10-23T04:59:00.000Z',
-        'Asia/Saigon',
-      ),
-    ).toBe('Oct 15 – 23, 2025, 11:59');
+    ).toBe('Oct 4, 2026 – Jan 4, 2027');
   });
 
   it('decides the current year in the schedule timezone, not the machine one', () => {
     const start = '2026-12-31T17:00:00.000Z';
     const end = '2027-01-05T17:00:00.000Z';
 
-    expect(formatScheduleRange(start, end, 'Asia/Saigon')).toBe('Jan 1 – 6, 2027, 00:00');
-    expect(formatScheduleRange(start, end, 'UTC')).toBe(
-      'Dec 31, 2026, 17:00 – Jan 5, 2027, 17:00',
-    );
+    expect(formatScheduleDateRange(start, end, 'Asia/Saigon')).toBe('Jan 1 – 6, 2027');
+  });
+});
+
+describe('format-schedule-date-time', () => {
+  it('renders the full wall-clock stamp in the schedule timezone', () => {
+    expect(
+      formatScheduleDateTime('2026-10-04T13:57:00.000Z', 'America/New_York'),
+    ).toBe('Oct 4, 2026, 09:57');
+  });
+
+  it('renders each endpoint of a schedule in its authored timezone', () => {
+    expect(
+      formatScheduleDateTime('2027-01-04T13:57:00.000Z', 'America/New_York'),
+    ).toBe('Jan 4, 2027, 08:57');
   });
 });

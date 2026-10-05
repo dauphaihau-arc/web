@@ -37,17 +37,29 @@ function zonedScheduleParts(instant: string | Date, timezone: string): ZonedSche
 }
 
 /**
- * Renders a Promotion Period as one compact range on the wall clock of the
- * timezone it was authored in.
- *
- * Parts the two endpoints share — the month, the year, and the time of day —
- * are hoisted and printed once, so a schedule reads as `Oct 15 – 23, 11:59`
- * rather than repeating every field twice. A shared year is dropped only when
- * it is the current year in that timezone; an instant in any other year always
- * shows its year. Endpoints in different years never hoist the year, so
- * `Dec 30 – Jan 2` can never leave the year of either end ambiguous.
+ * One endpoint as a full wall-clock stamp in the schedule's own timezone, for
+ * a tooltip that must not hide the exact instant: `Oct 4, 2026, 09:57`.
  */
-export function formatScheduleRange(
+export function formatScheduleDateTime(instant: string | Date, timezone: string): string {
+  const {
+    year, month, day, time,
+  } = zonedScheduleParts(instant, timezone);
+
+  return `${month} ${day}, ${year}, ${time}`;
+}
+
+/**
+ * Renders a Promotion Period as a compact date range on the wall clock of the
+ * timezone it was authored in, with the time of day left to the tooltip.
+ *
+ * Parts the two endpoints share are hoisted and printed once, so a schedule
+ * reads as `Oct 15 – 23, 2026` rather than repeating the month. A shared year
+ * is dropped only when it is the current year in that timezone; an instant in
+ * any other year always shows its year. Endpoints in different years never
+ * hoist the year, so `Dec 30, 2025 – Jan 2, 2026` can never leave either end
+ * ambiguous.
+ */
+export function formatScheduleDateRange(
   startAt: string | Date,
   endAt: string | Date,
   timezone: string,
@@ -56,31 +68,19 @@ export function formatScheduleRange(
   const end = zonedScheduleParts(endAt, timezone);
   const currentYear = zonedScheduleParts(new Date(), timezone).year;
 
-  const sameYear = start.year === end.year;
-  const sameMonth = sameYear && start.month === end.month;
-  const sameTime = start.time === end.time;
-
-  if (!sameYear) {
-    return `${start.month} ${start.day}, ${start.year}, ${start.time} – ${end.month} ${end.day}, ${end.year}, ${end.time}`;
+  if (start.year !== end.year) {
+    return `${start.month} ${start.day}, ${start.year} – ${end.month} ${end.day}, ${end.year}`;
   }
 
   const sharedYear = start.year === currentYear ? '' : `, ${start.year}`;
 
-  if (sameMonth && start.day === end.day) {
-    return `${start.month} ${start.day}${sharedYear}, ${start.time} – ${end.time}`;
+  if (start.month === end.month && start.day === end.day) {
+    return `${start.month} ${start.day}${sharedYear}`;
   }
 
-  if (sameMonth && sameTime) {
-    return `${start.month} ${start.day} – ${end.day}${sharedYear}, ${start.time}`;
+  if (start.month === end.month) {
+    return `${start.month} ${start.day} – ${end.day}${sharedYear}`;
   }
 
-  if (sameMonth) {
-    return `${start.month} ${start.day}${sharedYear}, ${start.time} – ${end.day}, ${end.time}`;
-  }
-
-  if (sameTime) {
-    return `${start.month} ${start.day} – ${end.month} ${end.day}${sharedYear}, ${start.time}`;
-  }
-
-  return `${start.month} ${start.day}${sharedYear}, ${start.time} – ${end.month} ${end.day}, ${end.time}`;
+  return `${start.month} ${start.day} – ${end.month} ${end.day}${sharedYear}`;
 }
