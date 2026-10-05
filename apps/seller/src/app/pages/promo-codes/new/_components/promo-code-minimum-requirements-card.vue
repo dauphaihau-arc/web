@@ -25,57 +25,70 @@ const minPurchaseQuantity = defineModel<CreatePromoCodeFormState['min_purchase_q
         <UFormGroup
           label="Do buyers need to meet a minimum?"
           name="min_order_type"
-          description="A minimum counts only this code’s eligible products, after any sale and before the code’s own discount. Shipping and other products never count toward it."
+          description="Applies to this code’s eligible products only, counted after sales and before the code’s discount."
+          class="grid grid-cols-4 gap-10"
+          :ui="{ container: 'col-span-3' }"
         >
           <RadioGroupInput
             v-model="minOrderType"
             :options="PROMO_CODE_MINIMUM_OPTIONS"
             :disabled="disabled"
             row
-          />
-        </UFormGroup>
-
-        <UFormGroup
-          v-if="minOrderType === PromotionMinOrderType.ORDER_TOTAL"
-          label="Minimum spend"
-          name="min_order_value"
-          class="grid grid-cols-4 items-center gap-10"
-          required
-        >
-          <UInput
-            v-model.number="minOrderValue"
-            v-numeric
-            :disabled="disabled"
-            type="number"
-            step="any"
-            size="lg"
-            class="w-32"
+            :ui-radio="{ wrapper: '!items-start' }"
           >
-            <template #trailing>
-              <span class="text-xs text-text-muted">{{ shopCurrency }}</span>
-            </template>
-          </UInput>
-        </UFormGroup>
+            <template #label="{ option }">
+              <div
+                class="flex flex-col gap-2"
+                :class="option.value !== PromotionMinOrderType.NONE && 'min-w-[128px]'"
+              >
+                <span class="text-sm font-medium text-text-subtle">
+                  {{ option.label }}<span
+                    v-if="option.value === minOrderType && option.value !== PromotionMinOrderType.NONE"
+                    class="ms-1 text-red-500"
+                  >*</span>
+                </span>
 
-        <UFormGroup
-          v-if="minOrderType === PromotionMinOrderType.PURCHASE_QUANTITY"
-          label="Minimum quantity"
-          name="min_purchase_quantity"
-          class="grid grid-cols-4 items-center gap-10"
-          required
-        >
-          <UInput
-            v-model.number="minPurchaseQuantity"
-            v-numeric
-            :disabled="disabled"
-            type="number"
-            size="lg"
-            class="w-32"
-          >
-            <template #trailing>
-              <span class="text-xs text-text-muted">items</span>
+                <UFormGroup
+                  v-if="option.value === minOrderType && option.value === PromotionMinOrderType.ORDER_TOTAL"
+                  name="min_order_value"
+                  class="w-32"
+                >
+                  <UInput
+                    v-model.number="minOrderValue"
+                    v-numeric
+                    :disabled="disabled"
+                    type="number"
+                    step="any"
+                    size="lg"
+                    class="w-32"
+                  >
+                    <template #trailing>
+                      <span class="text-xs text-text-muted">{{ shopCurrency }}</span>
+                    </template>
+                  </UInput>
+                </UFormGroup>
+
+                <UFormGroup
+                  v-else-if="option.value === minOrderType && option.value === PromotionMinOrderType.PURCHASE_QUANTITY"
+                  name="min_purchase_quantity"
+                  class="w-32"
+                >
+                  <UInput
+                    v-model.number="minPurchaseQuantity"
+                    v-numeric
+                    :disabled="disabled"
+                    type="number"
+                    size="lg"
+                    class="w-32"
+                  >
+                    <template #trailing>
+                      <span class="text-xs text-text-muted">items</span>
+                    </template>
+                  </UInput>
+                </UFormGroup>
+              </div>
             </template>
-          </UInput>
+          </RadioGroupInput>
         </UFormGroup>
       </div>
     </template>

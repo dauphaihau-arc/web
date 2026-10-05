@@ -39,7 +39,7 @@ defineExpose({
         <UFormGroup
           label="Name"
           name="name"
-          description="Buyers won’t see this. It is only for you to track the promo code, and does not need to be unique."
+          description="Buyers won’t see this."
           class="grid grid-cols-4 gap-10"
           required
         >
@@ -56,7 +56,7 @@ defineExpose({
           ref="codeFieldRef"
           label="Code"
           name="code"
-          description="This is what shoppers will enter at checkout to get a discount. Letters and numbers only."
+          description="Shoppers enter this at checkout. Letters and numbers only."
           class="grid grid-cols-4 gap-10"
           required
         >
@@ -75,8 +75,9 @@ defineExpose({
         <UFormGroup
           label="Discount type"
           name="benefit_type"
-          description="Choose whether the code reduces eligible prices by a percentage or a fixed amount, or waives the shop's shipping charge."
+          description="How the discount is applied to eligible items."
           class="grid grid-cols-4 gap-10"
+          :ui="{ container: 'col-span-3' }"
           required
         >
           <RadioGroupInput
@@ -84,61 +85,71 @@ defineExpose({
             :options="PROMO_CODE_BENEFIT_OPTIONS"
             :disabled="disabled"
             row
-          />
-        </UFormGroup>
-
-        <UFormGroup
-          v-if="benefitType === PromotionBenefitType.PERCENTAGE"
-          label="Percentage off"
-          name="percent_off"
-          description="Every eligible product’s price after any sale is reduced by this percentage at checkout."
-          class="grid grid-cols-4 items-center gap-10"
-          required
-        >
-          <UInput
-            v-model.number="percentOff"
-            v-numeric
-            v-max-number="99"
-            :disabled="disabled"
-            type="number"
-            step="any"
-            size="lg"
-            class="w-32"
+            :ui-radio="{ wrapper: '!items-start' }"
           >
-            <template #trailing>
-              <span class="text-xs text-text-muted">%</span>
-            </template>
-          </UInput>
-        </UFormGroup>
+            <template #label="{ option }">
+              <div
+                class="flex flex-col gap-2"
+                :class="option.value !== PromotionBenefitType.FREE_SHIPPING && 'min-w-[128px]'"
+              >
+                <span class="text-sm font-medium text-text-subtle">
+                  {{ option.label }}<span
+                    v-if="option.value === benefitType && option.value !== PromotionBenefitType.FREE_SHIPPING"
+                    class="ms-0.5 text-red-500"
+                  >*</span>
+                </span>
 
-        <UFormGroup
-          v-else-if="benefitType === PromotionBenefitType.FIXED_AMOUNT"
-          label="Amount off"
-          name="amount_off"
-          description="The code subtracts this amount once per order from the eligible merchandise total at checkout, never more than that total."
-          class="grid grid-cols-4 items-center gap-10"
-          required
-        >
-          <UInput
-            v-model.number="amountOff"
-            v-numeric
-            :disabled="disabled"
-            type="number"
-            step="any"
-            size="lg"
-            class="w-32"
-          >
-            <template #trailing>
-              <span class="text-xs text-text-muted">{{ shopCurrency }}</span>
+                <UFormGroup
+                  v-if="option.value === benefitType && option.value === PromotionBenefitType.PERCENTAGE"
+                  name="percent_off"
+                  class="w-32"
+                >
+                  <UInput
+                    v-model.number="percentOff"
+                    v-numeric
+                    v-max-number="99"
+                    :disabled="disabled"
+                    type="number"
+                    step="any"
+                    size="lg"
+                    class="w-32"
+                  >
+                    <template #trailing>
+                      <span class="text-xs text-text-muted">%</span>
+                    </template>
+                  </UInput>
+                </UFormGroup>
+
+                <UFormGroup
+                  v-else-if="option.value === benefitType && option.value === PromotionBenefitType.FIXED_AMOUNT"
+                  name="amount_off"
+                  class="w-32"
+                >
+                  <UInput
+                    v-model.number="amountOff"
+                    v-numeric
+                    :disabled="disabled"
+                    type="number"
+                    step="any"
+                    size="lg"
+                    class="w-32"
+                  >
+                    <template #trailing>
+                      <span class="text-xs text-text-muted">{{ shopCurrency }}</span>
+                    </template>
+                  </UInput>
+                </UFormGroup>
+              </div>
             </template>
-          </UInput>
+          </RadioGroupInput>
         </UFormGroup>
 
         <UFormGroup
           label="Visibility"
           name="visibility"
-          description="Public promo codes can appear in checkout for eligible shoppers. Code-only promo codes are applied only when a shopper enters the code."
+          description="Whether the code is surfaced to shoppers automatically or only when entered."
           class="grid grid-cols-4 gap-10"
+          :ui="{ container: 'col-span-3' }"
           required
         >
           <RadioGroupInput
