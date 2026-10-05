@@ -6,7 +6,7 @@ const { data } = defineProps<{ data: LinkItem }>()
 
 const route = useRoute()
 
-const isOpen = ref(false)
+const isOpen = ref(true)
 
 const itemsLinkPaths = Array.isArray(data.sub)
   ? data.sub.flatMap(item => item.matchPath ? [item.matchPath] : [])
