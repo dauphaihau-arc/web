@@ -20,7 +20,7 @@ const percentOff = defineModel<CreateSaleFormState['percent_off']>('percentOff',
         <UFormGroup
           label="Sale name"
           name="name"
-          description="Buyers won’t see this. It is only for you to track the sale, and does not need to be unique."
+          description="Buyers won’t see this."
           class="grid grid-cols-4 gap-10"
           required
         >
@@ -36,7 +36,7 @@ const percentOff = defineModel<CreateSaleFormState['percent_off']>('percentOff',
         <UFormGroup
           label="Percentage off"
           name="percent_off"
-          description="Every eligible product’s current regular price is reduced by this percentage."
+          description="Off each eligible product’s regular price."
           class="grid grid-cols-4 items-center gap-10"
           required
         >

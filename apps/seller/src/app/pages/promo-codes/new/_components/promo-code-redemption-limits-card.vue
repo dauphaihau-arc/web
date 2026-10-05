@@ -20,7 +20,7 @@ const maxRedemptionsPerBuyer = defineModel<CreatePromoCodeFormState['max_redempt
         <UFormGroup
           label="Total redemptions"
           name="max_redemptions"
-          description="The most times this promo code can be redeemed across all buyers. Leave blank for unlimited."
+          description="Counts across all buyers."
           class="grid grid-cols-4 items-center gap-10"
         >
           <UInput
@@ -39,7 +39,7 @@ const maxRedemptionsPerBuyer = defineModel<CreatePromoCodeFormState['max_redempt
         <UFormGroup
           label="Redemptions per buyer"
           name="max_redemptions_per_buyer"
-          description="The most times each buyer can redeem this code. Buyers must sign in before it can be used. Leave blank for unlimited."
+          description="Counts per buyer. Buyers must sign in to redeem."
           class="grid grid-cols-4 items-center gap-10"
         >
           <UInput
