@@ -17,7 +17,10 @@ type ProductTargetRow = ListShopProductsItem & {
 const productIdsModel = defineModel<string[]>()
 
 const isOpen = ref(false)
+/** Committed rows: what the preview table renders and what `productIdsModel` mirrors. */
 const selectedRows = ref<ProductTargetRow[]>([])
+/** Working selection owned by the dialog; only promoted to `selectedRows` on save. */
+const draftRows = ref<ProductTargetRow[]>([])
 const page = ref(1)
 const search = ref()
 
@@ -91,13 +94,21 @@ const rowsDialog = computed<ProductTargetRow[]>(() => {
   })
 })
 
+watch(isOpen, (open) => {
+  if (open) {
+    draftRows.value = [...selectedRows.value]
+  }
+})
+
 const applyProducts = () => {
-  productIdsModel.value = selectedRows.value.map(prod => prod.id)
+  selectedRows.value = [...draftRows.value]
+  productIdsModel.value = draftRows.value.map(prod => prod.id)
   isOpen.value = false
 }
 
 const removeProduct = (id: string) => {
   selectedRows.value = selectedRows.value.filter(row => row.id !== id)
+  draftRows.value = draftRows.value.filter(row => row.id !== id)
   if (productIdsModel.value) {
     productIdsModel.value = productIdsModel.value.filter(productId => productId !== id)
   }
@@ -145,7 +156,8 @@ watchDebounced(
         }"
       />
       <UTable
-        v-model="selectedRows"
+        v-model="draftRows"
+        by="id"
         class="min-h-[315px]"
         :rows="rowsDialog"
         :columns="columnsDialog"
@@ -184,7 +196,10 @@ watchDebounced(
       </template>
     </BaseDialog>
 
-    <div v-if="selectedRows.length > 0">
+    <div
+      v-if="selectedRows.length > 0"
+      class="mt-4"
+    >
       <UTable
         :columns="columnsPreviewTable"
         :rows="selectedRows"
