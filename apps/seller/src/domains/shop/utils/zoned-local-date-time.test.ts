@@ -45,6 +45,15 @@ describe('zoned-local-date-time', () => {
     ).toBe(-300);
   });
 
+  it('ignores seconds when deriving the offset', () => {
+    expect(
+      offsetMinutesForInstant(new Date('2026-07-01T14:00:37.500Z'), 'UTC'),
+    ).toBe(0);
+    expect(
+      offsetMinutesForInstant(new Date('2026-07-01T14:00:37.500Z'), 'America/New_York'),
+    ).toBe(-240);
+  });
+
   it('rejects values that are not local wall clocks', () => {
     expect(parseLocalDateTime('2026-11-01 01:30')).toBeUndefined();
     expect(parseLocalDateTime('2026-11-01T25:00')).toBeUndefined();

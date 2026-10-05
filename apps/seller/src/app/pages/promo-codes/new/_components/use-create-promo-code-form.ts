@@ -21,6 +21,7 @@ import {
 import { isAmbiguousLocalTime } from '~/domains/shop/schemas/sale/create-sale-form.schema';
 import { parseLocalDateTime } from '~/domains/shop/utils/zoned-local-date-time';
 import { usePromotionScheduleTimezone } from '~/domains/shop/ui/promotion/use-promotion-schedule-timezone';
+import { addDurationToLocal, nowLocal } from '~/domains/shop/utils/promotion-schedule-range';
 
 export const CREATE_PROMO_CODE_FORM_ID = 'create-promo-code-form';
 
@@ -92,6 +93,13 @@ export function useCreatePromoCodeForm(options: {
 
   watch(timezone, (value) => {
     state.timezone = value;
+
+    // Seed the schedule the moment the store timezone is known, so the End
+    // field is never empty and presets have a wall clock to count from.
+    if (value && !state.end_local) {
+      state.start_local = nowLocal(value);
+      state.end_local = addDurationToLocal(state.start_local, value, 24, 'hour');
+    }
   }, { immediate: true });
 
   // The server's verdict on a code stops being true the moment the seller

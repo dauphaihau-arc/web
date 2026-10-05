@@ -2,7 +2,7 @@
 import RadioGroupInput from '@arc/ui/primitives/radio-group-input.vue'
 import WrapperFormGroupCard from '~/shared/ui/wrapper-form-group-card.vue'
 import { PROMOTION_START_MODE_OPTIONS } from './promotion.constants'
-import PromotionScheduleOccurrenceField from './promotion-schedule-occurrence-field.vue'
+import PromotionScheduleRangeInput from './promotion-schedule-range-input.vue'
 
 defineProps<{
   /** What the schedule belongs to, e.g. "sale" or "promo code". */
@@ -47,44 +47,22 @@ const timezone = defineModel<string>('timezone', { required: true })
         </UFormGroup>
 
         <UFormGroup
-          v-if="startMode === 'scheduled'"
-          label="Start"
-          name="start_local"
+          label="Duration"
+          :description="`The ${subject} is active up to, but not including, the end time.`"
           required
           class="grid grid-cols-4 gap-10"
           :ui="{ container: 'col-span-3' }"
         >
-          <UInput
-            v-model="startLocal"
-            type="datetime-local"
-            size="lg"
-            class="w-64"
-          />
-          <PromotionScheduleOccurrenceField
-            v-if="startIsAmbiguous"
-            v-model="startOccurrence"
-            label="Start occurrence"
-          />
-        </UFormGroup>
-
-        <UFormGroup
-          label="End"
-          name="end_local"
-          :description="`The ${subject} is active up to, but not including, this local time.`"
-          required
-          class="grid grid-cols-4 gap-10"
-          :ui="{ container: 'col-span-3' }"
-        >
-          <UInput
-            v-model="endLocal"
-            type="datetime-local"
-            size="lg"
-            class="w-64"
-          />
-          <PromotionScheduleOccurrenceField
-            v-if="endIsAmbiguous"
-            v-model="endOccurrence"
-            label="End occurrence"
+          <PromotionScheduleRangeInput
+            v-model:start-local="startLocal"
+            v-model:end-local="endLocal"
+            v-model:start-occurrence="startOccurrence"
+            v-model:end-occurrence="endOccurrence"
+            :start-mode="startMode"
+            :timezone="timezone"
+            :start-is-ambiguous="startIsAmbiguous"
+            :end-is-ambiguous="endIsAmbiguous"
+            :disabled="disabled"
           />
         </UFormGroup>
 

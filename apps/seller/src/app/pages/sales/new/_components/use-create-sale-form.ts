@@ -13,6 +13,7 @@ import {
 import { parseLocalDateTime } from '~/domains/shop/utils/zoned-local-date-time';
 import type { CreateShopSaleRequestBody } from '~/domains/shop/api/sale/contracts/sale.contract';
 import { usePromotionScheduleTimezone } from '~/domains/shop/ui/promotion/use-promotion-schedule-timezone';
+import { addDurationToLocal, nowLocal } from '~/domains/shop/utils/promotion-schedule-range';
 
 export const CREATE_SALE_FORM_ID = 'create-sale-form';
 
@@ -55,6 +56,13 @@ export function useCreateSaleForm() {
 
   watch(timezone, (value) => {
     state.timezone = value;
+
+    // Seed the schedule the moment the store timezone is known, so the End
+    // field is never empty and presets have a wall clock to count from.
+    if (value && !state.end_local) {
+      state.start_local = nowLocal(value);
+      state.end_local = addDurationToLocal(state.start_local, value, 24, 'hour');
+    }
   }, { immediate: true });
 
   function isAmbiguous(value: string, zone: string): boolean {

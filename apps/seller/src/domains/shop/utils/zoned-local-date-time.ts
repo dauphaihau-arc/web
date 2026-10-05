@@ -88,6 +88,14 @@ export function offsetMinutesForInstant(instant: Date, timeZone: string): number
   return offsetMinutesAt(instant.getTime(), timeZone);
 }
 
+/** Formats an instant as the wall clock `YYYY-MM-DDTHH:mm` in `timeZone`. */
+export function formatLocalDateTime(instant: Date, timeZone: string): string {
+  const parts = zonedParts(instant.getTime(), timeZone);
+  const pad = (value: number) => String(value).padStart(2, '0');
+
+  return `${parts.year}-${pad(parts.month)}-${pad(parts.day)}T${pad(parts.hour)}:${pad(parts.minute)}`;
+}
+
 export function browserTimeZone(): string {
   return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
 }
@@ -124,7 +132,11 @@ function zonedParts(instantMillis: number, timeZone: string): LocalDateTimeParts
 }
 
 function offsetMinutesAt(instantMillis: number, timeZone: string): number {
-  const parts = zonedParts(instantMillis, timeZone);
+  // The wall clock is read at minute precision, so the instant is snapped to
+  // its minute first; otherwise a sub-minute remainder biases the offset by a
+  // minute around the rounding boundary.
+  const snappedMillis = Math.floor(instantMillis / 60_000) * 60_000;
+  const parts = zonedParts(snappedMillis, timeZone);
   const wallClockAsUtc = Date.UTC(
     parts.year,
     parts.month - 1,
@@ -133,7 +145,7 @@ function offsetMinutesAt(instantMillis: number, timeZone: string): number {
     parts.minute,
   );
 
-  return Math.round((wallClockAsUtc - instantMillis) / 60_000);
+  return Math.round((wallClockAsUtc - snappedMillis) / 60_000);
 }
 
 function sameParts(
