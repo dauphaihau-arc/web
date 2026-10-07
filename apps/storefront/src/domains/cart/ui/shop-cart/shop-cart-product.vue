@@ -76,7 +76,7 @@ const compareAtAmount = computed(() =>
 
       <div class="space-y-3 text-right">
         <div v-if="compareAtAmount">
-          <div class="text-primary text-xl font-medium">
+          <div class="text-xl font-medium text-[var(--state-success-text)]">
             {{ displayAmount }}
           </div>
           <div class="text-sm text-text-muted">
