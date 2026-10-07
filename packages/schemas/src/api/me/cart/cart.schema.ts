@@ -106,6 +106,7 @@ export const getCartRequestSchema = z.object({
 export const updateCartRequestSchema = z.object({
   cart_id: z.string().optional(),
   inventory_id: z.string().optional(),
+  replace_with_inventory_id: z.string().optional(),
   is_select_order: z.boolean().optional(),
   quantity: z.number().optional(),
   addition_info_temp_cart: z.object({

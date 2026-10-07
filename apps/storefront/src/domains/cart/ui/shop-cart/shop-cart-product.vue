@@ -1,20 +1,18 @@
 <script setup lang="ts">
 import ShopCartQuantityUi from './shop-cart-quantity-ui.vue'
+import ShopCartProductOptions from './shop-cart-product-options/shop-cart-product-options.vue'
 import { formatMinorCurrency } from '@arc/utils'
 import type { CartProductItem } from '~/domains/cart/api/cart.shared'
 
 const props = withDefaults(defineProps<{
   productCart: CartProductItem
+  shopItems?: CartProductItem[]
   quantityDisabled?: boolean
 }>(), {
+  shopItems: () => [],
   quantityDisabled: false,
 })
 
-const selectedOptionsLabel = computed(() =>
-  props.productCart.inventory.selected_options
-    .map(option => `${option.option_name}: ${option.value}`)
-    .join(', '),
-)
 const quantity = defineModel<number>('quantity', { default: 0 })
 
 const displayAmount = computed(() => formatMinorCurrency(
@@ -46,17 +44,15 @@ const compareAtAmount = computed(() =>
 
     <div class="flex w-full justify-between">
       <div class="space-y-2">
-        <div>
-          <h1 class="cursor-pointer text-lg font-semibold">
+        <div class="space-y-1">
+          <h1 class="text-lg font-semibold">
             {{ props.productCart.product.title }}
           </h1>
 
-          <div
-            v-if="selectedOptionsLabel"
-            class=" text-text-muted"
-          >
-            {{ selectedOptionsLabel }}
-          </div>
+          <ShopCartProductOptions
+            :product-cart="props.productCart"
+            :sibling-items="props.shopItems"
+          />
         </div>
 
         <div class="space-y-3">

@@ -23,6 +23,7 @@ const props = defineProps<{
       v-for="productCart of props.shopCart.items"
       :key="productCart.inventory.id"
       :product-cart="productCart"
+      :shop-items="props.shopCart.items"
     >
       <template #selection>
         <div class="flex flex-col justify-center">

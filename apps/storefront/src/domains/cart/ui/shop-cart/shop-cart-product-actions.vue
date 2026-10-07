@@ -25,15 +25,7 @@ const {
 </script>
 
 <template>
-  <div class="flex gap-4">
-    <UButton
-      variant="ghost"
-      :icon="ICON_NAME_BY_ALIAS['edit']"
-      color="gray"
-      @click.once="deleteProductCart()"
-    >
-      Edit
-    </UButton>
+  <div class="-ml-2 flex gap-4">
     <UButton
       variant="ghost"
       :icon="ICON_NAME_BY_ALIAS['trash']"

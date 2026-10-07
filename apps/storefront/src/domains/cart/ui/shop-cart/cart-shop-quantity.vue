@@ -4,6 +4,7 @@ import { watchDebounced } from '@vueuse/core'
 import { useCartStore } from '~/domains/cart/stores/cart.store'
 import { useUpdateCart } from '~/domains/cart/mutations/update-cart.mutation'
 import { applyPricedCartUpdate } from '~/domains/cart/utils/apply-priced-cart-update'
+import { buildCartAdjustments } from '~/domains/cart/utils/cart-adjustments'
 import type { CartProductItem } from '~/domains/cart/api/cart.shared'
 import type { GetCartResponse, UpdateCartRequest } from '~/domains/cart/api/contracts/cart.contract'
 
@@ -36,13 +37,7 @@ watchDebounced(
       quantity: tempProductQty.value,
     }
 
-    const addition_info_shop_carts = Array
-      .from(cartStore.additionInfoShopCarts)
-      .map(([keyShopId, value]) => ({
-        shop_id: keyShopId,
-        promo_codes: value?.promoCodes || [],
-      }))
-      .filter(item => item.promo_codes.length > 0)
+    const addition_info_shop_carts = buildCartAdjustments(cartStore.additionInfoShopCarts)
 
     if (addition_info_shop_carts.length > 0) {
       body.addition_info_shop_carts = addition_info_shop_carts
