@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { formatMinorCurrency } from '@arc/utils'
+import { formatMinorCurrency, formatShippingEstimateRange } from '@arc/utils'
 import type { CartShopGroup } from '~/domains/cart/api/cart.shared'
 import type { CheckoutQuoteShop } from '~/domains/me/api/order/contracts/order.contract'
 
 /**
- * Per-shop money in the checkout review, mirroring the cart's per-shop summary:
- * the merchandise total, any code saving applied to it, and the resulting shop
- * total. The basket-level Summary Order card carries the checkout breakdown.
+ * Per-shop money in the checkout review: the merchandise total, any code saving
+ * applied to it, the accepted Shipping Charge, and the resulting shop total. The
+ * accepted quote's shipping money is already net of any free-shipping waiver, so
+ * the rows reconcile: merchandise - code saving + shipping = total. Before a
+ * quote exists the cart is merchandise-only, so the charge has nothing to show.
+ * The basket-level Summary Order card carries the same breakdown for the basket.
  */
 const props = withDefaults(defineProps<{
   shopCart: CartShopGroup
@@ -41,6 +44,26 @@ const codeSavingsMinor = computed(
 )
 
 /**
+ * Accepted Shipping Charge for this shop. Present only once the server has
+ * priced the shop, so the row stays hidden while the cart is merchandise-only.
+ * The amount is net of the free-shipping waiver below.
+ */
+const shippingMinor = computed(() => props.quoteShop?.shipping_minor)
+
+/** Waived amount, carried for provenance; already deducted from `shippingMinor`. */
+const shippingDiscountMinor = computed(
+  () => props.quoteShop?.shipping_discount_minor ?? 0,
+)
+
+/**
+ * Seller's accepted Processing/Delivery window for this shop, printed from the
+ * quote snapshot. Empty until the server has priced the shop.
+ */
+const estimateLabel = computed(
+  () => formatShippingEstimateRange(props.quoteShop?.shipping?.estimate),
+)
+
+/**
  * Accepted quote total when the server has priced this shop, the cart's own
  * merchandise total net of its code saving before that. The cart is
  * merchandise-only, so it never implies a charge the server has not accepted.
@@ -70,6 +93,35 @@ const totalMinor = computed(
       </div>
       <UDivider class="my-3" />
     </template>
+    <div
+      v-if="typeof shippingMinor === 'number'"
+      class="flex justify-between"
+    >
+      <div class="title">
+        <div>Shipping</div>
+        <div v-if="shippingDiscountMinor > 0">
+          Shipping savings
+        </div>
+      </div>
+      <div class="price">
+        <div>
+          {{ formatMinorCurrency(shippingMinor, displayCurrency) }}
+        </div>
+        <div v-if="shippingDiscountMinor > 0">
+          {{ formatMinorCurrency(shippingDiscountMinor, displayCurrency) }}
+        </div>
+      </div>
+    </div>
+    <div
+      v-if="estimateLabel"
+      class="mt-1 text-sm text-text-muted"
+    >
+      Estimated delivery: {{ estimateLabel }}
+    </div>
+    <UDivider
+      v-if="typeof shippingMinor === 'number'"
+      class="my-3"
+    />
     <div class="flex justify-between">
       <div class="font-semibold">
         Total

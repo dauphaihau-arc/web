@@ -60,20 +60,32 @@ function render(quote?: CheckoutQuoteResponse, summaryOrder = buildSummary()) {
 }
 
 describe('summary order card', () => {
-  it('shows the accepted basket merchandise, code saving, and total only', () => {
+  it('shows the accepted basket merchandise, code saving, shipping, and total', () => {
     const text = render(buildQuote({ shippingMinor: 1400 })).text();
 
     expect(text).toContain('2 products');
     expect(text).toContain('Product(s) total');
     expect(text).toContain('Code savings');
+    expect(text).toContain('Shipping');
     expect(text).toContain(formatMinorCurrency(5000, 'USD'));
     expect(text).toContain(formatMinorCurrency(500, 'USD'));
+    expect(text).toContain(formatMinorCurrency(1400, 'USD'));
+    // Merchandise - code saving + shipping = accepted total.
     expect(text).toContain(formatMinorCurrency(5900, 'USD'));
-    // Reduced to the cart's fields: no sale, charge, or shipping breakdown.
+    // No sale breakdown or pending placeholder in the review.
     expect(text).not.toContain('Sale savings');
+    expect(text).not.toContain('Shipping savings');
     expect(text).not.toContain('Subtotal');
-    expect(text).not.toContain('Shipping');
     expect(text).not.toContain('Calculated at checkout');
+  });
+
+  it('sums the per-shop waived amounts into one shipping savings row', () => {
+    const quote = buildQuote();
+    quote.shops[0]!.shipping_discount_minor = 250;
+    const text = render(quote).text();
+
+    expect(text).toContain('Shipping savings');
+    expect(text).toContain(formatMinorCurrency(250, 'USD'));
   });
 
   it('shows only the aggregate total when the basket carries no code saving', () => {

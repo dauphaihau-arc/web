@@ -51,7 +51,7 @@ const itemRows = computed(() => (shopCart.value?.items ?? []).map(item => ({
     <OrderItemsTable :rows="itemRows" />
 
     <template #footer>
-      <ShopCartFooter>
+      <ShopCartFooter summary-class="w-2/5">
         <template #promo-codes>
           <CheckoutNowPromoCodes
             :shop-id="shopCart.shop.id"

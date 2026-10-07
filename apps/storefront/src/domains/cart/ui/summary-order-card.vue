@@ -7,7 +7,9 @@ import type { CheckoutQuoteResponse } from '~/domains/me/api/order/contracts/ord
  * The basket-level mirror of the per-shop summaries: the merchandise breakdown
  * appears only when the basket carries code savings, otherwise only the total
  * does. An accepted quote replaces the cart's merchandise-only figures with the
- * money the server accepted.
+ * money the server accepted. The accepted shipping money is already net of any
+ * free-shipping waiver, so the rows reconcile:
+ * merchandise - code saving + shipping = total.
  */
 const props = withDefaults(defineProps<{
   loading: boolean
@@ -28,6 +30,26 @@ const merchandiseSubtotalMinor = computed(
 )
 const discountMinor = computed(() => props.quote?.discount_minor ?? props.summaryOrder?.discount_minor ?? 0)
 const totalMinor = computed(() => props.quote?.total_minor ?? props.summaryOrder?.total_minor ?? 0)
+
+/**
+ * Accepted basket Shipping Charge (the sum of the per-shop charges). Present
+ * only once the server has quoted the basket, so the row stays hidden while the
+ * cart is merchandise-only. The amount is net of the waiver below.
+ */
+const shippingMinor = computed(() => props.quote?.shipping_minor)
+
+/**
+ * Waived basket amount, carried for provenance; already deducted from
+ * `shippingMinor`. The basket response carries no aggregate, so the accepted
+ * per-shop provenance is summed.
+ */
+const shippingDiscountMinor = computed(
+  () => props.quote?.shops.reduce(
+    (sum, shop) => sum + (shop.shipping_discount_minor ?? 0),
+    0,
+  ) ?? 0,
+)
+
 const selectedQuantity = computed(() => props.summaryOrder?.total_selected_quantity ?? 0)
 </script>
 
@@ -64,6 +86,29 @@ const selectedQuantity = computed(() => props.summaryOrder?.total_selected_quant
           </div>
           <UDivider class="my-3" />
         </template>
+        <div
+          v-if="typeof shippingMinor === 'number'"
+          class="flex justify-between"
+        >
+          <div class="title">
+            <div>Shipping</div>
+            <div v-if="shippingDiscountMinor > 0">
+              Shipping savings
+            </div>
+          </div>
+          <div class="price">
+            <div>
+              {{ formatMinorCurrency(shippingMinor, currency) }}
+            </div>
+            <div v-if="shippingDiscountMinor > 0">
+              {{ formatMinorCurrency(shippingDiscountMinor, currency) }}
+            </div>
+          </div>
+        </div>
+        <UDivider
+          v-if="typeof shippingMinor === 'number'"
+          class="my-3"
+        />
         <div class="flex justify-between gap-3">
           <div class="text-lg font-medium">
             Total ({{ selectedQuantity }} {{ selectedQuantity > 1 ? 'products' : 'product' }})
