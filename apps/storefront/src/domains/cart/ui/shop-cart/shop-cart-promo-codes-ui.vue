@@ -160,24 +160,29 @@ function accept() {
           </div>
 
           <div class="mt-4 flex min-h-32 flex-col justify-center">
-            <div
+            <Empty
               v-if="isPendingPromoCodes"
-              class="py-4 text-center text-xs text-text-muted"
-            >
-              Loading promo codes...
-            </div>
-            <div
+              loading
+              variant="naked"
+              size="lg"
+              description="Loading promo codes..."
+            />
+            <Empty
               v-else-if="isErrorPromoCodes"
-              class="py-4 text-center text-xs text-state-danger-text"
-            >
-              Could not load promo codes for this shop.
-            </div>
-            <div
+              variant="naked"
+              size="lg"
+              :icon="ICON_NAME_BY_ALIAS['warning']"
+              description="Could not load promo codes for this shop."
+            />
+            <Empty
               v-else-if="promoCodes.length === 0"
-              class="py-4 text-center text-xs text-text-muted"
-            >
-              No promo codes available for this shop.
-            </div>
+              variant="naked"
+              size="lg"
+              class="-mx-4"
+              :icon="ICON_NAME_BY_ALIAS['ticketPercent']"
+              title="No promo codes available for this shop."
+              description="Enter an applicable promo code in the field above."
+            />
             <div
               v-else
               class="scrollbar-subtle -mr-3 max-h-64 space-y-2 overflow-y-auto pr-2"

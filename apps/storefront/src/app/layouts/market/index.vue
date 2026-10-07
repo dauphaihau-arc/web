@@ -59,7 +59,10 @@ watch(() => route.path, () => {
         <slot />
       </div>
 
-      <div v-else>
+      <div
+        v-else
+        class="min-h-[60vh]"
+      >
         <slot />
       </div>
     </div>

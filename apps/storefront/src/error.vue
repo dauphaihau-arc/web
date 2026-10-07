@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import { routePaths } from '~/shared/navigation/routes'
 
 defineOptions({
@@ -15,17 +16,9 @@ const { error } = defineProps<{
   error: IError
 }>()
 
-const errorCode = computed(() => (
-  !(error instanceof Error) || !error
-    ? 500
-    : error.statusCode
-))
+const errorCode = computed(() => error?.statusCode || 500)
 
-const errorMessage = computed(() => (
-  !(error instanceof Error) || !error
-    ? 'Something went wrong'
-    : error.statusMessage
-))
+const errorMessage = computed(() => error?.statusMessage || 'Something went wrong')
 
 const handleError = () => {
   clearError({ redirect: routePaths.home })
@@ -37,21 +30,21 @@ useHead({
 </script>
 
 <template>
-  <div class="mx-auto grid h-screen max-w-[350px] place-content-center text-center">
-    <div class="mb-8">
-      <h1 class="text-primary mb-3 text-xl font-medium">
-        {{ errorCode }}
-      </h1>
-      <p class="text-2xl font-bold">
-        {{ errorMessage }}
-      </p>
-    </div>
-    <UButton
-      size="xl"
-      block
-      @click="handleError"
-    >
-      Back to home
-    </UButton>
-  </div>
+  <Empty
+    variant="naked"
+    size="xl"
+    :icon="ICON_NAME_BY_ALIAS['warning']"
+    :title="errorMessage"
+    :description="`Error code: ${errorCode}`"
+    container-class="h-screen"
+  >
+    <template #actions>
+      <UButton
+        size="xl"
+        @click="handleError"
+      >
+        Back to home
+      </UButton>
+    </template>
+  </Empty>
 </template>

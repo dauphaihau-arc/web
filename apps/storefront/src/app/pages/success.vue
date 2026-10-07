@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
-import { isBackendWakeUpError } from '@arc/lib'
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
 import { useGetCheckoutOrderShopsByCheckoutSession } from '~/domains/checkout/queries/order-shops.query'
@@ -72,10 +71,7 @@ const orderShops = computed(() => {
   return []
 })
 
-const isBackendWakingUp = computed(() => (
-  !!errorGetOrderShopsByCheckoutSession.value
-  && isBackendWakeUpError(errorGetOrderShopsByCheckoutSession.value)
-))
+const isUnknownError = computed(() => !!errorGetOrderShopsByCheckoutSession.value)
 
 onUnmounted(() => {
   if (cartStore.orderShops) {
@@ -85,23 +81,22 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div
+  <Empty
     v-if="isLoadingGetOrderShopsByCheckoutSession && cartStore.orderShops.length === 0"
-    class="grid h-[80vh] w-full place-content-center"
-  >
-    <LoadingSvg :child-class="'!w-12 !h-12'" />
-  </div>
-  <div
-    v-else-if="isBackendWakingUp"
-    class="grid h-[80vh] w-full place-content-center text-center"
-  >
-    <div class="space-y-3">
-      <LoadingSvg :child-class="'!w-12 !h-12'" />
-      <p class="text-sm text-text-subtle">
-        The server is waking up. Please wait a moment.
-      </p>
-    </div>
-  </div>
+    loading
+    size="xl"
+    variant="naked"
+    container-class="h-[80vh] w-full"
+  />
+  <Empty
+    v-else-if="isUnknownError"
+    variant="naked"
+    size="xl"
+    :icon="ICON_NAME_BY_ALIAS['warning']"
+    title="Something went wrong"
+    description="We couldn't load your order details. Please try again."
+    container-class="h-[80vh] w-full"
+  />
   <div
     v-else-if="orderShops.length > 0"
     class="mt-20 grid place-content-center text-center"

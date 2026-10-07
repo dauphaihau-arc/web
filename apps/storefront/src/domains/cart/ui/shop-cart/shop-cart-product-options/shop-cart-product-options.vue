@@ -73,24 +73,26 @@ const {
             :description="panelError"
           />
 
-          <div
+          <Empty
             v-if="isPendingProduct"
-            class="py-4 text-center text-xs text-text-muted"
-          >
-            Loading options...
-          </div>
-          <div
+            loading
+            variant="naked"
+            description="Loading options..."
+          />
+          <Empty
             v-else-if="isErrorProduct"
-            class="py-4 text-center text-xs text-state-danger-text"
-          >
-            Could not load product options.
-          </div>
-          <div
+            variant="naked"
+            size="sm"
+            :icon="ICON_NAME_BY_ALIAS['warning']"
+            description="Could not load product options."
+          />
+          <Empty
             v-else-if="optionMode === 'none'"
-            class="py-4 text-center text-xs text-text-muted"
-          >
-            This product has no options to edit.
-          </div>
+            variant="naked"
+            size="sm"
+            :icon="ICON_NAME_BY_ALIAS['product']"
+            description="This product has no options to edit."
+          />
           <div
             v-else
             class="space-y-4"

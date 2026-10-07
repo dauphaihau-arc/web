@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import CreateOrderBtn from './_components/create-order-btn.vue'
 import ReviewShippingAndPayment from '~/domains/checkout/ui/review-shipping-and-payment.vue'
 import ShopCart from './_components/shop-cart.vue'
@@ -92,12 +91,14 @@ watch(
 </script>
 
 <template>
-  <div
+  <Empty
     v-if="isPendingGetCart"
-    class="grid h-[80vh] w-full place-content-center"
-  >
-    <LoadingSvg :child-class="'!w-12 !h-12'" />
-  </div>
+    loading
+    size="xl"
+    variant="naked"
+    description="Loading your checkout..."
+    container-class="h-[80vh] w-full"
+  />
 
   <div
     v-else-if="dataGetCart?.cart && dataGetCart.cart.shop_groups?.length > 0"

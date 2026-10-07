@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import ShopCart from './_components/shop-cart.vue'
 import SummaryOrder from './_components/summary-order.vue'
 import { useCartStore } from '~/domains/cart/stores/cart.store'
@@ -30,12 +30,14 @@ if (import.meta.client) {
 
 <template>
   <div class="mt-2 py-12">
-    <div
+    <Empty
       v-if="isPendingGetCart"
-      class="grid h-[80vh] w-full place-content-center"
-    >
-      <LoadingSvg :child-class="'!w-12 !h-12'" />
-    </div>
+      loading
+      size="xl"
+      variant="naked"
+      description="Loading your cart..."
+      container-class="h-[80vh] w-full"
+    />
     <div v-else-if="dataGetCart?.cart && dataGetCart.cart.shop_groups?.length > 0">
       <div>
         <h1 class="mb-4 text-2xl font-medium">
@@ -59,13 +61,13 @@ if (import.meta.client) {
         </div>
       </div>
     </div>
-    <div
+    <Empty
       v-else
-      class="text-center"
-    >
-      <h3 class="text-3xl text-text-strong">
-        Your cart is empty.
-      </h3>
-    </div>
+      variant="naked"
+      size="2xl"
+      :icon="ICON_NAME_BY_ALIAS['cart']"
+      title="Your cart is empty."
+      container-class="h-[80vh] w-full"
+    />
   </div>
 </template>
