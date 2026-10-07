@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue'
+import { getStatusCode } from '@arc/lib'
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import { routes } from '~/shared/navigation/routes'
@@ -15,17 +17,21 @@ const UpdateProductForm = defineAsyncComponent({
 const route = useRoute()
 const productId = route.params.id as string
 
-const {
-  isPending,
-} = useShopGetDetailProduct(productId, {
-  onResponseError: () => {
-    throw showError({
-      statusCode: 404,
-      statusMessage: 'Page Not Found',
-      fatal: true,
+const { isPending, isError, error } = useShopGetDetailProduct(productId)
+
+const isNotFound = computed(() => isError.value && getStatusCode(error.value) === 404)
+
+const errorState = computed(() => isNotFound.value
+  ? {
+      icon: ICON_NAME_BY_ALIAS['product'],
+      title: 'Product not found',
+      description: 'This product may have been deleted, or the link is no longer valid.',
+    }
+  : {
+      icon: ICON_NAME_BY_ALIAS['warning'],
+      title: 'Could not load product',
+      description: 'Something went wrong while loading this product. Please try again.',
     })
-  },
-})
 </script>
 
 <template>
@@ -38,12 +44,24 @@ const {
     </template>
     <template #content>
       <div class="mb-20">
-        <div
+        <Empty
           v-if="isPending"
-          class="grid h-[80vh] w-full place-content-center"
-        >
-          <LoadingSvg :child-class="'!w-12 !h-12'" />
-        </div>
+          loading
+          size="xl"
+          variant="naked"
+          description="Loading product..."
+          container-class="min-h-[80vh]"
+        />
+        <Empty
+          v-else-if="isError"
+          v-bind="errorState"
+          size="xl"
+          variant="naked"
+          container-class="min-h-[80vh]"
+          :actions="[
+            { label: 'Back to products', to: routes.products() },
+          ]"
+        />
         <UpdateProductForm v-else />
       </div>
     </template>

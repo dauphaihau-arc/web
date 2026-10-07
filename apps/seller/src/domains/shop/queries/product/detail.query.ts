@@ -1,4 +1,5 @@
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
+import { getStatusCode } from '@arc/lib';
 import { resolveMyShopId } from '../../utils/resolve-my-shop-id';
 import { shopProductApi } from '~/domains/shop/api/product/product.api';
 
@@ -15,5 +16,9 @@ export function useShopGetDetailProduct(
       const shopId = await resolveMyShopId(queryClient);
       return shopProductApi.detail(shopId, id, options);
     },
+    // A missing product never starts existing on retry: skip it so the not-found
+    // state shows immediately, and keep retries for transient failures only.
+    retry: (failureCount, error) =>
+      getStatusCode(error) !== 404 && failureCount < 3,
   });
 }

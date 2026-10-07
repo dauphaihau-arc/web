@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
+import { getStatusCode } from '@arc/lib'
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import Customer from './customer.vue'
 import OrderDetails from './order-details.vue'
 import OrderSummary from './order-summary.vue'
@@ -15,24 +16,54 @@ const props = defineProps<{
 const {
   data,
   isPending,
+  isError,
+  error,
 } = useShopGetOrderDetail(props.orderId)
 
 const config = useRuntimeConfig()
 const assetHost = computed(() => config.public.assetHost?.replace(/\/+$/, '') ?? '')
 const order = computed(() => data.value?.order)
 const timeline = computed(() => data.value?.timeline ?? [])
+
+const isNotFound = computed(() => isError.value && getStatusCode(error.value) === 404)
+
+const errorState = computed(() => {
+  const isMissing = isNotFound.value || (!isError.value && !order.value)
+
+  return isMissing
+    ? {
+        icon: ICON_NAME_BY_ALIAS['orders'],
+        title: 'Order not found',
+        description: 'This order may have been deleted, or the link is no longer valid.',
+      }
+    : {
+        icon: ICON_NAME_BY_ALIAS['warning'],
+        title: 'Could not load order',
+        description: 'Something went wrong while loading this order. Please try again.',
+      }
+})
 </script>
 
 <template>
-  <div
+  <Empty
     v-if="isPending"
-    class="grid h-[70vh] w-full place-content-center"
-  >
-    <LoadingSvg :child-class="'!w-12 !h-12'" />
-  </div>
+    loading
+    variant="naked"
+    size="xl"
+    description="Loading order..."
+    container-class="min-h-[70vh]"
+  />
+
+  <Empty
+    v-else-if="isError || !order"
+    v-bind="errorState"
+    variant="naked"
+    size="xl"
+    container-class="min-h-[70vh]"
+  />
 
   <div
-    v-else-if="order"
+    v-else
     class="grid grid-cols-12 gap-6"
   >
     <div class="col-span-12 space-y-6 xl:col-span-9">
@@ -52,12 +83,5 @@ const timeline = computed(() => data.value?.timeline ?? [])
       <Customer :order="order" />
       <ShippingAddress :order="order" />
     </div>
-  </div>
-
-  <div
-    v-else
-    class="rounded-md border border-border-subtle bg-surface p-6 text-sm text-text-muted"
-  >
-    Order not found.
   </div>
 </template>
