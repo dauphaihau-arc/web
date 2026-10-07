@@ -1,7 +1,48 @@
 import { nextTick, ref } from 'vue';
-import { describe, expect, it } from 'vitest';
+import { mockNuxtImport } from '@nuxt/test-utils/runtime';
+import {
+  beforeEach, describe, expect, it, vi,
+} from 'vitest';
 import { useAddToCartForm } from './use-add-to-cart-form';
+import type { AddProductToCartRequest } from '~/domains/cart/api/contracts/cart.contract';
 import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract';
+
+const addToCartFixture = vi.hoisted(() => ({
+  calls: [] as AddProductToCartRequest[],
+  response: undefined as unknown,
+}));
+const navigateToFixture = vi.hoisted(() => vi.fn());
+
+// vi.mock factories are hoisted above imports, so vue must load dynamically.
+vi.mock('~/domains/cart/mutations/add-product.mutation', async () => {
+  const { ref: createRef } = await import('vue');
+
+  return {
+    useAddProductToCart: () => ({
+      mutateAsync: async (body: AddProductToCartRequest) => {
+        addToCartFixture.calls.push(body);
+
+        return addToCartFixture.response;
+      },
+      isPending: createRef(false),
+    }),
+  };
+});
+
+mockNuxtImport('useToast', () => () => ({ add: vi.fn() }));
+mockNuxtImport('useQueryClient', () => () => ({ setQueryData: vi.fn() }));
+mockNuxtImport('navigateTo', () => navigateToFixture);
+
+const EMPTY_SUMMARY = {
+  currency: 'USD',
+  subtotal_minor: 0,
+  discount_minor: 0,
+  subtotal_after_discount_minor: 0,
+  shipping_minor: 0,
+  total_minor: 0,
+  total_selected_quantity: 0,
+  total_quantity: 0,
+};
 
 type AddToCartProduct = Pick<
   GetDetailProductBySlugResponse,
@@ -119,5 +160,62 @@ describe('useAddToCartForm', () => {
     });
 
     expect(form.subVariantOptions.value.map(option => option.value)).toEqual(['S', 'M']);
+  });
+
+  describe('submit', () => {
+    beforeEach(() => {
+      addToCartFixture.calls = [];
+      addToCartFixture.response = { cart: { id: 'cart-1' }, summary: EMPTY_SUMMARY };
+      navigateToFixture.mockClear();
+    });
+
+    it('posts the resolved inventory and quantity for an add to cart', async () => {
+      const form = useAddToCartForm({
+        product: ref(product),
+        inventorySelectedModel: ref(),
+      });
+
+      form.stateSubmit.variantOption = 'Red';
+      form.stateSubmit.variantSubOption = 'S';
+      await nextTick();
+      await nextTick();
+
+      await form.submit({ quantity: 2, isBuyNow: false });
+
+      expect(addToCartFixture.calls).toEqual([
+        { inventory_id: 'inventory-red-small', quantity: 2 },
+      ]);
+      expect(navigateToFixture).not.toHaveBeenCalled();
+    });
+
+    it('marks the cart as temporary for Buy Now and hands off to checkout', async () => {
+      const form = useAddToCartForm({
+        product: ref(product),
+        inventorySelectedModel: ref(),
+      });
+
+      form.stateSubmit.variantOption = 'Blue';
+      form.stateSubmit.variantSubOption = 'M';
+      await nextTick();
+      await nextTick();
+
+      await form.submit({ quantity: 1, isBuyNow: true });
+
+      expect(addToCartFixture.calls).toEqual([
+        { inventory_id: 'inventory-blue-medium', quantity: 1, is_temp: true },
+      ]);
+      expect(navigateToFixture).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not post when the selection has no available inventory', async () => {
+      const form = useAddToCartForm({
+        product: ref(product),
+        inventorySelectedModel: ref(),
+      });
+
+      await form.submit({ quantity: 1, isBuyNow: false });
+
+      expect(addToCartFixture.calls).toEqual([]);
+    });
   });
 });

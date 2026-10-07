@@ -1,7 +1,19 @@
+import { FetchError } from 'ofetch';
 import { computed, reactive, watch } from 'vue';
 import type { FormError } from '#ui/types';
+import type { AddProductToCartRequest, AddProductToCartResponse } from '~/domains/cart/api/contracts/cart.contract';
+import { useAddProductToCart } from '~/domains/cart/mutations/add-product.mutation';
+import { applyPricedCartUpdate } from '~/domains/cart/utils/apply-priced-cart-update';
+import { getAddToCartFailureCopy, resolveAddToCartFailure } from '~/domains/cart/utils/cart-error';
 import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract';
-import { getProductOptionMode } from '~/domains/product/utils/product-options';
+import { getBackendErrorMessage } from '~/shared/utils/backend-error';
+import { routes } from '~/shared/navigation/routes';
+import { toastCustom } from '~/shared/config/toast';
+import {
+  buildVariantSelectOptions,
+  getProductOptionMode,
+  resolveInventoryBySelection,
+} from '~/domains/product/utils/product-options';
 
 interface StateSubmit {
   quantity: number
@@ -14,14 +26,6 @@ type AddToCartProduct = Pick<
   GetDetailProductBySlugResponse,
   'inventory' | 'options' | 'variants'
 >;
-type ProductOption = AddToCartProduct['options'][number];
-type ProductOptionValue = ProductOption['values'][number];
-
-interface VariantSelectOption {
-  label: string
-  value: string
-  disabled: boolean
-}
 
 interface UseAddToCartFormOptions {
   product: Ref<AddToCartProduct>
@@ -32,6 +36,14 @@ export function useAddToCartForm({
   product,
   inventorySelectedModel,
 }: UseAddToCartFormOptions) {
+  const queryClient = useQueryClient();
+  const toast = useToast();
+
+  const {
+    mutateAsync: addProductToCart,
+    isPending: isPendingAddProductToCart,
+  } = useAddProductToCart({ showErrorToast: false });
+
   const stateSubmit = reactive<StateSubmit>({
     quantity: 1,
     variantOption: '',
@@ -40,64 +52,20 @@ export function useAddToCartForm({
 
   const optionMode = computed(() => getProductOptionMode(product.value));
 
-  function hasInventoryStock(variantId: string) {
-    return product.value.inventory.some(inventory =>
-      inventory.product_variant_id === variantId && inventory.stock > 0,
-    );
-  }
-
-  function variantIncludesSelection(variant: AddToCartProduct['variants'][number], option: ProductOption, value: ProductOptionValue) {
-    return variant.selections.some(selection =>
-      selection.option_id === option.id && selection.value_id === value.id,
-    );
-  }
-
-  function hasAvailableVariant(option: ProductOption, value: ProductOptionValue, pairedOption: ProductOption | undefined, pairedValueName: string) {
-    const pairedValue = pairedOption?.values.find(item => item.value === pairedValueName);
-
-    return product.value.variants.some((variant) => {
-      if (!variantIncludesSelection(variant, option, value) || !hasInventoryStock(variant.id)) {
-        return false;
-      }
-
-      if (!pairedOption || !pairedValue) {
-        return true;
-      }
-
-      return variantIncludesSelection(variant, pairedOption, pairedValue);
-    });
-  }
-
-  function buildSelectOptions(option: ProductOption | undefined, pairedOption: ProductOption | undefined, pairedValueName: string): VariantSelectOption[] {
-    if (!option) {
-      return [];
-    }
-
-    return option.values.map((value) => {
-      const disabled = !hasAvailableVariant(option, value, pairedOption, pairedValueName);
-
-      return {
-        label: disabled ? `${value.value} (Unavailable)` : value.value,
-        value: value.value,
-        disabled,
-      };
-    });
-  }
-
-  const variantOptions = computed(() => {
-    return buildSelectOptions(
-      product.value.options[0],
-      optionMode.value === 'combine' ? product.value.options[1] : undefined,
-      stateSubmit.variantSubOption,
-    );
-  });
+  const variantOptions = computed(() => buildVariantSelectOptions(
+    product.value,
+    product.value.options[0],
+    optionMode.value === 'combine' ? product.value.options[1] : undefined,
+    stateSubmit.variantSubOption,
+  ));
 
   const subVariantOptions = computed(() => {
     if (optionMode.value !== 'combine') {
       return [];
     }
 
-    return buildSelectOptions(
+    return buildVariantSelectOptions(
+      product.value,
       product.value.options[1],
       product.value.options[0],
       stateSubmit.variantOption,
@@ -138,25 +106,10 @@ export function useAddToCartForm({
       return product.value.inventory[0];
     }
 
-    const primaryOption = product.value.options[0];
-    const secondaryOption = product.value.options[1];
-    const selectedPrimaryValue = primaryOption?.values.find(value => value.value === stateSubmit.variantOption);
-    const selectedSecondaryValue = secondaryOption?.values.find(value => value.value === stateSubmit.variantSubOption);
-
-    return product.value.inventory.find((inventory) => {
-      const variant = product.value.variants.find(item => item.id === inventory.product_variant_id);
-      if (!variant || !primaryOption || !selectedPrimaryValue) return false;
-
-      const hasPrimary = variant.selections.some(selection =>
-        selection.option_id === primaryOption.id && selection.value_id === selectedPrimaryValue.id,
-      );
-      const hasSecondary = optionMode.value !== 'combine'
-        || Boolean(secondaryOption && selectedSecondaryValue && variant.selections.some(selection =>
-          selection.option_id === secondaryOption.id && selection.value_id === selectedSecondaryValue.id,
-        ));
-
-      return hasPrimary && hasSecondary;
-    });
+    return resolveInventoryBySelection(product.value, [
+      stateSubmit.variantOption,
+      stateSubmit.variantSubOption,
+    ]);
   });
 
   const maxQuantity = computed(() => {
@@ -269,15 +222,105 @@ export function useAddToCartForm({
     },
   );
 
+  /**
+   * The form's single write path. Buy Now creates a temp cart and hands off to
+   * checkout; otherwise the product joins the active cart, whose cached order is
+   * preserved so the added line lands last instead of jumping to the top.
+   */
+  async function submit(input: { quantity: number, isBuyNow: boolean }) {
+    const inventory = resolvedInventorySelected.value;
+
+    if (!inventory?.id) {
+      return;
+    }
+
+    if (inventory.stock <= 0) {
+      toast.add({
+        ...toastCustom.error,
+        title: 'Out of stock',
+      });
+      return;
+    }
+
+    const body: AddProductToCartRequest = {
+      inventory_id: inventory.id,
+      quantity: input.quantity,
+    };
+
+    try {
+      if (input.isBuyNow) {
+        body.is_temp = true;
+        const response = await addProductToCart(body);
+
+        if (response.cart === null || !response.cart?.id) {
+          toast.add({
+            ...toastCustom.error,
+            title: 'Unable to start checkout',
+          });
+          return;
+        }
+
+        queryClient.setQueryData<AddProductToCartResponse>(
+          ['get-cart', response.cart.id],
+          oldData => applyPricedCartUpdate(oldData, response) ?? response,
+        );
+        // eslint-disable-next-line id-length -- `c` is the checkout route's cart param.
+        navigateTo(routes.checkout({ c: response.cart.id }));
+        return;
+      }
+
+      const response = await addProductToCart(body);
+
+      if (response.cart === null) {
+        toast.add({
+          ...toastCustom.error,
+          title: 'Add product to cart failed',
+        });
+        return;
+      }
+
+      queryClient.setQueryData<AddProductToCartResponse>(
+        ['get-cart', 'my-cart'],
+        oldData => applyPricedCartUpdate(oldData, response) ?? response,
+      );
+      toast.add({
+        ...toastCustom.success,
+        title: 'Added to cart',
+      });
+    }
+    catch (error) {
+      const failure = resolveAddToCartFailure(error);
+      const failureCopy = getAddToCartFailureCopy(failure, { isBuyNow: input.isBuyNow });
+      const backendMessage = getBackendErrorMessage(error);
+
+      toast.add({
+        ...toastCustom.error,
+        title: failureCopy.title,
+        description: failureCopy.description ??
+          (error instanceof FetchError && !backendMessage
+            ? `Request failed with status ${error.status ?? 'unknown'}`
+            : undefined),
+        ...(failure === 'unknown' && backendMessage
+          ? { title: backendMessage }
+          : {}),
+        ...(error instanceof FetchError && !backendMessage && failure === 'unknown'
+          ? { description: `Request failed with status ${error.status ?? 'unknown'}` }
+          : {}),
+      });
+    }
+  }
+
   return {
     decreaseQty,
     increaseQty,
     isOutOfStock,
+    isPendingAddProductToCart,
     maxQuantity,
     resolvedInventorySelected,
     stateSubmit,
     subVariantOptions,
     optionMode,
+    submit,
     validateForm,
     variantOptions,
   };
