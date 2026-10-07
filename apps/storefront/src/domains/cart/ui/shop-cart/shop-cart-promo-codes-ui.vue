@@ -90,7 +90,7 @@ function accept() {
         variant="ghost"
         :icon="ICON_NAME_BY_ALIAS['ticket']"
         color="gray"
-        :class="['mb-2 w-fit', open && 'bg-surface-hover text-text-strong']"
+        :class="['w-fit', open && 'bg-surface-hover text-text-strong']"
         :disabled="props.disabled"
       >
         Apply shop promo codes
@@ -259,7 +259,7 @@ function accept() {
 
     <div
       v-if="props.codes.length > 0"
-      class="flex gap-3"
+      class="mt-2 flex gap-3"
     >
       <div
         v-for="appliedCode of props.codes"
