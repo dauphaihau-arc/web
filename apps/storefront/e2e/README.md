@@ -23,7 +23,6 @@ pnpm e2e:ui
 - `auth/login.spec.ts`
 - `checkout/redirect.spec.ts`
 - `guest-orders/lookup.spec.ts`
-- `notifications/read-all.spec.ts`
 - `preferences/currency-product-price.spec.ts`
 
 ## Next flows worth promoting to stronger e2e coverage

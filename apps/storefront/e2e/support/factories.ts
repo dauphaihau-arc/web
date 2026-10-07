@@ -37,17 +37,3 @@ export function createUser(overrides: Partial<E2EUser> = {}): E2EUser {
     ...overrides,
   };
 }
-
-export function createNotification(overrides: Partial<E2ENotification> = {}): E2ENotification {
-  return {
-    id: 'notification-1',
-    title: 'Order update',
-    body: 'Your order status changed.',
-    created_at: '2026-06-22T10:00:00.000Z',
-    read_at: null,
-    data: {
-      orderId: 'order-1001',
-    },
-    ...overrides,
-  };
-}

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
+import { ICON_NAME_BY_ALIAS } from '../../foundation/app-icon.constants'
 
 interface NotificationPopoverItem {
   id: string
@@ -26,7 +27,6 @@ const props = withDefaults(defineProps<{
   activeFilter?: string
   emptyText?: string
   showUnreadCount?: boolean
-  viewAllLabel?: string
 }>(), {
   loading: false,
   error: false,
@@ -36,12 +36,10 @@ const props = withDefaults(defineProps<{
   activeFilter: 'all',
   emptyText: 'No notifications yet.',
   showUnreadCount: true,
-  viewAllLabel: 'View all',
 })
 
 const emit = defineEmits<{
   markAll: []
-  viewAll: []
   itemClick: [notification: NotificationPopoverItem]
   filterChange: [value: string]
 }>()
@@ -96,16 +94,8 @@ function handleFilterChange(index: number) {
 <template>
   <div class="flex max-h-[min(32rem,calc(100vh-5rem))] w-[25rem] max-w-[calc(100vw-2rem)] flex-col py-3">
     <div class="mb-3 flex items-center justify-between gap-3 px-3">
-      <div>
-        <div class="text-sm font-semibold">
-          Notifications
-        </div>
-        <div
-          v-if="showUnreadCount"
-          class="text-xs text-text-muted"
-        >
-          {{ unreadCount }} unread
-        </div>
+      <div class="text-sm font-semibold">
+        Notifications
       </div>
 
       <UButton
@@ -140,28 +130,33 @@ function handleFilterChange(index: number) {
       @change="handleFilterChange"
     />
 
-    <div class="scrollbar-subtle min-h-0 flex-1 overflow-y-auto overscroll-contain border-y">
-      <AppStateBlock
+    <div class="scrollbar-subtle flex min-h-60 flex-1 flex-col overflow-y-auto overscroll-contain">
+      <Empty
         v-if="loading"
-        class="border-0 bg-transparent px-0 py-6 text-text-muted shadow-none"
-      >
-        Loading notifications...
-      </AppStateBlock>
+        loading
+        variant="naked"
+        size="sm"
+        description="Loading notifications..."
+        container-class="flex-1"
+      />
 
-      <AppStateBlock
+      <Empty
         v-else-if="error"
-        state="danger"
-        class="border-0 bg-transparent px-0 py-6 shadow-none"
-      >
-        Failed to load notifications.
-      </AppStateBlock>
+        variant="naked"
+        size="sm"
+        :icon="ICON_NAME_BY_ALIAS['warning']"
+        description="Failed to load notifications."
+        container-class="flex-1"
+      />
 
-      <AppStateBlock
+      <Empty
         v-else-if="notifications.length === 0"
-        class="border-0 bg-transparent px-0 py-6 text-text-muted shadow-none"
-      >
-        {{ emptyText }}
-      </AppStateBlock>
+        variant="naked"
+        size="sm"
+        :icon="ICON_NAME_BY_ALIAS['bell']"
+        :description="emptyText"
+        container-class="flex-1"
+      />
 
       <div
         v-else
@@ -190,16 +185,6 @@ function handleFilterChange(index: number) {
           </div>
         </button>
       </div>
-    </div>
-
-    <div class="mt-3 flex justify-end px-3">
-      <UButton
-        variant="ghost"
-        size="xs"
-        @click="emit('viewAll')"
-      >
-        {{ viewAllLabel }}
-      </UButton>
     </div>
   </div>
 </template>

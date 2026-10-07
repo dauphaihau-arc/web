@@ -44,11 +44,6 @@ async function handleMarkAll(close: () => void) {
   await markAllAsRead()
   close()
 }
-
-function handleViewAll(close: () => void) {
-  close()
-  navigateTo(routes.accountNotifications())
-}
 </script>
 
 <template>
@@ -61,10 +56,8 @@ function handleViewAll(close: () => void) {
     :is-marking-all="isMarkingAll"
     :is-marking-one="isMarkingOne"
     empty-text="No notifications yet."
-    view-all-label="View all"
     tooltip-text="Notifications"
     @mark-all="handleMarkAll"
     @item-click="handleNotificationClick"
-    @view-all="handleViewAll"
   />
 </template>

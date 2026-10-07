@@ -68,7 +68,6 @@ export default defineNuxtConfig({
     '/dashboard': { ssr: true },
     '/orders': { ssr: true },
     '/orders/*': { ssr: true },
-    '/notifications': { ssr: true },
     '/sales': { ssr: true },
     '/promo-codes': { ssr: true },
     '/settings/shipping': { ssr: true },

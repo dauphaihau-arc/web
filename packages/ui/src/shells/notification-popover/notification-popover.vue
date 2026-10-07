@@ -24,7 +24,6 @@ withDefaults(defineProps<{
   activeFilter?: string
   emptyText?: string
   showUnreadCount?: boolean
-  viewAllLabel?: string
   tooltipText?: string
   preventTooltipWhenOpen?: boolean
 }>(), {
@@ -36,14 +35,12 @@ withDefaults(defineProps<{
   activeFilter: 'all',
   emptyText: 'No notifications yet.',
   showUnreadCount: true,
-  viewAllLabel: 'View all',
   tooltipText: 'Notifications',
   preventTooltipWhenOpen: false,
 })
 
 const emit = defineEmits<{
   markAll: [close: () => void]
-  viewAll: [close: () => void]
   itemClick: [notification: NotificationPopoverItem, close: () => void]
   filterChange: [value: string]
 }>()
@@ -90,11 +87,9 @@ const isPopoverOpen = ref(false)
         :active-filter="activeFilter"
         :empty-text="emptyText"
         :show-unread-count="showUnreadCount"
-        :view-all-label="viewAllLabel"
         @filter-change="emit('filterChange', $event)"
         @mark-all="emit('markAll', close)"
         @item-click="emit('itemClick', $event, close)"
-        @view-all="emit('viewAll', close)"
       />
     </template>
   </UPopover>

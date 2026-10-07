@@ -94,11 +94,6 @@ async function handleMarkAll(close: () => void) {
   close()
 }
 
-function handleViewAll(close: () => void) {
-  close()
-  navigateTo(routes.notifications())
-}
-
 async function downloadOrderExportNotification(notification: NotificationPopoverItem) {
   const exportId = typeof notification.data?.export_id === 'string'
     ? notification.data.export_id
@@ -155,12 +150,10 @@ onBeforeUnmount(() => {
     :active-filter="activeFilter"
     :empty-text="activeFilter === 'unread' ? 'No unread notifications.' : 'No notifications yet.'"
     :show-unread-count="unreadCount > 0"
-    view-all-label="View all"
     tooltip-text="Notifications"
     prevent-tooltip-when-open
     @filter-change="handleFilterChange"
     @mark-all="handleMarkAll"
     @item-click="handleNotificationClick"
-    @view-all="handleViewAll"
   />
 </template>
