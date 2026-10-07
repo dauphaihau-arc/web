@@ -11,7 +11,7 @@ defineOptions({
 
 const props = withDefaults(defineProps<{
   name: string
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl'
   mode?: 'svg' | 'css'
   decorative?: boolean
 }>(), {
@@ -28,6 +28,8 @@ const sizeClassByVariant = {
   md: 'size-5',
   lg: 'size-6',
   xl: 'size-7',
+  '2xl': 'size-8',
+  '3xl': 'size-10',
 } as const
 
 const forwardedAttrs = computed(() => {

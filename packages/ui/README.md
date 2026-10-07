@@ -36,6 +36,7 @@ Examples:
 - `app-panel.vue`
 - `app-state-block.vue`
 - `callout.vue` (Nuxt UI v4 `Callout` port: color variants, optional icon, optional link)
+- `empty.vue` (Nuxt UI v4 `Empty` port: icon or avatar, title, description, actions, variants, sizes)
 - `section-header.vue`
 - `dialog-actions.vue`
 - `fixed-form-actions.vue`
