@@ -10,6 +10,13 @@ change needs tests.
 - Prefer the smallest test that proves the changed behavior.
 - Favor cheap deterministic tests for business logic before adding heavier Nuxt or browser coverage.
 
+## Identifier Contracts
+
+- Treat API identifiers as opaque non-empty strings using the shared `idSchema`.
+- Do not validate identifier prefixes, UUID structure, encoding, or length; backend validation owns those details.
+- Frontend contracts use ordinary `id` and reference fields without distinguishing database IDs from public IDs.
+- Schema tests should cover missing/empty identifiers, not backend identifier formats.
+
 ## Test Layers
 
 - Unit/domain tests: pure Vitest tests for utilities, schemas, mappers, validation, permissions, cart/checkout calculations, query key helpers, and other deterministic business logic.
