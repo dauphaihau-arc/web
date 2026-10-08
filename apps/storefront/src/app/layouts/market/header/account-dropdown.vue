@@ -80,7 +80,7 @@ const userInitial = computed(() => {
         <UButton
           color="gray"
           variant="ghost"
-          class="rounded-full p-1.5"
+          class="rounded-full p-1"
           @mouseover="emit('hoverTrigger')"
         >
           <div class="user-avatar">
