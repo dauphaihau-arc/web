@@ -254,7 +254,7 @@ export function useExportOrdersDialog(options: UseExportOrdersDialogOptions) {
     }
 
     if (payload.eventType === 'order_export.failed') {
-      activeExport.value = activeExport.value
+      activeExport.value = activeExport.value?.id === exportId
         ? { ...activeExport.value, status: 'failed', error_message: payload.message }
         : null;
       toast.add({

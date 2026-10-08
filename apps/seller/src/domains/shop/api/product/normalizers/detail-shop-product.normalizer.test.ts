@@ -6,9 +6,7 @@ describe('normalizeDetailShopProductResponse', () => {
   it('preserves the category name from shop product detail responses', () => {
     const response = {
       id: 'product-1',
-      public_id: 'public-product-1',
       shop_id: 'shop-1',
-      shop_public_id: 'public-shop-1',
       state: ProductStates.ACTIVE,
       category_id: 'category-1',
       category: {
@@ -33,6 +31,7 @@ describe('normalizeDetailShopProductResponse', () => {
       inventory: [],
     };
 
+    expect(normalizeDetailShopProductResponse(response).product.id).toBe('product-1');
     expect(normalizeDetailShopProductResponse(response).product.category).toEqual({
       id: 'category-1',
       name: 'Sneakers',

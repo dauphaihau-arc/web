@@ -60,10 +60,13 @@ export function buildPublishFeedback(
   result: BulkMutateShopProductsResponse,
   sourceRows: ProductRow[],
 ): PublishFeedback {
-  const rowById = new Map(sourceRows.map(row => [row.id, row]));
+  const rowById: Record<string, ProductRow | undefined> = {};
+  for (const row of sourceRows) {
+    rowById[row.id] = row;
+  }
   const failedProducts = result.failed.map(item => ({
     id: item.id,
-    title: rowById.get(item.id)?.title ?? item.id,
+    title: rowById[item.id]?.title ?? item.id,
     reason: item.reason,
   }));
 

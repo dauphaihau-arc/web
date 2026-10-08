@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { idSchema } from '@arc/schemas/primitives/id.schema'
 
 export const upsertMyProductReviewRequestSchema = z.object({
   rating: z.number().int().min(1).max(5),
@@ -20,10 +21,10 @@ export const issueReviewImageUploadResponseSchema = z.object({
 
 export const myProductReviewResponseSchema = z.object({
   id: z.string(),
-  order_id: z.string(),
+  order_id: idSchema,
   order_item_id: z.string(),
   product: z.object({
-    id: z.string(),
+    id: idSchema,
     slug: z.string(),
     title: z.string(),
     shop_slug: z.string(),

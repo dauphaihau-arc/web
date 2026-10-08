@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { ProductStates } from '@arc/enums/product'
 import { productSchema } from './product.schema'
+import { publicProductAutoSaleSchema } from './api/product/product.schema'
+import { shippingRatePreviewSchema } from './shipping-profile.schema'
 
 const baseProduct = {
-  id: '00000000-0000-4000-8000-000000000001',
-  shop: '00000000-0000-4000-8000-000000000002',
+  id: 'prod_000000000001',
+  shop: 'shop_000000000002',
   category: '00000000-0000-4000-8000-000000000003',
   shipping: '00000000-0000-4000-8000-000000000004',
   attributes: [],
@@ -23,6 +25,30 @@ const baseProduct = {
 }
 
 describe('productSchema', () => {
+  it('accepts opaque identifiers and rejects empty identifiers', () => {
+    const product = {
+      ...baseProduct,
+      id: 'an-opaque-product-reference',
+      shop: 'an-opaque-shop-reference',
+      category: 'an-opaque-category-reference',
+      shipping: 'an-opaque-shipping-reference',
+    }
+    expect(productSchema.parse(product).id).toBe(product.id)
+    expect(productSchema.safeParse({ ...product, id: '' }).success).toBe(false)
+    expect(publicProductAutoSaleSchema.parse({
+      promotion_id: 'an-opaque-sale-reference',
+      percent_off: 20,
+    }).promotion_id).toBe('an-opaque-sale-reference')
+    expect(shippingRatePreviewSchema.parse({
+      shipping_profile_id: 'an-opaque-profile-reference',
+      shop_id: product.shop,
+      currency: 'USD',
+      checkout_ready: false,
+      readiness_issues: [],
+      matched: false,
+    }).shop_id).toBe(product.shop)
+  })
+
   it('accepts default-variant products without option rows', () => {
     const parsed = productSchema.parse({
       ...baseProduct,

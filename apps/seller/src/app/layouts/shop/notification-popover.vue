@@ -106,9 +106,7 @@ async function downloadOrderExportNotification(notification: NotificationPopover
     return
   }
 
-  const shopId = typeof notification.data?.shop_id === 'string'
-    ? notification.data.shop_id
-    : await resolveMyShopId(queryClient)
+  const shopId = await resolveMyShopId(queryClient)
   const blob = await shopOrderApi.downloadExport(shopId, exportId)
   const url = URL.createObjectURL(blob)
   const anchor = document.createElement('a')

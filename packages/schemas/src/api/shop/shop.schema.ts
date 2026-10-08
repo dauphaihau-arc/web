@@ -1,9 +1,9 @@
 import { MarketCurrencies } from '@arc/enums/market'
 import { z } from 'zod'
+import { idSchema } from '@arc/schemas/primitives/id.schema'
 
 export const myShopResponseSchema = z.object({
-  id: z.string(),
-  public_id: z.string().optional(),
+  id: idSchema,
   owner_user_id: z.string(),
   shop_name: z.string(),
   slug: z.string(),

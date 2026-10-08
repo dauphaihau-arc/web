@@ -13,7 +13,6 @@ export const authPreferencesSchema = z.object({
 
 export const authShopSchema = z.object({
   id: z.string(),
-  public_id: z.string().optional(),
   owner_user_id: z.string().optional(),
   shop_name: z.string(),
   status: z.string().optional(),

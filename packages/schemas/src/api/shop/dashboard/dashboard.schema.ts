@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { shopOrderSummarySchema } from '../order/order.schema'
+import { idSchema } from '@arc/schemas/primitives/id.schema'
 
 export const shopDashboardTimeRangeSchema = z.enum([
   'today',
@@ -31,7 +32,7 @@ export const shopDashboardRevenuePointSchema = z.object({
 })
 
 export const shopDashboardTopProductSchema = z.object({
-  product_id: z.string(),
+  id: idSchema,
   title: z.string(),
   slug: z.string(),
   image_url: z.string().optional(),

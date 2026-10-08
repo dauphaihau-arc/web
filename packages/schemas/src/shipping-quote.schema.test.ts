@@ -85,13 +85,6 @@ describe('checkoutShippingQuoteSchema', () => {
     expect(parsed.estimate.earliest_delivery_date).toBe('2026-09-26T00:00:00.000Z')
   })
 
-  it('rejects a charge that loses its matched rate identity', () => {
-    const quote = buildQuote()
-    quote.units[0].rate_id = 'not-a-uuid'
-
-    expect(() => checkoutShippingQuoteSchema.parse(quote)).toThrow()
-  })
-
   it('rejects a negative money component instead of accepting a malformed quote', () => {
     const quote = buildQuote()
     quote.charge.total_minor = -1

@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { shippingDestinationScopeSchema } from '@arc/schemas/shipping-profile.schema'
+import { idSchema } from '@arc/schemas/primitives/id.schema'
 
 const requestGetListParamsSchema = z.object({
   page: z.union([z.number(), z.any()]).optional(),
@@ -10,8 +11,7 @@ const requestGetListParamsSchema = z.object({
 })
 
 export const publicProductShopSchema = z.object({
-  id: z.string(),
-  public_id: z.string().optional(),
+  id: idSchema,
   shop_name: z.string(),
   slug: z.string(),
 })
@@ -30,12 +30,18 @@ export const publicProductImageSchema = z.object({
   })).optional(),
 })
 
+export const publicProductAutoSaleSchema = z.object({
+  promotion_id: idSchema,
+  percent_off: z.number().int(),
+})
+
 export const publicProductListPricingSchema = z.object({
   min_amount_minor: z.number().int().nonnegative().optional(),
   max_amount_minor: z.number().int().nonnegative().optional(),
   original_min_amount_minor: z.number().int().nonnegative().optional(),
   original_max_amount_minor: z.number().int().nonnegative().optional(),
   currency: z.string(),
+  auto_sale: publicProductAutoSaleSchema.optional(),
 })
 
 export const publicProductListAvailabilitySchema = z.object({
@@ -46,7 +52,7 @@ export const publicProductListAvailabilitySchema = z.object({
 
 export const getProductsRequestSchema = requestGetListParamsSchema.extend({
   category_id: z.string().optional(),
-  shop_id: z.string().optional(),
+  shop_id: idSchema.optional(),
   search: z.string().optional(),
   title: z.string().optional(),
   is_digital: z.boolean().optional(),
@@ -64,7 +70,7 @@ export const getProductsRequestSchema = requestGetListParamsSchema.extend({
 ]))
 
 export const getProductsResponseItemSchema = z.object({
-  id: z.string(),
+  id: idSchema,
   shop: publicProductShopSchema,
   category_id: z.string().optional(),
   title: z.string(),
@@ -77,7 +83,7 @@ export const getProductsResponseItemSchema = z.object({
 })
 
 export const productSuggestionSchema = z.object({
-  id: z.string(),
+  id: idSchema,
   title: z.string(),
   slug: z.string(),
   shop: publicProductShopSchema,
@@ -184,6 +190,7 @@ export const publicProductDetailInventorySchema = z.object({
   amount_minor: z.number().int().nonnegative(),
   original_amount_minor: z.number().int().nonnegative().optional(),
   currency: z.string(),
+  auto_sale: publicProductAutoSaleSchema.optional(),
 })
 
 export const publicProductShippingDestinationSchema = z.object({
@@ -277,7 +284,7 @@ export const getPublicProductReviewImagesResponseSchema = z.object({
 })
 
 export const getDetailProductBySlugResponseSchema = z.object({
-  id: z.string(),
+  id: idSchema,
   shop: publicProductShopSchema,
   category_id: z.string().optional(),
   category_path: z.array(publicProductCategoryPathItemSchema).optional(),

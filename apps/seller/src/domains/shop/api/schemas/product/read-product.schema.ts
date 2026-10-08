@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { shippingRateSchema } from '@arc/schemas/shipping-profile.schema';
 import { ProductStates, ProductVariantTypes } from '@arc/enums/product';
+import { idSchema } from '@arc/schemas/primitives/id.schema';
 
 const requestGetListParamsSchema = z.object({
   page: z.union([z.number(), z.any()]).optional(),
@@ -13,7 +14,7 @@ const requestGetListParamsSchema = z.object({
 export const listShopProductsRequestSchema = requestGetListParamsSchema.extend({
   search: z.string().optional(),
   state: z.nativeEnum(ProductStates).optional(),
-  category_id: z.string().uuid().optional(),
+  category_id: idSchema.optional(),
 });
 
 const shopProductInventoryApiSchema = z.object({
@@ -72,7 +73,7 @@ export const shopProductShippingApiSchema = z.object({
 });
 
 export const listShopProductsItemSchema = z.object({
-  id: z.string(),
+  id: idSchema,
   slug: z.string(),
   title: z.string(),
   state: z.nativeEnum(ProductStates).optional(),
@@ -114,10 +115,8 @@ export const listShopProductsResponseSchema = z.object({
 });
 
 export const shopProductDetailApiResponseSchema = z.object({
-  id: z.string(),
-  public_id: z.string().optional(),
-  shop_id: z.string(),
-  shop_public_id: z.string().optional(),
+  id: idSchema,
+  shop_id: idSchema,
   product_version: z.number().int().nonnegative().optional(),
   published_at: z.coerce.date().optional(),
   removed_at: z.coerce.date().optional(),
@@ -252,7 +251,7 @@ export const detailShopProductResponseSchema = z.object({
 });
 
 export const issueProductImageUploadUrlRequestSchema = z.object({
-  productId: z.string(),
+  productId: idSchema,
   content_type: z.string(),
   asset_type: z.literal('original').optional(),
 });
@@ -270,15 +269,15 @@ export const bulkMutateShopProductsActionSchema = z.enum([
 ]);
 
 export const bulkMutateShopProductsRequestSchema = z.object({
-  ids: z.array(z.string()).min(1),
+  ids: z.array(idSchema).min(1),
   action: bulkMutateShopProductsActionSchema,
   idempotency_key: z.string().min(1),
 });
 
 export const bulkMutateShopProductsResponseSchema = z.object({
-  succeeded_ids: z.array(z.string()),
+  succeeded_ids: z.array(idSchema),
   failed: z.array(z.object({
-    id: z.string(),
+    id: idSchema,
     code: z.string(),
     reason: z.string(),
   })),

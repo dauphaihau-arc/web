@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { shippingRateSchema } from '@arc/schemas/shipping-profile.schema';
 import { ProductWhoMade } from '@arc/enums/product';
+import { idSchema } from '@arc/schemas/primitives/id.schema';
 
 export const createDraftProductRequestImageSchema = z.object({
   storage_key: z.string(),
@@ -77,12 +78,12 @@ export const createDraftProductRequestSchema = z.object({
   variants: z.array(createDraftProductRequestVariantSchema).optional(),
   inventory: z.array(createDraftProductRequestInventorySchema),
   pricing: z.array(createDraftProductRequestPricingSchema),
-  shipping_profile_id: z.string().uuid().optional(),
+  shipping_profile_id: idSchema.optional(),
 });
 
 export const createDraftProductResponseSchema = z.object({
-  id: z.string(),
-  shop_id: z.string(),
+  id: idSchema,
+  shop_id: idSchema,
   category_id: z.string().optional(),
   title: z.string(),
   description: z.string(),

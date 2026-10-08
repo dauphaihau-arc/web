@@ -2,4 +2,4 @@ import { z } from 'zod'
 
 export const idSchema = z
   .string()
-  .uuid('Required')
+  .min(1, 'Required')

@@ -1,7 +1,8 @@
+import type { QueryClient } from '@tanstack/vue-query';
 import type { MyShop } from './shop.types';
 import { apiClient } from '~/domains/_shared/api-client';
 
-export async function resolveMyShopId(queryClient: ReturnType<typeof useQueryClient>) {
+export async function resolveMyShopId(queryClient: QueryClient) {
   const cachedShop = queryClient.getQueryData<MyShop>(['my-shop']);
 
   if (cachedShop?.id) {

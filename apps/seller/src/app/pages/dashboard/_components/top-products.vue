@@ -23,7 +23,7 @@ type TopProductRow = {
 
 const rows = computed<TopProductRow[]>(() =>
   props.products.map(product => ({
-    id: product.product_id,
+    id: product.id,
     title: product.title,
     imageUrl: product.image_url,
     quantitySold: product.quantity_sold,
