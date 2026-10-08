@@ -2,9 +2,9 @@ import { routes } from '~/shared/navigation/routes';
 import { toastCustom } from '~/shared/config/toast';
 import { authApi } from '~/domains/auth/api/auth.api';
 import { useWebPushNotifications } from '~/domains/me/composables/use-web-push-notifications';
+import type { GetCartResponse } from '~/domains/cart/api/contracts/cart.contract';
 
 const storefrontUserScopedQueryKeys = [
-  ['get-cart'],
   ['my-notifications'],
   ['my-notifications-unread-count'],
   ['my-chat-conversations'],
@@ -27,6 +27,13 @@ export function useLogout() {
       return authApi.logout();
     },
     onSuccess() {
+      void queryClient.cancelQueries({ queryKey: ['get-cart'] });
+
+      queryClient.setQueryData<GetCartResponse>(
+        ['get-cart', 'my-cart'],
+        oldData => oldData ? { ...oldData, cart: null } : oldData,
+      );
+
       for (const queryKey of storefrontUserScopedQueryKeys) {
         queryClient.removeQueries({ queryKey });
       }
