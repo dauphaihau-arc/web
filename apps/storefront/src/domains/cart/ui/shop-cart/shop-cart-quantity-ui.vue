@@ -13,12 +13,19 @@ const props = withDefaults(defineProps<{
 
 const quantity = defineModel<number>('quantity', { required: true })
 
+// Guards live in the flags so a disabled button and a no-op click share one source.
+const canDecrease = computed(() => !props.disabled && quantity.value > 1)
+const canIncrease = computed(
+  () => !props.disabled && (props.stock === undefined || quantity.value < props.stock),
+)
+
 const decreaseQty = () => {
-  if (quantity.value === 1) return
+  if (!canDecrease.value) return
   quantity.value--
 }
 
 const increaseQty = () => {
+  if (!canIncrease.value) return
   quantity.value++
 }
 </script>
@@ -33,7 +40,7 @@ const increaseQty = () => {
       :icon="ICON_NAME_BY_ALIAS['minus']"
       color="white"
       class="w-11 justify-center rounded-l-md rounded-r-none"
-      :disabled="props.disabled"
+      :disabled="!canDecrease"
       @click="decreaseQty"
     />
     <UInput
@@ -49,7 +56,7 @@ const increaseQty = () => {
       :icon="ICON_NAME_BY_ALIAS['plus']"
       color="white"
       class="w-11 justify-center rounded-l-none rounded-r-md"
-      :disabled="props.disabled"
+      :disabled="!canIncrease"
       @click="increaseQty"
     />
   </UButtonGroup>

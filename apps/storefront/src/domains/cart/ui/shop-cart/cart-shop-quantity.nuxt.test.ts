@@ -153,6 +153,28 @@ describe('cart shop quantity', () => {
     expect(mutationFixture.calls[1].body.quantity).toBe(4);
   });
 
+  it('disables minus at one and plus at the stock ceiling', async () => {
+    const { wrapper } = mountQuantity(1, 3);
+
+    expect((wrapper.findAll('button')[0].element as HTMLButtonElement).disabled).toBe(true);
+    expect((wrapper.findAll('button')[1].element as HTMLButtonElement).disabled).toBe(false);
+
+    await wrapper.findAll('button')[1].trigger('click');
+    await wrapper.findAll('button')[1].trigger('click');
+    await nextTick();
+
+    expect((wrapper.find('input').element as HTMLInputElement).value).toBe('3');
+    expect((wrapper.findAll('button')[0].element as HTMLButtonElement).disabled).toBe(false);
+    expect((wrapper.findAll('button')[1].element as HTMLButtonElement).disabled).toBe(true);
+
+    // The capped buttons are no-ops even if a click still lands on them.
+    await wrapper.findAll('button')[1].trigger('click');
+    await wrapper.findAll('button')[0].trigger('click');
+    await nextTick();
+
+    expect((wrapper.find('input').element as HTMLInputElement).value).toBe('2');
+  });
+
   it('follows the server quantity when no edit is pending', async () => {
     const { wrapper, productCart } = mountQuantity(1);
 
