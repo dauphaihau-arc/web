@@ -6,15 +6,18 @@ import { useGetCart } from '~/domains/cart/queries/cart.query'
 const props = defineProps<{ show: boolean }>()
 
 const { data: dataGetCart } = useGetCart()
+const MAX_RECENT_PRODUCTS = 3
+
+const recentProducts = computed(
+  () => dataGetCart.value?.cart?.recent_items.slice(0, MAX_RECENT_PRODUCTS) ?? [],
+)
 
 const remainProductCart = computed(() => {
-  if (dataGetCart.value?.cart) {
-    return (
-      dataGetCart.value.cart.total_quantity
-      - dataGetCart.value.cart.recent_items.length
-    )
-  }
-  return 0
+  const itemCount = dataGetCart.value?.cart?.shop_groups.reduce(
+    (total, group) => total + group.items.length,
+    0,
+  ) ?? 0
+  return Math.max(0, itemCount - recentProducts.value.length)
 })
 </script>
 
@@ -49,9 +52,8 @@ const remainProductCart = computed(() => {
           >
             <div class="mb-6 space-y-8">
               <div
-                v-for="(productCart, index) in dataGetCart.cart
-                  .recent_items"
-                :key="index"
+                v-for="productCart in recentProducts"
+                :key="productCart.product.id"
               >
                 <NuxtLink
                   class="flex items-center gap-6"
@@ -93,7 +95,7 @@ const remainProductCart = computed(() => {
               v-if="remainProductCart > 0"
               class="text-text-strong"
             >
-              {{ remainProductCart }} more product in your Cart
+              {{ remainProductCart }} more products in your Cart
             </div>
           </div>
           <div
