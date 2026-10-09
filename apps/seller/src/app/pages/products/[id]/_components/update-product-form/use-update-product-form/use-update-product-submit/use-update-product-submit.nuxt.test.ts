@@ -578,9 +578,12 @@ describe('actual update submit chain', () => {
       updateDetails: vi.fn().mockRejectedValue({
         statusCode: 409,
         data: {
-          code: 'ProductVersionConflictError',
+          code: 'PRODUCT_VERSION_CONFLICT',
           message: 'Product Version conflict',
-          current_product: { product: baseProduct },
+          details: {
+            product_version: 8,
+            current_product: baseProduct,
+          },
         },
       }),
     };
@@ -609,15 +612,17 @@ describe('actual update submit chain', () => {
       setVariantConfiguration: vi.fn().mockRejectedValue({
         statusCode: 409,
         data: {
-          code: 'ProductSkuConflict',
-          affected_ids: ['inventory-1'],
-          conflicts: [{
-            sku: 'DUPLICATE-SKU',
-            inventory_id: 'inventory-1',
-            variant_id: 'variant-1',
-            client_ref: 'variant-1',
-          }],
-          current_product: { product: baseProduct },
+          code: 'PRODUCT_SKU_CONFLICT',
+          details: {
+            affected_ids: ['inventory-1'],
+            conflicts: [{
+              sku: 'DUPLICATE-SKU',
+              inventory_id: 'inventory-1',
+              variant_id: 'variant-1',
+              client_ref: 'variant-1',
+            }],
+            current_product: baseProduct,
+          },
         },
       }),
     };
@@ -657,8 +662,10 @@ describe('actual update submit chain', () => {
       setVariantConfiguration: vi.fn().mockRejectedValue({
         statusCode: 409,
         data: {
-          code: 'ProductSkuConflict',
-          affected_ids: ['inventory-1'],
+          code: 'PRODUCT_SKU_CONFLICT',
+          details: {
+            affected_ids: ['inventory-1'],
+          },
         },
       }),
     };
@@ -688,8 +695,10 @@ describe('actual update submit chain', () => {
       setVariantConfiguration: vi.fn().mockRejectedValue({
         statusCode: 409,
         data: {
-          code: 'ProductReservationConflict',
-          current_product: { product: baseProduct },
+          code: 'PRODUCT_RESERVATION_CONFLICT',
+          details: {
+            current_product: baseProduct,
+          },
         },
       }),
     };

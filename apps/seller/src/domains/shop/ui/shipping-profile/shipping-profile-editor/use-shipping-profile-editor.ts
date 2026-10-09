@@ -135,7 +135,7 @@ export function useShippingProfileEditor(
     }
     catch (error) {
       const apiError = readShippingProfileApiError(error);
-      if (apiError.code === 'ShippingProfileVersionConflictError' && props.profile) {
+      if (apiError.code === 'SHIPPING_PROFILE_VERSION_CONFLICT' && props.profile) {
         const shopId = await resolveMyShopId(queryClient);
         const latest = await shopShippingProfileApi.detail(shopId, props.profile.id);
         Object.assign(state, toShippingProfileFormState(latest, profileCurrency.value));

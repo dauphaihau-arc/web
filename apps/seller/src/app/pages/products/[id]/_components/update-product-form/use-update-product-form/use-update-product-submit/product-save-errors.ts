@@ -14,13 +14,16 @@ export class ProductSectionSaveError extends Error {
   }
 }
 
-type ErrorPayload = Record<string, unknown> & {
-  code?: string
+type ErrorDetails = Record<string, unknown> & {
   conflicts?: Array<Record<string, unknown>>
   ['affected_ids']?: unknown[]
-  current?: { product?: unknown }
-  product?: unknown
+  ['current_product']?: unknown
+};
+
+type ErrorPayload = Record<string, unknown> & {
+  code?: string
   message?: string
+  details?: ErrorDetails
 };
 
 type ErrorLike = {
@@ -55,15 +58,10 @@ export function isConflictError(error: unknown) {
 }
 
 export function readConflictProduct(error: unknown): DetailShopProductResponse['product'] | undefined {
-  const payload = readErrorPayload(error);
-  const currentProduct = payload?.['current_product'] ?? payload?.current?.product ?? payload?.product;
+  const currentProduct = readErrorPayload(error)?.details?.current_product;
 
   if (!currentProduct) {
     return undefined;
-  }
-
-  if (isRecord(currentProduct) && 'product' in currentProduct) {
-    return currentProduct.product as DetailShopProductResponse['product'];
   }
 
   if (isShopProductDetailApiResponseLike(currentProduct)) {
@@ -81,12 +79,12 @@ export function readErrorMessage(error: unknown) {
 export function isSkuConflictError(error: unknown) {
   const payload = readErrorPayload(error);
 
-  return payload?.code === 'ProductSkuConflict';
+  return payload?.code === 'PRODUCT_SKU_CONFLICT';
 }
 
 export function readSkuConflicts(error: unknown) {
-  const payload = readErrorPayload(error);
-  const conflicts = Array.isArray(payload?.conflicts) ? payload.conflicts : [];
+  const details = readErrorPayload(error)?.details;
+  const conflicts = Array.isArray(details?.conflicts) ? details.conflicts : [];
   const mappedConflicts = conflicts.map(conflict => ({
     sku: typeof conflict.sku === 'string' ? conflict.sku : undefined,
     inventoryId: typeof conflict.inventory_id === 'string' ? conflict.inventory_id : undefined,
@@ -97,7 +95,7 @@ export function readSkuConflicts(error: unknown) {
   if (mappedConflicts.length > 0) {
     return mappedConflicts;
   }
-  return (payload?.['affected_ids'] ?? [])
+  return (details?.['affected_ids'] ?? [])
     .filter((id): id is string => typeof id === 'string')
     .map(id => ({ inventoryId: id }));
 }
@@ -105,7 +103,7 @@ export function readSkuConflicts(error: unknown) {
 export function isReservationConflictError(error: unknown) {
   const payload = readErrorPayload(error);
 
-  return payload?.code === 'ProductReservationConflict';
+  return payload?.code === 'PRODUCT_RESERVATION_CONFLICT';
 }
 
 function isShopProductDetailApiResponseLike(value: unknown) {

@@ -141,16 +141,19 @@ test('a refused commitment for changed prices asks the buyer to review the refre
       status: 409,
       contentType: 'application/json',
       body: JSON.stringify({
+        status_code: 409,
         code: 'CHECKOUT_QUOTE_PRICES_CHANGED',
         message: 'Checkout totals changed',
-        refreshed_totals: {
-          checkout_currency: 'USD',
-          subtotal_minor: 8000,
-          shipping_minor: 0,
-          discount_minor: 0,
-          sale_discount_minor: 2000,
-          total_minor: 8000,
-          shops: [],
+        details: {
+          refreshed_totals: {
+            checkout_currency: 'USD',
+            subtotal_minor: 8000,
+            shipping_minor: 0,
+            discount_minor: 0,
+            sale_discount_minor: 2000,
+            total_minor: 8000,
+            shops: [],
+          },
         },
       }),
     });

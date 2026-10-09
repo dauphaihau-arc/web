@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { FetchError } from 'ofetch'
-import { StatusCodes } from 'http-status-codes'
 import { LocalStorageKeys } from '@arc/enums/local-storage-keys'
 import { MarketCurrencies, MarketRegions } from '@arc/enums/market'
 import type { FormError, FormSubmitEvent } from '#ui/types'
@@ -9,6 +8,7 @@ import type { AuthPreferences } from '~/domains/auth/api/contracts/auth-user.con
 import { useRegister } from '~/domains/auth/mutations/register.mutation'
 import type { RegisterRequest as RegisterBody } from '~/domains/auth/api/contracts/register.contract'
 import { registerFormSchema } from '~/domains/auth/api/schemas/register.schema'
+import { getBackendErrorCode } from '~/shared/utils/backend-error'
 import { appendPasswordError } from '~/domains/auth/utils/password-policy'
 
 const invalidEmails: string[] = []
@@ -76,7 +76,7 @@ async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
   }
   catch (error) {
     if (error instanceof FetchError) {
-      if (error.status === StatusCodes.CONFLICT) {
+      if (getBackendErrorCode(error) === 'EMAIL_ALREADY_REGISTERED') {
         formRef.value.setErrors([{ path: 'email', message: 'Email already taken' }])
         invalidEmails.push(event.data.email)
         return

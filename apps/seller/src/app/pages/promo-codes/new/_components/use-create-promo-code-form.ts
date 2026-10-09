@@ -8,7 +8,7 @@ import {
 } from '@arc/enums/promotion';
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types';
 import { toastCustom } from '~/shared/config/toast';
-import { readApiError } from '~/shared/lib/api-error';
+import { readApiError, type ApiErrorField } from '~/shared/lib/api-error';
 import { PROMO_CODE_ERROR_MESSAGES } from '~/domains/shop/api/promo-code/promo-code-error-messages';
 import { routes } from '~/shared/navigation/routes';
 import { useShopCreatePromoCode } from '~/domains/shop/mutations/create-promo-code.mutation';
@@ -153,7 +153,7 @@ export function useCreatePromoCodeForm(options: {
       });
     }
     catch (error) {
-      const { code, message } = readApiError(error);
+      const { code, message, fields } = readApiError(error);
       const fieldMessage = code && PROMO_CODE_ERROR_MESSAGES[code];
 
       // A code collision belongs under the Code field: it is the only thing
@@ -163,12 +163,39 @@ export function useCreatePromoCodeForm(options: {
         return;
       }
 
+      // The server names each rejected request path, which matches the form
+      // input names, so its field errors are reported on the fields themselves.
+      if (code === 'VALIDATION_FAILED' && fields?.length) {
+        await showFieldErrors(fields);
+        return;
+      }
+
       toast.add({
         ...toastCustom.error,
         title: 'Could not create the promo code',
         description: fieldMessage || message,
       });
     }
+  }
+
+  /**
+   * Reports the server's per-field validation errors on the matching inputs and
+   * brings the first one into view.
+   */
+  async function showFieldErrors(fields: ApiErrorField[]) {
+    const first = fields[0];
+
+    if (!first) {
+      return;
+    }
+
+    formRef.value?.clear();
+    formRef.value?.setErrors(fields.map(field => ({ path: field.field, message: field.message })));
+    await nextTick();
+
+    const element = document.querySelector<HTMLElement>(`[name="${first.field}"]`);
+    element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    element?.focus();
   }
 
   /**

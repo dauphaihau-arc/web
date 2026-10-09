@@ -4,7 +4,7 @@ import { readApiError } from './api-error';
 describe('readApiError', () => {
   it('reads the code and message the API rejected with', () => {
     const error = Object.assign(new Error('[POST] "/api/v1/shops/s/promo-codes": 409 Conflict'), {
-      data: { statusCode: 409, code: 'PROMO_CODE_ALREADY_EXISTS', message: 'Promo code already exists' },
+      data: { status_code: 409, code: 'PROMO_CODE_ALREADY_EXISTS', message: 'Promo code already exists' },
     });
 
     expect(readApiError(error)).toEqual({
@@ -16,7 +16,7 @@ describe('readApiError', () => {
   it('reads a body wrapped in the response envelope', () => {
     const error = {
       message: '[POST] "/api/v1/shops/s/promo-codes": 400 Bad Request',
-      response: { _data: { code: 'PROMO_CODE_PRODUCT_SCOPE_INVALID', message: 'A selected product belongs to another shop' } },
+      response: { _data: { status_code: 400, code: 'PROMO_CODE_PRODUCT_SCOPE_INVALID', message: 'A selected product belongs to another shop' } },
     };
 
     expect(readApiError(error)).toEqual({
@@ -25,14 +25,39 @@ describe('readApiError', () => {
     });
   });
 
-  it('joins the messages of a validation rejection that carries no code', () => {
+  it('exposes structured validation fields and composes their messages over the generic summary', () => {
     const error = {
-      data: { message: ['percent_off must not be greater than 99', 'timezone must be a valid IANA zone'] },
+      data: {
+        status_code: 422,
+        code: 'VALIDATION_FAILED',
+        message: 'Validation failed',
+        details: {
+          fields: [
+            { field: 'percent_off', messages: ['percent_off must not be greater than 99'] },
+            { field: 'timezone', messages: ['timezone must be a valid IANA zone', 'timezone must be a string'] },
+          ],
+        },
+      },
     };
 
     expect(readApiError(error)).toEqual({
-      code: undefined,
-      message: 'percent_off must not be greater than 99, timezone must be a valid IANA zone',
+      code: 'VALIDATION_FAILED',
+      message: 'percent_off must not be greater than 99, timezone must be a valid IANA zone, timezone must be a string',
+      fields: [
+        { field: 'percent_off', message: 'percent_off must not be greater than 99' },
+        { field: 'timezone', message: 'timezone must be a valid IANA zone, timezone must be a string' },
+      ],
+    });
+  });
+
+  it('keeps the generic summary when a validation rejection carries no fields', () => {
+    const error = {
+      data: { status_code: 422, code: 'VALIDATION_FAILED', message: 'Validation failed' },
+    };
+
+    expect(readApiError(error)).toEqual({
+      code: 'VALIDATION_FAILED',
+      message: 'Validation failed',
     });
   });
 

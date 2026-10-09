@@ -6,6 +6,7 @@ import { useAuthClientConfig } from '~/domains/auth/queries/client-config.query'
 import { useRegister } from '~/domains/auth/mutations/register.mutation'
 import type { RegisterRequest as RegisterBody } from '~/domains/auth/api/contracts/register.contract'
 import { registerFormSchema } from '~/domains/auth/api/schemas/register.schema'
+import { readApiError } from '~/shared/lib/api-error'
 import { appendPasswordError } from '~/domains/auth/utils/password-policy'
 
 const invalidEmails: string[] = []
@@ -55,9 +56,7 @@ async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
   catch (error) {
     if (error instanceof FetchError) {
       if (error.status === StatusCodes.CONFLICT) {
-        const errorMessage = String((error.data as { message?: string } | undefined)?.message ?? '')
-
-        if (errorMessage.toLowerCase().includes('email')) {
+        if (readApiError(error).code === 'EMAIL_ALREADY_REGISTERED') {
           formRef.value.setErrors([{ path: 'email', message: 'Email already taken' }])
           invalidEmails.push(event.data.email)
           return

@@ -15,9 +15,10 @@ function readNumberField(source: Record<string, unknown>, key: string) {
 }
 
 /**
- * Shop shipping-profile endpoints reject with the same payload either bare or
+ * Shop shipping-profile endpoints reject with the same envelope either bare or
  * wrapped by `$fetch` in `response._data`, so callers unwrap once instead of
- * re-typing the envelope at every call site.
+ * re-typing the envelope at every call site. Endpoint-specific context (`code`,
+ * `assigned_product_count`) sits under `details`.
  */
 export function readShippingProfileApiError(error: unknown): ShippingProfileApiError {
   const value = error as {
@@ -25,10 +26,13 @@ export function readShippingProfileApiError(error: unknown): ShippingProfileApiE
     response?: Record<string, unknown>
   };
   const payload = (value.response?.['_data'] ?? value.data ?? error) as Record<string, unknown>;
+  const details = payload.details && typeof payload.details === 'object'
+    ? payload.details as Record<string, unknown>
+    : {};
 
   return {
     code: readStringField(payload, 'code'),
     message: readStringField(payload, 'message'),
-    assignedProductCount: readNumberField(payload, 'assigned_product_count'),
+    assignedProductCount: readNumberField(details, 'assigned_product_count'),
   };
 }
