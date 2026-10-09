@@ -117,7 +117,6 @@ const compareAtAmount = computed(() =>
         </div>
 
         <CartShopQuantity
-          :key="props.productCart.quantity"
           :shop-id="shopId"
           :product-cart="props.productCart"
           class="w-2/5"

@@ -35,7 +35,6 @@ const props = defineProps<{
       </template>
       <template #quantity>
         <CartShopQuantity
-          :key="productCart.quantity"
           :shop-id="props.shopCart.shop?.id"
           :product-cart="productCart"
         />
