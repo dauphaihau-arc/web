@@ -73,12 +73,13 @@ async function expectIntactCategoryLayout(page: Page) {
   expect(brand, 'brand link is rendered').not.toBeNull();
   expect(brand!.x).toBeLessThan(viewportWidth * 0.3);
 
-  // Toolbar: breadcrumb on the left, sort control on the right, both on-screen.
-  const breadcrumb = await page.locator(`a[href="${FLAT_LAPTOPS_URL}"]`).first().boundingBox();
+  // Toolbar: category title on the left, sort control on the right, both on-screen.
+  // Scope to the title element (the header nav also renders category names).
+  const title = await page.locator('div.text-2xl > span').first().boundingBox();
   const sort = await page.getByText('Sort by:').first().boundingBox();
-  expect(breadcrumb, 'breadcrumb is rendered').not.toBeNull();
+  expect(title, 'category title is rendered').not.toBeNull();
   expect(sort, 'sort control is rendered').not.toBeNull();
-  expect(breadcrumb!.x, 'breadcrumb is left of the sort control').toBeLessThan(sort!.x);
+  expect(title!.x, 'category title is left of the sort control').toBeLessThan(sort!.x);
   expect(sort!.x + sort!.width, 'sort control stays on-screen').toBeLessThanOrEqual(viewportWidth + 1);
 
   // Sidebar is a fixed-width column left of the product grid.
@@ -127,8 +128,10 @@ test.describe('flat category direct access and reload (SSR)', () => {
     await expect(page.getByText('Brand', { exact: true }).first()).toBeVisible();
     await expect(page.getByText('Aurora', { exact: true }).first()).toBeVisible();
 
-    // Breadcrumb comes from the served ancestry, not from navigation state.
-    await expect(page.locator(`a[href="${FLAT_LAPTOPS_URL}"]`).first()).toBeVisible();
+    // The served canonical URL is emitted for the resolved root identity. A
+    // single-entry ancestry intentionally renders no breadcrumb trail, so the
+    // root page proves the canonical flat URL through the document head.
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', FLAT_LAPTOPS_URL);
 
     const requests = await fixtureRequests(request);
     // Identity was resolved from the URL against the backend.

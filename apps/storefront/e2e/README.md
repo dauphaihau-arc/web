@@ -44,6 +44,11 @@ E2E_MODE=ssr playwright test --config ./playwright.config.ts e2e/category/catego
 - The fixture port defaults to 4310 (`E2E_FIXTURE_PORT`) and matches the base URL
   baked by `pnpm e2e:ssr:build`; change both together.
 - SSR specs run single-worker because the fixture keeps one shared request log.
+- The fixture category hierarchy is fixed and seeded: specs never mutate it at
+  runtime, and resolution ancestry is served from the seeded tree. Category
+  listing and facet scope therefore resolve against the same seeded subtree, and
+  the API's five-minute taxonomy-subtree cache is consistent with it; the suite
+  makes no immediate post-mutation consistency claim.
 
 ## Current specs
 
