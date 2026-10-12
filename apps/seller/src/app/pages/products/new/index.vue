@@ -3,8 +3,11 @@ import { defineAsyncComponent } from 'vue'
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import { routes } from '~/shared/navigation/routes'
+import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-guard'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
+
+const { blocked, checking, checkForUpdate } = useCategoryIdentityBlocked()
 
 const CreateProductForm = defineAsyncComponent({
   loader: () => import('./_components/create-product-form/create-product-form.vue'),
@@ -22,7 +25,12 @@ const CreateProductForm = defineAsyncComponent({
     </template>
     <template #content>
       <div class="mb-20">
-        <CreateProductForm />
+        <CategoryIdentityUpdateCard
+          v-if="blocked"
+          :checking="checking"
+          @check="checkForUpdate"
+        />
+        <CreateProductForm v-else />
       </div>
     </template>
   </LayoutShopWrapperContent>

@@ -3,9 +3,11 @@ import type { Category } from '@arc/models/category'
 import { useGetCategories } from '~/domains/category/queries/categories.query'
 import { getRoutePath, routes } from '~/shared/navigation/routes'
 import { CATEGORY_IMAGE_VARIANTS, resolveCategoryImageUrl } from '~/domains/category/utils/category-image'
+import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-guard'
 
 const marketStore = useMarketStore()
 const config = useRuntimeConfig()
+const { blocked } = useCategoryIdentityBlocked()
 
 const categoryImageUrl = (category: Category) => resolveCategoryImageUrl(
   category,
@@ -59,7 +61,7 @@ const redirectPage = (subCategory: Category) => {
 </script>
 
 <template>
-  <div>
+  <div v-if="!blocked">
     <div
       v-if="isFetchingGetCategories && isPendingGetCategories"
       class="flex gap-16"

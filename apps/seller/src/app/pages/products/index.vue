@@ -12,8 +12,11 @@ import type {
 } from '~/domains/shop/api/product/contracts/read.contract'
 import { useShopGetProducts } from '~/domains/shop/queries/product/list.query'
 import { useGetMyShop } from '~/domains/shop/queries/my-shop.query'
+import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-guard'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
+
+const { blocked, checking, checkForUpdate } = useCategoryIdentityBlocked()
 
 const pageCount = 20
 const page = ref(1)
@@ -137,25 +140,33 @@ watch(stateFilter, () => {
       </div>
     </template>
     <template #content>
-      <ProductsStateTabs
-        v-model="stateFilter"
-        :counts="stateTabCounts"
+      <CategoryIdentityUpdateCard
+        v-if="blocked"
+        :checking="checking"
+        @check="checkForUpdate"
       />
-      <ProductsFilterToolbar
-        v-model:state-filter="stateFilter"
-        @change="handleToolbarChange"
-        @reset-page="page = 1"
-      />
-      <ProductsTable
-        :products="dataShopGetProducts?.items ?? []"
-        :loading="isPendingShopGetProducts"
-        :page="page"
-        :page-count="pageCount"
-        :total="totalProducts"
-        :shop-slug="dataMyShop?.slug"
-        :show-state-column="!stateFilter"
-        @update:page="page = $event"
-      />
+
+      <template v-else>
+        <ProductsStateTabs
+          v-model="stateFilter"
+          :counts="stateTabCounts"
+        />
+        <ProductsFilterToolbar
+          v-model:state-filter="stateFilter"
+          @change="handleToolbarChange"
+          @reset-page="page = 1"
+        />
+        <ProductsTable
+          :products="dataShopGetProducts?.items ?? []"
+          :loading="isPendingShopGetProducts"
+          :page="page"
+          :page-count="pageCount"
+          :total="totalProducts"
+          :shop-slug="dataMyShop?.slug"
+          :show-state-column="!stateFilter"
+          @update:page="page = $event"
+        />
+      </template>
     </template>
   </LayoutShopWrapperContent>
 </template>

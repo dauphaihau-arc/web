@@ -3,10 +3,12 @@ import type { Category } from '@arc/models/category'
 import { getRoutePath, routes } from '~/shared/navigation/routes'
 import { useGetRootCategories } from '~/domains/category/queries/categories.query'
 import { CATEGORY_IMAGE_VARIANTS, resolveCategoryImageUrl } from '~/domains/category/utils/category-image'
+import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-guard'
 
 const { data } = useGetRootCategories()
 const marketStore = useMarketStore()
 const config = useRuntimeConfig()
+const { blocked, checking, checkForUpdate } = useCategoryIdentityBlocked()
 
 const categoryImageUrl = (category: Category) => resolveCategoryImageUrl(
   category,
@@ -23,7 +25,13 @@ const redirectByCategory = (category: Category) => {
 </script>
 
 <template>
-  <div v-if="data && data.length > 0">
+  <CategoryIdentityUpdateCard
+    v-if="blocked"
+    :checking="checking"
+    @check="checkForUpdate"
+  />
+
+  <div v-else-if="data && data.length > 0">
     <h3 class="mb-6 text-center text-2xl font-normal">
       Shop by category
     </h3>

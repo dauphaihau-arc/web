@@ -109,6 +109,7 @@ export default defineNuxtConfig({
       apiBaseURL: process.env.API_BASE_URL,
       apiVersion: process.env.API_VERSION,
       assetHost: process.env.ASSET_HOST,
+      categoryIdentityContractVersion: process.env.NUXT_PUBLIC_CATEGORY_IDENTITY_CONTRACT_VERSION,
       sellerAppURL: process.env.SELLER_APP_URL || 'http://localhost:4002',
     },
   },

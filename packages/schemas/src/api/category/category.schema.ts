@@ -1,13 +1,14 @@
 import { z } from 'zod'
+import { idSchema } from '@arc/schemas/primitives/id.schema'
 
 export const categoryAttributeOptionResponseSchema = z.object({
-  id: z.string(),
+  id: idSchema,
   value: z.string(),
   rank: z.number(),
 })
 
 export const categoryAttributeResponseSchema = z.object({
-  id: z.string(),
+  id: idSchema,
   key: z.string(),
   name: z.string(),
   input_type: z.string(),
@@ -17,8 +18,8 @@ export const categoryAttributeResponseSchema = z.object({
 })
 
 export const categoryResponseSchema = z.object({
-  id: z.string(),
-  parent_id: z.string().optional(),
+  id: idSchema,
+  parent_id: idSchema.optional(),
   name: z.string(),
   rank: z.number(),
   image_url: z.string().optional(),
@@ -27,23 +28,23 @@ export const categoryResponseSchema = z.object({
 })
 
 export const getCategoriesRequestSchema = z.object({
-  parent_id: z.string().optional(),
+  parent_id: idSchema.optional(),
 })
 
 export const getCategoriesResponseSchema = z.array(categoryResponseSchema)
 
 export const categoryAttributeSelectSchema = z.object({
-  id: z.string(),
+  id: idSchema,
   key: z.string().optional(),
   name: z.string(),
   options: z.array(z.object({
-    id: z.string(),
+    id: idSchema,
     value: z.string(),
   })).optional(),
 })
 
 export const nestedCategoryAttributeSchema = z.object({
-  id: z.string(),
+  id: idSchema,
   key: z.string(),
   name: z.string(),
   options: z.array(categoryAttributeOptionResponseSchema),
@@ -55,7 +56,7 @@ export const getCategoryAttributesResponseSchema = z.union([
 ])
 
 export const categorySuggestionSchema = z.object({
-  id: z.string(),
+  id: idSchema,
   lastNameCategory: z.string().optional(),
   categoriesRelated: z.array(z.string()).optional(),
   last_name_category: z.string().optional(),

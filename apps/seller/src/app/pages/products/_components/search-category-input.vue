@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import type { Category } from '@arc/models/category'
 import { useGetSuggestCategories } from '~/domains/category/mutations/suggest-categories.mutation'
+import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-guard'
 
 const props = withDefaults(defineProps<{ title?: string, category?: Category | null, required?: boolean }>(), {
   required: true,
 })
+
+const { blocked, checking, checkForUpdate } = useCategoryIdentityBlocked()
 
 const model = defineModel<string | undefined>({
   required: true,
@@ -111,7 +114,14 @@ watch(querySuggestion, () => {
 </script>
 
 <template>
+  <CategoryIdentityUpdateCard
+    v-if="blocked"
+    :checking="checking"
+    @check="checkForUpdate"
+  />
+
   <UFormGroup
+    v-else
     label="Category"
     name="category_id"
     class="form-field-constrained mb-4"

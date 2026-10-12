@@ -22,6 +22,31 @@ export type CreateApiClientConfig = {
   isWakeUpError?: (error: unknown) => boolean
   lifecycle?: RequestLifecycle
   refreshSession?: RefreshSessionConfig
+
+  /**
+   * Awaited before each request is sent. Used to block category-bearing
+   * requests from a client whose category identity contract is outdated.
+   */
+  guardRequest?: (url: string, options?: NitroFetchOptions<NitroFetchRequest>) => Promise<void>
+
+  /**
+   * Decides whether ofetch's own transport retry may run for a request URL.
+   *
+   * Returning `false` sends the request with `retry: 0`, so the first failure
+   * surfaces immediately instead of being retried inside the transport (ofetch
+   * retries a GET once by default, including on 409). The caller's higher-level
+   * retry policies (query retry, guard probe) are unaffected and still govern
+   * any retry above the transport. Returning `true` (or omitting the predicate)
+   * preserves the caller's `retry` option and the transport default.
+   */
+  shouldRetryTransport?: (url: string) => boolean
+
+  /**
+   * Called for every failed request before the error is rethrown. Lets a client
+   * react to a backend rejection such as an outdated category identity
+   * generation (e.g. force a reload).
+   */
+  onRequestError?: (error: unknown) => void
 }
 
 export function getStatusCode(error: unknown) {
@@ -82,12 +107,26 @@ export function createApiClient(config: CreateApiClientConfig) {
     url: R,
     options?: O,
   ) => {
-    return $fetch<T>(url, {
-      baseURL: config.getBaseURL(),
+    const requestUrl = String(url)
+
+    // Nuxt's SSR request context must be read before the guard yields.
+    const baseURL = config.getBaseURL()
+    const headers = resolveHeaders(options)
+
+    await config.guardRequest?.(requestUrl, options)
+
+    const fetchOptions = {
+      baseURL,
       credentials: 'include',
       ...options,
-      headers: resolveHeaders(options),
-    })
+      headers,
+    } as NitroFetchOptions<R>
+
+    if (config.shouldRetryTransport && !config.shouldRetryTransport(requestUrl)) {
+      fetchOptions.retry = 0
+    }
+
+    return $fetch<T>(url, fetchOptions)
   }
 
   const requestWithWakeUpRecovery = async <T>(
@@ -99,6 +138,8 @@ export function createApiClient(config: CreateApiClientConfig) {
       return response
     }
     catch (error) {
+      config.onRequestError?.(error)
+
       if (
         !behavior?.retryOnWakeUp
         || !config.isWakeUpError?.(error)

@@ -2,9 +2,11 @@
 import { log } from '@arc/lib'
 import type { Category } from '@arc/models/category'
 import { useGetCategories } from '~/domains/category/queries/categories.query'
+import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-guard'
 
 const route = useRoute()
 const marketStore = useMarketStore()
+const { blocked, checking, checkForUpdate } = useCategoryIdentityBlocked()
 
 const params = computed(() => {
   const category = marketStore.categoriesBreadcrumb.find((c: Category & { to: string }) => c.to === route.fullPath)
@@ -36,8 +38,14 @@ const redirectPage = (category: Category) => {
 </script>
 
 <template>
+  <CategoryIdentityUpdateCard
+    v-if="blocked"
+    :checking="checking"
+    @check="checkForUpdate"
+  />
+
   <div
-    v-if="isLoadingGetCategories || dataCategories?.length"
+    v-else-if="isLoadingGetCategories || dataCategories?.length"
     class="flex gap-3"
   >
     <div

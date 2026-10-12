@@ -1,4 +1,5 @@
 import type { ComputedRef, Ref } from 'vue';
+import { categoryIdentityQueryPolicy } from '@arc/lib';
 import { resolveMyShopId } from '../../utils/resolve-my-shop-id';
 import { shopProductApi } from '~/domains/shop/api/product/product.api';
 import type {
@@ -11,6 +12,7 @@ export function useShopGetProducts(
 ) {
   const queryClient = useQueryClient();
   return useQuery<ListShopProductsResponse>({
+    ...categoryIdentityQueryPolicy(),
     queryKey: ['shop-get-products', queryParams],
     queryFn: async () => {
       const shopId = await resolveMyShopId(queryClient);

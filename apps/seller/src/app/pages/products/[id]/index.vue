@@ -6,8 +6,11 @@ import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import { routes } from '~/shared/navigation/routes'
 import { useShopGetDetailProduct } from '~/domains/shop/queries/product/detail.query'
+import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-guard'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
+
+const { blocked, checking, checkForUpdate } = useCategoryIdentityBlocked()
 
 const UpdateProductForm = defineAsyncComponent({
   loader: () => import('./_components/update-product-form/update-product-form.vue'),
@@ -44,8 +47,13 @@ const errorState = computed(() => isNotFound.value
     </template>
     <template #content>
       <div class="mb-20">
+        <CategoryIdentityUpdateCard
+          v-if="blocked"
+          :checking="checking"
+          @check="checkForUpdate"
+        />
         <Empty
-          v-if="isPending"
+          v-else-if="isPending"
           loading
           size="xl"
           variant="naked"

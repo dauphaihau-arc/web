@@ -66,6 +66,47 @@ pnpm lint:packages
 pnpm lint:packages:fix
 ```
 
+## Seller browser tests
+
+Playwright starts the two seller frontends only. It consumes a separately
+provisioned real test API; the web checkout does not launch an API checkout or
+read a shared readiness file.
+
+For local runs, the API checkout provides `e2e:seller`. Run it from that API
+package with an explicit seller checkout path and command:
+
+`pnpm e2e:seller -- --cwd /absolute/path/to/web/apps/seller -- pnpm exec playwright test`
+
+The launcher creates an isolated migrated database, seeds the seller/shop,
+categories, attributes, shipping profile, and draft fixture, then supplies the
+API origin and fixture JSON to the command. It owns API shutdown and test-data
+cleanup on success, command failure, and interruption. Neither checkout needs
+to be adjacent to the other.
+
+For an API provisioned independently by CI or another launcher, supply:
+
+- `SELLER_E2E_API_ORIGIN`: required bare HTTP(S) origin, without credentials,
+  path, query, or fragment. Browser requests use the seller proxy; direct
+  readback uses the origin's `/v1` API.
+- `SELLER_E2E_FIXTURES_JSON`: required provisioner-created JSON containing
+  `seller.email`, `seller.password`, `shopPublicId`, `rootCategoryPublicId`,
+  `childCategoryPublicId`, `fixtureProductPublicId`, and `fixtureProductTitle`.
+  Identifiers must be nonempty strings belonging to that API's seeded data.
+  Treat the JSON as credentials; do not print it in CI logs.
+
+Then run `pnpm --dir apps/seller exec playwright test` from the web checkout.
+The external provisioner remains responsible for cleanup in its own `finally`
+or CI teardown step. Do not point the suite at production or an arbitrary
+developer database.
+
+The suite checks API readiness and contract compatibility before browser tests.
+The current mismatch runtime remains generation `2`; the compatible runtime
+uses `SELLER_E2E_COMPATIBLE_GENERATION` (default `3`). This is an explicitly
+selected test bundle, not automatic adoption of the backend contract version.
+
+Run browser tests separately from Nuxt typechecks, unit-test environments, or
+static generation that write the same app's generated `.nuxt` state.
+
 ## Authentication
 
 Seller and storefront do not store token expiry timestamps in localStorage.

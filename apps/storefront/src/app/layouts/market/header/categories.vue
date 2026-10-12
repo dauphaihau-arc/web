@@ -2,6 +2,7 @@
 import type { Category } from '@arc/models/category'
 import { getRoutePath, routes } from '~/shared/navigation/routes'
 import { useGetRootCategories } from '~/domains/category/queries/categories.query'
+import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-guard'
 
 const {
   data: dataRootCategories,
@@ -9,6 +10,7 @@ const {
   isFetching: isFetchingRootCategories,
 } = useGetRootCategories()
 const marketStore = useMarketStore()
+const { blocked } = useCategoryIdentityBlocked()
 
 const redirectByCategory = (rootCategory: Category) => {
   const to = getRoutePath(routes.category(rootCategory.name.replaceAll(' ', '-').toLowerCase()))
@@ -19,7 +21,7 @@ const redirectByCategory = (rootCategory: Category) => {
 </script>
 
 <template>
-  <div>
+  <div v-if="!blocked">
     <div
       v-if="isPendingRootCategories && isFetchingRootCategories"
       class="flex gap-3"

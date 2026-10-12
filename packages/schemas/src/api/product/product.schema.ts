@@ -17,7 +17,7 @@ export const publicProductShopSchema = z.object({
 })
 
 export const publicProductCategoryPathItemSchema = z.object({
-  id: z.string(),
+  id: idSchema,
   name: z.string(),
   slug: z.string(),
 })
@@ -51,7 +51,7 @@ export const publicProductListAvailabilitySchema = z.object({
 })
 
 export const getProductsRequestSchema = requestGetListParamsSchema.extend({
-  category_id: z.string().optional(),
+  category_id: idSchema.optional(),
   shop_id: idSchema.optional(),
   search: z.string().optional(),
   title: z.string().optional(),
@@ -72,7 +72,7 @@ export const getProductsRequestSchema = requestGetListParamsSchema.extend({
 export const getProductsResponseItemSchema = z.object({
   id: idSchema,
   shop: publicProductShopSchema,
-  category_id: z.string().optional(),
+  category_id: idSchema.optional(),
   title: z.string(),
   slug: z.string(),
   image: publicProductImageSchema.optional(),
@@ -286,7 +286,7 @@ export const getPublicProductReviewImagesResponseSchema = z.object({
 export const getDetailProductBySlugResponseSchema = z.object({
   id: idSchema,
   shop: publicProductShopSchema,
-  category_id: z.string().optional(),
+  category_id: idSchema.optional(),
   category_path: z.array(publicProductCategoryPathItemSchema).optional(),
   title: z.string(),
   slug: z.string(),

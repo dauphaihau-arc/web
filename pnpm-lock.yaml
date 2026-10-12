@@ -233,6 +233,9 @@ importers:
       '@iconify-json/uil':
         specifier: ^1.2.3
         version: 1.2.3
+      '@playwright/test':
+        specifier: 1.63.0
+        version: 1.63.0
 
   apps/storefront:
     dependencies:
@@ -378,6 +381,9 @@ importers:
 
   packages/lib:
     dependencies:
+      '@arc/enums':
+        specifier: workspace:*
+        version: link:../enums
       '@tanstack/vue-query':
         specifier: ^5.45.0
         version: 5.59.16(vue@3.5.12(typescript@5.6.3))

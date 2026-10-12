@@ -5,12 +5,14 @@ import SubCategories from './_components/sub-categories.vue'
 import Filters from '~/domains/product/ui/filters/product-filters.vue'
 import SortProductsBy from '~/domains/product/ui/sort-products-by.vue'
 import { useGetProducts } from '~/domains/product/queries/products.query'
+import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-guard'
 
 definePageMeta({ layout: 'market' })
 
 const route = useRoute()
 const router = useRouter()
 const marketStore = useMarketStore()
+const { blocked, checking, checkForUpdate } = useCategoryIdentityBlocked()
 
 const limit = 16
 const page = ref(getRoutePage(route.query.page))
@@ -114,7 +116,10 @@ watch(page, (currentPage) => {
 
 <template>
   <div class="pt-12">
-    <div class="sticky top-0 z-[2] mb-4 flex items-center justify-between py-2">
+    <div
+      v-if="!blocked"
+      class="sticky top-0 z-[2] mb-4 flex items-center justify-between py-2"
+    >
       <div class="surface-backdrop categories-toolbar-backdrop" />
       <CategoriesBreadcrumb
         :total-products="dataGetProducts?.meta.total"
@@ -123,7 +128,17 @@ watch(page, (currentPage) => {
       <SortProductsBy />
     </div>
 
-    <div class="flex items-start gap-12">
+    <CategoryIdentityUpdateCard
+      v-if="blocked"
+      class="mt-4"
+      :checking="checking"
+      @check="checkForUpdate"
+    />
+
+    <div
+      v-else
+      class="flex items-start gap-12"
+    >
       <div class="scrollbar-subtle sticky top-16 flex max-h-[calc(100vh-4rem)] min-w-[200px] max-w-[200px] flex-col space-y-4 overflow-y-auto pb-8 pr-2">
         <SubCategories />
         <UDivider />

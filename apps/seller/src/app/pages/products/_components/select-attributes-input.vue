@@ -2,6 +2,7 @@
 import type { Category } from '@arc/models/category'
 import { useGetAttributesByCategory } from '~/domains/category/queries/attributes.query'
 import type { ReqAttributeOption } from '~/domains/shop/api/product/contracts/form.contract'
+import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-guard'
 
 type ProductAttributeSelection = {
   attribute: string
@@ -22,6 +23,8 @@ const attributesModel = defineModel<ReqAttributeOption[] | undefined>({
 const {
   data: dataGetAttributesByCategory,
 } = useGetAttributesByCategory(props.category_id)
+
+const { blocked, checking, checkForUpdate } = useCategoryIdentityBlocked()
 
 const state = reactive<Record<ReqAttributeOption['attribute_id'], ReqAttributeOption['selected']>>({})
 
@@ -68,8 +71,14 @@ watch(() => state, () => {
 </script>
 
 <template>
+  <CategoryIdentityUpdateCard
+    v-if="blocked"
+    :checking="checking"
+    @check="checkForUpdate"
+  />
+
   <div
-    v-if="dataGetAttributesByCategory?.attributes && dataGetAttributesByCategory.attributes.length > 0"
+    v-else-if="dataGetAttributesByCategory?.attributes && dataGetAttributesByCategory.attributes.length > 0"
     class="flex min-w-0 flex-wrap gap-x-4"
   >
     <div

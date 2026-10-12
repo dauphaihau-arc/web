@@ -1,6 +1,7 @@
 import type { UseQueryOptions } from '@tanstack/vue-query';
 import type { ComputedRef } from 'vue';
 import { MARKET_CONFIG } from '@arc/enums/market';
+import { categoryIdentityQueryPolicy } from '@arc/lib';
 import { productApi } from '~/domains/product/api/product.api';
 import type {
   GetProductFacetsResponse,
@@ -26,9 +27,8 @@ export function useGetProducts(
   return useQuery<GetProductsResponse>({
     enabled: computed(() => !!params.value && marketStore.isMarketReady),
     staleTime: 0,
-    refetchOnMount: 'always',
-    refetchOnWindowFocus: true,
     ...options,
+    ...categoryIdentityQueryPolicy(),
     queryKey: computed(() => ['get-products', params.value, marketContext.value]),
     queryFn: () => {
       return productApi.getList(params.value) as Promise<GetProductsResponse>;
@@ -204,9 +204,8 @@ export function useGetProductFacets(
   return useQuery<GetProductFacetsResponse>({
     enabled: computed(() => !!params.value && marketStore.isMarketReady),
     staleTime: 0,
-    refetchOnMount: 'always',
-    refetchOnWindowFocus: true,
     ...options,
+    ...categoryIdentityQueryPolicy(),
     queryKey: computed(() => ['get-product-facets', params.value, marketContext.value]),
     queryFn: () => productApi.getFacets(params.value) as Promise<GetProductFacetsResponse>,
   });
@@ -222,6 +221,7 @@ export function useGetProductsByMultiQueries(queries?: GetProductsRequest[]) {
 
   return useQueries({
     queries: queries?.map(qp => ({
+      ...categoryIdentityQueryPolicy(),
       queryKey: ['get-products', qp, marketContext.value],
       queryFn: async () => {
         const res = await productApi.getList(qp) as GetProductsResponse;
