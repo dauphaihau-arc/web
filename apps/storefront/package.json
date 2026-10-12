@@ -17,6 +17,8 @@
     "test:unit": "vitest run --config ./vitest.unit.config.ts",
     "test:nuxt": "vitest run --config ./vitest.config.ts",
     "e2e:serve": "pnpm generate",
+    "e2e:ssr:build": "API_BASE_URL=http://127.0.0.1:4310 API_VERSION=1 NUXT_PUBLIC_CATEGORY_IDENTITY_CONTRACT_VERSION=2 nuxt build",
+    "e2e:ssr": "pnpm e2e:ssr:build && E2E_MODE=ssr playwright test --config ./playwright.config.ts",
     "e2e": "playwright test --config ./playwright.config.ts",
     "e2e:smoke": "E2E_SUITE=smoke playwright test --config ./playwright.config.ts",
     "e2e:headed": "playwright test --config ./playwright.config.ts --headed",

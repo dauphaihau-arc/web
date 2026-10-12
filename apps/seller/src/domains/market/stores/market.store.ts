@@ -7,7 +7,7 @@ import type { AuthPreferences } from '~/domains/auth/api/contracts/auth-user.con
 import { useGetExchangeRates } from '~/domains/market/queries/exchange-rates.query';
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query';
 import type {
-  CategoriesBreadcrumbStorage, ExchangeRateStorage,
+  ExchangeRateStorage,
   UserActivitiesSessionStorage,
 } from '~/domains/market/stores/market.store.types';
 
@@ -15,12 +15,6 @@ dayjs.extend(utc);
 
 export const useMarketStore = defineStore('market', () => {
   const { data: dataUserAuth } = useGetCurrentUser();
-
-  const categoriesBreadcrumb = useStorage(
-    SessionStorageKeys.CATEGORIES_BREADCRUMB,
-    parseJSON<CategoriesBreadcrumbStorage[]>(sessionStorage.getItem(SessionStorageKeys.CATEGORIES_BREADCRUMB)) || [],
-    sessionStorage, // bind value with SS
-  );
 
   const userActivities = useStorage<Partial<UserActivitiesSessionStorage>>(
     SessionStorageKeys.USER_ACTIVITIES,
@@ -72,21 +66,9 @@ export const useMarketStore = defineStore('market', () => {
     },
   );
 
-  const clearCategoryRecommendationState = () => {
-    userActivities.value = {
-      ...userActivities.value,
-      categoryIdProductVisited: undefined,
-      rootCategoryProductVisited: undefined,
-      subCategoriesLastVisit: undefined,
-    };
-    categoriesBreadcrumb.value = [];
-  };
-
   return {
     userActivities,
     guestPreferences,
     exchangeRate,
-    categoriesBreadcrumb,
-    clearCategoryRecommendationState,
   };
 });

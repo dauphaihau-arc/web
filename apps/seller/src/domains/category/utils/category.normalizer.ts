@@ -27,6 +27,7 @@ export function normalizeCategory(response: GetCategoriesResponse[number]): Cate
     id: response.id,
     parentId: response.parent_id,
     name: response.name,
+    slug: response.slug,
     rank: response.rank,
     imageUrl: response.image_url,
     featuredFacetKeys: response.featured_facet_keys,

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import ProductCard from '~/domains/product/ui/product-card.vue'
 import type { GetProductsResponseItem } from '~/domains/product/api/contracts/product.contract'
 
@@ -9,6 +10,7 @@ const props = defineProps<{
   total?: number
   limit: number
   loading: boolean
+  error?: unknown
   hasActiveFilters?: boolean
 }>()
 </script>
@@ -37,6 +39,17 @@ const props = defineProps<{
       </div>
     </div>
 
+    <Empty
+      v-else-if="error"
+      variant="naked"
+      size="2xl"
+      class="mb-16 min-h-[320px]"
+      heading-class="font-semibold"
+      :icon="ICON_NAME_BY_ALIAS['warning']"
+      title="Couldn't load products"
+      description="Something went wrong while loading this category. Please try again."
+    />
+
     <template v-else>
       <div
         v-if="items?.length"
@@ -50,19 +63,18 @@ const props = defineProps<{
         </div>
       </div>
 
-      <div
+      <Empty
         v-else
-        class="mb-16 flex min-h-[320px] flex-col items-center justify-center rounded-2xl px-6 text-center"
-      >
-        <h2 class="text-xl font-semibold text-text-strong">
-          {{ props.hasActiveFilters ? 'No results found' : 'No products here yet' }}
-        </h2>
-        <p class="mt-2 max-w-md text-sm text-text-subtle">
-          {{ props.hasActiveFilters
-            ? 'Try adjusting or clearing your filters.'
-            : 'Try another category or browse all products.' }}
-        </p>
-      </div>
+        variant="naked"
+        size="2xl"
+        class="mb-16 min-h-[320px]"
+        heading-class="font-semibold"
+        :icon="ICON_NAME_BY_ALIAS[props.hasActiveFilters ? 'search' : 'product']"
+        :title="props.hasActiveFilters ? 'No results found' : 'No products here yet'"
+        :description="props.hasActiveFilters
+          ? 'Try adjusting or clearing your filters.'
+          : 'Try another category or browse all products.'"
+      />
 
       <div
         v-if="total && total > limit"

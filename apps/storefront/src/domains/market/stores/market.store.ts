@@ -14,7 +14,6 @@ import { currentUserQueryOptions, useGetCurrentUser } from '~/domains/me/queries
 import { marketConfigQueryOptions } from '~/domains/market/queries/config.query';
 import { getIpData } from '~/domains/market/queries/ip-data.query';
 import type {
-  CategoriesBreadcrumbStorage,
   RecentProductViewStorage,
   UserActivitiesSessionStorage,
 } from '~/domains/market/stores/market.store.types';
@@ -133,15 +132,6 @@ export const useMarketStore = defineStore('market', () => {
   const { data: dataUserAuth } = useGetCurrentUser();
   const sessionStorageRef = import.meta.client ? sessionStorage : createMemoryStorage();
   const localStorageRef = import.meta.client ? localStorage : createMemoryStorage();
-
-  const categoriesBreadcrumb = useStorage(
-    SessionStorageKeys.CATEGORIES_BREADCRUMB,
-    readStoredObject<CategoriesBreadcrumbStorage[]>(
-      sessionStorageRef,
-      SessionStorageKeys.CATEGORIES_BREADCRUMB,
-    ) || [],
-    sessionStorageRef,
-  );
 
   const userActivities = useStorage<Partial<UserActivitiesSessionStorage>>(
     SessionStorageKeys.USER_ACTIVITIES,
@@ -303,7 +293,6 @@ export const useMarketStore = defineStore('market', () => {
       rootCategoryProductVisited: undefined,
       subCategoriesLastVisit: undefined,
     };
-    categoriesBreadcrumb.value = [];
   };
 
   const recordRecentProductView = (product: RecentProductViewStorage['product']) => {
@@ -333,7 +322,6 @@ export const useMarketStore = defineStore('market', () => {
     marketPreferenceSource,
     isMarketReady,
     marketReadyPromise,
-    categoriesBreadcrumb,
     ensureMarketReady,
     clearCategoryRecommendationState,
     recordRecentProductView,

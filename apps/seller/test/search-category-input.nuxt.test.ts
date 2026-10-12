@@ -30,6 +30,7 @@ describe('SearchCategoryInput', () => {
       category: {
         id: 'category-1',
         name: 'Sneakers',
+        slug: 'sneakers',
         rank: 1,
         attributes: [],
       },

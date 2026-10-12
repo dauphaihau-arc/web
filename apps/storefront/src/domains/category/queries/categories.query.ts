@@ -4,13 +4,13 @@ import { categoryApi } from '~/domains/category/api/category.api';
 import type { GetCategoriesRequest as GetCategoriesParams } from '~/domains/category/api/contracts/category.contract';
 
 export function useGetCategories(
-  params?: GetCategoriesParams,
+  params?: MaybeRefOrGetter<GetCategoriesParams | undefined>,
 ) {
   return useQuery<Category[]>({
-    enabled: !!params,
-    queryKey: ['get-categories', params],
+    enabled: computed(() => !!toValue(params)),
+    queryKey: computed(() => ['get-categories', toValue(params)]),
     queryFn: async () => {
-      const response = await categoryApi.getCategories(params);
+      const response = await categoryApi.getCategories(toValue(params));
 
       return response.map(normalizeCategory);
     },

@@ -2,6 +2,7 @@ export type Category = {
   id: string
   parentId?: string
   name: string
+  slug: string
   rank: number
   imageStorageKey?: string
   imageUrl?: string

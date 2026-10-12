@@ -1,5 +1,10 @@
 import type { Category } from '@arc/models/category';
-import type { CategoryAttributeSelect, GetCategoriesResponse } from '~/domains/category/api/contracts/category.contract';
+import type {
+  CategoryAncestryEntry,
+  CategoryAttributeSelect,
+  CategoryResolutionResponse,
+  GetCategoriesResponse,
+} from '~/domains/category/api/contracts/category.contract';
 
 type NestCategoryAttributeOption = {
   id: string
@@ -27,6 +32,7 @@ export function normalizeCategory(response: GetCategoriesResponse[number]): Cate
     id: response.id,
     parentId: response.parent_id,
     name: response.name,
+    slug: response.slug,
     rank: response.rank,
     imageUrl: response.image_url,
     featuredFacetKeys: response.featured_facet_keys,
@@ -42,6 +48,38 @@ export function normalizeCategory(response: GetCategoriesResponse[number]): Cate
         rank: option.rank,
       })),
     })),
+  };
+}
+
+export type ResolvedCategorySummary = {
+  id: string
+  slug: string
+  name: string
+  featuredFacetKeys?: string[]
+};
+
+export type CategoryResolution = {
+  category: ResolvedCategorySummary
+  ancestry: CategoryAncestryEntry[]
+  canonicalPath: string
+};
+
+export function normalizeCategoryResolution(
+  response: CategoryResolutionResponse,
+): CategoryResolution {
+  return {
+    category: {
+      id: response.category.id,
+      slug: response.category.slug,
+      name: response.category.name,
+      featuredFacetKeys: response.category.featured_facet_keys,
+    },
+    ancestry: response.ancestry.map(entry => ({
+      id: entry.id,
+      slug: entry.slug,
+      name: entry.name,
+    })),
+    canonicalPath: response.canonical_path,
   };
 }
 

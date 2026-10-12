@@ -29,7 +29,7 @@ const {
   error: errorGetCategories,
   isPending: isPendingGetCategories,
   isFetching: isFetchingGetCategories,
-} = useGetCategories(params.value)
+} = useGetCategories(params)
 
 watch(errorGetCategories, (value) => {
   const status = value?.statusCode || value?.status || value?.response?.status
@@ -39,24 +39,7 @@ watch(errorGetCategories, (value) => {
 })
 
 const redirectPage = (subCategory: Category) => {
-  if (marketStore.categoriesBreadcrumb && marketStore.userActivities?.rootCategoryProductVisited?.name) {
-    const lower = (str: string) => str.replaceAll(' ', '-').toLowerCase()
-    const rootCategorySlug = lower(marketStore.userActivities.rootCategoryProductVisited.name)
-    const toRootCategory = getRoutePath(routes.category(rootCategorySlug))
-    const toSubCategory = getRoutePath(routes.category([rootCategorySlug, lower(subCategory.name)]))
-
-    marketStore.categoriesBreadcrumb = [
-      {
-        ...marketStore.userActivities?.rootCategoryProductVisited,
-        to: toRootCategory,
-      },
-      {
-        ...subCategory,
-        to: toSubCategory,
-      },
-    ]
-    navigateTo(toSubCategory)
-  }
+  navigateTo(getRoutePath(routes.category(subCategory.slug, subCategory.id)))
 }
 </script>
 

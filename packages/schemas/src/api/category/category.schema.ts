@@ -21,10 +21,35 @@ export const categoryResponseSchema = z.object({
   id: idSchema,
   parent_id: idSchema.optional(),
   name: z.string(),
+  slug: z.string(),
   rank: z.number(),
   image_url: z.string().optional(),
   featured_facet_keys: z.array(z.string()).optional(),
   attributes: z.array(categoryAttributeResponseSchema),
+})
+
+/**
+ * Authoritative resolution of a category public identity. `ancestry` is ordered
+ * root-to-current and includes the resolved category itself; every entry links
+ * to its own canonical flat URL.
+ */
+export const resolvedCategorySchema = z.object({
+  id: idSchema,
+  slug: z.string(),
+  name: z.string(),
+  featured_facet_keys: z.array(z.string()).optional(),
+})
+
+export const categoryAncestryEntrySchema = z.object({
+  id: idSchema,
+  slug: z.string(),
+  name: z.string(),
+})
+
+export const categoryResolutionResponseSchema = z.object({
+  category: resolvedCategorySchema,
+  ancestry: z.array(categoryAncestryEntrySchema),
+  canonical_path: z.string(),
 })
 
 export const getCategoriesRequestSchema = z.object({

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { resolveAppIconCssClass } from '@arc/ui/foundation/app-icon.constants'
-import { getRoutePath, routes } from '~/shared/navigation/routes'
+import { buildCategoryPath } from '~/shared/navigation/route-paths'
 import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract'
 
 const props = defineProps<{
@@ -14,9 +14,9 @@ const breadcrumbLinks = computed(() => {
     return []
   }
 
-  return categoryPath.map((category, index) => ({
+  return categoryPath.map(category => ({
     label: category.name,
-    to: getRoutePath(routes.category(categoryPath.slice(0, index + 1).map(item => item.slug))),
+    to: buildCategoryPath(category.slug, category.id),
   }))
 })
 </script>

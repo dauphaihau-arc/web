@@ -18,6 +18,7 @@ const route = useRoute()
 const marketStore = useMarketStore()
 const props = defineProps<{
   categoryId?: Category['id']
+  featuredFacetKeys?: string[]
 }>()
 
 const currency = computed(() => marketStore.guestPreferences?.currency ?? 'USD')
@@ -72,13 +73,6 @@ const filterItems = computed(() => [
 const { state, isResetDisabled, resetFilters } = useProductFilterState(
   createDefaultFilterState(route.query, currency.value),
 )
-
-const currentCategory = computed(() => {
-  if (!props.categoryId) {
-    return undefined
-  }
-  return marketStore.categoriesBreadcrumb.find(category => category.id === props.categoryId)
-})
 
 useProductFilterQuerySync(state, currency)
 </script>
@@ -153,7 +147,7 @@ useProductFilterQuerySync(state, currency)
           <AttributeFacets
             v-model="state.attributeFilters"
             :category-id="props.categoryId"
-            :featured-facet-keys="currentCategory?.featuredFacetKeys"
+            :featured-facet-keys="props.featuredFacetKeys"
           />
         </div>
       </template>

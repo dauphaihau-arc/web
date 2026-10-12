@@ -17,10 +17,8 @@ const categoryImageUrl = (category: Category) => resolveCategoryImageUrl(
 )
 
 const redirectByCategory = (category: Category) => {
-  const to = getRoutePath(routes.category(category.name.replaceAll(' ', '-').toLowerCase()))
-  marketStore.categoriesBreadcrumb = [{ ...category, to }]
   marketStore.userActivities.rootCategoryProductVisited = category
-  navigateTo(to)
+  navigateTo(getRoutePath(routes.category(category.slug, category.id)))
 }
 </script>
 

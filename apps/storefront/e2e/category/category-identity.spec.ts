@@ -248,6 +248,7 @@ test('browses a category with the public category identity', async ({ page }) =>
         id: PUBLIC_CATEGORY_ID,
         parent_id: null,
         name: 'Laptops',
+        slug: 'laptops',
         rank: 1,
         image_url: null,
         featured_facet_keys: [],
@@ -316,7 +317,7 @@ test('browses a category with the public category identity', async ({ page }) =>
 
   await page.getByText('Laptops', { exact: true }).first().click();
 
-  await expect(page).toHaveURL(/\/c\/laptops$/);
+  await expect(page).toHaveURL(new RegExp(`/c/laptops-c${PUBLIC_CATEGORY_ID}$`));
 
   await expect
     .poll(() => listRequests.some(url => new URL(url).searchParams.get('category_id') === PUBLIC_CATEGORY_ID))
@@ -390,7 +391,7 @@ test('hides category browsing controls while an update is required', async ({ pa
   await installStorefrontApiMocks(page, { currentUser: null });
   await page.route(/\/categories\/contract/, route => route.fulfill({ json: { version: '3' } }));
 
-  await page.goto('/c/electronics');
+  await page.goto('/c/electronics-c1');
 
   await expect(page.getByTestId('category-identity-update-card')).toHaveCount(1);
   await expect(page.getByTestId('category-identity-update-card')).toBeVisible();

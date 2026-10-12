@@ -18,6 +18,7 @@ Interactive customer flows should prefer client rendering when they depend heavi
 Typical Storefront split:
 
 - public landing and catalog content: SSR, ISR, or static generation
+- category listings (`/c/:slug-c:publicId`): uncached SSR; identity is resolved from the URL against the API before rendering, so these routes are never static or ISR-cached
 - search and request-specific discovery: SSR
 - cart, checkout, account, and orders: CSR
 

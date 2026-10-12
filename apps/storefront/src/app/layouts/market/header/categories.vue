@@ -13,10 +13,8 @@ const marketStore = useMarketStore()
 const { blocked } = useCategoryIdentityBlocked()
 
 const redirectByCategory = (rootCategory: Category) => {
-  const to = getRoutePath(routes.category(rootCategory.name.replaceAll(' ', '-').toLowerCase()))
-  marketStore.categoriesBreadcrumb = [{ ...rootCategory, to }]
   marketStore.userActivities.rootCategoryProductVisited = rootCategory
-  navigateTo(to)
+  navigateTo(getRoutePath(routes.category(rootCategory.slug, rootCategory.id)))
 }
 </script>
 

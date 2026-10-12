@@ -168,12 +168,40 @@ function buildIpData() {
   };
 }
 
+/**
+ * Category public identities used by the static-suite mocks. Flat category
+ * URLs (`/c/:slug-c:publicId`) require a numeric public id, so ids are decimal
+ * strings and every list category carries its `slug`.
+ */
+export const staticCategoryFixtures: Record<string, { slug: string, name: string }> = {
+  101: { slug: 'jewelry', name: 'Jewelry' },
+  102: { slug: 'art', name: 'Art' },
+  '9007199254740993': { slug: 'laptops', name: 'Laptops' },
+};
+
+export function buildCategoryResolution(id: string) {
+  const fixture = staticCategoryFixtures[id];
+
+  if (!fixture) {
+    return null;
+  }
+
+  const entry = { id, slug: fixture.slug, name: fixture.name };
+
+  return {
+    category: entry,
+    ancestry: [entry],
+    canonical_path: `/c/${fixture.slug}-c${id}`,
+  };
+}
+
 function buildCategories() {
   return [
     {
-      id: 'category-jewelry',
+      id: '101',
       parent_id: null,
       name: 'Jewelry',
+      slug: 'jewelry',
       rank: 1,
       image_storage_key: null,
       image_url: null,
@@ -181,9 +209,10 @@ function buildCategories() {
       attributes: [],
     },
     {
-      id: 'category-art',
+      id: '102',
       parent_id: null,
       name: 'Art',
+      slug: 'art',
       rank: 2,
       image_storage_key: null,
       image_url: null,
@@ -211,7 +240,7 @@ function buildDefaultProductDetail(currency: string) {
 
   return {
     id: 'product-e2e-1',
-    category_id: 'category-jewelry',
+    category_id: '101',
     title: 'Handmade Ring',
     slug: 'handmade-ring',
     variant_type: 'none',
@@ -323,6 +352,18 @@ export async function installStorefrontApiMocks(
 
     if (pathname.endsWith('/categories') && method === 'GET') {
       return fulfillJSON(route, buildCategories());
+    }
+
+    const categoryResolutionMatch = /\/categories\/([^/]+)$/.exec(pathname);
+
+    if (categoryResolutionMatch && method === 'GET') {
+      const resolution = buildCategoryResolution(categoryResolutionMatch[1]);
+
+      if (!resolution) {
+        return fulfillJSON(route, { message: 'Category not found' }, 404);
+      }
+
+      return fulfillJSON(route, resolution);
     }
 
     if (pathname.endsWith('/health/ready') && method === 'GET') {

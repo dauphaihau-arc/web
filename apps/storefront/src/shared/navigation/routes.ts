@@ -81,8 +81,8 @@ export const routes = {
         ...(query.sessionId ? { session_id: query.sessionId } : {}),
       }
       : undefined),
-  category: (categories: string | string[]) =>
-    createRoute(buildCategoryPath(categories)),
+  category: (slug: string, publicId: string) =>
+    createRoute(buildCategoryPath(slug, publicId)),
   productDetail: (shopSlug: string, productSlug: string) =>
     createRoute(buildProductDetailPath(shopSlug, productSlug)),
 } as const;

@@ -6,10 +6,6 @@ export type ExchangeRateStorage = {
   exp: number
 };
 
-export interface CategoriesBreadcrumbStorage extends Category {
-  to: string
-}
-
 export type UserActivitiesSessionStorage = {
   categoryIdProductVisited: Category['id']
   rootCategoryProductVisited: Category

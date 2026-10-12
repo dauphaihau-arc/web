@@ -1,28 +1,22 @@
 <script setup lang="ts">
-import { log } from '@arc/lib'
 import type { Category } from '@arc/models/category'
 import { useGetCategories } from '~/domains/category/queries/categories.query'
 import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-guard'
+import { buildCategoryPath } from '~/shared/navigation/route-paths'
 
-const route = useRoute()
+const props = defineProps<{
+  categoryId: string
+}>()
+
 const marketStore = useMarketStore()
 const { blocked, checking, checkForUpdate } = useCategoryIdentityBlocked()
 
-const params = computed(() => {
-  const category = marketStore.categoriesBreadcrumb.find((c: Category & { to: string }) => c.to === route.fullPath)
-  if (!category) {
-    log.error('params be undefined')
-    return undefined
-  }
-  return {
-    parent_id: category.id,
-  }
-})
+const params = computed(() => ({ parent_id: props.categoryId }))
 
 const {
   isLoading: isLoadingGetCategories,
   data: dataCategories,
-} = useGetCategories(params.value)
+} = useGetCategories(params)
 
 onMounted(() => {
   if (dataCategories.value) {
@@ -31,9 +25,7 @@ onMounted(() => {
 })
 
 const redirectPage = (category: Category) => {
-  const to = `${route.fullPath}/${category.name.replaceAll(' ', '-').toLowerCase()}`
-  marketStore.categoriesBreadcrumb.push({ ...category, to })
-  navigateTo(to)
+  navigateTo(buildCategoryPath(category.slug, category.id))
 }
 </script>
 
@@ -76,7 +68,3 @@ const redirectPage = (category: Category) => {
     </div>
   </div>
 </template>
-
-<style scoped>
-
-</style>
