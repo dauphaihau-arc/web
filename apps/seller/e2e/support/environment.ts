@@ -1,3 +1,5 @@
+import { CATEGORY_IDENTITY_CONTRACT } from '@arc/enums/category';
+
 /**
  * Test-only environment contract for the seller browser suite.
  *
@@ -16,9 +18,6 @@ export const SELLER_E2E_FIXTURES_JSON_ENV = 'SELLER_E2E_FIXTURES_JSON';
 
 /** Environment variable overriding the compatible bundle's generation. */
 export const SELLER_E2E_COMPATIBLE_GENERATION_ENV = 'SELLER_E2E_COMPATIBLE_GENERATION';
-
-/** Generation the compatible bundle speaks unless the caller pins another. */
-export const DEFAULT_COMPATIBLE_GENERATION = '3';
 
 /**
  * Seeded data published by the external API provisioner. Identifiers are opaque
@@ -144,11 +143,11 @@ function parseFixtures(raw: string | undefined): SellerE2eFixtures {
   };
 }
 
-/** Generation the compatible bundle is configured to speak (default `3`). */
+/** Generation the compatible bundle speaks, defaulting to the shared contract. */
 export function resolveSellerE2eCompatibleGeneration(env: Environment = process.env): string {
   const raw = env[SELLER_E2E_COMPATIBLE_GENERATION_ENV];
 
-  return raw === undefined || raw.trim() === '' ? DEFAULT_COMPATIBLE_GENERATION : raw;
+  return raw === undefined || raw.trim() === '' ? CATEGORY_IDENTITY_CONTRACT.VERSION : raw;
 }
 
 /**

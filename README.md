@@ -100,9 +100,10 @@ or CI teardown step. Do not point the suite at production or an arbitrary
 developer database.
 
 The suite checks API readiness and contract compatibility before browser tests.
-The current mismatch runtime remains generation `2`; the compatible runtime
-uses `SELLER_E2E_COMPATIBLE_GENERATION` (default `3`). This is an explicitly
-selected test bundle, not automatic adoption of the backend contract version.
+The mismatch runtime simulates the prepared internal-ID generation `1`;
+the compatible runtime uses `SELLER_E2E_COMPATIBLE_GENERATION`, defaulting to
+the shared category contract (`2`). This is an explicitly selected test bundle,
+not automatic adoption of the backend contract version.
 
 Run browser tests separately from Nuxt typechecks, unit-test environments, or
 static generation that write the same app's generated `.nuxt` state.

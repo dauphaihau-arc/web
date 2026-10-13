@@ -9,10 +9,10 @@ import { loadSellerE2eEnvironment } from './e2e/support/environment'
 const { apiOrigin, compatibleGeneration } = loadSellerE2eEnvironment()
 
 const sellerPort = Number(process.env.SELLER_E2E_PORT ?? 4399)
-// A second, isolated seller runtime that speaks the API's active category
-// identity generation (`3`). It simulates a deployed compatible bundle so the
-// successful assignment journey can run against the real API without changing
-// the seller's default build or the backend.
+
+// A second, isolated seller runtime speaks the expected API generation.
+// The first runtime simulates a prepared client's stale generation, so
+// mismatch coverage does not depend on changing the production API contract.
 const compatibleSellerPort = Number(process.env.SELLER_E2E_COMPATIBLE_PORT ?? 4400)
 
 const sellerServerEnv = {
@@ -35,12 +35,14 @@ export default defineConfig({
   },
   webServer: [
     {
-      // Default seller bundle: speaks generation `2`, so the real API
-      // (generation `3`) must block category-bearing requests. Always started
-      // fresh so it cannot silently reuse a server pointed at a stale API.
+      // Simulated stale-client generation `1` must be rejected by the public-ID
+      // API. Never reuse a server pointed at a different API.
       command: `nuxt dev --port ${sellerPort}`,
       cwd: '.',
-      env: sellerServerEnv,
+      env: {
+        ...sellerServerEnv,
+        NUXT_PUBLIC_CATEGORY_IDENTITY_CONTRACT_VERSION: '1',
+      },
       url: `http://127.0.0.1:${sellerPort}/`,
       reuseExistingServer: false,
       timeout: 240_000,

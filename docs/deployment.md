@@ -14,9 +14,9 @@ Each site should:
 - use the app-local `netlify.toml`
 - publish the app-qualified Netlify output path, for example `apps/storefront/dist`
 
-The two sites use different Netlify targets:
+Both sites use Nitro's Netlify server target:
 
-- **Storefront** (`ssr: true` with prerendered routes) builds with `nuxt generate` and is served as static assets.
+- **Storefront** builds with `nuxt build` and runs on the Nitro server runtime. `/c/**` must resolve categories at request time with SSR enabled and ISR/cache disabled to return authoritative HTTP `301`, `404`, and backend errors; static generation cannot satisfy that contract. Other routes retain their configured ISR/client-rendering rules.
 - **Seller** builds with `nuxt build` and runs on the Nitro server runtime. The seller site needs a runtime for its `/api/**` proxy rule (`nuxt.config.ts`), which forwards browser and SSR requests to `API_BASE_URL`. Static generation cannot serve that proxy, so the seller site must not revert to `nuxt generate`.
 
 Seller routes are server-rendered per route, listed in `routeRules` (`apps/seller/nuxt.config.ts`): the auth pages plus the seller surfaces (`/dashboard`, `/orders`, `/orders/*`, `/products`, `/products/*`, `/coupons`, `/notifications`, `/settings/shipping`). Editor and realtime flows (`/products/new`, `/products/import`, `/messages`) stay client-rendered, and `'/**': { ssr: false }` keeps everything else as-is.
@@ -50,7 +50,7 @@ Sources:
 - Package directory: `apps/seller`
 - Config file: `apps/seller/netlify.toml`
 
-The seller `netlify.toml` sets `NODE_OPTIONS=--max-old-space-size=4096`. The Nitro `netlify` preset bundles the SSR server (server rollup plus node-file-trace) and peaks around 2.3 GB of heap, above Netlify's default Node old-space ceiling (~2 GB), where the build aborts with `Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory`. Do not remove that setting, and do not port it to the storefront site, which prerenders with `nuxt generate` and needs no server bundle.
+Both app-local `netlify.toml` files set `NODE_OPTIONS=--max-old-space-size=4096`. The Nitro `netlify` preset bundles the SSR server (server rollup plus node-file-trace) and needs more heap than Netlify's default Node old-space ceiling (~2 GB). Keep this allowance for both server builds.
 
 ## Ignore rules
 
@@ -79,3 +79,29 @@ So this setup assumes:
 
 - Netlify auto-deploy from Git stays enabled
 - GitHub Actions does not trigger Netlify build hooks for these sites
+
+## Category identity cutover
+
+Deploy seller and storefront as generation `2` bundles only after category
+identity preparation and catalog reprojection have passed the API release gate.
+The staged procedure and SQL preflight live in
+[category public identity cutover runbook](../../api/docs/operations/deployment/category-public-identity-cutover.md)
+in the enclosing Arc checkout; this web checkout can be deployed independently,
+but the category semantic switch must be coordinated with that API release.
+
+- Set `API_BASE_URL` and `API_VERSION=1` at build time. For a server runtime
+  override, set `NUXT_PUBLIC_API_BASE_URL`; this is the actual override for
+  `runtimeConfig.public.apiBaseURL`, not `API_BASE_URL` alone.
+- Do not pin `NUXT_PUBLIC_CATEGORY_IDENTITY_CONTRACT_VERSION=1` on the public-ID
+  build. That value belongs only to a preparation bundle that still uses
+  internal UUID semantics.
+- Keep `/c/**` out of static fallback rewrites and prerendered output. Deploy
+  the generated Nitro functions as well as the app's public assets. Verify a
+  legacy path or wrong slug with redirect auto-follow disabled: one HTTP `301`
+  to the flat canonical URL, followed by `200` at its destination.
+- Seed the hierarchy before traffic; moves, new availability controls, and
+  explicit admin slug edits are deferred. Unsupported hierarchy changes can
+  leave cached facet scope stale for up to five minutes.
+- Root `scripts/verify` covers checks/unit suites, not browser journeys.
+  Run the category SSR, real-API redirect, persisted-state, and seller suites
+  separately using the app READMEs before activation.

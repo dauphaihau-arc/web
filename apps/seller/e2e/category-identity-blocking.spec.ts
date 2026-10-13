@@ -6,8 +6,8 @@ import {
 } from './support/seller-api';
 
 /**
- * Runs against the default seller bundle (generation `2`) with the real API
- * (generation `3`). Every test proves the guard's observable behaviour: the
+ * Runs against a simulated stale-generation seller runtime (`1`) with the real
+ * public-ID API (`2`). Every test proves the guard's observable behaviour: the
  * scoped card replaces the category surface, the app never sends the generation
  * it does not own, exactly one automatic reload happens per browser session,
  * and no category-bearing request — including any create/update submission —
@@ -42,8 +42,8 @@ test('blocks the product list with a single reload and a scoped card', async ({ 
 
   const traffic = observeCategoryTraffic(page);
 
-  // The real API advertises generation 3; this bundle speaks 2, so the guard
-  // must block category-bearing requests and reload once. Start on mobile.
+  // The real API speaks public-ID semantics; this runtime advertises the stale
+  // generation, so the guard blocks and reloads once. Start on mobile.
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/products', { waitUntil: 'domcontentloaded' });
 

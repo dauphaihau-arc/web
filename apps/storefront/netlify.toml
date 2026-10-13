@@ -1,4 +1,8 @@
 [build]
-  command = "pnpm --filter @arc/storefront generate"
+  command = "pnpm --filter @arc/storefront build"
   publish = "apps/storefront/dist"
   ignore = "git diff --quiet \"$CACHED_COMMIT_REF\" \"$COMMIT_REF\" -- apps/storefront packages package.json pnpm-lock.yaml pnpm-workspace.yaml"
+
+# Nitro's Netlify server bundling needs the same heap allowance as seller.
+[build.environment]
+  NODE_OPTIONS = "--max-old-space-size=4096"

@@ -6,8 +6,8 @@ import {
 } from './support/seller-api';
 
 /**
- * Runs against the isolated seller runtime pinned to the API's active category
- * identity generation (`3`) — a deployed compatible bundle. It proves the real
+ * Runs against the isolated seller runtime pinned to the expected public-ID
+ * generation — a deployed compatible bundle. It proves the real
  * seller journey still works after the public-identity cutover: pick the seeded
  * parent/child category ("Apparel › Shirts"), pick the "Size" attribute
  * ("Medium"), save a draft, and read the persisted product back through the
