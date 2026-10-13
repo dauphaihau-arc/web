@@ -3,6 +3,7 @@ import {
 } from 'vitest';
 import {
   buildCategoryPath,
+  isCanonicalCategoryPath,
   parseCategorySegment,
 } from './route-paths';
 
@@ -71,5 +72,21 @@ describe('parseCategorySegment', () => {
   it('rejects the empty and missing param', () => {
     expect(parseCategorySegment(undefined)).toBeNull();
     expect(parseCategorySegment([])).toBeNull();
+  });
+});
+
+describe('isCanonicalCategoryPath', () => {
+  it('matches the canonical path regardless of percent-encoding', () => {
+    expect(isCanonicalCategoryPath('/c/gaming-laptops-c1', '/c/gaming-laptops-c1')).toBe(true);
+    expect(isCanonicalCategoryPath('/c/caf%C3%A9-cadeaux-c11', '/c/caf\u00e9-cadeaux-c11')).toBe(true);
+  });
+
+  it.each([
+    '/c/old-slug-c1',
+    '/c/gaming-laptops-c1/',
+    '/c/gaming-laptops-c2',
+    '/c/home/gaming-laptops',
+  ])('treats %s as non-canonical', (requested) => {
+    expect(isCanonicalCategoryPath(requested, '/c/gaming-laptops-c1')).toBe(false);
   });
 });

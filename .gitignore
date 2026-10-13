@@ -23,6 +23,7 @@ logs
 .vscode
 playwright-report
 test-results
+test-results-real-api
 .conversation
 
 # Local env files

@@ -53,6 +53,12 @@ const FLAT_CATEGORY_SEGMENT_PATTERN = /^(?<slug>.+)-c(?<publicId>[1-9][0-9]*)$/;
 export const CATEGORY_ROUTE_PARAM = 'category';
 
 /**
+ * Route parameter carrying the remaining segments of a legacy hierarchical
+ * path, e.g. `home/gaming-laptops` for `/c/home/gaming-laptops`.
+ */
+export const CATEGORY_LEGACY_ROUTE_PARAM = 'legacyPath';
+
+/**
  * Build the canonical flat URL for a category. All category navigation links
  * must be generated through this single policy.
  */
@@ -82,4 +88,26 @@ export function parseCategorySegment(
   }
 
   return { slug, publicId };
+}
+
+/**
+ * Whether a requested category URL already is the canonical one. Percent
+ * encoding is normalized before comparing so a Unicode slug is not redirected
+ * to itself; any other difference — a wrong slug or a trailing slash — is not
+ * canonical.
+ */
+export function isCanonicalCategoryPath(
+  requestedPath: string,
+  canonicalPath: string,
+): boolean {
+  return decodeCategoryPath(requestedPath) === decodeCategoryPath(canonicalPath);
+}
+
+function decodeCategoryPath(path: string): string {
+  try {
+    return decodeURI(path);
+  }
+  catch {
+    return path;
+  }
 }

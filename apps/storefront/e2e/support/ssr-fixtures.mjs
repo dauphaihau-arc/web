@@ -75,6 +75,30 @@ export const CATEGORY_BY_ID = {
     featured_facet_keys: ['color', 'material'],
     attributes: [],
   },
+  // Unicode slug — the canonical URL must round-trip and a wrong ASCII slug
+  // must canonicalize to it.
+  11: {
+    id: '11',
+    slug: 'caf\u00e9-cadeaux',
+    name: 'Caf\u00e9 Cadeaux',
+    parent_id: null,
+    rank: 5,
+    image_url: null,
+    featured_facet_keys: [],
+    attributes: [],
+  },
+  // Shares the slug `gaming-mice` with category 3. Canonicalization must key off
+  // the public identity, never the slug.
+  13: {
+    id: '13',
+    slug: 'gaming-mice',
+    name: 'Gaming_Mice',
+    parent_id: null,
+    rank: 6,
+    image_url: null,
+    featured_facet_keys: [],
+    attributes: [],
+  },
 };
 
 /** Root categories returned by `GET /categories` (list responses expose slug). */
@@ -87,6 +111,8 @@ export const ANCESTRY_BY_ID = {
   9: ['9'],
   20: ['20'],
   30: ['30'],
+  11: ['11'],
+  13: ['13'],
 };
 
 export const CANONICAL_PATH_BY_ID = {
@@ -95,7 +121,25 @@ export const CANONICAL_PATH_BY_ID = {
   9: '/c/empty-shelf-c9',
   20: '/c/pagination-lab-c20',
   30: '/c/filter-lab-c30',
+  11: '/c/caf\u00e9-cadeaux-c11',
+  13: '/c/gaming-mice-c13',
 };
+
+/**
+ * Permanently owned legacy hierarchical paths, bound to the category identity
+ * that owns them (never to a destination URL). A legacy path's canonical
+ * destination is always the owner's current `CANONICAL_PATH_BY_ID`.
+ */
+export const LEGACY_CATEGORY_ID_BY_PATH = {
+  '/c/home/gaming-laptops': '1',
+  '/c/home/gaming-mice': '3',
+  '/c/home/caf\u00e9-cadeaux': '11',
+  // Legacy URL that historically belonged to the EU duplicate-slug category.
+  '/c/legacy-gaming-mice': '13',
+};
+
+/** A legacy path whose backend resolution fails, to prove errors stay errors. */
+export const FAILING_LEGACY_PATH = '/c/broken/legacy';
 
 /** Public identity whose resolution fails with a backend error (not a 404). */
 export const FAILING_CATEGORY_ID = '500';
@@ -178,6 +222,8 @@ export const PRODUCTS = {
       created_at: '2026-03-02T00:00:00.000Z',
     },
   ],
+  11: [],
+  13: [],
 };
 
 /** Category attributes carried by the filter-aware fixture products. */
@@ -212,6 +258,8 @@ export const FACETS_BY_ID = {
   ],
   9: [],
   20: [],
+  11: [],
+  13: [],
 };
 
 /**
@@ -439,6 +487,23 @@ export function resolveFixtureRequest(method, requestUrl) {
   if (method === 'GET' && path === '/categories') {
     const parentId = searchParams.get('parent_id') ?? undefined;
     return { status: 200, body: listCategories(parentId) };
+  }
+
+  if (method === 'GET' && path === '/categories/legacy-path') {
+    const legacyPath = searchParams.get('path') ?? '';
+
+    if (legacyPath === FAILING_LEGACY_PATH) {
+      return { status: 500, body: { message: 'category backend unavailable' } };
+    }
+
+    const ownerId = LEGACY_CATEGORY_ID_BY_PATH[legacyPath];
+    const resolution = ownerId ? resolutionFor(ownerId) : null;
+
+    if (!resolution) {
+      return { status: 404, body: { message: 'category not found' } };
+    }
+
+    return { status: 200, body: resolution };
   }
 
   const resolutionMatch = /^\/categories\/([^/]+)$/.exec(path);

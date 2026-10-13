@@ -49,6 +49,43 @@ E2E_MODE=ssr playwright test --config ./playwright.config.ts e2e/category/catego
   listing and facet scope therefore resolve against the same seeded subtree, and
   the API's five-minute taxonomy-subtree cache is consistent with it; the suite
   makes no immediate post-mutation consistency claim.
+- Category canonicalization fixtures (`LEGACY_CATEGORY_ID_BY_PATH`,
+  `CANONICAL_PATH_BY_ID`) model permanently owned legacy paths, a Unicode slug,
+  and two categories that share one slug. Every redirect is asserted with
+  `maxRedirects: 0` so the spec proves the actual `301` and `Location`, then
+  fetches the destination again to prove it serves `200` with no second redirect.
+
+## Real-API mode
+
+The category canonicalization journey also has a real-backend mode that runs the
+built storefront against a **real API over HTTP on a fresh, migrated PostgreSQL
+database** — no backend fixture. The API harness
+(`apps/api/api/test/support/category-redirect-e2e-api.ts`) inserts categories
+before the identity migration runs, so slugs and permanently owned legacy-path
+aliases come from persisted rows, then boots the real `AppModule` and prints a
+ready line carrying the origin and fixture paths.
+
+```bash
+# 1. Build the storefront SSR output
+pnpm e2e:ssr:build
+
+# 2. Start the real API harness (apps/api/api) and read its CATEGORY_E2E_READY line
+node -r ts-node/register/transpile-only -r tsconfig-paths/register \
+  test/support/category-redirect-e2e-api.ts
+
+# 3. Run the journey with the reported origin + fixtures (storefront dir)
+CATEGORY_E2E_API_ORIGIN=<origin> CATEGORY_E2E_FIXTURES_JSON='<fixtures>' \
+  npx playwright test --config ./playwright.category-redirect.config.ts
+```
+
+- `playwright.category-redirect.config.ts` refuses to run without
+  `CATEGORY_E2E_API_ORIGIN`, and points the server at the harness through
+  `NUXT_PUBLIC_API_BASE_URL` (a public `runtimeConfig` value is only overridable
+  at runtime through its `NUXT_PUBLIC_*` env var).
+- The harness allows exactly the storefront origin through CORS, mirroring the
+  deployment's `CORS_ALLOWED_ORIGINS`; without it the browser cannot reach the
+  real API.
+- The harness drops its own database on shutdown, so no fixture outlives a run.
 
 ## Current specs
 
@@ -56,6 +93,8 @@ E2E_MODE=ssr playwright test --config ./playwright.config.ts e2e/category/catego
 - `auth/login.spec.ts`
 - `category/category-identity.spec.ts` (static mode)
 - `category/category-direct-access.spec.ts` (SSR mode)
+- `category/category-canonical-redirects.spec.ts` (SSR mode)
+- `e2e-real-api/category-real-api-redirect.spec.ts` (real API + PostgreSQL)
 - `checkout/redirect.spec.ts`
 - `guest-orders/lookup.spec.ts`
 - `preferences/currency-product-price.spec.ts`
