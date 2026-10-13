@@ -2,6 +2,22 @@
 
 The web repo deploys to Netlify with two separate sites connected to the same Git repository.
 
+## CI/CD
+
+GitHub Actions runs app-aware validation:
+
+- `storefront` changes run storefront lint, typecheck, tests, and build
+- `seller` changes run seller lint, typecheck, tests, and build
+- shared `packages/*` changes trigger both app pipelines
+
+The web apps deploy to Netlify as two separate sites from the same repository:
+
+- storefront builds `apps/storefront`
+- seller builds `apps/seller`
+- each site uses its app-local `netlify.toml` with ignore rules so unrelated
+  pushes can be skipped
+
+
 ## Deployment model
 
 - storefront site
