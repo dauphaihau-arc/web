@@ -1,4 +1,5 @@
 import { toMinorUnits } from '@arc/utils';
+import { PRODUCT_FILTER_QUERY_KEYS } from '~/domains/product/ui/filters/product-filter-query';
 import {
   getPricePresetRanges,
   isDigitalOpts,
@@ -160,11 +161,8 @@ export function useProductFilterQuerySync(
   const router = useRouter();
 
   const controlledQueryKeys = new Set<string>([
-    'is_digital',
+    ...PRODUCT_FILTER_QUERY_KEYS,
     'price',
-    'min_price',
-    'max_price',
-    'who_made',
     'attribute_filters',
   ]);
   const queryKeyByStateKey: Partial<Record<keyof ProductFilterState, string>> = {

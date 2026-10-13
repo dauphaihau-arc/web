@@ -62,6 +62,19 @@ export const CATEGORY_BY_ID = {
     featured_facet_keys: [],
     attributes: [],
   },
+  // Root whose backend facets are filter-aware (see
+  // FACET_DEFINITIONS_BY_CATEGORY), so a browser transition can observe both
+  // the listing and the facet alternatives narrowing.
+  30: {
+    id: '30',
+    slug: 'filter-lab',
+    name: 'Filter Lab',
+    parent_id: null,
+    rank: 4,
+    image_url: null,
+    featured_facet_keys: ['color', 'material'],
+    attributes: [],
+  },
 };
 
 /** Root categories returned by `GET /categories` (list responses expose slug). */
@@ -73,6 +86,7 @@ export const ANCESTRY_BY_ID = {
   3: ['1', '3'],
   9: ['9'],
   20: ['20'],
+  30: ['30'],
 };
 
 export const CANONICAL_PATH_BY_ID = {
@@ -80,6 +94,7 @@ export const CANONICAL_PATH_BY_ID = {
   3: '/c/gaming-mice-c3',
   9: '/c/empty-shelf-c9',
   20: '/c/pagination-lab-c20',
+  30: '/c/filter-lab-c30',
 };
 
 /** Public identity whose resolution fails with a backend error (not a 404). */
@@ -141,6 +156,40 @@ export const PRODUCTS = {
   ],
   9: [],
   20: PAGINATION_LAB_PRODUCTS,
+  30: [
+    {
+      id: 'product-filter-lab-black-cotton',
+      shop: { id: 'shop-e2e-1', shop_name: 'Arc Supplies', slug: 'arc-supplies' },
+      category_id: '30',
+      title: 'Filter Lab Black Cotton',
+      slug: 'filter-lab-black-cotton',
+      availability: { in_stock: true, low_stock: false, stock_total: 4 },
+      variant_count: 1,
+      created_at: '2026-03-01T00:00:00.000Z',
+    },
+    {
+      id: 'product-filter-lab-white-linen',
+      shop: { id: 'shop-e2e-1', shop_name: 'Arc Supplies', slug: 'arc-supplies' },
+      category_id: '30',
+      title: 'Filter Lab White Linen',
+      slug: 'filter-lab-white-linen',
+      availability: { in_stock: true, low_stock: false, stock_total: 4 },
+      variant_count: 1,
+      created_at: '2026-03-02T00:00:00.000Z',
+    },
+  ],
+};
+
+/** Category attributes carried by the filter-aware fixture products. */
+export const PRODUCT_ATTRIBUTES_BY_ID = {
+  'product-filter-lab-black-cotton': [
+    { key: 'color', value: 'Black' },
+    { key: 'material', value: 'Cotton' },
+  ],
+  'product-filter-lab-white-linen': [
+    { key: 'color', value: 'White' },
+    { key: 'material', value: 'Linen' },
+  ],
 };
 
 export const FACETS_BY_ID = {
@@ -164,6 +213,95 @@ export const FACETS_BY_ID = {
   9: [],
   20: [],
 };
+
+/**
+ * Facets whose options are computed from the eligible products of the current
+ * query, mirroring the backend contract: a facet's own filter is excluded while
+ * every other active filter is honored. This lets a browser regression observe
+ * facet alternatives narrowing, not just a static payload.
+ */
+export const FILTER_AWARE_FACETS_BY_ID = {
+  30: [
+    {
+      facet_key: 'color',
+      attribute_name: 'Color',
+      options: [
+        { option_key: 'black', value: 'Black' },
+        { option_key: 'white', value: 'White' },
+      ],
+    },
+    {
+      facet_key: 'material',
+      attribute_name: 'Material',
+      options: [
+        { option_key: 'cotton', value: 'Cotton' },
+        { option_key: 'linen', value: 'Linen' },
+      ],
+    },
+  ],
+};
+
+function toOptionKey(value) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+}
+
+function activeAttributeFilters(searchParams) {
+  const filters = {};
+
+  for (const [key, value] of searchParams.entries()) {
+    if (!key.startsWith('attr_')) {
+      continue;
+    }
+
+    filters[key.slice('attr_'.length)] = new Set(
+      value.split(',').map(entry => entry.trim()).filter(Boolean),
+    );
+  }
+
+  return filters;
+}
+
+function attributeFor(product, facetKey) {
+  return (PRODUCT_ATTRIBUTES_BY_ID[product.id] ?? []).find(entry => entry.key === facetKey);
+}
+
+function productMatchesFilters(product, filters, excludedFacetKey) {
+  return Object.entries(filters).every(([facetKey, optionKeys]) => {
+    if (facetKey === excludedFacetKey) {
+      return true;
+    }
+
+    const attribute = attributeFor(product, facetKey);
+    return attribute ? optionKeys.has(toOptionKey(attribute.value)) : false;
+  });
+}
+
+function filterAwareFacets(categoryId, searchParams) {
+  const definitions = FILTER_AWARE_FACETS_BY_ID[categoryId] ?? [];
+  const filters = activeAttributeFilters(searchParams);
+  const products = PRODUCTS[categoryId] ?? [];
+
+  return definitions.map(facet => ({
+    facet_key: facet.facet_key,
+    attribute_name: facet.attribute_name,
+    options: facet.options.filter(option => products.some((product) => {
+      const attribute = attributeFor(product, facet.facet_key);
+      return productMatchesFilters(product, filters, facet.facet_key)
+        && attribute
+        && toOptionKey(attribute.value) === option.option_key;
+    })),
+  }));
+}
+
+function productListItems(categoryId, searchParams) {
+  const filters = activeAttributeFilters(searchParams);
+
+  return (PRODUCTS[categoryId] ?? []).filter(product => productMatchesFilters(product, filters));
+}
 
 export function ancestryFor(id) {
   return (ANCESTRY_BY_ID[id] ?? []).map((ancestorId) => {
@@ -324,6 +462,9 @@ export function resolveFixtureRequest(method, requestUrl) {
     if (categoryId === '') {
       return { status: 200, body: { facets: [] } };
     }
+    if (categoryId in FILTER_AWARE_FACETS_BY_ID) {
+      return { status: 200, body: { facets: filterAwareFacets(categoryId, searchParams) } };
+    }
     if (!(categoryId in FACETS_BY_ID)) {
       return { status: 404, body: { message: 'category not found' } };
     }
@@ -339,7 +480,7 @@ export function resolveFixtureRequest(method, requestUrl) {
     if (!(categoryId in PRODUCTS)) {
       return { status: 404, body: { message: 'category not found' } };
     }
-    return { status: 200, body: productListResponse(PRODUCTS[categoryId], requestUrl) };
+    return { status: 200, body: productListResponse(productListItems(categoryId, searchParams), requestUrl) };
   }
 
   // Home rails: deterministic and empty so unrelated sections never trip the

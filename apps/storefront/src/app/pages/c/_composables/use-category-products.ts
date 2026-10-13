@@ -1,21 +1,14 @@
 import { useGetProducts } from '~/domains/product/queries/products.query';
+import {
+  isAttributeFilterQueryKey,
+  isProductFilterQueryKey,
+} from '~/domains/product/ui/filters/product-filter-query';
 
 /**
  * Page size for the category listing. Kept as a module constant because the
  * listing is the single owner of category pagination.
  */
 const PAGE_LIMIT = 16;
-
-/**
- * Query keys that describe an active product filter. Any `attr_*` key also
- * counts; this table plus the attribute prefix mirrors what the listing renders.
- */
-const FILTER_QUERY_KEYS: Record<string, true> = {
-  is_digital: true,
-  min_price: true,
-  max_price: true,
-  who_made: true,
-};
 
 function getRoutePage(queryPage: unknown): number {
   const value = Array.isArray(queryPage) ? queryPage[0] : queryPage;
@@ -47,11 +40,11 @@ function normalizeRouteQuery(query: Record<string, unknown>): Record<string, str
 
 function hasActiveFilterQuery(query: Record<string, unknown>): boolean {
   return Object.entries(query).some(([key, value]) => {
-    if (key.startsWith('attr_')) {
+    if (isAttributeFilterQueryKey(key)) {
       return true;
     }
 
-    if (!Object.hasOwn(FILTER_QUERY_KEYS, key)) {
+    if (!isProductFilterQueryKey(key)) {
       return false;
     }
 

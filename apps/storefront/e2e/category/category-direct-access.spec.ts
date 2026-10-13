@@ -21,6 +21,7 @@ const FIXTURE_ORIGIN = `http://127.0.0.1:${process.env.E2E_FIXTURE_PORT ?? 4310}
 const FLAT_LAPTOPS_URL = '/c/gaming-laptops-c1';
 const FLAT_MICE_URL = '/c/gaming-mice-c3';
 const FLAT_PAGINATION_URL = '/c/pagination-lab-c20';
+const FLAT_FILTER_LAB_URL = '/c/filter-lab-c30';
 
 type FixtureRequest = {
   method: string
@@ -300,6 +301,154 @@ test.describe('flat category direct access and reload (SSR)', () => {
     expect(listRequest).toBeDefined();
     expect(listRequest?.search).toContain('category_id=1');
     expect(listRequest?.search).toContain('min_price=50');
+  });
+
+  test('selecting a facet threads the active filters into the facet request', async ({ page, request }) => {
+    await page.goto(FLAT_LAPTOPS_URL);
+    await expectProductsVisible(page, ['Aurora Gaming Laptop']);
+
+    await page.getByText('Aurora', { exact: true }).first().click();
+
+    await expect(page).toHaveURL(url => new URL(url).searchParams.get('attr_brand') === 'aurora');
+
+    // Facet alternatives are computed against the active filters, so the facet
+    // request must carry them rather than only the category identity.
+    await expect.poll(async () => {
+      const requests = await fixtureRequests(request);
+      return requests.some(
+        entry => entry.path === '/v1/products/facets'
+          && entry.search.includes('category_id=1')
+          && entry.search.includes('attr_brand=aurora'),
+      );
+    }).toBe(true);
+
+    const requests = await fixtureRequests(request);
+    expect(requests.some(
+      entry => entry.path === '/v1/products'
+        && entry.search.includes('attr_brand=aurora'),
+    )).toBe(true);
+
+    // The selected facet keeps its other alternatives visible.
+    await expect(page.getByText('Aurora', { exact: true }).first()).toBeVisible();
+    await expect(page.getByText('Nimbus', { exact: true }).first()).toBeVisible();
+    expect(requests.filter(entry => entry.unexpected)).toEqual([]);
+  });
+
+  test('a facet transition keeps unavailable options visible but disabled and preserves the selected facet alternatives', async ({ page, request }) => {
+    await page.goto(FLAT_FILTER_LAB_URL);
+    await expectProductsVisible(page, ['Filter Lab Black Cotton', 'Filter Lab White Linen']);
+
+    // Baseline: both facets offer both eligible options, all selectable.
+    await expect(page.locator('#attribute-facet-color-black')).toBeEnabled();
+    await expect(page.locator('#attribute-facet-color-white')).toBeEnabled();
+    await expect(page.locator('#attribute-facet-material-cotton')).toBeEnabled();
+    await expect(page.locator('#attribute-facet-material-linen')).toBeEnabled();
+
+    // Select Color=Black: the listing narrows, Color keeps its alternatives
+    // (own filter excluded), and Material's no-longer-eligible option stays
+    // visible but becomes disabled rather than disappearing.
+    await page.locator('#attribute-facet-color-black').click();
+    await expect(page).toHaveURL(url => new URL(url).searchParams.get('attr_color') === 'black');
+    await expectProductsVisible(page, ['Filter Lab Black Cotton']);
+    await expect(page.getByText('Filter Lab White Linen', { exact: true })).toHaveCount(0, { timeout: 20_000 });
+    await expect(page.locator('#attribute-facet-color-white')).toBeEnabled();
+    await expect(page.locator('#attribute-facet-material-cotton')).toBeEnabled();
+    await expect(page.locator('#attribute-facet-material-linen')).toBeDisabled();
+
+    // The facet request carried the active filter, so the availability was
+    // computed by the backend with the own filter excluded, not locally.
+    await expect.poll(async () => {
+      const requests = await fixtureRequests(request);
+      return requests.some(entry => entry.path === '/v1/products/facets'
+        && entry.search.includes('category_id=30')
+        && entry.search.includes('attr_color=black'));
+    }).toBe(true);
+
+    // Clear Color: the disabled option becomes selectable again.
+    await page.locator('#attribute-facet-color-black').click();
+    await expect(page).toHaveURL(url => new URL(url).searchParams.get('attr_color') === null);
+    await expect(page.locator('#attribute-facet-material-linen')).toBeEnabled({ timeout: 20_000 });
+
+    // Select Material=Linen: the symmetric narrowing, with the selected
+    // Material facet keeping its own alternatives and Color's Black disabled.
+    await page.locator('#attribute-facet-material-linen').click();
+    await expect(page).toHaveURL(url => new URL(url).searchParams.get('attr_material') === 'linen');
+    await expectProductsVisible(page, ['Filter Lab White Linen']);
+    await expect(page.getByText('Filter Lab Black Cotton', { exact: true })).toHaveCount(0, { timeout: 20_000 });
+    await expect(page.locator('#attribute-facet-material-cotton')).toBeEnabled();
+    await expect(page.locator('#attribute-facet-color-white')).toBeEnabled();
+    await expect(page.locator('#attribute-facet-color-black')).toBeDisabled({ timeout: 20_000 });
+
+    expect((await fixtureRequests(request)).filter(entry => entry.unexpected)).toEqual([]);
+  });
+
+  test('an unavailable option stays visible and disabled, and clears back to enabled', async ({ page, request }) => {
+    await page.goto(FLAT_FILTER_LAB_URL);
+    await expectProductsVisible(page, ['Filter Lab Black Cotton']);
+
+    // Select Cotton: the only remaining product is Black+Cotton, so Color's
+    // White is unavailable — but it must still be shown, disabled.
+    await page.locator('#attribute-facet-material-cotton').click();
+    await expect(page).toHaveURL(url => new URL(url).searchParams.get('attr_material') === 'cotton');
+    await expectProductsVisible(page, ['Filter Lab Black Cotton']);
+
+    await expect(page.locator('#attribute-facet-color-white')).toBeVisible();
+    await expect(page.locator('#attribute-facet-color-white')).toBeDisabled({ timeout: 20_000 });
+    await expect(page.locator('#attribute-facet-color-black')).toBeEnabled();
+    // The selected facet keeps its own alternatives selectable.
+    await expect(page.locator('#attribute-facet-material-cotton')).toBeEnabled();
+    await expect(page.locator('#attribute-facet-material-linen')).toBeEnabled();
+
+    // Clearing the selection restores the unavailable option.
+    await page.locator('#attribute-facet-material-cotton').click();
+    await expect(page).toHaveURL(url => new URL(url).searchParams.get('attr_material') === null);
+    await expect(page.locator('#attribute-facet-color-white')).toBeEnabled({ timeout: 20_000 });
+
+    expect((await fixtureRequests(request)).filter(entry => entry.unexpected)).toEqual([]);
+  });
+
+  test('a direct filtered load requests a category-only baseline instead of hiding the unavailable option', async ({ page, request }) => {
+    // Direct load with an active filter: the baseline must come from a fresh
+    // category-only facet request, not from the cached filtered response.
+    await page.goto(`${FLAT_FILTER_LAB_URL}?attr_material=cotton`);
+    await expectProductsVisible(page, ['Filter Lab Black Cotton']);
+
+    await expect(page.locator('#attribute-facet-color-white')).toBeVisible();
+    await expect(page.locator('#attribute-facet-color-white')).toBeDisabled({ timeout: 20_000 });
+    await expect(page.locator('#attribute-facet-material-cotton')).toBeChecked();
+    await expect(page.locator('#attribute-facet-material-cotton')).toBeEnabled();
+
+    await expect.poll(async () => {
+      const requests = await fixtureRequests(request);
+      return requests.some(entry => entry.path === '/v1/products/facets'
+        && entry.search.includes('category_id=30')
+        && !entry.search.includes('attr_'));
+    }).toBe(true);
+
+    // Reload keeps the same view.
+    await page.reload();
+    await expect(page.locator('#attribute-facet-color-white')).toBeDisabled({ timeout: 20_000 });
+
+    expect((await fixtureRequests(request)).filter(entry => entry.unexpected)).toEqual([]);
+  });
+
+  test('a selected option that the active filters make incompatible stays checked and removable', async ({ page, request }) => {
+    // No fixture product is White+Cotton, so both selections narrow the listing
+    // to nothing. The shopper's own choices must stay checked and clearable.
+    await page.goto(`${FLAT_FILTER_LAB_URL}?attr_color=white&attr_material=cotton`);
+    await expect(page.getByText('No results found', { exact: true })).toBeVisible({ timeout: 20_000 });
+
+    const white = page.locator('#attribute-facet-color-white');
+    await expect(white).toBeChecked();
+    await expect(white).toBeEnabled();
+    await expect(page.locator('#attribute-facet-material-cotton')).toBeChecked();
+    await expect(page.locator('#attribute-facet-material-cotton')).toBeEnabled();
+
+    await white.click();
+    await expect(page).toHaveURL(url => new URL(url).searchParams.get('attr_color') === null);
+    await expectProductsVisible(page, ['Filter Lab Black Cotton']);
+
+    expect((await fixtureRequests(request)).filter(entry => entry.unexpected)).toEqual([]);
   });
 
   test('paging with active filters and sort writes the page to the URL, requests that page, and renders that page\'s products', async ({ page, request }) => {
