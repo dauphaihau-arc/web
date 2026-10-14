@@ -112,8 +112,8 @@ const removeImageInDB = (id: string, index: number) => {
             v-if="!props.loading"
             class="wrapper-close-icon"
           >
-            <UIcon
-              name="i-material-symbols:cancel-rounded"
+            <AppIcon
+              name="xCircle"
               class="size-full p-12 text-white"
             />
           </div>
@@ -144,8 +144,8 @@ const removeImageInDB = (id: string, index: number) => {
             v-if="!props.loading"
             class="wrapper-close-icon"
           >
-            <UIcon
-              name="i-material-symbols:cancel-rounded"
+            <AppIcon
+              name="xCircle"
               class="size-full p-12 text-white"
             />
           </div>

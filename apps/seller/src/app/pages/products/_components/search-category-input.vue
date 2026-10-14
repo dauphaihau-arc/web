@@ -162,9 +162,9 @@ watch(querySuggestion, () => {
               <p class="break-words">
                 {{ nameCategory }}
               </p>
-              <UIcon
+              <AppIcon
                 v-if="categoryData.relatedCategories[idx + 1]"
-                name="i-material-symbols:play-arrow"
+                name="play"
                 class="size-3"
               />
             </div>

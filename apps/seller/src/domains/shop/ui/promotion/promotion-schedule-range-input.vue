@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import PromotionScheduleOccurrenceField from './promotion-schedule-occurrence-field.vue'
 import PromotionScheduleSuggestDateInput from './promotion-schedule-suggest-date-input.vue'
 import {
@@ -88,13 +87,13 @@ function applyPreset(index: number) {
         :ui="{ font: 'font-normal' }"
       >
         <span class="inline-flex items-center gap-2">
-          <UIcon
-            :name="ICON_NAME_BY_ALIAS['calendarDaysSolid']"
+          <AppIcon
+            name="calendarDaysSolid"
             class="size-5"
           />
           <span>{{ startLabel }}</span>
-          <UIcon
-            :name="ICON_NAME_BY_ALIAS['arrowRight']"
+          <AppIcon
+            name="arrowRight"
             class="size-4 stroke-2"
           />
           <span>{{ endLabel }}</span>

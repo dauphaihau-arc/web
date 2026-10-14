@@ -77,8 +77,8 @@ watch(state, () => {
             class="size-image"
           />
           <div class="wrapper-close-icon">
-            <UIcon
-              name="i-material-symbols:cancel-rounded"
+            <AppIcon
+              name="xCircle"
               class="size-full p-12 text-white"
             />
           </div>

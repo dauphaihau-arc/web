@@ -64,8 +64,8 @@ function handleDrop(event: DragEvent) {
       @click.stop
     />
     <div class="mb-4 flex size-12 items-center justify-center rounded-full bg-surface-muted text-text-muted">
-      <UIcon
-        name="i-heroicons-document-arrow-up"
+      <AppIcon
+        name="fileUp"
         class="size-6"
       />
     </div>

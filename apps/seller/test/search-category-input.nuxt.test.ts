@@ -21,7 +21,7 @@ describe('SearchCategoryInput', () => {
       },
       global: {
         stubs: {
-          UIcon: true,
+          AppIcon: true,
         },
       },
     });

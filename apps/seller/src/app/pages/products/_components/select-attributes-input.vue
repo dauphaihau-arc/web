@@ -102,8 +102,8 @@ watch(() => state, () => {
           v-if="state[attr.id]"
           class="hidden group-hover:block"
         >
-          <UIcon
-            name="i-material-symbols:cancel-rounded"
+          <AppIcon
+            name="xCircle"
             class="absolute right-9 top-3 size-4 cursor-pointer text-text-muted"
             @click="() => state[attr.id] = ''"
           />

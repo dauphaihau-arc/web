@@ -45,8 +45,8 @@ const formattedRowCount = computed(() =>
       </div>
 
       <div class="flex items-center gap-2 text-state-success-text">
-        <UIcon
-          name="i-heroicons-check-circle"
+        <AppIcon
+          name="circleCheck"
           class="size-4 shrink-0"
         />
         <span class="font-medium">
