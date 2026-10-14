@@ -6,20 +6,23 @@ import { buildFacetOptionView } from '~/domains/product/ui/filters/facet-option-
 import {
   buildFacetBaselineQuery,
   buildFacetRequestQuery,
+  type ProductFacetScope,
 } from '~/domains/product/ui/filters/product-filter-query';
 import { useGetProductFacets } from '~/domains/product/queries/products.query';
 
 type ProductFacetsInput = {
-  categoryId: MaybeRefOrGetter<string | undefined>
+  scope: MaybeRefOrGetter<ProductFacetScope>
   /** Current shopper selections; selected options stay visible and clearable. */
   selections: MaybeRefOrGetter<AttributeFilter[]>
-  /** When the category has children, only these facet keys are offered. */
+  /** When the scope's category has children, only these facet keys are offered. */
   featuredFacetKeys?: MaybeRefOrGetter<string[] | undefined>
 };
 
 /**
- * Category-scoped facet panel data shared by the desktop filter panel and the
+ * Listing-scoped facet panel data shared by the desktop filter panel and the
  * mobile filter sheet: the option list, availability flags, and loading state.
+ * The scope is a category node or a search keyword; a scope with neither issues
+ * no request.
  *
  * The filtered request carries the active filter set so the backend computes
  * each facet's alternatives with every filter except its own; the baseline
@@ -29,26 +32,17 @@ type ProductFacetsInput = {
 export function useProductFacets(input: ProductFacetsInput) {
   const route = useRoute();
 
-  const facetParams = computed(() => {
-    const categoryId = toValue(input.categoryId);
+  const scope = computed(() => toValue(input.scope));
+  const categoryId = computed(() => scope.value.categoryId);
 
-    if (!categoryId) {
-      return undefined;
-    }
-
-    return buildFacetRequestQuery(categoryId, route.query);
-  });
+  const facetParams = computed(() => buildFacetRequestQuery(scope.value, route.query));
 
   const {
     data: dataGetProductFacets,
     isPending: isPendingGetProductFacets,
   } = useGetProductFacets(facetParams);
 
-  const baselineFacetParams = computed(() => {
-    const categoryId = toValue(input.categoryId);
-
-    return categoryId ? buildFacetBaselineQuery(categoryId) : undefined;
-  });
+  const baselineFacetParams = computed(() => buildFacetBaselineQuery(scope.value));
 
   const {
     data: dataBaselineFacets,
@@ -59,27 +53,29 @@ export function useProductFacets(input: ProductFacetsInput) {
     data: dataChildCategories,
     isPending: isPendingGetChildCategories,
   } = useQuery<Category[]>({
-    enabled: computed(() => !!toValue(input.categoryId)),
-    queryKey: computed(() => ['get-child-categories', toValue(input.categoryId)]),
+    enabled: computed(() => !!categoryId.value),
+    queryKey: computed(() => ['get-child-categories', categoryId.value]),
     queryFn: async () => {
-      const categoryId = toValue(input.categoryId);
+      const parentId = categoryId.value;
 
-      if (!categoryId) {
+      if (!parentId) {
         return [];
       }
 
       const response = await categoryApi.getCategories({
-        parent_id: categoryId,
+        parent_id: parentId,
       });
 
       return response.map(normalizeCategory);
     },
   });
 
+  // A disabled child-category query stays `isPending`, so the category-only leg
+  // is gated on the scope actually carrying a category.
   const isLoading = computed(() => {
     return isPendingGetProductFacets.value
       || isPendingBaselineFacets.value
-      || isPendingGetChildCategories.value;
+      || (!!categoryId.value && isPendingGetChildCategories.value);
   });
 
   const facets = computed(() => {

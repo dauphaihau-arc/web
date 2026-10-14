@@ -5,7 +5,7 @@ import ProductResults from './product-results.vue'
 import SubCategories from './sub-categories.vue'
 import Filters from '~/domains/product/ui/filters/product-filters.vue'
 import SortProductsBy from '~/domains/product/ui/sort-products-by.vue'
-import { provideCategoryFilters } from '~/domains/product/ui/filters/use-category-filters'
+import { provideProductListingFilters } from '~/domains/product/ui/filters/use-product-listing-filters'
 import { usePricePresetOptions } from '~/domains/product/ui/filters/use-price-preset-options'
 import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-guard'
 import type { CategoryResolution } from '~/domains/category/utils/category.normalizer'
@@ -36,7 +36,7 @@ const {
 // panel, the mobile filter bar and sheet, and the sort control all read and
 // write it instead of each owning a private copy that fights over the query.
 const { currency } = usePricePresetOptions()
-provideCategoryFilters(currency)
+provideProductListingFilters(currency)
 
 // The mobile toolbar sticks below the header while it is revealed and flush to
 // the viewport top once the header scrolls away.

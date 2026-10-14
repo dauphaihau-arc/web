@@ -7,15 +7,16 @@ import {
   productWhoMadeOpts,
   type PricePresetId,
 } from '~/domains/product/ui/filters/product-filter.constants'
-import { useCategoryFilters } from '~/domains/product/ui/filters/use-category-filters'
+import { useProductListingFilters } from '~/domains/product/ui/filters/use-product-listing-filters'
 import { usePricePresetOptions } from '~/domains/product/ui/filters/use-price-preset-options'
 
 const props = defineProps<{
   categoryId?: Category['id']
+  search?: string
   featuredFacetKeys?: string[]
 }>()
 
-const { state, isResetDisabled, resetFilters } = useCategoryFilters()
+const { state, isResetDisabled, resetFilters } = useProductListingFilters()
 const { currency, pricePresetOpts } = usePricePresetOptions()
 
 const filterItems = computed(() => [
@@ -112,6 +113,7 @@ const filterItems = computed(() => [
           <AttributeFacets
             v-model="state.attributeFilters"
             :category-id="props.categoryId"
+            :search="props.search"
             :featured-facet-keys="props.featuredFacetKeys"
           />
         </div>

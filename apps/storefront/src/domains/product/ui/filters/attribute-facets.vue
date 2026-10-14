@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import type { Category } from '@arc/models/category'
 import type { AttributeFilter } from '~/domains/product/ui/filters/product-filter.constants'
+import type { ProductFacetScope } from '~/domains/product/ui/filters/product-filter-query'
 import { toggleFacetSelection } from '~/domains/product/ui/filters/facet-option-view'
 import { useProductFacets } from '~/domains/product/ui/filters/use-product-facets'
 
 const props = defineProps<{
   categoryId?: Category['id']
+  search?: string
   featuredFacetKeys?: string[]
   modelValue: AttributeFilter[]
 }>()
@@ -16,8 +18,13 @@ const emit = defineEmits<{
 
 const state = ref<AttributeFilter[]>([])
 
+const scope = computed<ProductFacetScope>(() => ({
+  categoryId: props.categoryId,
+  search: props.search,
+}))
+
 const { facets: visibleFacets, isLoading } = useProductFacets({
-  categoryId: () => props.categoryId,
+  scope,
   selections: () => state.value,
   featuredFacetKeys: () => props.featuredFacetKeys,
 })

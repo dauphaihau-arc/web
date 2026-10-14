@@ -11,14 +11,14 @@ import {
 } from '~/domains/product/ui/filters/use-product-filter-query-sync';
 import { useProductFilterState } from '~/domains/product/ui/filters/use-product-filter-state';
 
-export type CategoryFiltersController = {
+export type ProductListingFilters = {
   state: ProductFilterState
   sortOrder: Ref<ProductSortId>
   isResetDisabled: ComputedRef<boolean>
   resetFilters: () => void
 };
 
-const CATEGORY_FILTERS_KEY: InjectionKey<CategoryFiltersController> = Symbol('category-filters');
+const PRODUCT_LISTING_FILTERS_KEY: InjectionKey<ProductListingFilters> = Symbol('product-listing-filters');
 
 /**
  * Deep-copies filter state so the mobile sheet can stage edits on a draft and
@@ -38,39 +38,44 @@ export function cloneFilterState(state: ProductFilterState): ProductFilterState 
 }
 
 /**
- * Creates the category listing's filter and sort state for one page instance
- * and provides it to every filter surface — the desktop sidebar panel, the
- * mobile filter sheet, and the sort control — so they read and write a single
- * reactive state instead of each pushing their own route query.
+ * Creates a product listing's filter and sort state for one page instance and
+ * provides it to every filter surface — the desktop sidebar panel, the mobile
+ * filter sheet, and the sort control — so they read and write a single reactive
+ * state instead of each pushing their own route query.
+ *
+ * A listing is any page that renders those surfaces, scoped to a category or a
+ * search; each listing provides its own instance.
  */
-export function provideCategoryFilters(currency: Ref<string>): CategoryFiltersController {
+export function provideProductListingFilters(currency: Ref<string>): ProductListingFilters {
   const route = useRoute();
+
   const { state, isResetDisabled, resetFilters } = useProductFilterState(
     createDefaultFilterState(route.query, currency.value),
   );
+
   const sortOrder = ref<ProductSortId>(
     isProductSortId(route.query.order) ? route.query.order : DEFAULT_PRODUCT_SORT_ID,
   );
 
   useProductFilterQuerySync(state, currency, { sortOrder });
 
-  const controller: CategoryFiltersController = {
+  const controller: ProductListingFilters = {
     state,
     sortOrder,
     isResetDisabled,
     resetFilters,
   };
 
-  provide(CATEGORY_FILTERS_KEY, controller);
+  provide(PRODUCT_LISTING_FILTERS_KEY, controller);
 
   return controller;
 }
 
-export function useCategoryFilters(): CategoryFiltersController {
-  const controller = inject(CATEGORY_FILTERS_KEY);
+export function useProductListingFilters(): ProductListingFilters {
+  const controller = inject(PRODUCT_LISTING_FILTERS_KEY);
 
   if (!controller) {
-    throw new Error('Category filters were not provided by the category page.');
+    throw new Error('Product listing filters were not provided by the listing page.');
   }
 
   return controller;

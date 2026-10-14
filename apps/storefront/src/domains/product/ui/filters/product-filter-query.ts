@@ -66,30 +66,51 @@ export function extractProductFilterQuery(
 }
 
 /**
- * Builds the category-only facet request: the eligible products' facets before
- * any shopper filter narrows them. The panel uses it as the baseline option
- * list so an unavailable option stays visible (rendered disabled) instead of
+ * The listing a facet request is scoped to: a category node or a search
+ * keyword. The keyword is deliberately not part of
+ * `extractProductFilterQuery`'s whitelist — the scope is added explicitly so a
+ * facet alternative is never computed as if the keyword were a selection.
+ */
+export type ProductFacetScope = {
+  categoryId?: string
+  search?: string
+};
+
+/**
+ * Builds the scope-only facet request: the eligible products' facets before any
+ * shopper filter narrows them. The panel uses it as the baseline option list so
+ * an unavailable option stays visible (rendered disabled) instead of
  * disappearing. It shares the facet query cache with the filtered request, but
  * carries no filter params, so a previously visited filter state can never
  * stand in for the baseline.
  */
 export function buildFacetBaselineQuery(
-  categoryId: string,
-): Record<string, string> {
-  return { category_id: categoryId };
+  scope: ProductFacetScope,
+): Record<string, string> | undefined {
+  return scope.categoryId
+    ? { category_id: scope.categoryId }
+    : scope.search
+      ? { search: scope.search }
+      : undefined;
 }
 
 /**
- * Builds the facet request params: the active filter subset plus the resolved
- * category identity. The backend then computes each facet's alternatives with
- * every active filter except that facet's own.
+ * Builds the facet request params: the active filter subset plus the listing
+ * scope. The backend then computes each facet's alternatives with every active
+ * filter except that facet's own.
  */
 export function buildFacetRequestQuery(
-  categoryId: string,
+  scope: ProductFacetScope,
   query: Record<string, unknown>,
-): Record<string, string | string[]> {
+): Record<string, string | string[]> | undefined {
+  const scopeQuery = buildFacetBaselineQuery(scope);
+
+  if (!scopeQuery) {
+    return undefined;
+  }
+
   return {
     ...extractProductFilterQuery(query),
-    category_id: categoryId,
+    ...scopeQuery,
   };
 }

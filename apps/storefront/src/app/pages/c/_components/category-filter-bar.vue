@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import CategoryFilterSheet from './category-filter-sheet.vue'
+import type { ProductFacetScope } from '~/domains/product/ui/filters/product-filter-query'
 import { PRODUCT_SORT_OPTIONS } from '~/domains/product/ui/filters/product-sort'
-import { useCategoryFilters } from '~/domains/product/ui/filters/use-category-filters'
+import { useProductListingFilters } from '~/domains/product/ui/filters/use-product-listing-filters'
 import { useProductFacets } from '~/domains/product/ui/filters/use-product-facets'
 import { countActiveFilters } from '~/domains/product/ui/filters/use-product-filter-state'
 
@@ -10,10 +11,12 @@ const props = defineProps<{
   featuredFacetKeys?: string[]
 }>()
 
-const { state, sortOrder } = useCategoryFilters()
+const { state, sortOrder } = useProductListingFilters()
+
+const scope = computed<ProductFacetScope>(() => ({ categoryId: props.categoryId }))
 
 const { facets } = useProductFacets({
-  categoryId: () => props.categoryId,
+  scope,
   selections: () => state.attributeFilters,
   featuredFacetKeys: () => props.featuredFacetKeys,
 })

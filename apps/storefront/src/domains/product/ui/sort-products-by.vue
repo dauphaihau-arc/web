@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { PRODUCT_SORT_OPTIONS } from '~/domains/product/ui/filters/product-sort'
-import { useCategoryFilters } from '~/domains/product/ui/filters/use-category-filters'
+import { useProductListingFilters } from '~/domains/product/ui/filters/use-product-listing-filters'
 
-const { sortOrder } = useCategoryFilters()
+const { sortOrder } = useProductListingFilters()
 
 const selected = computed({
   get: () => PRODUCT_SORT_OPTIONS.find(option => option.id === sortOrder.value) ?? PRODUCT_SORT_OPTIONS[0],

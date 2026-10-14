@@ -45,7 +45,7 @@ describe('extractProductFilterQuery', () => {
 
 describe('buildFacetRequestQuery', () => {
   it('sends the active filters plus the category identity, without pagination or sorting', () => {
-    expect(buildFacetRequestQuery('29', {
+    expect(buildFacetRequestQuery({ categoryId: '29' }, {
       page: '2',
       order: 'newest',
       is_digital: 'true',
@@ -56,11 +56,37 @@ describe('buildFacetRequestQuery', () => {
       category_id: '29',
     });
   });
+
+  it('scopes a search listing to its keyword and keeps the active filters', () => {
+    expect(buildFacetRequestQuery({ search: 'kl' }, {
+      search: 'kl',
+      page: '2',
+      order: 'newest',
+      is_digital: 'true',
+      attr_color: 'black',
+    })).toEqual({
+      is_digital: 'true',
+      attr_color: 'black',
+      search: 'kl',
+    });
+  });
+
+  it('returns no request when the scope carries neither a category nor a keyword', () => {
+    expect(buildFacetRequestQuery({}, { is_digital: 'true' })).toBeUndefined();
+  });
 });
 
 describe('buildFacetBaselineQuery', () => {
   it('carries only the category identity so the baseline ignores active filters', () => {
-    expect(buildFacetBaselineQuery('29')).toEqual({ category_id: '29' });
+    expect(buildFacetBaselineQuery({ categoryId: '29' })).toEqual({ category_id: '29' });
+  });
+
+  it('carries the keyword for a search listing', () => {
+    expect(buildFacetBaselineQuery({ search: 'kl' })).toEqual({ search: 'kl' });
+  });
+
+  it('returns no baseline without a scope', () => {
+    expect(buildFacetBaselineQuery({})).toBeUndefined();
   });
 });
 

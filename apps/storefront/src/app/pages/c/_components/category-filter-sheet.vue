@@ -10,7 +10,7 @@ import {
   type ProductFilterState,
 } from '~/domains/product/ui/filters/product-filter.constants'
 import { PRODUCT_SORT_OPTIONS } from '~/domains/product/ui/filters/product-sort'
-import { cloneFilterState, useCategoryFilters } from '~/domains/product/ui/filters/use-category-filters'
+import { cloneFilterState, useProductListingFilters } from '~/domains/product/ui/filters/use-product-listing-filters'
 import { createDefaultFilterState } from '~/domains/product/ui/filters/use-product-filter-query-sync'
 import { countActiveFilters } from '~/domains/product/ui/filters/use-product-filter-state'
 import { usePricePresetOptions } from '~/domains/product/ui/filters/use-price-preset-options'
@@ -25,7 +25,7 @@ const emit = defineEmits<{
   'update:panel': [value: string | null]
 }>()
 
-const { state, sortOrder } = useCategoryFilters()
+const { state, sortOrder } = useProductListingFilters()
 const { currency, pricePresetOpts } = usePricePresetOptions()
 
 // Edits are staged on a draft so the sheet commits exactly one route query on
