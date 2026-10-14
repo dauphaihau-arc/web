@@ -40,7 +40,7 @@ const itemRows = computed(() => selectedItems.value.map(item => ({
     <OrderItemsTable :rows="itemRows" />
 
     <template #footer>
-      <ShopCartFooter summary-class="w-2/5">
+      <ShopCartFooter summary-class="w-full md:w-2/5">
         <template #promo-codes>
           <CartShopPromoCodes
             :shop-id="props.shopCart?.shop?.id"

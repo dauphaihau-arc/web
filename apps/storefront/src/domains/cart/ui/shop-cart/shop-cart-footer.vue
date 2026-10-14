@@ -11,15 +11,15 @@ const props = withDefaults(defineProps<{
    */
   summaryClass?: string
 }>(), {
-  summaryClass: 'w-[30%]',
+  summaryClass: 'w-full md:w-[30%]',
 })
 
 const slots = useSlots()
 </script>
 
 <template>
-  <div class="mt-6 flex justify-between gap-10">
-    <div class="flex-1 space-y-3">
+  <div class="mt-6 flex flex-col gap-6 md:flex-row md:justify-between md:gap-10">
+    <div class="min-w-0 flex-1 space-y-3">
       <slot name="promo-codes" />
       <slot name="note" />
     </div>
