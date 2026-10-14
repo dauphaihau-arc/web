@@ -102,10 +102,10 @@ watch(
 
   <div
     v-else-if="dataGetCart?.cart && dataGetCart.cart.shop_groups?.length > 0"
-    class="py-16"
+    class="py-6 md:py-16"
   >
-    <div class="grid grid-cols-12 gap-16">
-      <div class="col-span-8">
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-8">
         <ReviewShippingAndPayment
           v-model:checkout-state="cartStore.stateCheckoutCart"
           class="mb-12"
@@ -123,14 +123,17 @@ watch(
         </div>
       </div>
 
-      <div class="col-span-4">
-        <div class="sticky top-24">
+      <div class="lg:col-span-4">
+        <div class="w-full md:max-w-[400px] lg:sticky lg:top-24 lg:max-w-none">
           <SummaryOrderCard
             :loading="isPendingGetCart"
             :summary-order="dataGetCart?.summary"
             :quote="quote ?? undefined"
-          />
-          <CreateOrderBtn />
+          >
+            <template #footer>
+              <CreateOrderBtn />
+            </template>
+          </SummaryOrderCard>
         </div>
       </div>
     </div>

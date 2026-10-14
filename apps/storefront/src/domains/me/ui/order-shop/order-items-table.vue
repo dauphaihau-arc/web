@@ -34,7 +34,7 @@ const columns = [
   { key: 'items', label: 'Items' },
   { key: 'qty', label: 'Qty', class: 'hidden w-16 text-center md:table-cell', rowClass: 'hidden md:table-cell' },
   { key: 'unit', label: 'Unit price', class: 'hidden w-40 text-right md:table-cell', rowClass: 'hidden md:table-cell' },
-  { key: 'amount', label: 'Amount', class: 'w-28 text-left md:w-40 md:text-right' },
+  { key: 'amount', label: 'Amount', class: 'w-24 text-left md:w-40 md:text-right' },
 ]
 
 const emptyState = {
@@ -59,7 +59,7 @@ const emptyState = {
           :src="row.imageUrl"
           width="72"
           height="72"
-          class="rounded-xl border border-border-subtle object-cover"
+          class="size-12 shrink-0 rounded-xl border border-border-subtle object-cover md:size-[72px]"
         />
         <div class="min-w-0 space-y-1 whitespace-normal">
           <div class="font-medium text-text-strong">

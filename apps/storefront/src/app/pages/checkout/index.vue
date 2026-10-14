@@ -100,10 +100,10 @@ onUnmounted(() => {
   />
   <div
     v-else-if="dataGetCart?.cart"
-    class="py-16"
+    class="py-6 md:py-16"
   >
-    <div class="grid grid-cols-12 gap-16">
-      <div class="col-span-8">
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-8">
         <ReviewShippingAndPayment
           v-model:checkout-state="cartStore.stateCheckoutNow"
           class="mb-12"
@@ -114,16 +114,18 @@ onUnmounted(() => {
         />
       </div>
 
-      <div class="col-span-4">
-        <SummaryOrderCard
-          :loading="isPendingGetCart"
-          :summary-order="dataGetCart?.summary"
-          :quote="quote ?? undefined"
-        >
-          <template #footer>
-            <CreateOrderBtn />
-          </template>
-        </SummaryOrderCard>
+      <div class="lg:col-span-4">
+        <div class="w-full md:max-w-[400px] lg:sticky lg:top-24 lg:max-w-none">
+          <SummaryOrderCard
+            :loading="isPendingGetCart"
+            :summary-order="dataGetCart?.summary"
+            :quote="quote ?? undefined"
+          >
+            <template #footer>
+              <CreateOrderBtn />
+            </template>
+          </SummaryOrderCard>
+        </div>
       </div>
     </div>
   </div>
