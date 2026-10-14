@@ -59,7 +59,7 @@ describe('buildFacetRequestQuery', () => {
 
   it('scopes a search listing to its keyword and keeps the active filters', () => {
     expect(buildFacetRequestQuery({ search: 'kl' }, {
-      search: 'kl',
+      q: 'kl',
       page: '2',
       order: 'newest',
       is_digital: 'true',

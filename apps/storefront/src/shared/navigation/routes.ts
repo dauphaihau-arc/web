@@ -45,7 +45,7 @@ export const routes = {
       : undefined,
   ),
   orderDetail: (id: string) => createRoute(buildOrderDetailPath(id)),
-  search: (query?: { search?: string }) => createRoute(routePaths.search, query),
+  search: (query?: { q?: string }) => createRoute(routePaths.search, query),
   cart: () => createRoute(routePaths.cart),
   cartCheckout: () => createRoute(routePaths.cartCheckout),
   checkout: (query?: { c?: string }) => createRoute(routePaths.checkout, query),

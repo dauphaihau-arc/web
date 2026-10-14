@@ -25,13 +25,13 @@ const state = reactive({
   search: '',
 })
 
-watch(() => [route.query.search, props.show], () => {
+watch(() => [route.query.q, props.show], () => {
   if (!props.show) {
     state.search = ''
     return
   }
 
-  state.search = typeof route.query.search === 'string' ? route.query.search : ''
+  state.search = typeof route.query.q === 'string' ? route.query.q : ''
 })
 
 const trimmedSearch = computed(() => state.search.trim())
@@ -57,7 +57,7 @@ const redirectSearch = () => {
     return
   }
 
-  router.push(routes.search({ search: trimmedSearch.value }))
+  router.push(routes.search({ q: trimmedSearch.value }))
 }
 
 watchDebounced(

@@ -20,12 +20,21 @@ export function useSearchProducts(search: MaybeRefOrGetter<string>) {
 
   const page = ref(1);
 
-  const params = computed(() => ({
-    page: page.value,
-    limit: PAGE_LIMIT,
-    search: toValue(search),
-    ...normalizeRouteQuery(route.query),
-  }));
+  const params = computed(() => {
+    const queryParams = normalizeRouteQuery(route.query);
+
+    // `q` is the listing's routing key for the keyword, not a product request
+    // field: the request carries the keyword as `search`. Forwarding it would
+    // send an unknown param.
+    delete queryParams.q;
+
+    return {
+      page: page.value,
+      limit: PAGE_LIMIT,
+      search: toValue(search),
+      ...queryParams,
+    };
+  });
 
   const { data, isPending, error } = useGetProducts(params);
 

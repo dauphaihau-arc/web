@@ -11,7 +11,7 @@ import { useSearchProducts } from '../_composables/use-search-products'
 
 const route = useRoute()
 
-const searchQuery = computed(() => String(route.query.search ?? '').trim())
+const searchQuery = computed(() => String(route.query.q ?? '').trim())
 
 // This listing's facets describe the keyword, not a category node.
 const facetScope = computed<ProductFacetScope>(() => ({ search: searchQuery.value }))
