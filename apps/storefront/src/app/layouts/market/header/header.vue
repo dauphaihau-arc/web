@@ -2,6 +2,7 @@
 import { defineAsyncComponent } from 'vue'
 import HeaderActions from './header-actions.vue'
 import Categories from './categories.vue'
+import ScreenPanel from './screen-panel.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 
 const loadCartMegaMenu = () => import('./cart-mega-menu.vue')
@@ -22,6 +23,9 @@ const isShowSearch = ref(false)
 const hasLoadedCartMegaMenu = ref(false)
 const hasLoadedSearchAllMegaMenu = ref(false)
 
+/** `lg` breakpoint: below it the megamenus are replaced by full-screen panels. */
+const isDesktop = useMediaQuery('(min-width: 1024px)')
+
 async function preloadCartMegaMenu() {
   hasLoadedCartMegaMenu.value = true
   await loadCartMegaMenu()
@@ -38,14 +42,21 @@ watch(() => [route.path, route.query], () => {
 })
 
 const onMouseleave = () => {
+  // Below `lg` both menus are modal panels that cover the header, so pointer
+  // movement (including the synthetic leave a covering layer causes) must not close them.
+  if (!isDesktop.value) {
+    return
+  }
+
   isShowSearch.value = false
   isShowCart.value = false
 }
 
 const OFFSET = 60
 
+const headerVisible = useHeaderVisibility()
+
 const state = reactive({
-  showNavbar: true,
   lastScrollPosition: 0,
   scrollValue: 0,
 })
@@ -57,7 +68,7 @@ function onScroll() {
   if (Math.abs(window.pageYOffset - state.lastScrollPosition) < OFFSET) {
     return
   }
-  state.showNavbar = window.pageYOffset < state.lastScrollPosition
+  headerVisible.value = window.pageYOffset < state.lastScrollPosition
   state.lastScrollPosition = window.pageYOffset
 }
 
@@ -93,27 +104,29 @@ async function toggleCartMenu() {
   <div>
     <header
       class="header"
-      :class="{ 'hidden-header': !state.showNavbar }"
+      :class="{ 'hidden-header': !headerVisible }"
       @mouseleave="onMouseleave"
     >
-      <nav class="mx-auto grid max-w-home-layout grid-cols-[1fr_auto_1fr] items-start py-3">
+      <nav
+        class="mx-auto grid max-w-home-layout grid-cols-[1fr_auto_1fr] items-start px-4 py-3 md:px-12 lg:px-16"
+      >
         <NuxtLink
           id="brand"
           :to="ROUTES.HOME"
-          class="h-fit p-1 text-xl font-bold"
+          class="-ms-1 h-fit p-1 text-xl font-bold"
         >
           Arc
         </NuxtLink>
 
         <div class=" justify-self-center">
-          <Categories class="mx-3" />
+          <Categories class="mx-3 hidden lg:block" />
           <CartMegaMenu
-            v-if="hasLoadedCartMegaMenu"
+            v-if="hasLoadedCartMegaMenu && isDesktop"
             :show="isShowCart"
             class="mt-8"
           />
           <SearchAllMegaMenu
-            v-if="hasLoadedSearchAllMegaMenu"
+            v-if="hasLoadedSearchAllMegaMenu && isDesktop"
             :show="isShowSearch"
             class="mt-8"
           />
@@ -130,6 +143,30 @@ async function toggleCartMenu() {
       </nav>
     </header>
 
+    <ScreenPanel
+      v-if="hasLoadedSearchAllMegaMenu && !isDesktop"
+      v-model="isShowSearch"
+      close-label="Close search"
+      close-test-id="header-search-close"
+    >
+      <SearchAllMegaMenu
+        :show="true"
+        variant="screen"
+      />
+    </ScreenPanel>
+
+    <ScreenPanel
+      v-if="hasLoadedCartMegaMenu && !isDesktop"
+      v-model="isShowCart"
+      close-label="Close cart"
+      close-test-id="header-cart-close"
+    >
+      <CartMegaMenu
+        :show="true"
+        variant="screen"
+      />
+    </ScreenPanel>
+
     <transition
       enter-class="ease-out duration-500"
       enter-to-class="opacity-100"
@@ -139,7 +176,7 @@ async function toggleCartMenu() {
       leave-to-class="opacity-0"
     >
       <div
-        v-if="isShowCart || isShowSearch"
+        v-if="(isShowCart || isShowSearch) && isDesktop"
         class="overlay"
       />
     </transition>
@@ -156,7 +193,7 @@ async function toggleCartMenu() {
 }
 
 .header {
-  @apply fixed top-0 z-[3] bg-surface w-screen border-b border-b-border-subtle;
+  @apply fixed inset-x-0 top-0 z-[3] bg-surface border-b border-b-border-subtle;
   transform: translate3d(0, 0, 0);
   transition: 0.1s all ease-out;
 }

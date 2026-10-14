@@ -3,7 +3,35 @@ import ProductCardImage from '~/domains/product/ui/product-card-image.vue'
 import { routes } from '~/shared/navigation/routes'
 import { useGetCart } from '~/domains/cart/queries/cart.query'
 
-const props = defineProps<{ show: boolean }>()
+const props = withDefaults(defineProps<{
+  show: boolean
+  variant?: 'mega' | 'screen'
+}>(), {
+  variant: 'mega',
+})
+
+const isScreenVariant = computed(() => props.variant === 'screen')
+const contentClass = computed(() => (isScreenVariant.value
+  ? 'px-12  pb-8'
+  : 'mx-auto ml-5 pb-12'))
+
+/** `md` breakpoint: from tablet up the screen panel keeps the primary action in the heading row. */
+const isTabletUp = useMediaQuery('(min-width: 768px)')
+
+/** Mobile/tablet panel scales the copy down; the desktop megamenu keeps its original sizes. */
+const textClass = computed(() => (isScreenVariant.value
+  ? {
+      title: 'text-xl md:text-2xl',
+      item: 'text-base md:text-lg',
+      meta: 'text-xs md:text-sm',
+      empty: 'text-sm md:text-base',
+    }
+  : {
+      title: 'text-2xl',
+      item: 'text-xl',
+      meta: 'text-[15px]',
+      empty: 'text-sm',
+    }))
 
 const { data: dataGetCart } = useGetCart()
 const MAX_RECENT_PRODUCTS = 3
@@ -22,18 +50,21 @@ const remainProductCart = computed(() => {
 </script>
 
 <template>
-  <transition name="slide-down">
+  <transition
+    name="slide-down"
+    :css="!isScreenVariant"
+  >
     <div
       v-if="props.show"
       id="mega-menu-cart"
     >
-      <div class="mx-auto ml-5 pb-12">
+      <div :class="contentClass">
         <div class="mb-4 flex justify-between gap-3">
-          <div class="text-2xl font-semibold">
+          <div :class="[textClass.title, 'font-semibold']">
             Cart
           </div>
           <UButton
-            v-if="dataGetCart?.cart?.total_quantity"
+            v-if="(!isScreenVariant || isTabletUp) && dataGetCart?.cart?.total_quantity"
             :to="routes.cart()"
             label="Review Cart"
           >
@@ -70,11 +101,11 @@ const remainProductCart = computed(() => {
                     :frame-style="{ aspectRatio: '1 / 1' }"
                   />
                   <div>
-                    <div class="text-xl font-medium">
+                    <div :class="[textClass.item, 'font-medium']">
                       {{ productCart.product.title }}
                     </div>
                     <div
-                      class="text-[15px] text-text-muted"
+                      :class="[textClass.meta, 'text-text-muted']"
                     >
                       {{
                         productCart.inventory.selected_options
@@ -83,7 +114,7 @@ const remainProductCart = computed(() => {
                       }}
                     </div>
                     <div
-                      class="text-[15px] tracking-wide text-text-muted"
+                      :class="[textClass.meta, 'tracking-wide text-text-muted']"
                     >
                       x{{ productCart.quantity }}
                     </div>
@@ -100,10 +131,27 @@ const remainProductCart = computed(() => {
           </div>
           <div
             v-else
-            class="text-sm text-text-strong"
+            :class="[textClass.empty, 'text-text-strong']"
           >
             Your cart is empty.
           </div>
+        </div>
+
+        <!-- Mobile only: the primary action sits below the list, full width for thumb reach. -->
+        <div
+          v-if="isScreenVariant && !isTabletUp && dataGetCart?.cart?.total_quantity"
+          class="mt-8"
+        >
+          <UButton
+            block
+            size="lg"
+            :to="routes.cart()"
+            label="Review Cart"
+          >
+            <template #trailing>
+              <UIcon name="i-heroicons-arrow-right-20-solid" />
+            </template>
+          </UButton>
         </div>
       </div>
     </div>

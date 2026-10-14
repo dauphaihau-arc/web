@@ -108,13 +108,14 @@ const primaryLinks = [
   },
 ]
 
+const accordionItems = primaryLinks.map(section => ({
+  label: section.title,
+  links: section.links,
+}))
+
 const secondaryLinks = [
   {
     title: 'Guides',
-    link: '/',
-  },
-  {
-    title: 'Terms of Sale',
     link: '/',
   },
   {
@@ -130,14 +131,47 @@ const secondaryLinks = [
 
 <template>
   <footer class="footer">
-    <div class="mx-auto max-w-home-layout">
-      <div class="grid grid-cols-5 gap-32 py-8">
+    <div class="mx-auto max-w-home-layout px-4 md:px-12 lg:px-16">
+      <div class="grid grid-cols-1 gap-1 pb-0 pt-8 lg:grid-cols-5 lg:gap-32 lg:py-8">
         <div class="text-xl font-semibold text-text-strong">
           Arc
         </div>
+
+        <div class="lg:hidden">
+          <UAccordion
+            color="gray"
+            variant="ghost"
+            size="sm"
+            :items="accordionItems"
+            :ui="{
+              item: {
+                padding: 'pt-3 pb-3',
+              },
+              default: {
+                class: 'mb-0 w-full rounded-none border-b border-border-subtle px-0 py-3 text-sm font-semibold text-text-strong',
+              },
+            }"
+          >
+            <template #item="{ item }">
+              <div class="flex flex-col items-start gap-3">
+                <ULink
+                  v-for="linkItem of item.links"
+                  :key="linkItem.title"
+                  :to="linkItem.link"
+                  class="text-sm text-text-strong
+                   transition-all duration-200 hover:underline hover:opacity-90"
+                >
+                  {{ linkItem.title }}
+                </ULink>
+              </div>
+            </template>
+          </UAccordion>
+        </div>
+
         <div
           v-for="(item, idx) of primaryLinks"
           :key="idx"
+          class="hidden lg:block"
         >
           <div class="mb-3 text-sm font-semibold text-text-strong">
             {{ item.title }}
@@ -159,10 +193,13 @@ const secondaryLinks = [
           </div>
         </div>
       </div>
-      <UDivider />
-      <div class="flex items-center justify-between py-4">
+
+      <UDivider class="hidden lg:block" />
+
+      <div class="flex flex-col items-start gap-4 py-5 lg:flex-row lg:items-center lg:justify-between lg:py-4">
         <UpdateUserPreferencesBtn />
-        <div class="flex items-center gap-4">
+
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 lg:flex-nowrap">
           <div class="pt-1 text-xs">
             © {{ new Date().getFullYear() }} Arc Inc.
           </div>

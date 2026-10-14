@@ -51,7 +51,7 @@ const onSubmit = async () => {
   <div>
     <div
       data-testid="market-preferences-trigger"
-      class="flex items-center gap-6"
+      class="-ml-3 flex items-center gap-6 lg:ml-0"
       @click="isOpenDialog = true"
     >
       <div class="flex items-center gap-5">

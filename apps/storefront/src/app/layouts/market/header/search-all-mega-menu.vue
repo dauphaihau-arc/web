@@ -4,7 +4,17 @@ import type { ProductSuggestion } from '~/domains/product/api/contracts/product.
 import { useGetProductSuggestions } from '~/domains/product/queries/products.query'
 import { routes } from '~/shared/navigation/routes'
 
-const props = defineProps<{ show: boolean }>()
+const props = withDefaults(defineProps<{
+  show: boolean
+  variant?: 'mega' | 'screen'
+}>(), {
+  variant: 'mega',
+})
+
+const isScreenVariant = computed(() => props.variant === 'screen')
+const contentClass = computed(() => (isScreenVariant.value
+  ? 'px-4 pb-8 md:px-12'
+  : 'mx-auto ml-1.5 pb-12'))
 
 const route = useRoute()
 const router = useRouter()
@@ -112,9 +122,12 @@ function openSuggestedProduct(product: ProductSuggestion) {
 </script>
 
 <template>
-  <transition name="slide-down">
+  <transition
+    name="slide-down"
+    :css="!isScreenVariant"
+  >
     <div v-if="props.show">
-      <div class="mx-auto ml-1.5 pb-12">
+      <div :class="contentClass">
         <UInput
           v-model="state.search"
           :icon="ICON_NAME_BY_ALIAS['searchSolid']"

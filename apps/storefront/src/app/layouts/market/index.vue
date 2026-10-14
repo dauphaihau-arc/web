@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { resolveAppIconName } from '@arc/ui/foundation/app-icon.constants'
-import LayoutMarketFooter from './footer/footer.vue'
-import LayoutMarketHeader from './header/header.vue'
+import Footer from './footer/footer.vue'
+import Header from './header/header.vue'
 import { accountSidebarLinks } from '~/shared/navigation/menu'
 import { routePaths } from '~/shared/navigation/routes'
 
@@ -12,6 +12,7 @@ onMounted(() => {
 })
 
 const isAccountRoute = ref(false)
+const isHomeRoute = computed(() => route.path === routePaths.home)
 
 watch(() => route.path, () => {
   isAccountRoute.value = route.path.startsWith(routePaths.account)
@@ -20,9 +21,12 @@ watch(() => route.path, () => {
 
 <template>
   <div>
-    <LayoutMarketHeader />
+    <Header />
 
-    <div class="mx-auto max-w-home-layout pb-[500px] pt-14">
+    <div
+      class="pb-[500px] pt-14"
+      :class="isHomeRoute ? '' : 'mx-auto max-w-home-layout px-4 md:px-12 lg:px-16'"
+    >
       <div
         v-if="isAccountRoute"
         class="mx-auto mt-24 flex min-h-[50vh] max-w-[900px] gap-10"
@@ -67,6 +71,6 @@ watch(() => route.path, () => {
       </div>
     </div>
 
-    <LayoutMarketFooter />
+    <Footer />
   </div>
 </template>

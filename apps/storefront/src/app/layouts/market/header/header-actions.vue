@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue'
+import CategoryMenuSlideover from './category-menu-slideover.vue'
 import { useGetCart } from '~/domains/cart/queries/cart.query'
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
 import { hasAdminRole, hasCustomerAccess, hasSellerAccess } from '~/domains/auth/utils/seller-access'
@@ -27,6 +28,7 @@ const NotificationPopover = defineAsyncComponent({
 
 const modal = useModal()
 const config = useRuntimeConfig()
+const isShowCategoryMenu = ref(false)
 
 const {
   data: dataGetCart,
@@ -93,7 +95,7 @@ function handleCartHover() {
 </script>
 
 <template>
-  <div class="flex h-fit items-center gap-2 justify-self-end">
+  <div class="-me-1.5 flex h-fit items-center gap-2 justify-self-end">
     <UTooltip text="Search">
       <UButton
         square
@@ -176,5 +178,19 @@ function handleCartHover() {
         </UButton>
       </UChip>
     </UTooltip>
+
+    <UButton
+      class="lg:hidden"
+      data-testid="header-menu-trigger"
+      square
+      color="gray"
+      variant="ghost"
+      aria-label="Open menu"
+      @click="isShowCategoryMenu = true"
+    >
+      <AppIcon name="menu" />
+    </UButton>
+
+    <CategoryMenuSlideover v-model="isShowCategoryMenu" />
   </div>
 </template>
