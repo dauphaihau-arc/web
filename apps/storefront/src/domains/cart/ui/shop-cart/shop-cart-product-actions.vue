@@ -25,14 +25,15 @@ const {
 </script>
 
 <template>
-  <div class="-ml-2 flex gap-4">
+  <div class="-ml-1 flex gap-4 md:-ml-2">
     <UButton
       variant="ghost"
       :icon="ICON_NAME_BY_ALIAS['trash']"
       color="gray"
+      aria-label="Remove"
       @click.once="deleteProductCart()"
     >
-      Remove
+      <span class="hidden md:inline">Remove</span>
     </UButton>
   </div>
 </template>

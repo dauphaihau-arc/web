@@ -29,7 +29,7 @@ if (import.meta.client) {
 </script>
 
 <template>
-  <div class="mt-2 py-12">
+  <div class="mt-2 py-6 md:py-12">
     <Empty
       v-if="isPendingGetCart"
       loading
@@ -40,12 +40,12 @@ if (import.meta.client) {
     />
     <div v-else-if="dataGetCart?.cart && dataGetCart.cart.shop_groups?.length > 0">
       <div>
-        <h1 class="mb-4 text-2xl font-medium">
+        <h1 class="mb-4 text-xl font-medium md:text-2xl">
           {{ dataGetCart?.cart?.total_quantity }} products in your cart
         </h1>
 
-        <div class="grid grid-cols-12 gap-16">
-          <div class="col-span-8">
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-16">
+          <div class="lg:col-span-8">
             <ShopCart
               v-for="shopCart of dataGetCart.cart.shop_groups"
               :key="shopCart.shop.id"
@@ -53,8 +53,8 @@ if (import.meta.client) {
             />
           </div>
 
-          <div class="col-span-4">
-            <div class="sticky top-24 w-[400px]">
+          <div class="lg:col-span-4">
+            <div class="w-full md:max-w-[400px] lg:sticky lg:top-24 lg:w-[400px]">
               <SummaryOrder />
             </div>
           </div>

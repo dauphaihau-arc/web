@@ -39,7 +39,7 @@ const increaseQty = () => {
     <UButton
       :icon="ICON_NAME_BY_ALIAS['minus']"
       color="white"
-      class="w-11 justify-center rounded-l-md rounded-r-none"
+      class="w-8 justify-center rounded-l-md rounded-r-none md:w-11"
       :disabled="!canDecrease"
       @click="decreaseQty"
     />
@@ -47,7 +47,7 @@ const increaseQty = () => {
       v-model.number="quantity"
       v-numeric
       v-max-number="props.stock"
-      class="w-20 rounded-l-none"
+      class="w-12 rounded-l-none md:w-20"
       type="number"
       :disabled="props.disabled"
       :ui="{ base: 'text-center rounded-l-none' }"
@@ -55,7 +55,7 @@ const increaseQty = () => {
     <UButton
       :icon="ICON_NAME_BY_ALIAS['plus']"
       color="white"
-      class="w-11 justify-center rounded-l-none rounded-r-md"
+      class="w-8 justify-center rounded-l-none rounded-r-md md:w-11"
       :disabled="!canIncrease"
       @click="increaseQty"
     />
