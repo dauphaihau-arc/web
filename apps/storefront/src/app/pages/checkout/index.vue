@@ -119,8 +119,11 @@ onUnmounted(() => {
           :loading="isPendingGetCart"
           :summary-order="dataGetCart?.summary"
           :quote="quote ?? undefined"
-        />
-        <CreateOrderBtn />
+        >
+          <template #footer>
+            <CreateOrderBtn />
+          </template>
+        </SummaryOrderCard>
       </div>
     </div>
   </div>

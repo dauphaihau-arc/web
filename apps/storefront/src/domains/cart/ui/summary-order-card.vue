@@ -118,6 +118,7 @@ const selectedQuantity = computed(() => props.summaryOrder?.total_selected_quant
           </div>
         </div>
       </div>
+      <slot name="footer" />
     </div>
   </UCard>
 </template>
