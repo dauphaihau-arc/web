@@ -52,9 +52,9 @@ const {
         size="xl"
       >
         {{ selectedOptionsLabel }}
-        <UIcon
-          :name="ICON_NAME_BY_ALIAS[open ? 'chevronUp' : 'chevronDown']"
-          class="size-3.5 shrink-0"
+        <AppIcon
+          :name="open ? 'chevronUp' : 'chevronDown'"
+          size="xs"
         />
       </UButton>
 

@@ -63,9 +63,9 @@ const filterItems = computed(() => [
           class="flex w-full items-center gap-3 rounded-none bg-transparent py-1 text-left text-base font-semibold text-text-strong transition-colors hover:bg-transparent focus-visible:outline-none focus-visible:ring-0 active:bg-transparent"
         >
           <span>{{ item.label }}</span>
-          <UIcon
-            :name="open ? 'i-heroicons-chevron-up-20-solid' : 'i-heroicons-chevron-down-20-solid'"
-            class="ml-auto size-5 text-text-subtle"
+          <AppIcon
+            :name="open ? 'chevronUp' : 'chevronDown'"
+            class="ml-auto text-text-subtle"
           />
         </button>
       </template>

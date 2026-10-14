@@ -196,7 +196,7 @@ watch(
               :key="line"
               class="flex gap-2"
             >
-              <UIcon name="i-material-symbols:location-on-outline" />
+              <AppIcon name="location" />
               {{ line }}
             </div>
           </template>
@@ -204,7 +204,7 @@ watch(
             v-else
             class="flex gap-2 text-text-subtle"
           >
-            <UIcon name="i-material-symbols:location-on-outline" />
+            <AppIcon name="location" />
             Shipping coverage not available
           </div>
         </div>

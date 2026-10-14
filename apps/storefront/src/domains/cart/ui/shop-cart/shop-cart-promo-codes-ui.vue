@@ -236,9 +236,10 @@ function accept() {
                 base: 'relative h-auto px-2 py-1 text-xs font-normal leading-snug text-clip whitespace-normal',
               }"
             >
-              <UIcon
-                :name="ICON_NAME_BY_ALIAS['info']"
-                class="size-4 shrink-0 text-text-muted"
+              <AppIcon
+                name="info"
+                size="xs"
+                class="text-text-muted"
               />
             </UTooltip>
           </div>

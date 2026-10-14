@@ -68,8 +68,8 @@ const onSubmit = async () => {
             class="h-5 w-2"
           />
           <div class="flex items-center gap-2 text-nowrap font-medium">
-            <UIcon
-              name="i-heroicons-language"
+            <AppIcon
+              name="languages"
               class="h-4"
             />
             {{ state.language.label }}

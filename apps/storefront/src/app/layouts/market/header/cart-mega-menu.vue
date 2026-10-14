@@ -69,7 +69,7 @@ const remainProductCart = computed(() => {
             label="Review Cart"
           >
             <template #trailing>
-              <UIcon name="i-heroicons-arrow-right-20-solid" />
+              <AppIcon name="arrowRight" />
             </template>
           </UButton>
         </div>
@@ -149,7 +149,7 @@ const remainProductCart = computed(() => {
             label="Review Cart"
           >
             <template #trailing>
-              <UIcon name="i-heroicons-arrow-right-20-solid" />
+              <AppIcon name="arrowRight" />
             </template>
           </UButton>
         </div>
