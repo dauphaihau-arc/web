@@ -2,6 +2,12 @@
 import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract'
 import { resolveProductImageUrl } from '~/domains/product/utils/product-image-url'
 
+type CarouselExposed = {
+  page?: number
+  prev?: () => void
+  next?: () => void
+}
+
 const props = withDefaults(defineProps<{
   images?: GetDetailProductBySlugResponse['images']
   isLoading?: boolean
@@ -11,6 +17,8 @@ const props = withDefaults(defineProps<{
 })
 
 const config = useRuntimeConfig()
+
+// Desktop gallery state.
 const selectedImg = ref(0)
 const previewImg = ref<number | null>(null)
 const imageThumbRefs = ref<HTMLElement[]>([])
@@ -86,89 +94,143 @@ watch(selectedImg, async () => {
     block: 'nearest',
   })
 })
+
+// Mobile/tablet carousel state.
+const carousel = ref<CarouselExposed | null>(null)
+
+const imageUrl = (index: number) => {
+  const image = props.images[index]
+  return image ? resolveProductImageUrl(image, config.public.assetHost, 'pdp_contain') : ''
+}
+
+/**
+ * Below `lg` the track bleeds to both viewport edges while the container owns
+ * the page gutter as inline padding, so the first slide starts on the same left
+ * edge as the breadcrumb and the neighbouring image stays visible in the
+ * trailing gutter. There is no thumbnail rail or chevron there.
+ *
+ * `items-start` keeps the slide from stretching to the track's line height,
+ * which would cancel the frame's `aspect-[1/1]`.
+ */
+const carouselUi = {
+  container: 'px-4 md:px-12 scroll-px-4 md:scroll-px-12',
+  item: 'w-full snap-start items-start pe-3',
+}
+
+// UCarousel exposes the current page as a 1-based number.
+watch(() => carousel.value?.page, (page) => {
+  if (typeof page !== 'number' || page < 1) {
+    return
+  }
+
+  selectedImg.value = page - 1
+})
 </script>
 
 <template>
   <div
     v-if="props.isLoading"
-    class="flex gap-6"
     aria-busy="true"
     aria-live="polite"
   >
-    <div class="flex w-fit flex-col gap-3">
-      <USkeleton
-        v-for="index in 4"
-        :key="index"
-        class="size-[100px] rounded !bg-customGray-300/85"
-      />
+    <div class="hidden gap-6 lg:flex">
+      <div class="flex w-fit flex-col gap-3">
+        <USkeleton
+          v-for="index in 4"
+          :key="index"
+          class="size-[100px] rounded !bg-customGray-300/85"
+        />
+      </div>
+      <USkeleton class="aspect-[1/1] w-[575px] max-w-full rounded !bg-customGray-300/85" />
     </div>
-    <USkeleton class="aspect-square w-[575px] max-w-full rounded !bg-customGray-300/85" />
+
+    <div class="-mx-4 px-4 md:-mx-12 md:px-12 lg:hidden">
+      <div class="pe-3">
+        <USkeleton class="aspect-[1/1] w-full rounded !bg-customGray-300/85" />
+      </div>
+    </div>
   </div>
 
-  <div
-    v-else
-    class="flex gap-6"
-  >
-    <div
-      class="no-scrollbar scroll-fade flex h-[575px] w-fit flex-col gap-3 overflow-y-auto p-1"
-      @mouseleave="onResetPreviewImg"
-    >
+  <div v-else>
+    <div class="hidden gap-6 lg:flex">
       <div
-        v-for="(image, index) of props.images"
-        :key="image.id"
+        class="scrollbar-hidden scroll-fade flex h-[575px] w-fit flex-col gap-3 overflow-y-auto p-1"
+        @mouseleave="onResetPreviewImg"
       >
-        <button
-          :ref="element => setImageThumbRef(element, index)"
-          type="button"
-          :class="[
-            'block rounded bg-media-product ring-2 ring-transparent',
-            {
-              '!ring-primary': selectedImg === index,
-            }]"
-          @mouseenter="onPreviewImg(index)"
-          @focus="onPreviewImg(index)"
-          @blur="onResetPreviewImg"
-          @click="onSelectImg(index)"
+        <div
+          v-for="(image, index) of props.images"
+          :key="image.id"
         >
-          <NuxtImg
-            preload
-            :src="imageThumbSelected(index)"
-            width="90"
-            height="90"
-            class="rounded"
-          />
-        </button>
+          <button
+            :ref="element => setImageThumbRef(element, index)"
+            type="button"
+            :class="[
+              'block rounded bg-media-product ring-2 ring-transparent',
+              {
+                '!ring-primary': selectedImg === index,
+              }]"
+            @mouseenter="onPreviewImg(index)"
+            @focus="onPreviewImg(index)"
+            @blur="onResetPreviewImg"
+            @click="onSelectImg(index)"
+          >
+            <NuxtImg
+              preload
+              :src="imageThumbSelected(index)"
+              width="90"
+              height="90"
+              class="rounded"
+            />
+          </button>
+        </div>
+      </div>
+
+      <div class="relative size-[575px] max-w-full overflow-hidden rounded bg-media-product">
+        <NuxtImg
+          preload
+          :src="imageUrlSelected"
+          width="575"
+          height="575"
+          class="absolute inset-0 size-full rounded object-contain"
+        />
+        <template v-if="props.images.length > 1">
+          <div
+            class="arrow absolute bottom-3 right-16"
+            @click="onSelectPrevImg"
+          >
+            <AppIcon
+              name="chevronLeft"
+              class="text-black"
+            />
+          </div>
+          <div
+            class="arrow absolute bottom-3 right-3"
+            @click="onSelectNextImg"
+          >
+            <AppIcon
+              name="chevronRight"
+              class="text-black"
+            />
+          </div>
+        </template>
       </div>
     </div>
 
-    <div class="relative size-[575px] max-w-full overflow-hidden rounded bg-media-product">
-      <NuxtImg
-        preload
-        :src="imageUrlSelected"
-        width="575"
-        height="575"
-        class="absolute inset-0 size-full rounded object-contain"
-      />
-      <template v-if="props.images.length > 1">
-        <div
-          class="arrow absolute bottom-3 right-16"
-          @click="onSelectPrevImg"
-        >
-          <AppIcon
-            name="chevronLeft"
-            class="text-black"
-          />
-        </div>
-        <div
-          class="arrow absolute bottom-3 right-3"
-          @click="onSelectNextImg"
-        >
-          <AppIcon
-            name="chevronRight"
-            class="text-black"
-          />
-        </div>
-      </template>
+    <div class="-mx-4 md:-mx-12 lg:hidden">
+      <UCarousel
+        ref="carousel"
+        :items="props.images"
+        :ui="carouselUi"
+      >
+        <template #default="{ index }">
+          <div class="relative aspect-[1/1] w-full overflow-hidden rounded bg-media-product">
+            <NuxtImg
+              :src="imageUrl(index)"
+              class="absolute inset-0 size-full object-contain"
+            />
+          </div>
+        </template>
+      </UCarousel>
     </div>
   </div>
 </template>
@@ -177,13 +239,5 @@ watch(selectedImg, async () => {
 .arrow {
   @apply cursor-pointer bg-surface rounded-full p-4
   h-10 w-10 grid place-content-center;
-}
-
-.no-scrollbar {
-  scrollbar-width: none;
-}
-
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
 }
 </style>

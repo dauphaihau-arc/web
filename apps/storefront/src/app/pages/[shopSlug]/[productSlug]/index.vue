@@ -115,16 +115,18 @@ watch(productData, (value) => {
 </script>
 
 <template>
-  <div class="mt-20">
+  <div class="mt-6 lg:mt-20">
     <div
       v-if="isPendingProduct || product"
-      class="space-y-20"
+      class="space-y-10 lg:space-y-20"
     >
-      <div class="mb-20 grid grid-cols-10 gap-16">
-        <div class="sticky top-24 col-span-6 -mt-9 self-start">
+      <div class="grid grid-cols-1 gap-8 lg:grid-cols-10 lg:gap-16">
+        <!-- Below `lg` this column is flattened so its children join the
+             single-column grid and reviews can move after the details. -->
+        <div class="max-lg:contents lg:sticky lg:top-24 lg:col-span-6 lg:-mt-9 lg:self-start">
           <ProductCategoryBreadcrumb
             :category-path="productData?.category_path"
-            class="mb-3"
+            class="mb-3 max-lg:mb-0"
           />
           <ProductImages
             :images="product?.images"
@@ -134,9 +136,10 @@ watch(productData, (value) => {
             :shop-slug="shopSlug"
             :product-slug="productSlug"
             :is-loading="isPendingProduct && !product"
+            class="max-lg:order-last"
           />
         </div>
-        <div class="col-span-4 space-y-6">
+        <div class="space-y-6 lg:col-span-4">
           <ProductSummary
             :product="product"
             :inventory-selected="selectedInventory"
@@ -154,10 +157,15 @@ watch(productData, (value) => {
           />
         </div>
       </div>
-      <RecommendationSections
-        :product-slug="productSlug"
-        :shop-slug="shopSlug"
-      />
+
+      <!-- Cancels the market layout gutter so recommendation tracks stay
+           full-bleed below `xl`, exactly as they render on the homepage. -->
+      <div class="-mx-4 md:-mx-12 lg:-mx-16">
+        <RecommendationSections
+          :product-slug="productSlug"
+          :shop-slug="shopSlug"
+        />
+      </div>
     </div>
   </div>
 </template>

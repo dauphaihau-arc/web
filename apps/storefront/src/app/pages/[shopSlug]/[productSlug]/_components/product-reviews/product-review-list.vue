@@ -111,8 +111,8 @@ function getReviewImageSrc(review: GetPublicProductReviewsResponse['items'][numb
         class="border-t border-border-subtle py-4 first:border-t-0 first:pt-0"
       >
         <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-          <div class="w-full space-y-1">
-            <div class="flex justify-between">
+          <div class="w-full space-y-2 md:space-y-1">
+            <div class="justify-between space-y-2 md:flex md:space-y-0">
               <div class="flex flex-wrap items-center gap-3">
                 <div class="flex items-center gap-1 text-rating-star">
                   <AppIcon
