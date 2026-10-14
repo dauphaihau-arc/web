@@ -3,12 +3,18 @@ import { resolveAppIconCssClass } from '@arc/ui/foundation/app-icon.constants'
 import type { CategoryAncestryEntry } from '~/domains/category/api/contracts/category.contract'
 import { buildCategoryPath } from '~/shared/navigation/route-paths'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   ancestry: CategoryAncestryEntry[]
   name?: string
   totalProducts?: number
   loading: boolean
-}>()
+  /** The mobile layout renders breadcrumb and heading in separate sticky zones. */
+  showBreadcrumb?: boolean
+  showHeading?: boolean
+}>(), {
+  showBreadcrumb: true,
+  showHeading: true,
+})
 
 const breadcrumbLinks = computed(() => props.ancestry.map(entry => ({
   label: entry.name,
@@ -19,12 +25,15 @@ const breadcrumbLinks = computed(() => props.ancestry.map(entry => ({
 <template>
   <div>
     <UBreadcrumb
-      v-if="breadcrumbLinks.length > 1"
+      v-if="showBreadcrumb && breadcrumbLinks.length > 1"
       :divider="resolveAppIconCssClass('chevronRight')"
       :links="breadcrumbLinks"
       :ui="{ active: 'text-text-subtle' }"
     />
-    <div class="mb-2 flex items-center gap-2 text-2xl font-semibold capitalize">
+    <div
+      v-if="showHeading"
+      class="flex items-center gap-2 text-2xl font-semibold capitalize lg:mb-2"
+    >
       <span>{{ name }}</span>
       <USkeleton
         v-if="loading"

@@ -1,14 +1,8 @@
 <script setup lang="ts">
 import type { Category } from '@arc/models/category'
 import type { AttributeFilter } from '~/domains/product/ui/filters/product-filter.constants'
-import { categoryApi } from '~/domains/category/api/category.api'
-import { normalizeCategory } from '~/domains/category/utils/category.normalizer'
-import { buildFacetOptionView } from '~/domains/product/ui/filters/facet-option-view'
-import {
-  buildFacetBaselineQuery,
-  buildFacetRequestQuery,
-} from '~/domains/product/ui/filters/product-filter-query'
-import { useGetProductFacets } from '~/domains/product/queries/products.query'
+import { toggleFacetSelection } from '~/domains/product/ui/filters/facet-option-view'
+import { useProductFacets } from '~/domains/product/ui/filters/use-product-facets'
 
 const props = defineProps<{
   categoryId?: Category['id']
@@ -20,96 +14,15 @@ const emit = defineEmits<{
   'update:modelValue': [value: AttributeFilter[]]
 }>()
 
-const route = useRoute()
 const state = ref<AttributeFilter[]>([])
 
-// Facet alternatives are computed by the backend with every active filter
-// except each facet's own, so the request must carry the full active filter set
-// the listing uses. Pagination and sorting are deliberately omitted.
-const facetParams = computed(() => {
-  if (!props.categoryId) {
-    return undefined
-  }
-
-  return buildFacetRequestQuery(props.categoryId, route.query)
-})
-
-const {
-  data: dataGetProductFacets,
-  isPending: isPendingGetProductFacets,
-} = useGetProductFacets(facetParams)
-
-// The same category-scoped facet endpoint without the active filters: the
-// eligible options before any shopper selection narrows them. It shares the
-// filtered query's cache, market context, and eligibility rules, but its own
-// query key means a previously visited filter state can never be mistaken for
-// the baseline. Only the filtered response above decides availability.
-const baselineFacetParams = computed(() => {
-  if (!props.categoryId) {
-    return undefined
-  }
-
-  return buildFacetBaselineQuery(props.categoryId)
-})
-
-const {
-  data: dataBaselineFacets,
-  isPending: isPendingBaselineFacets,
-} = useGetProductFacets(baselineFacetParams)
-
-const {
-  data: dataChildCategories,
-  isPending: isPendingGetChildCategories,
-} = useQuery<Category[]>({
-  enabled: computed(() => !!props.categoryId),
-  queryKey: computed(() => ['get-child-categories', props.categoryId]),
-  queryFn: async () => {
-    if (!props.categoryId) {
-      return []
-    }
-
-    const response = await categoryApi.getCategories({
-      parent_id: props.categoryId,
-    })
-
-    return response.map(normalizeCategory)
-  },
-})
-
-const isLoading = computed(() => {
-  return isPendingGetProductFacets.value
-    || isPendingBaselineFacets.value
-    || isPendingGetChildCategories.value
+const { facets: visibleFacets, isLoading } = useProductFacets({
+  categoryId: () => props.categoryId,
+  selections: () => state.value,
+  featuredFacetKeys: () => props.featuredFacetKeys,
 })
 
 const skeletonOptionWidths = ['w-24', 'w-32', 'w-28', 'w-36']
-
-const visibleFacets = computed(() => {
-  const facets = buildFacetOptionView({
-    baselineFacets: dataBaselineFacets.value?.facets ?? [],
-    filteredFacets: dataGetProductFacets.value?.facets ?? [],
-    selections: state.value,
-    // The filtered response is keyed by the active filters, so when it exists
-    // it describes the current selection. While it is pending or errored there
-    // is no availability signal, so unselected options stay disabled until it
-    // resolves rather than being enabled from stale data.
-    hasFilteredAvailability: dataGetProductFacets.value !== undefined,
-  })
-  const childCategories = dataChildCategories.value ?? []
-  const hasChildren = childCategories.length > 0
-
-  if (!hasChildren) {
-    return facets
-  }
-
-  const allowedFacetKeys = props.featuredFacetKeys
-
-  if (!allowedFacetKeys) {
-    return facets
-  }
-
-  return facets.filter(facet => allowedFacetKeys.includes(facet.facetKey))
-})
 
 watch(
   () => props.modelValue,
@@ -130,46 +43,13 @@ function toggleAttributeOption(
   optionValue: string,
   checked: boolean,
 ) {
-  const filters = [...state.value]
-  const existing = filters.find(filter => filter.facetKey === facetKey)
-
-  if (!existing && checked) {
-    state.value = [
-      ...filters,
-      {
-        facetKey,
-        attributeName,
-        selectedOptionKeys: [optionKey],
-        selectedOptionValues: [optionValue],
-      },
-    ]
-    emit('update:modelValue', state.value)
-    return
-  }
-
-  if (!existing) {
-    return
-  }
-
-  const selectedOptionKeys = checked
-    ? Array.from(new Set([...existing.selectedOptionKeys, optionKey]))
-    : existing.selectedOptionKeys.filter(value => value !== optionKey)
-  const selectedOptionValues = checked
-    ? Array.from(new Set([...existing.selectedOptionValues, optionValue]))
-    : existing.selectedOptionValues.filter(value => value !== optionValue)
-
-  state.value = selectedOptionKeys.length > 0
-    ? filters.map(filter =>
-        filter.facetKey === facetKey
-          ? {
-              ...filter,
-              attributeName,
-              selectedOptionKeys,
-              selectedOptionValues,
-            }
-          : filter,
-      )
-    : filters.filter(filter => filter.facetKey !== facetKey)
+  state.value = toggleFacetSelection(state.value, {
+    facetKey,
+    attributeName,
+    optionKey,
+    optionValue,
+    checked,
+  })
 
   emit('update:modelValue', state.value)
 }

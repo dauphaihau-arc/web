@@ -3,49 +3,20 @@ import type { Category } from '@arc/models/category'
 import AttributeFacets from '~/domains/product/ui/filters/attribute-facets.vue'
 import MinMaxPrice from '~/domains/product/ui/filters/min-max-price.vue'
 import {
-  getPricePresetRanges,
   isDigitalOpts,
   productWhoMadeOpts,
   type PricePresetId,
 } from '~/domains/product/ui/filters/product-filter.constants'
-import {
-  createDefaultFilterState,
-  useProductFilterQuerySync,
-} from '~/domains/product/ui/filters/use-product-filter-query-sync'
-import { useProductFilterState } from '~/domains/product/ui/filters/use-product-filter-state'
+import { useCategoryFilters } from '~/domains/product/ui/filters/use-category-filters'
+import { usePricePresetOptions } from '~/domains/product/ui/filters/use-price-preset-options'
 
-const route = useRoute()
-const marketStore = useMarketStore()
 const props = defineProps<{
   categoryId?: Category['id']
   featuredFacetKeys?: string[]
 }>()
 
-const currency = computed(() => marketStore.guestPreferences?.currency ?? 'USD')
-
-function formatPriceValue(amountMajor: number) {
-  return new Intl.NumberFormat(undefined, {
-    maximumFractionDigits: Number.isInteger(amountMajor) ? 0 : 2,
-    minimumFractionDigits: Number.isInteger(amountMajor) ? 0 : 2,
-  }).format(amountMajor)
-}
-
-const pricePresetOpts = computed(() => {
-  const ranges = getPricePresetRanges(currency.value)
-
-  return [
-    { value: 'all', label: 'Any price' },
-    ...ranges.map(range => ({
-      value: range.value,
-      label: range.min !== undefined && range.max !== undefined
-        ? `${formatPriceValue(range.min)}-${formatPriceValue(range.max)}`
-        : range.max !== undefined
-          ? `Under ${formatPriceValue(range.max)}`
-          : `Over ${formatPriceValue(range.min ?? 0)}`,
-    })),
-    { value: 'custom', label: 'Custom' },
-  ]
-})
+const { state, isResetDisabled, resetFilters } = useCategoryFilters()
+const { currency, pricePresetOpts } = usePricePresetOptions()
 
 const filterItems = computed(() => [
   {
@@ -69,12 +40,6 @@ const filterItems = computed(() => [
     defaultOpen: true,
   },
 ])
-
-const { state, isResetDisabled, resetFilters } = useProductFilterState(
-  createDefaultFilterState(route.query, currency.value),
-)
-
-useProductFilterQuerySync(state, currency)
 </script>
 
 <template>

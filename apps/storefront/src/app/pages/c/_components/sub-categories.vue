@@ -4,12 +4,21 @@ import { useGetCategories } from '~/domains/category/queries/categories.query'
 import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-guard'
 import { buildCategoryPath } from '~/shared/navigation/route-paths'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   categoryId: string
-}>()
+  /**
+   * `vertical` in the desktop sidebar; `horizontal` for the mobile strip that
+   * scrolls sideways under the category heading.
+   */
+  orientation?: 'vertical' | 'horizontal'
+}>(), {
+  orientation: 'vertical',
+})
 
 const marketStore = useMarketStore()
 const { blocked, checking, checkForUpdate } = useCategoryIdentityBlocked()
+
+const isHorizontal = computed(() => props.orientation === 'horizontal')
 
 const params = computed(() => ({ parent_id: props.categoryId }))
 
@@ -39,10 +48,11 @@ const redirectPage = (category: Category) => {
   <div
     v-else-if="isLoadingGetCategories || dataCategories?.length"
     class="flex gap-3"
+    :class="isHorizontal ? 'scrollbar-hidden -mx-4 overflow-x-auto px-4 md:-mx-12 md:px-12' : ''"
   >
     <div
       v-if="isLoadingGetCategories"
-      class="space-y-4"
+      :class="isHorizontal ? 'flex gap-6' : 'space-y-4'"
     >
       <div
         v-for="index in 4"
@@ -51,18 +61,20 @@ const redirectPage = (category: Category) => {
         <USkeleton class="h-7 w-32" />
       </div>
     </div>
-    <div v-else>
-      <div class="flex flex-col gap-2">
+    <div
+      v-else
+      :class="isHorizontal ? 'flex gap-6' : 'flex flex-col gap-2'"
+    >
+      <div
+        v-for="cg of dataCategories"
+        :key="cg.id"
+        :class="isHorizontal ? 'whitespace-nowrap' : ''"
+      >
         <div
-          v-for="cg of dataCategories"
-          :key="cg.id"
+          class="cursor-pointer text-base font-medium capitalize"
+          @click="() => redirectPage(cg)"
         >
-          <div
-            class="cursor-pointer text-base font-medium capitalize"
-            @click="() => redirectPage(cg)"
-          >
-            {{ cg.name }}
-          </div>
+          {{ cg.name }}
         </div>
       </div>
     </div>

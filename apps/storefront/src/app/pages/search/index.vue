@@ -3,11 +3,18 @@ import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import Filters from '~/domains/product/ui/filters/product-filters.vue'
 import ProductCard from '~/domains/product/ui/product-card.vue'
 import SortProductsBy from '~/domains/product/ui/sort-products-by.vue'
+import { provideCategoryFilters } from '~/domains/product/ui/filters/use-category-filters'
+import { usePricePresetOptions } from '~/domains/product/ui/filters/use-price-preset-options'
 import { useGetProducts } from '~/domains/product/queries/products.query'
 
 definePageMeta({ layout: 'market' })
 
 const route = useRoute()
+
+// The shared filter panel and sort control read and write one provided
+// filter/sort controller; the search listing provides its own instance.
+const { currency } = usePricePresetOptions()
+provideCategoryFilters(currency)
 
 function normalizeRouteQuery(query: typeof route.query): Record<string, string | string[]> {
   const normalized: Record<string, string | string[]> = {}

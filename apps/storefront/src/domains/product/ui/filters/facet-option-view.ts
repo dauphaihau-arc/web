@@ -121,3 +121,60 @@ export function buildFacetOptionView(
     };
   });
 }
+
+export type ToggleFacetSelectionInput = {
+  facetKey: string
+  attributeName: string
+  optionKey: string
+  optionValue: string
+  checked: boolean
+};
+
+/**
+ * Returns the next attribute filter list after checking or unchecking one
+ * option: creates the facet entry, unions the option into it, or drops the
+ * entry once its last option is cleared. Shared by the desktop facet panel and
+ * the mobile filter sheet so both stage selections identically.
+ */
+export function toggleFacetSelection(
+  filters: AttributeFilter[],
+  input: ToggleFacetSelectionInput,
+): AttributeFilter[] {
+  const existing = filters.find(filter => filter.facetKey === input.facetKey);
+
+  if (!existing) {
+    return input.checked
+      ? [
+        ...filters,
+        {
+          facetKey: input.facetKey,
+          attributeName: input.attributeName,
+          selectedOptionKeys: [input.optionKey],
+          selectedOptionValues: [input.optionValue],
+        },
+      ]
+      : filters;
+  }
+
+  const selectedOptionKeys = input.checked
+    ? Array.from(new Set([...existing.selectedOptionKeys, input.optionKey]))
+    : existing.selectedOptionKeys.filter(key => key !== input.optionKey);
+  const selectedOptionValues = input.checked
+    ? Array.from(new Set([...existing.selectedOptionValues, input.optionValue]))
+    : existing.selectedOptionValues.filter(value => value !== input.optionValue);
+
+  if (selectedOptionKeys.length === 0) {
+    return filters.filter(filter => filter.facetKey !== input.facetKey);
+  }
+
+  return filters.map(filter =>
+    filter.facetKey === input.facetKey
+      ? {
+        ...filter,
+        attributeName: input.attributeName,
+        selectedOptionKeys,
+        selectedOptionValues,
+      }
+      : filter,
+  );
+}

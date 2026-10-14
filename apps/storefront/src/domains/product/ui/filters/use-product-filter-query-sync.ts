@@ -1,5 +1,6 @@
 import { toMinorUnits } from '@arc/utils';
 import { PRODUCT_FILTER_QUERY_KEYS } from '~/domains/product/ui/filters/product-filter-query';
+import { DEFAULT_PRODUCT_SORT_ID, type ProductSortId } from '~/domains/product/ui/filters/product-sort';
 import {
   getPricePresetRanges,
   isDigitalOpts,
@@ -156,25 +157,29 @@ export function createDefaultFilterState(routeQuery: Record<string, unknown>, cu
 export function useProductFilterQuerySync(
   state: ProductFilterState,
   currency: Ref<string>,
+  options?: { sortOrder?: Ref<ProductSortId> },
 ) {
   const route = useRoute();
   const router = useRouter();
 
-  const controlledQueryKeys = new Set<string>([
+  const controlledQueryKeys = [
     ...PRODUCT_FILTER_QUERY_KEYS,
     'price',
     'attribute_filters',
-  ]);
+    'order',
+  ] as const;
   const queryKeyByStateKey: Partial<Record<keyof ProductFilterState, string>> = {
     isDigital: 'is_digital',
     whoMade: 'who_made',
   };
 
-  watch(state, () => {
+  // Filters and sort share one watcher so a single interaction (e.g. the mobile
+  // sheet's Apply) pushes one history entry instead of one per changed group.
+  watch([state, () => options?.sortOrder?.value], () => {
     const routeQuery = Object.fromEntries(
       Object.entries(route.query).filter(([key]) => {
         return !/^attr_.+/.test(key)
-          && !controlledQueryKeys.has(key);
+          && !(controlledQueryKeys as readonly string[]).includes(key);
       }),
     ) as Record<string, string>;
 
@@ -233,6 +238,12 @@ export function useProductFilterQuerySync(
         routeQuery[queryKeyByStateKey[key as keyof ProductFilterState] ?? key] = value;
       }
     });
+
+    const sortId = options?.sortOrder?.value;
+
+    if (sortId && sortId !== DEFAULT_PRODUCT_SORT_ID) {
+      routeQuery.order = sortId;
+    }
 
     router.push({ query: routeQuery });
   });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildFacetOptionView } from './facet-option-view';
+import { toggleFacetSelection, buildFacetOptionView } from './facet-option-view';
 
 /** Facet response shapes as the API returns them (snake_case keys). */
 const baselineColor = {
@@ -144,5 +144,62 @@ describe('buildFacetOptionView', () => {
         options: [{ optionKey: 'm', value: 'M', disabled: false }],
       },
     ]);
+  });
+});
+
+describe('toggleFacetSelection', () => {
+  const colorFilter = {
+    facetKey: 'color',
+    attributeName: 'Color',
+    selectedOptionKeys: ['black'],
+    selectedOptionValues: ['Black'],
+  };
+
+  it('creates a facet entry when the first option is checked', () => {
+    expect(toggleFacetSelection([], {
+      facetKey: 'color',
+      attributeName: 'Color',
+      optionKey: 'black',
+      optionValue: 'Black',
+      checked: true,
+    })).toEqual([colorFilter]);
+  });
+
+  it('unions a checked option into the existing facet entry', () => {
+    expect(toggleFacetSelection([colorFilter], {
+      facetKey: 'color',
+      attributeName: 'Color',
+      optionKey: 'white',
+      optionValue: 'White',
+      checked: true,
+    })).toEqual([
+      {
+        ...colorFilter,
+        selectedOptionKeys: ['black', 'white'],
+        selectedOptionValues: ['Black', 'White'],
+      },
+    ]);
+  });
+
+  it('drops the facet entry once its last option is unchecked', () => {
+    expect(toggleFacetSelection([colorFilter], {
+      facetKey: 'color',
+      attributeName: 'Color',
+      optionKey: 'black',
+      optionValue: 'Black',
+      checked: false,
+    })).toEqual([]);
+  });
+
+  it('leaves the list untouched when unchecking an option that is not selected', () => {
+    const filters = [colorFilter];
+
+    expect(toggleFacetSelection(filters, {
+      facetKey: 'color',
+      attributeName: 'Color',
+      optionKey: 'white',
+      optionValue: 'White',
+      checked: false,
+    })).toEqual([colorFilter]);
   });
 });
