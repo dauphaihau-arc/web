@@ -1,22 +1,25 @@
 <script setup lang="ts">
-import CategoryFilterSheet from './category-filter-sheet.vue'
+import ProductListingFilterSheet from '~/domains/product/ui/filters/product-listing-filter-sheet.vue'
 import type { ProductFacetScope } from '~/domains/product/ui/filters/product-filter-query'
 import { PRODUCT_SORT_OPTIONS } from '~/domains/product/ui/filters/product-sort'
 import { useProductListingFilters } from '~/domains/product/ui/filters/use-product-listing-filters'
 import { useProductFacets } from '~/domains/product/ui/filters/use-product-facets'
 import { countActiveFilters } from '~/domains/product/ui/filters/use-product-filter-state'
 
+/**
+ * The horizontal, scrollable filter entry point for listing pages below `lg`.
+ * It opens the shared filter sheet; the scope decides whether the facets
+ * describe a category node or a search keyword.
+ */
 const props = defineProps<{
-  categoryId?: string
+  scope: ProductFacetScope
   featuredFacetKeys?: string[]
 }>()
 
 const { state, sortOrder } = useProductListingFilters()
 
-const scope = computed<ProductFacetScope>(() => ({ categoryId: props.categoryId }))
-
 const { facets } = useProductFacets({
-  scope,
+  scope: () => props.scope,
   selections: () => state.attributeFilters,
   featuredFacetKeys: () => props.featuredFacetKeys,
 })
@@ -83,7 +86,7 @@ function facetSelectedCount(facetKey: string) {
       />
     </UButton>
 
-    <CategoryFilterSheet
+    <ProductListingFilterSheet
       v-model:panel="activePanel"
       :facets="facets"
     />

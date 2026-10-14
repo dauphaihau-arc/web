@@ -47,7 +47,7 @@ const props = defineProps<{
       heading-class="font-semibold"
       :icon="ICON_NAME_BY_ALIAS['warning']"
       title="Couldn't load products"
-      description="Something went wrong while loading this category. Please try again."
+      description="Something went wrong while loading this listing. Please try again."
     />
 
     <template v-else>
@@ -63,18 +63,21 @@ const props = defineProps<{
         </div>
       </div>
 
-      <Empty
-        v-else
-        variant="naked"
-        size="2xl"
-        class="mb-16 min-h-[320px]"
-        heading-class="font-semibold"
-        :icon="ICON_NAME_BY_ALIAS[props.hasActiveFilters ? 'search' : 'product']"
-        :title="props.hasActiveFilters ? 'No results found' : 'No products here yet'"
-        :description="props.hasActiveFilters
-          ? 'Try adjusting or clearing your filters.'
-          : 'Try another category or browse all products.'"
-      />
+      <template v-else>
+        <slot name="empty">
+          <Empty
+            variant="naked"
+            size="2xl"
+            class="mb-16 min-h-[320px]"
+            heading-class="font-semibold"
+            :icon="ICON_NAME_BY_ALIAS[props.hasActiveFilters ? 'search' : 'product']"
+            :title="props.hasActiveFilters ? 'No results found' : 'No products here yet'"
+            :description="props.hasActiveFilters
+              ? 'Try adjusting or clearing your filters.'
+              : 'Try another category or browse all products.'"
+          />
+        </slot>
+      </template>
 
       <div
         v-if="total && total > limit"

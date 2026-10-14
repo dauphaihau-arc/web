@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import CategoriesBreadcrumb from './categories-breadcrumb.vue'
-import CategoryFilterBar from './category-filter-bar.vue'
-import ProductResults from './product-results.vue'
 import SubCategories from './sub-categories.vue'
+import ProductResults from '~/domains/product/ui/product-results.vue'
 import Filters from '~/domains/product/ui/filters/product-filters.vue'
+import ProductListingFilterBar from '~/domains/product/ui/filters/product-listing-filter-bar.vue'
 import SortProductsBy from '~/domains/product/ui/sort-products-by.vue'
+import type { ProductFacetScope } from '~/domains/product/ui/filters/product-filter-query'
 import { provideProductListingFilters } from '~/domains/product/ui/filters/use-product-listing-filters'
 import { usePricePresetOptions } from '~/domains/product/ui/filters/use-price-preset-options'
 import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-guard'
@@ -21,6 +22,10 @@ const { blocked, checking, checkForUpdate } = useCategoryIdentityBlocked()
 // fallback, so products and facets never describe an unresolved category.
 const categoryId = computed(() => props.resolution?.category.id ?? '')
 const ancestry = computed(() => props.resolution?.ancestry ?? [])
+
+// The filter surfaces describe one listing scope: this page's facets belong to
+// the resolved category node.
+const facetScope = computed<ProductFacetScope>(() => ({ categoryId: categoryId.value }))
 
 const {
   page,
@@ -112,8 +117,8 @@ useIntersectionObserver(stickySentinel, ([entry]) => {
             class="overflow-hidden transition-all duration-200"
             :class="toolbarPinned ? 'max-h-0 opacity-0' : 'max-h-12 opacity-100'"
           />
-          <CategoryFilterBar
-            :category-id="categoryId"
+          <ProductListingFilterBar
+            :scope="facetScope"
             :featured-facet-keys="resolution?.category.featuredFacetKeys"
           />
         </div>

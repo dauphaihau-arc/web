@@ -1,8 +1,6 @@
 import { useGetProducts } from '~/domains/product/queries/products.query';
-import {
-  isAttributeFilterQueryKey,
-  isProductFilterQueryKey,
-} from '~/domains/product/ui/filters/product-filter-query';
+import { hasActiveProductFilterQuery } from '~/domains/product/ui/filters/product-filter-query';
+import { normalizeRouteQuery } from '~/shared/utils/route-query';
 
 /**
  * Page size for the category listing. Kept as a module constant because the
@@ -15,45 +13,6 @@ function getRoutePage(queryPage: unknown): number {
   const parsedPage = Number(value);
 
   return Number.isInteger(parsedPage) && parsedPage > 0 ? parsedPage : 1;
-}
-
-function normalizeRouteQuery(query: Record<string, unknown>): Record<string, string | string[]> {
-  const normalized: Record<string, string | string[]> = {};
-
-  Object.entries(query).forEach(([key, value]) => {
-    if (typeof value === 'string') {
-      normalized[key] = value;
-      return;
-    }
-
-    if (Array.isArray(value)) {
-      const entries = value.filter((entry): entry is string => typeof entry === 'string');
-
-      if (entries.length > 0) {
-        normalized[key] = entries;
-      }
-    }
-  });
-
-  return normalized;
-}
-
-function hasActiveFilterQuery(query: Record<string, unknown>): boolean {
-  return Object.entries(query).some(([key, value]) => {
-    if (isAttributeFilterQueryKey(key)) {
-      return true;
-    }
-
-    if (!isProductFilterQueryKey(key)) {
-      return false;
-    }
-
-    if (Array.isArray(value)) {
-      return value.some(entry => typeof entry === 'string' && entry.length > 0);
-    }
-
-    return typeof value === 'string' && value.length > 0;
-  });
 }
 
 /**
@@ -125,6 +84,6 @@ export function useCategoryProducts(categoryId: MaybeRefOrGetter<string | undefi
     total: computed(() => data.value?.meta.total),
     loading: isPending,
     error,
-    hasActiveFilters: computed(() => hasActiveFilterQuery(route.query)),
+    hasActiveFilters: computed(() => hasActiveProductFilterQuery(route.query)),
   };
 }

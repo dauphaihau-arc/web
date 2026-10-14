@@ -25,6 +25,30 @@ export function isProductFilterQueryKey(key: string): boolean {
     || (PRODUCT_FILTER_QUERY_KEYS as readonly string[]).includes(key);
 }
 
+/**
+ * Whether the route query carries at least one active product filter. A listing
+ * uses it to tell an empty result caused by filters apart from a listing that is
+ * genuinely empty. Attribute selections count as active even when blank, so the
+ * panel keeps offering a clear action for them.
+ */
+export function hasActiveProductFilterQuery(query: Record<string, unknown>): boolean {
+  return Object.entries(query).some(([key, value]) => {
+    if (!isProductFilterQueryKey(key)) {
+      return false;
+    }
+
+    if (isAttributeFilterQueryKey(key)) {
+      return true;
+    }
+
+    if (Array.isArray(value)) {
+      return value.some(entry => typeof entry === 'string' && entry.length > 0);
+    }
+
+    return typeof value === 'string' && value.length > 0;
+  });
+}
+
 function toQueryEntries(value: unknown): string | string[] | undefined {
   if (typeof value === 'string') {
     return value.length > 0 ? value : undefined;
