@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { Category } from '@arc/models/category'
-import ProductCard from './product-card.vue'
+import ProductSection from '~/domains/product/ui/product-section.vue'
 import { useGetProductsByMultiQueries } from '~/domains/product/queries/products.query'
 
 const groupSkeletons = 2
@@ -53,65 +53,28 @@ const subCategories = computed(() => {
     <!--  Skeletons loading -->
     <div
       v-if="queries && subCategories.length === 0"
-      class="space-y-12"
+      class="space-y-8 lg:space-y-12"
     >
-      <div
+      <ProductSection
         v-for="index in groupSkeletons"
         :key="index"
-      >
-        <div>
-          <div class="mb-6">
-            <USkeleton class="mb-3 h-7 w-20" />
-            <USkeleton class="h-7 w-32" />
-          </div>
-          <div class="grid grid-cols-6 gap-6">
-            <USkeleton class="col-span-2 h-full" />
-            <div class="col-span-4">
-              <div class="grid grid-cols-3 gap-6">
-                <USkeleton class="h-[160px]" />
-                <USkeleton class="h-[160px]" />
-                <USkeleton class="h-[160px]" />
-                <USkeleton class="h-[160px]" />
-                <USkeleton class="h-[160px]" />
-                <USkeleton class="h-[160px]" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+        title=""
+        loading
+        :limit="limit"
+      />
     </div>
     <div
       v-else-if="subCategories && subCategories.length > 0"
-      class="space-y-12"
+      class="space-y-8 lg:space-y-12"
     >
-      <div
+      <ProductSection
         v-for="(cg, i) of subCategories"
         :key="i"
-      >
-        <div v-if="cg.items && cg.items.length > 0">
-          <div class="mb-3">
-            <h3 class="text-lg font-medium">
-              Continue exploring {{ cg.categoryName }}
-            </h3>
-            <p class="text-md text-text-strong">
-              Popular picks from a category you visited
-            </p>
-          </div>
-
-          <div class="grid grid-cols-6 gap-6">
-            <div
-              v-for="product of cg.items"
-              :key="product.id"
-            >
-              <ProductCard :product="product" />
-            </div>
-          </div>
-        </div>
-      </div>
+        :title="`Continue exploring ${cg.categoryName}`"
+        description="Popular picks from a category you visited"
+        :products="cg.items"
+        :limit="limit"
+      />
     </div>
   </div>
 </template>
-
-<style scoped>
-
-</style>

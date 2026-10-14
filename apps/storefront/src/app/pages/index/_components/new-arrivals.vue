@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { UseQueryOptions } from '@tanstack/vue-query'
-import ProductSection from './product-section.vue'
+import ProductSection from '~/domains/product/ui/product-section.vue'
 import { useGetProducts } from '~/domains/product/queries/products.query'
 import type { GetProductsResponse } from '~/domains/product/api/contracts/product.contract'
 

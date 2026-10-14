@@ -1,6 +1,6 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import type { UseQueryOptions } from '@tanstack/vue-query'
-import ProductCard from './product-card.vue'
+import ProductSection from '~/domains/product/ui/product-section.vue'
 import type { GetProductsResponseItem, GetProductRecommendationsResponse } from '~/domains/product/api/contracts/product.contract'
 import { useGetProductRecommendations } from '~/domains/product/queries/products.query'
 
@@ -24,25 +24,16 @@ const queryParams = computed(() => {
 })
 
 const { data } = useGetProductRecommendations(queryParams, props.queryOptions)
+
+const recommendedProducts = computed(() => data.value?.items ?? [])
 </script>
 
 <template>
-  <div v-if="anchorProduct && data?.items?.length">
-    <div class="mb-3">
-      <h3 class="text-lg font-medium">
-        Because you viewed
-      </h3>
-      <p class="text-md text-text-strong">
-        {{ anchorProduct.title }}
-      </p>
-    </div>
-    <div class="grid grid-cols-6 gap-4">
-      <div
-        v-for="(product, i) of data.items"
-        :key="i"
-      >
-        <ProductCard :product="product" />
-      </div>
-    </div>
-  </div>
+  <ProductSection
+    v-if="anchorProduct && recommendedProducts.length > 0"
+    title="Because you viewed"
+    :description="anchorProduct.title"
+    :products="recommendedProducts"
+    :limit="limit"
+  />
 </template>

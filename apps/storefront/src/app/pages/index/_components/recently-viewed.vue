@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import ProductSection from './product-section.vue'
+import ProductSection from '~/domains/product/ui/product-section.vue'
 import type { GetProductsResponseItem } from '~/domains/product/api/contracts/product.contract'
 
 const marketStore = useMarketStore()

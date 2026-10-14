@@ -28,7 +28,7 @@ definePageMeta({ layout: 'market' })
 </script>
 
 <template>
-  <div class="space-y-20 py-12">
+  <div class="space-y-10 py-6 sm:space-y-14 sm:py-8 lg:space-y-20 lg:py-12">
     <TrendingNow :query-options="homeSectionQueryOptions" />
     <BestSellers :query-options="homeSectionQueryOptions" />
     <NewArrivals :query-options="homeSectionQueryOptions" />

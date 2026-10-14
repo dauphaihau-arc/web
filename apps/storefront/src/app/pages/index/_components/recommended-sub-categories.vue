@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import type { Category } from '@arc/models/category'
+import CarouselControls from '~/shared/ui/carousel/carousel-controls.vue'
+import { circleCategoryCarouselUi } from '~/shared/ui/carousel/carousel-ui'
+import { useCarouselControls } from '~/shared/ui/carousel/use-carousel-controls'
 import { useGetCategories } from '~/domains/category/queries/categories.query'
 import { getRoutePath, routes } from '~/shared/navigation/routes'
 import { CATEGORY_IMAGE_VARIANTS, resolveCategoryImageUrl } from '~/domains/category/utils/category-image'
 import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-guard'
+
+const skeletonItems = Array.from({ length: 4 }, (_, index) => index)
 
 const marketStore = useMarketStore()
 const config = useRuntimeConfig()
@@ -38,6 +43,9 @@ watch(errorGetCategories, (value) => {
   }
 })
 
+const subCategories = computed(() => dataGetCategories.value ?? [])
+const { carousel, canGoPrev, canGoNext, prev, next } = useCarouselControls(() => subCategories.value.length)
+
 const redirectPage = (subCategory: Category) => {
   navigateTo(getRoutePath(routes.category(subCategory.slug, subCategory.id)))
 }
@@ -45,22 +53,25 @@ const redirectPage = (subCategory: Category) => {
 
 <template>
   <div v-if="!blocked">
-    <div
-      v-if="isFetchingGetCategories && isPendingGetCategories"
-      class="flex gap-16"
-    >
-      <div
-        v-for="index in 4"
-        :key="index"
-      >
-        <USkeleton
-          class="size-28"
-          :ui="{ rounded: 'rounded-full' }"
-        />
+    <div v-if="isFetchingGetCategories && isPendingGetCategories">
+      <div class="mx-auto mb-6 max-w-home-layout px-4 md:px-12 lg:px-16">
+        <USkeleton class="mb-1 h-7 w-56" />
+        <USkeleton class="h-5 w-72" />
       </div>
+      <UCarousel
+        :items="skeletonItems"
+        :ui="circleCategoryCarouselUi"
+        class="xl:mx-auto xl:max-w-home-layout xl:px-16"
+      >
+        <template #default>
+          <div class="flex justify-center">
+            <USkeleton class="aspect-[1/1] w-full rounded-full" />
+          </div>
+        </template>
+      </UCarousel>
     </div>
-    <div v-else-if="dataGetCategories && dataGetCategories.length > 0">
-      <div class="mb-6">
+    <div v-else-if="subCategories.length > 0">
+      <div class="mx-auto mb-6 max-w-home-layout px-4 md:px-12 lg:px-16">
         <h3 class="text-lg font-medium">
           Explore more in this category
         </h3>
@@ -68,27 +79,35 @@ const redirectPage = (subCategory: Category) => {
           Jump back into subcategories related to your last browse
         </p>
       </div>
-      <div class="flex gap-16">
-        <div
-          v-for="cg of dataGetCategories"
-          :key="cg.id"
+      <div class="relative xl:mx-auto xl:max-w-home-layout xl:px-16">
+        <UCarousel
+          ref="carousel"
+          :items="subCategories"
+          :ui="circleCategoryCarouselUi"
         >
-          <div @click="() => redirectPage(cg)">
-            <div v-if="categoryImageUrl(cg)">
+          <template #default="{ item: cg }">
+            <div class="flex w-full min-w-0 flex-col items-center">
               <NuxtImg
+                v-if="categoryImageUrl(cg)"
                 :src="categoryImageUrl(cg)"
-                width="100"
-                height="100"
-                class="size-[100px] cursor-pointer rounded-full object-cover"
+                class="aspect-[1/1] w-full cursor-pointer rounded-full object-cover"
+                @click="() => redirectPage(cg)"
               />
+              <div
+                class="mt-2 cursor-pointer break-words text-center text-[13px] font-semibold capitalize"
+                @click="() => redirectPage(cg)"
+              >
+                {{ cg.name }}
+              </div>
             </div>
-            <div
-              class="mt-2 cursor-pointer text-center text-[13px] font-semibold capitalize"
-            >
-              {{ cg.name }}
-            </div>
-          </div>
-        </div>
+          </template>
+        </UCarousel>
+        <CarouselControls
+          :can-prev="canGoPrev"
+          :can-next="canGoNext"
+          @prev="prev"
+          @next="next"
+        />
       </div>
     </div>
   </div>

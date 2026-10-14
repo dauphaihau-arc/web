@@ -22,13 +22,7 @@ const imageUrl = computed(() => {
 })
 
 const imageFrameClass = computed(() => {
-  return props.fill || props.autoSize ? 'size-full' : ''
-})
-
-const imageFrameStyle = computed(() => {
-  return props.fill || props.autoSize
-    ? undefined
-    : { height: '160px', width: '100%' }
+  return props.fill || props.autoSize ? 'size-full' : 'aspect-[1/1] w-full'
 })
 
 const displayAmount = computed(() => {
@@ -37,12 +31,11 @@ const displayAmount = computed(() => {
     return undefined
   }
 
-  const minAmount = formatMinorCurrency(pricing.min_amount_minor, pricing.currency)
-  if (pricing.max_amount_minor != null && pricing.max_amount_minor > pricing.min_amount_minor) {
-    return `from ${minAmount}`
+  const maxAmount = pricing.max_amount_minor
+  return {
+    prefix: maxAmount != null && maxAmount > pricing.min_amount_minor ? 'from' : undefined,
+    amount: formatMinorCurrency(pricing.min_amount_minor, pricing.currency),
   }
-
-  return minAmount
 })
 </script>
 
@@ -57,14 +50,16 @@ const displayAmount = computed(() => {
     <ProductCardImage
       :src="imageUrl"
       :frame-class="imageFrameClass"
-      :frame-style="imageFrameStyle"
     />
-    <div class="absolute bottom-3 left-3 flex gap-1 space-y-0.5 rounded-lg bg-white px-2.5 py-1">
-      <p
-        v-if="displayAmount !== undefined"
-        class="text-md font-medium text-text-strong"
-      >
-        {{ displayAmount }}
+    <div
+      v-if="displayAmount"
+      class="absolute bottom-2 left-2 rounded-md bg-white px-1.5 py-0.5 md:bottom-3 md:left-3 md:rounded-lg md:px-2.5 md:py-1"
+    >
+      <p class="text-xs font-medium text-text-strong md:text-sm">
+        <span
+          v-if="displayAmount.prefix"
+          class="mr-1 hidden md:inline"
+        >{{ displayAmount.prefix }}</span>{{ displayAmount.amount }}
       </p>
     </div>
     <slot name="content" />
