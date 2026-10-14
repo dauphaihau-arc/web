@@ -109,6 +109,17 @@
   background-clip: content-box;
 }
 
+/* Scrolls without showing a scrollbar; for edge-bleeding horizontal strips
+   whose cut-off content already signals there is more to reach. */
+.scrollbar-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
 @property --scroll-fade-top {
   syntax: "<length-percentage>";
   inherits: false;
