@@ -81,6 +81,7 @@ export const ICON_NAME_BY_ALIAS = {
   externalLink: 'lucide:external-link',
   downloadTray: 'i-heroicons-arrow-down-tray',
   loading: 'eos-icons:loading',
+  desktop: 'lucide:monitor',
 } as const
 
 export type AppIconAlias = keyof typeof ICON_NAME_BY_ALIAS
@@ -189,6 +190,7 @@ export const APP_ICON_CLIENT_BUNDLE_ICONS = [
   'lucide:external-link',
   'heroicons:arrow-down-tray',
   'eos-icons:loading',
+  'lucide:monitor',
 ] as const
 
 export const APPROVED_ICON_PREFIXES = [

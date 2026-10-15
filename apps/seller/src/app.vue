@@ -30,21 +30,23 @@ if (import.meta.client) {
 
 <template>
   <div class="min-h-screen">
-    <AppSplash v-if="isUnknown" />
+    <DesktopGuard>
+      <AppSplash v-if="isUnknown" />
 
-    <NuxtLayout
-      v-else-if="isReady"
-      class="min-h-screen"
-    >
-      <NuxtPage />
-    </NuxtLayout>
+      <NuxtLayout
+        v-else-if="isReady"
+        class="min-h-screen"
+      >
+        <NuxtPage />
+      </NuxtLayout>
 
-    <BackendWakeUpOverlay
-      v-else-if="shouldShowBackendOverlay"
-      :is-backend-pending="isPending"
-      :is-backend-error="isError"
-      @retry="retryBackend"
-    />
+      <BackendWakeUpOverlay
+        v-else-if="shouldShowBackendOverlay"
+        :is-backend-pending="isPending"
+        :is-backend-error="isError"
+        @retry="retryBackend"
+      />
+    </DesktopGuard>
 
     <UNotifications />
     <UModals />
