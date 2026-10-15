@@ -179,6 +179,7 @@ onMounted(() => {
 
           <div class="flex justify-end">
             <UButton
+              class="w-full sm:w-auto"
               :loading="isSavingPreferences"
               :disabled="isSavingPreferences"
               @click="preferencesFormRef?.submit"

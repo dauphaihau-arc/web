@@ -46,6 +46,7 @@ const showCreateDialog = () => {
     <UButton
       color="primary"
       variant="solid"
+      class="w-full sm:w-auto"
       @click="showCreateDialog"
     >
       Add a new address
@@ -59,7 +60,7 @@ const showCreateDialog = () => {
     </div>
     <div
       v-else-if="dataUserAddress?.results && dataUserAddress.results.length > 0"
-      class="mt-8 grid grid-cols-3 gap-x-56 gap-y-16"
+      class="mt-8 grid grid-cols-1 gap-y-8 sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-3 lg:gap-x-56 lg:gap-y-16"
     >
       <div
         v-for="item in dataUserAddress.results"
