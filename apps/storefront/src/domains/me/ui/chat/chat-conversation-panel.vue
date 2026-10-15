@@ -6,6 +6,7 @@ import {
 } from '@arc/lib'
 import { formatMinorCurrency } from '@arc/utils'
 import ChatThreadPanel from '@arc/ui/shells/chat-thread-panel.vue'
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import type {
   MyChatConversation,
   MyChatMessage,
@@ -30,13 +31,20 @@ const props = withDefaults(defineProps<{
   emptyStateText?: string
   showHeader?: boolean
   autofocusComposer?: boolean
+  /** Mobile/tablet inbox shows a back control to return to the conversation list. */
+  showBackButton?: boolean
 }>(), {
   conversationId: undefined,
   initialConversation: null,
   emptyStateText: 'Select a conversation to read and reply.',
   showHeader: true,
   autofocusComposer: false,
+  showBackButton: false,
 })
+
+const emit = defineEmits<{
+  back: []
+}>()
 
 const messageDraft = ref('')
 const queryClient = useQueryClient()
@@ -219,7 +227,18 @@ async function handleSendMessage() {
       v-if="showHeader && selectedConversation"
       #header
     >
-      <div class="flex shrink-0 items-center border-b border-border-subtle px-6 py-3.5">
+      <div class="flex shrink-0 items-center border-b border-border-subtle px-4 py-3.5 lg:px-6">
+        <UButton
+          v-if="props.showBackButton"
+          class="mr-2 lg:hidden"
+          color="gray"
+          variant="ghost"
+          :padded="false"
+          :icon="ICON_NAME_BY_ALIAS.chevronLeft"
+          aria-label="Back to conversations"
+          @click="emit('back')"
+        />
+
         <div class="flex min-w-0 items-center gap-3">
           <div class="flex size-11 shrink-0 items-center justify-center rounded-full bg-customGray-200 text-base font-semibold text-text-strong">
             {{ getConversationShopInitial(selectedConversation) }}

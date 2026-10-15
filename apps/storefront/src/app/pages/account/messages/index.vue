@@ -41,10 +41,24 @@ const selectedConversation = computed<MyChatConversation | null>(() => {
     ?? null
 })
 
+/** `lg` breakpoint: below it the inbox shows one pane at a time instead of list + thread side by side. */
+const isDesktop = useMediaQuery('(min-width: 1024px)')
+
+const conversationListPanelClass = computed(() => [
+  'min-h-0 flex-col border-b border-border-subtle lg:border-b-0 lg:border-r',
+  // Mobile/tablet: the list yields to the open thread. Desktop keeps both panes visible.
+  selectedConversationId.value ? 'hidden lg:flex' : 'flex',
+].join(' '))
+
+const conversationPanelClass = computed(() => (
+  selectedConversationId.value ? '' : 'hidden lg:flex'
+))
+
 watch(
-  conversations,
-  (nextConversations: MyChatConversation[]) => {
-    if (selectedConversationId.value) {
+  [conversations, isDesktop],
+  ([nextConversations, desktop]: [MyChatConversation[], boolean]) => {
+    // Mobile/tablet starts on the list, so the first thread is auto-opened on desktop only.
+    if (!desktop || selectedConversationId.value) {
       return
     }
 
@@ -61,6 +75,10 @@ watch(
 
 function selectConversation(conversation: MyChatConversation) {
   router.push(routes.accountMessages({ conversationId: conversation.id }))
+}
+
+function closeConversation() {
+  router.push(routes.accountMessages())
 }
 
 if (import.meta.client) {
@@ -90,7 +108,7 @@ if (import.meta.client) {
         :loading="isPendingConversations"
         :empty="conversations.length === 0"
         empty-text="No conversations yet."
-        aside-class="flex min-h-0 flex-col border-b border-border-subtle lg:border-b-0 lg:border-r"
+        :aside-class="conversationListPanelClass"
         list-class="scrollbar-subtle min-h-0 flex-1 overflow-y-auto"
       >
         <button
@@ -137,6 +155,9 @@ if (import.meta.client) {
       <ChatConversationPanel
         :conversation-id="selectedConversationId"
         :initial-conversation="selectedConversation"
+        :class="conversationPanelClass"
+        show-back-button
+        @back="closeConversation"
       />
     </ConversationInboxShell>
   </div>
