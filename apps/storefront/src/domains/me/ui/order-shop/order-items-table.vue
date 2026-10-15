@@ -73,7 +73,7 @@ const emptyState = {
             {{ label }}
           </div>
           <div class="text-sm text-text-muted md:hidden">
-            Unit price: {{ formatMinorCurrency(row.unitPriceMinor, row.currency) }}
+            Qty: {{ row.quantity }} · Unit price: {{ formatMinorCurrency(row.unitPriceMinor, row.currency) }}
           </div>
           <slot
             name="row-actions"

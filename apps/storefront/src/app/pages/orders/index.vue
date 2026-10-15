@@ -148,12 +148,15 @@ watch(
 
 <template>
   <div class="mt-8">
-    <div class="mb-6 flex flex-col gap-4 ">
-      <UTabs
-        :items="filters"
-        :model-value="activeFilterIndex"
-        @change="handleFilterChange"
-      />
+    <div class="mb-6 flex flex-col gap-4">
+      <div class="-mx-4 min-w-0 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0 lg:overflow-visible lg:pb-0">
+        <UTabs
+          :items="filters"
+          :model-value="activeFilterIndex"
+          :ui="{ list: { width: 'w-max md:w-max lg:w-auto' } }"
+          @change="handleFilterChange"
+        />
+      </div>
 
       <UInput
         v-model="state.search"
@@ -171,10 +174,10 @@ watch(
       <LoadingSvg :child-class="'!w-12 !h-12'" />
     </div>
     <div v-else-if="dataGetOrderShops?.order_shops && dataGetOrderShops.order_shops.length > 0">
-      <h1 class="mb-6 ml-1 text-2xl">
+      <h1 class="mb-4 ml-1 text-xl md:mb-6 md:text-2xl">
         Products you’ve ordered.
       </h1>
-      <div class="ml-2 space-y-12">
+      <div class="space-y-10 md:ml-2 md:space-y-12">
         <div
           v-for="orderShop in dataGetOrderShops.order_shops"
           :key="orderShop.id"
@@ -188,7 +191,7 @@ watch(
       v-else
       class="text-center"
     >
-      <h3 class="text-3xl text-text-strong">
+      <h3 class="text-xl text-text-strong md:text-3xl">
         {{ state.search || activeFilterLabel !== 'All Orders' ? 'No orders match this filter.' : 'Your orders is empty.' }}
       </h3>
     </div>

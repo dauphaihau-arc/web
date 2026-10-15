@@ -10,11 +10,11 @@ defineProps<{
 <template>
   <div
     v-if="orderShop.note || orderShop.promo_codes.length > 0"
-    class="mb-6 flex gap-12"
+    class="mb-6 flex flex-col gap-3 md:flex-row md:gap-12"
   >
     <div
       v-if="orderShop.note"
-      class="min-w-[15%] max-w-[50%]"
+      class="md:min-w-[15%] md:max-w-[50%]"
     >
       <div>Shop Note</div>
       <div class="text-wrap text-text-muted">

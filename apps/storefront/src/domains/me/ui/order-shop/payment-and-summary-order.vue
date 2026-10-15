@@ -24,7 +24,7 @@ const subtotalAfterDiscountsMinor = computed(
   <div>
     <UButton
       color="gray"
-      class="-ml-2.5 mb-2"
+      class="relative z-10 -ml-2.5 mb-2"
       variant="ghost"
       :trailing-icon="showMore ? 'i-material-symbols:keyboard-arrow-up' : 'i-material-symbols:keyboard-arrow-down'"
       @click="showMore = !showMore"
@@ -34,7 +34,7 @@ const subtotalAfterDiscountsMinor = computed(
 
     <div
       v-if="showMore"
-      class="flex justify-between"
+      class="flex flex-col gap-4 md:flex-row md:justify-between md:gap-0"
     >
       <div
         v-if="orderShop?.payment"
@@ -71,7 +71,7 @@ const subtotalAfterDiscountsMinor = computed(
         </div>
       </div>
 
-      <div class="w-1/3">
+      <div class="w-full md:w-1/3">
         <div class="flex justify-between">
           <div class="title">
             <div>Product(s) total</div>

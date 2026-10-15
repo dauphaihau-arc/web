@@ -70,13 +70,29 @@ const productLinkByItemId = computed(() => new Map(
     routes.productDetail(product.product.shop.slug, product.product.slug),
   ]),
 ))
+
+/**
+ * Below `lg` the fulfillment/actions column is collapsed: this component owns
+ * no detail page (the order detail view and the guest lookup both pass
+ * `show-detail-link: false`), so its status and post-purchase actions stay on
+ * screen. Otherwise the card itself carries the link to the detail page.
+ */
+const detailLink = computed(() =>
+  props.showDetailLink ? routes.orderDetail(props.orderShop.id) : undefined,
+)
 </script>
 
 <template>
-  <div class="mb-16 grid grid-cols-12 gap-16">
-    <div class="col-span-8">
-      <UCard class="relative pt-10">
-        <div class="absolute -left-1 -top-4 flex w-[101%] items-center justify-between rounded-md border border-border-subtle bg-surface-muted px-4 py-3 text-text-muted shadow-border">
+  <div class="mb-16 grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
+    <div class="lg:col-span-8">
+      <UCard class="relative md:pt-10">
+        <NuxtLink
+          v-if="detailLink"
+          :to="detailLink"
+          class="absolute inset-0 z-0 lg:hidden"
+          :aria-label="`View order ${displayOrderShop.order_number}`"
+        />
+        <div class="mb-4 flex flex-col gap-1 rounded-md border border-border-subtle bg-surface-muted px-4 py-3 text-text-muted shadow-border md:absolute md:-left-1 md:-top-4 md:mb-0 md:w-[101%] md:flex-row md:items-center md:justify-between md:gap-0">
           <div>
             <div class="text-xs font-medium uppercase tracking-[0.14em] text-text-muted">
               {{ displayOrderShop.order_number }}
@@ -98,6 +114,7 @@ const productLinkByItemId = computed(() => new Map(
           <template #row-actions="{ row }">
             <UButton
               :to="productLinkByItemId.get(row.id)"
+              class="relative z-10"
               variant="link"
               :padded="false"
               size="sm"
@@ -115,7 +132,10 @@ const productLinkByItemId = computed(() => new Map(
       </UCard>
     </div>
 
-    <div class="col-span-3 -mt-4 w-5/6">
+    <div
+      class="w-full lg:col-span-3 lg:-mt-4 lg:w-5/6"
+      :class="detailLink && 'hidden lg:block'"
+    >
       <ShopShippingInfo
         :order-shop="displayOrderShop"
         :display="props.fulfillmentDisplay"
