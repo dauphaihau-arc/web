@@ -50,9 +50,9 @@ const shippingAddressLines = computed(() => {
 
 <template>
   <div class="mt-8 space-y-6">
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between md:gap-0">
       <div>
-        <h1 class="text-2xl">
+        <h1 class="text-xl md:text-2xl">
           {{ displayOrderShop ? `Order ${displayOrderShop.order_number}` : 'Order details' }}
         </h1>
         <div class="text-sm text-text-muted">
@@ -78,9 +78,9 @@ const shippingAddressLines = computed(() => {
 
     <div
       v-else-if="displayOrderShop"
-      class="grid grid-cols-12 gap-8"
+      class="grid grid-cols-1 gap-8 lg:grid-cols-12"
     >
-      <div class="col-span-9">
+      <div class="lg:col-span-9">
         <ShopItem
           :order-shop="displayOrderShop"
           :show-detail-link="false"
@@ -90,7 +90,7 @@ const shippingAddressLines = computed(() => {
         />
       </div>
 
-      <div class="col-span-3 space-y-4">
+      <div class="space-y-4 lg:col-span-3">
         <UCard>
           <template #header>
             <div class="font-medium">
