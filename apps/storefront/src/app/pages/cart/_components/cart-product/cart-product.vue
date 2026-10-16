@@ -97,6 +97,7 @@ const compareAtAmount = computed(() =>
     >
       <NuxtImg
         :src="props.productCart?.product?.image_url"
+        densities="1"
         width="180"
         height="180"
         class="size-full object-cover object-center"

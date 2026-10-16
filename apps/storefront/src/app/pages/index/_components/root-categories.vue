@@ -5,7 +5,7 @@ import { categoryCarouselUi } from '~/shared/ui/carousel/carousel-ui'
 import { useCarouselControls } from '~/shared/ui/carousel/use-carousel-controls'
 import { getRoutePath, routes } from '~/shared/navigation/routes'
 import { useGetRootCategories } from '~/domains/category/queries/categories.query'
-import { CATEGORY_IMAGE_VARIANTS, resolveCategoryImageUrl } from '~/domains/category/utils/category-image'
+import { CATEGORY_IMAGE_VARIANTS, CATEGORY_IMAGE_VARIANT_SIZES, resolveCategoryImageUrl } from '~/domains/category/utils/category-image'
 import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-guard'
 
 const { data } = useGetRootCategories()
@@ -56,6 +56,9 @@ const redirectByCategory = (category: Category) => {
             <NuxtImg
               v-if="categoryImageUrl(cg)"
               :src="categoryImageUrl(cg)"
+              densities="1"
+              v-bind="CATEGORY_IMAGE_VARIANT_SIZES[CATEGORY_IMAGE_VARIANTS.ROOT_2X3]"
+              loading="lazy"
               class="aspect-[2/3] w-full cursor-pointer rounded object-cover"
               @click="() => redirectByCategory(cg)"
             />

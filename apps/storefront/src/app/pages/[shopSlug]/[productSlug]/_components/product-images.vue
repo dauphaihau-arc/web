@@ -177,6 +177,7 @@ watch(() => carousel.value?.page, (page) => {
             <NuxtImg
               preload
               :src="imageThumbSelected(index)"
+              densities="1"
               width="90"
               height="90"
               class="rounded"
@@ -189,6 +190,7 @@ watch(() => carousel.value?.page, (page) => {
         <NuxtImg
           preload
           :src="imageUrlSelected"
+          densities="1"
           width="575"
           height="575"
           class="absolute inset-0 size-full rounded object-contain"
@@ -226,6 +228,9 @@ watch(() => carousel.value?.page, (page) => {
           <div class="relative aspect-[1/1] w-full overflow-hidden rounded bg-media-product">
             <NuxtImg
               :src="imageUrl(index)"
+              densities="1"
+              width="575"
+              height="575"
               class="absolute inset-0 size-full object-contain"
             />
           </div>

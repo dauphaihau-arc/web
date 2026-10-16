@@ -220,6 +220,7 @@ watch(
           <NuxtImg
             :src="item.src"
             :alt="item.alt"
+            densities="1"
             width="720"
             height="720"
             class="aspect-square w-full object-cover"
@@ -240,6 +241,7 @@ watch(
         <NuxtImg
           :src="item.src"
           :alt="item.alt"
+          densities="1"
           width="720"
           height="720"
           class="aspect-square w-full object-cover"

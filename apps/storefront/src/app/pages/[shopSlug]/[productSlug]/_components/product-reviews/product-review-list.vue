@@ -164,6 +164,7 @@ function getReviewImageSrc(review: GetPublicProductReviewsResponse['items'][numb
                 v-if="getReviewImageSrc(review)"
                 :src="getReviewImageSrc(review) ?? undefined"
                 :alt="review.title || `Review photo from ${review.author.display_name}`"
+                densities="1"
                 width="176"
                 height="176"
                 class="size-24 shrink-0 rounded-2xl bg-surface-muted object-cover md:size-16"

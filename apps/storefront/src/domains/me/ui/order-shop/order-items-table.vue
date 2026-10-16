@@ -57,6 +57,7 @@ const emptyState = {
         <NuxtImg
           v-if="row.imageUrl"
           :src="row.imageUrl"
+          densities="1"
           width="72"
           height="72"
           class="size-12 shrink-0 rounded-xl border border-border-subtle object-cover md:size-[72px]"

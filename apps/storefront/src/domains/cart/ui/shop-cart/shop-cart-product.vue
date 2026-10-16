@@ -46,6 +46,7 @@ const compareAtAmount = computed(() =>
       <div class="size-24 shrink-0 cursor-pointer overflow-hidden rounded-lg bg-media-product ring-1 ring-border-subtle md:size-[180px]">
         <NuxtImg
           :src="props.productCart.product.image_url"
+          densities="1"
           width="180"
           height="180"
           class="size-full object-cover object-center"

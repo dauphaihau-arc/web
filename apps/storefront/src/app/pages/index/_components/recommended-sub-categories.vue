@@ -5,7 +5,7 @@ import { circleCategoryCarouselUi } from '~/shared/ui/carousel/carousel-ui'
 import { useCarouselControls } from '~/shared/ui/carousel/use-carousel-controls'
 import { useGetCategories } from '~/domains/category/queries/categories.query'
 import { getRoutePath, routes } from '~/shared/navigation/routes'
-import { CATEGORY_IMAGE_VARIANTS, resolveCategoryImageUrl } from '~/domains/category/utils/category-image'
+import { CATEGORY_IMAGE_VARIANTS, CATEGORY_IMAGE_VARIANT_SIZES, resolveCategoryImageUrl } from '~/domains/category/utils/category-image'
 import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-guard'
 
 const skeletonItems = Array.from({ length: 4 }, (_, index) => index)
@@ -90,6 +90,9 @@ const redirectPage = (subCategory: Category) => {
               <NuxtImg
                 v-if="categoryImageUrl(cg)"
                 :src="categoryImageUrl(cg)"
+                densities="1"
+                v-bind="CATEGORY_IMAGE_VARIANT_SIZES[CATEGORY_IMAGE_VARIANTS.RECOMMENDED_1X1]"
+                loading="lazy"
                 class="aspect-[1/1] w-full cursor-pointer rounded-full object-cover"
                 @click="() => redirectPage(cg)"
               />

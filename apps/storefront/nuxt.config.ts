@@ -188,6 +188,8 @@ export default defineNuxtConfig({
 
   image: {
     provider: 'none',
+    // The module defu-merges density arrays with its [1, 2] default, so use
+    // densities="1" on NuxtImg instances that point at a single stored asset.
     alias: {
       assetHost: awsHostBucketAlias
     }

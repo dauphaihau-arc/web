@@ -22,5 +22,6 @@ const { data, isPending } = useGetTrendingProducts(
     :products="data?.items"
     :loading="isPending"
     :limit="limit"
+    priority
   />
 </template>

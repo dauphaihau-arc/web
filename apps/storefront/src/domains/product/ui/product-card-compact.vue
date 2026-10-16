@@ -9,6 +9,8 @@ const props = defineProps<{
   product: GetProductsResponseItem
   autoSize?: boolean
   fill?: boolean
+  /** Card image holds the LCP candidate: eager, top fetch priority. */
+  priority?: boolean
 }>()
 
 const config = useRuntimeConfig()
@@ -50,6 +52,7 @@ const displayAmount = computed(() => {
     <ProductCardImage
       :src="imageUrl"
       :frame-class="imageFrameClass"
+      :priority="props.priority"
     />
     <div
       v-if="displayAmount"

@@ -11,11 +11,14 @@ const props = withDefaults(defineProps<{
   products?: GetProductsResponseItem[]
   loading?: boolean
   limit?: number
+  /** Rail sits at the top of the page and holds the LCP candidate. */
+  priority?: boolean
 }>(), {
   description: undefined,
   products: undefined,
   loading: false,
   limit: 10,
+  priority: false,
 })
 
 const productItems = computed(() => props.products ?? [])
@@ -64,8 +67,11 @@ const { carousel, canGoPrev, canGoNext, prev, next } = useCarouselControls(() =>
         :items="productItems"
         :ui="productCarouselUi"
       >
-        <template #default="{ item }">
-          <ProductCard :product="item" />
+        <template #default="{ item, index }">
+          <ProductCard
+            :product="item"
+            :priority="props.priority && index === 0"
+          />
         </template>
       </UCarousel>
       <CarouselControls
