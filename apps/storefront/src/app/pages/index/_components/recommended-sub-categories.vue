@@ -11,12 +11,10 @@ import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-
 const skeletonItems = Array.from({ length: 4 }, (_, index) => index)
 
 const marketStore = useMarketStore()
-const config = useRuntimeConfig()
 const { blocked } = useCategoryIdentityBlocked()
 
 const categoryImageUrl = (category: Category) => resolveCategoryImageUrl(
   category,
-  config.public.assetHost,
   CATEGORY_IMAGE_VARIANTS.RECOMMENDED_1X1,
 )
 

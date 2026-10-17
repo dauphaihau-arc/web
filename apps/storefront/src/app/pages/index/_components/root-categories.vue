@@ -10,7 +10,6 @@ import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-
 
 const { data } = useGetRootCategories()
 const marketStore = useMarketStore()
-const config = useRuntimeConfig()
 const { blocked, checking, checkForUpdate } = useCategoryIdentityBlocked()
 
 const categories = computed(() => data.value ?? [])
@@ -18,7 +17,6 @@ const { carousel, canGoPrev, canGoNext, prev, next } = useCarouselControls(() =>
 
 const categoryImageUrl = (category: Category) => resolveCategoryImageUrl(
   category,
-  config.public.assetHost,
   CATEGORY_IMAGE_VARIANTS.ROOT_2X3,
 )
 

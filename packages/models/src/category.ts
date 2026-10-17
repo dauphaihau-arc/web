@@ -4,8 +4,8 @@ export type Category = {
   name: string
   slug: string
   rank: number
-  imageStorageKey?: string
   imageUrl?: string
+  imageUrl1x1?: string
   featuredFacetKeys?: string[]
   attributes: {
     id: string

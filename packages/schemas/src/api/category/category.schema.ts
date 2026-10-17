@@ -24,6 +24,7 @@ export const categoryResponseSchema = z.object({
   slug: z.string(),
   rank: z.number(),
   image_url: z.string().optional(),
+  image_url_1x1: z.string().optional(),
   featured_facet_keys: z.array(z.string()).optional(),
   attributes: z.array(categoryAttributeResponseSchema),
 })

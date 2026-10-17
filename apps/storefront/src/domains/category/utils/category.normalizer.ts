@@ -35,6 +35,7 @@ export function normalizeCategory(response: GetCategoriesResponse[number]): Cate
     slug: response.slug,
     rank: response.rank,
     imageUrl: response.image_url,
+    imageUrl1x1: response.image_url_1x1,
     featuredFacetKeys: response.featured_facet_keys,
     attributes: response.attributes.map(attribute => ({
       id: attribute.id,
