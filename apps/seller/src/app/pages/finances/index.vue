@@ -1,14 +1,15 @@
 <script lang="ts" setup>
-import { formatMinorCurrency } from '@arc/utils'
-import StatusBadge from '@arc/ui/primitives/status-badge.vue'
+import Empty from '@arc/ui/primitives/empty.vue'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
+import PayableCard from './_components/payable-card.vue'
+import PayoutAccountCard from './_components/payout-account-card.vue'
 import PayoutAccountDialog from './_components/payout-account-dialog.vue'
 import { useShopFinancePayable } from '~/domains/shop/queries/finance-payable.query'
 import { useShopFinancePayoutAccount } from '~/domains/shop/queries/payout-account.query'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 
-const { data: payable, isPending } = useShopFinancePayable()
+const { data: payable, isPending, isError: isPayableError } = useShopFinancePayable()
 
 const modal = useModal()
 const {
@@ -16,23 +17,12 @@ const {
   isPending: isPayoutAccountPending,
   isError: isPayoutAccountError,
 } = useShopFinancePayoutAccount()
-const payoutAccount = computed(() => payoutAccountResponse.value?.payout_account ?? null)
 
-const payoutAccountStatus = {
-  pending: { label: 'Pending', color: 'yellow' },
-  active: { label: 'Active', color: 'green' },
-  disabled: { label: 'Disabled', color: 'gray' },
-} as const
+const payoutAccount = computed(() => payoutAccountResponse.value?.payout_account ?? null)
 
 function openPayoutAccountDialog() {
   modal.open(PayoutAccountDialog, { account: payoutAccount.value })
 }
-
-const hasBalance = computed(() => {
-  if (!payable.value) return false
-
-  return payable.value.available_minor !== 0 || payable.value.not_yet_available_minor !== 0
-})
 </script>
 
 <template>
@@ -55,49 +45,16 @@ const hasBalance = computed(() => {
           <USkeleton class="mt-4 h-8 w-32" />
         </div>
 
-        <div
-          v-else-if="!hasBalance"
-          class="rounded-lg border border-border-subtle bg-surface p-10 text-center"
-        >
-          <p class="text-sm font-medium text-text-strong">
-            No payable balance yet
-          </p>
-          <p class="mt-1 text-sm text-text-subtle">
-            Your available and not-yet-available balances appear here once you have sales.
-          </p>
-        </div>
+        <Empty
+          v-else-if="isPayableError || !payable"
+          title="Unable to load balance"
+          description="Reload the page to try again."
+        />
 
-        <div
+        <PayableCard
           v-else
-          class="rounded-lg border border-border-subtle bg-surface p-5"
-        >
-          <div class="flex items-center gap-2">
-            <AppIcon
-              name="revenue"
-              size="xs"
-              class="text-text-subtle"
-            />
-            <span class="text-sm font-medium text-text-muted">{{ payable?.currency }}</span>
-          </div>
-
-          <div class="mt-4">
-            <div class="text-sm text-text-muted">
-              Available
-            </div>
-            <div class="mt-1 text-2xl font-semibold text-text-strong">
-              {{ formatMinorCurrency(payable?.available_minor ?? 0, payable?.currency ?? '') }}
-            </div>
-          </div>
-
-          <div class="mt-4 border-t border-border-subtle pt-4">
-            <div class="text-sm text-text-muted">
-              Not yet available
-            </div>
-            <div class="mt-1 text-2xl font-semibold text-text-strong">
-              {{ formatMinorCurrency(payable?.not_yet_available_minor ?? 0, payable?.currency ?? '') }}
-            </div>
-          </div>
-        </div>
+          :payable="payable"
+        />
 
         <div
           v-if="isPayoutAccountPending"
@@ -108,86 +65,34 @@ const hasBalance = computed(() => {
           <USkeleton class="mt-4 h-5 w-40" />
         </div>
 
-        <div
+        <Empty
           v-else-if="isPayoutAccountError"
-          class="rounded-lg border border-border-subtle bg-surface p-5"
-        >
-          <UAlert
-            color="red"
-            variant="subtle"
-            title="Unable to load payout account"
-            description="Reload the page to try again."
-          />
-        </div>
+          title="Unable to load payout account"
+          description="Reload the page to try again."
+        />
 
-        <div
+        <Empty
           v-else-if="!payoutAccount"
-          class="rounded-lg border border-border-subtle bg-surface p-10 text-center"
+          icon="payment"
+          size="lg"
+          title="No payout account yet"
+          description="Add the bank account you want to be paid into"
         >
-          <AppIcon
-            name="payment"
-            size="3xl"
-            class="text-text-subtle"
-          />
-          <p class="mt-3 text-sm font-medium text-text-strong">
-            No payout account yet
-          </p>
-          <p class="mt-1 text-sm text-text-subtle">
-            Add the bank account you want to be paid into
-          </p>
-          <UButton
-            class="mt-5"
-            icon="i-heroicons-plus"
-            @click="openPayoutAccountDialog"
-          >
-            Add bank account
-          </UButton>
-        </div>
+          <template #actions>
+            <UButton
+              icon="i-heroicons-plus"
+              @click="openPayoutAccountDialog"
+            >
+              Add bank account
+            </UButton>
+          </template>
+        </Empty>
 
-        <div
+        <PayoutAccountCard
           v-else
-          class="rounded-lg border border-border-subtle bg-surface p-5"
-        >
-          <div class="flex items-center gap-2">
-            <AppIcon
-              name="payment"
-              size="xs"
-              class="text-text-subtle"
-            />
-            <span class="text-sm font-medium text-text-muted">Payout account</span>
-            <StatusBadge
-              class="ml-auto"
-              :label="payoutAccountStatus[payoutAccount.status].label"
-              :color="payoutAccountStatus[payoutAccount.status].color"
-            />
-          </div>
-
-          <div class="mt-4">
-            <div class="text-sm text-text-muted">
-              Bank
-            </div>
-            <div class="mt-1 text-lg font-semibold text-text-strong">
-              {{ payoutAccount.bank_name }} ••{{ payoutAccount.last4 }}
-            </div>
-          </div>
-
-          <div class="mt-4 border-t border-border-subtle pt-4">
-            <div class="text-sm text-text-muted">
-              Account holder
-            </div>
-            <div class="mt-1 text-sm font-medium text-text-strong">
-              {{ payoutAccount.holder_name }}
-            </div>
-          </div>
-
-          <UButton
-            class="mt-4"
-            color="gray"
-            @click="openPayoutAccountDialog"
-          >
-            Replace bank account
-          </UButton>
-        </div>
+          :account="payoutAccount"
+          @replace="openPayoutAccountDialog"
+        />
       </div>
     </template>
   </LayoutShopWrapperContent>
