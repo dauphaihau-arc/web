@@ -81,9 +81,8 @@ export const shopSidebarItems: LinkItem[] = [
   {
     title: 'Finances',
     icon: 'revenue',
-    to: { path: '/finances' },
-    matchPath: '/finances',
-    disabled: true,
+    to: routes.finances(),
+    matchPath: routePaths.finances,
   },
 ];
 
