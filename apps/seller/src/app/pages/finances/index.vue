@@ -4,8 +4,10 @@ import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import PayableCard from './_components/payable-card.vue'
 import PayoutAccountCard from './_components/payout-account-card.vue'
 import PayoutAccountDialog from './_components/payout-account-dialog.vue'
+import PayoutHistory from './_components/payout-history.vue'
 import { useShopFinancePayable } from '~/domains/shop/queries/finance-payable.query'
 import { useShopFinancePayoutAccount } from '~/domains/shop/queries/payout-account.query'
+import { useShopFinancePayouts } from '~/domains/shop/queries/payouts.query'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 
@@ -19,6 +21,12 @@ const {
 } = useShopFinancePayoutAccount()
 
 const payoutAccount = computed(() => payoutAccountResponse.value?.payout_account ?? null)
+
+const {
+  data: payoutsResponse,
+  isPending: isPayoutsPending,
+  isError: isPayoutsError,
+} = useShopFinancePayouts()
 
 function openPayoutAccountDialog() {
   modal.open(PayoutAccountDialog, { account: payoutAccount.value })
@@ -94,6 +102,28 @@ function openPayoutAccountDialog() {
           @replace="openPayoutAccountDialog"
         />
       </div>
+
+      <div
+        v-if="isPayoutsPending"
+        class="mt-4 rounded-lg border border-border-subtle bg-surface p-5"
+      >
+        <USkeleton class="h-5 w-32" />
+        <USkeleton class="mt-5 h-5 w-48" />
+        <USkeleton class="mt-4 h-5 w-48" />
+      </div>
+
+      <Empty
+        v-else-if="isPayoutsError || !payoutsResponse"
+        class="mt-4"
+        title="Unable to load payout history"
+        description="Reload the page to try again."
+      />
+
+      <PayoutHistory
+        v-else
+        class="mt-4"
+        :payouts="payoutsResponse.payouts"
+      />
     </template>
   </LayoutShopWrapperContent>
 </template>

@@ -3,6 +3,7 @@ import type {
   ShopFinancePayoutAccountResponse,
 } from './contracts/payout-account.contract';
 import type { ShopFinancePayable } from './contracts/payable.contract';
+import type { ShopFinancePayoutHistory } from './contracts/payout.contract';
 import { apiClient } from '~/domains/_shared/api-client';
 
 export const shopFinanceApi = {
@@ -21,6 +22,15 @@ export const shopFinanceApi = {
   getPayoutAccount(shopId: string) {
     return apiClient.get<ShopFinancePayoutAccountResponse>(
       `/shops/${shopId}/finance/payout-account`,
+    );
+  },
+
+  /**
+   * The shop's Payouts, newest first. Amounts are integer minor units.
+   */
+  getPayouts(shopId: string) {
+    return apiClient.get<ShopFinancePayoutHistory>(
+      `/shops/${shopId}/finance/payouts`,
     );
   },
 
