@@ -60,6 +60,12 @@ export const shopSidebarItems: LinkItem[] = [
     ],
   },
   {
+    title: 'Finances',
+    icon: 'revenue',
+    to: routes.finances(),
+    matchPath: routePaths.finances,
+  },
+  {
     title: 'Settings',
     icon: 'settings',
     matchPath: routePaths.settings,
@@ -77,12 +83,6 @@ export const shopSidebarItems: LinkItem[] = [
         matchPath: routePaths.shippingSettings,
       },
     ],
-  },
-  {
-    title: 'Finances',
-    icon: 'revenue',
-    to: routes.finances(),
-    matchPath: routePaths.finances,
   },
 ];
 
