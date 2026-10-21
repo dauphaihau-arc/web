@@ -8,6 +8,10 @@ import type {
 } from './contracts/manual-payout.contract';
 import type { ShopFinancePayable } from './contracts/payable.contract';
 import type { ShopFinancePayoutHistory } from './contracts/payout.contract';
+import type {
+  ShopFinancePayoutSettings,
+  UpdateShopFinancePayoutSettingsRequest,
+} from './contracts/payout-settings.contract';
 import { apiClient } from '~/domains/_shared/api-client';
 
 /**
@@ -57,6 +61,26 @@ export const shopFinanceApi = {
   savePayoutAccount(shopId: string, body: SaveShopFinancePayoutAccountRequestBody) {
     return apiClient.put<ShopFinancePayoutAccountResponse>(
       `/shops/${shopId}/finance/payout-account`,
+      body,
+    );
+  },
+
+  /**
+   * Whether auto payout is on, the day of the month it runs, and how many
+   * manual withdrawals are left this platform month (null means unlimited).
+   */
+  getPayoutSettings(shopId: string) {
+    return apiClient.get<ShopFinancePayoutSettings>(
+      `/shops/${shopId}/finance/payout-settings`,
+    );
+  },
+
+  /**
+   * Turns auto payout on or off. The API answers with the settings it stored.
+   */
+  savePayoutSettings(shopId: string, body: UpdateShopFinancePayoutSettingsRequest) {
+    return apiClient.put<ShopFinancePayoutSettings>(
+      `/shops/${shopId}/finance/payout-settings`,
       body,
     );
   },

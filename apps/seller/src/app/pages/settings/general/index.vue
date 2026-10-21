@@ -2,9 +2,12 @@
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import WrapperFormRow from '~/shared/ui/wrapper-form-row.vue'
 import WrapperFormRows from '~/shared/ui/wrapper-form-rows.vue'
+import PayoutSettingsToggle from './_components/payout-settings-toggle.vue'
 import { useGetMyShop } from '~/domains/shop/queries/my-shop.query'
 import { useUpdateShopSettings } from '~/domains/shop/mutations/update-shop-settings.mutation'
+import { useShopFinancePayoutSettings } from '~/domains/shop/queries/payout-settings.query'
 import { supportedTimeZones } from '~/domains/shop/utils/zoned-local-date-time'
+import { formatOrdinalDay } from '~/domains/shop/utils/format-ordinal-day'
 import { toastCustom } from '~/shared/config/toast'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
@@ -12,6 +15,18 @@ definePageMeta({ layout: 'shop', middleware: ['auth'] })
 const toast = useToast()
 const { data: myShop } = useGetMyShop()
 const { mutateAsync: saveSettings, isPending: isSaving } = useUpdateShopSettings()
+
+const {
+  data: payoutSettings,
+  isPending: isPayoutSettingsPending,
+  isError: isPayoutSettingsError,
+} = useShopFinancePayoutSettings()
+
+const autoPayoutDescription = computed(() => (
+  payoutSettings.value
+    ? `Pays your available balance automatically on the ${formatOrdinalDay(payoutSettings.value.auto_payout_day_of_month)} of each month.`
+    : 'Pays your available balance automatically each month.'
+))
 
 const timezoneOptions = supportedTimeZones()
 const timezone = ref<string>()
@@ -75,6 +90,30 @@ async function onTimezoneChange(value: string) {
             size="lg"
             class="w-full md:ms-auto md:max-w-52"
             @update:model-value="onTimezoneChange"
+          />
+        </WrapperFormRow>
+
+        <WrapperFormRow
+          label="Auto payout"
+          :description="autoPayoutDescription"
+        >
+          <div
+            v-if="isPayoutSettingsPending"
+            class="flex md:justify-end"
+          >
+            <USkeleton class="h-6 w-24" />
+          </div>
+
+          <p
+            v-else-if="isPayoutSettingsError || !payoutSettings"
+            class="text-sm text-text-subtle"
+          >
+            Unable to load auto payout. Reload the page to try again.
+          </p>
+
+          <PayoutSettingsToggle
+            v-else
+            :settings="payoutSettings"
           />
         </WrapperFormRow>
       </WrapperFormRows>
