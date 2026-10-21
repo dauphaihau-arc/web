@@ -1,8 +1,32 @@
-import { describe, expect, it } from 'vitest';
+import {
+  describe, expect, it, vi,
+} from 'vitest';
 import { mountSuspended } from '@nuxt/test-utils/runtime';
 import { formatMinorCurrency } from '@arc/utils';
 import type { ShopFinancePayout } from '~/domains/shop/api/finance/contracts/payout.contract';
 import PayoutHistory from './payout-history.vue';
+
+const { historyState } = vi.hoisted(() => ({
+  historyState: {
+    payouts: [] as ShopFinancePayout[],
+    isPending: false,
+    isError: false,
+  },
+}));
+
+vi.mock('~/domains/shop/queries/payouts.query', async () => {
+  // `vi.mock` factories are hoisted above the module's own imports, so `vue`
+  // cannot be a static import here.
+  const { computed } = await import('vue');
+
+  return {
+    useShopFinancePayouts: () => ({
+      data: computed(() => (historyState.isError ? undefined : { payouts: historyState.payouts })),
+      isPending: computed(() => historyState.isPending),
+      isError: computed(() => historyState.isError),
+    }),
+  };
+});
 
 function buildPayout(overrides: Partial<ShopFinancePayout> = {}): ShopFinancePayout {
   return {
@@ -10,6 +34,9 @@ function buildPayout(overrides: Partial<ShopFinancePayout> = {}): ShopFinancePay
     amount_minor: 12_500,
     currency: 'USD',
     state: 'paid',
+    source: 'scheduled',
+    period: '2026-10',
+    reason: null,
     paid_at: '2026-10-19T09:15:00.000Z',
     created_at: '2026-10-19T09:15:00.000Z',
     ...overrides,
@@ -17,27 +44,50 @@ function buildPayout(overrides: Partial<ShopFinancePayout> = {}): ShopFinancePay
 }
 
 async function render(payouts: ShopFinancePayout[]) {
-  return mountSuspended(PayoutHistory, {
-    props: { payouts },
-  });
+  historyState.payouts = payouts;
+  historyState.isPending = false;
+  historyState.isError = false;
+
+  return mountSuspended(PayoutHistory);
 }
 
 describe('payout history', () => {
+  it('owns its loading state', async () => {
+    historyState.payouts = [];
+    historyState.isPending = true;
+    historyState.isError = false;
+
+    const wrapper = await mountSuspended(PayoutHistory);
+
+    expect(wrapper.text()).not.toContain('Payout history');
+  });
+
+  it('owns its error state', async () => {
+    historyState.payouts = [];
+    historyState.isPending = false;
+    historyState.isError = true;
+
+    const wrapper = await mountSuspended(PayoutHistory);
+
+    expect(wrapper.text()).toContain('Unable to load payout history');
+  });
+
   it('shows a paid payout with its amount, currency, date and state', async () => {
     const wrapper = await render([buildPayout()]);
 
     const headers = wrapper.findAll('thead th');
-    expect(headers.map(header => header.text())).toEqual(['Amount', 'Currency', 'Date', 'State']);
+    expect(headers.map(header => header.text())).toEqual(['Amount', 'Currency', 'Date', 'State', 'Source']);
 
     const rows = wrapper.findAll('tbody tr');
     expect(rows).toHaveLength(1);
 
     const cells = rows[0].findAll('td');
-    expect(cells).toHaveLength(4);
+    expect(cells).toHaveLength(5);
     expect(cells[0].text()).toContain(formatMinorCurrency(12_500, 'USD'));
     expect(cells[1].text()).toContain('USD');
     expect(cells[2].text()).toContain('Oct 19, 2026');
     expect(cells[3].text()).toContain('Paid');
+    expect(cells[4].text()).toContain('Scheduled');
   });
 
   it('falls back to the created date while a payout has not been paid', async () => {
@@ -52,6 +102,30 @@ describe('payout history', () => {
     const cells = wrapper.get('tbody tr').findAll('td');
     expect(cells[2].text()).toContain('Oct 18, 2026');
     expect(cells[3].text()).toContain('Pending');
+  });
+
+  it('marks a manual withdrawal as manual', async () => {
+    const wrapper = await render([
+      buildPayout({
+        source: 'manual',
+        period: '2026-10',
+      }),
+    ]);
+
+    expect(wrapper.get('tbody tr').findAll('td')[4].text()).toContain('Manual');
+  });
+
+  it('shows a blocked payout with the reason it was not sent', async () => {
+    const wrapper = await render([
+      buildPayout({
+        state: 'blocked',
+        reason: 'no_payout_account',
+        paid_at: null,
+      }),
+    ]);
+
+    expect(wrapper.text()).toContain('Blocked');
+    expect(wrapper.text()).toContain('No payout account');
   });
 
   it('shows an honest empty state when the shop has no payouts yet', async () => {

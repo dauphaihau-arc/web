@@ -2,9 +2,25 @@ import type {
   SaveShopFinancePayoutAccountRequestBody,
   ShopFinancePayoutAccountResponse,
 } from './contracts/payout-account.contract';
+import type {
+  RequestShopFinanceManualPayoutRequest,
+  ShopFinanceManualPayoutResponse,
+} from './contracts/manual-payout.contract';
 import type { ShopFinancePayable } from './contracts/payable.contract';
 import type { ShopFinancePayoutHistory } from './contracts/payout.contract';
 import { apiClient } from '~/domains/_shared/api-client';
+
+/**
+ * A manual withdrawal moves money once, so a retried request must not pay the
+ * seller twice. The API requires an idempotency key for it.
+ */
+function idempotentOptions() {
+  return {
+    headers: {
+      'Idempotency-Key': crypto.randomUUID(),
+    },
+  };
+}
 
 export const shopFinanceApi = {
   /**
@@ -42,6 +58,18 @@ export const shopFinanceApi = {
     return apiClient.put<ShopFinancePayoutAccountResponse>(
       `/shops/${shopId}/finance/payout-account`,
       body,
+    );
+  },
+
+  /**
+   * Withdraws the whole net available balance, or `amount_minor` of it. The
+   * request is idempotent so a retry cannot pay the seller twice.
+   */
+  requestManualPayout(shopId: string, body: RequestShopFinanceManualPayoutRequest) {
+    return apiClient.post<ShopFinanceManualPayoutResponse>(
+      `/shops/${shopId}/finance/payouts/manual`,
+      body,
+      idempotentOptions(),
     );
   },
 };
