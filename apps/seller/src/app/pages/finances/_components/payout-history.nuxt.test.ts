@@ -2,8 +2,10 @@ import {
   describe, expect, it, vi,
 } from 'vitest';
 import { mountSuspended } from '@nuxt/test-utils/runtime';
+import { nextTick } from 'vue';
 import { formatMinorCurrency } from '@arc/utils';
 import type { ShopFinancePayout } from '~/domains/shop/api/finance/contracts/payout.contract';
+import type { VueWrapper } from '@vue/test-utils';
 import PayoutHistory from './payout-history.vue';
 
 const { historyState } = vi.hoisted(() => ({
@@ -49,6 +51,54 @@ async function render(payouts: ShopFinancePayout[]) {
   historyState.isError = false;
 
   return mountSuspended(PayoutHistory);
+}
+
+function chip(wrapper: VueWrapper, label: string) {
+  const found = wrapper.findAll('span').find(candidate => candidate.text() === label);
+
+  if (!found) {
+    throw new Error(`Filter chip "${label}" not found`);
+  }
+
+  return found;
+}
+
+async function openFilter(wrapper: VueWrapper, label: string) {
+  await chip(wrapper, label).trigger('click');
+}
+
+async function toggleOption(wrapper: VueWrapper, label: string) {
+  const option = wrapper.findAll('label').find(candidate => candidate.text() === label);
+
+  if (!option) {
+    throw new Error(`Filter option "${label}" not found`);
+  }
+
+  const checkbox = option.find('input[type="checkbox"]');
+
+  if (checkbox.exists()) {
+    await checkbox.setValue(true);
+    return;
+  }
+
+  await option.trigger('click');
+}
+
+async function applyOpenFilter(wrapper: VueWrapper) {
+  const applyButton = wrapper.findAll('button').find(button => button.text() === 'Apply');
+
+  if (!applyButton) {
+    throw new Error('Apply button not found');
+  }
+
+  const form = applyButton.element.closest('form');
+
+  if (!form) {
+    throw new Error('Filter form not found');
+  }
+
+  form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+  await nextTick();
 }
 
 describe('payout history', () => {
@@ -131,12 +181,84 @@ describe('payout history', () => {
   it('shows an honest empty state when the shop has no payouts yet', async () => {
     const wrapper = await render([]);
 
-    expect(wrapper.text()).toContain('Payout history');
+    expect(wrapper.text()).not.toContain('Payout history');
     expect(wrapper.text()).toContain('No payouts yet');
 
     const rows = wrapper.findAll('tbody tr');
     expect(rows).toHaveLength(1);
     expect(rows[0].findAll('td')).toHaveLength(1);
     expect(rows[0].text()).not.toContain(formatMinorCurrency(12_500, 'USD'));
+  });
+
+  it('filters by state and source through the shared filter toolbar', async () => {
+    const wrapper = await render([
+      buildPayout({
+        id: 'pay_paid',
+        amount_minor: 12_500,
+        state: 'paid',
+        source: 'scheduled',
+      }),
+      buildPayout({
+        id: 'pay_pending',
+        amount_minor: 7_500,
+        state: 'pending',
+        source: 'manual',
+        paid_at: null,
+      }),
+      buildPayout({
+        id: 'pay_blocked',
+        amount_minor: 3_000,
+        state: 'blocked',
+        source: 'scheduled',
+        reason: 'no_payout_account',
+        paid_at: null,
+      }),
+    ]);
+
+    expect(wrapper.findAll('tbody tr')).toHaveLength(3);
+
+    await openFilter(wrapper, 'State');
+    await toggleOption(wrapper, 'Paid');
+    await applyOpenFilter(wrapper);
+
+    expect(wrapper.findAll('tbody tr')).toHaveLength(1);
+    expect(wrapper.text()).toContain(formatMinorCurrency(12_500, 'USD'));
+    expect(wrapper.text()).not.toContain(formatMinorCurrency(7_500, 'USD'));
+    expect(wrapper.text()).not.toContain(formatMinorCurrency(3_000, 'USD'));
+
+    await wrapper.get('[data-testid="payouts-clear-filters"]').trigger('click');
+
+    expect(wrapper.findAll('tbody tr')).toHaveLength(3);
+
+    await openFilter(wrapper, 'Source');
+    await toggleOption(wrapper, 'Manual');
+    await applyOpenFilter(wrapper);
+
+    expect(wrapper.findAll('tbody tr')).toHaveLength(1);
+    expect(wrapper.text()).toContain(formatMinorCurrency(7_500, 'USD'));
+    expect(wrapper.text()).not.toContain(formatMinorCurrency(12_500, 'USD'));
+    expect(wrapper.text()).not.toContain(formatMinorCurrency(3_000, 'USD'));
+  });
+
+  it('shows an empty filter result instead of claiming there are no payouts', async () => {
+    const wrapper = await render([buildPayout()]);
+
+    await openFilter(wrapper, 'State');
+    await toggleOption(wrapper, 'Failed');
+    await applyOpenFilter(wrapper);
+
+    expect(wrapper.text()).toContain('No payouts match these filters');
+    expect(wrapper.text()).not.toContain('No payouts yet');
+  });
+
+  it('keeps the filter toolbar available while the payout list fails', async () => {
+    historyState.payouts = [];
+    historyState.isPending = false;
+    historyState.isError = true;
+
+    const wrapper = await mountSuspended(PayoutHistory);
+
+    expect(wrapper.text()).toContain('Unable to load payout history');
+    expect(wrapper.findAll('span').some(span => span.text() === 'State')).toBe(true);
   });
 });
