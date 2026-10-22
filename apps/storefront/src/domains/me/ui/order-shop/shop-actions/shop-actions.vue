@@ -91,10 +91,10 @@ function openReviewDialog() {
         Help with order
       </UButton>
       <UButton
+        v-if="canCancelOrder"
         block
         size="md"
         color="gray"
-        :disabled="!canCancelOrder"
         @click="openCancelDialog"
       >
         Cancel order
