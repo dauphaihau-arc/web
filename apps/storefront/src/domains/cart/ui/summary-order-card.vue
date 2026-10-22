@@ -69,23 +69,25 @@ const selectedQuantity = computed(() => props.summaryOrder?.total_selected_quant
         v-else
         class="flex flex-col gap-2"
       >
-        <template v-if="discountMinor > 0">
-          <div class="flex justify-between">
-            <div class="title">
-              <div>Product(s) total</div>
-              <div>Code savings</div>
-            </div>
-            <div class="price">
-              <div>
-                {{ formatMinorCurrency(merchandiseSubtotalMinor, currency) }}
-              </div>
-              <div class="text-right">
-                {{ formatMinorCurrency(discountMinor, currency) }}
-              </div>
+        <div class="flex justify-between">
+          <div class="title">
+            <div>Subtotal</div>
+            <div v-if="discountMinor > 0">
+              Code savings
             </div>
           </div>
-          <UDivider class="my-3" />
-        </template>
+          <div class="price">
+            <div>
+              {{ formatMinorCurrency(merchandiseSubtotalMinor, currency) }}
+            </div>
+            <div
+              v-if="discountMinor > 0"
+              class="text-right"
+            >
+              {{ formatMinorCurrency(discountMinor, currency) }}
+            </div>
+          </div>
+        </div>
         <div
           v-if="typeof shippingMinor === 'number'"
           class="flex justify-between"

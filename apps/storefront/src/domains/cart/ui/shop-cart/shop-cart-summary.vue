@@ -50,7 +50,7 @@ const showTotal = computed(
     <template v-if="codeSavingsMinor > 0">
       <div class="flex justify-between">
         <div class="title">
-          <div>Product(s) total</div>
+          <div>Subtotal</div>
           <div>Code savings</div>
         </div>
         <div class="price">

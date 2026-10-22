@@ -64,7 +64,7 @@ describe('checkout shop summary', () => {
   it('shows the accepted per-shop merchandise, code saving, shipping, and total', () => {
     const text = render(buildQuoteShop()).text();
 
-    expect(text).toContain('Product(s) total');
+    expect(text).toContain('Subtotal');
     expect(text).toContain('Code savings');
     expect(text).toContain('Shipping');
     expect(text).toContain(formatMinorCurrency(2500, 'USD'));
@@ -76,7 +76,6 @@ describe('checkout shop summary', () => {
     // No sale breakdown, estimate placeholder, or pending placeholder.
     expect(text).not.toContain('Sale savings');
     expect(text).not.toContain('Shipping savings');
-    expect(text).not.toContain('Subtotal');
     expect(text).not.toContain('Calculating...');
     expect(text).not.toContain('Calculated at checkout');
   });
@@ -88,18 +87,19 @@ describe('checkout shop summary', () => {
     expect(text).toContain(formatMinorCurrency(200, 'USD'));
   });
 
-  it('shows only the total when the shop carries no code saving', () => {
+  it('always shows the merchandise Subtotal, even when the shop carries no code saving', () => {
     const text = render(buildQuoteShop({ discountMinor: 0 })).text();
 
     expect(text).toContain('Total');
-    expect(text).not.toContain('Product(s) total');
+    expect(text).toContain('Subtotal');
+    expect(text).toContain(formatMinorCurrency(2500, 'USD'));
     expect(text).not.toContain('Code savings');
   });
 
   it('falls back to the cart merchandise net of its code saving before a quote exists', () => {
     const text = render(undefined, undefined, buildShopCart({ discount_minor: 500 })).text();
 
-    expect(text).toContain('Product(s) total');
+    expect(text).toContain('Subtotal');
     expect(text).toContain('Code savings');
     expect(text).toContain(formatMinorCurrency(2500, 'USD'));
     expect(text).toContain(formatMinorCurrency(500, 'USD'));

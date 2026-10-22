@@ -76,23 +76,26 @@ const totalMinor = computed(
 
 <template>
   <div>
-    <template v-if="codeSavingsMinor > 0">
-      <div class="flex justify-between">
-        <div class="title">
-          <div>Product(s) total</div>
-          <div>Code savings</div>
-        </div>
-        <div class="price">
-          <div>
-            {{ formatMinorCurrency(merchandiseTotalMinor, displayCurrency) }}
-          </div>
-          <div>
-            {{ formatMinorCurrency(codeSavingsMinor, displayCurrency) }}
-          </div>
+    <div class="flex justify-between">
+      <div class="title">
+        <div>Subtotal</div>
+        <div v-if="codeSavingsMinor > 0">
+          Code savings
         </div>
       </div>
-      <UDivider class="my-3" />
-    </template>
+      <div class="price">
+        <div>
+          {{ formatMinorCurrency(merchandiseTotalMinor, displayCurrency) }}
+        </div>
+        <div v-if="codeSavingsMinor > 0">
+          {{ formatMinorCurrency(codeSavingsMinor, displayCurrency) }}
+        </div>
+      </div>
+    </div>
+    <UDivider
+      v-if="codeSavingsMinor > 0"
+      class="my-3"
+    />
     <div
       v-if="typeof shippingMinor === 'number'"
       class="flex justify-between"

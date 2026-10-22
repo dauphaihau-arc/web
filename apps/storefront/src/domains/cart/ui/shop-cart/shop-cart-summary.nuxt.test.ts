@@ -100,7 +100,7 @@ describe('shop cart summary', () => {
   it('shows the applied code saving and subtracts it from the total exactly once', () => {
     const text = render(buildShopCart({ discount_minor: 1250 })).text();
 
-    expect(text).toContain('Product(s) total');
+    expect(text).toContain('Subtotal');
     expect(text).toContain('Code savings');
     expect(text).toContain('Total');
     // Merchandise - saving = total, so the saving amount is printed twice: the

@@ -60,10 +60,10 @@ describe('payment and summary order', () => {
     const wrapper = await renderCollapsed(buildOrderShop());
     const text = wrapper.text();
 
-    expect(text).toContain('Product(s) total');
+    expect(text).toContain('Subtotal');
     expect(text).toContain('Sale savings');
     expect(text).toContain('Code savings');
-    expect(text).toContain('Subtotal');
+    expect(text).toContain('Subtotal after discounts');
     expect(text).toContain('Shipping');
     expect(text).toContain('Shipping savings');
     expect(text).toContain('Total');

@@ -74,7 +74,7 @@ const subtotalAfterDiscountsMinor = computed(
       <div class="w-full md:w-1/3">
         <div class="flex justify-between">
           <div class="title">
-            <div>Product(s) total</div>
+            <div>Subtotal</div>
             <div v-if="saleDiscountMinor > 0">
               Sale savings
             </div>
@@ -97,7 +97,7 @@ const subtotalAfterDiscountsMinor = computed(
         <UDivider class="my-3" />
         <div class="flex justify-between">
           <div class="title">
-            <div>Subtotal</div>
+            <div>Subtotal after discounts</div>
             <div>Shipping</div>
             <div v-if="shippingDiscountMinor > 0">
               Shipping savings

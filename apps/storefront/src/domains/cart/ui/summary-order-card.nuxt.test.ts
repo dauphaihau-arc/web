@@ -61,10 +61,11 @@ function render(quote?: CheckoutQuoteResponse, summaryOrder = buildSummary()) {
 
 describe('summary order card', () => {
   it('shows the accepted basket merchandise, code saving, shipping, and total', () => {
-    const text = render(buildQuote({ shippingMinor: 1400 })).text();
+    const wrapper = render(buildQuote({ shippingMinor: 1400 }));
+    const text = wrapper.text();
 
     expect(text).toContain('2 products');
-    expect(text).toContain('Product(s) total');
+    expect(text).toContain('Subtotal');
     expect(text).toContain('Code savings');
     expect(text).toContain('Shipping');
     expect(text).toContain(formatMinorCurrency(5000, 'USD'));
@@ -75,8 +76,9 @@ describe('summary order card', () => {
     // No sale breakdown or pending placeholder in the review.
     expect(text).not.toContain('Sale savings');
     expect(text).not.toContain('Shipping savings');
-    expect(text).not.toContain('Subtotal');
     expect(text).not.toContain('Calculated at checkout');
+    // One rule only, between the rows and the total.
+    expect(wrapper.findAll('.my-3')).toHaveLength(1);
   });
 
   it('sums the per-shop waived amounts into one shipping savings row', () => {
@@ -88,7 +90,7 @@ describe('summary order card', () => {
     expect(text).toContain(formatMinorCurrency(250, 'USD'));
   });
 
-  it('shows only the aggregate total when the basket carries no code saving', () => {
+  it('always shows the merchandise Subtotal, even when the basket carries no code saving', () => {
     const text = render(undefined, buildSummary({
       subtotal_minor: 4500,
       discount_minor: 0,
@@ -96,8 +98,8 @@ describe('summary order card', () => {
     })).text();
 
     expect(text).toContain('2 products');
+    expect(text).toContain('Subtotal');
     expect(text).toContain(formatMinorCurrency(4500, 'USD'));
-    expect(text).not.toContain('Product(s) total');
     expect(text).not.toContain('Code savings');
     expect(text).not.toContain('Shipping');
   });
@@ -106,7 +108,7 @@ describe('summary order card', () => {
     const text = render().text();
 
     expect(text).toContain('2 products');
-    expect(text).toContain('Product(s) total');
+    expect(text).toContain('Subtotal');
     expect(text).toContain('Code savings');
     expect(text).toContain(formatMinorCurrency(5000, 'USD'));
     expect(text).toContain(formatMinorCurrency(500, 'USD'));

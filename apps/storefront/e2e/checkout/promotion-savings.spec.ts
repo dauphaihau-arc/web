@@ -117,7 +117,7 @@ test('checkout review explains regular value, Sale, Code and Shipping savings se
   await expect(summary).toBeVisible();
 
   // Regular merchandise value (100.00), then each saving explained once.
-  await expect(page.getByText('Product(s) total', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText('Subtotal', { exact: true }).first()).toBeVisible();
   await expect(page.getByText('$100.00').first()).toBeVisible();
   await expect(page.getByText('Sale savings', { exact: true }).first()).toBeVisible();
   await expect(page.getByText('$20.00').first()).toBeVisible();
