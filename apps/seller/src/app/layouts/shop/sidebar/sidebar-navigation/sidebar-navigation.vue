@@ -2,10 +2,19 @@
 import SubLinks from './sub-links.vue'
 import type { LinkItem } from './sidebar.types'
 import { shopSidebarItems } from './navigation-items'
+import { getRoutePath, isRouteActive } from '~/shared/navigation/routes'
 
 const route = useRoute()
 
 const itemsLinkSidebar: LinkItem[] = shopSidebarItems
+
+function isItemActive(item: LinkItem) {
+  return isRouteActive(
+    route.path,
+    item.matchPath ?? getRoutePath(item.to ?? ''),
+    item.exact,
+  )
+}
 </script>
 
 <template>
@@ -24,7 +33,7 @@ const itemsLinkSidebar: LinkItem[] = shopSidebarItems
         class="flex w-full"
       >
         <UDivider
-          :ui="{ border: { base: item.matchPath && route.path.startsWith(item.matchPath) ? 'border-primary' : 'border-transparent' } }"
+          :ui="{ border: { base: isItemActive(item) ? 'border-primary' : 'border-transparent' } }"
           orientation="vertical"
           class="h-auto w-[3px]"
           size="sm"
@@ -43,7 +52,7 @@ const itemsLinkSidebar: LinkItem[] = shopSidebarItems
               'pl-5',
               item.disabled
                 ? 'cursor-not-allowed text-text-strong opacity-50'
-                : item.matchPath && route.path.startsWith(item.matchPath) ? 'link-active' : 'link-inactive',
+                : isItemActive(item) ? 'link-active' : 'link-inactive',
             ]"
           >
             <AppIcon

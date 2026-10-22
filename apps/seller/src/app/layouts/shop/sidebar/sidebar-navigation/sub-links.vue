@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { LinkItem } from './sidebar.types'
-import { isRouteActive } from '~/shared/navigation/routes'
+import type { LinkBase, LinkItem } from './sidebar.types'
+import { getRoutePath, isRouteActive } from '~/shared/navigation/routes'
 
 const { data } = defineProps<{ data: LinkItem }>()
 
@@ -8,29 +8,35 @@ const route = useRoute()
 
 const isOpen = ref(true)
 
-const itemsLinkPaths = Array.isArray(data.sub)
-  ? data.sub.flatMap(item => item.matchPath ? [item.matchPath] : [])
-  : false
+function isItemActive(item: LinkBase) {
+  const path = item.matchPath ?? getRoutePath(item.to ?? '')
 
-function isActive(path?: string) {
-  return !!path && route.path.startsWith(path)
+  if (!path) {
+    return false
+  }
+
+  return isRouteActive(route.path, path, item.exact)
 }
+
+const isGroupActive = computed(() =>
+  Array.isArray(data.sub) && data.sub.some(item => isItemActive(item)),
+)
 </script>
 
 <template>
-  <div v-if="!itemsLinkPaths" />
+  <div v-if="!data.sub" />
   <div v-else>
     <div
       :class="[
         'link-default w-full cursor-pointer border-l-2 border-transparent pl-2 pr-3 ',
-        itemsLinkPaths.some(path => route.path.startsWith(path)) && '!border-primary border-l-2',
+        isGroupActive && '!border-primary border-l-2',
       ]"
       @click="isOpen = !isOpen"
     >
       <div
         class="link-theme flex w-full items-center justify-between gap-2"
         :class="[
-          itemsLinkPaths.some(path => route.path.startsWith(path)) ? 'link-active' : 'link-inactive',
+          isGroupActive ? 'link-active' : 'link-inactive',
         ]"
       >
         <div class="flex items-center gap-2">
@@ -63,7 +69,7 @@ function isActive(path?: string) {
               :class="[item.disabled && 'opacity-50']"
             >
               <UDivider
-                :ui="{ border: { base: isActive(item.matchPath) ? 'border-primary' : '' } }"
+                :ui="{ border: { base: isItemActive(item) ? 'border-primary' : '' } }"
                 orientation="vertical"
                 class="h-auto w-4"
               />
@@ -74,7 +80,7 @@ function isActive(path?: string) {
                 :class="[
                   item.disabled
                     ? 'cursor-not-allowed text-text-strong'
-                    : isActive(item.matchPath) || isRouteActive(route.path, item.to || '')
+                    : isItemActive(item)
                       ? 'link-active'
                       : 'link-inactive',
                 ]"

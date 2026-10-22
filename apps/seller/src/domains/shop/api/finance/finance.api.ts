@@ -9,6 +9,10 @@ import type {
 import type { ShopFinancePayable } from './contracts/payable.contract';
 import type { ShopFinancePayoutHistory } from './contracts/payout.contract';
 import type {
+  ListShopFinanceTransactionsRequest,
+  ShopFinanceTransactionsPage,
+} from './contracts/transactions.contract';
+import type {
   ShopFinancePayoutSettings,
   UpdateShopFinancePayoutSettingsRequest,
 } from './contracts/payout-settings.contract';
@@ -51,6 +55,18 @@ export const shopFinanceApi = {
   getPayouts(shopId: string) {
     return apiClient.get<ShopFinancePayoutHistory>(
       `/shops/${shopId}/finance/payouts`,
+    );
+  },
+
+  /**
+   * The shop's money timeline: Order income, Refunds, and Payouts merged newest
+   * first. Amounts are signed integer minor units in the Settlement Currency.
+   * Numbered pagination: pass `page` and `limit`.
+   */
+  getTransactions(shopId: string, query?: ListShopFinanceTransactionsRequest) {
+    return apiClient.get<ShopFinanceTransactionsPage>(
+      `/shops/${shopId}/finance/transactions`,
+      query,
     );
   },
 

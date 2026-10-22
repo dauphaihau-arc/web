@@ -23,6 +23,8 @@ export const routePaths = {
   orders: '/orders',
   messages: '/messages',
   finances: '/finances',
+  financesTransactions: '/finances/transactions',
+  financesPayouts: '/finances/payouts',
   settings: '/settings',
   shippingSettings: '/settings/shipping',
   generalSettings: '/settings/general',
@@ -51,6 +53,8 @@ export const routes = {
     ),
   orderDetail: (id: string) => createRoute(`${routePaths.orders}/${id}`),
   finances: () => createRoute(routePaths.finances),
+  financesTransactions: () => createRoute(routePaths.financesTransactions),
+  financesPayouts: () => createRoute(routePaths.financesPayouts),
   settings: () => createRoute(routePaths.settings),
   shippingSettings: () => createRoute(routePaths.shippingSettings),
   generalSettings: () => createRoute(routePaths.generalSettings),
@@ -70,8 +74,16 @@ export function getRoutePath(to: RouteLocationRaw): string {
   return '';
 }
 
-export function isRouteActive(currentPath: string, target: RouteLocationRaw): boolean {
+export function isRouteActive(
+  currentPath: string,
+  target: RouteLocationRaw,
+  exact = false,
+): boolean {
   const targetPath = getRoutePath(target);
 
-  return targetPath.length > 0 && currentPath.startsWith(targetPath);
+  if (targetPath.length === 0) {
+    return false;
+  }
+
+  return exact ? currentPath === targetPath : currentPath.startsWith(targetPath);
 }

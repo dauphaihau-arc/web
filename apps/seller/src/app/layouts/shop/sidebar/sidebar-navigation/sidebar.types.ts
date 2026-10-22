@@ -5,6 +5,8 @@ export type LinkBase = {
   icon?: string
   to?: RouteLocationRaw
   matchPath?: string
+  /** Only mark the link active on an exact path match, not on its children. */
+  exact?: boolean
   disabled?: boolean
 };
 

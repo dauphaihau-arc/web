@@ -2,7 +2,7 @@
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import PayableCard from './_components/payable-card.vue'
 import PayoutAccountCard from './_components/payout-account-card.vue'
-import PayoutHistory from './_components/payout-history.vue'
+import RecentTransactions from './_components/recent-transactions.vue'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 </script>
@@ -17,12 +17,14 @@ definePageMeta({ layout: 'shop', middleware: ['auth'] })
     </template>
 
     <template #content>
-      <div class="grid gap-4 md:grid-cols-2">
-        <PayableCard />
-        <PayoutAccountCard />
-      </div>
+      <div data-testid="finances-overview">
+        <div class="grid gap-4 md:grid-cols-2">
+          <PayableCard />
+          <PayoutAccountCard />
+        </div>
 
-      <PayoutHistory />
+        <RecentTransactions />
+      </div>
     </template>
   </LayoutShopWrapperContent>
 </template>
