@@ -98,6 +98,8 @@ export default defineNuxtConfig({
 
   icon: {
     fallbackToApi: false,
+    // `/api/**` proxies to the API origin, so icons must not be served from there.
+    localApiEndpoint: '/icon-sources',
     serverBundle: {
       collections: [...APP_ICON_COLLECTIONS],
     },
