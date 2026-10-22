@@ -56,13 +56,13 @@ async function render(order: ShopOrder) {
 }
 
 describe('order detail content order summary', () => {
-  it('shows regular merchandise value, sale/code savings, discounted subtotal and shipping savings', async () => {
+  it('shows sale/code savings, discounted subtotal and shipping savings without refund or product total rows', async () => {
     const order = buildOrder();
     const wrapper = await render(order);
     const text = wrapper.text();
 
-    expect(text).toContain('Product(s) total');
-    expect(text).toContain(formatMinorCurrency(5400, 'USD'));
+    expect(text).not.toContain('Product(s) total');
+    expect(text).not.toContain('Refund');
 
     expect(text).toContain('Sale savings');
     expect(text).toContain(formatMinorCurrency(400, 'USD'));
@@ -73,7 +73,7 @@ describe('order detail content order summary', () => {
     expect(text).toContain('Subtotal');
     expect(text).toContain(formatMinorCurrency(4500, 'USD'));
 
-    expect(text).toContain('Shipping charge');
+    expect(text).not.toContain('Shipping charge');
     expect(text).toContain(formatMinorCurrency(700, 'USD'));
 
     expect(text).toContain('Shipping savings');
@@ -82,7 +82,35 @@ describe('order detail content order summary', () => {
     expect(text).toContain('Total');
     expect(text).toContain(formatMinorCurrency(5200, 'USD'));
 
+    expect(text).not.toContain('Platform commission');
+    expect(text).not.toContain('Net earnings');
+
     expect(text).not.toContain('Discount');
+  });
+
+  it('shows the platform commission as a deduction and nets it out of the total', async () => {
+    const order = buildOrder({ platform_commission_minor: 520 });
+    const wrapper = await render(order);
+    const text = wrapper.text();
+
+    expect(text).toContain('Platform commission');
+    expect(text).toContain(`-${formatMinorCurrency(520, 'USD')}`);
+
+    expect(text).toContain('Net earnings');
+    expect(text).toContain(formatMinorCurrency(4680, 'USD'));
+    expect(text).not.toContain(formatMinorCurrency(5200, 'USD'));
+  });
+
+  it('keeps the total label when the commission is null or zero', async () => {
+    for (const commission of [null, 0]) {
+      const wrapper = await render(buildOrder({ platform_commission_minor: commission }));
+      const text = wrapper.text();
+
+      expect(text).not.toContain('Platform commission');
+      expect(text).not.toContain('Net earnings');
+      expect(text).toContain('Total');
+      expect(text).toContain(formatMinorCurrency(5200, 'USD'));
+    }
   });
 
   it('hides sale and shipping savings rows when they are zero', async () => {

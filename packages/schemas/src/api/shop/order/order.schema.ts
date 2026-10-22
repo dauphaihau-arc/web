@@ -162,6 +162,11 @@ export const listShopOrdersResponseSchema = z.object({
 
 export const shopOrderDetailResponseSchema = z.object({
   order: shopOrderSummarySchema.extend({
+    /**
+     * Marketplace fee charged on this order, in Order currency. Positive fee;
+     * `null` when the order predates commission tracking.
+     */
+    platform_commission_minor: z.number().nullable().optional(),
     products: z.array(shopOrderDetailProductSchema),
     shipping_address: z.object({
       full_name: z.string(),

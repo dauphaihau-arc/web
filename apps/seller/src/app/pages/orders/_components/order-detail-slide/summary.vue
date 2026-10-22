@@ -34,15 +34,6 @@ const shippingDiscountMinor = computed(
     </div>
 
     <div class="mt-4 space-y-3 text-sm">
-      <div class="flex items-center justify-between gap-4">
-        <div class="text-text-muted">
-          Product(s) total:
-        </div>
-        <div class="text-text-strong">
-          {{ formatAmountWithShortLabel(regularMerchandiseMinor) }}
-        </div>
-      </div>
-
       <div
         v-if="order.sale_discount_minor > 0"
         class="flex items-center justify-between gap-4"
@@ -78,11 +69,18 @@ const shippingDiscountMinor = computed(
 
       <div class="flex items-center justify-between gap-4">
         <div class="text-text-muted">
-          Shipping charge:
+          Shipping
         </div>
         <div class="text-text-strong">
           {{ formatAmountWithShortLabel(order.shipping_minor) }}
         </div>
+      </div>
+
+      <div
+        v-if="estimateLabel"
+        class="text-text-muted"
+      >
+        <span class="text-xs">Estimated delivery: {{ estimateLabel }}</span>
       </div>
 
       <div
@@ -95,25 +93,6 @@ const shippingDiscountMinor = computed(
         <div class="text-text-strong">
           {{ formatAmountWithShortLabel(shippingDiscountMinor) }}
         </div>
-      </div>
-
-      <div
-        v-if="estimateLabel"
-        class="flex items-center justify-between gap-4"
-      >
-        <div class="text-text-muted">
-          Estimated delivery:
-        </div>
-        <div class="text-text-strong">
-          {{ estimateLabel }}
-        </div>
-      </div>
-
-      <div
-        v-if="estimateLabel"
-        class="text-right text-xs text-text-muted"
-      >
-        Seller estimate, not a carrier guarantee.
       </div>
 
       <div class="border-t border-border-subtle" />

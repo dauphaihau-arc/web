@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import dayjs from 'dayjs'
 import { formatMinorCurrency } from '@arc/utils'
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail'
 import DataTable from '@arc/ui/primitives/data-table/data-table.vue'
@@ -54,6 +53,15 @@ const subtotalAfterDiscountsMinor = computed(
 
 const shippingDiscountMinor = computed(
   () => props.order.shipping_discount_minor ?? 0,
+)
+
+const platformCommissionMinor = computed(() => {
+  const commission = props.order.platform_commission_minor
+  return typeof commission === 'number' && commission > 0 ? commission : 0
+})
+
+const netEarningsMinor = computed(
+  () => props.order.total_minor - platformCommissionMinor.value,
 )
 </script>
 
@@ -120,21 +128,10 @@ const shippingDiscountMinor = computed(
     <div class="mt-2 border-t border-border-subtle pt-5">
       <div class="ml-auto w-full max-w-md space-y-3 text-sm text-text-subtle">
         <div
-          v-if="order.payment.refund_status"
-          class="flex items-center justify-between gap-4"
-        >
-          <span>Refund</span>
-          <span class="capitalize">{{ order.payment.refund_status.replaceAll('_', ' ') }}</span>
-        </div>
-        <div
           v-if="order.payment.refund_failed_reason"
           class="text-right text-text-muted"
         >
           {{ order.payment.refund_failed_reason }}
-        </div>
-        <div class="flex items-center justify-between gap-4">
-          <span>Product(s) total</span>
-          <span>{{ formatAmountWithShortLabel(regularMerchandiseMinor) }}</span>
         </div>
         <div
           v-if="order.sale_discount_minor > 0"
@@ -155,7 +152,7 @@ const shippingDiscountMinor = computed(
           <span>{{ formatAmountWithShortLabel(subtotalAfterDiscountsMinor) }}</span>
         </div>
         <div class="flex items-center justify-between gap-4">
-          <span>Shipping charge</span>
+          <span>Shipping</span>
           <span>{{ formatAmountWithShortLabel(order.shipping_minor) }}</span>
         </div>
         <div
@@ -165,15 +162,22 @@ const shippingDiscountMinor = computed(
           <span>Shipping savings</span>
           <span>{{ formatAmountWithShortLabel(shippingDiscountMinor) }}</span>
         </div>
+        <div
+          v-if="platformCommissionMinor > 0"
+          class="flex items-center justify-between gap-4"
+        >
+          <span>Platform commission</span>
+          <span>-{{ formatAmountWithShortLabel(platformCommissionMinor) }}</span>
+        </div>
         <div class="border-t border-border-subtle pt-3" />
         <div class="flex items-center justify-between gap-4 text-base font-semibold text-text-strong">
-          <span>Total</span>
-          <span>{{ formatAmountWithShortLabel(order.total_minor) }}</span>
+          <span>{{ platformCommissionMinor > 0 ? 'Net earnings' : 'Total' }}</span>
+          <span>{{ formatAmountWithShortLabel(netEarningsMinor) }}</span>
         </div>
       </div>
 
       <div
-        v-if="order.note || order.customer_support_note || order.cancel_requested_at"
+        v-if="order.note || order.customer_support_note"
         class="mt-6 space-y-4 border-t border-border-subtle pt-5 text-sm text-text-subtle"
       >
         <div v-if="order.note">
@@ -187,12 +191,6 @@ const shippingDiscountMinor = computed(
             Buyer support request
           </div>
           <div>{{ order.customer_support_note }}</div>
-        </div>
-        <div v-if="order.cancel_requested_at">
-          <div class="mb-1 font-medium text-text-strong">
-            Cancel requested
-          </div>
-          <div>{{ dayjs(order.cancel_requested_at).format('MMM DD, YYYY HH:mm') }}</div>
         </div>
       </div>
     </div>
