@@ -59,7 +59,7 @@ const actionMenuGroups = computed<ActionMenuGroup[]>(() => {
       items: [
         {
           label: 'Cancel order',
-          icon: 'i-heroicons-x-circle-20-solid',
+          icon: 'lucide:circle-x',
           tone: 'danger',
           onClick: () => openCancelDialog(),
         },
@@ -72,14 +72,14 @@ const actionMenuGroups = computed<ActionMenuGroup[]>(() => {
   if (canRefund.value) {
     paymentActions.push({
       label: 'Refund order',
-      icon: 'i-heroicons-banknotes-20-solid',
+      icon: 'lucide:banknote',
       onClick: () => openRefundDialog(false),
     })
   }
   else if (canRetryRefund.value) {
     paymentActions.push({
       label: 'Retry refund',
-      icon: 'i-heroicons-arrow-path-20-solid',
+      icon: 'lucide:rotate-cw',
       onClick: () => openRefundDialog(true),
     })
   }
@@ -160,7 +160,7 @@ const actionMenuGroups = computed<ActionMenuGroup[]>(() => {
       >
         <template #leading>
           <AppIcon
-            name="ellipsisHorizontal"
+            name="moreHorizontal"
             size="sm"
             class="text-text-strong"
           />

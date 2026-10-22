@@ -33,15 +33,15 @@ const JOURNEY_PRESENTATION: Record<
 > = {
   [ShipmentJourneyStatuses.DISPATCHED]: {
     label: 'Dispatch',
-    icon: 'i-heroicons-arrow-up-on-square-20-solid',
+    icon: 'lucide:package-check',
   },
   [ShipmentJourneyStatuses.IN_TRANSIT]: {
     label: 'Mark in transit',
-    icon: 'i-heroicons-truck-20-solid',
+    icon: 'lucide:truck',
   },
   [ShipmentJourneyStatuses.DELIVERED]: {
     label: 'Mark delivered',
-    icon: 'i-heroicons-check-circle-20-solid',
+    icon: 'lucide:circle-check-big',
   },
 };
 

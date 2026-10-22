@@ -50,7 +50,7 @@ const menuItems = computed<DropdownItem[][]>(() => {
   if (canEditShipmentInfo.value) {
     upkeep.push({
       label: 'Edit shipment',
-      icon: 'i-heroicons-pencil-square-20-solid',
+      icon: 'lucide:square-pen',
       click: () => dialog.open(EditShipmentDialog, {
         order: props.order,
         group: props.group,
@@ -62,7 +62,7 @@ const menuItems = computed<DropdownItem[][]>(() => {
   if (canVoidShipment.value) {
     upkeep.push({
       label: 'Void shipment',
-      icon: 'i-heroicons-x-circle-20-solid',
+      icon: 'lucide:circle-x',
       class: 'text-red-600',
       click: () => dialog.open(VoidShipmentDialog, {
         order: props.order,
@@ -125,15 +125,11 @@ async function handleJourneyTransition(status: ShipmentJourneyStatuses) {
       <UTooltip text="More actions">
         <UButton
           color="gray"
-          variant="ghost"
+          variant="soft"
+          icon="lucide:ellipsis"
           aria-label="More actions"
           :disabled="updateShipmentJourney.isPending.value"
-        >
-          <AppIcon
-            name="moreHorizontal"
-            size="xs"
-          />
-        </UButton>
+        />
       </UTooltip>
     </UDropdown>
   </div>
