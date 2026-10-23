@@ -3,6 +3,7 @@ import { SHOP_FINANCE_PAYABLE_QUERY_KEY } from '../queries/finance-payable.query
 import { SHOP_FINANCE_PAYOUTS_QUERY_KEY } from '../queries/payouts.query';
 import { SHOP_FINANCE_PAYOUT_SETTINGS_QUERY_KEY } from '../queries/payout-settings.query';
 import { SHOP_FINANCE_TRANSACTIONS_QUERY_KEY } from '../queries/transactions.query';
+import { SHOP_FINANCE_SETTLEMENT_CURRENCY_QUERY_KEY } from '../queries/settlement-currency.query';
 import { shopFinanceApi } from '~/domains/shop/api/finance/finance.api';
 import type { RequestShopFinanceManualPayoutRequest } from '~/domains/shop/api/finance/contracts/manual-payout.contract';
 import { toastCustom } from '~/shared/config/toast';
@@ -28,6 +29,7 @@ export function useRequestShopFinanceManualPayout() {
         queryClient.invalidateQueries({ queryKey: [SHOP_FINANCE_PAYABLE_QUERY_KEY] }),
         queryClient.invalidateQueries({ queryKey: [SHOP_FINANCE_PAYOUT_SETTINGS_QUERY_KEY] }),
         queryClient.invalidateQueries({ queryKey: [SHOP_FINANCE_TRANSACTIONS_QUERY_KEY] }),
+        queryClient.invalidateQueries({ queryKey: [SHOP_FINANCE_SETTLEMENT_CURRENCY_QUERY_KEY] }),
       ]);
 
       toast.add({

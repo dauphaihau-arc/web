@@ -16,6 +16,11 @@ import type {
   ShopFinancePayoutSettings,
   UpdateShopFinancePayoutSettingsRequest,
 } from './contracts/payout-settings.contract';
+import type {
+  ChangeShopFinanceSettlementCurrencyRequest,
+  ShopFinanceSettlementCurrency,
+  ShopFinanceSettlementCurrencyChange,
+} from './contracts/settlement-currency.contract';
 import { apiClient } from '~/domains/_shared/api-client';
 
 /**
@@ -98,6 +103,32 @@ export const shopFinanceApi = {
     return apiClient.put<ShopFinancePayoutSettings>(
       `/shops/${shopId}/finance/payout-settings`,
       body,
+    );
+  },
+
+  /**
+   * The shop's Settlement Currency, read from its dated history, and when it may
+   * change again.
+   */
+  getSettlementCurrency(shopId: string) {
+    return apiClient.get<ShopFinanceSettlementCurrency>(
+      `/shops/${shopId}/finance/settlement-currency`,
+    );
+  },
+
+  /**
+   * Moves the shop to another currency at a zero balance. The API decides
+   * whether the change is allowed and answers with the currency it stored. The
+   * request is idempotent so a retry cannot write a second history row.
+   */
+  changeSettlementCurrency(
+    shopId: string,
+    body: ChangeShopFinanceSettlementCurrencyRequest,
+  ) {
+    return apiClient.post<ShopFinanceSettlementCurrencyChange>(
+      `/shops/${shopId}/finance/settlement-currency`,
+      body,
+      idempotentOptions(),
     );
   },
 

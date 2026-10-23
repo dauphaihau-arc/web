@@ -3,9 +3,11 @@ import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import WrapperFormRow from '~/shared/ui/wrapper-form-row.vue'
 import WrapperFormRows from '~/shared/ui/wrapper-form-rows.vue'
 import PayoutSettingsToggle from './_components/payout-settings-toggle.vue'
+import SettlementCurrencySetting from './_components/settlement-currency-setting.vue'
 import { useGetMyShop } from '~/domains/shop/queries/my-shop.query'
 import { useUpdateShopSettings } from '~/domains/shop/mutations/update-shop-settings.mutation'
 import { useShopFinancePayoutSettings } from '~/domains/shop/queries/payout-settings.query'
+import { useShopFinanceSettlementCurrency } from '~/domains/shop/queries/settlement-currency.query'
 import { supportedTimeZones } from '~/domains/shop/utils/zoned-local-date-time'
 import { formatOrdinalDay } from '~/domains/shop/utils/format-ordinal-day'
 import { toastCustom } from '~/shared/config/toast'
@@ -21,6 +23,12 @@ const {
   isPending: isPayoutSettingsPending,
   isError: isPayoutSettingsError,
 } = useShopFinancePayoutSettings()
+
+const {
+  data: settlementCurrency,
+  isPending: isSettlementCurrencyPending,
+  isError: isSettlementCurrencyError,
+} = useShopFinanceSettlementCurrency()
 
 const autoPayoutDescription = computed(() => (
   payoutSettings.value
@@ -90,6 +98,30 @@ async function onTimezoneChange(value: string) {
             size="lg"
             class="w-full md:ms-auto md:max-w-52"
             @update:model-value="onTimezoneChange"
+          />
+        </WrapperFormRow>
+
+        <WrapperFormRow
+          label="Shop currency"
+          description="Used for new orders and payouts."
+        >
+          <div
+            v-if="isSettlementCurrencyPending"
+            class="flex md:justify-end"
+          >
+            <USkeleton class="h-8 w-28" />
+          </div>
+
+          <p
+            v-else-if="isSettlementCurrencyError || !settlementCurrency"
+            class="text-sm text-text-subtle"
+          >
+            Unable to load the shop currency. Reload the page to try again.
+          </p>
+
+          <SettlementCurrencySetting
+            v-else
+            :settings="settlementCurrency"
           />
         </WrapperFormRow>
 
