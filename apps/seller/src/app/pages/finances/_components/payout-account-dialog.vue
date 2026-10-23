@@ -23,14 +23,6 @@ const { data: payable } = useShopFinancePayable()
 const { data: countriesResponse } = useGetCountries()
 const { mutateAsync: savePayoutAccount, isPending } = useSaveShopFinancePayoutAccount()
 
-const payoutAccountTypeOptions: Array<{
-  label: string
-  value: SaveShopFinancePayoutAccountRequestBody['type']
-}> = [
-  { label: 'Bank account', value: 'bank' },
-  { label: 'Wallet', value: 'wallet' },
-]
-
 const countryOptions = computed(() => (countriesResponse.value?.data ?? [])
   .filter(country => country.Iso2)
   .map(country => ({ label: country.name, value: country.Iso2! })))
@@ -41,7 +33,6 @@ const countryOptions = computed(() => (countriesResponse.value?.data ?? [])
  * be re-entered: replacing closes the stored row and activates the new one.
  */
 const state = reactive<SaveShopFinancePayoutAccountRequestBody>({
-  type: props.account?.type ?? 'bank',
   holder_name: props.account?.holder_name ?? '',
   bank_name: props.account?.bank_name ?? '',
   country: props.account?.country ?? '',
@@ -119,20 +110,6 @@ async function submit(event: FormSubmitEvent<SaveShopFinancePayoutAccountRequest
         class="space-y-5"
         @submit="submit"
       >
-        <UFormGroup
-          label="Type"
-          name="type"
-          required
-        >
-          <USelectMenu
-            v-model="state.type"
-            :options="payoutAccountTypeOptions"
-            value-attribute="value"
-            option-attribute="label"
-            size="lg"
-          />
-        </UFormGroup>
-
         <UFormGroup
           label="Account holder name"
           name="holder_name"

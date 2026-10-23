@@ -85,7 +85,6 @@ vi.mock('~/domains/shop/queries/payout-settings.query', async () => {
 function account(overrides: Partial<ShopFinancePayoutAccount> = {}): ShopFinancePayoutAccount {
   return {
     id: 'pa_1',
-    type: 'bank',
     holder_name: 'Ada Lovelace',
     bank_name: 'Analytical Bank',
     last4: '4242',

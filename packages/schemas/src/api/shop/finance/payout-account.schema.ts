@@ -1,16 +1,13 @@
 import { z } from 'zod'
 import { idSchema } from '@arc/schemas/primitives/id.schema'
 
-export const payoutAccountTypes = ['bank', 'wallet'] as const
 export const payoutAccountStatuses = ['pending', 'active', 'disabled'] as const
 
-export const payoutAccountTypeSchema = z.enum(payoutAccountTypes)
 export const payoutAccountStatusSchema = z.enum(payoutAccountStatuses)
 
 /** The masked Payout Account returned by the seller finance endpoints. */
 export const shopFinancePayoutAccountSchema = z.object({
   id: idSchema,
-  type: payoutAccountTypeSchema,
   holder_name: z.string(),
   bank_name: z.string(),
   last4: z.string(),
@@ -22,7 +19,6 @@ export const shopFinancePayoutAccountSchema = z.object({
 
 /** The account reference is write-only; responses contain only its last four characters. */
 export const saveShopFinancePayoutAccountRequestSchema = z.object({
-  type: payoutAccountTypeSchema,
   holder_name: z.string().trim().min(1).max(255),
   bank_name: z.string().trim().min(1).max(255),
   country: z.string().regex(/^[A-Z]{2}$/, 'Choose a two-letter country code'),

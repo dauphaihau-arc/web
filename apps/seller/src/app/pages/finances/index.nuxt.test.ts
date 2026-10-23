@@ -10,7 +10,6 @@ const { overviewState } = vi.hoisted(() => ({
     transactions: [] as ShopFinanceTransaction[],
     payoutAccount: null as null | {
       id: string
-      type: string
       holderName: string
       bankName: string
       last4: string
@@ -121,7 +120,6 @@ function buildTransaction(overrides: Partial<ShopFinanceTransaction> = {}): Shop
 async function render() {
   overviewState.payoutAccount = {
     id: 'pa_1',
-    type: 'bank',
     holderName: 'Ada Lovelace',
     bankName: 'Analytical Bank',
     last4: '4242',
