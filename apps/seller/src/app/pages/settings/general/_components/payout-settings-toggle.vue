@@ -16,7 +16,7 @@ const INELIGIBLE_COPY: Record<string, string> = {
   payout_account_unverified: 'Payout account is not verified yet.',
   payout_account_disabled: 'Payout account is disabled.',
   payout_account_currency_mismatch: 'Payout account currency does not match your shop.',
-  settlement_currency_unresolved: 'Shop currency could not be resolved.',
+  settlement_currency_unresolved: 'Payout currency could not be resolved.',
 }
 
 /**

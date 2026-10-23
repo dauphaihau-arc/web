@@ -188,7 +188,10 @@ async function submit(event: FormSubmitEvent<SaveShopFinancePayoutAccountRequest
           />
         </UFormGroup>
 
-        <UFormGroup label="Settlement Currency">
+        <UFormGroup
+          label="Payout currency"
+          description="Payouts are sent in your shop currency."
+        >
           <UInput
             :model-value="currency"
             disabled
