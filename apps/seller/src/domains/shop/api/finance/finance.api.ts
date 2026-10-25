@@ -1,13 +1,19 @@
 import type {
-  SaveShopFinancePayoutAccountRequestBody,
+  ShopFinancePayoutAccountCountries,
+  ShopFinancePayoutAccountOnboardingResponse,
   ShopFinancePayoutAccountResponse,
+  StartShopFinancePayoutAccountOnboardingRequest,
 } from './contracts/payout-account.contract';
 import type {
   RequestShopFinanceManualPayoutRequest,
   ShopFinanceManualPayoutResponse,
 } from './contracts/manual-payout.contract';
 import type { ShopFinancePayable } from './contracts/payable.contract';
-import type { ShopFinancePayoutHistory } from './contracts/payout.contract';
+import type {
+  GetShopFinancePayoutQuoteRequest,
+  ShopFinancePayoutHistory,
+  ShopFinancePayoutQuote,
+} from './contracts/payout.contract';
 import type {
   ListShopFinanceTransactionsRequest,
   ShopFinanceTransactionsPage,
@@ -46,11 +52,40 @@ export const shopFinanceApi = {
     );
   },
   /**
-   * The shop's active Payout Account, with the account reference masked.
+   * The shop's active Payout Account and what the payout provider reports about
+   * it. Stripe holds the bank details; neither the API nor the seller app ever
+   * sees them.
    */
   getPayoutAccount(shopId: string) {
     return apiClient.get<ShopFinancePayoutAccountResponse>(
       `/shops/${shopId}/finance/payout-account`,
+    );
+  },
+
+  /**
+   * The ops-owned list of countries where payout onboarding may start. The
+   * picker offers exactly these, so an unsupported country is never chosen.
+   */
+  getPayoutAccountCountries(shopId: string) {
+    return apiClient.get<ShopFinancePayoutAccountCountries>(
+      `/shops/${shopId}/finance/payout-account/countries`,
+    );
+  },
+
+  /**
+   * Starts or resumes Stripe onboarding for the shop's Payout Account. The
+   * response carries the hosted URL, or null for the local adapter, which
+   * activates the destination without leaving the app. The request is
+   * idempotent so a retry cannot create a second connected account.
+   */
+  startPayoutAccountOnboarding(
+    shopId: string,
+    body: StartShopFinancePayoutAccountOnboardingRequest,
+  ) {
+    return apiClient.post<ShopFinancePayoutAccountOnboardingResponse>(
+      `/shops/${shopId}/finance/payout-account/onboarding`,
+      body,
+      idempotentOptions(),
     );
   },
 
@@ -76,13 +111,14 @@ export const shopFinanceApi = {
   },
 
   /**
-   * Saves the shop's Payout Account. The Settlement Currency is resolved by
-   * the API and is never accepted from the client.
+   * The server-computed preview of a withdrawal: fee, rate and the amount that
+   * would land in the Payout Account. Nothing is persisted; the client never
+   * converts between currencies itself.
    */
-  savePayoutAccount(shopId: string, body: SaveShopFinancePayoutAccountRequestBody) {
-    return apiClient.put<ShopFinancePayoutAccountResponse>(
-      `/shops/${shopId}/finance/payout-account`,
-      body,
+  getPayoutQuote(shopId: string, query: GetShopFinancePayoutQuoteRequest) {
+    return apiClient.get<ShopFinancePayoutQuote>(
+      `/shops/${shopId}/finance/payouts/quote`,
+      query,
     );
   },
 

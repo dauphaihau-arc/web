@@ -2,22 +2,14 @@ import {
   describe, expect, it, vi,
 } from 'vitest';
 import { mountSuspended } from '@nuxt/test-utils/runtime';
+import type { ShopFinancePayoutAccount } from '~/domains/shop/api/finance/contracts/payout-account.contract';
 import type { ShopFinanceTransaction } from '~/domains/shop/api/finance/contracts/transactions.contract';
 import FinancesOverviewPage from './index.vue';
 
 const { overviewState } = vi.hoisted(() => ({
   overviewState: {
     transactions: [] as ShopFinanceTransaction[],
-    payoutAccount: null as null | {
-      id: string
-      holderName: string
-      bankName: string
-      last4: string
-      country: string
-      currency: string
-      status: string
-      verifiedAt: string | null
-    },
+    payoutAccount: null as ShopFinancePayoutAccount | null,
     recentLimit: null as number | null,
   },
 }));
@@ -46,6 +38,11 @@ vi.mock('~/domains/shop/queries/payout-account.query', async () => {
       data: computed(() => ({ payout_account: overviewState.payoutAccount })),
       isPending: computed(() => false),
       isError: computed(() => false),
+      refetch: vi.fn(),
+    }),
+    useStartShopFinancePayoutAccountOnboarding: () => ({
+      mutateAsync: vi.fn(),
+      isPending: computed(() => false),
     }),
   };
 });
@@ -120,13 +117,18 @@ function buildTransaction(overrides: Partial<ShopFinanceTransaction> = {}): Shop
 async function render() {
   overviewState.payoutAccount = {
     id: 'pa_1',
-    holderName: 'Ada Lovelace',
-    bankName: 'Analytical Bank',
-    last4: '4242',
+    provider: 'stripe_connect',
+    provider_account_id: 'acct_1',
     country: 'US',
     currency: 'USD',
     status: 'active',
-    verifiedAt: '2026-01-02T00:00:00.000Z',
+    payouts_enabled: true,
+    charges_enabled: true,
+    transfers_capability: 'active',
+    requirements: { currently_due: [], disabled_reason: null },
+    default_currency: 'USD',
+    bank_name: null,
+    last4: null,
   };
   overviewState.transactions = Array.from({ length: 6 }, (_unused, index) => buildTransaction({
     id: `txn_${index}`,

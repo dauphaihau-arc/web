@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { formatMinorCurrency } from '@arc/utils'
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import Empty from '@arc/ui/primitives/empty.vue'
 import DataTable from '@arc/ui/primitives/data-table/data-table.vue'
 import StatusBadge from '@arc/ui/primitives/status-badge.vue'
 import type { ShopFinancePayout } from '~/domains/shop/api/finance/contracts/payout.contract'
 import { useShopFinancePayouts } from '~/domains/shop/queries/payouts.query'
+import { formatPayoutAmount, formatPayoutCurrency, formatPayoutRate } from './payout-format'
 import type { PayoutFilters } from './payout-filters'
 import PayoutsFilterToolbar from './payouts-filter-toolbar.vue'
 
@@ -69,8 +69,9 @@ const payouts = computed(() => (response.value?.payouts ?? []).filter(payout =>
 
 const rows = computed(() => payouts.value.map(payout => ({
   id: payout.id,
-  amount: formatMinorCurrency(payout.amount_minor, payout.currency),
-  currency: payout.currency,
+  amount: formatPayoutAmount(payout),
+  rate: formatPayoutRate(payout),
+  currency: formatPayoutCurrency(payout),
   date: formatPayoutDate(payout),
   stateLabel: statusByValue[payout.state].label,
   stateTone: statusByValue[payout.state].color,
@@ -114,6 +115,17 @@ function handleFilterChange(nextFilters: PayoutFilters) {
       :selectable="false"
       :empty-state="{ icon: ICON_NAME_BY_ALIAS.payment, label: emptyLabel }"
     >
+      <template #amount-data="{ row }">
+        <div class="flex flex-col gap-0.5">
+          <span>{{ row.amount }}</span>
+          <span
+            v-if="row.rate"
+            class="text-xs text-text-subtle"
+          >
+            {{ row.rate }}
+          </span>
+        </div>
+      </template>
       <template #state-data="{ row }">
         <div class="flex flex-col items-center gap-1">
           <StatusBadge

@@ -10,4 +10,6 @@ export const MANUAL_PAYOUT_ERROR_MESSAGES: Record<string, string> = {
     'That is more than your available balance. Enter a smaller amount.',
   PAYOUT_AMOUNT_NOT_POSITIVE:
     'Enter an amount greater than zero in minor units.',
+  PAYOUT_CONVERSION_RATE_UNAVAILABLE:
+    'The exchange rate is unavailable right now. Try again in a moment.',
 };

@@ -35,6 +35,12 @@ function buildPayout(overrides: Partial<ShopFinancePayout> = {}): ShopFinancePay
     id: 'pay_2f5a91c4b7de',
     amount_minor: 12_500,
     currency: 'USD',
+    source_currency: 'USD',
+    target_currency: 'USD',
+    fx_rate: '1',
+    target_amount_minor: 12_500,
+    provider_fx_rate: null,
+    fx_fee_minor: 0,
     state: 'paid',
     source: 'scheduled',
     period: '2026-10',
@@ -138,6 +144,90 @@ describe('payout history', () => {
     expect(cells[2].text()).toContain('Oct 19, 2026');
     expect(cells[3].text()).toContain('Paid');
     expect(cells[4].text()).toContain('Scheduled');
+  });
+
+  it('shows a same-currency payout as the single paid amount', async () => {
+    const wrapper = await render([buildPayout()]);
+
+    const cells = wrapper.get('tbody tr').findAll('td');
+    expect(cells[0].text()).toBe(formatMinorCurrency(12_500, 'USD'));
+    expect(cells[0].text()).not.toContain('→');
+    expect(cells[1].text()).toBe('USD');
+  });
+
+  it('shows the received amount next to the paid amount for a converted payout', async () => {
+    const wrapper = await render([
+      buildPayout({
+        source: 'manual',
+        amount_minor: 12_500,
+        currency: 'USD',
+        source_currency: 'USD',
+        target_currency: 'VND',
+        fx_rate: '25400.0000000000',
+        provider_fx_rate: '25010.0000000000',
+        target_amount_minor: 285_750_000,
+        fx_fee_minor: 0,
+      }),
+    ]);
+
+    const cells = wrapper.get('tbody tr').findAll('td');
+    expect(cells[0].text()).toContain(formatMinorCurrency(12_500, 'USD'));
+    expect(cells[0].text()).toContain('→');
+    expect(cells[0].text()).toContain(formatMinorCurrency(285_750_000, 'VND'));
+    expect(cells[0].text()).toContain('1 USD = 25,010 VND');
+    expect(cells[0].text()).not.toContain('25,400');
+    expect(cells[1].text()).toBe('USD → VND');
+  });
+
+  it('shows the claim-time rate when the provider has not reported one', async () => {
+    const wrapper = await render([
+      buildPayout({
+        source: 'manual',
+        target_currency: 'VND',
+        fx_rate: '25400.0000000000',
+        provider_fx_rate: null,
+        target_amount_minor: 285_750_000,
+      }),
+    ]);
+
+    const cells = wrapper.get('tbody tr').findAll('td');
+    expect(cells[0].text()).toContain('1 USD = 25,400 VND');
+  });
+
+  it('shows no received amount until the provider reports the target amount', async () => {
+    const wrapper = await render([
+      buildPayout({
+        source: 'manual',
+        amount_minor: 12_500,
+        target_currency: 'VND',
+        fx_rate: '25400.0000000000',
+        provider_fx_rate: '25010.0000000000',
+        target_amount_minor: null,
+      }),
+    ]);
+
+    const cells = wrapper.get('tbody tr').findAll('td');
+    expect(cells[0].text()).toContain(formatMinorCurrency(12_500, 'USD'));
+    expect(cells[0].text()).not.toContain('→');
+    expect(cells[0].text()).toContain('1 USD = 25,010 VND');
+    expect(cells[1].text()).toBe('USD');
+  });
+
+  it('keeps a payout recorded before the frozen quote readable', async () => {
+    const wrapper = await render([
+      buildPayout({
+        source_currency: null,
+        target_currency: null,
+        fx_rate: null,
+        target_amount_minor: null,
+        provider_fx_rate: null,
+        fx_fee_minor: null,
+      }),
+    ]);
+
+    const cells = wrapper.get('tbody tr').findAll('td');
+    expect(cells[0].text()).toBe(formatMinorCurrency(12_500, 'USD'));
+    expect(cells[1].text()).toBe('USD');
   });
 
   it('falls back to the created date while a payout has not been paid', async () => {

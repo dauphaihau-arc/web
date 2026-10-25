@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
-import PayableCard from './_components/payable-card.vue'
-import PayoutAccountCard from './_components/payout-account-card.vue'
+import PayableCard from './_components/payable-card/payable-card.vue'
+import PayoutAccountCard from './_components/payout-account-card/payout-account-card.vue'
 import RecentTransactions from './_components/recent-transactions.vue'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })

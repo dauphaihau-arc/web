@@ -1,11 +1,12 @@
 import {
   describe, expect, it, vi,
 } from 'vitest';
-import { mountSuspended } from '@nuxt/test-utils/runtime';
+import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime';
 import type { ShopFinancePayoutAccount } from '~/domains/shop/api/finance/contracts/payout-account.contract';
 import PayableCard from './payable-card.vue';
 
-const { cardState } = vi.hoisted(() => ({
+const { cardState, openModal } = vi.hoisted(() => ({
+  openModal: vi.fn(),
   cardState: {
     availableMinor: 12_500,
     isPending: false,
@@ -15,6 +16,8 @@ const { cardState } = vi.hoisted(() => ({
     remaining: 1 as number | null | undefined,
   },
 }));
+
+mockNuxtImport('useModal', () => () => ({ open: openModal, close: vi.fn() }));
 
 vi.mock('~/domains/shop/queries/finance-payable.query', async () => {
   // `vi.mock` factories are hoisted above the module's own imports, so `vue`
@@ -85,13 +88,18 @@ vi.mock('~/domains/shop/queries/payout-settings.query', async () => {
 function account(overrides: Partial<ShopFinancePayoutAccount> = {}): ShopFinancePayoutAccount {
   return {
     id: 'pa_1',
-    holder_name: 'Ada Lovelace',
-    bank_name: 'Analytical Bank',
-    last4: '4242',
+    provider: 'stripe_connect',
+    provider_account_id: 'acct_1',
     country: 'US',
     currency: 'USD',
     status: 'active',
-    verified_at: '2026-01-02T00:00:00.000Z',
+    payouts_enabled: true,
+    charges_enabled: true,
+    transfers_capability: 'active',
+    requirements: { currently_due: [], disabled_reason: null },
+    default_currency: 'USD',
+    bank_name: null,
+    last4: null,
     ...overrides,
   };
 }
@@ -164,7 +172,7 @@ describe('payable card', () => {
   it('disables the button and explains an unusable payout account', async () => {
     const withoutAccount = await render({ payoutAccount: null });
     const unverified = await render({
-      payoutAccount: account({ status: 'pending', verified_at: null }),
+      payoutAccount: account({ status: 'onboarding', payouts_enabled: false }),
     });
 
     expect(withoutAccount.find('button').attributes('disabled')).toBeDefined();
@@ -179,5 +187,31 @@ describe('payable card', () => {
     expect(wrapper.find('button').attributes('disabled')).toBeDefined();
     expect(wrapper.find('[aria-label="Why withdrawal is unavailable"]').exists()).toBe(false);
     expect(wrapper.text()).not.toContain('still loading');
+  });
+
+  it('opens the withdrawal dialog in the payout account currency', async () => {
+    openModal.mockReset();
+    const wrapper = await render({ payoutAccount: account({ default_currency: 'EUR' }) });
+
+    await wrapper.find('button').trigger('click');
+
+    expect(openModal).toHaveBeenCalledWith(expect.anything(), {
+      availableMinor: 12_500,
+      currency: 'USD',
+      targetCurrency: 'EUR',
+    });
+  });
+
+  it('opens the withdrawal dialog in the balance currency without an account currency', async () => {
+    openModal.mockReset();
+    const wrapper = await render({ payoutAccount: account({ default_currency: null }) });
+
+    await wrapper.find('button').trigger('click');
+
+    expect(openModal).toHaveBeenCalledWith(expect.anything(), {
+      availableMinor: 12_500,
+      currency: 'USD',
+      targetCurrency: 'USD',
+    });
   });
 });
