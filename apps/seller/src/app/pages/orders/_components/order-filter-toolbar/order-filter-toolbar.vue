@@ -22,8 +22,8 @@ import type {
   OrderCurrencyFilterDraft,
   OrderDateFilterDraft,
 } from '~/shared/ui/date-filter/filter-draft.types'
-import FilterPopover from '~/shared/ui/data-filter/filter-popover.vue'
-import FilterToolbar from '~/shared/ui/data-filter/filter-toolbar.vue'
+import FilterPopover from '@arc/ui/patterns/data-filter/filter-popover.vue'
+import FilterToolbar from '@arc/ui/patterns/data-filter/filter-toolbar.vue'
 import type { ListShopOrdersRequest } from '~/domains/shop/api/order/contracts/order.contract'
 import { useGetMarketplaceConfig } from '~/domains/market/queries/config.query'
 import { useGetMyShop } from '~/domains/shop/queries/my-shop.query'

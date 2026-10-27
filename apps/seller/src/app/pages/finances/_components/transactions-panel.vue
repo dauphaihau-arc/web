@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Empty from '@arc/ui/primitives/empty.vue'
-import FixedPagination from '~/shared/ui/fixed-pagination.vue'
+import FixedPagination from '@arc/ui/patterns/fixed-pagination.vue'
 import type { ShopFinanceTransactionFilters } from '~/domains/shop/queries/transactions.query'
 import {
   TRANSACTIONS_PAGE_LIMIT,

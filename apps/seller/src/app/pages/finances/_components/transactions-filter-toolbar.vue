@@ -6,8 +6,8 @@ import type {
 import type { ShopFinanceTransactionFilters } from '~/domains/shop/queries/transactions.query'
 import DateFilterPanel from '~/shared/ui/date-filter/date-filter-panel.vue'
 import type { OrderDateFilterDraft } from '~/shared/ui/date-filter/filter-draft.types'
-import FilterPopover from '~/shared/ui/data-filter/filter-popover.vue'
-import FilterToolbar from '~/shared/ui/data-filter/filter-toolbar.vue'
+import FilterPopover from '@arc/ui/patterns/data-filter/filter-popover.vue'
+import FilterToolbar from '@arc/ui/patterns/data-filter/filter-toolbar.vue'
 import {
   buildTransactionsDateRange,
   createDefaultTransactionsDateFilter,

@@ -3,7 +3,7 @@ import { ShippingProfileStatuses } from '@arc/enums/shipping'
 import AppIcon from '@arc/ui/primitives/app-icon.vue'
 import StatusBadge from '@arc/ui/primitives/status-badge.vue'
 import DataTable from '@arc/ui/primitives/data-table/data-table.vue'
-import FixedPagination from '~/shared/ui/fixed-pagination.vue'
+import FixedPagination from '@arc/ui/patterns/fixed-pagination.vue'
 import ShippingProfileCoverageCell from './shipping-profile-coverage-cell.vue'
 import type { ShippingProfileResource } from '~/domains/shop/api/shipping-profile/contracts/shipping-profile.contract'
 

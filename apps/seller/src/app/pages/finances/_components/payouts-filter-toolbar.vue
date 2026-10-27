@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { ShopFinancePayout } from '~/domains/shop/api/finance/contracts/payout.contract'
-import FilterPopover from '~/shared/ui/data-filter/filter-popover.vue'
-import FilterToolbar from '~/shared/ui/data-filter/filter-toolbar.vue'
-import type { FilterOption } from '~/shared/ui/data-filter/types'
+import FilterPopover from '@arc/ui/patterns/data-filter/filter-popover.vue'
+import FilterToolbar from '@arc/ui/patterns/data-filter/filter-toolbar.vue'
+import type { FilterOption } from '@arc/ui/patterns/data-filter/types'
 import StatusFilterPanel from '~/app/pages/orders/_components/order-filter-toolbar/status-filter-panel.vue'
 import type { PayoutFilters } from './payout-filters'
 

@@ -2,7 +2,7 @@
 import DataTable from '@arc/ui/primitives/data-table/data-table.vue'
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import type { ListShopProductsItem } from '~/domains/shop/api/product/contracts/read.contract'
-import FixedPagination from '~/shared/ui/fixed-pagination.vue'
+import FixedPagination from '@arc/ui/patterns/fixed-pagination.vue'
 import SelectionActionBar from '~/shared/ui/selection-action-bar.vue'
 import ProductInventoryCell from './_components/product-inventory-cell.vue'
 import ProductStateCell from './_components/product-state-cell.vue'
