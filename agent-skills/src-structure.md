@@ -6,6 +6,7 @@ belongs.
 ## Top-Level Ownership
 
 - `apps/seller/` owns the seller-facing Nuxt app.
+- `apps/admin/` owns the admin-facing Nuxt app.
 - `apps/storefront/` owns the buyer-facing storefront Nuxt app.
 - `packages/` owns reusable workspace packages shared across web apps.
 

@@ -4,7 +4,7 @@ This directory contains the Nuxt web monorepo.
 
 ## Before Editing
 
-1. Determine whether the work belongs to seller, storefront, or a shared workspace package.
+1. Determine whether the work belongs to seller, admin, storefront, or a shared workspace package.
 2. Read `agent-skills/README.md`, then load only the focused guidance needed for the change.
 3. For UI work, inspect the nearest existing page, component, and app pattern before adding new structure.
 4. For cross-app behavior, check the shared packages before duplicating logic between seller and storefront.
@@ -23,6 +23,7 @@ Load only the files relevant to the task:
 ## App Ownership
 
 - Seller app: `apps/seller/`
+- Admin app: `apps/admin/`
 - Storefront app: `apps/storefront/`
 - Shared workspace packages: `packages/`
 
@@ -41,6 +42,7 @@ For focused checks:
 
 ```bash
 pnpm check:seller
+pnpm check:admin
 pnpm check:storefront
 ```
 
@@ -49,5 +51,6 @@ From the repository root:
 ```bash
 ./scripts/verify web
 ./scripts/verify seller
+./scripts/verify admin
 ./scripts/verify storefront
 ```

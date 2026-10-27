@@ -17,6 +17,7 @@ jobs:
     outputs:
       storefront: ${{ steps.filter.outputs.storefront }}
       seller: ${{ steps.filter.outputs.seller }}
+      admin: ${{ steps.filter.outputs.admin }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -44,6 +45,7 @@ jobs:
 
           storefront=false
           seller=false
+          admin=false
 
           while IFS= read -r file; do
             [[ -z "$file" ]] && continue
@@ -59,15 +61,23 @@ jobs:
                 seller=true
                 ;;
             esac
+
+            case "$file" in
+              .github/workflows/*|apps/admin/*|packages/*|pnpm-workspace.yaml|package.json|pnpm-lock.yaml)
+                admin=true
+                ;;
+            esac
           done <<< "$changed_files"
 
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             storefront=true
             seller=true
+            admin=true
           fi
 
           echo "storefront=$storefront" >> "$GITHUB_OUTPUT"
           echo "seller=$seller" >> "$GITHUB_OUTPUT"
+          echo "admin=$admin" >> "$GITHUB_OUTPUT"
 
   storefront:
     needs: changes
@@ -150,3 +160,44 @@ jobs:
 
       - name: Build seller
         run: pnpm build:seller
+
+  admin:
+    needs: changes
+    if: needs.changes.outputs.admin == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.13.0
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Verify lockfile
+        working-directory: ${{ github.workspace }}
+        run: test -f pnpm-lock.yaml
+
+      - name: Install dependencies
+        working-directory: ${{ github.workspace }}
+        run: pnpm install --frozen-lockfile
+
+      - name: Prepare admin Nuxt artifacts
+        run: pnpm --filter @arc/admin exec nuxi prepare
+
+      - name: Lint admin
+        run: pnpm lint:admin
+
+      - name: Typecheck admin
+        run: pnpm typecheck:admin
+
+      - name: Test admin
+        run: pnpm --filter @arc/admin test
+
+      - name: Build admin
+        run: pnpm build:admin
