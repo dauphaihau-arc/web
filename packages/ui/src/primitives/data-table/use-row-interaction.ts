@@ -135,6 +135,15 @@ export function useRowInteraction<Row extends { id: string }>(
     bindRowEvents();
   });
 
+  // A table can mount with its rows already in the DOM (SSR hydration or a
+  // cache-warm query). The watches above may run before `tbody` exists, so bind
+  // once more after mount instead of relying on a later row mutation.
+  onMounted(async () => {
+    await nextTick();
+    observeRowDom();
+    bindRowEvents();
+  });
+
   onDeactivated(() => {
     stopObservingRows();
     cleanupBoundRowEvents();
