@@ -1,7 +1,6 @@
 import { routePaths, routes } from '~/shared/navigation/routes';
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query';
 import { hasAdminRole, hasSellerAccess } from '~/domains/auth/utils/seller-access';
-import { authApi } from '~/domains/auth/api/auth.api';
 
 // Routes whose guard outcome depends on knowing the session; the server has no
 // query cache on a fresh request, so it must be resolved before deciding.
@@ -24,7 +23,9 @@ export default defineNuxtRouteMiddleware(async (to, _from) => {
   }
 
   if (hasAdminRole(data.value?.user)) {
-    await authApi.logout().catch(() => undefined);
+    // Do not log the admin session out: cookies are host-scoped, not
+    // port-scoped, so a development admin session can share this host's jar.
+    // Clearing the seller query cache is enough to show the guest surface.
     queryClient.setQueryData(['current-user'], { user: null });
 
     if (to.path !== routePaths.login) {
