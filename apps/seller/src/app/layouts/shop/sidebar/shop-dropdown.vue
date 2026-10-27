@@ -15,8 +15,6 @@ const formattedShopName = computed(() => {
   return shopName.charAt(0).toUpperCase() + shopName.slice(1)
 })
 
-const shopInitial = computed(() => formattedShopName.value.charAt(0))
-
 type ShopDropdownItem = Omit<DropdownItem, 'icon'> & {
   icon?: string
 }
@@ -64,18 +62,35 @@ const itemsShopDropdown: ShopDropdownItem[][] = [
       </div>
     </template>
 
-    <div class="flex w-full items-center gap-2">
-      <UButton
-        color="gray"
-        size="sm"
-      >
-        <span class="text-xs font-semibold uppercase">
-          {{ shopInitial }}
-        </span>
-      </UButton>
-      <div class="min-w-0 flex-1 text-sm font-medium text-text-strong">
-        {{ formattedShopName }}
+    <template #default="{ open }">
+      <div class="flex w-full items-center gap-2">
+        <UButton
+          square
+          color="gray"
+          size="md"
+          class="!size-9 shrink-0 justify-center !p-0"
+          :ui="{ rounded: 'rounded-lg' }"
+        >
+          <AppIcon
+            name="shop"
+            size="xs"
+          />
+        </UButton>
+        <div class="min-w-0 flex-1">
+          <div class="truncate text-xs text-text-subtle">
+            Seller Portal
+          </div>
+          <div class="truncate text-sm font-medium text-text-strong">
+            {{ formattedShopName }}
+          </div>
+        </div>
+        <AppIcon
+          name="chevronDown"
+          size="xs"
+          class="shrink-0 text-text-muted transition-transform duration-200"
+          :class="{ 'rotate-180': open }"
+        />
       </div>
-    </div>
+    </template>
   </UDropdown>
 </template>
