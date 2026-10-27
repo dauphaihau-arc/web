@@ -1,0 +1,11 @@
+[build]
+  command = "pnpm --filter @arc/admin build"
+  publish = "apps/admin/dist"
+  ignore = "git diff --quiet \"$CACHED_COMMIT_REF\" \"$COMMIT_REF\" -- apps/admin packages package.json pnpm-lock.yaml pnpm-workspace.yaml"
+
+# The Nitro `netlify` preset runs a third bundling pass (server rollup plus
+# node-file-trace of the traced dependencies) that peaks around 2.3 GB of heap,
+# above Netlify's default Node old-space ceiling (~2 GB), which aborts the build
+# with "Ineffective mark-compacts near heap limit".
+[build.environment]
+  NODE_OPTIONS = "--max-old-space-size=4096"

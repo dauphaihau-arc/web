@@ -1,0 +1,87 @@
+
+@import url("../../../../../../packages/ui/src/foundation/design-tokens.css");
+
+/** ================== Base ================== **/
+
+html {
+  scrollbar-gutter: stable;
+}
+
+html[style*="overflow: hidden"] {
+  padding-right: 0 !important;
+}
+
+body {
+  @apply relative min-h-screen dark:bg-black dark:text-white;
+}
+
+/*
+  Remove Arrows/LoadingSvgs from Input Number
+*/
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.surface-backdrop {
+  position: absolute;
+  inset: 0;
+  bottom: -4rem;
+  pointer-events: none;
+  backdrop-filter: blur(0px);
+  background: transparent;
+  -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+  transition:
+    backdrop-filter 300ms,
+    background 300ms;
+  z-index: -1;
+}
+
+.surface-backdrop-active {
+  backdrop-filter: blur(10px);
+  background: linear-gradient(to bottom, var(--surface-overlay) 0%, transparent 100%);
+}
+
+.dark .surface-backdrop-active {
+  background: linear-gradient(to bottom, var(--surface-overlay-dark) 0%, transparent 100%);
+}
+
+/* Set heroicon's stroke width */
+.heroicon-sw-2 path {
+  stroke-width: 2 !important;
+}
+.heroicon-sw-1\.75 path {
+  stroke-width: 1.75 !important;
+}
+.heroicon-sw-1\.5 path {
+  stroke-width: 1.5 !important;
+}
+.heroicon-sw-1\.2 path {
+  stroke-width: 1.2 !important;
+}
+
+/** ================== Animations ================== **/
+/* use at nuxt.config.ts file, app.pageTransition */
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.2s;
+}
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+  filter: blur(1rem);
+}
+
+
+/** ================== Others ================== **/
+
+.form-field-constrained {
+  @apply w-full max-w-[640px];
+}

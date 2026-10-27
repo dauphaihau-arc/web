@@ -1,0 +1,17 @@
+<script setup lang="ts">
+defineProps<{
+  title: string
+}>()
+</script>
+
+<template>
+  <UCard>
+    <div class="font-semibold">
+      {{ title }}
+    </div>
+
+    <div class="mt-4">
+      <slot />
+    </div>
+  </UCard>
+</template>

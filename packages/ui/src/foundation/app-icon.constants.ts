@@ -68,6 +68,7 @@ export const ICON_NAME_BY_ALIAS = {
   orderCreated: 'i-heroicons-document-plus-20-solid',
   moreHorizontal: 'lucide:ellipsis',
   notepadText: 'lucide:notepad-text',
+  auditLog: 'lucide:list-clock',
   receiptText: 'lucide:receipt-text',
   uploadCloud: 'lucide:cloud-upload',
   fileUp: 'lucide:file-up',
@@ -82,6 +83,7 @@ export const ICON_NAME_BY_ALIAS = {
   downloadTray: 'i-heroicons-arrow-down-tray',
   loading: 'eos-icons:loading',
   desktop: 'lucide:monitor',
+  adminPortal: 'lucide:shield-check',
 } as const
 
 export type AppIconAlias = keyof typeof ICON_NAME_BY_ALIAS
@@ -176,6 +178,7 @@ export const APP_ICON_CLIENT_BUNDLE_ICONS = [
   'lucide:credit-card',
   'heroicons:document-plus-20-solid',
   'lucide:notepad-text',
+  'lucide:list-clock',
   'lucide:receipt-text',
   'lucide:ellipsis',
   'lucide:cloud-upload',
@@ -191,6 +194,7 @@ export const APP_ICON_CLIENT_BUNDLE_ICONS = [
   'heroicons:arrow-down-tray',
   'eos-icons:loading',
   'lucide:monitor',
+  'lucide:shield-check',
 ] as const
 
 export const APPROVED_ICON_PREFIXES = [
