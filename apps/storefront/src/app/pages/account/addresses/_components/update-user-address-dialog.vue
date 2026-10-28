@@ -47,6 +47,7 @@ const {
 
 const {
   mutateAsync: updateUserAddress,
+  isPending: isPendingUpdateAddress,
 } = useUpdateUserAddress()
 
 const countriesOptions = computed(() => {
@@ -235,6 +236,7 @@ watch(() => stateSubmit.country, () => {
         <UButton
           size="md"
           color="gray"
+          :disabled="isPendingUpdateAddress"
           @click="dialog.close"
         >
           Cancel
@@ -242,6 +244,7 @@ watch(() => stateSubmit.country, () => {
         <UButton
           size="md"
           type="submit"
+          :loading="isPendingUpdateAddress"
           @click="formRef?.submit"
         >
           Save

@@ -15,6 +15,7 @@ const stateSubmit = reactive<AddressFormState>({})
 
 const {
   mutateAsync: createUserAddress,
+  isPending: isPendingCreateAddress,
 } = useCreateUserAddress()
 
 async function onSubmit(payload: AddressFormState) {
@@ -54,6 +55,7 @@ async function onSubmit(payload: AddressFormState) {
         <UButton
           size="md"
           color="gray"
+          :disabled="isPendingCreateAddress"
           @click="dialog.close"
         >
           Cancel
@@ -61,6 +63,7 @@ async function onSubmit(payload: AddressFormState) {
         <UButton
           size="md"
           type="submit"
+          :loading="isPendingCreateAddress"
           @click="formRef?.submit"
         >
           Save
