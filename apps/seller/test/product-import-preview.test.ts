@@ -32,8 +32,8 @@ describe('buildProductImportPreview', () => {
       { field: 'title', message: 'Title is required.' },
       { field: 'description', message: 'Description is required.' },
       { field: 'categoryPath', message: 'Category is required.' },
-      { field: 'price', message: 'Price must be a positive number.' },
-      { field: 'stock', message: 'Stock must be a whole number 0 or greater.' },
+      { field: 'price', message: 'Enter a price greater than zero.' },
+      { field: 'stock', message: 'Enter stock as a whole number, 0 or more.' },
     ]);
     expect(preview.invalidPreviewRowCount).toBe(1);
   });

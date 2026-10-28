@@ -44,11 +44,11 @@ describe('shipping profile form postal code', () => {
   });
 
   it('reports a postal code that is too short', () => {
-    expect(postalIssue('1')).toMatch(/between 2 and 20 characters/i);
+    expect(postalIssue('1')).toMatch(/use 2 to 20 characters/i);
   });
 
   it('reports a postal code that is too long', () => {
-    expect(postalIssue('1'.repeat(21))).toMatch(/between 2 and 20 characters/i);
+    expect(postalIssue('1'.repeat(21))).toMatch(/use 2 to 20 characters/i);
   });
 
   it('reports characters no carrier would accept', () => {

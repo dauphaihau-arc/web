@@ -25,7 +25,7 @@ export function useLogout() {
     onError() {
       toast.add({
         color: 'red',
-        title: 'An unknown error occurred. Please try again',
+        title: 'Something went wrong on our end. Please try again',
       });
     },
   });

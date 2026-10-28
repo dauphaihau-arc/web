@@ -164,7 +164,7 @@ async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zi
       <div class="space-y-3">
         <LoadingSvg :child-class="'!w-12 !h-12'" />
         <p class="text-sm text-text-subtle">
-          The server is waking up. Please wait a moment.
+          Just a moment while we load your orders. This can take a little longer than usual.
         </p>
       </div>
     </div>

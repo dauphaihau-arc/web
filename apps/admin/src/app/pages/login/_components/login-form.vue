@@ -70,7 +70,7 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
         unknownErrorServerMsg.value = 'This account does not have admin access'
         return
       }
-      unknownErrorServerMsg.value = 'An unknown error occurred. Please try again'
+      unknownErrorServerMsg.value = 'Something went wrong on our end. Please try again'
     }
   }
 }

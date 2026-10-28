@@ -54,7 +54,9 @@ const validateForm = (stateValidate: Partial<RegisterBody> & { display_name?: st
     }
   }
 
-  appendPasswordError(errors, 'password', stateValidate.password, authClientConfig.value)
+  if (!errors.some(error => error.path === 'password')) {
+    appendPasswordError(errors, 'password', stateValidate.password, authClientConfig.value)
+  }
 
   return errors
 }
@@ -62,7 +64,7 @@ const validateForm = (stateValidate: Partial<RegisterBody> & { display_name?: st
 async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
   formRef.value.clear()
   if (invalidEmails.includes(event.data.email)) {
-    formRef.value.setErrors([{ path: 'email', message: 'Invalid email' }])
+    formRef.value.setErrors([{ path: 'email', message: 'This email is already registered. Try logging in instead.' }])
     return
   }
 
@@ -77,11 +79,11 @@ async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
   catch (error) {
     if (error instanceof FetchError) {
       if (getBackendErrorCode(error) === 'EMAIL_ALREADY_REGISTERED') {
-        formRef.value.setErrors([{ path: 'email', message: 'Email already taken' }])
+        formRef.value.setErrors([{ path: 'email', message: 'This email is already registered. Try logging in instead.' }])
         invalidEmails.push(event.data.email)
         return
       }
-      unknownErrorServerMsg.value = 'An unknown error occurred. Please try again'
+      unknownErrorServerMsg.value = 'Something went wrong on our end. Please try again'
     }
   }
 }

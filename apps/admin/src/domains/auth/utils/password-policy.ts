@@ -13,7 +13,7 @@ export const DEFAULT_AUTH_CLIENT_CONFIG: AuthClientConfig = {
       number: true,
       special_character: true,
     },
-    message: 'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character',
+    message: 'Include an uppercase letter, a lowercase letter, a number, and a symbol',
   },
   session: {
     access_token_ttl_seconds: 15 * 60,
@@ -29,15 +29,15 @@ export function validatePasswordByPolicy(
   policy: AuthClientConfig = DEFAULT_AUTH_CLIENT_CONFIG,
 ): string | undefined {
   if (!password) {
-    return 'Password is required';
+    return 'Please create a password';
   }
 
   if (password.length < policy.password.min_length) {
-    return `Password must be at least ${policy.password.min_length} characters`;
+    return `Use at least ${policy.password.min_length} characters`;
   }
 
   if (password.length > policy.password.max_length) {
-    return `Password must be no longer than ${policy.password.max_length} characters`;
+    return `Use ${policy.password.max_length} characters or fewer`;
   }
 
   const pattern = new RegExp(policy.password.pattern);

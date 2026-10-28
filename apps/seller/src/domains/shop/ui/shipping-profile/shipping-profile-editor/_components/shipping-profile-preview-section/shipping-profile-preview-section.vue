@@ -28,7 +28,7 @@ const {
         Preview a destination
       </h3>
       <p class="text-sm text-text-muted">
-        The server applies destination precedence and calculates the total.
+        Pick a destination to see the shipping fee your buyers would pay.
       </p>
     </div>
     <div class="space-y-4">

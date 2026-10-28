@@ -231,7 +231,7 @@ export const createPromoCodeFormSchema = z
         context.addIssue({
           code: z.ZodIssueCode.custom,
           path: ['end_local'],
-          message: 'The promo code must end after it starts.',
+          message: 'The promo code has to end after it starts.',
         });
       }
     }

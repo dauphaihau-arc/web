@@ -35,7 +35,7 @@ useHead({
     size="xl"
     :icon="ICON_NAME_BY_ALIAS['warning']"
     :title="errorMessage"
-    :description="`Error code: ${errorCode}`"
+    :description="`If this keeps happening, contact support and mention reference ${errorCode}.`"
     container-class="h-screen"
   >
     <template #actions>

@@ -34,14 +34,14 @@ async function onSubmit(event: FormSubmitEvent<CreateShopRequest>) {
     await createShop(event.data)
     toast.add({
       ...toastCustom.success,
-      title: 'Create shop success',
+      title: 'Shop created',
     })
     navigateTo(routes.dashboard())
   }
   catch {
     toast.add({
       ...toastCustom.error,
-      title: 'Unknown error from server',
+      title: 'We couldn’t create your shop. Please try again.',
     })
   }
 }

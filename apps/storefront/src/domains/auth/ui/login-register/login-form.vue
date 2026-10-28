@@ -64,7 +64,7 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
         unknownErrorServerMsg.value = 'This account cannot access the customer site'
         return
       }
-      unknownErrorServerMsg.value = 'An unknown error occurred. Please try again'
+      unknownErrorServerMsg.value = 'Something went wrong on our end. Please try again'
     }
   }
 }

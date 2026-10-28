@@ -52,7 +52,7 @@ export function useAdminUserCreateForm() {
     }
 
     if (password.value.length < MIN_PASSWORD_LENGTH) {
-      formError.value = `Password must be at least ${MIN_PASSWORD_LENGTH} characters.`;
+      formError.value = `Use at least ${MIN_PASSWORD_LENGTH} characters.`;
       return;
     }
 

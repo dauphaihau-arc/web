@@ -55,7 +55,7 @@ async function onSubmit(event: FormSubmitEvent<ResetPasswordBody>) {
     resetPasswordSuccess.value = true
   }
   catch {
-    unknownErrorServerMsg.value = 'An unknown error occurred. Please try again'
+    unknownErrorServerMsg.value = 'Something went wrong on our end. Please try again'
   }
 }
 </script>

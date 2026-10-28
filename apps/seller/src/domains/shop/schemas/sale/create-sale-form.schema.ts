@@ -123,7 +123,7 @@ export const createSaleFormSchema = z
         context.addIssue({
           code: z.ZodIssueCode.custom,
           path: ['end_local'],
-          message: 'The sale must end after it starts.',
+          message: 'The sale has to end after it starts.',
         });
       }
     }

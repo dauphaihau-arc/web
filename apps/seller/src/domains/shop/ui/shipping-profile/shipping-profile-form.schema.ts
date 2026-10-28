@@ -38,7 +38,7 @@ export const shippingProfileFormRateSchema = z.object({
   if (hasDeliveryMin !== hasDeliveryMax) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      message: 'Delivery time needs both a minimum and a maximum in calendar days',
+      message: 'Enter both a minimum and a maximum delivery time, in calendar days',
       path: ['delivery_time_min_days'],
     });
     return;
@@ -47,7 +47,7 @@ export const shippingProfileFormRateSchema = z.object({
   if (hasDeliveryMin && hasDeliveryMax && rate.delivery_time_min_days! > rate.delivery_time_max_days!) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      message: 'Delivery time minimum must not exceed the maximum',
+      message: 'The minimum delivery time can’t be longer than the maximum',
       // Anchored to the pair's field row: the row is named after the minimum,
       // and an error path with no group renders nowhere.
       path: ['delivery_time_min_days'],
@@ -57,7 +57,7 @@ export const shippingProfileFormRateSchema = z.object({
 
 const MIN_POSTAL_CHAR = SHIPPING_PROFILE_CONFIG.MIN_POSTAL_CHAR;
 const MAX_POSTAL_CHAR = SHIPPING_PROFILE_CONFIG.MAX_POSTAL_CHAR;
-const POSTAL_CHAR_RANGE_MESSAGE = `Postal code must be between ${MIN_POSTAL_CHAR} and ${MAX_POSTAL_CHAR} characters`;
+const POSTAL_CHAR_RANGE_MESSAGE = `Use ${MIN_POSTAL_CHAR} to ${MAX_POSTAL_CHAR} characters for the postal code`;
 
 /** Mirrors the domain rule: permissive charset, because formats are country-specific. */
 const postalCodeSchema = z
@@ -79,7 +79,7 @@ export const shippingProfileFormSchema = z.object({
     .min(1, 'Enter a profile name')
     .max(
       SHIPPING_PROFILE_CONFIG.MAX_NAME_CHAR,
-      `Profile name must be ${SHIPPING_PROFILE_CONFIG.MAX_NAME_CHAR} characters or fewer`,
+      `Keep the profile name to ${SHIPPING_PROFILE_CONFIG.MAX_NAME_CHAR} characters or fewer`,
     ),
   status: shippingProfileFormStatusSchema,
   ship_from_country: z.string().optional(),

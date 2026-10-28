@@ -94,7 +94,7 @@ describe('shipping profile editor validation', () => {
     await wrapper.vm.submit();
     await flushPromises();
 
-    expect(wrapper.text()).toContain('Delivery time minimum must not exceed the maximum');
+    expect(wrapper.text()).toContain('The minimum delivery time can’t be longer than the maximum');
     expect(wrapper.emitted('saved')).toBeUndefined();
   });
 });

@@ -137,14 +137,14 @@ function validatePreviewRow(
     issues.push({ field: 'price', message: 'Price is required.' });
   }
   else if (!isPositiveNumber(row.price)) {
-    issues.push({ field: 'price', message: 'Price must be a positive number.' });
+    issues.push({ field: 'price', message: 'Enter a price greater than zero.' });
   }
 
   if (!row.stock) {
     issues.push({ field: 'stock', message: 'Stock is required.' });
   }
   else if (!isNonNegativeInteger(row.stock)) {
-    issues.push({ field: 'stock', message: 'Stock must be a whole number 0 or greater.' });
+    issues.push({ field: 'stock', message: 'Enter stock as a whole number, 0 or more.' });
   }
 
   addFormulaIssues(issues, productsSheet, rowNumber, columnIndex);
