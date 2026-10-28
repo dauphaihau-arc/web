@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { AdminOrderRefundAction } from '~/domains/orders/api/contracts/admin-orders.contract'
-import BaseDialog from '@arc/ui/primitives/dialog/base-dialog.vue'
+import BaseDialog from '@arc/ui/patterns/dialog/base-dialog.vue'
 import { useAdminUpdateOrderRefund } from '~/domains/orders/mutations/update-refund.mutation'
 import {
   ADMIN_ORDER_REFUND_ACTION_OPTIONS,

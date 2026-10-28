@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import StatusBadge from './status-badge.vue'
+import StatusBadge from '../primitives/status-badge.vue'
 
 const props = withDefaults(defineProps<{
   title: string

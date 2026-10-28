@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
-import Empty from '@arc/ui/primitives/empty.vue'
-import DataTable from '@arc/ui/primitives/data-table/data-table.vue'
+import Empty from '@arc/ui/patterns/empty.vue'
+import DataTable from '@arc/ui/patterns/data-table/data-table.vue'
 import StatusBadge from '@arc/ui/primitives/status-badge.vue'
 import type { ShopFinancePayout } from '~/domains/shop/api/finance/contracts/payout.contract'
 import { useShopFinancePayouts } from '~/domains/shop/queries/payouts.query'

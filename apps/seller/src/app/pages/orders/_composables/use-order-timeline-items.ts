@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { OrderStatuses, PaymentTypes } from '@arc/enums/order';
 import { ShipmentStatuses } from '@arc/enums/fulfillment';
 import type { AppIconAlias } from '@arc/ui/foundation/app-icon.constants';
-import type { TimelineItem } from '@arc/ui/primitives/timeline.vue';
+import type { TimelineItem } from '@arc/ui/patterns/timeline.vue';
 import type { ShopOrder, ShopOrderTimelineEvent } from '~/domains/shop/order/types/shop-order-detail';
 
 type OrderTimelineMilestone = TimelineItem & {

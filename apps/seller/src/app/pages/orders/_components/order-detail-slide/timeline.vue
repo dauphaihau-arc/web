@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import Timeline from '@arc/ui/primitives/timeline.vue'
+import Timeline from '@arc/ui/patterns/timeline.vue'
 import type { ShopOrder, ShopOrderTimelineEvent } from '~/domains/shop/order/types/shop-order-detail'
 import { useOrderTimelineItems } from '~/app/pages/orders/_composables/use-order-timeline-items'
 

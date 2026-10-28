@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import { PromotionProductScope, PromotionStatus } from '@arc/enums/promotion'
-import DataTable from '@arc/ui/primitives/data-table/data-table.vue'
+import DataTable from '@arc/ui/patterns/data-table/data-table.vue'
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import StatusBadge from '@arc/ui/primitives/status-badge.vue'
 import type { DropdownItem } from '#ui/types'

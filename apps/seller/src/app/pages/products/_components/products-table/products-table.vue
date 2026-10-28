@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import DataTable from '@arc/ui/primitives/data-table/data-table.vue'
+import DataTable from '@arc/ui/patterns/data-table/data-table.vue'
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import type { ListShopProductsItem } from '~/domains/shop/api/product/contracts/read.contract'
 import FixedPagination from '@arc/ui/patterns/fixed-pagination.vue'

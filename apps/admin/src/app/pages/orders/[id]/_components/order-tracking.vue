@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { AdminOrderDetailOrder } from '~/domains/orders/api/contracts/admin-orders.contract'
-import Timeline from '@arc/ui/primitives/timeline.vue'
+import Timeline from '@arc/ui/patterns/timeline.vue'
 import { useAdminOrderTimelineItems } from '../_composables/use-admin-order-timeline-items'
 
 const props = defineProps<{

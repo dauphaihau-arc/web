@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Empty from '@arc/ui/primitives/empty.vue'
+import Empty from '@arc/ui/patterns/empty.vue'
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 
 defineProps<{

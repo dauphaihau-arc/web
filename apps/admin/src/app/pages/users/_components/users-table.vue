@@ -2,7 +2,7 @@
 import type { AdminUser } from '~/domains/users/api/contracts/admin-users.contract'
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import AppIcon from '@arc/ui/primitives/app-icon.vue'
-import DataTable from '@arc/ui/primitives/data-table/data-table.vue'
+import DataTable from '@arc/ui/patterns/data-table/data-table.vue'
 import StatusBadge from '@arc/ui/primitives/status-badge.vue'
 import {
   formatUserRoleLabel,

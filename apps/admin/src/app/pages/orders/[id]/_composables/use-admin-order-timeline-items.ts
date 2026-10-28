@@ -1,5 +1,5 @@
 import type { AdminOrderDetailOrder } from '~/domains/orders/api/contracts/admin-orders.contract';
-import type { TimelineItem } from '@arc/ui/primitives/timeline.vue';
+import type { TimelineItem } from '@arc/ui/patterns/timeline.vue';
 import { formatOrderDateTime, formatOrderStatusLabel } from '~/domains/orders/utils/order-presentation';
 
 /**

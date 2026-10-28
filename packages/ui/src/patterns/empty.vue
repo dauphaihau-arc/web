@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { RouteLocationRaw } from 'vue-router'
 import { ICON_NAME_BY_ALIAS } from '../foundation/app-icon.constants'
-import AppIcon from './app-icon.vue'
+import AppIcon from '../primitives/app-icon.vue'
 
 defineOptions({
   inheritAttrs: false,

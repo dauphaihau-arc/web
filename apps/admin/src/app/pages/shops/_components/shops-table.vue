@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { AdminShopListEntry } from '~/domains/shops/api/contracts/admin-shops.contract'
 import AppIcon from '@arc/ui/primitives/app-icon.vue'
-import DataTable from '@arc/ui/primitives/data-table/data-table.vue'
+import DataTable from '@arc/ui/patterns/data-table/data-table.vue'
 import StatusBadge from '@arc/ui/primitives/status-badge.vue'
 import {
   formatShopCurrency,

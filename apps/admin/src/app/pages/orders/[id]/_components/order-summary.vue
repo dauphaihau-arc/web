@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
-import DataTable from '@arc/ui/primitives/data-table/data-table.vue'
+import DataTable from '@arc/ui/patterns/data-table/data-table.vue'
 import type { AdminOrderDetailOrder } from '~/domains/orders/api/contracts/admin-orders.contract'
 import { formatOrderAmount } from '~/domains/orders/utils/order-presentation'
 

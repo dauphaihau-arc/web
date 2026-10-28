@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { formatMinorCurrency } from '@arc/utils'
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
-import DataTable from '@arc/ui/primitives/data-table/data-table.vue'
+import DataTable from '@arc/ui/patterns/data-table/data-table.vue'
 import StatusBadge from '@arc/ui/primitives/status-badge.vue'
 import type {
   ShopFinanceTransaction,

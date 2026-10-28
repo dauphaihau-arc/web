@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Empty from '@arc/ui/primitives/empty.vue'
+import Empty from '@arc/ui/patterns/empty.vue'
 import FixedPagination from '@arc/ui/patterns/fixed-pagination.vue'
 import type { ShopFinanceTransactionFilters } from '~/domains/shop/queries/transactions.query'
 import {

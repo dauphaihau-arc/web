@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { AdminShopPayout } from '~/domains/finance/api/contracts/admin-finance.contract'
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
-import DataTable from '@arc/ui/primitives/data-table/data-table.vue'
+import DataTable from '@arc/ui/patterns/data-table/data-table.vue'
 import StatusBadge from '@arc/ui/primitives/status-badge.vue'
 import { useAdminShopPayouts } from '~/domains/finance/queries/payouts.query'
 import {

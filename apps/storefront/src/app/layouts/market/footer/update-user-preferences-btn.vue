@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { MARKET_REGION_EMOJIS, MarketCurrencies } from '@arc/enums/market'
-import BaseDialog from '@arc/ui/primitives/dialog/base-dialog.vue'
-import DialogActions from '@arc/ui/primitives/dialog/dialog-actions.vue'
+import BaseDialog from '@arc/ui/patterns/dialog/base-dialog.vue'
+import DialogActions from '@arc/ui/patterns/dialog/dialog-actions.vue'
 import MarketPreferencesForm from '~/domains/market/ui/preferences/market-preferences-form.vue'
 import { useUpdateMarketPreferences } from '~/domains/market/ui/preferences/use-update-market-preferences'
 import { useUserPreferenceForm } from '~/domains/market/ui/preferences/use-user-preference-form'

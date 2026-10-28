@@ -11,7 +11,7 @@ import type { DropdownItem } from '#ui/types'
 import FixedPagination from '@arc/ui/patterns/fixed-pagination.vue'
 import type { ShopOrderSummary } from '~/domains/shop/api/order/contracts/order.contract'
 import { routes } from '~/shared/navigation/routes'
-import DataTable from '@arc/ui/primitives/data-table/data-table.vue'
+import DataTable from '@arc/ui/patterns/data-table/data-table.vue'
 
 const props = defineProps<{
   orders: ShopOrderSummary[]

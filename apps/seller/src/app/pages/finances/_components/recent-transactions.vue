@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AppIcon from '@arc/ui/primitives/app-icon.vue'
-import Empty from '@arc/ui/primitives/empty.vue'
+import Empty from '@arc/ui/patterns/empty.vue'
 import { useShopFinanceRecentTransactions } from '~/domains/shop/queries/transactions.query'
 import TransactionsTable from './transactions-table.vue'
 

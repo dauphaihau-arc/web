@@ -1,6 +1,6 @@
 # `@arc/ui`
 
-Shared UI for `apps/storefront` and `apps/seller`.
+Shared UI for `apps/storefront`, `apps/seller`, and `apps/admin`.
 
 ## Purpose
 
@@ -8,7 +8,8 @@ This package is the shared presentation layer for:
 
 - design tokens
 - Nuxt UI theme defaults
-- reusable UI primitives
+- reusable UI primitives and patterns
+- cross-app feature states
 - shared feature shells that are structurally identical across apps
 
 It is not the place for app-specific business logic, route decisions, or data-fetching rules.
@@ -17,62 +18,99 @@ It is not the place for app-specific business logic, route decisions, or data-fe
 
 Use these files as the primary UI configuration sources:
 
-- tokens: [src/design-tokens.ts](/Volumes/Local/dev/pj-personal/apps/arc/codebase/apps/web/packages/ui/src/design-tokens.ts:1)
-- shared CSS token utilities: [src/design-tokens.css](/Volumes/Local/dev/pj-personal/apps/arc/codebase/apps/web/packages/ui/src/design-tokens.css:1)
-- Nuxt UI defaults: [src/app-config.ts](/Volumes/Local/dev/pj-personal/apps/arc/codebase/apps/web/packages/ui/src/app-config.ts:1)
+- tokens: `src/foundation/design-tokens.ts`
+- shared CSS token utilities: `src/foundation/design-tokens.css`
+- Nuxt UI defaults: `src/foundation/app-config.ts`
+- icon aliases and bundles: `src/foundation/app-icon.constants.ts`
 
 If a color, radius, shadow, layout width, or shared utility is repeated in app code, move it here first instead of copying it again.
 
 ## Component Tiers
 
-Keep components in `src/` in one of these tiers.
+Keep components in `src/` in one of these tiers. The folder is the tier:
+`primitives/`, `patterns/`, `features/`, `shells/`.
 
-### 1. Primitives
+### 1. Primitives — `src/primitives/`
 
-Low-level building blocks with minimal domain knowledge.
+Single visual unit: one element or one control, no anatomy (no header/body/actions
+structure), no data or view-model contract.
 
 Examples:
 
-- `app-panel.vue`
-- `app-state-block.vue`
-- `callout.vue` (Nuxt UI v4 `Callout` port: color variants, optional icon, optional link)
-- `empty.vue` (Nuxt UI v4 `Empty` port: icon or avatar, title, description, actions, variants, sizes)
-- `section-header.vue`
-- `dialog-actions.vue`
-- `fixed-form-actions.vue`
-- `base-dialog.vue`
-- `data-table/data-table.vue` (Nuxt UI `UTable` wrapper with row-click, hover actions, and per-column data slots)
+- `app-icon.vue`
+- `loading-svg.vue`
+- `radio-input.vue`
+- `radio-group-input.vue`
+- `status-badge.vue`
+- `shortcut-hint.vue`
 
 Rules:
 
 - prefer generic names
 - prefer presentational props over domain-specific props
 - avoid route logic, query logic, and mutation logic
+- no data model, no required item shapes; if a component needs a view model, it is a pattern
 
-### 2. Feature Shells
+Note: `shortcut-hint.vue` reads `useShortcuts()` from Nuxt UI's auto-imports, so it
+only resolves inside a consuming Nuxt app. Replacing it with a local implementation
+would change the displayed meta key, so leave it as is until Nuxt UI exposes the
+composable through an importable entry point.
 
-Shared structural components for workflows that exist in both apps with near-identical UI framing.
+### 2. Patterns — `src/patterns/`
+
+Compositions with a fixed anatomy (header/body/actions), a view-model contract, or
+shared interaction behavior. Still domain-neutral.
 
 Examples:
 
-- `notification-popover.vue`
-- `notification-popover-panel.vue`
-- `conversation-inbox-shell.vue`
-- `conversation-list-panel.vue`
-- `conversation-thread-panel.vue`
+- `empty.vue` (icon or avatar, title, description, actions, variants, sizes)
+- `section-header.vue` (title, description, badge, actions slot)
+- `app-panel.vue` (surface container preset)
+- `app-state-block.vue` (panel + tone/align preset)
+- `timeline.vue` (item model with `state` and `icon`)
+- `data-table/data-table.vue` (Nuxt UI `UTable` wrapper with row-click, hover actions, per-column slots)
+- `dialog/base-dialog.vue`, `dialog/dialog-actions.vue`
+- `data-filter/`
+- `fixed-pagination.vue`
+
+Rules:
+
+- the anatomy is fixed; variation goes through slots, not new required props
+- keep app-specific data adapters outside the package
+
+### 3. Features — `src/features/`
+
+Cross-app product states whose copy is product-specific but still identical in every
+consumer. A component lands here when it is not generic UI yet is also not a shell.
+
+Examples:
+
+- `category-identity-update-card.vue` (app/server category schema mismatch notice)
+
+Rules:
+
+- the component owns product copy and the state it represents
+- if copy or behavior starts diverging per app, move it into the owning app's
+  `src/domains/` or `src/shared/` instead of adding props
+
+### 4. Feature Shells — `src/shells/`
+
+Shared structural components for workflows that exist in every app with near-identical UI framing, plus app chrome.
+
+Examples:
+
+- `app-splash.vue`
+- `backend-wake-up-overlay.vue`
+- `notification-popover/`
+- `conversation/`
+- `chat-thread-panel.vue`
+- `auth/reset-password-shell.vue`
 
 Rules:
 
 - structure can be shared
 - app-specific navigation and data adapters stay in app code
 - if header/body/composer/details differ materially, use slots instead of encoding app behavior
-
-### 3. Utilities And Assets
-
-Examples:
-
-- `app-icon.vue`
-- `loading-svg.vue`
 
 ## What Should Stay App-Local
 
@@ -133,32 +171,39 @@ At the time of writing, the shared layer covers:
 
 - design tokens and layout utilities
 - Nuxt UI theme defaults
-- panel/state/header/dialog primitives
-- callout primitive (`primitives/callout.vue`)
-- data table wrapper (`primitives/data-table/data-table.vue`)
-- fixed form action bars
-- notification popover shell
-- conversation inbox shell
-- conversation thread shell
+- icon aliases (`primitives/app-icon.vue`)
+- form controls (`primitives/radio-input.vue`, `primitives/radio-group-input.vue`)
+- status and shortcut display (`primitives/status-badge.vue`, `primitives/shortcut-hint.vue`)
+- loading indicator (`primitives/loading-svg.vue`)
+- empty states and headers (`patterns/empty.vue`, `patterns/section-header.vue`)
+- surfaces and state blocks (`patterns/app-panel.vue`, `patterns/app-state-block.vue`)
+- data table wrapper (`patterns/data-table/data-table.vue`)
+- timelines (`patterns/timeline.vue`)
+- dialogs (`patterns/dialog/`)
+- filters and pagination (`patterns/data-filter/`, `patterns/fixed-pagination.vue`)
+- app shell chrome (`shells/`)
+- category schema mismatch notice (`features/category-identity-update-card.vue`)
 
 ## When Adding A New Shared Component
 
 Use this checklist:
 
 1. add or reuse tokens first
-2. decide whether it is a primitive or a feature shell
+2. pick the tier: primitive, pattern, feature, or shell
 3. keep app-specific routing/data logic outside the package
 4. expose the smallest prop API that still works
 5. prefer slots over over-configurable prop matrices
-6. update consumers in both apps if the component is meant to be shared immediately
-7. run typecheck for both apps
+6. update consumers in every app that shares it
+7. run typecheck for all three apps
 
 ## Verification
 
-After changes in this package, validate both apps:
+After changes in this package, validate all three apps:
 
 ```bash
-./node_modules/.bin/tsc --noEmit -p apps/storefront/tsconfig.json
-./node_modules/.bin/tsc --noEmit -p apps/seller/tsconfig.json
+pnpm typecheck:seller
+pnpm typecheck:admin
+pnpm typecheck:storefront
+pnpm check:architecture
 git diff --check
 ```

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { formatMinorCurrency } from '@arc/utils'
-import DataTable from '@arc/ui/primitives/data-table/data-table.vue'
+import DataTable from '@arc/ui/patterns/data-table/data-table.vue'
 
 /**
  * Line-item table for purchased or about-to-be-purchased quantities: the

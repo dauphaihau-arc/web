@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AppIcon from './app-icon.vue'
+import AppIcon from '../primitives/app-icon.vue'
 
 defineOptions({
   name: 'AppTimeline',

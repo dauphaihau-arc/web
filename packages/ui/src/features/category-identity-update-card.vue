@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ICON_NAME_BY_ALIAS } from '../foundation/app-icon.constants'
-import Empty from './empty.vue'
+import Empty from '../patterns/empty.vue'
 
 defineOptions({
   inheritAttrs: false,

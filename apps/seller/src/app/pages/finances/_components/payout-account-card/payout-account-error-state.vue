@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Empty from '@arc/ui/primitives/empty.vue'
+import Empty from '@arc/ui/patterns/empty.vue'
 </script>
 
 <template>

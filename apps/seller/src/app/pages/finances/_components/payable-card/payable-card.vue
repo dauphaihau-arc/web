@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { formatMinorCurrency } from '@arc/utils'
-import Empty from '@arc/ui/primitives/empty.vue'
+import Empty from '@arc/ui/patterns/empty.vue'
 import AppIcon from '@arc/ui/primitives/app-icon.vue'
 import { usePayableCard } from './use-payable-card'
 

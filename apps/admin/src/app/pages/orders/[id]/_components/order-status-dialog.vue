@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { OrderStatuses } from '@arc/enums/order'
-import BaseDialog from '@arc/ui/primitives/dialog/base-dialog.vue'
+import BaseDialog from '@arc/ui/patterns/dialog/base-dialog.vue'
 import { useAdminUpdateOrderStatus } from '~/domains/orders/mutations/update-status.mutation'
 import type { AdminOrderActionStatus } from '~/domains/orders/utils/order-presentation'
 import {

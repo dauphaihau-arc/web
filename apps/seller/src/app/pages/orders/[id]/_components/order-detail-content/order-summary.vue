@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { formatMinorCurrency } from '@arc/utils'
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail'
-import DataTable from '@arc/ui/primitives/data-table/data-table.vue'
+import DataTable from '@arc/ui/patterns/data-table/data-table.vue'
 
 const props = defineProps<{
   order: ShopOrder
