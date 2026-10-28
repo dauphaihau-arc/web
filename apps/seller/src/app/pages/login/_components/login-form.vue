@@ -124,7 +124,12 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
           />
         </UFormGroup>
 
-        <NuxtLink :to="routes.reset()">
+        <NuxtLink
+          :to="routes.reset()"
+          :aria-disabled="isPendingLogin || undefined"
+          :tabindex="isPendingLogin ? -1 : undefined"
+          class="aria-disabled:pointer-events-none aria-disabled:opacity-50"
+        >
           <UButton
             variant="link"
             class="mb-4 pl-0"

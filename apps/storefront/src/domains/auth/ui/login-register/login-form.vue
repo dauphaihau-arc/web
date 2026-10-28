@@ -99,6 +99,7 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
         >
           <UInput
             v-model="stateSubmit.email"
+            :disabled="isPendingLogin"
             size="xl"
           />
         </UFormGroup>
@@ -110,12 +111,18 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
         >
           <UInput
             v-model="stateSubmit.password"
+            :disabled="isPendingLogin"
             size="xl"
             type="password"
           />
         </UFormGroup>
 
-        <NuxtLink :to="ROUTES.RESET">
+        <NuxtLink
+          :to="ROUTES.RESET"
+          :aria-disabled="isPendingLogin || undefined"
+          :tabindex="isPendingLogin ? -1 : undefined"
+          class="aria-disabled:pointer-events-none aria-disabled:opacity-50"
+        >
           <UButton
             variant="link"
             class="mb-4 pl-0"

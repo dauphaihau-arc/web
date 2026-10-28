@@ -8,10 +8,16 @@ import { routes } from '~/shared/navigation/routes';
 import LayoutShopHeader from '~/app/layouts/shop/header.vue';
 import LoginForm from '~/app/pages/login/_components/login-form.vue';
 
-const { mockNavigateTo, loginMock, authConfigState } = vi.hoisted(() => ({
+const {
+  mockNavigateTo,
+  loginMock,
+  authConfigState,
+  loginState,
+} = vi.hoisted(() => ({
   mockNavigateTo: vi.fn(),
   loginMock: vi.fn(),
   authConfigState: { isLoading: false },
+  loginState: { isPending: false },
 }));
 
 mockNuxtImport('navigateTo', () => mockNavigateTo);
@@ -19,7 +25,7 @@ mockNuxtImport('navigateTo', () => mockNavigateTo);
 vi.mock('~/domains/auth/mutations/login.mutation', () => ({
   useLogin: () => ({
     mutateAsync: loginMock,
-    isPending: false,
+    isPending: loginState.isPending,
   }),
 }));
 
@@ -35,6 +41,7 @@ describe('login', () => {
     mockNavigateTo.mockReset();
     loginMock.mockReset();
     authConfigState.isLoading = false;
+    loginState.isPending = false;
   });
 
   it('mounts seller header', async () => {
@@ -136,6 +143,19 @@ describe('login', () => {
 
     expect(submit.attributes('disabled')).toBeDefined();
     expect(submit.find('.animate-spin').exists()).toBe(false);
+  });
+
+  it('blocks the forgot password link while the login request is in flight', async () => {
+    loginState.isPending = true;
+
+    const component = await mountSuspended(LoginForm);
+
+    const resetLink = component.find('a[href*="reset"]');
+    const inputs = component.findAll('input');
+
+    expect(resetLink.attributes('aria-disabled')).toBe('true');
+    expect(resetLink.attributes('tabindex')).toBe('-1');
+    expect(inputs.every(input => input.attributes('disabled') !== undefined)).toBe(true);
   });
 
   // TODO: test login success
