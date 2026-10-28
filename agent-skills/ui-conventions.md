@@ -13,6 +13,8 @@ Use this file when changing visible UI, user flows, or reusable components.
 
 - Use existing form, table, dialog, toast, loading, and empty-state patterns in the app.
 - Keep mutation feedback explicit: loading, success, and failure states should be visible when the action is user-facing.
+- Reserve `:loading` for user-initiated actions (submit, withdraw, save, refresh). An initial data fetch must not render as a loading button: render the block's skeleton, or keep the control `disabled` until every input that decides its enabled state is resolved.
+- When a control is disabled because its inputs failed to load, explain it in the existing hint/tooltip pattern instead of leaving a silent dead control.
 - Do not add explanatory in-app text about implementation details or shortcuts.
 - Keep labels and actions aligned with existing route and domain vocabulary.
 
