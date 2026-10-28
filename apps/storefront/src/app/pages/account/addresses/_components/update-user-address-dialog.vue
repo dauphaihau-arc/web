@@ -172,7 +172,7 @@ watch(() => stateSubmit.country, () => {
         <USelectMenu
           v-model="stateSubmit.country"
           searchable
-          :loading="isPendingGetCountries"
+          :disabled="isPendingGetCountries"
           :options="countriesOptions"
           size="lg"
         />
@@ -188,7 +188,6 @@ watch(() => stateSubmit.country, () => {
           <USelectMenu
             v-model="stateSubmit.state"
             searchable
-            :loading="isPendingGetStates"
             :disabled="!stateSubmit.country || isPendingGetStates"
             :options="stateOptions"
             size="lg"

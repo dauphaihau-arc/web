@@ -134,7 +134,7 @@ defineExpose({
       <USelectMenu
         v-model="state.country"
         searchable
-        :loading="isPendingGetCountries"
+        :disabled="isPendingGetCountries"
         :options="countriesOptions"
         size="lg"
       />

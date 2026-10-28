@@ -99,8 +99,7 @@ function processingTimeLabel(profile: ShippingProfileResource) {
             <USelectMenu
               v-model="model"
               searchable
-              :loading="isPending"
-              :disabled="disabled"
+              :disabled="disabled || isPending"
               :options="profileOptions"
               value-attribute="value"
               option-attribute="label"

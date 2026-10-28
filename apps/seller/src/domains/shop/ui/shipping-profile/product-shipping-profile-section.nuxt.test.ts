@@ -7,6 +7,7 @@ import ProductShippingProfileSection from './product-shipping-profile-section.vu
 
 const state = vi.hoisted(() => ({
   profiles: undefined as unknown,
+  pending: false,
 }));
 
 vi.mock('~/domains/shop/queries/shipping-profiles.query', async () => {
@@ -18,7 +19,7 @@ vi.mock('~/domains/shop/queries/shipping-profiles.query', async () => {
     SHIPPING_PROFILE_PICKER_QUERY: { page: 1, limit: 100 },
     useShopShippingProfiles: () => ({
       data: computed(() => state.profiles),
-      isPending: computed(() => false),
+      isPending: computed(() => state.pending),
     }),
   };
 });
@@ -66,5 +67,18 @@ describe('product shipping profile section', () => {
     const wrapper = await render('plain');
 
     expect(wrapper.text()).not.toContain('Default');
+  });
+
+  it('disables the picker without a spinner while profiles load', async () => {
+    state.pending = true;
+
+    const wrapper = await render('');
+
+    const trigger = wrapper.find('button');
+
+    expect(trigger.attributes('disabled')).toBeDefined();
+    expect(trigger.find('.animate-spin').exists()).toBe(false);
+
+    state.pending = false;
   });
 });
