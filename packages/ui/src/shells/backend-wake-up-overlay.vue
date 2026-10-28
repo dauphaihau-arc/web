@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import LoadingSvg from '../primitives/loading-svg.vue'
+import Empty from '../patterns/empty.vue'
+import { ICON_NAME_BY_ALIAS } from '../foundation/app-icon.constants'
 
 const props = defineProps<{
   isBackendPending: boolean
@@ -11,33 +12,42 @@ const emit = defineEmits<{
 }>()
 
 const shouldShowRetryAction = computed(() => props.isBackendError && !props.isBackendPending)
+
+const title = computed(() =>
+  shouldShowRetryAction.value ? 'We couldn’t connect' : 'Getting things ready',
+)
+
+const description = computed(() =>
+  shouldShowRetryAction.value
+    ? 'Check your connection, then try again.'
+    : 'This can take a few seconds.',
+)
 </script>
 
 <template>
   <div
     class="fixed inset-0 z-[100] grid place-content-center bg-surface px-4"
   >
-    <div
-      class="flex items-center gap-3 rounded-full bg-surface px-3 py-2 text-sm text-text-subtle shadow-lg ring-1 ring-border-subtle"
+    <Empty
+      variant="naked"
+      size="xl"
+      :icon="ICON_NAME_BY_ALIAS.offline"
+      :loading="isBackendPending"
+      :title="title"
+      :description="description"
     >
-      <LoadingSvg
-        v-if="isBackendPending"
-        :child-class="'!w-4 !h-4'"
-      />
-      <span v-if="!shouldShowRetryAction">
-        Waking up the backend server. This can take a few seconds.
-      </span>
-      <span v-else> The server is still unavailable. </span>
-      <UButton
+      <template
         v-if="shouldShowRetryAction"
-        color="gray"
-        size="xs"
-        :ui="{ rounded: 'rounded-full' }"
-        class="rounded-full"
-        @click="emit('retry')"
+        #actions
       >
-        Retry
-      </UButton>
-    </div>
+        <UButton
+          color="gray"
+          size="sm"
+          @click="emit('retry')"
+        >
+          Retry
+        </UButton>
+      </template>
+    </Empty>
   </div>
 </template>

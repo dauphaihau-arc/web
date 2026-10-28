@@ -28,6 +28,7 @@ export const ICON_NAME_BY_ALIAS = {
   check: 'i-material-symbols:check-circle-rounded',
   circleCheck: 'lucide:circle-check',
   info: 'lucide:info',
+  offline: 'lucide:cloud-off',
   calendar: 'i-material-symbols:calendar-month-rounded',
   calendarDaysSolid: 'lucide:calendar-days',
   location: 'lucide:map-pin',
@@ -193,6 +194,7 @@ export const APP_ICON_CLIENT_BUNDLE_ICONS = [
   'lucide:external-link',
   'heroicons:arrow-down-tray',
   'eos-icons:loading',
+  'lucide:cloud-off',
   'lucide:monitor',
   'lucide:shield-check',
 ] as const
