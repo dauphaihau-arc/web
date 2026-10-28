@@ -19,7 +19,13 @@ export function usePayableCard() {
   } = useShopFinancePayoutAccount();
 
   const { data: payoutsResponse } = useShopFinancePayouts();
-  const { data: payoutSettings } = useShopFinancePayoutSettings();
+
+  const {
+    data: payoutSettings,
+    isPending: isPayoutSettingsPending,
+    isError: isPayoutSettingsError,
+  } = useShopFinancePayoutSettings();
+
   const modal = useModal();
 
   const payoutAccount = computed<ShopFinancePayoutAccount | null | undefined>(() => (
@@ -44,8 +50,19 @@ export function usePayableCard() {
       return 'A payout is already pending. Wait for it to finish before withdrawing again.';
     }
 
+    if (
+      isPayoutSettingsError.value
+      || (!isPayoutSettingsPending.value && remaining.value === undefined)
+    ) {
+      return 'Could not load your withdrawal allowance. Reload the page to try again.';
+    }
+
     if (remaining.value !== undefined && remaining.value !== null && remaining.value <= 0) {
       return 'You have already made your manual withdrawal this month.';
+    }
+
+    if (isPayoutAccountError.value) {
+      return 'Could not load your payout account. Reload the page to try again.';
     }
 
     if (payoutAccount.value === null) {
@@ -59,8 +76,24 @@ export function usePayableCard() {
     return null;
   });
 
+  /**
+   * Every input that decides whether a withdrawal may start is loaded. Until
+   * then the button stays disabled — an initial fetch is not a user-initiated
+   * action, so it must not render as a loading button.
+   */
+  const isWithdrawReady = computed(() => (
+    !isPayoutSettingsPending.value
+    && remaining.value !== undefined
+    && !isPayoutAccountPending.value
+  ));
+
   function openWithdrawDialog() {
-    if (!payable.value || payable.value.available_minor <= 0 || disabledReason.value) {
+    if (
+      !isWithdrawReady.value
+      || !payable.value
+      || payable.value.available_minor <= 0
+      || disabledReason.value
+    ) {
       return;
     }
 
@@ -75,7 +108,7 @@ export function usePayableCard() {
     payable,
     isPending,
     isError,
-    remaining,
+    isWithdrawReady,
     isNegative,
     disabledReason,
     openWithdrawDialog,

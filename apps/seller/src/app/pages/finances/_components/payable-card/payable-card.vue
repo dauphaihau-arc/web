@@ -8,7 +8,7 @@ const {
   payable,
   isPending,
   isError,
-  remaining,
+  isWithdrawReady,
   isNegative,
   disabledReason,
   openWithdrawDialog,
@@ -45,8 +45,7 @@ const {
 
       <div class="mt-3 flex items-center gap-2">
         <UButton
-          :disabled="payable.available_minor <= 0 || remaining === undefined || Boolean(disabledReason)"
-          :loading="remaining === undefined"
+          :disabled="!isWithdrawReady || payable.available_minor <= 0 || Boolean(disabledReason)"
           @click="openWithdrawDialog"
         >
           Withdraw now

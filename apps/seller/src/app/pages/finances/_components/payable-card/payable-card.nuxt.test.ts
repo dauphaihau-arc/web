@@ -14,6 +14,8 @@ const { cardState, openModal } = vi.hoisted(() => ({
     payoutAccount: null as ShopFinancePayoutAccount | null,
     hasPendingPayout: false,
     remaining: 1 as number | null | undefined,
+    settingsPending: false,
+    settingsError: false,
   },
 }));
 
@@ -79,8 +81,8 @@ vi.mock('~/domains/shop/queries/payout-settings.query', async () => {
           auto_payout_ineligible_reason: null,
           manual_withdrawals_remaining: cardState.remaining,
         })),
-      isPending: computed(() => false),
-      isError: computed(() => false),
+      isPending: computed(() => cardState.settingsPending),
+      isError: computed(() => cardState.settingsError),
     }),
   };
 });
@@ -112,12 +114,16 @@ type RenderOptions = {
   hasPendingPayout?: boolean
   isPending?: boolean
   isError?: boolean
+  settingsPending?: boolean
+  settingsError?: boolean
 };
 
 async function render(overrides: RenderOptions = {}) {
   cardState.availableMinor = overrides.availableMinor ?? 12_500;
   cardState.isPending = overrides.isPending ?? false;
   cardState.isError = overrides.isError ?? false;
+  cardState.settingsPending = overrides.settingsPending ?? false;
+  cardState.settingsError = overrides.settingsError ?? false;
   cardState.payoutAccount = overrides.payoutAccount === undefined ? account() : overrides.payoutAccount;
   cardState.hasPendingPayout = overrides.hasPendingPayout ?? false;
   cardState.remaining = overrides.remainingUnset ? undefined : (overrides.remaining ?? 1);
@@ -181,12 +187,20 @@ describe('payable card', () => {
     expect(unverified.find('[aria-label="Why withdrawal is unavailable"]').exists()).toBe(true);
   });
 
-  it('disables and loads without a tooltip while the allowance loads', async () => {
-    const wrapper = await render({ remainingUnset: true });
+  it('disables without a spinner or tooltip while the allowance loads', async () => {
+    const wrapper = await render({ settingsPending: true, remainingUnset: true });
+    const button = wrapper.find('button');
+
+    expect(button.attributes('disabled')).toBeDefined();
+    expect(button.find('.animate-spin').exists()).toBe(false);
+    expect(wrapper.find('[aria-label="Why withdrawal is unavailable"]').exists()).toBe(false);
+  });
+
+  it('disables and explains an allowance that failed to load', async () => {
+    const wrapper = await render({ settingsError: true, remainingUnset: true });
 
     expect(wrapper.find('button').attributes('disabled')).toBeDefined();
-    expect(wrapper.find('[aria-label="Why withdrawal is unavailable"]').exists()).toBe(false);
-    expect(wrapper.text()).not.toContain('still loading');
+    expect(wrapper.find('[aria-label="Why withdrawal is unavailable"]').exists()).toBe(true);
   });
 
   it('opens the withdrawal dialog in the payout account currency', async () => {
