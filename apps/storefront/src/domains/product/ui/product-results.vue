@@ -53,7 +53,7 @@ const props = defineProps<{
     <template v-else>
       <div
         v-if="items?.length"
-        class="mb-16 grid grid-cols-2 gap-x-3 gap-y-8 md:grid-cols-3 lg:grid-cols-4 lg:gap-8"
+        class="mb-16 grid grid-cols-2 gap-x-3 md:grid-cols-3 md:gap-x-4 lg:grid-cols-4 lg:gap-5"
       >
         <div
           v-for="product of items"
