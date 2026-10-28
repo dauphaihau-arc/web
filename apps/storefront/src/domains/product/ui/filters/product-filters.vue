@@ -8,6 +8,7 @@ import {
   type PricePresetId,
 } from '~/domains/product/ui/filters/product-filter.constants'
 import { useProductListingFilters } from '~/domains/product/ui/filters/use-product-listing-filters'
+import { useProductFacets } from '~/domains/product/ui/filters/use-product-facets'
 import { usePricePresetOptions } from '~/domains/product/ui/filters/use-price-preset-options'
 
 const props = defineProps<{
@@ -18,6 +19,18 @@ const props = defineProps<{
 
 const { state, isResetDisabled, resetFilters } = useProductListingFilters()
 const { currency, pricePresetOpts } = usePricePresetOptions()
+
+// Same request as the facet panel below (shared query key), read here to decide
+// whether the section has anything to show at all.
+const { facets, isLoading: isFacetsLoading } = useProductFacets({
+  scope: () => ({ categoryId: props.categoryId, search: props.search }),
+  selections: () => state.attributeFilters,
+  featuredFacetKeys: () => props.featuredFacetKeys,
+})
+
+// While facets load the skeleton communicates progress, so the section stays
+// visible; it disappears only once there is no populated group to render.
+const hasAttributeFacets = computed(() => isFacetsLoading.value || facets.value.length > 0)
 
 const filterItems = computed(() => [
   {
@@ -35,11 +48,13 @@ const filterItems = computed(() => [
     label: 'Item type',
     defaultOpen: true,
   },
-  {
-    id: 'attributes',
-    label: 'Attributes',
-    defaultOpen: true,
-  },
+  ...(hasAttributeFacets.value
+    ? [{
+        id: 'attributes',
+        label: 'Attributes',
+        defaultOpen: true,
+      }]
+    : []),
 ])
 </script>
 

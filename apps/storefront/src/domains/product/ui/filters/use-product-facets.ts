@@ -90,14 +90,20 @@ export function useProductFacets(input: ProductFacetsInput) {
       hasFilteredAvailability: dataGetProductFacets.value !== undefined,
     });
 
+    // A group without options is a dead control: the backend keeps configured
+    // featured facets even when no product carries a matching value, so drop them
+    // here. A facet with an active selection always carries its selected options
+    // (the view unions them in), so it survives and stays clearable.
+    const populated = view.filter(facet => facet.options.length > 0);
+
     const hasChildren = (dataChildCategories.value ?? []).length > 0;
     const allowedFacetKeys = toValue(input.featuredFacetKeys);
 
     if (!hasChildren || !allowedFacetKeys) {
-      return view;
+      return populated;
     }
 
-    return view.filter(facet => allowedFacetKeys.includes(facet.facetKey));
+    return populated.filter(facet => allowedFacetKeys.includes(facet.facetKey));
   });
 
   return { facets, isLoading };
