@@ -126,7 +126,8 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
 
         <UButton
           data-testid="login-submit"
-          :loading="isPendingLogin || isLoadingAuthClientConfig"
+          :loading="isPendingLogin"
+          :disabled="isLoadingAuthClientConfig"
           size="xl"
           block
           type="submit"

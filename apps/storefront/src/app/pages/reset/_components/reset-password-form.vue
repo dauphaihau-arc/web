@@ -114,7 +114,8 @@ async function onSubmit(event: FormSubmitEvent<ResetPasswordBody>) {
             </UFormGroup>
 
             <UButton
-              :loading="isPendingResetPassword || isLoadingAuthClientConfig"
+              :loading="isPendingResetPassword"
+              :disabled="isLoadingAuthClientConfig"
               size="xl"
               block
               type="submit"

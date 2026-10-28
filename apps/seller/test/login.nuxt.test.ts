@@ -8,9 +8,10 @@ import { routes } from '~/shared/navigation/routes';
 import LayoutShopHeader from '~/app/layouts/shop/header.vue';
 import LoginForm from '~/app/pages/login/_components/login-form.vue';
 
-const { mockNavigateTo, loginMock } = vi.hoisted(() => ({
+const { mockNavigateTo, loginMock, authConfigState } = vi.hoisted(() => ({
   mockNavigateTo: vi.fn(),
   loginMock: vi.fn(),
+  authConfigState: { isLoading: false },
 }));
 
 mockNuxtImport('navigateTo', () => mockNavigateTo);
@@ -25,7 +26,7 @@ vi.mock('~/domains/auth/mutations/login.mutation', () => ({
 vi.mock('~/domains/auth/queries/client-config.query', () => ({
   useAuthClientConfig: () => ({
     data: { value: undefined },
-    isLoading: false,
+    isLoading: authConfigState.isLoading,
   }),
 }));
 
@@ -33,6 +34,7 @@ describe('login', () => {
   beforeEach(() => {
     mockNavigateTo.mockReset();
     loginMock.mockReset();
+    authConfigState.isLoading = false;
   });
 
   it('mounts seller header', async () => {
@@ -117,6 +119,23 @@ describe('login', () => {
       password: 'Valid1!Pass',
     });
     expect(component.html()).toContain('Incorrect email or password');
+  });
+
+  it('disables the log in button without a spinner while the password policy loads', async () => {
+    authConfigState.isLoading = true;
+
+    const component = await mountSuspended(LoginForm, {
+      global: {
+        stubs: {
+          NuxtLink: true,
+        },
+      },
+    });
+
+    const submit = component.find('button[type="submit"]');
+
+    expect(submit.attributes('disabled')).toBeDefined();
+    expect(submit.find('.animate-spin').exists()).toBe(false);
   });
 
   // TODO: test login success

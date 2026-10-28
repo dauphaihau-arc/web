@@ -153,7 +153,8 @@ async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
         </UFormGroup>
 
         <UButton
-          :loading="isPendingRegister || isLoadingAuthClientConfig"
+          :loading="isPendingRegister"
+          :disabled="isLoadingAuthClientConfig"
           size="xl"
           block
           type="submit"

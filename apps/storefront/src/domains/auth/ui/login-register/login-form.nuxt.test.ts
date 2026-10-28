@@ -8,8 +8,10 @@ import LoginForm from './login-form.vue';
 
 const {
   loginMock,
+  authClientConfigLoading,
 } = vi.hoisted(() => ({
   loginMock: vi.fn(),
+  authClientConfigLoading: { value: false },
 }));
 
 vi.mock('~/domains/auth/mutations/login.mutation', () => ({
@@ -22,13 +24,14 @@ vi.mock('~/domains/auth/mutations/login.mutation', () => ({
 vi.mock('~/domains/auth/queries/client-config.query', () => ({
   useAuthClientConfig: () => ({
     data: { value: undefined },
-    isLoading: false,
+    isLoading: authClientConfigLoading.value,
   }),
 }));
 
 describe('login form', () => {
   beforeEach(() => {
     loginMock.mockReset();
+    authClientConfigLoading.value = false;
   });
 
   it('fills email and password input', async () => {
@@ -76,5 +79,22 @@ describe('login form', () => {
       password: 'Valid1!Pass',
     });
     expect(component.html()).toContain('Incorrect email or password');
+  });
+
+  it('keeps submit disabled instead of spinning while the auth config loads', () => {
+    authClientConfigLoading.value = true;
+
+    const component = mount(LoginForm, {
+      global: {
+        stubs: {
+          NuxtLink: true,
+        },
+      },
+    });
+
+    const submit = component.find('[data-testid="login-submit"]');
+
+    expect(submit.attributes('disabled')).toBeDefined();
+    expect(submit.find('.animate-spin').exists()).toBe(false);
   });
 });
