@@ -142,6 +142,7 @@ function handleCartHover() {
 
     <UTooltip
       v-if="!isAdminUser"
+      class="max-lg:hidden"
       :text="sellerCtaLabel"
     >
       <UButton
