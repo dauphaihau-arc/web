@@ -88,7 +88,7 @@ export function useOrderTimelineItems(order: MaybeRefOrGetter<ShopOrder>, timeli
           title: 'Shipped',
           description: buildLegacyShippingDescription(legacy),
           occurredAt: legacy.shipped_at,
-          state: legacy.delivered_at ? 'completed' : 'current',
+          state: legacy.delivered_at ? 'completed' : 'active',
           icon: 'shipping',
         });
       }
@@ -99,7 +99,7 @@ export function useOrderTimelineItems(order: MaybeRefOrGetter<ShopOrder>, timeli
           title: 'Delivered',
           description: buildLegacyShippingDescription(legacy),
           occurredAt: legacy.delivered_at,
-          state: 'current',
+          state: 'active',
           icon: 'delivered',
         });
       }
@@ -134,7 +134,7 @@ export function useOrderTimelineItems(order: MaybeRefOrGetter<ShopOrder>, timeli
         const currentKey = `shipment-${activeShipment.id}-${activeShipment.status}`;
         const existing = items.find(item => item.key === currentKey);
         if (existing) {
-          existing.state = 'current';
+          existing.state = 'active';
         }
         else if (activeShipment.status === ShipmentStatuses.VOIDED) {
           items.push({
@@ -142,7 +142,7 @@ export function useOrderTimelineItems(order: MaybeRefOrGetter<ShopOrder>, timeli
             title: 'Shipment voided',
             description: 'A prepared shipment was voided.',
             occurredAt: activeShipment.voided_at,
-            state: 'current',
+            state: 'active',
             icon: 'xCircle',
           });
         }
@@ -155,7 +155,7 @@ export function useOrderTimelineItems(order: MaybeRefOrGetter<ShopOrder>, timeli
         title: 'Refund requested',
         description: 'Refund request is pending review or processor completion.',
         occurredAt: refundRequestedAt.value,
-        state: 'current',
+        state: 'active',
         icon: 'refund',
       });
     }
@@ -168,7 +168,7 @@ export function useOrderTimelineItems(order: MaybeRefOrGetter<ShopOrder>, timeli
           ? resolvedOrder.value.payment.refund_failed_reason
           : 'Summary was refunded successfully.',
         occurredAt: resolvedOrder.value.payment.refunded_at,
-        state: 'current',
+        state: 'active',
         icon: 'refund',
       });
     }
@@ -185,7 +185,7 @@ export function useOrderTimelineItems(order: MaybeRefOrGetter<ShopOrder>, timeli
             ? 'Checkout session expired before payment completed.'
             : 'This order is no longer active.'),
         occurredAt: resolvedOrder.value.canceled_at ?? paymentExpiredAt.value,
-        state: resolvedOrder.value.status === OrderStatuses.EXPIRED ? 'failed' : 'current',
+        state: resolvedOrder.value.status === OrderStatuses.EXPIRED ? 'failed' : 'active',
         icon: resolvedOrder.value.status === OrderStatuses.EXPIRED
           ? 'expired'
           : 'xCircle',
@@ -202,7 +202,7 @@ export function useOrderTimelineItems(order: MaybeRefOrGetter<ShopOrder>, timeli
     icon: milestone.icon,
     state: milestone.state,
     badge: milestone.badge,
-    meta: metaLabel(milestone),
+    date: metaLabel(milestone),
   })));
 }
 

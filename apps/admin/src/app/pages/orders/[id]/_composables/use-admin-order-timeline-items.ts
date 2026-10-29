@@ -22,7 +22,7 @@ export function useAdminOrderTimelineItems(order: MaybeRefOrGetter<AdminOrderDet
         key: 'created',
         title: 'Order created',
         description: `${formatOrderStatusLabel(value.payment.type)} payment order placed with ${value.shop.shop_name}.`,
-        meta: formatOrderDateTime(value.created_at),
+        date: formatOrderDateTime(value.created_at),
         icon: 'orderCreated',
         state: 'completed',
       },
@@ -31,14 +31,14 @@ export function useAdminOrderTimelineItems(order: MaybeRefOrGetter<AdminOrderDet
         title: `Status: ${formatOrderStatusLabel(value.status)}`,
         description: 'Current order status as recorded on the platform.',
         icon: 'orders',
-        state: 'current',
+        state: 'active',
       },
       {
         key: 'fulfillment',
         title: `Fulfillment: ${formatOrderStatusLabel(value.fulfillment.status)}`,
         description: `${value.fulfillment.progress.delivered} of ${value.fulfillment.progress.ordered} items delivered.`,
         icon: 'shipping',
-        state: value.fulfillment.progress.outstanding > 0 ? 'current' : 'completed',
+        state: value.fulfillment.progress.outstanding > 0 ? 'active' : 'completed',
       },
     ];
 
@@ -47,7 +47,7 @@ export function useAdminOrderTimelineItems(order: MaybeRefOrGetter<AdminOrderDet
         key: 'canceled',
         title: 'Order canceled',
         description: value.cancel_reason || 'Canceled by an operator.',
-        meta: formatOrderDateTime(value.canceled_at),
+        date: formatOrderDateTime(value.canceled_at),
         icon: 'close',
         state: 'failed',
       });
@@ -58,7 +58,7 @@ export function useAdminOrderTimelineItems(order: MaybeRefOrGetter<AdminOrderDet
         key: 'refunded',
         title: 'Refund recorded',
         description: 'A refund against this order was recorded by an operator.',
-        meta: formatOrderDateTime(value.refunded_at),
+        date: formatOrderDateTime(value.refunded_at),
         icon: 'refund',
         state: 'completed',
       });
