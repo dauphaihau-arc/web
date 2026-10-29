@@ -13,6 +13,7 @@ import OrderCustomer from './order-customer.vue'
 import OrderDetailActions from './order-detail-actions.vue'
 import OrderDetails from './order-details.vue'
 import OrderPricingBreakdown from './order-pricing-breakdown.vue'
+import OrderProgress from './order-progress.vue'
 import OrderShop from './order-shop.vue'
 import OrderSummary from './order-summary.vue'
 import OrderTracking from './order-tracking.vue'
@@ -110,6 +111,7 @@ const {
         class="grid grid-cols-12 gap-6"
       >
         <div class="col-span-12 space-y-6 xl:col-span-9">
+          <OrderProgress :order="order" />
           <OrderSummary :order="order" />
           <OrderPricingBreakdown :order="order" />
           <UCard>

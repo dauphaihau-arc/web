@@ -183,6 +183,15 @@ export interface AdminOrderFulfillmentSummary {
   legacy_shipping: AdminOrderLegacyShipping
 }
 
+/**
+ * Frozen purchase-time shipping quote. The estimate is the delivery window the
+ * buyer accepted at checkout; the remaining quote fields stay opaque because
+ * the admin views read the order-level `shipping_minor` instead.
+ */
+export interface AdminOrderShippingSnapshot extends Record<string, unknown> {
+  estimate?: { latest_delivery_date?: string }
+}
+
 export interface AdminOrderShippingAddress {
   full_name: string
   address1: string
@@ -206,7 +215,7 @@ export interface AdminOrderDetailOrder {
   fulfillment: AdminOrderFulfillmentSummary
   shipping_address: AdminOrderShippingAddress
   /** Frozen purchase-time quote snapshot; the admin views read `shipping_minor`. */
-  shipping?: Record<string, unknown>
+  shipping?: AdminOrderShippingSnapshot
   shipping_discount_minor?: number
   shipping_discounts?: Array<Record<string, unknown>>
   note?: string
@@ -235,6 +244,41 @@ export interface AdminOrderFinancialBreakdown {
   order_id: string
   currency: string
   platform_commission_minor: number | null
+  /** `null` when the order has no paid journal basis; never substitute zero. */
+  seller_payable_minor: number | null
+
+  /** Payout availability is recorded per order when every required unit is delivered. */
+  availability: {
+    recorded: boolean
+    available_at: string | null
+  }
+
+  /** The most recent payout attributed to this order, when one has been claimed. */
+  payout: {
+    id: string
+    state: 'pending' | 'paid'
+    amount_minor: number
+    paid_at: string | null
+  } | null
+
+  /** Finance's payout destination and schedule facts for the shop. */
+  payout_method: AdminOrderPayoutMethod
+}
+
+/** Finance's payout account and automatic schedule for an order's shop. */
+export interface AdminOrderPayoutMethod {
+  /** `missing` when the shop has no usable Payout Account. */
+  account_status:
+    | 'missing'
+    | 'onboarding'
+    | 'action_required'
+    | 'active'
+    | 'restricted'
+    | 'disabled'
+  auto_payout_enabled: boolean
+  auto_payout_day_of_month: number
+  /** UTC calendar date (`YYYY-MM-DD`) of the next automatic run, else `null`. */
+  next_payout_date: string | null
 }
 
 export type UpdateAdminOrderStatusBody = {
