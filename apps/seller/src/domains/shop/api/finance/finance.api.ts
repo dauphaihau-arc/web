@@ -8,6 +8,7 @@ import type {
   RequestShopFinanceManualPayoutRequest,
   ShopFinanceManualPayoutResponse,
 } from './contracts/manual-payout.contract';
+import type { ShopOrderPayout } from './contracts/order-payout.contract';
 import type { ShopFinancePayable } from './contracts/payable.contract';
 import type {
   GetShopFinancePayoutQuoteRequest,
@@ -86,6 +87,17 @@ export const shopFinanceApi = {
       `/shops/${shopId}/finance/payout-account/onboarding`,
       body,
       idempotentOptions(),
+    );
+  },
+
+  /**
+   * The payout fact for one Order: what the seller is payable from it, whether
+   * availability is recorded, and the most recent payout attributable to it.
+   * Order-scoped so Finance keeps owning every payout fact.
+   */
+  getOrderPayout(shopId: string, orderId: string) {
+    return apiClient.get<ShopOrderPayout>(
+      `/shops/${shopId}/finance/orders/${orderId}/payout`,
     );
   },
 

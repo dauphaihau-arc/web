@@ -3,6 +3,7 @@ import { getStatusCode } from '@arc/lib'
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import Customer from './customer.vue'
 import OrderDetails from './order-details.vue'
+import OrderProgress from './order-progress.vue'
 import OrderSummary from './order-summary.vue'
 import OrderTimeline from './order-timeline.vue'
 import Shipments from './shipments.vue'
@@ -67,6 +68,7 @@ const errorState = computed(() => {
     class="grid grid-cols-12 gap-6"
   >
     <div class="col-span-12 space-y-6 xl:col-span-9">
+      <OrderProgress :order="order" />
       <OrderSummary
         :order="order"
         :asset-host="assetHost"

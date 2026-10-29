@@ -12,6 +12,10 @@ import type {
 function invalidateOrderQueries(queryClient: QueryClient, orderId: string) {
   queryClient.invalidateQueries({ queryKey: ['shop-orders'] });
   queryClient.invalidateQueries({ queryKey: ['shop-order-detail', orderId] });
+  // Finance records payout availability when the last unit is delivered, so the
+  // progress strip's Payout step must reopen with the order after any shipment
+  // change instead of waiting for a page reload.
+  queryClient.invalidateQueries({ queryKey: ['shop-order-payout', orderId] });
 }
 
 export function useShopOrderFulfillmentMutations() {

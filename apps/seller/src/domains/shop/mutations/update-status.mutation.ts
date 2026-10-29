@@ -20,6 +20,8 @@ export function useShopUpdateOrderStatus() {
       });
       queryClient.invalidateQueries({ queryKey: ['shop-orders'] });
       queryClient.invalidateQueries({ queryKey: ['shop-order-detail', variables.orderId] });
+      // Payout labels follow the order's money state, so they refresh with it.
+      queryClient.invalidateQueries({ queryKey: ['shop-order-payout', variables.orderId] });
     },
     onError() {
       toast.add({
