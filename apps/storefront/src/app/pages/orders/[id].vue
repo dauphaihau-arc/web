@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import ShopItem from '~/domains/me/ui/order-shop/shop-item.vue'
+import OrderProgressPanel from '~/domains/me/ui/order-shop/order-progress.vue'
 import { routes } from '~/shared/navigation/routes'
 import { useGetOrderById } from '~/domains/me/queries/orders/order-shops.query'
 import {
@@ -80,7 +81,9 @@ const shippingAddressLines = computed(() => {
       v-else-if="displayOrderShop"
       class="grid grid-cols-1 gap-8 lg:grid-cols-12"
     >
-      <div class="lg:col-span-9">
+      <div class="space-y-6 lg:col-span-9">
+        <OrderProgressPanel :order-shop="displayOrderShop" />
+
         <ShopItem
           :order-shop="displayOrderShop"
           :show-detail-link="false"

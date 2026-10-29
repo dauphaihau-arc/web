@@ -3,6 +3,7 @@ import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import { isBackendWakeUpError } from '@arc/lib'
 import type { FormSubmitEvent } from '#ui/types'
 import ShopItem from '~/domains/me/ui/order-shop/shop-item.vue'
+import OrderProgressPanel from '~/domains/me/ui/order-shop/order-progress.vue'
 import { useLookupGuestOrders } from '~/domains/checkout/queries/guest-orders.query'
 import { routes } from '~/shared/navigation/routes'
 
@@ -172,7 +173,10 @@ async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zi
       <div
         v-for="orderShop in orderShops"
         :key="orderShop.id"
+        class="space-y-6"
       >
+        <OrderProgressPanel :order-shop="orderShop" />
+
         <ShopItem
           :order-shop="orderShop"
           :allow-post-purchase-actions="false"
