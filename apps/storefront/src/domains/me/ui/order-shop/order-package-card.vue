@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import StatusBadge from '@arc/ui/primitives/status-badge.vue'
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import {
   orderPackageStatusText,
   orderPackageTone,
@@ -31,6 +32,17 @@ const trackingText = computed(() => {
 })
 
 const visibleUpdates = computed(() => props.orderPackage.updates.slice(0, 3))
+
+/** Each card owns its own toggle, so multi-package orders expand independently. */
+const trackingOpen = ref(false)
+
+const hasTrackingHistory = computed(() => visibleUpdates.value.length > 0)
+
+/**
+ * Preparing packages have nothing to track yet; every later state keeps its
+ * history behind the toggle. The button styling stays identical across states.
+ */
+const showTrackingToggle = computed(() => hasTrackingHistory.value && props.orderPackage.state !== 'preparing')
 </script>
 
 <template>
@@ -42,6 +54,7 @@ const visibleUpdates = computed(() => props.orderPackage.updates.slice(0, 3))
         </h3>
 
         <StatusBadge
+          v-if="showPackageIndex"
           :color="orderPackageTone(orderPackage)"
           :label="orderPackageStatusText(orderPackage)"
           size="sm"
@@ -64,8 +77,38 @@ const visibleUpdates = computed(() => props.orderPackage.updates.slice(0, 3))
       class="mt-5"
     />
 
+    <OrderItemLines
+      :lines="orderPackage.lines"
+      class="mt-5"
+    />
+
+    <div
+      v-if="orderPackage.note"
+      class="mt-5 rounded-md bg-surface-muted px-4 py-3 text-sm text-text-muted"
+    >
+      {{ orderPackage.note }}
+    </div>
+
+    <div
+      v-if="showTrackingToggle || $slots.actions"
+      class="mt-5 flex flex-wrap items-center gap-2"
+    >
+      <UButton
+        v-if="showTrackingToggle"
+        color="gray"
+        size="sm"
+        :trailing-icon="trackingOpen ? ICON_NAME_BY_ALIAS['chevronUp'] : ICON_NAME_BY_ALIAS['chevronDown']"
+        :aria-expanded="trackingOpen"
+        @click="trackingOpen = !trackingOpen"
+      >
+        Track package
+      </UButton>
+
+      <slot name="actions" />
+    </div>
+
     <ol
-      v-if="!showStages && visibleUpdates.length"
+      v-if="showTrackingToggle && trackingOpen"
       class="mt-5 space-y-3"
     >
       <li
@@ -92,24 +135,5 @@ const visibleUpdates = computed(() => props.orderPackage.updates.slice(0, 3))
         </div>
       </li>
     </ol>
-
-    <OrderItemLines
-      :lines="orderPackage.lines"
-      class="mt-5"
-    />
-
-    <div
-      v-if="orderPackage.note"
-      class="mt-5 rounded-md bg-surface-muted px-4 py-3 text-sm text-text-muted"
-    >
-      {{ orderPackage.note }}
-    </div>
-
-    <div
-      v-if="$slots.actions"
-      class="mt-5 flex flex-wrap gap-2"
-    >
-      <slot name="actions" />
-    </div>
   </UCard>
 </template>
