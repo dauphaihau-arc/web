@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
-import { isBackendWakeUpError } from '@arc/lib'
 import type { FormSubmitEvent } from '#ui/types'
-import ShopItem from '~/domains/me/ui/order-shop/shop-item.vue'
-import OrderProgressPanel from '~/domains/me/ui/order-shop/order-progress.vue'
+import OrderHeading from '~/domains/me/ui/order-shop/order-heading.vue'
+import OrderPackagesOverview from '~/domains/me/ui/order-shop/order-packages-overview.vue'
+import OrderPackageCard from '~/domains/me/ui/order-shop/order-package-card.vue'
+import OrderAwaitingItemsCard from '~/domains/me/ui/order-shop/order-awaiting-items-card.vue'
+import OrderSummaryCard from '~/domains/me/ui/order-shop/order-summary-card.vue'
+import OrderPaymentCard from '~/domains/me/ui/order-shop/order-payment-card.vue'
+import {
+  buildAwaitingShipmentLines,
+  buildOrderPackages,
+} from '~/domains/me/ui/order-shop/order-detail-presentation'
 import { useLookupGuestOrders } from '~/domains/checkout/queries/guest-orders.query'
 import { routes } from '~/shared/navigation/routes'
 
@@ -38,7 +44,6 @@ const lookupParams = computed(() => ({
 
 const {
   data,
-  error,
   isLoading,
   refetch,
 } = useLookupGuestOrders(lookupParams, {
@@ -51,9 +56,16 @@ const {
 
 const orderShops = computed(() => data.value?.order_shops ?? [])
 
-const isBackendWakingUp = computed(() => (
-  !!error.value && isBackendWakeUpError(error.value)
-))
+/** One view model per order so packages and awaiting lines are derived once. */
+const orderViews = computed(() => orderShops.value.map((orderShop) => {
+  const packages = buildOrderPackages(orderShop).packages
+
+  return {
+    orderShop,
+    packages,
+    awaitingLines: buildAwaitingShipmentLines(orderShop),
+  }
+}))
 
 onMounted(async () => {
   if (
@@ -144,52 +156,56 @@ async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zi
       </UForm>
     </UCard>
 
-    <div
+    <Empty
       v-if="isLoading"
-      class="grid h-[40vh] w-full place-content-center text-center"
-    >
-      <div class="flex flex-col items-center justify-center space-y-4">
-        <LoadingSvg :child-class="'!w-12 !h-12'" />
-        <p
-          v-if="hasDirectLookup"
-          class="text-sm text-text-subtle"
-        >
-          Loading your order details.
-        </p>
-      </div>
-    </div>
-    <div
-      v-else-if="isBackendWakingUp"
-      class="grid h-[40vh] w-full place-content-center text-center"
-    >
-      <div class="space-y-3">
-        <LoadingSvg :child-class="'!w-12 !h-12'" />
-        <p class="text-sm text-text-subtle">
-          Just a moment while we load your orders. This can take a little longer than usual.
-        </p>
-      </div>
-    </div>
+      loading
+      variant="naked"
+      size="lg"
+      class="min-h-[40vh]"
+      title="Loading your order details"
+    />
     <div v-else-if="orderShops.length > 0">
       <div
-        v-for="orderShop in orderShops"
-        :key="orderShop.id"
+        v-for="view in orderViews"
+        :key="view.orderShop.id"
         class="space-y-6"
       >
-        <OrderProgressPanel :order-shop="orderShop" />
+        <OrderHeading :order-shop="view.orderShop" />
 
-        <ShopItem
-          :order-shop="orderShop"
-          :allow-post-purchase-actions="false"
-          :show-detail-link="false"
-          fulfillment-display="detail"
-        />
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
+          <div class="space-y-6 lg:col-span-9">
+            <OrderPackagesOverview :order-shop="view.orderShop" />
+
+            <OrderPackageCard
+              v-for="pkg in view.packages"
+              :key="pkg.id"
+              :order-package="pkg"
+              :show-package-index="view.packages.length > 1"
+              :show-stages="view.packages.length > 1"
+            />
+
+            <OrderAwaitingItemsCard
+              v-if="view.awaitingLines.length"
+              :lines="view.awaitingLines"
+            />
+          </div>
+
+          <div class="space-y-4 lg:col-span-3">
+            <OrderSummaryCard :order-shop="view.orderShop" />
+
+            <OrderPaymentCard :order-shop="view.orderShop" />
+          </div>
+        </div>
       </div>
     </div>
-    <div
+    <Empty
       v-else-if="route.query.token || route.query.session_id || route.query.order_id || route.query.order_ids"
-      class="mx-auto max-w-2xl text-text-subtle"
-    >
-      No guest orders matched that lookup.
-    </div>
+      class="mx-auto max-w-2xl"
+      variant="outline"
+      size="lg"
+      icon="search"
+      title="No guest orders found"
+      description="We couldn't match that email, order number, and ZIP / postal code. Check the details and try again."
+    />
   </div>
 </template>

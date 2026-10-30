@@ -29,22 +29,6 @@ const aggregateStatusLabel: Record<FulfillmentAggregateStatuses, string> = {
   [FulfillmentAggregateStatuses.IN_TRANSIT]: 'Shipped',
 }
 
-/**
- * Buyer-safe summary line. It is rendered from the server-provided aggregate
- * status only, never from prepared capacity or derived delivery dates.
- */
-const aggregateStatusSecondary: Record<FulfillmentAggregateStatuses, string> = {
-  [FulfillmentAggregateStatuses.UNFULFILLED]: 'We are preparing your order',
-  [FulfillmentAggregateStatuses.PREPARED]: 'We are preparing your order',
-  [FulfillmentAggregateStatuses.PARTIALLY_SHIPPED]: 'Some items are on the way',
-  [FulfillmentAggregateStatuses.SHIPPED]: 'All items are on the way',
-  [FulfillmentAggregateStatuses.PARTIALLY_DELIVERED]: 'Some items have arrived',
-  [FulfillmentAggregateStatuses.DELIVERED]: 'Everything has arrived',
-  [FulfillmentAggregateStatuses.CANCELED]: 'This order was canceled',
-  [FulfillmentAggregateStatuses.DISPATCHED]: 'All items are on the way',
-  [FulfillmentAggregateStatuses.IN_TRANSIT]: 'All items are on the way',
-}
-
 const shipmentStatusLabel: Record<ShipmentStatuses, string> = {
   [ShipmentStatuses.PREPARED]: 'Prepared',
   [ShipmentStatuses.DISPATCHED]: 'Dispatched',
@@ -153,9 +137,6 @@ const visibleShipments = computed(() => fulfillment.value.groups.flatMap(group =
   <div>
     <div class="text-2xl font-medium">
       {{ aggregateStatusLabel[fulfillment.status] }}
-    </div>
-    <div class="text-text-muted">
-      {{ aggregateStatusSecondary[fulfillment.status] }}
     </div>
 
     <div

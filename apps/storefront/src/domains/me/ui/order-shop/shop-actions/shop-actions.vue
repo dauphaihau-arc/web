@@ -12,9 +12,11 @@ const props = withDefaults(defineProps<{
   orderShop: ElementType<GetOrderShopsResponse['order_shops']>
   showViewOrderLink?: boolean
   showReviewCta?: boolean
+  orientation?: 'stack' | 'inline'
 }>(), {
   showViewOrderLink: true,
   showReviewCta: false,
+  orientation: 'stack',
 })
 
 const dialog = useModal()
@@ -64,10 +66,14 @@ function openReviewDialog() {
 
 <template>
   <div>
-    <div class="mt-4 flex flex-col gap-4">
+    <div
+      :class="props.orientation === 'inline'
+        ? 'flex flex-wrap items-center justify-end gap-2'
+        : 'mt-4 flex flex-col gap-4'"
+    >
       <UButton
         v-if="props.showViewOrderLink"
-        block
+        :block="props.orientation === 'stack'"
         size="md"
         color="gray"
         :to="routes.orderDetail(props.orderShop.id)"
@@ -76,14 +82,14 @@ function openReviewDialog() {
       </UButton>
       <UButton
         v-if="canWriteReview"
-        block
+        :block="props.orientation === 'stack'"
         size="md"
         @click="openReviewDialog"
       >
         {{ reviewButtonLabel }}
       </UButton>
       <UButton
-        block
+        :block="props.orientation === 'stack'"
         size="md"
         color="gray"
         @click="openSupportDialog"
@@ -92,7 +98,7 @@ function openReviewDialog() {
       </UButton>
       <UButton
         v-if="canCancelOrder"
-        block
+        :block="props.orientation === 'stack'"
         size="md"
         color="gray"
         @click="openCancelDialog"

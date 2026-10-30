@@ -94,7 +94,7 @@ const emptyState = {
       <div class="text-right text-text-subtle">
         <div>{{ formatMinorCurrency(row.unitPriceMinor, row.currency) }}</div>
         <div
-          v-if="row.originalUnitPriceMinor"
+          v-if="row.originalUnitPriceMinor != null && row.originalUnitPriceMinor > row.unitPriceMinor"
           class="text-sm text-text-muted"
         >
           <span class="line-through">

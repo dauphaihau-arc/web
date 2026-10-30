@@ -27,9 +27,13 @@ const ratingOptions: ReadonlyArray<{
   { value: 5, label: 'Excellent', icon: 'ratingExcellent' },
 ]
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   orderShop: OrderShop
-}>()
+  /** Restricts the reviewable item picker, e.g. to the items of one package. */
+  orderItemIds?: string[]
+}>(), {
+  orderItemIds: undefined,
+})
 
 const dialog = useModal()
 const toast = useToast()
@@ -37,7 +41,13 @@ const runtimeConfig = useRuntimeConfig()
 const formRef = ref()
 const isUploadingImages = ref(false)
 
-const reviewableProducts = computed(() => props.orderShop.products)
+const reviewableProducts = computed(() => {
+  const orderItemIds = props.orderItemIds
+
+  return orderItemIds
+    ? props.orderShop.products.filter(product => orderItemIds.includes(product.id))
+    : props.orderShop.products
+})
 
 const state = reactive<ReviewFormState>({
   orderItemId: reviewableProducts.value.find(product => !product.my_review)?.id ?? reviewableProducts.value[0]?.id ?? '',

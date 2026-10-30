@@ -266,14 +266,13 @@ describe('shop shipping info', () => {
     const text = partiallyShipped.text();
 
     expect(text).toContain('Partially shipped');
-    expect(text).toContain('Some items are on the way');
     expect(text).not.toContain('Shipping');
     expect(text).not.toContain('Carrier: DHL');
     expect(text).not.toContain('Tracking: TRACK-1');
     expect(text).not.toContain('Shipment 1');
   });
 
-  it('shows the server aggregate with buyer-safe copy in detail mode', () => {
+  it('shows the server aggregate in detail mode', () => {
     const partiallyDelivered = render(buildOrderShop({
       status: FulfillmentAggregateStatuses.PARTIALLY_DELIVERED,
       groups: [
@@ -285,7 +284,7 @@ describe('shop shipping info', () => {
       ],
     }));
     expect(partiallyDelivered.text()).toContain('Partially delivered');
-    expect(partiallyDelivered.text()).toContain('Some items have arrived');
+    expect(partiallyDelivered.text()).not.toContain('Some items have arrived');
   });
 
   it('falls back to Legacy shipping only when there is no group and legacy facts exist', () => {

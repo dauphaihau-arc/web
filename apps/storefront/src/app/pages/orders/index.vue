@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
-import ShopItem from '~/domains/me/ui/order-shop/shop-item.vue'
+import ShopItem from '~/domains/me/ui/order-shop/shop-item/shop-item.vue'
 import type { MyOrderListState } from '~/domains/me/api/order/contracts/order.contract'
 import { routes } from '~/shared/navigation/routes'
 import { useGetOrderShops } from '~/domains/me/queries/orders/order-shops.query'
@@ -148,7 +148,11 @@ watch(
 
 <template>
   <div class="mt-8">
-    <div class="mb-6 flex flex-col gap-4">
+    <h1 class="mb-4 ml-1 text-xl md:mb-6 md:text-2xl">
+      Products you’ve ordered.
+    </h1>
+
+    <div class="mb-10 flex flex-col gap-4">
       <div class="-mx-4 min-w-0 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0 lg:overflow-visible lg:pb-0">
         <UTabs
           :items="filters"
@@ -174,9 +178,6 @@ watch(
       <LoadingSvg :child-class="'!w-12 !h-12'" />
     </div>
     <div v-else-if="dataGetOrderShops?.order_shops && dataGetOrderShops.order_shops.length > 0">
-      <h1 class="mb-4 ml-1 text-xl md:mb-6 md:text-2xl">
-        Products you’ve ordered.
-      </h1>
       <div class="space-y-10 md:ml-2 md:space-y-12">
         <div
           v-for="orderShop in dataGetOrderShops.order_shops"

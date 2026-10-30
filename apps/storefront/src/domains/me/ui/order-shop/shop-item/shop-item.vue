@@ -3,9 +3,9 @@ import dayjs from 'dayjs'
 import type { ElementType } from '@arc/contracts/utils'
 import { formatMinorCurrency } from '@arc/utils'
 import NoteAndPromoCodes from './note-and-promo-codes.vue'
-import OrderItemsTable from './order-items-table.vue'
+import OrderItemsTable from '../order-items-table.vue'
 import PaymentAndSummaryOrder from './payment-and-summary-order.vue'
-import ShopActions from './shop-actions/shop-actions.vue'
+import ShopActions from '../shop-actions/shop-actions.vue'
 import ShopShippingInfo from './shop-shipping-info.vue'
 import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract'
 import { routes } from '~/shared/navigation/routes'
@@ -20,11 +20,19 @@ const props = withDefaults(defineProps<{
   fulfillmentDisplay?: 'summary' | 'detail'
   showDetailLink?: boolean
   showReviewCta?: boolean
+  showFulfillment?: boolean
+  showOrderSummaryStrip?: boolean
+  title?: string
+  ui?: { divide?: string }
 }>(), {
   allowPostPurchaseActions: true,
   fulfillmentDisplay: 'summary',
   showDetailLink: true,
   showReviewCta: true,
+  showFulfillment: true,
+  showOrderSummaryStrip: true,
+  title: undefined,
+  ui: undefined,
 })
 
 const orderedAt = computed(() => {
@@ -84,15 +92,31 @@ const detailLink = computed(() =>
 
 <template>
   <div class="mb-16 grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
-    <div class="lg:col-span-8">
-      <UCard class="relative md:pt-10">
+    <div :class="props.showFulfillment ? 'lg:col-span-8' : 'lg:col-span-12'">
+      <UCard
+        class="relative"
+        :class="props.showOrderSummaryStrip && 'md:pt-10'"
+        :ui="props.ui"
+      >
+        <template
+          v-if="props.title"
+          #header
+        >
+          <div class="font-medium">
+            {{ props.title }}
+          </div>
+        </template>
+
         <NuxtLink
           v-if="detailLink"
           :to="detailLink"
           class="absolute inset-0 z-0 lg:hidden"
           :aria-label="`View order ${displayOrderShop.order_number}`"
         />
-        <div class="mb-4 flex flex-col gap-1 rounded-md border border-border-subtle bg-surface-muted px-4 py-3 text-text-muted shadow-border md:absolute md:-left-1 md:-top-4 md:mb-0 md:w-[101%] md:flex-row md:items-center md:justify-between md:gap-0">
+        <div
+          v-if="props.showOrderSummaryStrip"
+          class="mb-4 flex flex-col gap-1 rounded-md border border-border-subtle bg-surface-muted px-4 py-3 text-text-muted shadow-border md:absolute md:-left-1 md:-top-4 md:mb-0 md:w-[101%] md:flex-row md:items-center md:justify-between md:gap-0"
+        >
           <div>
             <div class="text-xs font-medium uppercase tracking-[0.14em] text-text-muted">
               {{ displayOrderShop.order_number }}
@@ -133,6 +157,7 @@ const detailLink = computed(() =>
     </div>
 
     <div
+      v-if="props.showFulfillment"
       class="w-full lg:col-span-3 lg:-mt-4 lg:w-5/6"
       :class="detailLink && 'hidden lg:block'"
     >
