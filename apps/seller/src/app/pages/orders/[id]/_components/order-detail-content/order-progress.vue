@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import Timeline from '@arc/ui/patterns/timeline.vue'
-import { routes } from '~/shared/navigation/routes'
+import ProgressSteps from '@arc/ui/patterns/progress-steps.vue'
+import type { ProgressStep, ProgressStepState } from '@arc/ui/patterns/progress-steps.vue'
+import { routePaths } from '~/shared/navigation/routes'
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail'
 import { useShopGetOrderPayout } from '~/domains/shop/queries/order/order-payout.query'
 import { buildOrderProgressSteps } from './order-progress.presentation'
@@ -34,6 +35,28 @@ const { data: orderPayout } = useShopGetOrderPayout(
 )
 
 const steps = computed(() => buildOrderProgressSteps(props.order, orderPayout.value))
+
+/** Progress states carried over from `buildOrderProgressSteps`. */
+const STATE_MAP: Record<string, ProgressStepState> = {
+  completed: 'completed',
+  active: 'current',
+  pending: 'upcoming',
+  failed: 'failed',
+}
+
+const progressSteps = computed<ProgressStep[]>(() =>
+  steps.value.map(item => ({
+    key: item.key ?? item.title,
+    label: item.title,
+    date: item.date,
+    description: item.description,
+    state: STATE_MAP[item.state ?? 'pending'] ?? 'upcoming',
+    /** The payout step sends the seller to Finance to add a bank account. */
+    href: item.key === 'payout' && item.description === 'Add bank account'
+      ? routePaths.finances
+      : undefined,
+  })),
+)
 </script>
 
 <template>
@@ -42,35 +65,10 @@ const steps = computed(() => buildOrderProgressSteps(props.order, orderPayout.va
       Order progress
     </div>
 
-    <Timeline
+    <ProgressSteps
       class="mt-6"
-      :items="steps"
-      orientation="horizontal"
+      :steps="progressSteps"
       aria-label="Seller order progress"
-    >
-      <template #title="{ item }">
-        <span :class="item.key === 'payout' ? 'font-normal' : undefined">{{ item.title }}</span>
-      </template>
-      <template #description="{ item, state }">
-        <NuxtLink
-          v-if="item.key === 'payout' && item.description === 'Add bank account'"
-          :to="routes.finances()"
-          class="mt-1 inline-block text-xs text-text-muted underline"
-        >
-          {{ item.description }}
-        </NuxtLink>
-        <div
-          v-else-if="item.description"
-          class="mt-1 text-xs"
-          :class="{
-            'text-state-warning-text': state === 'active' && item.key !== 'payout',
-            'text-state-danger-text': state === 'failed',
-            'text-text-muted': state !== 'failed' && (state !== 'active' || item.key === 'payout'),
-          }"
-        >
-          {{ item.description }}
-        </div>
-      </template>
-    </Timeline>
+    />
   </UCard>
 </template>

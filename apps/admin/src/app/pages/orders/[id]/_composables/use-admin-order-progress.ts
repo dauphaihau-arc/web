@@ -284,7 +284,7 @@ export function useAdminOrderProgress(
       },
       {
         key: 'paid',
-        title: 'Payment / order status',
+        title: 'Payment',
         state: paymentState,
         icon: 'payment',
         date: formatOrderStatusLabel(value.status),

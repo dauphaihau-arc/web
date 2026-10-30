@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import type { ProgressStep, ProgressStepState } from '@arc/ui/patterns/progress-steps.vue'
+import ProgressSteps from '@arc/ui/patterns/progress-steps.vue'
+import { computed } from 'vue'
 import type { AdminOrderDetailOrder } from '~/domains/orders/api/contracts/admin-orders.contract'
-import Timeline from '@arc/ui/patterns/timeline.vue'
 import { useAdminOrderFinancialBreakdown } from '~/domains/orders/queries/financial-breakdown.query'
 import { useAdminOrderProgress } from '../_composables/use-admin-order-progress'
 
@@ -16,6 +18,29 @@ const props = defineProps<{
 const breakdownQuery = useAdminOrderFinancialBreakdown(() => props.order.id)
 
 const steps = useAdminOrderProgress(() => props.order, breakdownQuery.data)
+
+function toProgressState(state?: string): ProgressStepState {
+  switch (state) {
+    case 'completed':
+      return 'completed'
+    case 'active':
+      return 'current'
+    case 'failed':
+      return 'failed'
+    default:
+      return 'upcoming'
+  }
+}
+
+const progressSteps = computed<ProgressStep[]>(() =>
+  steps.value.map((step, index) => ({
+    key: step.key ?? String(index),
+    label: step.title,
+    date: step.date,
+    description: step.description,
+    state: toProgressState(step.state),
+  })),
+)
 </script>
 
 <template>
@@ -24,28 +49,10 @@ const steps = useAdminOrderProgress(() => props.order, breakdownQuery.data)
       Order progress
     </div>
 
-    <Timeline
+    <ProgressSteps
       class="mt-5"
-      :items="steps"
-      orientation="horizontal"
+      :steps="progressSteps"
       aria-label="Order progress"
-    >
-      <template #title="{ item }">
-        <span :class="item.key === 'payout' ? 'font-normal' : undefined">{{ item.title }}</span>
-      </template>
-      <template #description="{ item, state }">
-        <div
-          v-if="item.description"
-          class="mt-1 text-xs"
-          :class="{
-            'text-state-warning-text': state === 'active' && item.key !== 'payout',
-            'text-state-danger-text': state === 'failed',
-            'text-text-muted': state !== 'failed' && (state !== 'active' || item.key === 'payout'),
-          }"
-        >
-          {{ item.description }}
-        </div>
-      </template>
-    </Timeline>
+    />
   </UCard>
 </template>
