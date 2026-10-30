@@ -33,8 +33,6 @@ const actions = computed(() => [
     id: 'confirm-refund',
     label: props.isRetry ? 'Retry refund' : 'Confirm refund',
     variant: 'danger' as const,
-    shortcut: 'meta_enter' as const,
-    allowWhileInputFocused: true,
     loading: isPending,
     run: confirmRefund,
   },

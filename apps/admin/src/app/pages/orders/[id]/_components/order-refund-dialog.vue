@@ -58,8 +58,6 @@ const actions = computed(() => [
     id: 'update-refund',
     label: 'Update refund',
     variant: 'danger' as const,
-    shortcut: 'meta_enter' as const,
-    allowWhileInputFocused: true,
     loading: isPending,
     disabled: isPending,
     run: confirm,
