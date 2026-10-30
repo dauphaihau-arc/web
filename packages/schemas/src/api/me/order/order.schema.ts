@@ -16,7 +16,7 @@ export const myOrderListStateSchema = z.enum([
 export const paymentSchema = z.object({
   type: z.string(),
   card_funding: z.string().optional(),
-  card_last4: z.number().optional(),
+  card_last4: z.union([z.string(), z.number()]).optional(),
   card_brand: z.string().optional(),
   card_exp_month: z.number().optional(),
   card_exp_year: z.number().optional(),
