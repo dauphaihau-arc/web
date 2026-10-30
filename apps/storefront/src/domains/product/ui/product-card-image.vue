@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { CSSProperties } from 'vue'
+import ProductImage from '@arc/ui/primitives/product-image.vue'
 
 // `card_1x1` storage variant box: 600x600, `fit: cover`.
 const CARD_VARIANT_WIDTH = 600
@@ -27,30 +28,28 @@ const props = withDefaults(defineProps<{
   height: CARD_VARIANT_HEIGHT,
   priority: false,
 })
+
+const frameClasses = computed(() => [
+  props.stretch ? '' : 'w-fit shrink-0 self-start',
+  props.frameClass,
+].filter(Boolean).join(' '))
+
+const imageClasses = computed(() => [
+  props.hoverScale ? 'transition-transform duration-300 group-hover:scale-[1.03]' : '',
+  props.imageClass,
+].filter(Boolean).join(' '))
 </script>
 
 <template>
-  <div
-    :class="[
-      'relative overflow-hidden rounded-lg bg-media-product ring-1 ring-border-subtle',
-      props.stretch ? '' : 'w-fit shrink-0 self-start',
-      props.frameClass,
-    ]"
-    :style="props.frameStyle"
-  >
-    <NuxtImg
-      v-if="props.src"
-      :src="props.src"
-      densities="1"
-      :width="props.width"
-      :height="props.height"
-      :loading="props.priority ? 'eager' : 'lazy'"
-      :fetchpriority="props.priority ? 'high' : undefined"
-      :class="[
-        'absolute inset-0 block size-full object-cover object-center',
-        props.hoverScale ? 'transition-transform duration-300 group-hover:scale-[1.03]' : '',
-        props.imageClass,
-      ]"
-    />
-  </div>
+  <ProductImage
+    :src="props.src"
+    size="auto"
+    rounded="lg"
+    :frame-class="frameClasses"
+    :frame-style="props.frameStyle"
+    :image-class="imageClasses"
+    :width="props.width"
+    :height="props.height"
+    :priority="props.priority"
+  />
 </template>

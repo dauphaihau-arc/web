@@ -2,6 +2,7 @@
 import { formatMinorCurrency } from '@arc/utils'
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail'
 import DataTable from '@arc/ui/patterns/data-table/data-table.vue'
+import ProductImage from '@arc/ui/primitives/product-image.vue'
 
 const props = defineProps<{
   order: ShopOrder
@@ -82,12 +83,11 @@ const netEarningsMinor = computed(
     >
       <template #items-data="{ row }">
         <div class="flex min-w-0 items-start gap-4">
-          <NuxtImg
-            v-if="row.imageUrl"
+          <ProductImage
+            size="lg"
+            rounded="xl"
             :src="row.imageUrl"
-            width="72"
-            height="72"
-            class="rounded-xl border border-border-subtle object-cover"
+            :alt="row.title"
           />
           <div class="min-w-0 space-y-1">
             <div

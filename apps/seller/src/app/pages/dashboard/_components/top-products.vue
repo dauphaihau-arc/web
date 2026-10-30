@@ -2,6 +2,7 @@
 import { formatMinorCurrency } from '@arc/utils'
 import AppIcon from '@arc/ui/primitives/app-icon.vue'
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
+import ProductImage from '@arc/ui/primitives/product-image.vue'
 import DashboardPanel from './dashboard-panel.vue'
 import type { ShopDashboardResponse } from '~/domains/shop/api/dashboard/contracts/dashboard.contract'
 import { routes } from '~/shared/navigation/routes'
@@ -75,23 +76,13 @@ const tableUi = {
           :to="routes.productDetail(row.id)"
           class="flex max-w-[260px] items-center gap-2"
         >
-          <NuxtImg
-            v-if="row.imageUrl"
+          <ProductImage
+            size="sm"
+            rounded="md"
+            frame-class="shrink-0"
             :src="row.imageUrl"
             :alt="row.title"
-            width="50"
-            height="50"
-            class="size-[50px] shrink-0 rounded object-cover"
           />
-          <div
-            v-else
-            class="grid size-[50px] shrink-0 place-items-center rounded bg-surface-muted text-text-muted"
-          >
-            <AppIcon
-              name="i-heroicons-cube-20-solid"
-              size="sm"
-            />
-          </div>
           <div class="truncate text-sm font-medium text-text-strong">
             {{ row.title }}
           </div>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import DataTable from '@arc/ui/patterns/data-table/data-table.vue'
+import ProductImage from '@arc/ui/primitives/product-image.vue'
 import type { AdminOrderDetailOrder } from '~/domains/orders/api/contracts/admin-orders.contract'
 import { formatOrderAmount } from '~/domains/orders/utils/order-presentation'
 
@@ -68,21 +69,13 @@ const rows = computed<OrderSummaryRow[]>(() =>
     >
       <template #items-data="{ row }">
         <div class="flex min-w-0 items-start gap-4">
-          <div class="bg-elevated overflow-hidden rounded-xl border border-border-subtle">
-            <NuxtImg
-              v-if="row.imageUrl"
-              :src="row.imageUrl"
-              width="72"
-              height="72"
-              class="size-[72px] object-cover"
-            />
-            <div
-              v-else
-              class="grid size-[72px] place-content-center text-xs text-text-muted"
-            >
-              N/A
-            </div>
-          </div>
+          <ProductImage
+            :src="row.imageUrl"
+            :alt="row.title"
+            size="lg"
+            rounded="xl"
+            class="shrink-0"
+          />
           <div class="min-w-0 space-y-1">
             <div
               class="truncate font-medium text-text-strong"

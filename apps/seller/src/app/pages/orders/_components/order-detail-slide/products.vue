@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { formatMinorCurrency } from '@arc/utils'
+import ProductImage from '@arc/ui/primitives/product-image.vue'
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail'
 
 const props = defineProps<{
@@ -28,21 +29,12 @@ function formatAmountWithShortLabel(amountMinor: number) {
         :key="product.id"
         class="grid grid-cols-[64px_minmax(0,1fr)_auto] items-start gap-4"
       >
-        <div class="bg-elevated overflow-hidden rounded-xl border border-border-subtle">
-          <NuxtImg
-            v-if="product.image_url"
-            :src="product.image_url"
-            width="64"
-            height="64"
-            class="size-16 object-cover"
-          />
-          <div
-            v-else
-            class="grid size-16 place-content-center text-xs text-text-muted"
-          >
-            N/A
-          </div>
-        </div>
+        <ProductImage
+          size="md"
+          rounded="xl"
+          :src="product.image_url"
+          :alt="product.title"
+        />
 
         <div class="min-w-0 space-y-1">
           <div class="truncate font-medium text-text-strong">

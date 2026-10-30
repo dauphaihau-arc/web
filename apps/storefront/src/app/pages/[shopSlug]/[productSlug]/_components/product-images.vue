@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import ProductImage from '@arc/ui/primitives/product-image.vue'
 import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract'
 import { resolveProductImageUrl } from '~/domains/product/utils/product-image-url'
 
@@ -151,7 +152,7 @@ watch(() => carousel.value?.page, (page) => {
     </div>
   </div>
 
-  <div v-else>
+  <div v-else-if="props.images.length > 0">
     <div class="hidden gap-6 lg:flex">
       <div
         class="scrollbar-hidden scroll-fade flex h-[575px] w-fit flex-col gap-3 overflow-y-auto p-1"
@@ -238,6 +239,13 @@ watch(() => carousel.value?.page, (page) => {
       </UCarousel>
     </div>
   </div>
+
+  <ProductImage
+    v-else
+    size="auto"
+    fit="contain"
+    frame-class="aspect-[1/1] w-full max-w-[575px]"
+  />
 </template>
 
 <style scoped lang="postcss">

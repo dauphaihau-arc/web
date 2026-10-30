@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ProductImage from '@arc/ui/primitives/product-image.vue'
 import { formatMinorCurrency } from '@arc/utils'
 import type { OrderPackageLine } from './order-detail-presentation'
 
@@ -16,13 +17,12 @@ defineProps<{
       :key="line.id"
       class="flex flex-wrap items-start gap-x-3 gap-y-2 sm:flex-nowrap sm:gap-4"
     >
-      <NuxtImg
-        v-if="line.imageUrl"
+      <ProductImage
         :src="line.imageUrl"
-        densities="1"
-        width="72"
-        height="72"
-        class="size-12 shrink-0 rounded-xl border border-border-subtle object-cover md:size-[72px]"
+        :alt="line.title"
+        size="auto"
+        rounded="xl"
+        frame-class="size-12 shrink-0 md:size-[72px]"
       />
 
       <div class="min-w-0 flex-1">
@@ -42,10 +42,7 @@ defineProps<{
         </div>
       </div>
 
-      <div
-        class="w-full font-medium text-text-strong sm:w-auto sm:pl-0"
-        :class="line.imageUrl ? 'pl-[3.75rem]' : ''"
-      >
+      <div class="w-full pl-[3.75rem] font-medium text-text-strong sm:w-auto sm:pl-0">
         {{ formatMinorCurrency(line.amountMinor, line.currency) }}
       </div>
     </li>

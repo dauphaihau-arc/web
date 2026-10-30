@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { formatMinorCurrency } from '@arc/utils'
 import DataTable from '@arc/ui/patterns/data-table/data-table.vue'
+import ProductImage from '@arc/ui/primitives/product-image.vue'
 
 /**
  * Line-item table for purchased or about-to-be-purchased quantities: the
@@ -54,13 +55,12 @@ const emptyState = {
   >
     <template #items-data="{ row }">
       <div class="flex min-w-0 items-start gap-4">
-        <NuxtImg
-          v-if="row.imageUrl"
+        <ProductImage
           :src="row.imageUrl"
-          densities="1"
-          width="72"
-          height="72"
-          class="size-12 shrink-0 rounded-xl border border-border-subtle object-cover md:size-[72px]"
+          :alt="row.title"
+          size="auto"
+          rounded="xl"
+          frame-class="size-12 shrink-0 md:size-[72px]"
         />
         <div class="min-w-0 space-y-1 whitespace-normal">
           <div class="font-medium text-text-strong">

@@ -50,6 +50,7 @@ export const ICON_NAME_BY_ALIAS = {
   ticket: 'lucide:ticket',
   ticketPercent: 'lucide:ticket-percent',
   camera: 'material-symbols:android-camera',
+  image: 'lucide:image',
   message: 'tabler:message',
   shipping: 'lucide:plane',
   product: 'tabler:cube',
@@ -197,6 +198,7 @@ export const APP_ICON_CLIENT_BUNDLE_ICONS = [
   'lucide:cloud-off',
   'lucide:monitor',
   'lucide:shield-check',
+  'lucide:image',
 ] as const
 
 export const APPROVED_ICON_PREFIXES = [

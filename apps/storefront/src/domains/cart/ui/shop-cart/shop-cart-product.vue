@@ -2,6 +2,7 @@
 import ShopCartQuantityUi from './shop-cart-quantity-ui.vue'
 import ShopCartProductOptions from './shop-cart-product-options/shop-cart-product-options.vue'
 import { formatMinorCurrency } from '@arc/utils'
+import ProductImage from '@arc/ui/primitives/product-image.vue'
 import type { CartProductItem } from '~/domains/cart/api/cart.shared'
 
 const props = withDefaults(defineProps<{
@@ -43,15 +44,15 @@ const compareAtAmount = computed(() =>
         <slot name="selection" />
       </div>
 
-      <div class="size-24 shrink-0 cursor-pointer overflow-hidden rounded-lg bg-media-product ring-1 ring-border-subtle md:size-[180px]">
-        <NuxtImg
-          :src="props.productCart.product.image_url"
-          densities="1"
-          width="180"
-          height="180"
-          class="size-full object-cover object-center"
-        />
-      </div>
+      <ProductImage
+        :src="props.productCart.product.image_url"
+        :alt="props.productCart.product.title"
+        size="auto"
+        rounded="lg"
+        :width="180"
+        :height="180"
+        frame-class="size-24 shrink-0 cursor-pointer md:size-[180px]"
+      />
     </div>
 
     <!--

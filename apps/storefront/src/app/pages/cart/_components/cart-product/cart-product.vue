@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { formatMinorCurrency } from '@arc/utils'
+import ProductImage from '@arc/ui/primitives/product-image.vue'
 import CartCheckboxOrderProduct from '~/domains/cart/ui/shop-cart/checkbox-order-product.vue'
 import CartShopQuantity from '~/domains/cart/ui/shop-cart/cart-shop-quantity.vue'
 import CartVariantsProduct from './variants-product.vue'
@@ -91,18 +92,14 @@ const compareAtAmount = computed(() =>
       />
     </div>
 
-    <div
-      class="size-[180px] shrink-0 cursor-pointer overflow-hidden rounded-lg bg-media-product ring-1 ring-border-subtle"
+    <ProductImage
+      :src="props.productCart?.product?.image_url"
+      :alt="props.productCart?.product?.title"
+      size="2xl"
+      rounded="lg"
+      frame-class="shrink-0 cursor-pointer"
       @click="goToDetailProduct"
-    >
-      <NuxtImg
-        :src="props.productCart?.product?.image_url"
-        densities="1"
-        width="180"
-        height="180"
-        class="size-full object-cover object-center"
-      />
-    </div>
+    />
 
     <div class="flex w-full justify-between">
       <div class="w-3/5 space-y-3">
