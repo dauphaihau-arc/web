@@ -17,6 +17,13 @@ const props = defineProps<{
   order: ShopOrder
 }>()
 
+/** Dividerless card: the header sits close to the first group. */
+const cardUi = {
+  divide: 'divide-y-0',
+  header: { padding: 'px-4 pt-5 pb-0 sm:px-6 sm:pt-6 sm:pb-0' },
+  body: { padding: 'px-4 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-4' },
+}
+
 type FulfillmentGroup = ShopOrder['fulfillment']['groups'][number]
 type Shipment = FulfillmentGroup['shipments'][number]
 
@@ -25,15 +32,19 @@ type ShipmentTableRow = {
   carrier: string
   tracking: string
   items: string
+  date: string
+  origin: string
   shipment: Shipment
 }
 
 const columns = [
   { key: 'status', label: 'Status' },
+  { key: 'date', label: 'Date', class: 'w-32' },
+  { key: 'origin', label: 'Origin', class: 'w-24' },
   { key: 'carrier', label: 'Carrier', class: 'w-40' },
   { key: 'tracking', label: 'Tracking', class: 'w-48' },
   { key: 'items', label: 'Items', class: 'w-48' },
-  { key: 'actions', label: 'Actions', class: 'w-28' },
+  { key: 'actions', label: 'Actions', class: 'w-28 text-right' },
 ]
 
 const emptyState = {
@@ -61,6 +72,8 @@ function shipmentRows(group: FulfillmentGroup): ShipmentTableRow[] {
     items: shipment.items
       .map(item => `${productById.value.get(item.order_item_id)?.title ?? item.order_item_id} ×${item.quantity}`)
       .join(', '),
+    date: formatShipmentDate(shipmentStatusTimestamp(shipment)) ?? '—',
+    origin: shipment.origin_countries.join(', ') || '—',
     shipment,
   }))
 }
@@ -90,7 +103,7 @@ function openReconcileDialog() {
 </script>
 
 <template>
-  <UCard>
+  <UCard :ui="cardUi">
     <template #header>
       <div class="font-semibold">
         Shipments
@@ -152,22 +165,29 @@ function openReconcileDialog() {
           :empty-state="emptyState"
         >
           <template #status-data="{ row }">
-            <div class="space-y-1">
-              <StatusBadge
-                :color="shipmentStatusTone(row.shipment.status)"
-                class="capitalize"
-              >
-                {{ row.shipment.status.replaceAll('_', ' ') }}
-              </StatusBadge>
-              <div class="text-xs text-text-muted">
-                {{ formatShipmentDate(shipmentStatusTimestamp(row.shipment)) }}
-              </div>
-              <div
-                v-if="row.shipment.origin_countries.length"
-                class="text-xs text-text-muted"
-              >
-                From: {{ row.shipment.origin_countries.join(', ') }}
-              </div>
+            <StatusBadge
+              :color="shipmentStatusTone(row.shipment.status)"
+              class="capitalize"
+            >
+              {{ row.shipment.status.replaceAll('_', ' ') }}
+            </StatusBadge>
+          </template>
+
+          <template #date-data="{ row }">
+            <div
+              class="truncate text-xs text-text-muted"
+              :title="row.date"
+            >
+              {{ row.date }}
+            </div>
+          </template>
+
+          <template #origin-data="{ row }">
+            <div
+              class="truncate text-xs text-text-muted"
+              :title="row.origin"
+            >
+              {{ row.origin }}
             </div>
           </template>
 

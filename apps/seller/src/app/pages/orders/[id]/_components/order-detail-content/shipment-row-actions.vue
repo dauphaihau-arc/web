@@ -63,7 +63,8 @@ const menuItems = computed<DropdownItem[][]>(() => {
     upkeep.push({
       label: 'Void shipment',
       icon: 'lucide:circle-x',
-      class: 'text-red-600',
+      labelClass: 'text-red-600',
+      iconClass: 'text-red-500',
       click: () => dialog.open(VoidShipmentDialog, {
         order: props.order,
         shipment: props.shipment,
@@ -116,9 +117,9 @@ async function handleJourneyTransition(status: ShipmentJourneyStatuses) {
             v-if="item.icon"
             :name="item.icon"
             size="xs"
-            class="text-text-muted"
+            :class="item.iconClass ?? 'text-text-muted'"
           />
-          <span>{{ item.label }}</span>
+          <span :class="item.labelClass">{{ item.label }}</span>
         </div>
       </template>
 
