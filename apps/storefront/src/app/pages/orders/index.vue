@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
-import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
+import Empty from '@arc/ui/patterns/empty.vue'
 import ShopItem from '~/domains/me/ui/order-shop/shop-item/shop-item.vue'
 import type { MyOrderListState } from '~/domains/me/api/order/contracts/order.contract'
 import { routes } from '~/shared/navigation/routes'
@@ -92,7 +92,11 @@ const queryParams = computed(() => ({
 const {
   data: dataGetOrderShops,
   isPending: isPendingGetOrders,
+  isFetching: isFetchingGetOrders,
 } = useGetOrderShops(queryParams)
+
+const orderShops = computed(() => dataGetOrderShops.value?.order_shops ?? [])
+const isFiltering = computed(() => !!state.search.trim() || activeFilterLabel.value !== 'All Orders')
 
 function syncQuery(nextQuery: {
   search?: string
@@ -171,16 +175,23 @@ watch(
       />
     </div>
 
-    <div
+    <Empty
       v-if="isPendingGetOrders"
-      class="grid h-[80vh] w-full place-content-center"
-    >
-      <LoadingSvg :child-class="'!w-12 !h-12'" />
-    </div>
-    <div v-else-if="dataGetOrderShops?.order_shops && dataGetOrderShops.order_shops.length > 0">
-      <div class="space-y-10 md:ml-2 md:space-y-12">
+      loading
+      variant="naked"
+      size="lg"
+      class="min-h-[60vh]"
+      title="Loading orders"
+    />
+
+    <div v-else-if="orderShops.length > 0">
+      <div
+        class="space-y-10 transition-opacity md:ml-2 md:space-y-12"
+        :class="isFetchingGetOrders ? 'opacity-60' : 'opacity-100'"
+        :aria-busy="isFetchingGetOrders ? 'true' : undefined"
+      >
         <div
-          v-for="orderShop in dataGetOrderShops.order_shops"
+          v-for="orderShop in orderShops"
           :key="orderShop.id"
         >
           <ShopItem :order-shop="orderShop" />
@@ -188,13 +199,32 @@ watch(
       </div>
     </div>
 
-    <div
+    <Empty
+      v-else-if="isFiltering"
+      variant="naked"
+      size="lg"
+      icon="search"
+      title="No orders match this filter."
+      description="Try a different search term or pick another order status."
+      :actions="[{
+        label: 'Clear filters',
+        to: routes.orders(),
+        color: 'gray',
+      }]"
+    />
+
+    <Empty
       v-else
-      class="text-center"
-    >
-      <h3 class="text-xl text-text-strong md:text-3xl">
-        {{ state.search || activeFilterLabel !== 'All Orders' ? 'No orders match this filter.' : 'Your orders is empty.' }}
-      </h3>
-    </div>
+      variant="naked"
+      size="lg"
+      icon="orders"
+      title="Your orders is empty."
+      description="Orders you place will show up here."
+      :actions="[{
+        label: 'Browse shops',
+        to: routes.home(),
+        color: 'gray',
+      }]"
+    />
   </div>
 </template>

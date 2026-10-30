@@ -1,3 +1,4 @@
+import { keepPreviousData } from '@tanstack/vue-query';
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
 import { meCheckoutApi } from '~/domains/me/api/checkout/me-checkout.api';
 import { meOrdersApi } from '~/domains/me/api/order/me-orders.api';
@@ -13,6 +14,7 @@ export function useGetOrderShops(queryParams?: MaybeRefOrGetter<GetOrderShopsReq
     queryFn: () => {
       return meOrdersApi.getShops(toValue(queryParams));
     },
+    placeholderData: keepPreviousData,
     enabled: computed(() => !!toValue(queryParams)),
   });
 }
