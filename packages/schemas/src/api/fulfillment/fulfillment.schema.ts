@@ -30,6 +30,10 @@ export const fulfillmentShipmentSchema = z.object({
   group_id: z.string(),
   status: z.nativeEnum(ShipmentStatuses),
   carrier: z.string().optional(),
+  /** Display name resolved server-side from the carrier code. */
+  carrier_name: z.string().optional(),
+  /** Whether the carrier exposes tracking events to this platform. */
+  carrier_observable: z.boolean().optional(),
   tracking_number: z.string().optional(),
   shipment_note: z.string().optional(),
   origin_countries: z.array(z.string()),
@@ -112,3 +116,19 @@ export const reconcileOrderFulfillmentRequestSchema = z.object({
 export const fulfillmentMutationResponseSchema = z.object({
   fulfillment: orderFulfillmentSchema,
 })
+
+export const carrierSchema = z.object({
+  code: z.string(),
+  name: z.string(),
+  tracking_pattern: z.string().nullable().optional(),
+  tracking_hint: z.string().nullable().optional(),
+  observable: z.boolean(),
+  label_supported: z.boolean(),
+})
+
+export const carrierCatalogueResponseSchema = z.object({
+  carriers: z.array(carrierSchema),
+})
+
+export type Carrier = z.infer<typeof carrierSchema>
+export type CarrierCatalogueResponse = z.infer<typeof carrierCatalogueResponseSchema>

@@ -6,8 +6,10 @@ import {
   activeShipments,
   formatShipmentDate,
   remainingCapacityTotal,
+  shipmentCarrierName,
   shipmentStatusTimestamp,
   shipmentStatusTone,
+  shipmentTrackingUnverified,
 } from './shipments.presentation'
 import { useOrderShipmentState } from './use-order-shipment-state'
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail'
@@ -31,6 +33,7 @@ type ShipmentTableRow = {
   id: string
   carrier: string
   tracking: string
+  trackingUnverified: boolean
   items: string
   date: string
   origin: string
@@ -67,8 +70,9 @@ const productById = computed(() => new Map(
 function shipmentRows(group: FulfillmentGroup): ShipmentTableRow[] {
   return activeShipments(group).map(shipment => ({
     id: shipment.id,
-    carrier: shipment.carrier || '—',
+    carrier: shipmentCarrierName(shipment) || '—',
     tracking: shipment.tracking_number || '—',
+    trackingUnverified: shipmentTrackingUnverified(shipment),
     items: shipment.items
       .map(item => `${productById.value.get(item.order_item_id)?.title ?? item.order_item_id} ×${item.quantity}`)
       .join(', '),
@@ -203,6 +207,11 @@ function openReconcileDialog() {
               :title="row.tracking"
             >
               {{ row.tracking }}
+              <span
+                v-if="row.trackingUnverified"
+                class="ml-1 text-xs text-text-subtle"
+                title="This carrier does not expose tracking updates."
+              >Unverified</span>
             </div>
           </template>
 

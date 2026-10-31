@@ -120,6 +120,19 @@ export function clampShipmentQuantity(value: number | undefined, max: number): n
   return Math.max(0, Math.min(Math.floor(value ?? 0), max));
 }
 
+/** The server-resolved display name, falling back to the stored carrier code. */
+export function shipmentCarrierName(shipment: ShipmentView): string | undefined {
+  return shipment.carrier_name ?? shipment.carrier;
+}
+
+/**
+ * A tracking number is unverified when the carrier cannot report events; a
+ * missing tracking number has nothing to verify.
+ */
+export function shipmentTrackingUnverified(shipment: ShipmentView): boolean {
+  return shipment.carrier_observable === false && Boolean(shipment.tracking_number?.trim());
+}
+
 /** The timestamp that matches the Shipment's current status, never a stale one. */
 export function shipmentStatusTimestamp(
   shipment: ShipmentView,

@@ -93,8 +93,10 @@ export type OrderPackageStage = {
 
 export type OrderPackageUpdate = {
   id: string
+
   /** Human line: the update note when present, else the status label. */
   title: string
+
   /** `MMM DD, HH:mm` */
   occurredAt: string
 };
@@ -105,18 +107,32 @@ export type OrderPackage = {
   total: number
   state: OrderPackageState
   statusLabel: string
+
   /** Date fragment only, e.g. `Oct 27`. */
   statusDetail: string
+
   /** Order-level estimate, e.g. `Est. Nov 2 - 6`. */
   estimateDetail: string
+
   /** Order-level processing deadline, e.g. `Ships by Oct 31`. */
   shipByDetail: string
+
   carrier?: string
+
+  /** Server-resolved display name, falling back to the code. */
+  carrierName?: string
+
   trackingNumber?: string
+
+  /** True when the carrier cannot expose tracking updates for this number. */
+  trackingUnverified?: boolean
+
   note?: string
   lines: OrderPackageLine[]
+
   /** Empty for a canceled package. */
   stages: OrderPackageStage[]
+
   /** Newest first; empty for legacy packages. */
   updates: OrderPackageUpdate[]
 };
@@ -407,7 +423,9 @@ function buildLegacyPackage(
     estimateDetail,
     shipByDetail,
     carrier: legacy.carrier,
+    carrierName: legacy.carrier,
     trackingNumber: legacy.tracking_number,
+    trackingUnverified: false,
     note: legacy.note,
     lines: buildLines(
       orderShop,
@@ -450,7 +468,9 @@ export function buildOrderPackages(orderShop: OrderShop): OrderPackagesSummary {
         estimateDetail,
         shipByDetail,
         carrier: shipment.carrier,
+        carrierName: shipment.carrier_name ?? shipment.carrier,
         trackingNumber: shipment.tracking_number,
+        trackingUnverified: shipment.carrier_observable === false && Boolean(shipment.tracking_number),
         note: shipment.shipment_note,
         lines: buildLines(orderShop, shipment.items, shipment.id),
         stages: buildShipmentStages(orderShop, shipment, state, estimateDetail, shipByDetail),

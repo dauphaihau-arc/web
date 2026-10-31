@@ -21,11 +21,14 @@ const props = withDefaults(defineProps<{
 })
 
 const trackingText = computed(() => {
-  const { carrier, trackingNumber, state } = props.orderPackage
+  const {
+    carrierName, trackingNumber, state, trackingUnverified,
+  } = props.orderPackage
+  const trackingLabel = trackingUnverified ? `${trackingNumber} (unverified)` : trackingNumber
 
-  if (carrier && trackingNumber) return `Carrier: ${carrier} · Tracking: ${trackingNumber}`
-  if (trackingNumber) return `Tracking: ${trackingNumber}`
-  if (carrier) return `Carrier: ${carrier}`
+  if (carrierName && trackingLabel) return `Carrier: ${carrierName} · Tracking: ${trackingLabel}`
+  if (trackingLabel) return `Tracking: ${trackingLabel}`
+  if (carrierName) return `Carrier: ${carrierName}`
   if (state === 'preparing') return 'Tracking available once shipped'
 
   return ''

@@ -76,6 +76,8 @@ function buildShipment(input: {
   status: ShipmentStatuses
   items?: FulfillmentShipmentItem[]
   carrier?: string
+  carrierName?: string
+  carrierObservable?: boolean
   trackingNumber?: string
   preparedAt?: Date
   dispatchedAt?: Date
@@ -89,6 +91,8 @@ function buildShipment(input: {
     group_id: `group-${input.id}`,
     status: input.status,
     carrier: input.carrier,
+    carrier_name: input.carrierName,
+    carrier_observable: input.carrierObservable,
     tracking_number: input.trackingNumber,
     origin_countries: ['US'],
     prepared_at: preparedAt,
@@ -236,6 +240,50 @@ describe('buildOrderPackages', () => {
       preparing: 0,
       canceled: 0,
     });
+  });
+
+  it('resolves the carrier display name and marks a non-observable tracking number unverified', () => {
+    const summary = buildOrderPackages(buildOrderShop({
+      products: [buildProduct({ id: 'item-1', quantity: 2, amountMinor: 4000 })],
+      groups: [
+        buildGroup({
+          id: 'group-1',
+          shipments: [
+            buildShipment({
+              id: 'shipment-1',
+              status: ShipmentStatuses.DISPATCHED,
+              carrier: 'usps',
+              carrierName: 'USPS',
+              carrierObservable: true,
+              trackingNumber: '9400111899223456789012',
+            }),
+            buildShipment({
+              id: 'shipment-2',
+              status: ShipmentStatuses.DISPATCHED,
+              carrier: 'other',
+              carrierName: 'Other',
+              carrierObservable: false,
+              trackingNumber: 'TRACK-1',
+            }),
+            buildShipment({
+              id: 'shipment-3',
+              status: ShipmentStatuses.PREPARED,
+              carrier: 'dhl',
+            }),
+          ],
+        }),
+      ],
+    }));
+
+    expect(summary.packages.map(pkg => ({
+      carrier: pkg.carrier,
+      carrierName: pkg.carrierName,
+      trackingUnverified: pkg.trackingUnverified,
+    }))).toEqual([
+      { carrier: 'usps', carrierName: 'USPS', trackingUnverified: false },
+      { carrier: 'other', carrierName: 'Other', trackingUnverified: true },
+      { carrier: 'dhl', carrierName: 'dhl', trackingUnverified: false },
+    ]);
   });
 
   it('splits a quantity line and its price across packages', () => {

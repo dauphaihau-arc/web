@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import ShipmentItemQuantities from './shipment-item-quantities.vue'
 import {
+  carrierOptions,
+  carrierTrackingError,
+  carrierTrackingHint,
+  findCarrier,
+} from './carriers.presentation'
+import {
   clampShipmentQuantity,
   remainingCapacityByItem,
   remainingCapacityTotal,
 } from './shipments.presentation'
 import { useShopOrderFulfillmentMutations } from '~/domains/shop/mutations/order-fulfillment.mutation'
+import { useCarriers } from '~/domains/shop/queries/carriers.query'
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail'
 
 const props = defineProps<{
@@ -15,12 +22,30 @@ const props = defineProps<{
 
 const dialog = useModal()
 const { prepareShipment } = useShopOrderFulfillmentMutations()
+const { data: catalogue } = useCarriers()
 
 const form = reactive({
   carrier: '',
   trackingNumber: '',
   note: '',
 })
+
+const carriers = computed(() => catalogue.value?.carriers ?? [])
+const carrierSelectOptions = computed(() => carrierOptions(carriers.value))
+
+watch(() => form.carrier, () => {
+  form.trackingNumber = ''
+})
+
+const selectedCarrier = computed(() => findCarrier(carriers.value, form.carrier))
+const trackingHint = computed(() => carrierTrackingHint(selectedCarrier.value))
+const trackingError = computed(() => carrierTrackingError(selectedCarrier.value, form.trackingNumber))
+
+const carrierDescription = computed(() =>
+  carrierSelectOptions.value.length === 0
+    ? 'Carrier list is unavailable right now. Reload the page to choose one.'
+    : '',
+)
 
 const remaining = remainingCapacityByItem(props.group)
 const totalRemaining = remainingCapacityTotal(props.group)
@@ -49,7 +74,7 @@ const selectedItems = computed(() => rows
   .filter(item => item.quantity > 0))
 
 async function prepare() {
-  if (selectedItems.value.length === 0) return
+  if (selectedItems.value.length === 0 || trackingError.value) return
 
   await prepareShipment.mutateAsync({
     orderId: props.order.id,
@@ -57,7 +82,7 @@ async function prepare() {
       group_id: props.group.id,
       items: selectedItems.value,
       carrier: form.carrier || undefined,
-      tracking_number: form.trackingNumber || undefined,
+      tracking_number: form.trackingNumber.trim() || undefined,
       shipment_note: form.note || undefined,
     },
   })
@@ -80,7 +105,7 @@ const actions = computed(() => [
     label: 'Prepare shipment',
     shortcut: 'meta_enter' as const,
     allowWhileInputFocused: true,
-    disabled: selectedItems.value.length === 0,
+    disabled: selectedItems.value.length === 0 || Boolean(trackingError.value),
     loading: prepareShipment.isPending.value,
     run: prepare,
   },
@@ -101,14 +126,32 @@ const actions = computed(() => [
       />
 
       <div class="grid gap-4 md:grid-cols-2">
-        <UFormGroup label="Carrier">
-          <UInput
+        <UFormGroup
+          label="Carrier"
+          data-testid="shipment-carrier-field"
+          :description="carrierDescription"
+        >
+          <USelectMenu
             v-model="form.carrier"
-            placeholder="e.g. USPS"
+            data-testid="shipment-carrier-select"
+            :options="carrierSelectOptions"
+            :disabled="carrierSelectOptions.length === 0"
+            value-attribute="value"
+            name-attribute="label"
+            placeholder="Select a carrier"
+            searchable
           />
         </UFormGroup>
-        <UFormGroup label="Tracking number">
-          <UInput v-model="form.trackingNumber" />
+        <UFormGroup
+          label="Tracking number"
+          data-testid="shipment-tracking-number-field"
+          :description="trackingHint"
+          :error="trackingError"
+        >
+          <UInput
+            v-model="form.trackingNumber"
+            data-testid="shipment-tracking-number"
+          />
         </UFormGroup>
       </div>
 

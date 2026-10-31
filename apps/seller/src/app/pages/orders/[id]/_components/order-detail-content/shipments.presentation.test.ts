@@ -5,6 +5,8 @@ import {
   clampShipmentQuantity,
   remainingCapacityByItem,
   remainingCapacityTotal,
+  shipmentCarrierName,
+  shipmentTrackingUnverified,
 } from './shipments.presentation';
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail';
 
@@ -16,11 +18,19 @@ function buildShipment(input: {
   id: string
   status: ShipmentStatuses
   items: GroupItem[]
+  carrier?: string
+  carrierName?: string
+  carrierObservable?: boolean
+  trackingNumber?: string
 }): Shipment {
   return {
     id: input.id,
     group_id: 'group-1',
     status: input.status,
+    carrier: input.carrier,
+    carrier_name: input.carrierName,
+    carrier_observable: input.carrierObservable,
+    tracking_number: input.trackingNumber,
     origin_countries: [],
     prepared_at: new Date(),
     created_at: new Date(),
@@ -133,5 +143,78 @@ describe('clampShipmentQuantity', () => {
 
   it('cannot ship anything from a consignment with no capacity left', () => {
     expect(clampShipmentQuantity(3, 0)).toBe(0);
+  });
+});
+
+describe('shipmentCarrierName', () => {
+  it('prefers the server-resolved carrier name', () => {
+    const shipment = buildShipment({
+      id: 'shipment-1',
+      status: ShipmentStatuses.PREPARED,
+      items: [],
+      carrier: 'usps',
+      carrierName: 'USPS',
+    });
+
+    expect(shipmentCarrierName(shipment)).toBe('USPS');
+  });
+
+  it('falls back to the stored carrier code', () => {
+    const shipment = buildShipment({
+      id: 'shipment-1',
+      status: ShipmentStatuses.PREPARED,
+      items: [],
+      carrier: 'usps',
+    });
+
+    expect(shipmentCarrierName(shipment)).toBe('usps');
+  });
+
+  it('returns nothing when the shipment has no carrier', () => {
+    const shipment = buildShipment({
+      id: 'shipment-1',
+      status: ShipmentStatuses.PREPARED,
+      items: [],
+    });
+
+    expect(shipmentCarrierName(shipment)).toBeUndefined();
+  });
+});
+
+describe('shipmentTrackingUnverified', () => {
+  it('marks a tracking number from a non-observable carrier as unverified', () => {
+    const shipment = buildShipment({
+      id: 'shipment-1',
+      status: ShipmentStatuses.DISPATCHED,
+      items: [],
+      carrier: 'other',
+      carrierName: 'Other',
+      carrierObservable: false,
+      trackingNumber: 'TRACK-1',
+    });
+
+    expect(shipmentTrackingUnverified(shipment)).toBe(true);
+  });
+
+  it('does not mark an observable carrier or a missing tracking number', () => {
+    const observable = buildShipment({
+      id: 'shipment-1',
+      status: ShipmentStatuses.DISPATCHED,
+      items: [],
+      carrier: 'usps',
+      carrierName: 'USPS',
+      carrierObservable: true,
+      trackingNumber: '9400111899223456789012',
+    });
+    const withoutTracking = buildShipment({
+      id: 'shipment-2',
+      status: ShipmentStatuses.PREPARED,
+      items: [],
+      carrier: 'other',
+      carrierObservable: false,
+    });
+
+    expect(shipmentTrackingUnverified(observable)).toBe(false);
+    expect(shipmentTrackingUnverified(withoutTracking)).toBe(false);
   });
 });

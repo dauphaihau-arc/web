@@ -20,6 +20,8 @@ type ShipmentFixture = {
   id: string
   status: ShipmentStatuses
   carrier?: string
+  carrierName?: string
+  carrierObservable?: boolean
   trackingNumber?: string
   note?: string
   quantity?: number
@@ -35,6 +37,8 @@ function buildShipment(fixture: ShipmentFixture): FulfillmentShipment {
     group_id: 'group-ignored',
     status: fixture.status,
     carrier: fixture.carrier,
+    carrier_name: fixture.carrierName,
+    carrier_observable: fixture.carrierObservable,
     tracking_number: fixture.trackingNumber,
     shipment_note: fixture.note,
     origin_countries: ['US'],
@@ -145,7 +149,9 @@ describe('shop shipping info', () => {
             buildShipment({
               id: 'shipment-1',
               status: ShipmentStatuses.DELIVERED,
-              carrier: 'USPS',
+              carrier: 'usps',
+              carrierName: 'USPS',
+              carrierObservable: true,
               trackingNumber: 'TRACK-1',
               note: 'Left at the front desk',
               quantity: 2,
@@ -179,6 +185,48 @@ describe('shop shipping info', () => {
     expect(text).not.toContain('Delivery 1');
     expect(text).not.toContain('Fulfillment group');
     expect(text).not.toContain('seller');
+  });
+
+  it('falls back to the carrier code when the server sends no name', () => {
+    const wrapper = render(buildOrderShop({
+      groups: [
+        buildGroup({
+          id: 'group-1',
+          shipments: [buildShipment({
+            id: 'shipment-1',
+            status: ShipmentStatuses.DISPATCHED,
+            carrier: 'dhl',
+            trackingNumber: '1234567890',
+          })],
+        }),
+      ],
+    }));
+
+    expect(wrapper.text()).toContain('Carrier: dhl');
+    expect(wrapper.text()).not.toContain('(unverified)');
+  });
+
+  it('marks a tracking number from a non-observable carrier as unverified', () => {
+    const wrapper = render(buildOrderShop({
+      groups: [
+        buildGroup({
+          id: 'group-1',
+          shipments: [buildShipment({
+            id: 'shipment-1',
+            status: ShipmentStatuses.DISPATCHED,
+            carrier: 'other',
+            carrierName: 'Other',
+            carrierObservable: false,
+            trackingNumber: 'TRACK-1',
+          })],
+        }),
+      ],
+    }));
+
+    const text = wrapper.text();
+    expect(text).toContain('Carrier: Other');
+    expect(text).toContain('Tracking: TRACK-1');
+    expect(text).toContain('unverified');
   });
 
   it('numbers flattened Shipments without exposing internal group identity', () => {
