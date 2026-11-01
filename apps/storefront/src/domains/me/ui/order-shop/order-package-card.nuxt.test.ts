@@ -20,6 +20,39 @@ function buildPackage(overrides: Partial<OrderPackage> = {}): OrderPackage {
   };
 }
 
+describe('order package card carrier events', () => {
+  it('lists carrier events with location and failure wording behind the toggle', async () => {
+    const wrapper = await mountSuspended(OrderPackageCard, {
+      props: {
+        orderPackage: buildPackage({
+          updates: [
+            {
+              id: 'update-failed',
+              title: 'Delivery failed',
+              location: 'Austin, TX',
+              occurredAt: 'Oct 31, 09:00',
+            },
+            {
+              id: 'update-returned',
+              title: 'Returned to sender',
+              occurredAt: 'Nov 01, 09:00',
+            },
+          ],
+        }),
+      },
+    });
+
+    expect(wrapper.text()).not.toContain('Austin, TX');
+
+    const toggle = wrapper.findAll('button').find(button => button.text().includes('Track package'));
+    await toggle!.trigger('click');
+
+    expect(wrapper.text()).toContain('Delivery failed');
+    expect(wrapper.text()).toContain('Austin, TX');
+    expect(wrapper.text()).toContain('Returned to sender');
+  });
+});
+
 describe('order package card carrier line', () => {
   it('shows the carrier display name and tracking number', async () => {
     const wrapper = await mountSuspended(OrderPackageCard, {

@@ -132,6 +132,12 @@ const showTrackingToggle = computed(() => hasTrackingHistory.value && props.orde
           <div class="text-sm font-medium text-text-strong">
             {{ update.title }}
           </div>
+          <div
+            v-if="update.location"
+            class="text-sm text-text-muted"
+          >
+            {{ update.location }}
+          </div>
           <div class="text-sm text-text-muted">
             {{ update.occurredAt }}
           </div>

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { formatShippingEstimateRange } from '@arc/utils';
+import { carrierEventLabel, formatShippingEstimateRange } from '@arc/utils';
 import { OrderStatuses } from '@arc/enums/order';
 import { FulfillmentAggregateStatuses, ShipmentStatuses } from '@arc/enums/fulfillment';
 import type { ElementType } from '@arc/contracts/utils';
@@ -94,8 +94,11 @@ export type OrderPackageStage = {
 export type OrderPackageUpdate = {
   id: string
 
-  /** Human line: the update note when present, else the status label. */
+  /** Human line: the carrier event when present, else the update note or status label. */
   title: string
+
+  /** Carrier scan location, when the update carries one. */
+  location?: string
 
   /** `MMM DD, HH:mm` */
   occurredAt: string
@@ -203,6 +206,13 @@ const SHIPMENT_UPDATE_LABEL: Record<ShipmentStatuses, string> = {
   [ShipmentStatuses.VOIDED]: 'Voided',
 };
 
+function shipmentUpdateTitle(update: FulfillmentShipment['updates'][number]): string {
+  return carrierEventLabel(update.event_code)
+    || update.note?.trim()
+    || SHIPMENT_UPDATE_LABEL[update.status]
+    || '';
+}
+
 const PACKED_STATUSES = new Set<FulfillmentAggregateStatuses>([
   FulfillmentAggregateStatuses.PREPARED,
   FulfillmentAggregateStatuses.PARTIALLY_SHIPPED,
@@ -241,12 +251,20 @@ function buildUpdates(shipment: FulfillmentShipment): OrderPackageUpdate[] {
   return shipment.updates
     .map(update => ({
       id: update.id,
-      title: update.note?.trim() || SHIPMENT_UPDATE_LABEL[update.status] || '',
+      title: shipmentUpdateTitle(update),
+      location: update.location?.trim() || undefined,
       occurredAt: formatShortDateTime(update.occurred_at),
       occurredAtValue: dayjs(update.occurred_at).valueOf(),
     }))
     .sort((left, right) => right.occurredAtValue - left.occurredAtValue)
-    .map(({ id, title, occurredAt }) => ({ id, title, occurredAt }));
+    .map(({
+      id, title, location, occurredAt,
+    }) => ({
+      id,
+      title,
+      ...(location ? { location } : {}),
+      occurredAt,
+    }));
 }
 
 /** A shipment only exists once packed, so `placed`/`packed` are always complete here. */

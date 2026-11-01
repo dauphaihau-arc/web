@@ -1,5 +1,8 @@
 import dayjs from 'dayjs';
-import { ShipmentJourneyStatuses, ShipmentStatuses } from '@arc/enums/fulfillment';
+import {
+  ShipmentJourneyStatuses, ShipmentStatuses, ShipmentUpdateSources,
+} from '@arc/enums/fulfillment';
+import { carrierEventLabel } from '@arc/utils';
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail';
 
 export function formatShipmentTimestamp(value?: Date | string | null): string | undefined {
@@ -55,6 +58,28 @@ export function journeyIcon(status: ShipmentJourneyStatuses): string {
 
 type ShopOrderGroup = ShopOrder['fulfillment']['groups'][number];
 type ShipmentView = ShopOrderGroup['shipments'][number];
+type ShipmentUpdateView = ShipmentView['updates'][number];
+
+/** Carrier wording wins over the free-form note and the plain status label. */
+export function shipmentUpdateTitle(update: ShipmentUpdateView): string {
+  return carrierEventLabel(update.event_code) || update.note?.trim() || shipmentStatusLabel(update.status);
+}
+
+export function shipmentStatusLabel(status: ShipmentStatuses): string {
+  return status.replaceAll('_', ' ');
+}
+
+/**
+ * Carrier scans for the tracking dialog, newest first. Seller and system
+ * evidence (preparation, amendments, voids) stays in the consignment history
+ * rather than masquerading as a scan.
+ */
+export function shipmentCarrierEventUpdates(shipment: ShipmentView): ShipmentUpdateView[] {
+  return shipment.updates
+    .filter(update => update.source === ShipmentUpdateSources.CARRIER)
+    .sort((left, right) =>
+      dayjs(right.occurred_at).valueOf() - dayjs(left.occurred_at).valueOf());
+}
 
 /** Voided preparation is retained as history but never actionable. */
 export function activeShipments(group: ShopOrderGroup): ShipmentView[] {

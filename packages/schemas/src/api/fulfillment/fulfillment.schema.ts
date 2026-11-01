@@ -23,6 +23,8 @@ export const fulfillmentShipmentUpdateSchema = z.object({
   source: z.nativeEnum(ShipmentUpdateSources),
   occurred_at: z.coerce.date(),
   note: z.string().optional(),
+  event_code: z.string().optional(),
+  location: z.string().optional(),
 })
 
 export const fulfillmentShipmentSchema = z.object({

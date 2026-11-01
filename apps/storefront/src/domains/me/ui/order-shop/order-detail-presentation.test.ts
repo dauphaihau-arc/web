@@ -60,6 +60,8 @@ function buildUpdate(input: {
   status: ShipmentStatuses
   occurredAt: Date
   note?: string
+  eventCode?: string
+  location?: string
 }): FulfillmentShipmentUpdate {
   return {
     id: input.id,
@@ -68,6 +70,8 @@ function buildUpdate(input: {
     source: ShipmentUpdateSources.SELLER,
     occurred_at: input.occurredAt,
     note: input.note,
+    event_code: input.eventCode,
+    location: input.location,
   };
 }
 
@@ -606,6 +610,78 @@ describe('package updates', () => {
       { id: 'update-transit', title: 'In transit', occurredAt: 'Mar 03, 07:00' },
       { id: 'update-dispatched', title: 'Handed to carrier', occurredAt: 'Mar 02, 09:30' },
       { id: 'update-prepared', title: 'Prepared', occurredAt: 'Feb 28, 08:05' },
+    ]);
+  });
+
+  it('shows the carrier location and readable failure wording', () => {
+    const summary = buildOrderPackages(buildOrderShop({
+      products: [buildProduct({ id: 'item-1', quantity: 1, amountMinor: 1000 })],
+      groups: [buildGroup({
+        shipments: [
+          buildShipment({
+            id: 'shipment-1',
+            status: ShipmentStatuses.IN_TRANSIT,
+            updates: [
+              buildUpdate({
+                id: 'update-failed',
+                status: ShipmentStatuses.IN_TRANSIT,
+                eventCode: 'DELIVERY_FAILED',
+                location: 'Austin, TX',
+                occurredAt: new Date(2026, 9, 31, 9, 0),
+              }),
+              buildUpdate({
+                id: 'update-returned',
+                status: ShipmentStatuses.IN_TRANSIT,
+                eventCode: 'RETURNED',
+                occurredAt: new Date(2026, 10, 1, 9, 0),
+              }),
+            ],
+          }),
+        ],
+      })],
+    }));
+
+    expect(summary.packages[0].updates).toEqual([
+      { id: 'update-returned', title: 'Returned to sender', occurredAt: 'Nov 01, 09:00' },
+      {
+        id: 'update-failed',
+        title: 'Delivery failed',
+        location: 'Austin, TX',
+        occurredAt: 'Oct 31, 09:00',
+      },
+    ]);
+  });
+
+  it('words every shared carrier scan code', () => {
+    const summary = buildOrderPackages(buildOrderShop({
+      products: [buildProduct({ id: 'item-1', quantity: 1, amountMinor: 1000 })],
+      groups: [buildGroup({
+        shipments: [
+          buildShipment({
+            id: 'shipment-1',
+            status: ShipmentStatuses.IN_TRANSIT,
+            updates: [
+              buildUpdate({
+                id: 'update-labeled',
+                status: ShipmentStatuses.PREPARED,
+                eventCode: 'LABEL_CREATED',
+                occurredAt: new Date(2026, 9, 28, 9, 0),
+              }),
+              buildUpdate({
+                id: 'update-out-for-delivery',
+                status: ShipmentStatuses.IN_TRANSIT,
+                eventCode: 'OUT_FOR_DELIVERY',
+                occurredAt: new Date(2026, 9, 31, 9, 0),
+              }),
+            ],
+          }),
+        ],
+      })],
+    }));
+
+    expect(summary.packages[0].updates).toEqual([
+      { id: 'update-out-for-delivery', title: 'Out for delivery', occurredAt: 'Oct 31, 09:00' },
+      { id: 'update-labeled', title: 'Label created', occurredAt: 'Oct 28, 09:00' },
     ]);
   });
 

@@ -2,8 +2,9 @@
 import type { DropdownItem } from '#ui/types'
 import type { ShipmentJourneyStatuses } from '@arc/enums/fulfillment'
 import EditShipmentDialog from './edit-shipment-dialog.vue'
+import ShipmentEventsDialog from './shipment-events-dialog.vue'
 import VoidShipmentDialog from './void-shipment-dialog.vue'
-import { journeyIcon, journeyLabel } from './shipments.presentation'
+import { journeyIcon, journeyLabel, shipmentCarrierEventUpdates } from './shipments.presentation'
 import { useOrderShipmentState } from './use-order-shipment-state'
 import { useShopOrderFulfillmentMutations } from '~/domains/shop/mutations/order-fulfillment.mutation'
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail'
@@ -46,6 +47,16 @@ const menuItems = computed<DropdownItem[][]>(() => {
   }
 
   const upkeep: DropdownItem[] = []
+
+  if (shipmentCarrierEventUpdates(props.shipment).length) {
+    upkeep.push({
+      label: 'View tracking events',
+      icon: 'lucide:history',
+      click: () => dialog.open(ShipmentEventsDialog, {
+        shipment: props.shipment,
+      }),
+    })
+  }
 
   if (canEditShipmentInfo.value) {
     upkeep.push({
