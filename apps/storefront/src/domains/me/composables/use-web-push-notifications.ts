@@ -27,6 +27,20 @@ function normalizePermission(): NotificationPermission {
   return Notification.permission;
 }
 
+// PushSubscription.toJSON() carries `expirationTime`, which the API rejects
+// (whitelisted DTO); send only the fields the contract defines.
+function toSubscriptionPayload(subscription: PushSubscription) {
+  const { endpoint, keys } = subscription.toJSON();
+
+  return {
+    endpoint: endpoint ?? subscription.endpoint,
+    keys: {
+      p256dh: keys?.p256dh ?? '',
+      auth: keys?.auth ?? '',
+    },
+  };
+}
+
 export function useWebPushNotifications() {
   const status = useState<BrowserNotificationStatus>('web-push-status', () =>
     import.meta.client && 'serviceWorker' in navigator && 'PushManager' in window
@@ -102,10 +116,7 @@ export function useWebPushNotifications() {
 
     status.value = 'syncing';
 
-    await meNotificationApi.registerWebPushSubscription(subscription.toJSON() as {
-      endpoint: string
-      keys: { p256dh: string, auth: string }
-    });
+    await meNotificationApi.registerWebPushSubscription(toSubscriptionPayload(subscription));
 
     status.value = 'enabled';
     return true;
@@ -146,10 +157,7 @@ export function useWebPushNotifications() {
       });
     }
 
-    await meNotificationApi.registerWebPushSubscription(subscription.toJSON() as {
-      endpoint: string
-      keys: { p256dh: string, auth: string }
-    });
+    await meNotificationApi.registerWebPushSubscription(toSubscriptionPayload(subscription));
 
     status.value = 'enabled';
     return true;
