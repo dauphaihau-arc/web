@@ -4,7 +4,6 @@ import {
   FulfillmentMethods,
   FulfillmentOperators,
   FulfillmentProvenances,
-  ShipmentJourneyStatuses,
   ShipmentStatuses,
   ShipmentUpdateActorTypes,
   ShipmentUpdateSources,
@@ -99,13 +98,6 @@ export const prepareFulfillmentShipmentRequestSchema = z.object({
 
 export const amendFulfillmentShipmentRequestSchema = z.object({
   items: z.array(fulfillmentShipmentItemSchema).optional(),
-  carrier: z.string().max(255).optional(),
-  tracking_number: z.string().max(255).optional(),
-  shipment_note: z.string().max(5000).optional(),
-})
-
-export const updateShipmentJourneyRequestSchema = z.object({
-  status: z.nativeEnum(ShipmentJourneyStatuses),
   carrier: z.string().max(255).optional(),
   tracking_number: z.string().max(255).optional(),
   shipment_note: z.string().max(5000).optional(),

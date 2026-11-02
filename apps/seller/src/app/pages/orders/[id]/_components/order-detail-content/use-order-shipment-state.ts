@@ -1,6 +1,9 @@
 import { computed, type MaybeRefOrGetter, toValue } from 'vue';
 import { OrderStatuses } from '@arc/enums/order';
-import { ShipmentJourneyStatuses, ShipmentStatuses } from '@arc/enums/fulfillment';
+import {
+  ShipmentStatuses,
+  ShipmentUpdateSources,
+} from '@arc/enums/fulfillment';
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail';
 
 const SHIPMENT_BLOCKED_ORDER_STATUSES = [
@@ -12,9 +15,19 @@ const SHIPMENT_BLOCKED_ORDER_STATUSES = [
   OrderStatuses.AWAITING_PAYMENT,
 ];
 
+/** Kept in step with the API: three days after the Handover Declaration. */
+const HANDOVER_EDIT_WINDOW_MS = 3 * 24 * 60 * 60 * 1000;
+
+type ShipmentStateView = ShopOrder['fulfillment']['groups'][number]['shipments'][number];
+
+/**
+ * What a seller may still do on one Shipment. The seller declares handover and
+ * keeps editing carrier details for three days, until the carrier scans;
+ * everything after handover belongs to the carrier.
+ */
 export function useOrderShipmentState(
   orderSource: MaybeRefOrGetter<ShopOrder | undefined>,
-  shipmentSource: MaybeRefOrGetter<{ status: ShipmentStatuses } | undefined>,
+  shipmentSource: MaybeRefOrGetter<ShipmentStateView | undefined>,
 ) {
   const order = computed(() => toValue(orderSource));
   const shipment = computed(() => toValue(shipmentSource));
@@ -23,40 +36,45 @@ export function useOrderShipmentState(
     !!order.value && SHIPMENT_BLOCKED_ORDER_STATUSES.includes(order.value.status),
   );
 
-  const allowedJourneyTransitions = computed<ShipmentJourneyStatuses[]>(() => {
-    if (!shipment.value || shipmentUpdatesBlocked.value) return [];
-
-    switch (shipment.value.status) {
-      case ShipmentStatuses.PREPARED:
-        return [ShipmentJourneyStatuses.DISPATCHED];
-      case ShipmentStatuses.DISPATCHED:
-        return [ShipmentJourneyStatuses.IN_TRANSIT, ShipmentJourneyStatuses.DELIVERED];
-      case ShipmentStatuses.IN_TRANSIT:
-        return [ShipmentJourneyStatuses.DELIVERED];
-      case ShipmentStatuses.DELIVERED:
-      case ShipmentStatuses.VOIDED:
-      default:
-        return [];
-    }
-  });
-
-  const canEditShipmentInfo = computed(() =>
-    !shipmentUpdatesBlocked.value && shipment.value?.status === ShipmentStatuses.PREPARED,
+  /**
+   * A declaration needs something to declare: a prepared Shipment with the
+   * carrier and tracking number the API requires.
+   */
+  const canDeclareHandover = computed(() =>
+    !shipmentUpdatesBlocked.value
+    && shipment.value?.status === ShipmentStatuses.PREPARED
+    && Boolean(shipment.value.carrier)
+    && Boolean(shipment.value.tracking_number),
   );
+
+  /**
+   * A prepared Shipment is always editable. After handover, carrier and tracking
+   * stay correctable for the window, unless a carrier scan already landed.
+   */
+  const canEditShipmentInfo = computed(() => {
+    if (shipmentUpdatesBlocked.value || !shipment.value) return false;
+
+    if (shipment.value.status === ShipmentStatuses.PREPARED) return true;
+
+    if (shipment.value.status !== ShipmentStatuses.DISPATCHED) return false;
+
+    const dispatchedAt = shipment.value.dispatched_at;
+    if (!dispatchedAt) return false;
+
+    const elapsed = Date.now() - new Date(dispatchedAt).getTime();
+    if (elapsed > HANDOVER_EDIT_WINDOW_MS) return false;
+
+    return !shipment.value.updates.some(update => update.source === ShipmentUpdateSources.CARRIER);
+  });
 
   const canVoidShipment = computed(() =>
     !shipmentUpdatesBlocked.value && shipment.value?.status === ShipmentStatuses.PREPARED,
   );
 
-  function canTransitionTo(status: ShipmentJourneyStatuses) {
-    return allowedJourneyTransitions.value.includes(status);
-  }
-
   return {
-    allowedJourneyTransitions,
+    canDeclareHandover,
     canEditShipmentInfo,
     canVoidShipment,
-    canTransitionTo,
     shipmentUpdatesBlocked,
   };
 }

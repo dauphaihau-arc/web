@@ -49,7 +49,10 @@ const CATALOGUE: Carrier[] = [
   },
 ];
 
-function buildOrder(): ShopOrder {
+function buildOrder(
+  shipmentStatus: ShipmentStatuses = ShipmentStatuses.PREPARED,
+  updates: unknown[] = [],
+): ShopOrder {
   return {
     id: 'order-1',
     products: [{ id: 'item-1', title: 'Ceramic Mug' }],
@@ -73,7 +76,7 @@ function buildOrder(): ShopOrder {
             {
               id: 'shipment-1',
               group_id: 'group-1',
-              status: ShipmentStatuses.PREPARED,
+              status: shipmentStatus,
               carrier: 'usps',
               tracking_number: '9400111899223456789012',
               origin_countries: ['US'],
@@ -81,7 +84,7 @@ function buildOrder(): ShopOrder {
               created_at: new Date(),
               updated_at: new Date(),
               items: [{ order_item_id: 'item-1', quantity: 2 }],
-              updates: [],
+              updates,
             },
           ],
         },
@@ -99,8 +102,11 @@ function buildOrder(): ShopOrder {
 
 let wrapper: VueWrapper | undefined;
 
-async function render() {
-  const order = buildOrder();
+async function render(
+  shipmentStatus: ShipmentStatuses = ShipmentStatuses.PREPARED,
+  updates: unknown[] = [],
+) {
+  const order = buildOrder(shipmentStatus, updates);
   wrapper = await mountSuspended(EditShipmentDialog, {
     props: {
       order,
@@ -270,5 +276,27 @@ describe('edit shipment dialog carrier select', () => {
         shipment_note: undefined,
       },
     });
+  });
+
+  it('locks quantities after handover and submits only carrier and tracking', async () => {
+    await render(ShipmentStatuses.DISPATCHED);
+
+    expect(bodyText()).toContain('only its carrier and tracking number can change');
+    expect(trackingInput().value).toBe('9400111899223456789012');
+    expect(actionButton('Save shipment').disabled).toBe(false);
+
+    await typeTracking('9400111899223100009999');
+    actionButton('Save shipment').click();
+    await flushPromises();
+
+    const payload = mutateAsync.mock.calls[0]![0] as {
+      body: Record<string, unknown>
+    };
+    expect(payload.body).toEqual({
+      carrier: 'usps',
+      tracking_number: '9400111899223100009999',
+      shipment_note: undefined,
+    });
+    expect('items' in payload.body).toBe(false);
   });
 });

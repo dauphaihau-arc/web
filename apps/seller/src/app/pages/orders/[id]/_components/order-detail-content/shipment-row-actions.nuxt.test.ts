@@ -18,14 +18,19 @@ const { modalOpen } = vi.hoisted(() => ({ modalOpen: vi.fn() }));
 
 mockNuxtImport('useModal', () => () => ({ open: modalOpen, close: vi.fn() }));
 
+const { declareShipmentHandoverMutate } = vi.hoisted(() => ({
+  declareShipmentHandoverMutate: vi.fn(),
+}));
+
 vi.mock('~/domains/shop/mutations/order-fulfillment.mutation', () => ({
   useShopOrderFulfillmentMutations: () => ({
-    updateShipmentJourney: { mutateAsync: vi.fn(), isPending: ref(false) },
+    declareShipmentHandover: { mutateAsync: declareShipmentHandoverMutate, isPending: ref(false) },
   }),
 }));
 
 function buildShipment(
   updateSource: ShipmentUpdateSources | 'none',
+  overrides: Partial<ShopOrder['fulfillment']['groups'][number]['shipments'][number]> = {},
 ): ShopOrder['fulfillment']['groups'][number]['shipments'][number] {
   return {
     id: 'shipment-1',
@@ -40,6 +45,7 @@ function buildShipment(
     created_at: new Date(),
     updated_at: new Date(),
     items: [{ order_item_id: 'item-1', quantity: 1 }],
+    ...overrides,
     updates: updateSource === 'none'
       ? []
       : [{
@@ -94,17 +100,23 @@ function buildOrder(shipment: ShopOrder['fulfillment']['groups'][number]['shipme
 
 let wrapper: VueWrapper | undefined;
 
-async function openMenu(updateSource: ShipmentUpdateSources | 'none') {
-  const shipment = buildShipment(updateSource);
+async function openMenu(
+  updateSource: ShipmentUpdateSources | 'none',
+  overrides: Partial<ShopOrder['fulfillment']['groups'][number]['shipments'][number]> = {},
+) {
+  const shipment = buildShipment(updateSource, overrides);
   wrapper = await mountSuspended(ShipmentRowActions, {
     props: { order: buildOrder(shipment), group: buildOrder(shipment).fulfillment.groups[0], shipment },
     attachTo: document.body,
   });
   await flushPromises();
 
+  // A shipment with nothing left to do renders no actions at all.
   const trigger = wrapper.findAll('button').at(-1);
-  await trigger!.trigger('click');
-  await flushPromises();
+  if (trigger) {
+    await trigger.trigger('click');
+    await flushPromises();
+  }
 
   return { shipment, menuText: document.body.textContent ?? '' };
 }
@@ -143,5 +155,68 @@ describe('shipment row actions tracking events', () => {
     const { menuText } = await openMenu(ShipmentUpdateSources.SELLER);
 
     expect(menuText).not.toContain('View tracking events');
+  });
+});
+
+describe('shipment row actions handover', () => {
+  afterEach(() => {
+    wrapper?.unmount();
+    wrapper = undefined;
+    modalOpen.mockClear();
+    declareShipmentHandoverMutate.mockClear();
+    document.body.innerHTML = '';
+  });
+
+  it('offers "Mark as handed over" for a prepared shipment and declares it', async () => {
+    await openMenu('none', {
+      status: ShipmentStatuses.PREPARED,
+      dispatched_at: undefined,
+    });
+
+    const button = document.body.querySelector<HTMLButtonElement>(
+      'button[aria-label="Mark as handed over"]',
+    );
+    expect(button).not.toBeNull();
+
+    button!.click();
+    await flushPromises();
+
+    expect(declareShipmentHandoverMutate).toHaveBeenCalledWith({
+      orderId: 'order-1',
+      shipmentId: 'shipment-1',
+    });
+  });
+
+  it('offers voiding and editing while the shipment is prepared', async () => {
+    const { menuText } = await openMenu('none', {
+      status: ShipmentStatuses.PREPARED,
+      dispatched_at: undefined,
+    });
+
+    expect(menuText).toContain('Edit shipment');
+    expect(menuText).toContain('Void shipment');
+  });
+
+  it('offers no status control once the parcel is dispatched', async () => {
+    const { menuText } = await openMenu('none');
+
+    expect(document.body.querySelector('button[aria-label="Mark as handed over"]')).toBeNull();
+    expect(menuText).toContain('Edit shipment');
+    expect(menuText).not.toContain('Void shipment');
+  });
+
+  it('closes editing once the carrier has scanned the parcel', async () => {
+    const { menuText } = await openMenu(ShipmentUpdateSources.CARRIER);
+
+    expect(menuText).not.toContain('Edit shipment');
+  });
+
+  it('closes editing three days after the handover', async () => {
+    await openMenu('none', {
+      dispatched_at: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
+    });
+
+    // Nothing is left to do on a dispatched parcel whose window has closed.
+    expect(wrapper!.findAll('button')).toHaveLength(0);
   });
 });

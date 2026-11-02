@@ -8,7 +8,6 @@ import type {
   UpdateShopOrderStatusRequest,
   PrepareFulfillmentShipmentRequest,
   AmendFulfillmentShipmentRequest,
-  UpdateShipmentJourneyRequest,
   ReconcileOrderFulfillmentRequest,
   FulfillmentMutationResponse,
 } from './contracts/order.contract';
@@ -119,15 +118,18 @@ export const shopOrderApi = {
     );
   },
 
-  updateShipmentJourney(
+  /**
+   * The seller's only status authority: declaring that the prepared Shipment was
+   * handed to its carrier. Everything after handover is carrier evidence.
+   */
+  declareShipmentHandover(
     shopId: string,
     orderId: string,
     shipmentId: string,
-    payload: UpdateShipmentJourneyRequest,
   ) {
     return apiClient.post<FulfillmentMutationResponse>(
-      `/shops/${shopId}/orders/${orderId}/fulfillment/shipments/${shipmentId}/journey`,
-      payload,
+      `/shops/${shopId}/orders/${orderId}/fulfillment/shipments/${shipmentId}/handover`,
+      {},
       idempotentOptions(),
     );
   },

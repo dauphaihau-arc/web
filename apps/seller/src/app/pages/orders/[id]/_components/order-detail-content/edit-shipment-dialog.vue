@@ -7,6 +7,7 @@ import {
   findCarrier,
 } from './carriers.presentation'
 import { clampShipmentQuantity, remainingCapacityByItem } from './shipments.presentation'
+import { ShipmentStatuses } from '@arc/enums/fulfillment'
 import { useShopOrderFulfillmentMutations } from '~/domains/shop/mutations/order-fulfillment.mutation'
 import { useCarriers } from '~/domains/shop/queries/carriers.query'
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail'
@@ -68,6 +69,10 @@ const quantities = ref<Record<string, number>>(
   Object.fromEntries(rows.map(row => [row.orderItemId, row.ownQuantity])),
 )
 
+// After handover the parcel is with the carrier: only carrier and tracking stay
+// editable until the scan closes the window.
+const canChangeItems = computed(() => props.shipment.status === ShipmentStatuses.PREPARED)
+
 const amendedItems = computed(() => rows
   .map(row => ({
     order_item_id: row.orderItemId,
@@ -82,7 +87,7 @@ async function amend() {
     orderId: props.order.id,
     shipmentId: props.shipment.id,
     body: {
-      items: amendedItems.value,
+      ...(canChangeItems.value ? { items: amendedItems.value } : {}),
       carrier: form.carrier || undefined,
       tracking_number: form.trackingNumber.trim() || undefined,
       shipment_note: form.note || undefined,
@@ -107,7 +112,7 @@ const actions = computed(() => [
     label: 'Save shipment',
     shortcut: 'meta_enter' as const,
     allowWhileInputFocused: true,
-    disabled: amendedItems.value.length === 0 || Boolean(trackingError.value),
+    disabled: (canChangeItems.value && amendedItems.value.length === 0) || Boolean(trackingError.value),
     loading: amendShipment.isPending.value,
     run: amend,
   },
@@ -123,9 +128,18 @@ const actions = computed(() => [
   >
     <div class="space-y-6">
       <ShipmentItemQuantities
+        v-if="canChangeItems"
         v-model="quantities"
         :rows="rows"
       />
+
+      <p
+        v-else
+        class="text-sm text-text-muted"
+      >
+        This consignment is already with the carrier, so only its carrier and
+        tracking number can change.
+      </p>
 
       <div class="space-y-4">
         <UFormGroup

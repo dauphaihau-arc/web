@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import {
-  ShipmentJourneyStatuses, ShipmentStatuses, ShipmentUpdateSources,
+  ShipmentStatuses, ShipmentUpdateSources,
 } from '@arc/enums/fulfillment';
 import { carrierEventLabel } from '@arc/utils';
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail';
@@ -28,32 +28,6 @@ export function shipmentStatusTone(status: ShipmentStatuses): 'green' | 'blue' |
     default:
       return 'gray';
   }
-}
-
-const JOURNEY_PRESENTATION: Record<
-  ShipmentJourneyStatuses,
-  { label: string, icon: string }
-> = {
-  [ShipmentJourneyStatuses.DISPATCHED]: {
-    label: 'Dispatch',
-    icon: 'lucide:package-check',
-  },
-  [ShipmentJourneyStatuses.IN_TRANSIT]: {
-    label: 'Mark in transit',
-    icon: 'lucide:truck',
-  },
-  [ShipmentJourneyStatuses.DELIVERED]: {
-    label: 'Mark delivered',
-    icon: 'lucide:circle-check-big',
-  },
-};
-
-export function journeyLabel(status: ShipmentJourneyStatuses): string {
-  return JOURNEY_PRESENTATION[status].label;
-}
-
-export function journeyIcon(status: ShipmentJourneyStatuses): string {
-  return JOURNEY_PRESENTATION[status].icon;
 }
 
 type ShopOrderGroup = ShopOrder['fulfillment']['groups'][number];

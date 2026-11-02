@@ -191,7 +191,6 @@ export {
   amendFulfillmentShipmentRequestSchema as amendFulfillmentShipmentRequestSchema,
   prepareFulfillmentShipmentRequestSchema as prepareFulfillmentShipmentRequestSchema,
   reconcileOrderFulfillmentRequestSchema as reconcileOrderFulfillmentRequestSchema,
-  updateShipmentJourneyRequestSchema as updateShipmentJourneyRequestSchema,
 } from '../../fulfillment/fulfillment.schema'
 
 export const updateShopOrderRefundRequestSchema = z.object({

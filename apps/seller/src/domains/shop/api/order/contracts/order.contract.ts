@@ -11,7 +11,6 @@ import type {
   updateShopOrderStatusRequestSchema,
   prepareFulfillmentShipmentRequestSchema,
   amendFulfillmentShipmentRequestSchema,
-  updateShipmentJourneyRequestSchema,
   reconcileOrderFulfillmentRequestSchema,
 } from '@arc/schemas/api/shop/order/order.schema';
 import type { fulfillmentMutationResponseSchema } from '@arc/schemas/api/fulfillment/fulfillment.schema';
@@ -26,7 +25,6 @@ export type ShopOrderDetailResponse = z.infer<typeof shopOrderDetailResponseSche
 export type UpdateShopOrderStatusRequest = z.infer<typeof updateShopOrderStatusRequestSchema>;
 export type PrepareFulfillmentShipmentRequest = z.infer<typeof prepareFulfillmentShipmentRequestSchema>;
 export type AmendFulfillmentShipmentRequest = z.infer<typeof amendFulfillmentShipmentRequestSchema>;
-export type UpdateShipmentJourneyRequest = z.infer<typeof updateShipmentJourneyRequestSchema>;
 export type ReconcileOrderFulfillmentRequest = z.infer<typeof reconcileOrderFulfillmentRequestSchema>;
 export type FulfillmentMutationResponse = z.infer<typeof fulfillmentMutationResponseSchema>;
 export type UpdateShopOrderRefundRequest = z.infer<typeof updateShopOrderRefundRequestSchema>;

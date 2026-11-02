@@ -5,7 +5,6 @@ import { shopOrderApi } from '~/domains/shop/api/order/order.api';
 import type {
   PrepareFulfillmentShipmentRequest,
   AmendFulfillmentShipmentRequest,
-  UpdateShipmentJourneyRequest,
   ReconcileOrderFulfillmentRequest,
 } from '~/domains/shop/api/order/contracts/order.contract';
 
@@ -81,18 +80,18 @@ export function useShopOrderFulfillmentMutations() {
     },
   });
 
-  const updateShipmentJourney = useMutation({
-    mutationKey: ['shop-update-shipment-journey'],
-    mutationFn: async (input: { orderId: string, shipmentId: string, body: UpdateShipmentJourneyRequest }) => {
+  const declareShipmentHandover = useMutation({
+    mutationKey: ['shop-declare-shipment-handover'],
+    mutationFn: async (input: { orderId: string, shipmentId: string }) => {
       const shopId = await resolveMyShopId(queryClient);
-      return await shopOrderApi.updateShipmentJourney(shopId, input.orderId, input.shipmentId, input.body);
+      return await shopOrderApi.declareShipmentHandover(shopId, input.orderId, input.shipmentId);
     },
     onSuccess(_result, variables) {
-      showSuccess('Shipment status updated');
+      showSuccess('Handover declared');
       invalidateOrderQueries(queryClient, variables.orderId);
     },
     onError() {
-      showError('Failed to update shipment status');
+      showError('Failed to declare handover');
     },
   });
 
@@ -115,7 +114,7 @@ export function useShopOrderFulfillmentMutations() {
     prepareShipment,
     amendShipment,
     voidShipment,
-    updateShipmentJourney,
+    declareShipmentHandover,
     reconcileFulfillment,
   };
 }

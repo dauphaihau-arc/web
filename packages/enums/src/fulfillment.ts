@@ -21,12 +21,6 @@ export enum ShipmentStatuses {
   VOIDED = 'voided',
 }
 
-export enum ShipmentJourneyStatuses {
-  DISPATCHED = 'dispatched',
-  IN_TRANSIT = 'in_transit',
-  DELIVERED = 'delivered',
-}
-
 export enum ShipmentUpdateActorTypes {
   SYSTEM = 'system',
   SELLER = 'seller',

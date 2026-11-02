@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import type { DropdownItem } from '#ui/types'
-import type { ShipmentJourneyStatuses } from '@arc/enums/fulfillment'
 import EditShipmentDialog from './edit-shipment-dialog.vue'
 import ShipmentEventsDialog from './shipment-events-dialog.vue'
 import VoidShipmentDialog from './void-shipment-dialog.vue'
-import { journeyIcon, journeyLabel, shipmentCarrierEventUpdates } from './shipments.presentation'
+import { shipmentCarrierEventUpdates } from './shipments.presentation'
 import { useOrderShipmentState } from './use-order-shipment-state'
 import { useShopOrderFulfillmentMutations } from '~/domains/shop/mutations/order-fulfillment.mutation'
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail'
@@ -16,35 +15,17 @@ const props = defineProps<{
 }>()
 
 const dialog = useModal()
-const { updateShipmentJourney } = useShopOrderFulfillmentMutations()
+const { declareShipmentHandover } = useShopOrderFulfillmentMutations()
 
 const {
-  allowedJourneyTransitions,
+  canDeclareHandover,
   canEditShipmentInfo,
   canVoidShipment,
-  canTransitionTo,
 } = useOrderShipmentState(() => props.order, () => props.shipment)
 
-/**
- * The next step in the journey is the one-click action; the remaining steps and
- * the consignment upkeep live in the overflow menu.
- */
-const primaryTransition = computed(() => allowedJourneyTransitions.value[0])
-
+/** Declaring the parcel left the shop is the one-click action, once. */
 const menuItems = computed<DropdownItem[][]>(() => {
   const menu: DropdownItem[][] = []
-
-  const laterTransitions = allowedJourneyTransitions.value
-    .slice(1)
-    .map(transition => ({
-      label: journeyLabel(transition),
-      icon: journeyIcon(transition),
-      click: () => handleJourneyTransition(transition),
-    }))
-
-  if (laterTransitions.length) {
-    menu.push(laterTransitions)
-  }
 
   const upkeep: DropdownItem[] = []
 
@@ -90,12 +71,11 @@ const menuItems = computed<DropdownItem[][]>(() => {
   return menu
 })
 
-async function handleJourneyTransition(status: ShipmentJourneyStatuses) {
-  if (!canTransitionTo(status)) return
-  await updateShipmentJourney.mutateAsync({
+async function handleHandover() {
+  if (!canDeclareHandover.value) return
+  await declareShipmentHandover.mutateAsync({
     orderId: props.order.id,
     shipmentId: props.shipment.id,
-    body: { status },
   })
 }
 </script>
@@ -103,17 +83,17 @@ async function handleJourneyTransition(status: ShipmentJourneyStatuses) {
 <template>
   <div class="flex items-center justify-end gap-1">
     <UTooltip
-      v-if="primaryTransition"
-      :text="journeyLabel(primaryTransition)"
+      v-if="canDeclareHandover"
+      text="Mark as handed over"
     >
       <UButton
         color="gray"
         variant="soft"
-        :icon="journeyIcon(primaryTransition)"
-        :aria-label="journeyLabel(primaryTransition)"
-        :disabled="updateShipmentJourney.isPending.value"
-        :loading="updateShipmentJourney.isPending.value"
-        @click="handleJourneyTransition(primaryTransition)"
+        icon="lucide:package-check"
+        aria-label="Mark as handed over"
+        :disabled="declareShipmentHandover.isPending.value"
+        :loading="declareShipmentHandover.isPending.value"
+        @click="handleHandover"
       />
     </UTooltip>
 
@@ -140,7 +120,7 @@ async function handleJourneyTransition(status: ShipmentJourneyStatuses) {
           variant="soft"
           icon="lucide:ellipsis"
           aria-label="More actions"
-          :disabled="updateShipmentJourney.isPending.value"
+          :disabled="declareShipmentHandover.isPending.value"
         />
       </UTooltip>
     </UDropdown>
