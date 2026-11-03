@@ -2,6 +2,8 @@
 import type { CurrencyOption } from '@arc/utils/currency-options'
 import type { FormSubmitEvent } from '#ui/types'
 import type { PreferenceState } from './preference-options'
+import MarketCurrencySelect from './market-currency-select.vue'
+import MarketRegionSelect from './market-region-select.vue'
 
 const props = withDefaults(defineProps<{
   state: PreferenceState
@@ -21,16 +23,6 @@ const emit = defineEmits<{
 const formRef = ref()
 const preferenceState = toRef(props, 'state')
 
-const selectMenuUi = {
-  container: 'z-[60]',
-}
-
-const currencySelectMenuUi = {
-  ...selectMenuUi,
-  select: '!normal-case',
-  option: { base: '!normal-case' },
-}
-
 defineExpose({
   submit: () => formRef.value?.submit(),
 })
@@ -49,12 +41,11 @@ defineExpose({
         required
         class="mb-4"
       >
-        <USelectMenu
+        <MarketRegionSelect
           v-model="preferenceState.region"
-          :disabled="props.disabled || props.isPendingMarketConfig"
-          size="xl"
+          :disabled="props.disabled"
+          :pending="props.isPendingMarketConfig"
           :options="props.regionOptions"
-          :ui-menu="selectMenuUi"
         />
       </UFormGroup>
 
@@ -64,16 +55,11 @@ defineExpose({
         required
         class="mb-4"
       >
-        <USelectMenu
+        <MarketCurrencySelect
           v-model="preferenceState.currency"
           data-testid="market-preferences-currency"
-          searchable
-          size="xl"
           :disabled="props.disabled"
           :options="props.currencyOptions"
-          value-attribute="id"
-          option-attribute="displayLabel"
-          :ui-menu="currencySelectMenuUi"
         />
       </UFormGroup>
     </div>
