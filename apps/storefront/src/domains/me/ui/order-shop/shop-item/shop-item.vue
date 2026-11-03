@@ -91,7 +91,7 @@ const detailLink = computed(() =>
 </script>
 
 <template>
-  <div class="mb-16 grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
+  <div class="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
     <div :class="props.showFulfillment ? 'lg:col-span-8' : 'lg:col-span-12'">
       <UCard
         class="relative"
@@ -149,7 +149,7 @@ const detailLink = computed(() =>
         </OrderItemsTable>
 
         <UDivider
-          class="mb-3 mt-6"
+          class="mb-3"
         />
         <NoteAndPromoCodes :order-shop="displayOrderShop" />
         <PaymentAndSummaryOrder :order-shop="displayOrderShop" />
