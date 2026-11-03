@@ -83,7 +83,7 @@ watch(() => props.src, () => {
 <template>
   <div
     :class="[
-      'relative overflow-hidden bg-media-product ring-1 ring-border-subtle',
+      'relative overflow-hidden bg-media-product border border-border-subtle',
       sizeClassByVariant[size],
       roundedClassByVariant[rounded],
       frameClass,
