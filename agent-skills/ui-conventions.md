@@ -9,6 +9,15 @@ Use this file when changing visible UI, user flows, or reusable components.
 - Prefer local page components for page-specific UI before introducing shared abstractions.
 - Use shared UI only when reuse is real and the API is stable.
 
+## Color
+
+- One gray ramp is canonical: Tailwind `zinc`.
+- Reach grays only through semantic tokens: `bg-surface-*`, `border-border-*`, `text-text-*`, and the `state-*` tokens.
+- Raw palette classes (`gray-*`, `zinc-*`, `slate-*`, `neutral-*`, `stone-*`) are forbidden in light mode.
+- The only sanctioned raw usage is a `dark:` variant, because there is no dark-mode token layer.
+- `packages/ui/src/foundation/design-tokens.ts` is the single source of truth. `design-tokens.css` is generated from it: run `pnpm --filter @arc/ui generate:tokens`. Never hand-edit the CSS.
+- Do not add new gray ramps or one-off hex values. `customGray` is retired.
+
 ## Interaction Rules
 
 - Use existing form, table, dialog, toast, loading, and empty-state patterns in the app.

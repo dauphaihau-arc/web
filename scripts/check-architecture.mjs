@@ -5,6 +5,8 @@
  * - lower layers may not import higher layers (`shared` -> `domains` -> `app`)
  * - storefront pages may not import another page's private `_components`
  * - workspace packages may not import app source
+ * - source may not use raw gray palette classes or CSS variables; use semantic tokens
+ *   (dark: variants are exempt because there is no dark-mode token layer)
  */
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { dirname, extname, isAbsolute, join, normalize, relative, resolve, sep } from 'node:path'
@@ -23,12 +25,25 @@ const importPatterns = [
   /(?:^|[^\w$])import\s*\(\s*['"]([^'"]+)['"]\s*\)/gs,
 ]
 
+const grayScanExtensions = new Set([...sourceExtensions, '.css'])
+const rawGrayClassPattern =
+  /(?<![\w-])(bg|text|border|ring|divide|from|to|via|outline|fill|stroke|shadow|placeholder|caret)-(gray|zinc|slate|neutral|stone)-(?:50|[1-9]00|950)(?![\w-])/g
+const grayVariablePattern = /var\(--color-gray-/g
+const retiredGrayPattern = /customGray/g
+const tokenFiles = new Set([
+  'packages/ui/src/foundation/design-tokens.ts',
+  'packages/ui/src/foundation/design-tokens.css',
+  'packages/ui/src/foundation/design-tokens.spec.ts',
+])
+const grayTokenMessage = 'use semantic tokens (bg-surface-*, border-border-*, text-text-*, state-*)'
+
 const violations = []
 
 for (const appName of appNames) {
   checkApp(appName)
 }
 checkPackagesDoNotImportApps()
+checkGrayPalette()
 
 if (violations.length > 0) {
   console.error('Web architecture check failed:')
@@ -92,6 +107,71 @@ function checkPackagesDoNotImportApps() {
       }
     }
   }
+}
+
+function checkGrayPalette() {
+  const roots = [
+    ...appNames.map((appName) => join(appsRoot, appName, 'src')),
+    join(packagesRoot, 'ui', 'src'),
+  ]
+
+  for (const root of roots) {
+    for (const file of collectSourceFiles(root, grayScanExtensions)) {
+      if (isExemptFromGrayRules(file)) {
+        continue
+      }
+
+      reportGrayViolations(file)
+    }
+  }
+}
+
+function isExemptFromGrayRules(file) {
+  const relativePath = relative(webRoot, file).split(sep).join('/')
+
+  if (relativePath.startsWith('packages/ui/scripts/')) {
+    return true
+  }
+
+  return tokenFiles.has(relativePath)
+}
+
+function reportGrayViolations(file) {
+  const source = readFileSync(file, 'utf8')
+
+  reportPattern(source, retiredGrayPattern, (match) => `${match[0]} is retired; ${grayTokenMessage}`)
+  reportPattern(source, grayVariablePattern, () => `must not use raw gray CSS variable (var(--color-gray-*)); ${grayTokenMessage}`)
+  reportPattern(source, rawGrayClassPattern, (match) => {
+    if (isDarkPrefixed(source, match.index)) {
+      return null
+    }
+
+    return `must not use raw gray palette class (${match[0]}); ${grayTokenMessage}`
+  })
+
+  function reportPattern(text, pattern, messageFor) {
+    pattern.lastIndex = 0
+    let match
+
+    while ((match = pattern.exec(text)) !== null) {
+      const message = messageFor(match)
+      if (message) {
+        addViolation(file, lineForIndex(text, match.index), message)
+      }
+    }
+  }
+}
+
+function isDarkPrefixed(source, index) {
+  const separators = new Set(' \t\n\r\'"`()<>{}[],;='.split(''))
+  let start = index
+
+  while (start > 0 && !separators.has(source[start - 1])) {
+    start -= 1
+  }
+
+  const variants = source.slice(start, index).split(':').slice(0, -1)
+  return variants.includes('dark')
 }
 
 function isForbiddenSrcImport(fromLayer, toLayer) {
@@ -219,7 +299,7 @@ function getWorkspaceAppName(specifier) {
   return null
 }
 
-function collectSourceFiles(root) {
+function collectSourceFiles(root, extensions = sourceExtensions) {
   if (!existsSync(root)) {
     return []
   }
@@ -242,7 +322,7 @@ function collectSourceFiles(root) {
       continue
     }
 
-    if (stat.isFile() && sourceExtensions.has(extname(current))) {
+    if (stat.isFile() && extensions.has(extname(current))) {
       files.push(current)
     }
   }
