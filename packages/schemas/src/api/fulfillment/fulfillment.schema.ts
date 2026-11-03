@@ -4,14 +4,29 @@ import {
   FulfillmentMethods,
   FulfillmentOperators,
   FulfillmentProvenances,
+  ShipmentLabelStatuses,
   ShipmentStatuses,
   ShipmentUpdateActorTypes,
   ShipmentUpdateSources,
 } from '@arc/enums/fulfillment'
 
+export const shipmentRateServiceSchema = z.enum(['standard', 'express'])
+
 export const fulfillmentShipmentItemSchema = z.object({
   order_item_id: z.string(),
   quantity: z.number(),
+})
+
+/**
+ * The carrier label bought for a shipment. The PDF itself is not part of the
+ * shipment read model; it is downloaded separately.
+ */
+export const fulfillmentShipmentLabelSchema = z.object({
+  public_id: z.string(),
+  service: shipmentRateServiceSchema,
+  status: z.nativeEnum(ShipmentLabelStatuses),
+  price_minor: z.number().int().nonnegative(),
+  currency: z.string(),
 })
 
 export const fulfillmentShipmentUpdateSchema = z.object({
@@ -37,6 +52,7 @@ export const fulfillmentShipmentSchema = z.object({
   carrier_observable: z.boolean().optional(),
   tracking_number: z.string().optional(),
   shipment_note: z.string().optional(),
+  label: fulfillmentShipmentLabelSchema.nullable().optional(),
   origin_countries: z.array(z.string()),
   prepared_at: z.coerce.date(),
   dispatched_at: z.coerce.date().optional(),
@@ -96,6 +112,17 @@ export const prepareFulfillmentShipmentRequestSchema = z.object({
   shipment_note: z.string().max(5000).optional(),
 })
 
+/**
+ * A label purchase names the rate quote the seller chose. The quote already
+ * carries the carrier price; the group and items tell the API which quantities
+ * the label covers.
+ */
+export const purchaseShipmentLabelRequestSchema = z.object({
+  quote_id: z.string(),
+  group_id: z.string().optional(),
+  items: z.array(fulfillmentShipmentItemSchema).min(1),
+})
+
 export const amendFulfillmentShipmentRequestSchema = z.object({
   items: z.array(fulfillmentShipmentItemSchema).optional(),
   carrier: z.string().max(255).optional(),
@@ -124,5 +151,39 @@ export const carrierCatalogueResponseSchema = z.object({
   carriers: z.array(carrierSchema),
 })
 
+export const shipmentRatesRequestSchema = z.object({
+  weight_grams: z.number().int().positive(),
+  length_cm: z.number().int().positive(),
+  width_cm: z.number().int().positive(),
+  height_cm: z.number().int().positive(),
+})
+
+export const shipmentRateEstimatedDaysSchema = z.object({
+  min: z.number().int().positive(),
+  max: z.number().int().positive(),
+})
+
+export const shipmentRateQuoteSchema = z.object({
+  quote_id: z.string(),
+  carrier: z.string(),
+  /** Display name resolved server-side from the carrier code. */
+  service: shipmentRateServiceSchema,
+  /** Carrier price in the shop's Settlement Currency, integer minor units. */
+  price_minor: z.number().int().nonnegative(),
+  currency: z.string(),
+  estimated_days: shipmentRateEstimatedDaysSchema,
+  expires_at: z.coerce.date(),
+})
+
+export const shipmentRatesResponseSchema = z.object({
+  rates: z.array(shipmentRateQuoteSchema),
+})
+
 export type Carrier = z.infer<typeof carrierSchema>
 export type CarrierCatalogueResponse = z.infer<typeof carrierCatalogueResponseSchema>
+export type FulfillmentShipmentLabel = z.infer<typeof fulfillmentShipmentLabelSchema>
+export type PurchaseShipmentLabelRequest = z.infer<typeof purchaseShipmentLabelRequestSchema>
+export type ShipmentRateService = z.infer<typeof shipmentRateServiceSchema>
+export type ShipmentRatesRequest = z.infer<typeof shipmentRatesRequestSchema>
+export type ShipmentRateQuote = z.infer<typeof shipmentRateQuoteSchema>
+export type ShipmentRatesResponse = z.infer<typeof shipmentRatesResponseSchema>

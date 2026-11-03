@@ -119,6 +119,26 @@ export function clampShipmentQuantity(value: number | undefined, max: number): n
   return Math.max(0, Math.min(Math.floor(value ?? 0), max));
 }
 
+/**
+ * The seller-facing reason a typed quantity cannot be shipped, if any. The
+ * dialogs disable their primary action on this so the quantity a seller sees is
+ * the quantity the request carries.
+ */
+export function shipmentQuantityError(
+  value: number | undefined,
+  max: number,
+): string | undefined {
+  if (!Number.isFinite(value) || !Number.isInteger(value) || (value ?? 0) < 0) {
+    return `Enter a whole number between 0 and ${max}.`;
+  }
+
+  if ((value ?? 0) > max) {
+    return `Only ${max} remaining.`;
+  }
+
+  return undefined;
+}
+
 /** The server-resolved display name, falling back to the stored carrier code. */
 export function shipmentCarrierName(shipment: ShipmentView): string | undefined {
   return shipment.carrier_name ?? shipment.carrier;

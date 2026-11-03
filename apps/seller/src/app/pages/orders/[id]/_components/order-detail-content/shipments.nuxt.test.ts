@@ -17,6 +17,7 @@ vi.mock('~/domains/shop/mutations/order-fulfillment.mutation', async () => {
     useShopOrderFulfillmentMutations: () => ({
       declareShipmentHandover: { mutateAsync: vi.fn(), isPending: ref(false) },
       voidShipment: { mutateAsync: vi.fn(), isPending: ref(false) },
+      refundLabel: { mutateAsync: vi.fn(), isPending: ref(false) },
     }),
   };
 });

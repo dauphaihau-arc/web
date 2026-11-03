@@ -7,6 +7,7 @@ import type { VueWrapper } from '@vue/test-utils';
 import { ref } from 'vue';
 import {
   FulfillmentAggregateStatuses,
+  ShipmentLabelStatuses,
   ShipmentStatuses,
   ShipmentUpdateActorTypes,
   ShipmentUpdateSources,
@@ -18,13 +19,25 @@ const { modalOpen } = vi.hoisted(() => ({ modalOpen: vi.fn() }));
 
 mockNuxtImport('useModal', () => () => ({ open: modalOpen, close: vi.fn() }));
 
-const { declareShipmentHandoverMutate } = vi.hoisted(() => ({
+const { declareShipmentHandoverMutate, refundLabelMutate } = vi.hoisted(() => ({
   declareShipmentHandoverMutate: vi.fn(),
+  refundLabelMutate: vi.fn(),
+}));
+
+const { downloadLabel } = vi.hoisted(() => ({ downloadLabel: vi.fn() }));
+
+vi.mock('~/domains/shop/api/order/order.api', () => ({
+  shopOrderApi: { downloadLabel },
+}));
+
+vi.mock('~/domains/shop/utils/resolve-my-shop-id', () => ({
+  resolveMyShopId: async () => 'shop-1',
 }));
 
 vi.mock('~/domains/shop/mutations/order-fulfillment.mutation', () => ({
   useShopOrderFulfillmentMutations: () => ({
     declareShipmentHandover: { mutateAsync: declareShipmentHandoverMutate, isPending: ref(false) },
+    refundLabel: { mutateAsync: refundLabelMutate, isPending: ref(false) },
   }),
 }));
 
@@ -218,5 +231,110 @@ describe('shipment row actions handover', () => {
 
     // Nothing is left to do on a dispatched parcel whose window has closed.
     expect(wrapper!.findAll('button')).toHaveLength(0);
+  });
+});
+
+describe('shipment row actions label', () => {
+  const LABEL = {
+    public_id: 'lbl_123',
+    service: 'standard' as const,
+    status: ShipmentLabelStatuses.PURCHASED,
+    price_minor: 980,
+    currency: 'USD',
+  };
+
+  afterEach(() => {
+    wrapper?.unmount();
+    wrapper = undefined;
+    document.body.innerHTML = '';
+    downloadLabel.mockReset();
+    refundLabelMutate.mockReset();
+    vi.restoreAllMocks();
+  });
+
+  it('offers "Print label" and saves the downloaded PDF when a label exists', async () => {
+    const blob = new Blob(['%PDF-1.4'], { type: 'application/pdf' });
+    downloadLabel.mockResolvedValue(blob);
+
+    const createObjectURL = vi.fn(() => 'blob:label');
+    Object.defineProperty(URL, 'createObjectURL', { value: createObjectURL, configurable: true });
+    Object.defineProperty(URL, 'revokeObjectURL', { value: vi.fn(), configurable: true });
+    const anchorClick = vi
+      .spyOn(HTMLAnchorElement.prototype, 'click')
+      .mockImplementation(() => {});
+
+    const { menuText } = await openMenu('none', { label: LABEL });
+
+    expect(menuText).toContain('Print label');
+
+    const entry = Array.from(document.body.querySelectorAll('button'))
+      .find(button => button.textContent?.includes('Print label'));
+    expect(entry).toBeDefined();
+
+    entry!.click();
+    await flushPromises();
+
+    expect(downloadLabel).toHaveBeenCalledWith('shop-1', 'order-1', 'shipment-1');
+    expect(createObjectURL).toHaveBeenCalledWith(blob);
+    expect(anchorClick).toHaveBeenCalled();
+  });
+
+  it('hides the print action when the shipment has no label', async () => {
+    const { menuText } = await openMenu('none');
+
+    expect(menuText).not.toContain('Print label');
+    expect(downloadLabel).not.toHaveBeenCalled();
+  });
+
+  it('hides both the print and refund actions for a voided label', async () => {
+    const { menuText } = await openMenu('none', {
+      label: { ...LABEL, status: ShipmentLabelStatuses.VOIDED },
+    });
+
+    expect(menuText).not.toContain('Print label');
+    expect(menuText).not.toContain('Refund label');
+    expect(downloadLabel).not.toHaveBeenCalled();
+  });
+
+  it('offers "Refund label" for a purchased label and refunds it', async () => {
+    const { menuText } = await openMenu('none', {
+      status: ShipmentStatuses.PREPARED,
+      dispatched_at: undefined,
+      label: LABEL,
+    });
+
+    expect(menuText).toContain('Refund label');
+
+    const entry = Array.from(document.body.querySelectorAll('button'))
+      .find(button => button.textContent?.includes('Refund label'));
+    expect(entry).toBeDefined();
+
+    entry!.click();
+    await flushPromises();
+
+    expect(refundLabelMutate).toHaveBeenCalledWith({
+      orderId: 'order-1',
+      shipmentId: 'shipment-1',
+    });
+  });
+
+  it('offers "Refund label" after handover but before the carrier scans', async () => {
+    const { menuText } = await openMenu('none', { label: LABEL });
+
+    expect(menuText).toContain('Refund label');
+  });
+
+  it('hides "Refund label" once the carrier has scanned the parcel', async () => {
+    const { menuText } = await openMenu(ShipmentUpdateSources.CARRIER, { label: LABEL });
+
+    expect(menuText).not.toContain('Refund label');
+  });
+
+  it('hides "Refund label" for a label that is already used', async () => {
+    const { menuText } = await openMenu('none', {
+      label: { ...LABEL, status: ShipmentLabelStatuses.USED },
+    });
+
+    expect(menuText).not.toContain('Refund label');
   });
 });

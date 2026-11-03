@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { getStatusCode } from '@arc/lib'
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
+import CanceledLabelRefunds from './canceled-label-refunds.vue'
 import Customer from './customer.vue'
 import OrderDetails from './order-details.vue'
 import OrderProgress from './order-progress.vue'
@@ -73,6 +74,7 @@ const errorState = computed(() => {
         :order="order"
         :asset-host="assetHost"
       />
+      <CanceledLabelRefunds :order="order" />
       <Shipments :order="order" />
       <OrderTimeline
         :order="order"

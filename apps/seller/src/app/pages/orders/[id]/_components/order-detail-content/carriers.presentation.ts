@@ -26,6 +26,28 @@ export function carrierTrackingHint(carrier: Carrier | undefined): string {
 }
 
 /**
+ * Example tracking numbers per carrier code, kept beside the hint so the input
+ * placeholder never restates the format sentence.
+ */
+const TRACKING_PLACEHOLDERS: Record<string, string> = {
+  usps: '9400111899223197428490',
+  dhl: '1234567890',
+  vnpost: 'EA123456789VN',
+  other: 'Local courier tracking number',
+};
+
+const GENERIC_TRACKING_PLACEHOLDER = 'Local courier tracking number';
+
+/** An example tracking number to show in the empty tracking-number input. */
+export function carrierTrackingPlaceholder(carrier: Carrier | undefined): string {
+  if (!carrier) {
+    return 'Select a carrier first';
+  }
+
+  return TRACKING_PLACEHOLDERS[carrier.code] ?? GENERIC_TRACKING_PLACEHOLDER;
+}
+
+/**
  * Mirror the server rule before submitting: an observable carrier only accepts
  * a tracking number matching its catalogue pattern. Non-observable carriers and
  * an empty carrier/tracking pair are not pattern-checked.

@@ -1,6 +1,7 @@
 import { computed, type MaybeRefOrGetter, toValue } from 'vue';
 import { OrderStatuses } from '@arc/enums/order';
 import {
+  ShipmentLabelStatuses,
   ShipmentStatuses,
   ShipmentUpdateSources,
 } from '@arc/enums/fulfillment';
@@ -68,13 +69,40 @@ export function useOrderShipmentState(
   });
 
   const canVoidShipment = computed(() =>
-    !shipmentUpdatesBlocked.value && shipment.value?.status === ShipmentStatuses.PREPARED,
+    !shipmentUpdatesBlocked.value
+    && shipment.value?.status === ShipmentStatuses.PREPARED
+    && !shipment.value.label,
   );
+
+  /** A voided label's PDF is no longer a valid shipping document. */
+  const canPrintShipmentLabel = computed(() =>
+    !!shipment.value?.label
+    && shipment.value.label.status !== ShipmentLabelStatuses.VOIDED,
+  );
+
+  /**
+   * Only an unused label can be refunded: once the carrier scans the parcel the
+   * purchase is consumed. Handover alone (dispatched, no scan yet) still leaves
+   * the label refundable.
+   */
+  const canRefundShipmentLabel = computed(() => {
+    if (shipmentUpdatesBlocked.value || !shipment.value) return false;
+
+    const { label, status, updates } = shipment.value;
+    if (!label || label.status !== ShipmentLabelStatuses.PURCHASED) return false;
+
+    if (status === ShipmentStatuses.PREPARED) return true;
+    if (status !== ShipmentStatuses.DISPATCHED) return false;
+
+    return !updates.some(update => update.source === ShipmentUpdateSources.CARRIER);
+  });
 
   return {
     canDeclareHandover,
     canEditShipmentInfo,
     canVoidShipment,
+    canPrintShipmentLabel,
+    canRefundShipmentLabel,
     shipmentUpdatesBlocked,
   };
 }

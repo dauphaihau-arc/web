@@ -4,6 +4,7 @@ import {
   carrierOptions,
   carrierTrackingError,
   carrierTrackingHint,
+  carrierTrackingPlaceholder,
   findCarrier,
 } from './carriers.presentation';
 
@@ -30,6 +31,15 @@ const OTHER: Carrier = {
   name: 'Other',
   observable: false,
   label_supported: false,
+};
+
+const VNPOST: Carrier = {
+  code: 'vnpost',
+  name: 'VNPOST',
+  tracking_pattern: '^[A-Z]{2}\\d{9}VN$',
+  tracking_hint: 'two letters, nine digits, then VN',
+  observable: true,
+  label_supported: true,
 };
 
 const PLAIN: Carrier = {
@@ -68,6 +78,23 @@ describe('carrierTrackingHint', () => {
     expect(carrierTrackingHint(PLAIN)).toBe('');
     expect(carrierTrackingHint(OTHER)).toBe('');
     expect(carrierTrackingHint(undefined)).toBe('');
+  });
+});
+
+describe('carrierTrackingPlaceholder', () => {
+  it('offers an example tracking number per carrier code', () => {
+    expect(carrierTrackingPlaceholder(USPS)).toBe('9400111899223197428490');
+    expect(carrierTrackingPlaceholder(DHL)).toBe('1234567890');
+    expect(carrierTrackingPlaceholder(VNPOST)).toBe('EA123456789VN');
+  });
+
+  it('falls back to the local courier example for unmapped and plain carriers', () => {
+    expect(carrierTrackingPlaceholder(OTHER)).toBe('Local courier tracking number');
+    expect(carrierTrackingPlaceholder(PLAIN)).toBe('Local courier tracking number');
+  });
+
+  it('prompts for a carrier when none is selected', () => {
+    expect(carrierTrackingPlaceholder(undefined)).toBe('Select a carrier first');
   });
 });
 

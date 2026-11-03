@@ -7,9 +7,12 @@ import type {
   UpdateShopOrderRefundRequest,
   UpdateShopOrderStatusRequest,
   PrepareFulfillmentShipmentRequest,
+  PurchaseShipmentLabelRequest,
   AmendFulfillmentShipmentRequest,
   ReconcileOrderFulfillmentRequest,
   FulfillmentMutationResponse,
+  ShipmentRatesRequest,
+  ShipmentRatesResponse,
 } from './contracts/order.contract';
 import { apiClient } from '~/domains/_shared/api-client';
 
@@ -80,6 +83,21 @@ export const shopOrderApi = {
     );
   },
 
+  /**
+   * A Rate Quote is a read-only carrier price for package facts, so it carries
+   * no idempotency key and creates nothing.
+   */
+  shipmentRates(
+    shopId: string,
+    orderId: string,
+    payload: ShipmentRatesRequest,
+  ) {
+    return apiClient.post<ShipmentRatesResponse>(
+      `/shops/${shopId}/orders/${orderId}/fulfillment/shipment-rates`,
+      payload,
+    );
+  },
+
   prepareFulfillmentShipment(
     shopId: string,
     orderId: string,
@@ -88,6 +106,44 @@ export const shopOrderApi = {
     return apiClient.post<FulfillmentMutationResponse>(
       `/shops/${shopId}/orders/${orderId}/fulfillment/shipments`,
       payload,
+      idempotentOptions(),
+    );
+  },
+
+  /**
+   * Buys the carrier label for a Rate Quote. The quote is single-use, so the
+   * request carries an idempotency key: a transport retry must not buy twice.
+   */
+  buyLabel(
+    shopId: string,
+    orderId: string,
+    payload: PurchaseShipmentLabelRequest,
+  ) {
+    return apiClient.post<FulfillmentMutationResponse>(
+      `/shops/${shopId}/orders/${orderId}/fulfillment/shipments/label`,
+      payload,
+      idempotentOptions(),
+    );
+  },
+
+  downloadLabel(shopId: string, orderId: string, shipmentId: string) {
+    return apiClient.get<Blob>(
+      `/shops/${shopId}/orders/${orderId}/fulfillment/shipments/${shipmentId}/label.pdf`,
+      undefined,
+      { responseType: 'blob' },
+    );
+  },
+
+  /**
+   * Refunds the carrier label and voids the Shipment. Like every fulfillment
+   * write it carries an idempotency key: a retried refund must stay a refund,
+   * not refund twice.
+   */
+  refundLabel(shopId: string, orderId: string, shipmentId: string) {
+    return apiClient.delete<FulfillmentMutationResponse>(
+      `/shops/${shopId}/orders/${orderId}/fulfillment/shipments/${shipmentId}/label`,
+      undefined,
+      undefined,
       idempotentOptions(),
     );
   },

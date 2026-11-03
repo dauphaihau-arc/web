@@ -11,6 +11,7 @@ import {
   remainingCapacityTotal,
   shipmentCarrierEventUpdates,
   shipmentCarrierName,
+  shipmentQuantityError,
   shipmentTrackingUnverified,
   shipmentUpdateTitle,
 } from './shipments.presentation';
@@ -150,6 +151,25 @@ describe('clampShipmentQuantity', () => {
 
   it('cannot ship anything from a consignment with no capacity left', () => {
     expect(clampShipmentQuantity(3, 0)).toBe(0);
+  });
+});
+
+describe('shipmentQuantityError', () => {
+  it('accepts every quantity the consignment can actually carry', () => {
+    expect(shipmentQuantityError(0, 4)).toBeUndefined();
+    expect(shipmentQuantityError(4, 4)).toBeUndefined();
+  });
+
+  it('names the remaining capacity when the typed quantity is too high', () => {
+    expect(shipmentQuantityError(1331, 1)).toBe('Only 1 remaining.');
+    expect(shipmentQuantityError(5, 4)).toBe('Only 4 remaining.');
+  });
+
+  it('asks for a whole quantity when the entry is blank, fractional or negative', () => {
+    expect(shipmentQuantityError(Number.NaN, 4)).toBe('Enter a whole number between 0 and 4.');
+    expect(shipmentQuantityError(undefined, 4)).toBe('Enter a whole number between 0 and 4.');
+    expect(shipmentQuantityError(2.5, 4)).toBe('Enter a whole number between 0 and 4.');
+    expect(shipmentQuantityError(-1, 4)).toBe('Enter a whole number between 0 and 4.');
   });
 });
 

@@ -110,8 +110,6 @@ const actions = computed(() => [
   {
     id: 'save',
     label: 'Save shipment',
-    shortcut: 'meta_enter' as const,
-    allowWhileInputFocused: true,
     disabled: (canChangeItems.value && amendedItems.value.length === 0) || Boolean(trackingError.value),
     loading: amendShipment.isPending.value,
     run: amend,
