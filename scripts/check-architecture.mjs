@@ -6,7 +6,7 @@
  * - storefront pages may not import another page's private `_components`
  * - workspace packages may not import app source
  * - source may not use raw gray palette classes or CSS variables; use semantic tokens
- *   (dark: variants are exempt because there is no dark-mode token layer)
+ *   (dark: variants may only use the zinc palette, since there is no dark-mode token layer)
  */
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { dirname, extname, isAbsolute, join, normalize, relative, resolve, sep } from 'node:path'
@@ -143,7 +143,9 @@ function reportGrayViolations(file) {
   reportPattern(source, grayVariablePattern, () => `must not use raw gray CSS variable (var(--color-gray-*)); ${grayTokenMessage}`)
   reportPattern(source, rawGrayClassPattern, (match) => {
     if (isDarkPrefixed(source, match.index)) {
-      return null
+      return match[2] === 'zinc'
+        ? null
+        : `must not use raw ${match[2]} palette class under dark: (${match[0]}); only zinc is allowed in dark mode; ${grayTokenMessage}`
     }
 
     return `must not use raw gray palette class (${match[0]}); ${grayTokenMessage}`
