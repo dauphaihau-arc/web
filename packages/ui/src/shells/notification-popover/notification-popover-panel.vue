@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import { ICON_NAME_BY_ALIAS } from '../../foundation/app-icon.constants'
+import AppTabs from '../../patterns/app-tabs/app-tabs.vue'
 
 interface NotificationPopoverItem {
   id: string
@@ -44,7 +45,11 @@ const emit = defineEmits<{
   filterChange: [value: string]
 }>()
 
-const activeFilterIndex = computed(() => props.filters.findIndex(filter => filter.value === props.activeFilter))
+const filterItems = computed(() => props.filters.map(filter => ({
+  label: filter.label,
+  value: filter.value,
+})))
+
 function formatNotificationTime(value: string) {
   const createdAt = dayjs(value)
   const now = dayjs()
@@ -80,8 +85,8 @@ function formatNotificationTitle(value: string) {
 }
 
 
-function handleFilterChange(index: number) {
-  const filter = props.filters[index]
+function handleFilterChange(value: string | number) {
+  const filter = props.filters.find(item => item.value === String(value))
 
   if (!filter) {
     return
@@ -92,7 +97,7 @@ function handleFilterChange(index: number) {
 </script>
 
 <template>
-  <div class="flex max-h-[min(32rem,calc(100vh-5rem))] w-[25rem] max-w-[calc(100vw-2rem)] flex-col py-3">
+  <div class="flex max-h-[min(32rem,calc(100vh-5rem))] w-[25rem] max-w-[calc(100vw-2rem)] flex-col pt-3">
     <div class="mb-3 flex items-center justify-between gap-3 px-3">
       <div class="text-sm font-semibold">
         Notifications
@@ -108,29 +113,18 @@ function handleFilterChange(index: number) {
       </UButton>
     </div>
 
-    <UTabs
+    <AppTabs
       v-if="filters.length > 0"
-      class="mb-3 w-full px-3"
-      :items="filters"
-      :model-value="activeFilterIndex"
-      :ui="{
-        list: {
-          width: 'w-full md:w-full',
-          height: 'h-9',
-          padding: 'p-1',
-          tab: {
-            base: 'flex-1 justify-center',
-            height: 'h-7',
-            padding: 'px-2',
-            size: 'text-xs',
-            icon: 'w-3.5 h-3.5 me-1',
-          },
-        },
-      }"
-      @change="handleFilterChange"
+      variant="link"
+      size="sm"
+      class="w-full"
+      :items="filterItems"
+      :model-value="activeFilter"
+      aria-label="Notification filters"
+      @update:model-value="handleFilterChange"
     />
 
-    <div class="scrollbar-subtle flex min-h-60 flex-1 flex-col overflow-y-auto overscroll-contain">
+    <div class="scrollbar-subtle flex h-[min(25rem,calc(100vh-11rem))] flex-col overflow-y-auto overscroll-contain">
       <Empty
         v-if="loading"
         loading
@@ -165,7 +159,7 @@ function handleFilterChange(index: number) {
           v-for="notification in notifications"
           :key="notification.id"
           type="button"
-          class="w-full border-b px-3 py-3 text-left transition-colors hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-60"
+          class="w-full border-b px-3 py-3 text-left transition-colors last:border-b-0 hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-60"
           :disabled="isMarkingOne"
           @click="emit('itemClick', notification)"
         >
