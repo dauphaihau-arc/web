@@ -10,7 +10,6 @@ const props = defineProps<{
 }>()
 
 const dialog = useModal()
-const actionsMenuOpen = ref(false)
 
 const { data } = useShopGetOrderDetail(props.orderId)
 const order = computed(() => data.value?.order)
@@ -40,31 +39,18 @@ type ActionMenuItem = {
   onClick: () => void | Promise<void>
 }
 
-type ActionMenuGroup = {
-  label: string
-  items: ActionMenuItem[]
-}
-
-async function runMenuAction(handler: () => void | Promise<void>) {
-  await handler()
-  actionsMenuOpen.value = false
-}
-
-const actionMenuGroups = computed<ActionMenuGroup[]>(() => {
-  const groups: ActionMenuGroup[] = []
+const actionMenuGroups = computed<ActionMenuItem[][]>(() => {
+  const groups: ActionMenuItem[][] = []
 
   if (canCancel.value) {
-    groups.push({
-      label: 'Order actions',
-      items: [
-        {
-          label: 'Cancel order',
-          icon: 'lucide:circle-x',
-          tone: 'danger',
-          onClick: () => openCancelDialog(),
-        },
-      ],
-    })
+    groups.push([
+      {
+        label: 'Cancel order',
+        icon: 'lucide:circle-x',
+        tone: 'danger',
+        onClick: () => openCancelDialog(),
+      },
+    ])
   }
 
   const paymentActions: ActionMenuItem[] = []
@@ -85,14 +71,19 @@ const actionMenuGroups = computed<ActionMenuGroup[]>(() => {
   }
 
   if (paymentActions.length) {
-    groups.push({
-      label: 'Summary actions',
-      items: paymentActions,
-    })
+    groups.push(paymentActions)
   }
 
   return groups
 })
+
+const dropdownItems = computed(() => actionMenuGroups.value.map(group => group.map(item => ({
+  label: item.label,
+  icon: item.icon,
+  class: item.tone === 'danger' ? 'text-red-600' : undefined,
+  iconClass: item.tone === 'danger' ? 'text-red-500' : undefined,
+  click: () => item.onClick(),
+}))))
 </script>
 
 <template>
@@ -112,48 +103,11 @@ const actionMenuGroups = computed<ActionMenuGroup[]>(() => {
       Retry refund
     </UButton>
 
-    <UPopover
-      v-if="actionMenuGroups.length"
-      v-model:open="actionsMenuOpen"
+    <UDropdown
+      v-if="dropdownItems.length"
+      :items="dropdownItems"
       :popper="{ placement: 'bottom-end', offsetDistance: 8 }"
-      :ui="{ rounded: 'rounded-[16px]', shadow: 'shadow-none', ring: '', background: 'bg-transparent', base: 'overflow-hidden' }"
     >
-      <template #panel>
-        <div class="min-w-72 overflow-hidden rounded-[16px] border border-border-subtle bg-surface shadow-[0_24px_60px_rgba(15,23,42,0.16)]">
-          <div
-            v-for="(group, groupIndex) in actionMenuGroups"
-            :key="group.label"
-            class="p-2"
-            :class="{ 'border-t border-border-subtle': groupIndex > 0 }"
-          >
-            <div class="px-3 py-2 text-sm font-medium text-text-muted">
-              {{ group.label }}
-            </div>
-            <button
-              v-for="item in group.items"
-              :key="item.label"
-              type="button"
-              class="flex w-full items-center gap-3 rounded-xl px-3 py-1 text-left text-base text-text-strong transition-colors hover:bg-surface-hover"
-              :class="{ 'text-red-600 hover:bg-surface-accent': item.tone === 'danger' }"
-              @click="runMenuAction(item.onClick)"
-            >
-              <AppIcon
-                :name="item.icon"
-                size="sm"
-                class="shrink-0"
-                :class="item.tone === 'danger' ? 'text-red-500' : 'text-text-muted'"
-              />
-              <span
-                class="flex-1"
-                :class="item.tone === 'danger' ? 'text-red-600' : ''"
-              >
-                {{ item.label }}
-              </span>
-            </button>
-          </div>
-        </div>
-      </template>
-
       <UButton
         color="gray"
         aria-label="Order actions"
@@ -166,6 +120,6 @@ const actionMenuGroups = computed<ActionMenuGroup[]>(() => {
           />
         </template>
       </UButton>
-    </UPopover>
+    </UDropdown>
   </div>
 </template>
