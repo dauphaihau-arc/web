@@ -59,7 +59,7 @@ const rows = computed<OrderTableRow[]>(() => {
 
 const columns = [
   { key: 'order', label: 'Order number' },
-  { key: 'customer', label: 'Customer' },
+  { key: 'customer', label: 'Customer', class: 'w-[220px]' },
   { key: 'total', label: 'Total' },
   { key: 'items', label: 'Items' },
   { key: 'created_at', label: 'Order Date' },
@@ -172,7 +172,10 @@ function formatAmountWithShortLabel(amountMinor: number, currency: string) {
       </template>
 
       <template #customer-data="{ row }">
-        <div class="text-sm text-text-muted">
+        <div
+          class="max-w-[220px] truncate text-sm text-text-muted"
+          :title="row.raw.customer.email"
+        >
           {{ row.raw.customer.email }}
         </div>
       </template>

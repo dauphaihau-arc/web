@@ -37,21 +37,27 @@ const rows = computed<RecentOrderRow[]>(() =>
 
 const desktopColumns = [
   { key: 'orderNumber', label: 'Order' },
-  { key: 'total', label: 'Total', class: 'w-28' },
+  { key: 'total', label: 'Total', class: 'w-28 text-center', rowClass: 'text-center' },
   { key: 'status', label: 'Status', class: 'w-36 text-right' },
 ]
 
 const wrappedColumns = [
-  { key: 'orderNumber', label: 'Order' },
+  { key: 'orderNumber', label: 'Order', class: 'pl-0', rowClass: 'pl-0' },
   { key: 'customer', label: 'Customer' },
   { key: 'total', label: 'Total' },
   { key: 'status', label: 'Status' },
-  { key: 'date', label: 'Date' },
+  { key: 'date', label: 'Date', class: 'pr-0', rowClass: 'pr-0' },
 ]
 
 const tableUi = {
   divide: 'divide-y divide-border-subtle',
   tbody: 'divide-y divide-border-subtle',
+} as const
+
+const desktopTableUi = {
+  ...tableUi,
+  th: { padding: 'px-0 py-2' },
+  td: { padding: 'px-0 py-3' },
 } as const
 
 function orderTone(status: ShopOrderSummary['status']) {
@@ -160,7 +166,7 @@ function orderTone(status: ShopOrderSummary['status']) {
         :columns="desktopColumns"
         :loading="loading"
         :empty-state="{ icon: 'i-heroicons-archive-box-20-solid', label: 'No orders in this period.' }"
-        :ui="tableUi"
+        :ui="desktopTableUi"
       >
         <template #orderNumber-data="{ row }">
           <NuxtLink

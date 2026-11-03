@@ -35,16 +35,18 @@ const rows = computed<TopProductRow[]>(() =>
 )
 
 const columns = [
-  { key: 'title', label: 'Product' },
-  { key: 'quantitySold', label: 'Sold' },
-  { key: 'orderCount', label: 'Orders' },
-  { key: 'revenue', label: 'Revenue' },
-  { key: 'actions' },
+  { key: 'title', label: 'Product', class: 'w-[260px]' },
+  { key: 'quantitySold', label: 'Sold', class: 'w-20 text-center', rowClass: 'text-center' },
+  { key: 'orderCount', label: 'Orders', class: 'w-20 text-center', rowClass: 'text-center' },
+  { key: 'revenue', label: 'Revenue', class: 'w-28 text-center', rowClass: 'text-center' },
+  { key: 'actions', class: 'text-right' },
 ]
 
 const tableUi = {
   divide: 'divide-y divide-border-subtle',
   tbody: 'divide-y divide-border-subtle',
+  th: { padding: 'px-0 py-2' },
+  td: { padding: 'px-0 py-3' },
 } as const
 </script>
 
