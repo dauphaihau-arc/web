@@ -13,7 +13,7 @@ type NotificationPopoverFilter = {
   value: string
 }
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   notifications: NotificationPopoverItem[]
   unreadCount: number
   loading?: boolean
@@ -46,6 +46,7 @@ const emit = defineEmits<{
 }>()
 
 const isPopoverOpen = ref(false)
+const unreadBadgeText = computed(() => props.unreadCount > 9 ? '9+' : String(props.unreadCount))
 </script>
 
 <template>
@@ -54,7 +55,7 @@ const isPopoverOpen = ref(false)
     :popper="{ placement: 'bottom-end' }"
   >
     <UChip
-      :text="unreadCount"
+      :text="unreadBadgeText"
       :show="unreadCount > 0"
       size="lg"
       position="bottom-right"
