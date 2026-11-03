@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import type { DropdownItem } from '#ui/types'
-import type { ShipmentJourneyStatuses } from '@arc/enums/fulfillment'
 import EditShipmentDialog from './edit-shipment-dialog.vue'
+import ShipmentEventsDialog from './shipment-events-dialog.vue'
 import VoidShipmentDialog from './void-shipment-dialog.vue'
-import { journeyIcon, journeyLabel } from './shipments.presentation'
+import { shipmentCarrierEventUpdates } from './shipments.presentation'
 import { useOrderShipmentState } from './use-order-shipment-state'
 import { useShopOrderFulfillmentMutations } from '~/domains/shop/mutations/order-fulfillment.mutation'
+import { resolveMyShopId } from '~/domains/shop/utils/resolve-my-shop-id'
+import { shopOrderApi } from '~/domains/shop/api/order/order.api'
+import { toastCustom } from '~/shared/config/toast'
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail'
 
 const props = defineProps<{
@@ -15,37 +18,52 @@ const props = defineProps<{
 }>()
 
 const dialog = useModal()
-const { updateShipmentJourney } = useShopOrderFulfillmentMutations()
+const toast = useToast()
+const queryClient = useQueryClient()
+const { declareShipmentHandover, refundLabel } = useShopOrderFulfillmentMutations()
 
 const {
-  allowedJourneyTransitions,
+  canDeclareHandover,
   canEditShipmentInfo,
   canVoidShipment,
-  canTransitionTo,
+  canPrintShipmentLabel,
+  canRefundShipmentLabel,
 } = useOrderShipmentState(() => props.order, () => props.shipment)
 
-/**
- * The next step in the journey is the one-click action; the remaining steps and
- * the consignment upkeep live in the overflow menu.
- */
-const primaryTransition = computed(() => allowedJourneyTransitions.value[0])
-
+/** Declaring the parcel left the shop is the one-click action, once. */
 const menuItems = computed<DropdownItem[][]>(() => {
   const menu: DropdownItem[][] = []
 
-  const laterTransitions = allowedJourneyTransitions.value
-    .slice(1)
-    .map(transition => ({
-      label: journeyLabel(transition),
-      icon: journeyIcon(transition),
-      click: () => handleJourneyTransition(transition),
-    }))
+  const upkeep: DropdownItem[] = []
 
-  if (laterTransitions.length) {
-    menu.push(laterTransitions)
+  if (canPrintShipmentLabel.value) {
+    upkeep.push({
+      label: 'Print label',
+      icon: 'lucide:printer',
+      click: printLabel,
+    })
   }
 
-  const upkeep: DropdownItem[] = []
+  if (canRefundShipmentLabel.value) {
+    upkeep.push({
+      label: 'Refund label',
+      icon: 'lucide:rotate-ccw',
+      labelClass: 'text-red-600',
+      iconClass: 'text-red-500',
+      disabled: refundLabel.isPending.value,
+      click: handleRefundLabel,
+    })
+  }
+
+  if (shipmentCarrierEventUpdates(props.shipment).length) {
+    upkeep.push({
+      label: 'View tracking events',
+      icon: 'lucide:history',
+      click: () => dialog.open(ShipmentEventsDialog, {
+        shipment: props.shipment,
+      }),
+    })
+  }
 
   if (canEditShipmentInfo.value) {
     upkeep.push({
@@ -79,30 +97,69 @@ const menuItems = computed<DropdownItem[][]>(() => {
   return menu
 })
 
-async function handleJourneyTransition(status: ShipmentJourneyStatuses) {
-  if (!canTransitionTo(status)) return
-  await updateShipmentJourney.mutateAsync({
+async function handleHandover() {
+  if (!canDeclareHandover.value) return
+  await declareShipmentHandover.mutateAsync({
     orderId: props.order.id,
     shipmentId: props.shipment.id,
-    body: { status },
   })
+}
+
+/**
+ * Refunding voids the label and its Shipment server-side; the order refetch is
+ * what removes the row's actions afterwards.
+ */
+async function handleRefundLabel() {
+  if (!canRefundShipmentLabel.value || refundLabel.isPending.value) return
+  await refundLabel.mutateAsync({
+    orderId: props.order.id,
+    shipmentId: props.shipment.id,
+  })
+}
+
+/**
+ * The label PDF lives behind the same authenticated API as the order. It is
+ * downloaded as a blob and handed to the browser through an object URL, the
+ * same way order exports are saved.
+ */
+async function printLabel() {
+  if (!props.shipment.label) return
+
+  try {
+    const shopId = await resolveMyShopId(queryClient)
+    const blob = await shopOrderApi.downloadLabel(shopId, props.order.id, props.shipment.id)
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    anchor.href = url
+    anchor.download = `${props.shipment.label.public_id}.pdf`
+    document.body.appendChild(anchor)
+    anchor.click()
+    anchor.remove()
+    URL.revokeObjectURL(url)
+  }
+  catch {
+    toast.add({
+      ...toastCustom.error,
+      title: 'Failed to download label',
+    })
+  }
 }
 </script>
 
 <template>
   <div class="flex items-center justify-end gap-1">
     <UTooltip
-      v-if="primaryTransition"
-      :text="journeyLabel(primaryTransition)"
+      v-if="canDeclareHandover"
+      text="Mark as handed over"
     >
       <UButton
         color="gray"
         variant="soft"
-        :icon="journeyIcon(primaryTransition)"
-        :aria-label="journeyLabel(primaryTransition)"
-        :disabled="updateShipmentJourney.isPending.value"
-        :loading="updateShipmentJourney.isPending.value"
-        @click="handleJourneyTransition(primaryTransition)"
+        icon="lucide:package-check"
+        aria-label="Mark as handed over"
+        :disabled="declareShipmentHandover.isPending.value"
+        :loading="declareShipmentHandover.isPending.value"
+        @click="handleHandover"
       />
     </UTooltip>
 
@@ -129,7 +186,7 @@ async function handleJourneyTransition(status: ShipmentJourneyStatuses) {
           variant="soft"
           icon="lucide:ellipsis"
           aria-label="More actions"
-          :disabled="updateShipmentJourney.isPending.value"
+          :disabled="declareShipmentHandover.isPending.value || refundLabel.isPending.value"
         />
       </UTooltip>
     </UDropdown>

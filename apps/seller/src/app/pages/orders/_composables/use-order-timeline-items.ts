@@ -256,7 +256,9 @@ function shipmentUpdateDescription(
   const parts = [
     `By ${update.actor_type}`,
     `via ${update.source}`,
-    shipment.carrier ? `Carrier: ${shipment.carrier}` : '',
+    shipment.carrier || shipment.carrier_name
+      ? `Carrier: ${shipment.carrier_name ?? shipment.carrier}`
+      : '',
     shipment.tracking_number ? `Tracking: ${shipment.tracking_number}` : '',
     update.note ?? '',
   ].filter(Boolean);

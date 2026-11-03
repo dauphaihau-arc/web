@@ -21,11 +21,14 @@ const props = withDefaults(defineProps<{
 })
 
 const trackingText = computed(() => {
-  const { carrier, trackingNumber, state } = props.orderPackage
+  const {
+    carrierName, trackingNumber, state, trackingUnverified,
+  } = props.orderPackage
+  const trackingLabel = trackingUnverified ? `${trackingNumber} (unverified)` : trackingNumber
 
-  if (carrier && trackingNumber) return `Carrier: ${carrier} · Tracking: ${trackingNumber}`
-  if (trackingNumber) return `Tracking: ${trackingNumber}`
-  if (carrier) return `Carrier: ${carrier}`
+  if (carrierName && trackingLabel) return `Carrier: ${carrierName} · Tracking: ${trackingLabel}`
+  if (trackingLabel) return `Tracking: ${trackingLabel}`
+  if (carrierName) return `Carrier: ${carrierName}`
   if (state === 'preparing') return 'Tracking available once shipped'
 
   return ''
@@ -128,6 +131,12 @@ const showTrackingToggle = computed(() => hasTrackingHistory.value && props.orde
         <div class="min-w-0 flex-1">
           <div class="text-sm font-medium text-text-strong">
             {{ update.title }}
+          </div>
+          <div
+            v-if="update.location"
+            class="text-sm text-text-muted"
+          >
+            {{ update.location }}
           </div>
           <div class="text-sm text-text-muted">
             {{ update.occurredAt }}

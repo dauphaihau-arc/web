@@ -11,10 +11,16 @@ import type {
   updateShopOrderStatusRequestSchema,
   prepareFulfillmentShipmentRequestSchema,
   amendFulfillmentShipmentRequestSchema,
-  updateShipmentJourneyRequestSchema,
+  purchaseShipmentLabelRequestSchema,
   reconcileOrderFulfillmentRequestSchema,
+  shipmentRatesRequestSchema,
 } from '@arc/schemas/api/shop/order/order.schema';
-import type { fulfillmentMutationResponseSchema } from '@arc/schemas/api/fulfillment/fulfillment.schema';
+import type {
+  fulfillmentMutationResponseSchema,
+  shipmentRateQuoteSchema,
+  shipmentRateServiceSchema,
+  shipmentRatesResponseSchema,
+} from '@arc/schemas/api/fulfillment/fulfillment.schema';
 
 export type ListShopOrdersRequest = z.infer<typeof listShopOrdersRequestSchema>;
 export type ExportShopOrdersRequest = z.infer<typeof exportShopOrdersRequestSchema>;
@@ -25,8 +31,12 @@ export type ListShopOrdersResponse = z.infer<typeof listShopOrdersResponseSchema
 export type ShopOrderDetailResponse = z.infer<typeof shopOrderDetailResponseSchema>;
 export type UpdateShopOrderStatusRequest = z.infer<typeof updateShopOrderStatusRequestSchema>;
 export type PrepareFulfillmentShipmentRequest = z.infer<typeof prepareFulfillmentShipmentRequestSchema>;
+export type PurchaseShipmentLabelRequest = z.infer<typeof purchaseShipmentLabelRequestSchema>;
 export type AmendFulfillmentShipmentRequest = z.infer<typeof amendFulfillmentShipmentRequestSchema>;
-export type UpdateShipmentJourneyRequest = z.infer<typeof updateShipmentJourneyRequestSchema>;
 export type ReconcileOrderFulfillmentRequest = z.infer<typeof reconcileOrderFulfillmentRequestSchema>;
 export type FulfillmentMutationResponse = z.infer<typeof fulfillmentMutationResponseSchema>;
+export type ShipmentRatesRequest = z.infer<typeof shipmentRatesRequestSchema>;
+export type ShipmentRatesResponse = z.infer<typeof shipmentRatesResponseSchema>;
+export type ShipmentRateQuote = z.infer<typeof shipmentRateQuoteSchema>;
+export type ShipmentRateService = z.infer<typeof shipmentRateServiceSchema>;
 export type UpdateShopOrderRefundRequest = z.infer<typeof updateShopOrderRefundRequestSchema>;

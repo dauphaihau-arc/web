@@ -1,4 +1,5 @@
 export * from './build-tracking-url'
+export * from './carrier-event-label'
 export * from './currency-options'
 export * from './format-currency'
 export * from './insert'

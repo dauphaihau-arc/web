@@ -168,11 +168,15 @@ const visibleShipments = computed(() => fulfillment.value.groups.flatMap(group =
         <div class="font-medium">
           {{ shipmentStatusLabel[shipment.status] }}
         </div>
-        <div v-if="shipment.carrier">
-          Carrier: {{ shipment.carrier }}
+        <div v-if="shipment.carrier || shipment.carrier_name">
+          Carrier: {{ shipment.carrier_name ?? shipment.carrier }}
         </div>
         <div v-if="shipment.tracking_number">
           Tracking: {{ shipment.tracking_number }}
+          <span
+            v-if="shipment.carrier_observable === false"
+            class="text-xs text-text-subtle"
+          >(unverified)</span>
         </div>
         <div v-if="shipment.shipment_note">
           Note: {{ shipment.shipment_note }}

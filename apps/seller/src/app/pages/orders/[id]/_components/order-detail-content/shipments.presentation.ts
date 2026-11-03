@@ -1,5 +1,8 @@
 import dayjs from 'dayjs';
-import { ShipmentJourneyStatuses, ShipmentStatuses } from '@arc/enums/fulfillment';
+import {
+  ShipmentStatuses, ShipmentUpdateSources,
+} from '@arc/enums/fulfillment';
+import { carrierEventLabel } from '@arc/utils';
 import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail';
 
 export function formatShipmentTimestamp(value?: Date | string | null): string | undefined {
@@ -27,34 +30,30 @@ export function shipmentStatusTone(status: ShipmentStatuses): 'green' | 'blue' |
   }
 }
 
-const JOURNEY_PRESENTATION: Record<
-  ShipmentJourneyStatuses,
-  { label: string, icon: string }
-> = {
-  [ShipmentJourneyStatuses.DISPATCHED]: {
-    label: 'Dispatch',
-    icon: 'lucide:package-check',
-  },
-  [ShipmentJourneyStatuses.IN_TRANSIT]: {
-    label: 'Mark in transit',
-    icon: 'lucide:truck',
-  },
-  [ShipmentJourneyStatuses.DELIVERED]: {
-    label: 'Mark delivered',
-    icon: 'lucide:circle-check-big',
-  },
-};
-
-export function journeyLabel(status: ShipmentJourneyStatuses): string {
-  return JOURNEY_PRESENTATION[status].label;
-}
-
-export function journeyIcon(status: ShipmentJourneyStatuses): string {
-  return JOURNEY_PRESENTATION[status].icon;
-}
-
 type ShopOrderGroup = ShopOrder['fulfillment']['groups'][number];
 type ShipmentView = ShopOrderGroup['shipments'][number];
+type ShipmentUpdateView = ShipmentView['updates'][number];
+
+/** Carrier wording wins over the free-form note and the plain status label. */
+export function shipmentUpdateTitle(update: ShipmentUpdateView): string {
+  return carrierEventLabel(update.event_code) || update.note?.trim() || shipmentStatusLabel(update.status);
+}
+
+export function shipmentStatusLabel(status: ShipmentStatuses): string {
+  return status.replaceAll('_', ' ');
+}
+
+/**
+ * Carrier scans for the tracking dialog, newest first. Seller and system
+ * evidence (preparation, amendments, voids) stays in the consignment history
+ * rather than masquerading as a scan.
+ */
+export function shipmentCarrierEventUpdates(shipment: ShipmentView): ShipmentUpdateView[] {
+  return shipment.updates
+    .filter(update => update.source === ShipmentUpdateSources.CARRIER)
+    .sort((left, right) =>
+      dayjs(right.occurred_at).valueOf() - dayjs(left.occurred_at).valueOf());
+}
 
 /** Voided preparation is retained as history but never actionable. */
 export function activeShipments(group: ShopOrderGroup): ShipmentView[] {
@@ -118,6 +117,39 @@ export function clampShipmentQuantity(value: number | undefined, max: number): n
   }
 
   return Math.max(0, Math.min(Math.floor(value ?? 0), max));
+}
+
+/**
+ * The seller-facing reason a typed quantity cannot be shipped, if any. The
+ * dialogs disable their primary action on this so the quantity a seller sees is
+ * the quantity the request carries.
+ */
+export function shipmentQuantityError(
+  value: number | undefined,
+  max: number,
+): string | undefined {
+  if (!Number.isFinite(value) || !Number.isInteger(value) || (value ?? 0) < 0) {
+    return `Enter a whole number between 0 and ${max}.`;
+  }
+
+  if ((value ?? 0) > max) {
+    return `Only ${max} remaining.`;
+  }
+
+  return undefined;
+}
+
+/** The server-resolved display name, falling back to the stored carrier code. */
+export function shipmentCarrierName(shipment: ShipmentView): string | undefined {
+  return shipment.carrier_name ?? shipment.carrier;
+}
+
+/**
+ * A tracking number is unverified when the carrier cannot report events; a
+ * missing tracking number has nothing to verify.
+ */
+export function shipmentTrackingUnverified(shipment: ShipmentView): boolean {
+  return shipment.carrier_observable === false && Boolean(shipment.tracking_number?.trim());
 }
 
 /** The timestamp that matches the Shipment's current status, never a stale one. */

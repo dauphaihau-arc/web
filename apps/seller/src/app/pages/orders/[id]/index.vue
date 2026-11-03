@@ -9,6 +9,7 @@ import type { ShopOrder } from '~/domains/shop/order/types/shop-order-detail'
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
 import { routes } from '~/shared/navigation/routes'
 import { useShopGetOrderDetail } from '~/domains/shop/queries/order/detail.query'
+import { createOrderEventsClient } from '~/domains/shop/order/order-events.client'
 
 definePageMeta({ layout: 'shop', middleware: ['auth'] })
 
@@ -16,6 +17,18 @@ const route = useRoute()
 const orderId = computed(() => String(route.params.id ?? ''))
 const { data } = useShopGetOrderDetail(orderId.value)
 const order = computed(() => data.value?.order)
+
+const queryClient = useQueryClient()
+const orderEventsClient = shallowRef<ReturnType<typeof createOrderEventsClient> | null>(null)
+
+onMounted(() => {
+  orderEventsClient.value = createOrderEventsClient(queryClient)
+})
+
+onBeforeUnmount(() => {
+  orderEventsClient.value?.close()
+  orderEventsClient.value = null
+})
 
 const createdLabel = computed(() => {
   if (!order.value) return ''

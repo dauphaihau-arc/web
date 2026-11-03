@@ -21,10 +21,14 @@ export enum ShipmentStatuses {
   VOIDED = 'voided',
 }
 
-export enum ShipmentJourneyStatuses {
-  DISPATCHED = 'dispatched',
-  IN_TRANSIT = 'in_transit',
-  DELIVERED = 'delivered',
+/**
+ * The carrier label bought for a Shipment: `purchased` until the carrier's
+ * first scan consumes it (`used`), or until the seller refunds it (`voided`).
+ */
+export enum ShipmentLabelStatuses {
+  PURCHASED = 'purchased',
+  USED = 'used',
+  VOIDED = 'voided',
 }
 
 export enum ShipmentUpdateActorTypes {

@@ -67,7 +67,7 @@ const actions = computed(() => [
             Carrier
           </dt>
           <dd class="font-medium">
-            {{ shipment.carrier || '—' }}
+            {{ shipment.carrier_name ?? shipment.carrier ?? '—' }}
           </dd>
         </div>
         <div>

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { formatShippingEstimateRange } from '@arc/utils';
+import { carrierEventLabel, formatShippingEstimateRange } from '@arc/utils';
 import { OrderStatuses } from '@arc/enums/order';
 import { FulfillmentAggregateStatuses, ShipmentStatuses } from '@arc/enums/fulfillment';
 import type { ElementType } from '@arc/contracts/utils';
@@ -93,8 +93,13 @@ export type OrderPackageStage = {
 
 export type OrderPackageUpdate = {
   id: string
-  /** Human line: the update note when present, else the status label. */
+
+  /** Human line: the carrier event when present, else the update note or status label. */
   title: string
+
+  /** Carrier scan location, when the update carries one. */
+  location?: string
+
   /** `MMM DD, HH:mm` */
   occurredAt: string
 };
@@ -105,18 +110,32 @@ export type OrderPackage = {
   total: number
   state: OrderPackageState
   statusLabel: string
+
   /** Date fragment only, e.g. `Oct 27`. */
   statusDetail: string
+
   /** Order-level estimate, e.g. `Est. Nov 2 - 6`. */
   estimateDetail: string
+
   /** Order-level processing deadline, e.g. `Ships by Oct 31`. */
   shipByDetail: string
+
   carrier?: string
+
+  /** Server-resolved display name, falling back to the code. */
+  carrierName?: string
+
   trackingNumber?: string
+
+  /** True when the carrier cannot expose tracking updates for this number. */
+  trackingUnverified?: boolean
+
   note?: string
   lines: OrderPackageLine[]
+
   /** Empty for a canceled package. */
   stages: OrderPackageStage[]
+
   /** Newest first; empty for legacy packages. */
   updates: OrderPackageUpdate[]
 };
@@ -187,6 +206,13 @@ const SHIPMENT_UPDATE_LABEL: Record<ShipmentStatuses, string> = {
   [ShipmentStatuses.VOIDED]: 'Voided',
 };
 
+function shipmentUpdateTitle(update: FulfillmentShipment['updates'][number]): string {
+  return carrierEventLabel(update.event_code)
+    || update.note?.trim()
+    || SHIPMENT_UPDATE_LABEL[update.status]
+    || '';
+}
+
 const PACKED_STATUSES = new Set<FulfillmentAggregateStatuses>([
   FulfillmentAggregateStatuses.PREPARED,
   FulfillmentAggregateStatuses.PARTIALLY_SHIPPED,
@@ -225,12 +251,20 @@ function buildUpdates(shipment: FulfillmentShipment): OrderPackageUpdate[] {
   return shipment.updates
     .map(update => ({
       id: update.id,
-      title: update.note?.trim() || SHIPMENT_UPDATE_LABEL[update.status] || '',
+      title: shipmentUpdateTitle(update),
+      location: update.location?.trim() || undefined,
       occurredAt: formatShortDateTime(update.occurred_at),
       occurredAtValue: dayjs(update.occurred_at).valueOf(),
     }))
     .sort((left, right) => right.occurredAtValue - left.occurredAtValue)
-    .map(({ id, title, occurredAt }) => ({ id, title, occurredAt }));
+    .map(({
+      id, title, location, occurredAt,
+    }) => ({
+      id,
+      title,
+      ...(location ? { location } : {}),
+      occurredAt,
+    }));
 }
 
 /** A shipment only exists once packed, so `placed`/`packed` are always complete here. */
@@ -407,7 +441,9 @@ function buildLegacyPackage(
     estimateDetail,
     shipByDetail,
     carrier: legacy.carrier,
+    carrierName: legacy.carrier,
     trackingNumber: legacy.tracking_number,
+    trackingUnverified: false,
     note: legacy.note,
     lines: buildLines(
       orderShop,
@@ -450,7 +486,9 @@ export function buildOrderPackages(orderShop: OrderShop): OrderPackagesSummary {
         estimateDetail,
         shipByDetail,
         carrier: shipment.carrier,
+        carrierName: shipment.carrier_name ?? shipment.carrier,
         trackingNumber: shipment.tracking_number,
+        trackingUnverified: shipment.carrier_observable === false && Boolean(shipment.tracking_number),
         note: shipment.shipment_note,
         lines: buildLines(orderShop, shipment.items, shipment.id),
         stages: buildShipmentStages(orderShop, shipment, state, estimateDetail, shipByDetail),
