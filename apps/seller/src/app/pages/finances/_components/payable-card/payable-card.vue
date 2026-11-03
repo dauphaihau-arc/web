@@ -27,6 +27,7 @@ const {
 
   <Empty
     v-else-if="isError || !payable"
+    container-class="!rounded-lg"
     title="Unable to load balance"
     description="Reload the page to try again."
   />

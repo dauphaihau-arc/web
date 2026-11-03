@@ -4,6 +4,7 @@ import Empty from '@arc/ui/patterns/empty.vue'
 
 <template>
   <Empty
+    container-class="!rounded-lg"
     title="Unable to load payout account"
     description="Reload the page to try again."
   />

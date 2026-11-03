@@ -24,6 +24,7 @@ const emit = defineEmits<{
   <Empty
     icon="payment"
     size="lg"
+    container-class="!rounded-lg"
     :title="title"
     :description="description"
   >

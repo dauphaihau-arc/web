@@ -12,6 +12,7 @@ const emit = defineEmits<{
   <Empty
     icon="payment"
     size="lg"
+    container-class="!rounded-lg"
     title="Get paid with Stripe"
     description="Stripe collects your details and bank account, then sends payouts straight to it."
   >
