@@ -2,6 +2,9 @@
   "name": "@arc/ui",
   "private": true,
   "type": "module",
+  "scripts": {
+    "generate:tokens": "jiti scripts/generate-design-tokens.mjs"
+  },
   "dependencies": {
     "@tanstack/vue-virtual": "^3.13.35"
   }

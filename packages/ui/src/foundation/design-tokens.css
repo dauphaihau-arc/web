@@ -1,26 +1,25 @@
 :root {
   --surface-default: #ffffff;
-  --surface-muted: #f7f8fa;
-  --surface-hover: #f1f3f5;
-  --surface-control: #eef1f4;
-  --surface-subtle: #fcfcfd;
-  --surface-keycap: #e8ebef;
-  --surface-accent: #f6f8fa;
+  --surface-subtle: #fafafa;
+  --surface-muted: #f4f4f5;
+  --surface-hover: #f4f4f5;
+  --surface-control: #e4e4e7;
+  --surface-keycap: #e4e4e7;
+  --surface-accent: #f4f4f5;
+  --surface-skeleton: #e4e4e7;
+  --surface-inverse: #09090b;
   --surface-overlay: rgb(255 255 255 / 0.85);
   --surface-overlay-dark: rgb(0 0 0 / 0.75);
-  --media-product: #f5f5f5;
-  --border-muted: #d4d4d8;
+  --media-product: #f4f4f5;
   --border-subtle: #e4e4e7;
-  --border-hover: #aabac9;
-  --text-muted: #71717a;
-  --text-subtle: #52525b;
-  --text-strong: #18181b;
-  --state-success-surface: #EDFBE0;
+  --border-muted: #d4d4d8;
+  --border-hover: #a1a1aa;
+  --state-success-surface: #edfbe0;
   --state-success-border: #84cc16;
   --state-success-text: #396f1f;
-  --state-neutral-surface: #f8fafc;
-  --state-neutral-border: #cbd5e1;
-  --state-neutral-text: #64748b;
+  --state-neutral-surface: #fafafa;
+  --state-neutral-border: #e4e4e7;
+  --state-neutral-text: #71717a;
   --state-warning-surface: #fefce8;
   --state-warning-border: #facc15;
   --state-warning-text: #a16207;
@@ -30,6 +29,11 @@
   --state-info-surface: #eff6ff;
   --state-info-border: #93c5fd;
   --state-info-text: #2563eb;
+  --text-muted: #71717a;
+  --text-subtle: #52525b;
+  --text-strong: #18181b;
+  --text-on-dark: #d4d4d8;
+  --rating-star: #ffb100;
 
   --radius-panel: 1rem;
   --radius-dialog: 1.5rem;
@@ -37,7 +41,7 @@
   --radius-button: 0.75rem;
 
   --shadow-border: 0 3px 10px rgb(0 0 0 / 0.2);
-  --shadow-overlay: 0 8px 30px rgba(0, 0, 0, 0.18);
+  --shadow-overlay: 0 8px 30px rgba(0,0,0,0.18);
   --shadow-hero: 0 25px 50px -12px rgb(0 0 0 / 0.25);
 
   --layout-max-width-home: 1300px;
@@ -45,7 +49,7 @@
   --layout-shop-sidebar-width: 220px;
   --layout-shop-content-max-width: 1400px;
   --layout-page-gutter: 2.5rem;
-  --layout-shop-background: linear-gradient(to top, #f6f8fa, #f6f8fa, #fcfcfd);
+  --layout-shop-background: linear-gradient(to top, #f4f4f5, #f4f4f5, #fafafa);
 }
 
 .max-w-home-layout {

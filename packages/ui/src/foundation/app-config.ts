@@ -4,7 +4,7 @@ import { designTokenClasses } from './design-tokens'
 export const sharedAppConfig = {
   ui: {
     primary: 'indigo',
-    gray: 'neutral',
+    gray: 'zinc',
     notifications: {
       position: 'top-0 bottom-auto',
     },
@@ -44,7 +44,8 @@ export const sharedAppConfig = {
       description: 'text-text-muted',
     },
     skeleton: {
-      base: 'animate-pulse rounded-md bg-customGray-300/85 dark:bg-customGray-800/80',
+      // Dark mode has no token layer in this repo; the raw `dark:zinc-800` is the one sanctioned exception.
+      base: 'animate-pulse rounded-md bg-surface-skeleton dark:bg-zinc-800/70',
     },
     radio: {
       help: 'text-text-muted',
