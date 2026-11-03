@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { nextTick, useId } from 'vue'
+import type { CSSProperties } from 'vue'
 import AppIcon from '../../primitives/app-icon.vue'
 
 defineOptions({
@@ -95,6 +96,56 @@ const focusableIndex = computed(() => {
 
   return props.items.findIndex(item => !item.disabled)
 })
+
+// Suppress the slide-in on first paint: the class flips one frame after mount,
+// so the indicator appears in place and only subsequent changes animate.
+const hasMounted = ref(false)
+
+let mountFrame: number | undefined
+
+onMounted(() => {
+  mountFrame = requestAnimationFrame(() => {
+    hasMounted.value = true
+  })
+})
+
+onBeforeUnmount(() => {
+  if (mountFrame !== undefined) {
+    cancelAnimationFrame(mountFrame)
+  }
+})
+
+const indicatorStyle = computed<CSSProperties>(() => {
+  const count = props.items.length
+  const size = `calc((100% - 0.5rem) / ${count})`
+
+  if (props.orientation === 'vertical') {
+    const top = `calc(0.25rem + ${activeIndex.value} * ${size})`
+
+    return {
+      top,
+      height: size,
+      left: '0.25rem',
+      right: '0.25rem',
+    }
+  }
+
+  const left = `calc(0.25rem + ${activeIndex.value} * ${size})`
+
+  return {
+    left,
+    width: size,
+    top: '0.25rem',
+    bottom: '0.25rem',
+  }
+})
+
+const indicatorClass = computed(() => [
+  'pointer-events-none absolute rounded-md bg-primary-500 shadow-sm',
+  hasMounted.value
+    ? 'transition-all duration-200 ease-out motion-reduce:transition-none'
+    : 'transition-none',
+])
 
 const uid = useId()
 
@@ -213,7 +264,7 @@ const listClass = computed(() => {
   const direction = isVertical ? 'flex-col' : 'flex-row'
 
   if (props.variant === 'pill') {
-    return ['rounded-lg bg-surface-muted p-1', direction]
+    return ['relative rounded-lg bg-surface-muted p-1', direction]
   }
 
   return [direction]
@@ -245,9 +296,9 @@ function tabClass(index: number): string[] {
 
   if (props.variant === 'pill') {
     classes.push(
-      'rounded-md',
+      'z-10 rounded-md',
       active
-        ? 'bg-surface text-text-strong shadow-sm'
+        ? 'text-white shadow-none'
         : 'text-text-subtle hover:text-text-strong',
     )
 
@@ -274,6 +325,13 @@ function tabClass(index: number): string[] {
       class="flex w-full"
       :class="listClass"
     >
+      <span
+        v-if="variant === 'pill' && activeIndex !== -1"
+        aria-hidden="true"
+        :class="indicatorClass"
+        :style="indicatorStyle"
+      />
+
       <button
         v-for="(item, index) in items"
         :id="tabId(index)"
