@@ -24,6 +24,8 @@ const typeOptions: Array<{ label: string, value: ShopFinanceTransactionType | ''
   { label: 'All types', value: '' },
   { label: 'Order income', value: 'order_income' },
   { label: 'Refund', value: 'refund' },
+  { label: 'Label charge', value: 'label_charge' },
+  { label: 'Label refund', value: 'label_refund' },
   { label: 'Payout', value: 'payout' },
 ]
 
@@ -32,6 +34,7 @@ const statusOptions: Array<{ label: string, value: ShopFinanceTransactionStatus 
   { label: 'Released', value: 'released' },
   { label: 'Pending', value: 'pending' },
   { label: 'Deducted', value: 'deducted' },
+  { label: 'Refunded', value: 'refunded' },
   { label: 'Paid', value: 'paid' },
   { label: 'Blocked', value: 'blocked' },
   { label: 'Failed', value: 'failed' },

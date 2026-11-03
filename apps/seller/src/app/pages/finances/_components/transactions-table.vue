@@ -21,6 +21,8 @@ const props = withDefaults(defineProps<{
 const typeLabelByValue = {
   order_income: 'Order income',
   refund: 'Refund',
+  label_charge: 'Label charge',
+  label_refund: 'Label refund',
   payout: 'Payout',
 } as const satisfies Record<ShopFinanceTransactionType, string>
 
@@ -28,6 +30,7 @@ const statusByValue = {
   released: { label: 'Released', color: 'green' },
   pending: { label: 'Pending', color: 'yellow' },
   deducted: { label: 'Deducted', color: 'blue' },
+  refunded: { label: 'Refunded', color: 'green' },
   paid: { label: 'Paid', color: 'green' },
   blocked: { label: 'Blocked', color: 'gray' },
   failed: { label: 'Failed', color: 'red' },

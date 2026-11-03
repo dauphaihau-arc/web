@@ -1,28 +1,34 @@
 /**
- * One row of the shop's money timeline: Order income, a Refund, or a Payout.
- * Amounts are signed integer minor units of the shop's Settlement Currency and
- * satisfy `order_amount_minor + fees_minor = net_amount_minor`:
+ * One row of the shop's money timeline: Order income, a Refund, a carrier
+ * Label charge, or a Payout. Amounts are signed integer minor units of the
+ * shop's Settlement Currency and satisfy
+ * `order_amount_minor + fees_minor = net_amount_minor`:
  * `order_amount_minor` is positive Order income and negative on Refunds,
  * `fees_minor` is negative on Order income and positive on Refunds (the fee
  * rebate), and `net_amount_minor` is what actually moves. Payout rows carry
- * only a negative `net_amount_minor`; the other two are null.
+ * only a negative `net_amount_minor`; Label charges carry the carrier price as
+ * a negative `net_amount_minor`; the other two are null.
  */
 export const shopFinanceTransactionTypes = [
   'order_income',
   'refund',
+  'label_charge',
+  'label_refund',
   'payout',
 ] as const;
 
 export type ShopFinanceTransactionType = typeof shopFinanceTransactionTypes[number];
 
 /**
- * `released`/`pending` belong to Order income, `deducted` to Refunds, and the
- * remaining values to Payouts. A partially released Order is `pending`.
+ * `released`/`pending` belong to Order income, `deducted` to Refunds and
+ * Label charges, and the remaining values to Payouts. A partially released
+ * Order is `pending`.
  */
 export const shopFinanceTransactionStatuses = [
   'released',
   'pending',
   'deducted',
+  'refunded',
   'paid',
   'blocked',
   'failed',
