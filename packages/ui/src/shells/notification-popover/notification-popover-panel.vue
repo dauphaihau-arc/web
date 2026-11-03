@@ -50,6 +50,8 @@ const filterItems = computed(() => props.filters.map(filter => ({
   value: filter.value,
 })))
 
+const visibleUnreadCount = computed(() => props.notifications.filter(notification => !notification.read_at).length)
+
 function formatNotificationTime(value: string) {
   const createdAt = dayjs(value)
   const now = dayjs()
@@ -98,13 +100,16 @@ function handleFilterChange(value: string | number) {
 
 <template>
   <div class="flex max-h-[min(32rem,calc(100vh-5rem))] w-[25rem] max-w-[calc(100vw-2rem)] flex-col pt-3">
-    <div class="mb-3 flex items-center justify-between gap-3 px-3">
-      <div class="text-sm font-semibold">
+    <div
+      class="flex items-center justify-between gap-3 px-3 pb-3"
+      :class="filters.length === 0 ? 'border-b border-border-subtle' : ''"
+    >
+      <div class="text-lg font-semibold">
         Notifications
       </div>
 
       <UButton
-        v-if="unreadCount > 0"
+        v-if="showUnreadCount && unreadCount > 0 && visibleUnreadCount > 0"
         size="xs"
         :loading="isMarkingAll"
         @click="emit('markAll')"
@@ -115,13 +120,18 @@ function handleFilterChange(value: string | number) {
 
     <AppTabs
       v-if="filters.length > 0"
-      variant="link"
-      size="sm"
-      class="w-full"
+      variant="pill"
+      size="xs"
+      class="mb-3 px-3"
       :items="filterItems"
       :model-value="activeFilter"
       aria-label="Notification filters"
       @update:model-value="handleFilterChange"
+    />
+
+    <div
+      v-if="filters.length > 0"
+      class="border-b border-border-subtle"
     />
 
     <div class="scrollbar-subtle flex h-[min(25rem,calc(100vh-11rem))] flex-col overflow-y-auto overscroll-contain">
@@ -159,7 +169,7 @@ function handleFilterChange(value: string | number) {
           v-for="notification in notifications"
           :key="notification.id"
           type="button"
-          class="w-full border-b px-3 py-3 text-left transition-colors last:border-b-0 hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-60"
+          class="w-full border-b px-3 py-3 text-left transition-colors hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-60"
           :disabled="isMarkingOne"
           @click="emit('itemClick', notification)"
         >
