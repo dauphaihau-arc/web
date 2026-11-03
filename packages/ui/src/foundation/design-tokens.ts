@@ -21,7 +21,7 @@ export const designColors = {
     skeleton: '#E4E4E7',
     inverse: '#09090B',
     overlay: 'rgb(255 255 255 / 0.85)',
-    overlayDark: 'rgb(0 0 0 / 0.75)',
+    'overlay-dark': 'rgb(0 0 0 / 0.75)',
   },
   media: {
     product: '#F4F4F5',
@@ -62,7 +62,7 @@ export const designColors = {
     muted: '#71717A',
     subtle: '#52525B',
     strong: '#18181B',
-    onDark: '#D4D4D8',
+    'on-dark': '#D4D4D8',
   },
   rating: {
     star: '#FFB100',
