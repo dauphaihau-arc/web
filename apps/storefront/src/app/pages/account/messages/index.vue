@@ -120,7 +120,7 @@ if (import.meta.client) {
           @click="selectConversation(conversation)"
         >
           <div class="flex items-start gap-3">
-            <div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-customGray-200 text-sm font-semibold text-text-strong">
+            <div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-surface-control text-sm font-semibold text-text-strong">
               {{ getConversationShopInitial(conversation) }}
             </div>
 

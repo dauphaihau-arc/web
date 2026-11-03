@@ -162,7 +162,7 @@ const {
                   :ui="{
                     rounded: 'rounded-full',
                     base: 'overflow-hidden rounded-full',
-                    track: 'bg-customGray-200/80',
+                    track: 'bg-surface-control',
                   }"
                 />
                 <span class="w-10 text-right text-sm font-semibold text-text-strong">

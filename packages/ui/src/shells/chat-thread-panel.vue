@@ -230,7 +230,7 @@ function measureElement(ref: Element | ComponentPublicInstance | null) {
                 class="overflow-hidden rounded-lg border border-border-subtle bg-surface shadow-sm"
               >
                 <div class="flex gap-3 p-3">
-                  <div class="flex size-[70px] shrink-0 items-center justify-center overflow-hidden rounded-md bg-customGray-200">
+                  <div class="flex size-[70px] shrink-0 items-center justify-center overflow-hidden rounded-md bg-surface-control">
                     <img
                       v-if="messages[virtualRow.index].productReference?.imageUrl"
                       :src="messages[virtualRow.index].productReference?.imageUrl"

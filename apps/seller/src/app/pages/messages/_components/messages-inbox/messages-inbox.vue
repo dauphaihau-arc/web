@@ -62,7 +62,7 @@ const {
           />
           <div
             v-else
-            class="flex size-10 shrink-0 items-center justify-center rounded-full bg-customGray-200 text-sm font-semibold text-text-strong"
+            class="flex size-10 shrink-0 items-center justify-center rounded-full bg-surface-control text-sm font-semibold text-text-strong"
           >
             {{ getConversationBuyerInitial(conversation) }}
           </div>
@@ -128,7 +128,7 @@ const {
               />
               <div
                 v-else
-                class="flex size-11 shrink-0 items-center justify-center rounded-full bg-customGray-200 text-base font-semibold text-text-strong"
+                class="flex size-11 shrink-0 items-center justify-center rounded-full bg-surface-control text-base font-semibold text-text-strong"
               >
                 {{ getConversationBuyerInitial(selectedConversationResolved) }}
               </div>

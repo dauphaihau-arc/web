@@ -102,13 +102,13 @@ const filledStars = computed(() => {
     aria-busy="true"
     aria-live="polite"
   >
-    <USkeleton class="h-4 w-28 !bg-customGray-300/85" />
+    <USkeleton class="h-4 w-28 !bg-surface-skeleton" />
     <div class="flex items-center gap-3">
-      <USkeleton class="h-8 w-32 !bg-customGray-300/85" />
-      <USkeleton class="h-6 w-20 !bg-customGray-300/85" />
+      <USkeleton class="h-8 w-32 !bg-surface-skeleton" />
+      <USkeleton class="h-6 w-20 !bg-surface-skeleton" />
     </div>
-    <USkeleton class="h-10 w-4/5 !bg-customGray-300/85" />
-    <USkeleton class="h-4 w-32 !bg-customGray-300/85" />
+    <USkeleton class="h-10 w-4/5 !bg-surface-skeleton" />
+    <USkeleton class="h-4 w-32 !bg-surface-skeleton" />
   </div>
 
   <div

@@ -57,7 +57,7 @@ const onSubmit = async () => {
       <div class="flex items-center gap-5">
         <div
           class="flex cursor-pointer items-center gap-3 rounded-md
-             px-3 py-2 text-xs transition-all duration-200 hover:bg-customGray-200/50"
+             px-3 py-2 text-xs transition-all duration-200 hover:bg-surface-control"
         >
           <div class="flex items-center gap-3 text-nowrap text-xs font-medium">
             <span>{{ MARKET_REGION_EMOJIS[state.region] }}</span>

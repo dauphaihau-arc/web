@@ -65,16 +65,16 @@ async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
     aria-live="polite"
   >
     <div class="mb-6 flex w-1/3 min-w-[220px] flex-col gap-4">
-      <USkeleton class="h-5 w-24 !bg-customGray-300/85" />
-      <USkeleton class="h-11 w-full rounded-xl !bg-customGray-300/85" />
-      <USkeleton class="h-5 w-20 !bg-customGray-300/85" />
-      <USkeleton class="h-11 w-full rounded-xl !bg-customGray-300/85" />
-      <USkeleton class="h-11 w-full rounded-xl !bg-customGray-300/85" />
+      <USkeleton class="h-5 w-24 !bg-surface-skeleton" />
+      <USkeleton class="h-11 w-full rounded-xl !bg-surface-skeleton" />
+      <USkeleton class="h-5 w-20 !bg-surface-skeleton" />
+      <USkeleton class="h-11 w-full rounded-xl !bg-surface-skeleton" />
+      <USkeleton class="h-11 w-full rounded-xl !bg-surface-skeleton" />
     </div>
 
     <div class="flex gap-4">
-      <USkeleton class="h-12 w-32 rounded-xl !bg-customGray-300/85" />
-      <USkeleton class="h-12 w-32 rounded-xl !bg-customGray-300/85" />
+      <USkeleton class="h-12 w-32 rounded-xl !bg-surface-skeleton" />
+      <USkeleton class="h-12 w-32 rounded-xl !bg-surface-skeleton" />
     </div>
   </div>
 

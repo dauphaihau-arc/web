@@ -153,11 +153,11 @@ watch(
       class="space-y-3 border-b border-border-subtle pb-6"
     >
       <div class="flex items-center justify-between">
-        <USkeleton class="h-5 w-40 !bg-customGray-300/85" />
-        <USkeleton class="size-5 rounded !bg-customGray-300/85" />
+        <USkeleton class="h-5 w-40 !bg-surface-skeleton" />
+        <USkeleton class="size-5 rounded !bg-surface-skeleton" />
       </div>
-      <USkeleton class="h-4 w-full !bg-customGray-300/85" />
-      <USkeleton class="h-4 w-5/6 !bg-customGray-300/85" />
+      <USkeleton class="h-4 w-full !bg-surface-skeleton" />
+      <USkeleton class="h-4 w-5/6 !bg-surface-skeleton" />
     </div>
   </div>
 

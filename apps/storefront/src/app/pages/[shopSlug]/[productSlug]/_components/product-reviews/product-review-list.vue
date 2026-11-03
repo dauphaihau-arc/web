@@ -130,7 +130,7 @@ function getReviewImageSrc(review: GetPublicProductReviewsResponse['items'][numb
 
               <div class="flex items-center gap-2 text-right">
                 <div class="flex items-center gap-1">
-                  <div class="grid size-5 shrink-0 place-items-center rounded-full bg-customGray-200 text-xs font-semibold text-text-strong">
+                  <div class="grid size-5 shrink-0 place-items-center rounded-full bg-surface-control text-xs font-semibold text-text-strong">
                     {{ getAuthorInitial(review.author.display_name) }}
                   </div>
                   <div class="text-text text-[12px] font-semibold">

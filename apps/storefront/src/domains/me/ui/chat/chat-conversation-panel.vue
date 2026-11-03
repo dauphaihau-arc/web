@@ -240,7 +240,7 @@ async function handleSendMessage() {
         />
 
         <div class="flex min-w-0 items-center gap-3">
-          <div class="flex size-11 shrink-0 items-center justify-center rounded-full bg-customGray-200 text-base font-semibold text-text-strong">
+          <div class="flex size-11 shrink-0 items-center justify-center rounded-full bg-surface-control text-base font-semibold text-text-strong">
             {{ getConversationShopInitial(selectedConversation) }}
           </div>
 

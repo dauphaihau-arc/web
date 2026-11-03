@@ -94,6 +94,6 @@ const userInitial = computed(() => {
 
 <style scoped lang="postcss">
 .user-avatar {
-  @apply flex size-6 items-center justify-center rounded-full bg-customGray-200 text-text-strong text-sm font-semibold;
+  @apply flex size-6 items-center justify-center rounded-full bg-surface-control text-text-strong text-sm font-semibold;
 }
 </style>

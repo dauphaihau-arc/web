@@ -139,15 +139,15 @@ watch(() => carousel.value?.page, (page) => {
         <USkeleton
           v-for="index in 4"
           :key="index"
-          class="size-[100px] rounded !bg-customGray-300/85"
+          class="size-[100px] rounded !bg-surface-skeleton"
         />
       </div>
-      <USkeleton class="aspect-[1/1] w-[575px] max-w-full rounded !bg-customGray-300/85" />
+      <USkeleton class="aspect-[1/1] w-[575px] max-w-full rounded !bg-surface-skeleton" />
     </div>
 
     <div class="-mx-4 px-4 md:-mx-12 md:px-12 lg:hidden">
       <div class="pe-3">
-        <USkeleton class="aspect-[1/1] w-full rounded !bg-customGray-300/85" />
+        <USkeleton class="aspect-[1/1] w-full rounded !bg-surface-skeleton" />
       </div>
     </div>
   </div>

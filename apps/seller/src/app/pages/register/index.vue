@@ -13,16 +13,16 @@ useSeoMeta({
 
 <template>
   <div class="grid w-full overflow-hidden rounded-3xl border border-border-subtle bg-surface shadow-2xl lg:grid-cols-[1.1fr_0.9fr]">
-    <section class="bg-customGray-950 px-8 py-10 text-surface sm:px-10 lg:px-12 lg:py-14">
+    <section class="bg-surface-inverse px-8 py-10 text-surface sm:px-10 lg:px-12 lg:py-14">
       <div class="flex h-full flex-col justify-between gap-10">
         <div class="space-y-4">
-          <p class="text-sm font-semibold uppercase tracking-[0.28em] text-customGray-300">
+          <p class="text-text-on-dark text-sm font-semibold uppercase tracking-[0.28em]">
             Arc Seller
           </p>
           <h1 class="max-w-md text-4xl font-bold leading-tight">
             Create your account to start selling on Arc.
           </h1>
-          <p class="max-w-md text-base leading-7 text-customGray-300">
+          <p class="text-text-on-dark max-w-md text-base leading-7">
             Register first, then create your shop to start listing products and managing orders.
           </p>
         </div>
@@ -32,7 +32,7 @@ useSeoMeta({
             <p class="text-sm font-medium text-white">
               Catalog
             </p>
-            <p class="mt-1 text-sm text-customGray-300">
+            <p class="text-text-on-dark mt-1 text-sm">
               Add and update product listings.
             </p>
           </div>
@@ -40,7 +40,7 @@ useSeoMeta({
             <p class="text-sm font-medium text-white">
               Promotions
             </p>
-            <p class="mt-1 text-sm text-customGray-300">
+            <p class="text-text-on-dark mt-1 text-sm">
               Configure promotions and campaigns.
             </p>
           </div>
@@ -48,7 +48,7 @@ useSeoMeta({
             <p class="text-sm font-medium text-white">
               Fulfillment
             </p>
-            <p class="mt-1 text-sm text-customGray-300">
+            <p class="text-text-on-dark mt-1 text-sm">
               Monitor incoming orders and status.
             </p>
           </div>

@@ -6,15 +6,15 @@
     aria-live="polite"
   >
     <div class="space-y-5">
-      <USkeleton class="h-8 w-48 !bg-customGray-300/85" />
+      <USkeleton class="h-8 w-48 !bg-surface-skeleton" />
       <div class="flex items-center gap-4">
         <div class="flex gap-3">
-          <USkeleton class="h-12 w-16 !bg-customGray-300/85" />
-          <USkeleton class="size-8 rounded-full !bg-customGray-300/85" />
+          <USkeleton class="h-12 w-16 !bg-surface-skeleton" />
+          <USkeleton class="size-8 rounded-full !bg-surface-skeleton" />
         </div>
         <div class="space-y-2">
-          <USkeleton class="h-5 w-28 !bg-customGray-300/85" />
-          <USkeleton class="h-4 w-24 !bg-customGray-300/85" />
+          <USkeleton class="h-5 w-28 !bg-surface-skeleton" />
+          <USkeleton class="h-4 w-24 !bg-surface-skeleton" />
         </div>
       </div>
 
@@ -22,7 +22,7 @@
         <USkeleton
           v-for="index in 4"
           :key="index"
-          class="h-10 w-24 rounded-full !bg-customGray-300/85"
+          class="h-10 w-24 rounded-full !bg-surface-skeleton"
         />
       </div>
     </div>
@@ -31,7 +31,7 @@
       <USkeleton
         v-for="index in 4"
         :key="`review-image-${index}`"
-        class="aspect-square w-full rounded-[20px] !bg-customGray-300/85"
+        class="aspect-square w-full rounded-[20px] !bg-surface-skeleton"
       />
     </div>
 
@@ -45,23 +45,23 @@
           <div class="flex items-start justify-between gap-4">
             <div class="space-y-3">
               <div class="flex items-center gap-3">
-                <USkeleton class="h-4 w-24 !bg-customGray-300/85" />
-                <USkeleton class="h-6 w-8 !bg-customGray-300/85" />
+                <USkeleton class="h-4 w-24 !bg-surface-skeleton" />
+                <USkeleton class="h-6 w-8 !bg-surface-skeleton" />
               </div>
             </div>
             <div class="flex items-center gap-3">
-              <USkeleton class="size-7 rounded-full !bg-customGray-300/85" />
+              <USkeleton class="size-7 rounded-full !bg-surface-skeleton" />
               <div class="space-y-2">
-                <USkeleton class="h-3 w-24 !bg-customGray-300/85" />
-                <USkeleton class="h-3 w-20 !bg-customGray-300/85" />
+                <USkeleton class="h-3 w-24 !bg-surface-skeleton" />
+                <USkeleton class="h-3 w-20 !bg-surface-skeleton" />
               </div>
             </div>
           </div>
 
           <div class="space-y-2">
-            <USkeleton class="h-4 w-40 !bg-customGray-300/85" />
-            <USkeleton class="h-4 w-full max-w-4xl !bg-customGray-300/85" />
-            <USkeleton class="h-4 w-4/5 max-w-3xl !bg-customGray-300/85" />
+            <USkeleton class="h-4 w-40 !bg-surface-skeleton" />
+            <USkeleton class="h-4 w-full max-w-4xl !bg-surface-skeleton" />
+            <USkeleton class="h-4 w-4/5 max-w-3xl !bg-surface-skeleton" />
           </div>
         </div>
       </article>
