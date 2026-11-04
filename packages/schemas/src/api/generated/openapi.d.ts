@@ -3414,12 +3414,12 @@ export interface components {
       /** @enum {string} */
       dateRange?: "today" | "current_month" | "last_7_days" | "last_4_weeks" | "last_month" | "all" | "custom";
       /** @default UTC */
-      timezone: string;
+      timezone?: string;
       /**
        * @default default
        * @enum {string}
        */
-      columnPreset: "default" | "custom";
+      columnPreset?: "default" | "custom";
       columns?: string[];
       status?: ("canceled" | "pending" | "checkout_pending" | "awaiting_payment" | "expired" | "paid" | "refunded" | "completed" | "archived")[];
       fulfillmentStatus?: ("unfulfilled" | "prepared" | "partially_shipped" | "shipped" | "partially_delivered" | "delivered" | "canceled" | "dispatched" | "in_transit")[];
@@ -8562,14 +8562,14 @@ export interface operations {
   /** List product reviews for a shop */
   ShopProductReviews_list: {
     parameters: {
-      query: {
+      query?: {
         /** @description One-based page number. */
         page?: number;
         /** @description Maximum number of product reviews to return. */
         limit?: number;
         status?: "published" | "hidden";
         productId?: string;
-        sort: "newest" | "oldest" | "highest_rating" | "lowest_rating";
+        sort?: "newest" | "oldest" | "highest_rating" | "lowest_rating";
       };
       path: {
         shop_id: string;
@@ -10468,14 +10468,14 @@ export interface operations {
   /** Export shop orders as CSV */
   ShopOrderExport_exportCsv: {
     parameters: {
-      query: {
+      query?: {
         /** @description One-based page number. */
         page?: number;
         /** @description Maximum number of orders to return. */
         limit?: number;
         dateRange?: "today" | "current_month" | "last_7_days" | "last_4_weeks" | "last_month" | "all" | "custom";
-        timezone: string;
-        columnPreset: "default" | "custom";
+        timezone?: string;
+        columnPreset?: "default" | "custom";
         columns?: string[];
         status?: ("canceled" | "pending" | "checkout_pending" | "awaiting_payment" | "expired" | "paid" | "refunded" | "completed" | "archived")[];
         fulfillmentStatus?: ("unfulfilled" | "prepared" | "partially_shipped" | "shipped" | "partially_delivered" | "delivered" | "canceled" | "dispatched" | "in_transit")[];
