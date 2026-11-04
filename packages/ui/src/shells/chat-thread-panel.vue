@@ -22,6 +22,8 @@ type ChatThreadMessage = {
 
 const LOAD_OLDER_SCROLL_THRESHOLD_PX = 160
 const STICK_TO_BOTTOM_THRESHOLD_PX = 160
+/** Height the floating composer covers at the bottom of the list (`pb-40` = 160px). */
+const COMPOSER_CLEARANCE_PX = 160
 
 const props = withDefaults(defineProps<{
   hasConversation: boolean
@@ -56,11 +58,11 @@ const props = withDefaults(defineProps<{
   textareaMaxRows: 8,
   textareaClass: 'w-full',
   autofocusComposer: false,
-  messageBubbleClass: 'rounded-xl px-4 py-1 shadow-sm',
+  messageBubbleClass: 'rounded-xl p-2 shadow-sm',
   ownMessageBubbleClass: 'bg-primary text-white',
-  incomingMessageBubbleClass: 'bg-surface text-text-strong',
-  composerClass: 'bg-surface-muted px-6 py-4',
-  listClass: 'scrollbar-subtle flex-1 overflow-y-auto bg-surface-muted px-6 py-5',
+  incomingMessageBubbleClass: 'bg-surface-muted text-text-strong',
+  composerClass: 'px-6 py-4',
+  listClass: 'scrollbar-subtle flex-1 overflow-y-auto bg-surface px-6 pt-5 pb-40',
   sectionClass: 'flex min-h-[70vh] flex-col',
 })
 
@@ -92,6 +94,9 @@ const rowVirtualizer = useVirtualizer(computed(() => ({
   getScrollElement: () => scrollElement.value,
   estimateSize: () => 96,
   overscan: 8,
+  // The composer floats over the list (pb-40 on the list keeps rows clear of it), so
+  // scrollToIndex must not align the last row under the composer.
+  scrollPaddingEnd: COMPOSER_CLEARANCE_PX,
 })))
 
 const virtualRows = computed(() => rowVirtualizer.value.getVirtualItems())
@@ -298,7 +303,10 @@ function measureElement(ref: Element | ComponentPublicInstance | null) {
     </template>
 
     <template #composer>
-      <form @submit.prevent="handleSend">
+      <form
+        class="pointer-events-auto"
+        @submit.prevent="handleSend"
+      >
         <div
           ref="composerField"
           class="relative"
