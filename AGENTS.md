@@ -30,6 +30,21 @@ Load only the files relevant to the task:
 Prefer shared packages for stable cross-app contracts and primitives. Keep
 app-specific workflows in the owning app.
 
+## API Types
+
+API request and response types come from the generated module under
+`packages/schemas/src/api/generated/`. Never edit generated files.
+
+```bash
+pnpm generate:api-types
+pnpm generate:api-types -- --check
+```
+
+- Regenerate after `apps/api/api/openapi.json` changes; do not hand-fix types.
+- `@arc/enums` is hand-written and checked for conformance against the spec,
+  not generated.
+- From the repository root, `./scripts/verify api-types` runs the check.
+
 ## Verification
 
 For all web checks:
