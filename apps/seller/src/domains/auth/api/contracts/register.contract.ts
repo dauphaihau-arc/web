@@ -1,6 +1,5 @@
-import type { z } from 'zod';
-import type { registerRequestSchema } from '~/domains/auth/api/schemas/register.schema';
+import type { components } from '@arc/schemas/api/generated/openapi';
 import type { AuthUserEnvelope } from './auth-user.contract';
 
-export type RegisterRequest = z.infer<typeof registerRequestSchema>;
+export type RegisterRequest = components['schemas']['RegisterDto'];
 export type RegisterResponse = AuthUserEnvelope;

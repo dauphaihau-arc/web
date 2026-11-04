@@ -12,7 +12,7 @@ export function useLogin() {
 
   return useMutation({
     mutationKey: ['login'],
-    mutationFn: (body: LoginRequest) => {
+    mutationFn: (body: Omit<LoginRequest, 'app'>) => {
       return authApi.login({
         ...body,
         app: 'storefront',

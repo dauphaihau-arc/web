@@ -13,7 +13,7 @@ export function useLogin() {
 
   return useMutation({
     mutationKey: ['login'],
-    mutationFn: async (body: LoginRequest) => {
+    mutationFn: async (body: Omit<LoginRequest, 'app'>) => {
       const response = await authApi.login({
         ...body,
         app: 'seller',

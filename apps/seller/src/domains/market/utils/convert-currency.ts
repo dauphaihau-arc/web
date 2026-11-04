@@ -1,4 +1,4 @@
-import { MARKET_CONFIG } from '@arc/enums/market';
+import { MARKET_CONFIG, MarketCurrencies } from '@arc/enums/market';
 import formatCurrency from '@arc/utils/format-currency';
 import { useMarketStore } from '~/domains/market/stores/market.store';
 
@@ -24,8 +24,10 @@ export default function (amount: number | unknown) {
 
   const rates = marketStore.exchangeRate?.rates || tempRates;
 
-  const currency = marketStore.guestPreferences?.currency
-    || MARKET_CONFIG.BASE_CURRENCY;
+  const preferredCurrency = marketStore.guestPreferences?.currency;
+  const currency = Object.values(MarketCurrencies).find(
+    candidate => candidate === preferredCurrency,
+  ) ?? MARKET_CONFIG.BASE_CURRENCY;
 
   if (currency === MARKET_CONFIG.BASE_CURRENCY) {
     return formatCurrency(amount);

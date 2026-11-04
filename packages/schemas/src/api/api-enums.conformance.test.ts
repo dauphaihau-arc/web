@@ -48,6 +48,9 @@ const FE_ENUM_EXPORTS = [
  * them here needs a reviewer to sign off; the test fails if an entry goes stale.
  */
 const SPEC_ONLY_ENUMS: Record<string, string> = {
+  // Bulk verbs over product selection; each product state is a separate field.
+  'components.schemas.BulkMutateShopProductsDto.properties.action':
+    'API-only bulk product action verbs',
   // Guest/user cart ownership discriminator; no FE enum reads a cart owner type.
   'components.schemas.CartResponseDto.properties.cart_owner_type':
     'API-only cart ownership discriminator',
@@ -60,17 +63,34 @@ const SPEC_ONLY_ENUMS: Record<string, string> = {
   // Promo-code visibility is set by shop admins; FE has no shared enum for it.
   'components.schemas.CreateShopPromoCodeDto.properties.visibility':
     'API-only promo-code visibility',
+  // Order-export UI selectors; no FE enum models spreadsheet export options.
+  'components.schemas.ExportShopOrdersQueryDto.properties.columnPreset':
+    'API-only order-export column preset',
+  'components.schemas.ExportShopOrdersQueryDto.properties.dateRange':
+    'API-only order-export date-range selector',
+  // Each web app pins its own request `app` value; the seller subset is narrower.
+  'components.schemas.ForgotPasswordDto.properties.app':
+    'request subset of the login app union; each app pins its own value',
   // Liveness/readiness probes consumed by infrastructure, not the web clients.
   'components.schemas.HealthCheckResponseDto.properties.status':
     'internal health-probe contract',
   'components.schemas.HealthComponentResponseDto.properties.status':
     'internal health-probe contract',
+  // Single image upload asset kind accepted by the image pipeline.
+  'components.schemas.IssueProductImageUploadDto.properties.assetType':
+    'single accepted image asset kind',
+  // App discriminator; each web app pins its own literal.
+  'components.schemas.LoginDto.properties.app':
+    'app discriminator; each web app pins its own literal',
   // Locale codes (en-US/vi-VN/en-VN) have no @arc/enums counterpart; the FE
   // derives language options from the locale prefix.
   'components.schemas.MarketplaceMarketResponseDto.properties.defaultLocale':
     'API locale set; no @arc/enums counterpart',
   'components.schemas.MarketplaceMarketResponseDto.properties.supportedLocales.items':
     'API locale set; no @arc/enums counterpart',
+  // Account lifecycle status; no FE enum switches on it.
+  'components.schemas.MeResponseDto.properties.status':
+    'account lifecycle status; no @arc/enums counterpart',
   // Review moderation state only returned by seller/order review endpoints.
   'components.schemas.MyProductReviewResponseDto.properties.status':
     'API-only review moderation state',
@@ -91,9 +111,15 @@ const SPEC_ONLY_ENUMS: Record<string, string> = {
     'API-only payout account lifecycle',
   'components.schemas.PayoutAccountResponseDto.properties.status':
     'API-only payout account lifecycle',
+  // Request subset of ProductStates; draft/unavailable are server-owned.
+  'components.schemas.ProductVariantConfigurationDto.properties.lifecycleState':
+    'request subset of ProductStates (no `draft`/`unavailable`)',
   // Recommendation carousel taxonomy, not user-selectable.
   'components.schemas.PublicProductRecommendationSectionResponseDto.properties.type':
     'API-only recommendation section taxonomy',
+  // Same app discriminator as LoginDto.
+  'components.schemas.ResetPasswordDto.properties.app':
+    'app discriminator; each web app pins its own literal',
   // Carrier service tier returned by shipping quotes.
   'components.schemas.ShipmentRateDto.properties.service':
     'API-only carrier service tier',
@@ -121,11 +147,14 @@ const SPEC_ONLY_ENUMS: Record<string, string> = {
   // Ledger entry kind; no FE enum switches on transaction types.
   'components.schemas.ShopTransactionResponseDto.properties.type':
     'API-only ledger entry kind',
+  // Refund attempt verbs, not a status enum.
+  'components.schemas.UpdateShopOrderRefundDto.properties.action':
+    'API-only refund action verbs',
   // Update payload intentionally forbids `archived`; FE sends ShippingProfileStatuses values.
   'components.schemas.UpdateShippingProfileDto.properties.status':
     'update-payload subset of ShippingProfileStatuses (no `archived`)',
   // Single-purpose token-type filter for the verify endpoint.
-  'paths./v1/auth/verify-token.get.parameters.0':
+  'paths./v1/auth/verify-token.get.parameters.1':
     'single-value filter subset of TokenTypes (`resetPassword`)',
   // Order-list filter projection that also has `processing`, absent from OrderStatuses.
   'paths./v1/me/orders.get.parameters.5':
@@ -138,6 +167,19 @@ const SPEC_ONLY_ENUMS: Record<string, string> = {
     'API-only finance transaction-type filter',
   'paths./v1/shops/{shop_id}/finance/transactions.get.parameters.4':
     'API-only finance transaction-status filter',
+  // Dashboard period selector; FE passes literal query strings.
+  'paths./v1/shops/{shop_id}/dashboard.get.parameters.1':
+    'API-only dashboard period selector',
+  // Order-export selectors mirror the ExportShopOrdersQueryDto fields.
+  'paths./v1/shops/{shop_id}/orders/export.get.parameters.3':
+    'API-only order-export date-range selector',
+  'paths./v1/shops/{shop_id}/orders/export.get.parameters.5':
+    'API-only order-export column preset',
+  // Seller review moderation filter, displayed as a message.
+  'paths./v1/shops/{shop_id}/reviews.get.parameters.3':
+    'API-only review moderation filter',
+  'paths./v1/shops/{shop_id}/reviews.get.parameters.5':
+    'API-only review sort selector',
 }
 
 interface EnumCandidate {
