@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
+import type { AppTabsItem } from '@arc/ui/patterns/app-tabs/app-tabs.vue'
+import AppTabs from '@arc/ui/patterns/app-tabs/app-tabs.vue'
 import type { MyChatConversation } from '~/domains/me/api/chat/contracts/chat.contract'
 import ChatConversationPanel from '~/domains/me/ui/chat/chat-conversation-panel.vue'
 import {
@@ -10,7 +13,12 @@ import {
 } from '~/domains/me/ui/chat/storefront-chat-conversation.helpers'
 import { routes } from '~/shared/navigation/routes'
 import { createStorefrontChatEventsClient } from '~/domains/me/realtime/chat-events.client'
-import { useMyChatConversations } from '~/domains/me/queries/chat/conversations.query'
+import {
+  useMyChatConversations,
+  useMyChatUnreadCount,
+} from '~/domains/me/queries/chat/conversations.query'
+
+type MessagesTab = 'all' | 'unread'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 
@@ -27,9 +35,42 @@ const selectedConversationId = computed(() => {
   return typeof value === 'string' ? value : undefined
 })
 
+const activeTab = computed<MessagesTab>(() => (
+  route.query.tab === 'unread' ? 'unread' : 'all'
+))
+
+const state = reactive({
+  q: typeof route.query.q === 'string' ? route.query.q : '',
+})
+
+const search = toRef(state, 'q')
+const debouncedSearch = refDebounced(search, 400, { maxWait: 800 })
+
+const activeSearch = computed(() => {
+  const value = route.query.q
+  return typeof value === 'string' && value.trim() ? value.trim() : undefined
+})
+
+const { data: unreadCount } = useMyChatUnreadCount()
+
+const messageTabItems = computed<AppTabsItem[]>(() => {
+  const count = unreadCount.value?.unread_count
+
+  return [
+    { label: 'All', value: 'all' },
+    {
+      label: 'Unread',
+      value: 'unread',
+      ...(count !== undefined ? { badge: count } : {}),
+    },
+  ]
+})
+
 const conversationParams = computed(() => ({
   page: 1,
   limit: 50,
+  ...(activeTab.value === 'unread' ? { unread: true } : {}),
+  ...(activeSearch.value ? { q: activeSearch.value } : {}),
 }))
 
 const {
@@ -38,6 +79,14 @@ const {
 } = useMyChatConversations(conversationParams)
 
 const conversations = computed<MyChatConversation[]>(() => conversationList.value?.results ?? [])
+
+const emptyText = computed(() => {
+  if (activeSearch.value) {
+    return 'No conversations match your search.'
+  }
+
+  return activeTab.value === 'unread' ? 'No unread conversations.' : 'No conversations yet.'
+})
 
 const selectedConversation = computed<MyChatConversation | null>(() => {
   return conversations.value.find((conversation: MyChatConversation) => conversation.id === selectedConversationId.value)
@@ -57,6 +106,44 @@ const conversationPanelClass = computed(() => (
   selectedConversationId.value ? '' : 'hidden lg:flex'
 ))
 
+function syncQuery(
+  nextQuery: { conversationId?: string, tab?: 'unread', q?: string },
+  history: 'push' | 'replace' = 'replace',
+) {
+  const targetQuery = {
+    ...(nextQuery.conversationId ? { conversation_id: nextQuery.conversationId } : {}),
+    ...(nextQuery.tab ? { tab: nextQuery.tab } : {}),
+    ...(nextQuery.q ? { q: nextQuery.q } : {}),
+  }
+  const currentQuery = {
+    ...(selectedConversationId.value ? { conversation_id: selectedConversationId.value } : {}),
+    ...(activeTab.value === 'unread' ? { tab: 'unread' } : {}),
+    ...(activeSearch.value ? { q: activeSearch.value } : {}),
+  }
+
+  if (JSON.stringify(targetQuery) === JSON.stringify(currentQuery)) {
+    return
+  }
+
+  const target = routes.messages(nextQuery)
+
+  if (history === 'push') {
+    router.push(target)
+
+    return
+  }
+
+  router.replace(target)
+}
+
+function handleTabChange(value: string | number) {
+  syncQuery({
+    conversationId: selectedConversationId.value,
+    tab: value === 'unread' ? 'unread' : undefined,
+    q: activeSearch.value,
+  })
+}
+
 watch(
   [conversations, isDesktop],
   ([nextConversations, desktop]: [MyChatConversation[], boolean]) => {
@@ -71,18 +158,41 @@ watch(
       return
     }
 
-    router.replace(routes.messages({ conversationId: firstConversation.id }))
+    router.replace(routes.messages({
+      conversationId: firstConversation.id,
+      tab: activeTab.value === 'unread' ? 'unread' : undefined,
+      q: activeSearch.value,
+    }))
   },
   { immediate: true },
 )
 
 function selectConversation(conversation: MyChatConversation) {
-  router.push(routes.messages({ conversationId: conversation.id }))
+  syncQuery({
+    conversationId: conversation.id,
+    tab: activeTab.value === 'unread' ? 'unread' : undefined,
+    q: activeSearch.value,
+  }, 'push')
 }
 
 function closeConversation() {
-  router.push(routes.messages())
+  syncQuery({
+    tab: activeTab.value === 'unread' ? 'unread' : undefined,
+    q: activeSearch.value,
+  }, 'push')
 }
+
+watch(() => route.query.q, (q) => {
+  state.q = typeof q === 'string' ? q : ''
+})
+
+watch(debouncedSearch, (value) => {
+  syncQuery({
+    conversationId: selectedConversationId.value,
+    tab: activeTab.value === 'unread' ? 'unread' : undefined,
+    q: value.trim() || undefined,
+  })
+})
 
 if (import.meta.client) {
   onMounted(() => {
@@ -107,13 +217,35 @@ if (import.meta.client) {
 
     <ConversationInboxShell container-class="grid h-[calc(100dvh-18rem)] min-h-0 grid-cols-1 overflow-hidden lg:grid-cols-[340px_minmax(0,1fr)]">
       <ConversationListPanel
-        :total-results="conversationList?.total_results ?? 0"
         :loading="isPendingConversations"
         :empty="conversations.length === 0"
-        empty-text="No conversations yet."
+        :empty-text="emptyText"
         :aside-class="conversationListPanelClass"
         list-class="scrollbar-subtle min-h-0 flex-1 overflow-y-auto"
       >
+        <template #toolbar>
+          <div class="px-5 pb-1 pt-3">
+            <UInput
+              v-model="state.q"
+              :icon="ICON_NAME_BY_ALIAS['searchSolid']"
+              placeholder="Search shops"
+              size="sm"
+              class="w-full"
+            />
+          </div>
+
+          <div class="pt-1">
+            <AppTabs
+              variant="link"
+              size="sm"
+              aria-label="Message filters"
+              :items="messageTabItems"
+              :model-value="activeTab"
+              @change="handleTabChange"
+            />
+          </div>
+        </template>
+
         <button
           v-for="conversation in conversations"
           :key="conversation.id"

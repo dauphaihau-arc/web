@@ -20,9 +20,20 @@ import { useGetMyShop } from '~/domains/shop/queries/my-shop.query';
 import { useShopMarkChatRead } from '~/domains/shop/mutations/mark-read.mutation';
 import { useShopChatMessages } from '~/domains/shop/queries/messages.query';
 import { useShopSendChatMessage } from '~/domains/shop/mutations/send-message.mutation';
-import { useShopChatConversations } from '~/domains/shop/queries/conversations.query';
+import { useShopChatConversations, useShopChatUnreadCount } from '~/domains/shop/queries/conversations.query';
 
-export function useMessagesInbox(selectedConversationId: Ref<string | undefined>) {
+type MessagesQuery = {
+  conversationId?: string
+  tab?: 'unread'
+  q?: string
+};
+
+export function useMessagesInbox(
+  selectedConversationId: Ref<string | undefined>,
+  tab: Ref<'all' | 'unread'>,
+  q: Ref<string | undefined>,
+) {
+  const route = useRoute();
   const router = useRouter();
   const queryClient = useQueryClient();
   const config = useRuntimeConfig();
@@ -35,11 +46,35 @@ export function useMessagesInbox(selectedConversationId: Ref<string | undefined>
   const conversationParams = computed(() => ({
     page: 1,
     limit: 50,
+    ...(tab.value === 'unread' ? { unread: true } : {}),
+    ...(q.value ? { q: q.value } : {}),
   }));
 
   const messageParams = computed(() => ({
     limit: 50,
   }));
+
+  function messagesQuery(conversationId?: string): MessagesQuery {
+    return {
+      ...(conversationId ? { conversationId } : {}),
+      ...(tab.value === 'unread' ? { tab: 'unread' as const } : {}),
+      ...(q.value ? { q: q.value } : {}),
+    };
+  }
+
+  function isCurrentMessagesQuery(query: MessagesQuery): boolean {
+    const currentConversationId = typeof route.query.conversation_id === 'string'
+      ? route.query.conversation_id
+      : undefined;
+    const currentTab = route.query.tab === 'unread' ? 'unread' as const : undefined;
+    const currentQ = typeof route.query.q === 'string' && route.query.q.trim()
+      ? route.query.q.trim()
+      : undefined;
+
+    return currentConversationId === query.conversationId
+      && currentTab === query.tab
+      && currentQ === query.q;
+  }
 
   const messageDraft = ref('');
 
@@ -49,6 +84,12 @@ export function useMessagesInbox(selectedConversationId: Ref<string | undefined>
     data: conversationList,
     isPending: isPendingConversations,
   } = useShopChatConversations(conversationParams);
+
+  const {
+    data: unreadCountData,
+  } = useShopChatUnreadCount();
+
+  const unreadCount = computed(() => unreadCountData.value?.unread_count);
 
   const {
     data: messageList,
@@ -122,7 +163,13 @@ export function useMessagesInbox(selectedConversationId: Ref<string | undefined>
         return;
       }
 
-      router.replace(routes.messages({ conversationId: firstConversation.id }));
+      const nextQuery = messagesQuery(firstConversation.id);
+
+      if (isCurrentMessagesQuery(nextQuery)) {
+        return;
+      }
+
+      router.replace(routes.messages(nextQuery));
     },
     { immediate: true },
   );
@@ -170,7 +217,13 @@ export function useMessagesInbox(selectedConversationId: Ref<string | undefined>
   }
 
   function selectConversation(conversation: ShopChatConversation) {
-    router.push(routes.messages({ conversationId: conversation.id }));
+    const nextQuery = messagesQuery(conversation.id);
+
+    if (isCurrentMessagesQuery(nextQuery)) {
+      return;
+    }
+
+    router.push(routes.messages(nextQuery));
   }
 
   function conversationTimeLabel(conversation: ShopChatConversation) {
@@ -240,5 +293,6 @@ export function useMessagesInbox(selectedConversationId: Ref<string | undefined>
     selectConversation,
     selectedConversationResolved,
     threadMessages,
+    unreadCount,
   };
 }
