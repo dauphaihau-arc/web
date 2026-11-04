@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import AppTabs from '@arc/ui/patterns/app-tabs/app-tabs.vue'
+
 type ProductFormSection = {
   id: string
   label: string
@@ -20,11 +22,8 @@ const pendingScrollTop = ref<number | null>(null)
 const tabs = computed(() =>
   props.sections.map(section => ({
     label: section.label,
+    value: section.id,
   })),
-)
-
-const activeTabIndex = computed(() =>
-  Math.max(props.sections.findIndex(section => section.id === activeSectionId.value), 0),
 )
 
 function scrollToSection(sectionId: string) {
@@ -46,14 +45,8 @@ function scrollToSection(sectionId: string) {
   })
 }
 
-function handleChange(index: number) {
-  const nextSection = props.sections[index]
-
-  if (!nextSection) {
-    return
-  }
-
-  scrollToSection(nextSection.id)
+function handleChange(value: string | number) {
+  scrollToSection(String(value))
 }
 
 function collectSections() {
@@ -168,10 +161,10 @@ onMounted(async () => {
 
 <template>
   <div class="sticky top-4 z-[3] mb-6 w-fit max-w-full bg-transparent">
-    <UTabs
+    <AppTabs
+      aria-label="Product form sections"
       :items="tabs"
-      :model-value="activeTabIndex"
-      class="min-w-max"
+      :model-value="activeSectionId"
       @change="handleChange"
     />
   </div>
