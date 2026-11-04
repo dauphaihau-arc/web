@@ -2,20 +2,12 @@ import { z } from 'zod'
 import { shopOrderSummarySchema } from '../order/order.schema'
 import { idSchema } from '@arc/schemas/primitives/id.schema'
 
-export const shopDashboardTimeRangeSchema = z.enum([
-  'today',
-  'yesterday',
-  'last_7_days',
-  'last_30_days',
-  'this_month',
-  'last_month',
-  'all_time',
-])
-
-export const getShopDashboardRequestSchema = z.object({
-  range: shopDashboardTimeRangeSchema.optional(),
-})
-
+/**
+ * The dashboard response is kept hand-written: the contract types the period
+ * bounds as ISO strings while this client models them as instants, types the
+ * order status as a plain string instead of `OrderStatuses`, and names the top
+ * product id `product_id` where the dashboard UI reads `id`.
+ */
 export const shopDashboardSummarySchema = z.object({
   revenue_minor: z.number(),
   order_count: z.number(),
@@ -44,7 +36,15 @@ export const shopDashboardTopProductSchema = z.object({
 
 export const shopDashboardResponseSchema = z.object({
   period: z.object({
-    range: shopDashboardTimeRangeSchema,
+    range: z.enum([
+      'today',
+      'yesterday',
+      'last_7_days',
+      'last_30_days',
+      'this_month',
+      'last_month',
+      'all_time',
+    ]),
     from: z.coerce.date(),
     to: z.coerce.date(),
   }),

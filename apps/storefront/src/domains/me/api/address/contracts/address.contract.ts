@@ -1,20 +1,12 @@
-import type { z } from 'zod';
-import type {
-  addressItemSchema,
-  createUserAddressRequestSchema,
-  updateUserAddressBodySchema,
-  updateUserAddressRequestSchema,
-  userAddressEnvelopeSchema,
-  userAddressListResponseSchema,
-} from '@arc/schemas/api/me/address/address.schema';
+import type { components } from '@arc/schemas/api/generated/openapi';
 
-export type UserAddressItem = z.infer<typeof addressItemSchema>;
-export type GetUserAddressesResponse = z.infer<typeof userAddressListResponseSchema>;
-export type CreateUserAddressRequest = z.infer<typeof createUserAddressRequestSchema>;
-export type CreateUserAddressResponse = z.infer<typeof userAddressEnvelopeSchema>;
-export type UpdateUserAddressBody = z.infer<typeof updateUserAddressBodySchema>;
-export type UpdateUserAddressRequest = z.infer<typeof updateUserAddressRequestSchema>;
-export type UpdateUserAddressResponse = z.infer<typeof userAddressEnvelopeSchema>;
+export type UserAddressItem = components['schemas']['MyAddressResponseDto'];
+export type GetUserAddressesResponse = components['schemas']['MyAddressListResponseDto'];
+export type CreateUserAddressRequest = components['schemas']['CreateMyAddressDto'];
+export type CreateUserAddressResponse = components['schemas']['MyAddressEnvelopeResponseDto'];
+export type UpdateUserAddressBody = components['schemas']['UpdateMyAddressDto'];
+export type UpdateUserAddressRequest = UpdateUserAddressBody & { id: UserAddressItem['id'] };
+export type UpdateUserAddressResponse = CreateUserAddressResponse;
 export type DeleteUserAddressRequest = {
   id: UserAddressItem['id']
 };

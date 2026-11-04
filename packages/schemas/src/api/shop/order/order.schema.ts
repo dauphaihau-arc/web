@@ -182,11 +182,6 @@ export const shopOrderDetailResponseSchema = z.object({
   timeline: z.array(shopOrderTimelineEventSchema),
 })
 
-export const updateShopOrderStatusRequestSchema = z.object({
-  status: z.nativeEnum(OrderStatuses),
-  cancel_reason: z.string().max(1000).optional(),
-})
-
 export {
   amendFulfillmentShipmentRequestSchema as amendFulfillmentShipmentRequestSchema,
   prepareFulfillmentShipmentRequestSchema as prepareFulfillmentShipmentRequestSchema,
@@ -194,7 +189,3 @@ export {
   reconcileOrderFulfillmentRequestSchema as reconcileOrderFulfillmentRequestSchema,
   shipmentRatesRequestSchema as shipmentRatesRequestSchema,
 } from '../../fulfillment/fulfillment.schema'
-
-export const updateShopOrderRefundRequestSchema = z.object({
-  action: z.enum(['request', 'retry']),
-})

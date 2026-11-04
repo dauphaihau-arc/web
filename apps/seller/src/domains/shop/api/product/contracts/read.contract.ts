@@ -1,19 +1,17 @@
 import type { z } from 'zod';
+import type { components } from '@arc/schemas/api/generated/openapi';
 import type {
+  listShopProductsRequestSchema,
+  listShopProductsItemSchema,
+  listShopProductsResponseSchema,
   detailShopProductInventorySchema,
   detailShopProductResponseSchema,
   detailShopProductVariantOptionSchema,
   detailShopProductVariantSchema,
   issueProductImageUploadUrlRequestSchema,
-  issueProductImageUploadUrlResponseSchema,
-  listShopProductsItemSchema,
-  listShopProductsRequestSchema,
-  listShopProductsResponseSchema,
-  bulkMutateShopProductsActionSchema,
-  bulkMutateShopProductsRequestSchema,
-  bulkMutateShopProductsResponseSchema,
   shopProductDetailApiResponseSchema,
   shopProductShippingApiSchema,
+  bulkMutateShopProductsRequestSchema,
 } from '~/domains/shop/api/schemas/product/read-product.schema';
 
 export type ListShopProductsRequest = z.infer<typeof listShopProductsRequestSchema>;
@@ -27,8 +25,12 @@ export type DetailShopProductVariantOption = z.infer<typeof detailShopProductVar
 export type DetailShopProductVariant = z.infer<typeof detailShopProductVariantSchema>;
 export type DetailShopProductResponse = z.infer<typeof detailShopProductResponseSchema>;
 
+/**
+ * The upload target carries the `productId` path segment alongside the
+ * snake_case wire body, which the contract does not model as one payload.
+ */
 export type IssueProductImageUploadUrlRequest = z.infer<typeof issueProductImageUploadUrlRequestSchema>;
-export type IssueProductImageUploadUrlResponse = z.infer<typeof issueProductImageUploadUrlResponseSchema>;
-export type BulkMutateShopProductsAction = z.infer<typeof bulkMutateShopProductsActionSchema>;
+export type IssueProductImageUploadUrlResponse = components['schemas']['ProductImageUploadUrlResponseDto'];
+export type BulkMutateShopProductsAction = components['schemas']['BulkMutateShopProductsDto']['action'];
 export type BulkMutateShopProductsRequest = z.infer<typeof bulkMutateShopProductsRequestSchema>;
-export type BulkMutateShopProductsResponse = z.infer<typeof bulkMutateShopProductsResponseSchema>;
+export type BulkMutateShopProductsResponse = components['schemas']['ShopProductBulkMutateResponseDto'];

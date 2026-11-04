@@ -42,7 +42,7 @@ vi.mock('~/domains/cart/mutations/apply-cart-promo-code.mutation', async () => {
 
         if (applyPromoCodeFixture.handler) return applyPromoCodeFixture.handler(body);
 
-        const codes = [...new Set([...body.promo_codes, body.code])];
+        const codes = [...new Set([...(body.promo_codes ?? []), body.code])];
         const fixture = promoCodesFixture.promo_codes as CartPromoCodeItem[];
 
         return {

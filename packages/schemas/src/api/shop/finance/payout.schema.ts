@@ -68,21 +68,6 @@ export const shopFinanceManualPayoutResponseSchema = z.object({
   payout: shopFinancePayoutSchema,
 })
 
-/**
- * The seller-facing preview of one withdrawal: what leaves the shop balance and
- * what is expected to land in the Payout Account. Nothing is persisted; the
- * number is an estimate and the provider reports the amount it actually sent.
- */
-export const shopFinancePayoutQuoteSchema = z.object({
-  source_currency: z.string(),
-  target_currency: z.string(),
-  source_amount_minor: z.number().int(),
-  fx_rate: z.string(),
-  target_amount_minor: z.number().int(),
-  /** Always true: the panel never claims the amount is settled. */
-  estimated: z.literal(true),
-})
-
 /** Query of the withdrawal quote; the shop-currency amount is required. */
 export const getShopFinancePayoutQuoteRequestSchema = z.object({
   amount_minor: z.number().int().positive(),

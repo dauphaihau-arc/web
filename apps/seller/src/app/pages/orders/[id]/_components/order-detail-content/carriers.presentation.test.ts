@@ -29,6 +29,8 @@ const DHL: Carrier = {
 const OTHER: Carrier = {
   code: 'other',
   name: 'Other',
+  tracking_pattern: null,
+  tracking_hint: null,
   observable: false,
   label_supported: false,
 };
@@ -46,6 +48,7 @@ const PLAIN: Carrier = {
   code: 'plain',
   name: 'Plain',
   tracking_pattern: '^\\d+$',
+  tracking_hint: null,
   observable: true,
   label_supported: false,
 };
