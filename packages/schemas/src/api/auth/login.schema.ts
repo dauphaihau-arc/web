@@ -1,7 +1,13 @@
 import { z } from 'zod'
 import { USER_CONFIG, USER_REG_PASSWORD } from '@arc/enums/user'
-import { authUserEnvelopeSchema } from './auth-user.schema'
 
+/**
+ * Login request body.
+ *
+ * Kept as a zod schema because the OpenAPI spec publishes `LoginDto` as an
+ * empty object (`Record<string, never>`), so it does not model these fields.
+ * The login response type is derived from the generated contract instead.
+ */
 export const loginRequestSchema = z.object({
   email: z
     .string()
@@ -16,5 +22,3 @@ export const loginRequestSchema = z.object({
     .regex(USER_REG_PASSWORD),
   app: z.enum(['storefront', 'seller', 'admin']).optional(),
 })
-
-export const loginResponseSchema = authUserEnvelopeSchema

@@ -1,5 +1,4 @@
-import type { z } from 'zod';
-import type { verifyTokenRequestSchema } from '@arc/schemas/api/auth/verify-token.schema';
+import type { paths } from '@arc/schemas/api/generated/openapi';
 
-export type VerifyTokenRequestPayload = z.infer<typeof verifyTokenRequestSchema>;
+export type VerifyTokenRequestPayload = paths['/v1/auth/verify-token']['get']['parameters']['query'];
 export type VerifyTokenResponse = undefined;
