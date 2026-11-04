@@ -156,6 +156,7 @@ export default defineNuxtConfig({
     '/cart/**': { ssr: false, isr: false, cache: false },
     '/checkout/**': { ssr: false, isr: false, cache: false },
     '/account/**': { ssr: false, isr: false, cache: false },
+    '/messages': { ssr: false, isr: false, cache: false },
     '/orders/**': { ssr: false, isr: false, cache: false },
     '/reset/**': { ssr: false, isr: false, cache: false },
     '/**': { isr: 300 },

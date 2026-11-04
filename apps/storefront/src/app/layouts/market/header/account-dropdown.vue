@@ -28,7 +28,7 @@ const itemsUserDropdown = computed<UserDropdownItem[][]>(() => [
     {
       label: 'Messages',
       icon: 'message',
-      click: () => navigateTo(routes.accountMessages()),
+      click: () => navigateTo(routes.messages()),
     },
     {
       label: 'Account',

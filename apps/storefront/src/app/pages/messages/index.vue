@@ -17,9 +17,11 @@ definePageMeta({ layout: 'market', middleware: ['auth'] })
 const route = useRoute()
 const router = useRouter()
 const queryClient = useQueryClient()
+
 const chatEventsClient = import.meta.client
   ? createStorefrontChatEventsClient(queryClient)
   : null
+
 const selectedConversationId = computed(() => {
   const value = route.query.conversation_id
   return typeof value === 'string' ? value : undefined
@@ -36,6 +38,7 @@ const {
 } = useMyChatConversations(conversationParams)
 
 const conversations = computed<MyChatConversation[]>(() => conversationList.value?.results ?? [])
+
 const selectedConversation = computed<MyChatConversation | null>(() => {
   return conversations.value.find((conversation: MyChatConversation) => conversation.id === selectedConversationId.value)
     ?? null
@@ -68,17 +71,17 @@ watch(
       return
     }
 
-    router.replace(routes.accountMessages({ conversationId: firstConversation.id }))
+    router.replace(routes.messages({ conversationId: firstConversation.id }))
   },
   { immediate: true },
 )
 
 function selectConversation(conversation: MyChatConversation) {
-  router.push(routes.accountMessages({ conversationId: conversation.id }))
+  router.push(routes.messages({ conversationId: conversation.id }))
 }
 
 function closeConversation() {
-  router.push(routes.accountMessages())
+  router.push(routes.messages())
 }
 
 if (import.meta.client) {
@@ -93,12 +96,12 @@ if (import.meta.client) {
 </script>
 
 <template>
-  <div class="min-w-0 flex-1">
+  <div class="mt-8">
     <div class="mb-8">
       <SectionHeader
         title="Messages"
         description="Talk directly with sellers about products and orders."
-        heading-class="text-3xl font-semibold text-text-strong"
+        heading-class="text-2xl font-semibold text-text-strong md:text-3xl"
       />
     </div>
 

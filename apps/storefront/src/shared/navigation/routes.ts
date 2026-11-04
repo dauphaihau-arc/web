@@ -23,9 +23,9 @@ export const routes = {
   reset: (query?: { v?: string | number }) => createRoute(routePaths.reset, query),
   account: () => createRoute(routePaths.account),
   accountAddresses: () => createRoute(routePaths.accountAddresses),
-  accountMessages: (query?: { conversationId?: string }) =>
+  messages: (query?: { conversationId?: string }) =>
     createRoute(
-      routePaths.accountMessages,
+      routePaths.messages,
       query?.conversationId ? { conversation_id: query.conversationId } : undefined,
     ),
   orders: (query?: {
