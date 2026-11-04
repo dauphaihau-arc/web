@@ -1,14 +1,30 @@
-import type { z } from 'zod';
-import type {
-  authPreferencesSchema,
-  authUserEnvelopeSchema,
-  authUserSchema,
-  currentUserEnvelopeSchema,
-  currentUserSchema,
-} from '@arc/schemas/api/auth/auth-user.schema';
+import type { components } from '@arc/schemas/api/generated/openapi';
+import type { MarketCurrencies, MarketLanguages, MarketRegions } from '@arc/enums/market';
 
-export type AuthPreferences = z.infer<typeof authPreferencesSchema>;
-export type AuthUser = z.infer<typeof authUserSchema>;
-export type AuthUserEnvelope = z.infer<typeof authUserEnvelopeSchema>;
-export type CurrentUser = z.infer<typeof currentUserSchema>;
-export type CurrentUserEnvelope = z.infer<typeof currentUserEnvelopeSchema>;
+type ApiPreferences = components['schemas']['MePreferencesResponseDto'];
+type ApiAuthUser = components['schemas']['MeResponseDto'];
+type ApiAuthUserEnvelope = components['schemas']['AuthUserResponseDto'];
+type ApiCurrentUser = components['schemas']['CurrentUserResponseDto'];
+
+export type AuthPreferences =
+  Omit<ApiPreferences, 'region' | 'language' | 'currency'> & {
+    region: MarketRegions
+    language: MarketLanguages
+    currency: MarketCurrencies
+  };
+
+export type AuthUser = Omit<ApiAuthUser, 'preferences'> & {
+  preferences?: AuthPreferences
+};
+
+export type AuthUserEnvelope = Omit<ApiAuthUserEnvelope, 'user'> & {
+  user: AuthUser
+};
+
+export type CurrentUser = Omit<ApiCurrentUser, 'preferences'> & {
+  preferences?: AuthPreferences
+};
+
+export type CurrentUserEnvelope = {
+  user: CurrentUser
+};

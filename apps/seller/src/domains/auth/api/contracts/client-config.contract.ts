@@ -1,4 +1,3 @@
-import type { z } from 'zod';
-import type { authClientConfigSchema } from '@arc/schemas/api/auth/client-config.schema';
+import type { components } from '@arc/schemas/api/generated/openapi';
 
-export type AuthClientConfigResponse = z.infer<typeof authClientConfigSchema>;
+export type AuthClientConfigResponse = components['schemas']['AuthClientConfigResponseDto'];
