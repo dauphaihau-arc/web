@@ -1,5 +1,4 @@
-import type { z } from 'zod';
-import type { forgotPasswordRequestSchema } from '@arc/schemas/api/auth/forgot-password.schema';
+import type { components } from '@arc/schemas/api/generated/openapi';
 
-export type ForgotPasswordRequest = z.infer<typeof forgotPasswordRequestSchema>;
+export type ForgotPasswordRequest = components['schemas']['ForgotPasswordDto'];
 export type ForgotPasswordResponse = undefined;
