@@ -32,7 +32,7 @@ defineExpose({
 </script>
 
 <template>
-  <section :class="sectionClass">
+  <section :class="[sectionClass, 'relative']">
     <AppStateBlock
       v-if="!hasConversation"
       class="grid flex-1 place-content-center px-6 border-0 shadow-none"
@@ -67,7 +67,7 @@ defineExpose({
         </template>
       </div>
 
-      <div :class="composerClass">
+      <div :class="['pointer-events-none absolute inset-x-0 bottom-0 z-20', composerClass]">
         <slot name="composer" />
       </div>
     </template>

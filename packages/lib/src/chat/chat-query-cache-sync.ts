@@ -178,6 +178,12 @@ export function createChatQuerySyncHandler<
       const existingIndex = queryData.results.findIndex(conversation => conversation.id === payload.conversation_id)
 
       if (existingIndex < 0) {
+        // The cached page does not hold this conversation (e.g. it just became
+        // unread, or it was filtered out of the Unread tab). Refetching only
+        // this variant is cheaper than leaving a filtered list stale until the
+        // 15s poll picks the change up.
+        options.queryClient.invalidateQueries({ queryKey })
+
         continue
       }
 

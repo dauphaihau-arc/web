@@ -47,6 +47,8 @@ export type ShopChatMessage = {
 export type ListShopChatConversationsRequest = {
   page?: number
   limit?: number
+  unread?: boolean
+  q?: string
 };
 
 export type ListShopChatConversationsResponse = {

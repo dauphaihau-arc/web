@@ -115,28 +115,67 @@ onBeforeUnmount(() => {
   }
 })
 
-const indicatorStyle = computed<CSSProperties>(() => {
-  const count = props.items.length
-  const size = `calc((100% - 0.5rem) / ${count})`
+// Tabs size to their content, so the indicator is measured from the rendered
+// active tab instead of assuming equal-width segments.
+type IndicatorRect = { left: number, top: number, width: number, height: number }
 
-  if (props.orientation === 'vertical') {
-    const top = `calc(0.25rem + ${activeIndex.value} * ${size})`
+const listRef = ref<HTMLElement | null>(null)
+const indicatorRect = ref<IndicatorRect | null>(null)
 
-    return {
-      top,
-      height: size,
-      left: '0.25rem',
-      right: '0.25rem',
-    }
+function measureIndicator() {
+  const tab = activeIndex.value === -1 ? undefined : tabRefs.value[activeIndex.value]
+
+  if (!tab) {
+    indicatorRect.value = null
+
+    return
   }
 
-  const left = `calc(0.25rem + ${activeIndex.value} * ${size})`
+  indicatorRect.value = {
+    left: tab.offsetLeft,
+    top: tab.offsetTop,
+    width: tab.offsetWidth,
+    height: tab.offsetHeight,
+  }
+}
+
+let resizeObserver: ResizeObserver | undefined
+
+onMounted(() => {
+  void nextTick(() => {
+    measureIndicator()
+    resizeObserver = new ResizeObserver(() => measureIndicator())
+
+    if (listRef.value) {
+      resizeObserver.observe(listRef.value)
+    }
+  })
+})
+
+onBeforeUnmount(() => {
+  resizeObserver?.disconnect()
+})
+
+watch(
+  () => [activeIndex.value, props.items] as const,
+  () => {
+    void nextTick(measureIndicator)
+  },
+  { deep: true, flush: 'post' },
+)
+
+const indicatorStyle = computed<CSSProperties>(() => {
+  if (!indicatorRect.value) {
+    return { display: 'none' }
+  }
+
+  const { left, top, width, height } = indicatorRect.value
 
   return {
-    left,
-    width: size,
-    top: '0.25rem',
-    bottom: '0.25rem',
+    left: `${left}px`,
+    top: `${top}px`,
+    width: `${width}px`,
+    height: `${height}px`,
   }
 })
 
@@ -262,18 +301,28 @@ function onTabKeydown(event: KeyboardEvent, index: number) {
 const listClass = computed(() => {
   const isVertical = props.orientation === 'vertical'
   const direction = isVertical ? 'flex-col' : 'flex-row'
+  const display = isVertical ? 'flex w-full' : 'inline-flex'
 
   if (props.variant === 'pill') {
-    return ['relative rounded-lg bg-surface-muted p-1', direction]
+    return ['relative rounded-lg bg-surface-muted p-1', display, direction]
   }
 
-  return [direction]
+  return [display, direction]
 })
 
 const sizeClasses: Record<AppTabsSize, string> = {
   xs: 'px-2 py-1.5 text-xs',
   sm: 'px-3 py-2 text-sm',
   md: 'px-4 py-2.5 text-base',
+}
+
+// Content-sized tabs collapse around short labels (All, Paid), which reads as
+// ragged columns next to longer ones. A width floor keeps every pill in the
+// track optically comparable without stretching the track itself.
+const pillMinWidthClasses: Record<AppTabsSize, string> = {
+  xs: 'min-w-16',
+  sm: 'min-w-28',
+  md: 'min-w-32',
 }
 
 const iconSizes: Record<AppTabsSize, 'xs' | 'sm'> = {
@@ -291,12 +340,16 @@ function tabClass(index: number): string[] {
   const classes = [
     'relative inline-flex items-center justify-center gap-1.5 whitespace-nowrap font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50',
     sizeClasses[props.size],
-    isVertical ? 'w-full justify-start' : 'flex-1',
   ]
+
+  if (isVertical) {
+    classes.push('w-full justify-start')
+  }
 
   if (props.variant === 'pill') {
     classes.push(
       'z-10 rounded-md',
+      pillMinWidthClasses[props.size],
       active
         ? 'text-white shadow-none'
         : 'text-text-subtle hover:text-text-strong',
@@ -314,15 +367,25 @@ function tabClass(index: number): string[] {
 
   return classes
 }
+
+// A badge must stay visible on both the muted pill track and the selected
+// (primary) pill, so the background flips with selection instead of using a
+// single surface that matches one of them.
+function badgeClass(index: number): string[] {
+  return [
+    'inline-flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full px-1.5 text-[10px] font-semibold leading-none text-text-subtle tabular-nums',
+    isActive(index) ? 'bg-surface' : 'bg-surface-control',
+  ]
+}
 </script>
 
 <template>
   <div class="w-full">
     <div
+      ref="listRef"
       role="tablist"
       :aria-orientation="orientation"
       :aria-label="ariaLabel"
-      class="flex w-full"
       :class="listClass"
     >
       <span
@@ -357,7 +420,7 @@ function tabClass(index: number): string[] {
 
         <span
           v-if="item.badge !== undefined && item.badge !== ''"
-          class="inline-flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full bg-surface-hover px-1.5 text-[10px] font-semibold leading-none text-text-subtle tabular-nums"
+          :class="badgeClass(index)"
         >
           {{ item.badge }}
         </span>

@@ -1,41 +1,26 @@
 <script setup lang="ts">
 withDefaults(defineProps<{
-  title?: string
-  totalResults?: number
-  totalLabel?: string
   loading?: boolean
   empty?: boolean
   emptyText?: string
   loadingText?: string
   minHeightClass?: string
   asideClass?: string
-  headerClass?: string
   listClass?: string
 }>(), {
-  title: 'Conversations',
-  totalResults: 0,
-  totalLabel: 'total threads',
   loading: false,
   empty: false,
   emptyText: 'No conversations yet.',
   loadingText: 'Loading conversations...',
   minHeightClass: 'h-52',
   asideClass: 'border-b border-border-subtle lg:border-b-0 lg:border-r',
-  headerClass: 'border-b border-border-subtle px-5 py-4',
   listClass: 'scrollbar-subtle max-h-[70vh] overflow-y-auto',
 })
 </script>
 
 <template>
   <aside :class="asideClass">
-    <div :class="headerClass">
-      <div class="text-sm font-semibold text-text-strong">
-        {{ title }}
-      </div>
-      <div class="text-sm text-text-muted">
-        {{ totalResults }} {{ totalLabel }}
-      </div>
-    </div>
+    <slot name="toolbar" />
 
     <AppStateBlock
       v-if="loading"

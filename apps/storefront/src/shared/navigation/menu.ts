@@ -16,11 +16,6 @@ export const accountSidebarLinks: AppNavigationItem[] = [
     to: routes.account(),
   },
   {
-    label: 'Messages',
-    icon: 'message',
-    to: routes.accountMessages(),
-  },
-  {
     label: 'Addresses',
     icon: 'location',
     to: routes.accountAddresses(),
