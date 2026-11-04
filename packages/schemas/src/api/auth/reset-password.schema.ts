@@ -1,7 +1,13 @@
 import { z } from 'zod'
 import { USER_CONFIG, USER_REG_PASSWORD } from '@arc/enums/user'
-import { authUserEnvelopeSchema } from './auth-user.schema'
 
+/**
+ * Reset-password request body.
+ *
+ * Kept as a zod schema because the OpenAPI spec publishes `ResetPasswordDto`
+ * as an empty object (`Record<string, never>`) and models `token` only as a
+ * query parameter. The response type is derived from the generated contract.
+ */
 export const resetPasswordRequestSchema = z.object({
   token: z.string(),
   password: z
@@ -11,5 +17,3 @@ export const resetPasswordRequestSchema = z.object({
     .regex(USER_REG_PASSWORD),
   app: z.enum(['storefront', 'seller', 'admin']).optional(),
 })
-
-export const resetPasswordResponseSchema = authUserEnvelopeSchema
