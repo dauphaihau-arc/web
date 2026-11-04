@@ -152,9 +152,13 @@ watch(
 
 <template>
   <div class="mt-8">
-    <h1 class="mb-4 ml-1 text-xl md:mb-6 md:text-2xl">
-      Products you’ve ordered.
-    </h1>
+    <div class="mb-8">
+      <SectionHeader
+        title="Orders"
+        description="Track and manage the products you’ve ordered."
+        heading-class="text-2xl font-semibold text-text-strong md:text-3xl"
+      />
+    </div>
 
     <div class="mb-10 flex flex-col gap-4">
       <div class="-mx-4 min-w-0 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0 lg:overflow-visible lg:pb-0">
