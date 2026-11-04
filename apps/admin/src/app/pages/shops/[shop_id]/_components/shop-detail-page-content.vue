@@ -2,6 +2,7 @@
 import type { AdminShopListEntry } from '~/domains/shops/api/contracts/admin-shops.contract'
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import StatusBadge from '@arc/ui/primitives/status-badge.vue'
+import AppTabs from '@arc/ui/patterns/app-tabs/app-tabs.vue'
 import LayoutAdminWrapperContent from '~/app/layouts/admin/wrapper-content.vue'
 import {
   formatShopStatusLabel,
@@ -45,10 +46,18 @@ const headerShop = computed<AdminShopListEntry | null>(() => {
 })
 
 const tabs = [
-  { label: 'Overview' },
-  { label: 'Commission schedule' },
-  { label: 'Payout history' },
+  { label: 'Overview', value: SHOP_DETAIL_TABS.overview },
+  { label: 'Commission schedule', value: SHOP_DETAIL_TABS.commissionSchedule },
+  { label: 'Payout history', value: SHOP_DETAIL_TABS.payoutHistory },
 ]
+
+function handleTabChange(value: string | number) {
+  const tab = tabs.find(item => item.value === value)
+
+  if (tab) {
+    activeTab.value = tab.value
+  }
+}
 </script>
 
 <template>
@@ -122,10 +131,11 @@ const tabs = [
         class="space-y-6"
       >
         <template v-if="!isFinancePermissionDenied">
-          <UTabs
-            v-model="activeTab"
+          <AppTabs
+            aria-label="Shop detail sections"
             :items="tabs"
-            :content="false"
+            :model-value="activeTab"
+            @change="handleTabChange"
           />
 
           <div
