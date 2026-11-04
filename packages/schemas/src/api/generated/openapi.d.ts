@@ -1863,8 +1863,8 @@ export interface components {
       updated_at: string;
     };
     IssueReviewImageUploadDto: {
-      contentType: string;
-      sizeBytes: number;
+      content_type: string;
+      size_bytes: number;
     };
     ReviewImageUploadUrlResponseDto: {
       key: string;
@@ -1876,12 +1876,12 @@ export interface components {
       key: string;
     };
     IssueProductImageUploadDto: {
-      contentType: string;
+      content_type: string;
       /**
        * @default original
        * @enum {string}
        */
-      assetType: "original";
+      asset_type: "original";
     };
     ProductImageUploadUrlResponseDto: {
       key: string;
@@ -2119,42 +2119,42 @@ export interface components {
       selected_text?: string;
     };
     ProductOptionValueConfigurationDto: {
+      client_ref?: string;
       /** Format: uuid */
       id?: string;
-      clientRef?: string;
       value: string;
       position: number;
     };
     ProductOptionConfigurationDto: {
+      client_ref?: string;
       /** Format: uuid */
       id?: string;
-      clientRef?: string;
       name: string;
       position: number;
       values: components["schemas"]["ProductOptionValueConfigurationDto"][];
     };
     ProductVariantSelectionConfigurationDto: {
       /** Format: uuid */
-      optionId?: string;
-      optionRef?: string;
+      option_id?: string;
+      option_ref?: string;
       /** Format: uuid */
-      valueId?: string;
-      valueRef?: string;
+      value_id?: string;
+      value_ref?: string;
     };
     ProductVariantInventoryConfigurationDto: {
-      onHandQuantity?: number;
-      expectedOnHandVersion?: number;
+      on_hand_quantity?: number;
+      expected_on_hand_version?: number;
+      amount_minor?: number;
       sku?: string | null;
-      amountMinor?: number;
       currency?: string;
     };
     ProductVariantConfigurationDto: {
+      client_ref?: string;
+      /** @enum {string} */
+      lifecycle_state: "active" | "inactive" | "removed";
       /** Format: uuid */
       id?: string;
-      clientRef?: string;
       selections: components["schemas"]["ProductVariantSelectionConfigurationDto"][];
-      /** @enum {string} */
-      lifecycleState: "active" | "inactive" | "removed";
       inventory?: components["schemas"]["ProductVariantInventoryConfigurationDto"];
     };
     CreateProductDraftFacadeInventoryDto: {
@@ -2210,10 +2210,10 @@ export interface components {
       description: string;
     };
     BulkMutateShopProductsDto: {
+      idempotency_key?: string;
       ids: string[];
       /** @enum {string} */
       action: "publish" | "deactivate" | "remove";
-      idempotencyKey?: string;
     };
     ShopProductBulkMutateResponseDto: {
       /** @description Product public ids (prod_…) updated. */
@@ -3411,27 +3411,27 @@ export interface components {
        * @default 20
        */
       limit?: number;
+      status?: ("canceled" | "pending" | "checkout_pending" | "awaiting_payment" | "expired" | "paid" | "refunded" | "completed" | "archived")[];
+      fulfillment_status?: ("unfulfilled" | "prepared" | "partially_shipped" | "shipped" | "partially_delivered" | "delivered" | "canceled" | "dispatched" | "in_transit")[];
+      /** Format: date-time */
+      created_from?: string;
+      /** Format: date-time */
+      created_to?: string;
+      amount_min?: number;
+      amount_max?: number;
+      currency?: string[];
+      payment_type?: ("cash" | "card")[];
+      search?: string;
       /** @enum {string} */
-      dateRange?: "today" | "current_month" | "last_7_days" | "last_4_weeks" | "last_month" | "all" | "custom";
+      date_range?: "today" | "current_month" | "last_7_days" | "last_4_weeks" | "last_month" | "all" | "custom";
       /** @default UTC */
       timezone?: string;
       /**
        * @default default
        * @enum {string}
        */
-      columnPreset?: "default" | "custom";
+      column_preset?: "default" | "custom";
       columns?: string[];
-      status?: ("canceled" | "pending" | "checkout_pending" | "awaiting_payment" | "expired" | "paid" | "refunded" | "completed" | "archived")[];
-      fulfillmentStatus?: ("unfulfilled" | "prepared" | "partially_shipped" | "shipped" | "partially_delivered" | "delivered" | "canceled" | "dispatched" | "in_transit")[];
-      /** Format: date-time */
-      createdFrom?: string;
-      /** Format: date-time */
-      createdTo?: string;
-      amountMin?: number;
-      amountMax?: number;
-      currency?: string[];
-      paymentType?: ("cash" | "card")[];
-      search?: string;
     };
     ShopOrderStatusCountsResponseDto: {
       all: number;
@@ -4024,14 +4024,14 @@ export interface components {
        * @description Whether automatic Payout Runs may pay this shop without a manual request.
        * @example true
        */
-      autoPayoutEnabled: boolean;
+      auto_payout_enabled: boolean;
     };
     RequestManualPayoutDto: {
       /**
        * @description Amount to withdraw in the shop Settlement Currency minor units. Omitted withdraws all of the net available balance.
        * @example 12500
        */
-      amountMinor?: number;
+      amount_minor?: number;
     };
     ShopPayoutResponseWrapperDto: {
       payout: components["schemas"]["ShopPayoutResponseDto"];
@@ -6905,8 +6905,8 @@ export interface operations {
         limit?: number;
         sort?: "all" | "most_recent" | "newest" | "highest_rating" | "lowest_rating";
         rating?: 1 | 2 | 3 | 4 | 5;
-        hasImages?: boolean;
-        hasComment?: boolean;
+        has_images?: boolean;
+        has_comment?: boolean;
       };
       path: {
         shop_slug: string;
@@ -7496,7 +7496,7 @@ export interface operations {
         /** @description Maximum number of products to return. */
         limit?: number;
         state?: "active" | "draft" | "inactive" | "removed" | "unavailable";
-        categoryId?: string;
+        category_id?: string;
         search?: string;
       };
       path: {
@@ -8568,7 +8568,7 @@ export interface operations {
         /** @description Maximum number of product reviews to return. */
         limit?: number;
         status?: "published" | "hidden";
-        productId?: string;
+        product_id?: string;
         sort?: "newest" | "oldest" | "highest_rating" | "lowest_rating";
       };
       path: {
@@ -10473,19 +10473,19 @@ export interface operations {
         page?: number;
         /** @description Maximum number of orders to return. */
         limit?: number;
-        dateRange?: "today" | "current_month" | "last_7_days" | "last_4_weeks" | "last_month" | "all" | "custom";
-        timezone?: string;
-        columnPreset?: "default" | "custom";
-        columns?: string[];
         status?: ("canceled" | "pending" | "checkout_pending" | "awaiting_payment" | "expired" | "paid" | "refunded" | "completed" | "archived")[];
-        fulfillmentStatus?: ("unfulfilled" | "prepared" | "partially_shipped" | "shipped" | "partially_delivered" | "delivered" | "canceled" | "dispatched" | "in_transit")[];
-        createdFrom?: string;
-        createdTo?: string;
-        amountMin?: number;
-        amountMax?: number;
+        fulfillment_status?: ("unfulfilled" | "prepared" | "partially_shipped" | "shipped" | "partially_delivered" | "delivered" | "canceled" | "dispatched" | "in_transit")[];
+        created_from?: string;
+        created_to?: string;
+        amount_min?: number;
+        amount_max?: number;
         currency?: string[];
-        paymentType?: ("cash" | "card")[];
+        payment_type?: ("cash" | "card")[];
         search?: string;
+        date_range?: "today" | "current_month" | "last_7_days" | "last_4_weeks" | "last_month" | "all" | "custom";
+        timezone?: string;
+        column_preset?: "default" | "custom";
+        columns?: string[];
       };
       path: {
         shop_id: string;
@@ -10696,13 +10696,13 @@ export interface operations {
         /** @description Maximum number of orders to return. */
         limit?: number;
         status?: ("canceled" | "pending" | "checkout_pending" | "awaiting_payment" | "expired" | "paid" | "refunded" | "completed" | "archived")[];
-        fulfillmentStatus?: ("unfulfilled" | "prepared" | "partially_shipped" | "shipped" | "partially_delivered" | "delivered" | "canceled" | "dispatched" | "in_transit")[];
-        createdFrom?: string;
-        createdTo?: string;
-        amountMin?: number;
-        amountMax?: number;
+        fulfillment_status?: ("unfulfilled" | "prepared" | "partially_shipped" | "shipped" | "partially_delivered" | "delivered" | "canceled" | "dispatched" | "in_transit")[];
+        created_from?: string;
+        created_to?: string;
+        amount_min?: number;
+        amount_max?: number;
         currency?: string[];
-        paymentType?: ("cash" | "card")[];
+        payment_type?: ("cash" | "card")[];
         search?: string;
       };
       path: {
@@ -11094,9 +11094,9 @@ export interface operations {
         /** @description Only return rows with this status: released/pending for Order income, deducted for refunds and Label Charges, or the Payout state. */
         status?: "released" | "pending" | "deducted" | "refunded" | "paid" | "blocked" | "failed";
         /** @description Inclusive lower bound on the row date, as an ISO instant. */
-        dateFrom?: string;
+        date_from?: string;
         /** @description Inclusive upper bound on the row date, as an ISO instant. */
-        dateTo?: string;
+        date_to?: string;
       };
       path: {
         shop_id: string;
@@ -11155,7 +11155,7 @@ export interface operations {
     parameters: {
       query: {
         /** @description Amount to quote in the shop Settlement Currency minor units. */
-        amountMinor: number;
+        amount_minor: number;
       };
       path: {
         shop_id: string;

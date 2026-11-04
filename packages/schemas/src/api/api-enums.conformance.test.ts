@@ -64,9 +64,9 @@ const SPEC_ONLY_ENUMS: Record<string, string> = {
   'components.schemas.CreateShopPromoCodeDto.properties.visibility':
     'API-only promo-code visibility',
   // Order-export UI selectors; no FE enum models spreadsheet export options.
-  'components.schemas.ExportShopOrdersQueryDto.properties.columnPreset':
+  'components.schemas.ExportShopOrdersQueryDto.properties.column_preset':
     'API-only order-export column preset',
-  'components.schemas.ExportShopOrdersQueryDto.properties.dateRange':
+  'components.schemas.ExportShopOrdersQueryDto.properties.date_range':
     'API-only order-export date-range selector',
   // Each web app pins its own request `app` value; the seller subset is narrower.
   'components.schemas.ForgotPasswordDto.properties.app':
@@ -77,7 +77,7 @@ const SPEC_ONLY_ENUMS: Record<string, string> = {
   'components.schemas.HealthComponentResponseDto.properties.status':
     'internal health-probe contract',
   // Single image upload asset kind accepted by the image pipeline.
-  'components.schemas.IssueProductImageUploadDto.properties.assetType':
+  'components.schemas.IssueProductImageUploadDto.properties.asset_type':
     'single accepted image asset kind',
   // App discriminator; each web app pins its own literal.
   'components.schemas.LoginDto.properties.app':
@@ -112,7 +112,7 @@ const SPEC_ONLY_ENUMS: Record<string, string> = {
   'components.schemas.PayoutAccountResponseDto.properties.status':
     'API-only payout account lifecycle',
   // Request subset of ProductStates; draft/unavailable are server-owned.
-  'components.schemas.ProductVariantConfigurationDto.properties.lifecycleState':
+  'components.schemas.ProductVariantConfigurationDto.properties.lifecycle_state':
     'request subset of ProductStates (no `draft`/`unavailable`)',
   // Recommendation carousel taxonomy, not user-selectable.
   'components.schemas.PublicProductRecommendationSectionResponseDto.properties.type':
@@ -171,9 +171,9 @@ const SPEC_ONLY_ENUMS: Record<string, string> = {
   'paths./v1/shops/{shop_id}/dashboard.get.parameters.1':
     'API-only dashboard period selector',
   // Order-export selectors mirror the ExportShopOrdersQueryDto fields.
-  'paths./v1/shops/{shop_id}/orders/export.get.parameters.3':
+  'paths./v1/shops/{shop_id}/orders/export.get.parameters.12':
     'API-only order-export date-range selector',
-  'paths./v1/shops/{shop_id}/orders/export.get.parameters.5':
+  'paths./v1/shops/{shop_id}/orders/export.get.parameters.14':
     'API-only order-export column preset',
   // Seller review moderation filter, displayed as a message.
   'paths./v1/shops/{shop_id}/reviews.get.parameters.3':

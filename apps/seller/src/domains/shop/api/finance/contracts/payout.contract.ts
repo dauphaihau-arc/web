@@ -11,7 +11,7 @@ import type {
  * `target_amount_minor`, `target_currency`, `paid_at`, …) as
  * `Record<string, unknown> | null`, so the history row stays hand-written.
  * The quote response is fully typed by the contract and the quote query keeps
- * its snake_case `amount_minor` (the contract still spells it `amountMinor`).
+ * its snake_case `amount_minor`, matching the contract.
  */
 export type ShopFinancePayout = z.infer<typeof shopFinancePayoutSchema>;
 export type ShopFinancePayoutHistory = z.infer<typeof shopFinancePayoutHistorySchema>;
