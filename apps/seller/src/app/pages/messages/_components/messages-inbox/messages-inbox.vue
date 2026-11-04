@@ -114,18 +114,18 @@ function handleTabChange(value: string | number) {
       list-class="scrollbar-subtle min-h-0 flex-1 overflow-y-auto"
     >
       <template #toolbar>
-        <div class="px-5 pb-1 pt-3">
+        <div class="px-5 pb-3 pt-4">
           <UInput
             v-model="searchInput"
             :icon="ICON_NAME_BY_ALIAS['searchSolid']"
-            size="sm"
+            size="lg"
             placeholder="Search buyers"
             class="w-full"
           />
         </div>
         <AppTabs
           variant="link"
-          size="sm"
+          size="md"
           aria-label="Message filters"
           :items="tabs"
           :model-value="activeTab"

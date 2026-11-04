@@ -224,26 +224,24 @@ if (import.meta.client) {
         list-class="scrollbar-subtle min-h-0 flex-1 overflow-y-auto"
       >
         <template #toolbar>
-          <div class="px-5 pb-1 pt-3">
+          <div class="px-5 pb-3 pt-4">
             <UInput
               v-model="state.q"
               :icon="ICON_NAME_BY_ALIAS['searchSolid']"
               placeholder="Search shops"
-              size="sm"
+              size="lg"
               class="w-full"
             />
           </div>
 
-          <div class="pt-1">
-            <AppTabs
-              variant="link"
-              size="sm"
-              aria-label="Message filters"
-              :items="messageTabItems"
-              :model-value="activeTab"
-              @change="handleTabChange"
-            />
-          </div>
+          <AppTabs
+            variant="link"
+            size="md"
+            aria-label="Message filters"
+            :items="messageTabItems"
+            :model-value="activeTab"
+            @change="handleTabChange"
+          />
         </template>
 
         <button
