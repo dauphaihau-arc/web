@@ -42,11 +42,11 @@ function buildShipment(fixture: ShipmentFixture): FulfillmentShipment {
     tracking_number: fixture.trackingNumber,
     shipment_note: fixture.note,
     origin_countries: ['US'],
-    prepared_at: fixture.preparedAt ?? new Date('2026-03-01T10:00:00.000Z'),
-    dispatched_at: fixture.dispatchedAt,
-    delivered_at: fixture.deliveredAt,
-    created_at: new Date('2026-03-01T10:00:00.000Z'),
-    updated_at: new Date('2026-03-01T10:00:00.000Z'),
+    prepared_at: (fixture.preparedAt ?? new Date('2026-03-01T10:00:00.000Z')).toISOString(),
+    dispatched_at: fixture.dispatchedAt?.toISOString(),
+    delivered_at: fixture.deliveredAt?.toISOString(),
+    created_at: new Date('2026-03-01T10:00:00.000Z').toISOString(),
+    updated_at: new Date('2026-03-01T10:00:00.000Z').toISOString(),
     items: [
       {
         order_item_id: fixture.orderItemId ?? 'order-item-1',
@@ -343,7 +343,7 @@ describe('shop shipping info', () => {
         tracking_number: 'LEGACY-TRACK',
         carrier: 'FedEx',
         note: 'Historic note',
-        shipped_at: new Date('2026-01-05T00:00:00.000Z'),
+        shipped_at: new Date('2026-01-05T00:00:00.000Z').toISOString(),
       },
     }));
     const legacyText = withFacts.text();

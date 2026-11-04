@@ -7,7 +7,7 @@ import {
   ShipmentUpdateActorTypes,
   ShipmentUpdateSources,
 } from '@arc/enums/fulfillment';
-import { OrderStatuses } from '@arc/enums/order';
+import { OrderStatuses, PaymentTypes } from '@arc/enums/order';
 import type { ElementType } from '@arc/contracts/utils';
 import { describe, expect, it } from 'vitest';
 import type {
@@ -42,6 +42,7 @@ function buildProduct(input: {
     title: `Product ${input.id}`,
     quantity: input.quantity,
     amount_minor: input.amountMinor,
+    original_amount_minor: input.amountMinor,
     promo_discount_minor: 0,
     currency: 'USD',
     product: {
@@ -68,7 +69,7 @@ function buildUpdate(input: {
     status: input.status,
     actor_type: ShipmentUpdateActorTypes.SELLER,
     source: ShipmentUpdateSources.SELLER,
-    occurred_at: input.occurredAt,
+    occurred_at: input.occurredAt.toISOString(),
     note: input.note,
     event_code: input.eventCode,
     location: input.location,
@@ -99,11 +100,11 @@ function buildShipment(input: {
     carrier_observable: input.carrierObservable,
     tracking_number: input.trackingNumber,
     origin_countries: ['US'],
-    prepared_at: preparedAt,
-    dispatched_at: input.dispatchedAt,
-    delivered_at: input.deliveredAt,
-    created_at: preparedAt,
-    updated_at: preparedAt,
+    prepared_at: preparedAt.toISOString(),
+    dispatched_at: input.dispatchedAt?.toISOString(),
+    delivered_at: input.deliveredAt?.toISOString(),
+    created_at: preparedAt.toISOString(),
+    updated_at: preparedAt.toISOString(),
     items: input.items ?? [{ order_item_id: 'item-1', quantity: 1 }],
     updates: input.updates ?? [],
   };
@@ -146,15 +147,15 @@ function buildLegacy(input: {
 }): LegacyOrderShipping {
   return {
     status: input.status,
-    updated_at: new Date(2026, 2, 1, 10, 0),
+    updated_at: new Date(2026, 2, 1, 10, 0).toISOString(),
     to_country: 'US',
     from_countries: ['US'],
-    estimated_delivery: new Date(2026, 2, 10, 10, 0),
+    estimated_delivery: new Date(2026, 2, 10, 10, 0).toISOString(),
     tracking_number: input.trackingNumber,
     carrier: input.carrier,
     note: input.note,
-    shipped_at: input.shippedAt,
-    delivered_at: input.deliveredAt,
+    shipped_at: input.shippedAt?.toISOString(),
+    delivered_at: input.deliveredAt?.toISOString(),
   };
 }
 
@@ -1025,15 +1026,15 @@ describe('buildAwaitingShipmentLines', () => {
 
 describe('paymentMethodLabel', () => {
   it('masks a card with its brand and last four digits', () => {
-    expect(paymentMethodLabel({ type: 'card', card_brand: 'visa', card_last4: 4821 })).toBe('Visa •••• 4821');
+    expect(paymentMethodLabel({ type: PaymentTypes.CARD, card_brand: 'visa', card_last4: '4821' })).toBe('Visa •••• 4821');
   });
 
   it('falls back to the masked digits when the brand is missing', () => {
-    expect(paymentMethodLabel({ type: 'card', card_last4: 4821 })).toBe('•••• 4821');
+    expect(paymentMethodLabel({ type: PaymentTypes.CARD, card_last4: '4821' })).toBe('•••• 4821');
   });
 
   it('names the method without inventing card details', () => {
-    expect(paymentMethodLabel({ type: 'card' })).toBe('Card');
-    expect(paymentMethodLabel({ type: 'cash' })).toBe('Cash');
+    expect(paymentMethodLabel({ type: PaymentTypes.CARD })).toBe('Card');
+    expect(paymentMethodLabel({ type: PaymentTypes.CASH })).toBe('Cash');
   });
 });

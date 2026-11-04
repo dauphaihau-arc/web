@@ -47,8 +47,8 @@ export const shopFinancePayoutAccountResponseSchema = z.object({
 })
 
 /**
- * The country where the seller's bank account is held. The provider decides
- * whether it can onboard there, so the API validates only the shape.
+ * Runtime schema for the onboarding form: the seller picks the country where
+ * their bank account is held, and the form validates it before submitting.
  */
 export const startShopFinancePayoutAccountOnboardingRequestSchema = z.object({
   country: z.string().regex(/^[A-Za-z]{2}$/, 'Choose a two-letter country code'),
@@ -61,12 +61,4 @@ export const startShopFinancePayoutAccountOnboardingRequestSchema = z.object({
 export const shopFinancePayoutAccountOnboardingResponseSchema = z.object({
   url: z.string().nullable(),
   status: payoutAccountStatusSchema,
-})
-
-/**
- * The countries the seller may choose when starting onboarding. The ops-owned
- * API allowlist is the only source; the picker never offers anything else.
- */
-export const shopFinancePayoutAccountCountriesSchema = z.object({
-  countries: z.array(z.string()),
 })

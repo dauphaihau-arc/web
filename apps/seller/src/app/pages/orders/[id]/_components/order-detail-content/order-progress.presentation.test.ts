@@ -190,7 +190,7 @@ function buildPayout(input: {
       : input.sellerPayableMinor,
     availability: {
       recorded: input.recorded ?? true,
-      available_at: input.availableAt ?? null,
+      available_at: input.availableAt?.toISOString() ?? null,
     },
     payout: input.payout ?? null,
     payout_method: {
@@ -706,7 +706,7 @@ describe('payout progress', () => {
           id: 'pay-1',
           state: 'paid',
           amount_minor: 2500,
-          paid_at: new Date(2026, 10, 3, 9, 0),
+          paid_at: new Date(2026, 10, 3, 9, 0).toISOString(),
         },
       }),
     );
