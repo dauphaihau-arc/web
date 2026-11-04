@@ -1,6 +1,5 @@
-import type { z } from 'zod';
-import type { updateMeRequestSchema } from '@arc/schemas/api/auth/update-me.schema';
+import type { components } from '@arc/schemas/api/generated/openapi';
 import type { AuthUser } from './auth-user.contract';
 
-export type UpdateMeRequest = z.infer<typeof updateMeRequestSchema>;
+export type UpdateMeRequest = components['schemas']['UpdateMeDto'];
 export type UpdateMeResponse = AuthUser;

@@ -1,6 +1,5 @@
-import type { z } from 'zod';
-import type { loginRequestSchema } from '@arc/schemas/api/auth/login.schema';
+import type { components } from '@arc/schemas/api/generated/openapi';
 import type { AuthUserEnvelope } from './auth-user.contract';
 
-export type LoginRequest = z.infer<typeof loginRequestSchema>;
+export type LoginRequest = components['schemas']['LoginDto'];
 export type LoginResponse = AuthUserEnvelope;

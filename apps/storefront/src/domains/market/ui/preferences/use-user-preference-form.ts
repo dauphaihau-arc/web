@@ -1,4 +1,9 @@
-import { MARKET_CONFIG } from '@arc/enums/market';
+import {
+  MARKET_CONFIG,
+  MarketCurrencies,
+  MarketLanguages,
+  MarketRegions,
+} from '@arc/enums/market';
 import {
   defaultCurrencyOption,
   toCurrencyOption,
@@ -18,6 +23,10 @@ import type {
   MarketConfigMarket,
   MarketConfigResponse,
 } from '~/domains/market/api/contracts/market.contract';
+
+function toMarketEnum<T extends string>(values: readonly T[], value: string): T | undefined {
+  return values.find(candidate => candidate === value);
+}
 
 type UseUserPreferenceFormParams = {
   currentUserPreferences: ComputedRef<AuthPreferences | undefined>
@@ -79,9 +88,15 @@ export function useUserPreferenceForm({
       return;
     }
 
-    state.region = preferences.region;
-    state.language = preferences.language;
-    state.currency = preferences.currency;
+    const region = toMarketEnum(Object.values(MarketRegions), preferences.region);
+    const language = toMarketEnum(Object.values(MarketLanguages), preferences.language);
+    const currency = toMarketEnum(Object.values(MarketCurrencies), preferences.currency);
+
+    if (region && language && currency) {
+      state.region = region;
+      state.language = language;
+      state.currency = currency;
+    }
   }
 
   function normalizeForSelectedMarket() {

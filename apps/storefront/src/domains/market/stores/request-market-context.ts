@@ -1,8 +1,8 @@
 import {
   MARKET_CONFIG,
-  type MarketLanguages,
   type MarketRegions,
 } from '@arc/enums/market';
+import type { AuthPreferences } from '~/domains/auth/api/contracts/auth-user.contract';
 import { getFallbackMarketPreferences } from '~/domains/market/stores/market-preferences';
 
 const REQUEST_MARKET_HEADER_NAMES = {
@@ -22,7 +22,7 @@ const REGION_TO_LOCALE_REGION: Record<MarketRegions, string> = {
   Vietnam: 'VN',
 };
 
-function resolveLocaleLanguage(): MarketLanguages {
+function resolveLocaleLanguage(): AuthPreferences['language'] {
   const marketStore = useMarketStore();
 
   return marketStore.activePreferences?.language ?? MARKET_CONFIG.BASE_LANGUAGE;

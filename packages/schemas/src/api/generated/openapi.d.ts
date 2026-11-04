@@ -990,7 +990,15 @@ export interface components {
       enabled: boolean;
       public_key: string | null;
     };
-    RegisterWebPushSubscriptionDto: Record<string, never>;
+    WebPushSubscriptionKeysDto: {
+      p256dh: string;
+      auth: string;
+    };
+    RegisterWebPushSubscriptionDto: {
+      endpoint: string;
+      expiration_time?: number | null;
+      keys: components["schemas"]["WebPushSubscriptionKeysDto"];
+    };
     WebPushSubscriptionResponseDto: {
       id: string;
       endpoint: string;
@@ -1003,7 +1011,9 @@ export interface components {
     WebPushSubscriptionEnvelopeResponseDto: {
       subscription: components["schemas"]["WebPushSubscriptionResponseDto"];
     };
-    UnregisterWebPushSubscriptionDto: Record<string, never>;
+    UnregisterWebPushSubscriptionDto: {
+      endpoint: string;
+    };
     WebPushSubscriptionRemovalResponseDto: {
       removed: boolean;
     };
@@ -1026,13 +1036,28 @@ export interface components {
       timestamp: string;
       components: components["schemas"]["HealthComponentsResponseDto"];
     };
+    UserPreferencesDto: {
+      /** @enum {string} */
+      region?: "United States" | "Vietnam";
+      /** @enum {string} */
+      language?: "en" | "la" | "fr";
+      /** @enum {string} */
+      currency?: "USD" | "AUD" | "BRL" | "CHF" | "CNY" | "CZK" | "DKK" | "EUR" | "GBP" | "CAD" | "HKD" | "HUF" | "IDR" | "ILS" | "INR" | "JPY" | "KRW" | "MAD" | "MXN" | "MYR" | "NOK" | "NZD" | "PHP" | "PLN" | "SEK" | "VND" | "SGD" | "THB" | "TRY" | "TWD" | "ZAR";
+    };
     RegisterDto: {
       display_name?: string;
+      /** Format: email */
+      email: string;
+      password: string;
+      preferences?: components["schemas"]["UserPreferencesDto"];
     };
     MePreferencesResponseDto: {
-      region: string;
-      language: string;
-      currency: string;
+      /** @enum {string} */
+      region: "United States" | "Vietnam";
+      /** @enum {string} */
+      language: "en" | "la" | "fr";
+      /** @enum {string} */
+      currency: "USD" | "AUD" | "BRL" | "CHF" | "CNY" | "CZK" | "DKK" | "EUR" | "GBP" | "CAD" | "HKD" | "HUF" | "IDR" | "ILS" | "INR" | "JPY" | "KRW" | "MAD" | "MXN" | "MYR" | "NOK" | "NZD" | "PHP" | "PLN" | "SEK" | "VND" | "SGD" | "THB" | "TRY" | "TWD" | "ZAR";
     };
     MeShopResponseDto: {
       id: string;
@@ -1044,7 +1069,8 @@ export interface components {
       id: string;
       email: string;
       display_name?: string;
-      status: string;
+      /** @enum {string} */
+      status: "active" | "disabled";
       session_id: string;
       roles: string[];
       permissions: string[];
@@ -1054,8 +1080,19 @@ export interface components {
     AuthUserResponseDto: {
       user: components["schemas"]["MeResponseDto"];
     };
-    LoginDto: Record<string, never>;
-    ForgotPasswordDto: Record<string, never>;
+    LoginDto: {
+      /** Format: email */
+      email: string;
+      password: string;
+      /** @enum {string} */
+      app: "storefront" | "seller" | "admin";
+    };
+    ForgotPasswordDto: {
+      /** Format: email */
+      email: string;
+      /** @enum {string} */
+      app: "storefront" | "seller";
+    };
     AuthPasswordRequirementsResponseDto: {
       lowercase: boolean;
       uppercase: boolean;
@@ -1082,7 +1119,11 @@ export interface components {
       session: components["schemas"]["AuthSessionConfigResponseDto"];
       ai: components["schemas"]["AuthAiConfigResponseDto"];
     };
-    ResetPasswordDto: Record<string, never>;
+    ResetPasswordDto: {
+      password: string;
+      /** @enum {string} */
+      app: "storefront" | "seller" | "admin";
+    };
     CurrentUserShopResponseDto: {
       shop_name: string;
     };
@@ -1098,8 +1139,23 @@ export interface components {
     SellerRegisterDto: {
       display_name: string;
       shop_name: string;
+      /** Format: email */
+      email: string;
+      password: string;
+      /** @enum {string} */
+      currency: "USD" | "AUD" | "BRL" | "CHF" | "CNY" | "CZK" | "DKK" | "EUR" | "GBP" | "CAD" | "HKD" | "HUF" | "IDR" | "ILS" | "INR" | "JPY" | "KRW" | "MAD" | "MXN" | "MYR" | "NOK" | "NZD" | "PHP" | "PLN" | "SEK" | "VND" | "SGD" | "THB" | "TRY" | "TWD" | "ZAR";
     };
-    UpdateMeDto: Record<string, never>;
+    UpdateMePreferencesDto: {
+      /** @enum {string} */
+      region?: "United States" | "Vietnam";
+      /** @enum {string} */
+      language?: "en" | "la" | "fr";
+      /** @enum {string} */
+      currency?: "USD" | "AUD" | "BRL" | "CHF" | "CNY" | "CZK" | "DKK" | "EUR" | "GBP" | "CAD" | "HKD" | "HUF" | "IDR" | "ILS" | "INR" | "JPY" | "KRW" | "MAD" | "MXN" | "MYR" | "NOK" | "NZD" | "PHP" | "PLN" | "SEK" | "VND" | "SGD" | "THB" | "TRY" | "TWD" | "ZAR";
+    };
+    UpdateMeDto: {
+      preferences: components["schemas"]["UpdateMePreferencesDto"];
+    };
     MyAddressResponseDto: {
       /** @description Internal address id. */
       id: string;
@@ -1126,12 +1182,36 @@ export interface components {
       total_pages: number;
       total_results: number;
     };
-    CreateMyAddressDto: Record<string, never>;
+    CreateMyAddressDto: {
+      full_name: string;
+      address_1: string;
+      address_2?: string;
+      city: string;
+      state: string;
+      zip: string;
+      country: string;
+      phone: string;
+      is_primary?: boolean;
+    };
     MyAddressEnvelopeResponseDto: {
       address: components["schemas"]["MyAddressResponseDto"];
     };
-    UpdateMyAddressDto: Record<string, never>;
-    CreateShopDto: Record<string, never>;
+    UpdateMyAddressDto: {
+      full_name?: string;
+      address_1?: string;
+      address_2?: string;
+      city?: string;
+      state?: string;
+      zip?: string;
+      country?: string;
+      phone?: string;
+      is_primary?: boolean;
+    };
+    CreateShopDto: {
+      shop_name: string;
+      /** @enum {string} */
+      currency: "USD" | "AUD" | "BRL" | "CHF" | "CNY" | "CZK" | "DKK" | "EUR" | "GBP" | "CAD" | "HKD" | "HUF" | "IDR" | "ILS" | "INR" | "JPY" | "KRW" | "MAD" | "MXN" | "MYR" | "NOK" | "NZD" | "PHP" | "PLN" | "SEK" | "VND" | "SGD" | "THB" | "TRY" | "TWD" | "ZAR";
+    };
     ShopResponseDto: {
       /** @description Shop public id (shop_…). */
       id: string;
@@ -1205,7 +1285,9 @@ export interface components {
       total_pages: number;
       total_results: number;
     };
-    BulkStopShopSalesDto: Record<string, never>;
+    BulkStopShopSalesDto: {
+      ids: string[];
+    };
     BulkItemFailureResponseDto: {
       id: string;
       code: string;
@@ -1307,7 +1389,9 @@ export interface components {
       total_pages: number;
       total_results: number;
     };
-    BulkStopShopPromoCodesDto: Record<string, never>;
+    BulkStopShopPromoCodesDto: {
+      ids: string[];
+    };
     ShopPromoCodeStopListResponseDto: {
       results: components["schemas"]["ShopPromoCodeResponseDto"][];
       succeeded_ids: string[];
@@ -1384,10 +1468,10 @@ export interface components {
       name?: string;
       /** @enum {string} */
       status?: "draft" | "active";
-      ship_from_country?: Record<string, unknown> | null;
-      ship_from_postal?: Record<string, unknown> | null;
-      processing_time_min_days?: Record<string, unknown> | null;
-      processing_time_max_days?: Record<string, unknown> | null;
+      ship_from_country?: string | null;
+      ship_from_postal?: string | null;
+      processing_time_min_days?: number | null;
+      processing_time_max_days?: number | null;
       rates?: components["schemas"]["ShippingRateDto"][];
     };
     PreviewShippingProfileDto: {
@@ -1485,10 +1569,16 @@ export interface components {
     CreateCategoryDto: {
       parent_id?: string;
       image_storage_key?: string;
+      name: string;
+      rank: number;
     };
     CreateCategoryAttributeDto: {
       input_type?: string;
       is_required?: boolean;
+      key?: string;
+      name: string;
+      rank?: number;
+      options: string[];
     };
     RecordProductViewResponseDto: {
       /** @enum {boolean} */
@@ -1772,7 +1862,10 @@ export interface components {
       /** Format: date-time */
       updated_at: string;
     };
-    IssueReviewImageUploadDto: Record<string, never>;
+    IssueReviewImageUploadDto: {
+      contentType: string;
+      sizeBytes: number;
+    };
     ReviewImageUploadUrlResponseDto: {
       key: string;
       presigned_url: string;
@@ -1782,7 +1875,14 @@ export interface components {
     ReviewImageUploadedAssetResponseDto: {
       key: string;
     };
-    IssueProductImageUploadDto: Record<string, never>;
+    IssueProductImageUploadDto: {
+      contentType: string;
+      /**
+       * @default original
+       * @enum {string}
+       */
+      assetType: "original";
+    };
     ProductImageUploadUrlResponseDto: {
       key: string;
       presigned_url: string;
@@ -2004,35 +2104,81 @@ export interface components {
       is_digital?: boolean;
       non_taxable?: boolean;
       tags?: string[];
+      title: string;
+      description: string;
     };
     CreateProductDraftFacadeImageDto: {
       storage_key: string;
       rank: number;
     };
     CreateProductDraftFacadeAttributeDto: {
+      /** Format: uuid */
       category_attribute_id: string;
+      /** Format: uuid */
       selected_option_id?: string;
       selected_text?: string;
     };
-    ProductOptionConfigurationDto: Record<string, never>;
-    ProductVariantConfigurationDto: Record<string, never>;
+    ProductOptionValueConfigurationDto: {
+      /** Format: uuid */
+      id?: string;
+      clientRef?: string;
+      value: string;
+      position: number;
+    };
+    ProductOptionConfigurationDto: {
+      /** Format: uuid */
+      id?: string;
+      clientRef?: string;
+      name: string;
+      position: number;
+      values: components["schemas"]["ProductOptionValueConfigurationDto"][];
+    };
+    ProductVariantSelectionConfigurationDto: {
+      /** Format: uuid */
+      optionId?: string;
+      optionRef?: string;
+      /** Format: uuid */
+      valueId?: string;
+      valueRef?: string;
+    };
+    ProductVariantInventoryConfigurationDto: {
+      onHandQuantity?: number;
+      expectedOnHandVersion?: number;
+      sku?: string | null;
+      amountMinor?: number;
+      currency?: string;
+    };
+    ProductVariantConfigurationDto: {
+      /** Format: uuid */
+      id?: string;
+      clientRef?: string;
+      selections: components["schemas"]["ProductVariantSelectionConfigurationDto"][];
+      /** @enum {string} */
+      lifecycleState: "active" | "inactive" | "removed";
+      inventory?: components["schemas"]["ProductVariantInventoryConfigurationDto"];
+    };
     CreateProductDraftFacadeInventoryDto: {
       variant_client_key?: string;
+      /** Format: uuid */
       variant_id?: string;
       stock?: number;
       on_hand_quantity?: number;
       expected_on_hand_version?: number;
+      sku?: string | null;
     };
     CreateProductDraftFacadePricingDto: {
       variant_client_key?: string;
+      /** Format: uuid */
       variant_id?: string;
       amount_minor: number;
+      currency?: string;
     };
     CreateProductDraftFacadeDto: {
       category_id?: string;
       title: string;
       description: string;
-      who_made: string;
+      /** @enum {string} */
+      who_made: "i_did" | "collective" | "someone_else";
       is_digital?: boolean;
       non_taxable?: boolean;
       tags?: string[];
@@ -2045,14 +2191,17 @@ export interface components {
       shipping_profile_id?: string;
     };
     GenerateProductDescriptionAttributeDto: {
+      /** Format: uuid */
       category_attribute_id: string;
+      /** Format: uuid */
       selected_option_id?: string;
       selected_text?: string;
     };
     GenerateProductDescriptionDto: {
       title: string;
       category_id?: string;
-      who_made?: string;
+      /** @enum {string} */
+      who_made?: "i_did" | "collective" | "someone_else";
       is_digital?: boolean;
       tags?: string[];
       attributes?: components["schemas"]["GenerateProductDescriptionAttributeDto"][];
@@ -2060,7 +2209,12 @@ export interface components {
     GenerateProductDescriptionResponseDto: {
       description: string;
     };
-    BulkMutateShopProductsDto: Record<string, never>;
+    BulkMutateShopProductsDto: {
+      ids: string[];
+      /** @enum {string} */
+      action: "publish" | "deactivate" | "remove";
+      idempotencyKey?: string;
+    };
     ShopProductBulkMutateResponseDto: {
       /** @description Product public ids (prod_…) updated. */
       succeeded_ids: string[];
@@ -2070,7 +2224,8 @@ export interface components {
       product_version: number;
       title?: string;
       description?: string;
-      who_made?: string;
+      /** @enum {string} */
+      who_made?: "i_did" | "collective" | "someone_else";
       is_digital?: boolean;
       non_taxable?: boolean;
       tags?: string[];
@@ -2084,7 +2239,9 @@ export interface components {
       images: components["schemas"]["ProductImageByKeyDto"][];
     };
     SetProductAttributeValueDto: {
+      /** Format: uuid */
       category_attribute_id: string;
+      /** Format: uuid */
       selected_option_id?: string;
       selected_text?: string;
     };
@@ -2095,11 +2252,14 @@ export interface components {
       product_version: number;
       options: components["schemas"]["ProductOptionConfigurationDto"][];
       variants: components["schemas"]["ProductVariantConfigurationDto"][];
+      /** @default [] */
       removed_variant_ids?: string[];
+      /** @default [] */
       restore_variant_ids?: string[];
     };
     AssignProductShippingProfileDto: {
-      shipping_profile_id?: Record<string, unknown> | null;
+      /** Format: uuid */
+      shipping_profile_id?: string | null;
     };
     ShopProductReviewImageResponseDto: {
       id: string;
@@ -2267,10 +2427,12 @@ export interface components {
       promo_codes: components["schemas"]["CartPromoCodeResponseDto"][];
     };
     ApplyCartPromoCodeDto: {
+      /** Format: uuid */
       cart_id?: string;
       /** @description Shop public id (shop_…) */
       shop_id: string;
       code: string;
+      /** @default [] */
       promo_codes?: string[];
     };
     CartAppliedPromoCodeResponseDto: {
@@ -2283,8 +2445,10 @@ export interface components {
       applied_promo_codes: components["schemas"]["CartAppliedPromoCodeResponseDto"][];
     };
     AddCartItemDto: {
+      /** Format: uuid */
       inventory_id: string;
       is_temp?: boolean;
+      quantity: number;
     };
     AdditionInfoTempCartDto: {
       promo_codes?: string[];
@@ -2297,8 +2461,11 @@ export interface components {
       note?: string;
     };
     UpdateCartItemDto: {
+      /** Format: uuid */
       cart_id?: string;
+      /** Format: uuid */
       inventory_id?: string;
+      /** Format: uuid */
       replace_with_inventory_id?: string;
       quantity?: number;
       is_select_order?: boolean;
@@ -2654,10 +2821,13 @@ export interface components {
       items: components["schemas"]["CheckoutQuoteItemResponseDto"][];
     };
     GuestCheckoutIdentityDto: {
+      /** Format: email */
       email: string;
     };
     CreateGuestOrderFromCartDto: {
-      payment_type: string;
+      /** @enum {string} */
+      payment_type: "cash" | "card";
+      /** Format: uuid */
       quote_id: string;
       guest: components["schemas"]["GuestCheckoutIdentityDto"];
     };
@@ -2667,6 +2837,7 @@ export interface components {
       order_shops: components["schemas"]["CheckoutOrderShopRefResponseDto"][];
     };
     CreateGuestCheckoutQuoteForBuyNowDto: {
+      /** Format: uuid */
       cart_id: string;
       shipping_address: components["schemas"]["ShippingAddressDto"];
       promo_codes?: string[];
@@ -2674,34 +2845,46 @@ export interface components {
       presentment_currency?: string;
     };
     CreateGuestOrderForBuyNowDto: {
-      payment_type: string;
+      /** @enum {string} */
+      payment_type: "cash" | "card";
+      /** Format: uuid */
       quote_id: string;
       guest: components["schemas"]["GuestCheckoutIdentityDto"];
     };
     CreateCheckoutQuoteFromCartDto: {
       presentment_currency?: string;
+      /** Format: uuid */
       user_address_id: string;
       addition_info_shop_carts?: components["schemas"]["ShopAdjustmentDto"][];
     };
     CreateCheckoutQuoteForBuyNowDto: {
+      /** Format: uuid */
       cart_id: string;
+      /** Format: uuid */
       user_address_id: string;
       promo_codes?: string[];
       presentment_currency?: string;
+      note?: string;
     };
     CreateOrderFromCartDto: {
-      payment_type: string;
+      /** @enum {string} */
+      payment_type: "cash" | "card";
+      /** Format: uuid */
       quote_id: string;
     };
     CreateOrderForBuyNowDto: {
-      payment_type: string;
+      /** @enum {string} */
+      payment_type: "cash" | "card";
+      /** Format: uuid */
       quote_id: string;
     };
     FulfillmentShipmentItemDto: {
+      /** Format: uuid */
       order_item_id: string;
       quantity: number;
     };
     PrepareFulfillmentShipmentDto: {
+      /** Format: uuid */
       group_id?: string;
       items?: components["schemas"]["FulfillmentShipmentItemDto"][];
       carrier?: string;
@@ -2738,6 +2921,7 @@ export interface components {
     PurchaseFulfillmentLabelDto: {
       /** @description Rate quote id (rq_…) returned by shipment-rates. */
       quote_id: string;
+      /** Format: uuid */
       group_id?: string;
       items: components["schemas"]["FulfillmentShipmentItemDto"][];
     };
@@ -3216,7 +3400,39 @@ export interface components {
       recent_orders: components["schemas"]["ShopOrderSummaryResponseDto"][];
       top_selling_products: components["schemas"]["ShopDashboardTopProductResponseDto"][];
     };
-    ExportShopOrdersQueryDto: Record<string, never>;
+    ExportShopOrdersQueryDto: {
+      /**
+       * @description One-based page number.
+       * @default 1
+       */
+      page?: number;
+      /**
+       * @description Maximum number of orders to return.
+       * @default 20
+       */
+      limit?: number;
+      /** @enum {string} */
+      dateRange?: "today" | "current_month" | "last_7_days" | "last_4_weeks" | "last_month" | "all" | "custom";
+      /** @default UTC */
+      timezone: string;
+      /**
+       * @default default
+       * @enum {string}
+       */
+      columnPreset: "default" | "custom";
+      columns?: string[];
+      status?: ("canceled" | "pending" | "checkout_pending" | "awaiting_payment" | "expired" | "paid" | "refunded" | "completed" | "archived")[];
+      fulfillmentStatus?: ("unfulfilled" | "prepared" | "partially_shipped" | "shipped" | "partially_delivered" | "delivered" | "canceled" | "dispatched" | "in_transit")[];
+      /** Format: date-time */
+      createdFrom?: string;
+      /** Format: date-time */
+      createdTo?: string;
+      amountMin?: number;
+      amountMax?: number;
+      currency?: string[];
+      paymentType?: ("cash" | "card")[];
+      search?: string;
+    };
     ShopOrderStatusCountsResponseDto: {
       all: number;
       awaiting_payment: number;
@@ -3285,8 +3501,13 @@ export interface components {
     };
     UpdateShopOrderStatusDto: {
       cancel_reason?: string;
+      /** @enum {string} */
+      status: "canceled" | "pending" | "checkout_pending" | "awaiting_payment" | "expired" | "paid" | "refunded" | "completed" | "archived";
     };
-    UpdateShopOrderRefundDto: Record<string, never>;
+    UpdateShopOrderRefundDto: {
+      /** @enum {string} */
+      action: "request" | "retry";
+    };
     ShopSellerPayableResponseDto: {
       /**
        * @description The shop Settlement Currency the payable accrues in.
@@ -3981,6 +4202,14 @@ export interface operations {
    * @description Returns the signed-in user’s paginated notifications.
    */
   MeNotifications_list: {
+    parameters: {
+      query?: {
+        /** @description One-based page number. */
+        page?: number;
+        /** @description Maximum number of notifications to return. */
+        limit?: number;
+      };
+    };
     responses: {
       /** @description Paginated notification list. */
       200: {
@@ -4522,8 +4751,8 @@ export interface operations {
   Auth_verifyToken: {
     parameters: {
       query: {
-        type: "resetPassword";
         token: string;
+        type: "resetPassword";
       };
     };
     responses: {
@@ -4766,6 +4995,14 @@ export interface operations {
   };
   /** List my addresses */
   MeAddresses_list: {
+    parameters: {
+      query?: {
+        /** @description One-based page number. */
+        page?: number;
+        /** @description Maximum number of addresses to return. */
+        limit?: number;
+      };
+    };
     responses: {
       /** @description Paginated address list. */
       200: {
@@ -5133,6 +5370,12 @@ export interface operations {
   /** List shop sales */
   ShopSales_list: {
     parameters: {
+      query?: {
+        /** @description One-based page number. */
+        page?: number;
+        /** @description Maximum number of sales to return. */
+        limit?: number;
+      };
       path: {
         shop_id: string;
       };
@@ -5408,6 +5651,12 @@ export interface operations {
   /** List shop promo codes */
   ShopPromoCodes_list: {
     parameters: {
+      query?: {
+        /** @description One-based page number. */
+        page?: number;
+        /** @description Maximum number of promo codes to return. */
+        limit?: number;
+      };
       path: {
         shop_id: string;
       };
@@ -5696,6 +5945,10 @@ export interface operations {
   ShopShippingProfiles_profiles: {
     parameters: {
       query?: {
+        /** @description One-based page number. */
+        page?: number;
+        /** @description Maximum number of shipping profiles to return. */
+        limit?: number;
         /** @description Lifecycle states to list, repeatable or comma-separated. Defaults to active and draft; archived profiles are only listed when requested. */
         status?: ("draft" | "active" | "archived")[];
       };
@@ -6176,6 +6429,13 @@ export interface operations {
   };
   /** Suggest categories by name */
   Category_suggestCategories: {
+    parameters: {
+      query: {
+        /** @description Maximum number of category suggestions to return. */
+        limit?: number;
+        name: string;
+      };
+    };
     responses: {
       /** @description Matching category suggestions. */
       200: {
@@ -6490,8 +6750,9 @@ export interface operations {
    */
   Product_suggestProducts: {
     parameters: {
-      query?: {
+      query: {
         limit?: number;
+        search: string;
       };
     };
     responses: {
@@ -7229,6 +7490,15 @@ export interface operations {
    */
   ShopProducts_products: {
     parameters: {
+      query?: {
+        /** @description One-based page number. */
+        page?: number;
+        /** @description Maximum number of products to return. */
+        limit?: number;
+        state?: "active" | "draft" | "inactive" | "removed" | "unavailable";
+        categoryId?: string;
+        search?: string;
+      };
       path: {
         shop_id: string;
       };
@@ -8090,6 +8360,9 @@ export interface operations {
       };
     };
     responses: {
+      200: {
+        content: never;
+      };
       /** @description Authentication is required */
       401: {
         content: {
@@ -8141,6 +8414,11 @@ export interface operations {
       };
     };
     responses: {
+      201: {
+        content: {
+          "application/json": Record<string, never>;
+        };
+      };
       /** @description Missing XLSX file */
       400: {
         content: {
@@ -8197,6 +8475,11 @@ export interface operations {
       };
     };
     responses: {
+      200: {
+        content: {
+          "application/json": Record<string, never>;
+        };
+      };
       /** @description Authentication is required */
       401: {
         content: {
@@ -8241,6 +8524,9 @@ export interface operations {
       };
     };
     responses: {
+      200: {
+        content: never;
+      };
       /** @description Authentication is required */
       401: {
         content: {
@@ -8276,6 +8562,15 @@ export interface operations {
   /** List product reviews for a shop */
   ShopProductReviews_list: {
     parameters: {
+      query: {
+        /** @description One-based page number. */
+        page?: number;
+        /** @description Maximum number of product reviews to return. */
+        limit?: number;
+        status?: "published" | "hidden";
+        productId?: string;
+        sort: "newest" | "oldest" | "highest_rating" | "lowest_rating";
+      };
       path: {
         shop_id: string;
       };
@@ -9931,8 +10226,8 @@ export interface operations {
       query?: {
         page?: number;
         limit?: number;
-        status?: string;
-        fulfillment_status?: string;
+        status?: "canceled" | "pending" | "checkout_pending" | "awaiting_payment" | "expired" | "paid" | "refunded" | "completed" | "archived";
+        fulfillment_status?: "unfulfilled" | "prepared" | "partially_shipped" | "shipped" | "partially_delivered" | "delivered" | "canceled" | "dispatched" | "in_transit";
         search?: string;
         state?: "awaiting_payment" | "processing" | "shipped" | "delivered" | "canceled" | "refunded";
       };
@@ -10118,6 +10413,9 @@ export interface operations {
    */
   ShopDashboard_overview: {
     parameters: {
+      query?: {
+        range?: "today" | "yesterday" | "last_7_days" | "last_30_days" | "this_month" | "last_month" | "all_time";
+      };
       path: {
         shop_id: string;
       };
@@ -10170,11 +10468,33 @@ export interface operations {
   /** Export shop orders as CSV */
   ShopOrderExport_exportCsv: {
     parameters: {
+      query: {
+        /** @description One-based page number. */
+        page?: number;
+        /** @description Maximum number of orders to return. */
+        limit?: number;
+        dateRange?: "today" | "current_month" | "last_7_days" | "last_4_weeks" | "last_month" | "all" | "custom";
+        timezone: string;
+        columnPreset: "default" | "custom";
+        columns?: string[];
+        status?: ("canceled" | "pending" | "checkout_pending" | "awaiting_payment" | "expired" | "paid" | "refunded" | "completed" | "archived")[];
+        fulfillmentStatus?: ("unfulfilled" | "prepared" | "partially_shipped" | "shipped" | "partially_delivered" | "delivered" | "canceled" | "dispatched" | "in_transit")[];
+        createdFrom?: string;
+        createdTo?: string;
+        amountMin?: number;
+        amountMax?: number;
+        currency?: string[];
+        paymentType?: ("cash" | "card")[];
+        search?: string;
+      };
       path: {
         shop_id: string;
       };
     };
     responses: {
+      200: {
+        content: never;
+      };
       /** @description Validation failed */
       400: {
         content: {
@@ -10229,6 +10549,9 @@ export interface operations {
       };
     };
     responses: {
+      201: {
+        content: never;
+      };
       /** @description Validation failed */
       400: {
         content: {
@@ -10276,6 +10599,9 @@ export interface operations {
       };
     };
     responses: {
+      200: {
+        content: never;
+      };
       /** @description Authentication is required */
       401: {
         content: {
@@ -10320,6 +10646,9 @@ export interface operations {
       };
     };
     responses: {
+      200: {
+        content: never;
+      };
       /** @description Authentication is required */
       401: {
         content: {
@@ -10361,6 +10690,21 @@ export interface operations {
   /** List shop orders */
   ShopOrder_list: {
     parameters: {
+      query?: {
+        /** @description One-based page number. */
+        page?: number;
+        /** @description Maximum number of orders to return. */
+        limit?: number;
+        status?: ("canceled" | "pending" | "checkout_pending" | "awaiting_payment" | "expired" | "paid" | "refunded" | "completed" | "archived")[];
+        fulfillmentStatus?: ("unfulfilled" | "prepared" | "partially_shipped" | "shipped" | "partially_delivered" | "delivered" | "canceled" | "dispatched" | "in_transit")[];
+        createdFrom?: string;
+        createdTo?: string;
+        amountMin?: number;
+        amountMax?: number;
+        currency?: string[];
+        paymentType?: ("cash" | "card")[];
+        search?: string;
+      };
       path: {
         shop_id: string;
       };

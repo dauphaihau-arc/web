@@ -30,11 +30,11 @@ function sanitizeRegisterPreferences(preferences?: AuthPreferences | null): Part
 
   const sanitizedPreferences: Partial<AuthPreferences> = {}
 
-  if (Object.values(MarketCurrencies).includes(preferences.currency)) {
+  if (Object.values(MarketCurrencies).some(currency => currency === preferences.currency)) {
     sanitizedPreferences.currency = preferences.currency
   }
 
-  if (Object.values(MarketRegions).includes(preferences.region)) {
+  if (Object.values(MarketRegions).some(region => region === preferences.region)) {
     sanitizedPreferences.region = preferences.region
   }
 
