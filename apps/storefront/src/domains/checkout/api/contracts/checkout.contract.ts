@@ -1,18 +1,21 @@
-import type { z } from 'zod';
-import type {
-  checkoutQuoteResponseSchema,
-  createGuestCheckoutQuoteForBuyNowRequestSchema,
-  createGuestCheckoutQuoteFromCartRequestSchema,
-  createGuestOrderForBuyNowRequestSchema,
-  createGuestOrderFromCartRequestSchema,
-  createOrderResponseSchema,
-  getCheckoutOrderShopsBySessionResponseSchema,
-} from '@arc/schemas/api/checkout/checkout.schema';
+import type { components } from '@arc/schemas/api/generated/openapi';
+import type { PaymentTypes } from '@arc/enums/order';
 
-export type CreateGuestOrderResponse = z.infer<typeof createOrderResponseSchema>;
-export type CheckoutQuoteResponse = z.infer<typeof checkoutQuoteResponseSchema>;
-export type CreateGuestCheckoutQuoteFromCartRequest = z.infer<typeof createGuestCheckoutQuoteFromCartRequestSchema>;
-export type CreateGuestCheckoutQuoteForBuyNowRequest = z.infer<typeof createGuestCheckoutQuoteForBuyNowRequestSchema>;
-export type CreateGuestOrderFromCartRequest = z.infer<typeof createGuestOrderFromCartRequestSchema>;
-export type CreateGuestOrderForBuyNowRequest = z.infer<typeof createGuestOrderForBuyNowRequestSchema>;
-export type GetCheckoutOrderShopsBySessionResponse = z.infer<typeof getCheckoutOrderShopsBySessionResponseSchema>;
+type ApiCreateGuestOrderFromCart = components['schemas']['CreateGuestOrderFromCartDto'];
+type ApiCreateGuestOrderForBuyNow = components['schemas']['CreateGuestOrderForBuyNowDto'];
+
+export type CreateGuestOrderResponse = components['schemas']['CreateOrderResponseDto'];
+export type CheckoutQuoteResponse = components['schemas']['CheckoutQuoteResponseDto'];
+export type CreateGuestCheckoutQuoteFromCartRequest =
+  components['schemas']['CreateGuestCheckoutQuoteFromCartDto'];
+export type CreateGuestCheckoutQuoteForBuyNowRequest =
+  components['schemas']['CreateGuestCheckoutQuoteForBuyNowDto'];
+
+/** The contract spells `payment_type` as a string enum; the app passes `PaymentTypes`. */
+export type CreateGuestOrderFromCartRequest =
+  Omit<ApiCreateGuestOrderFromCart, 'payment_type'> & { payment_type: PaymentTypes };
+export type CreateGuestOrderForBuyNowRequest =
+  Omit<ApiCreateGuestOrderForBuyNow, 'payment_type'> & { payment_type: PaymentTypes };
+
+export type GetCheckoutOrderShopsBySessionResponse =
+  components['schemas']['CheckoutSessionOrderResponseDto'];

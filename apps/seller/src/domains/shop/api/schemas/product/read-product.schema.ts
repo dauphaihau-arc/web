@@ -256,12 +256,6 @@ export const issueProductImageUploadUrlRequestSchema = z.object({
   asset_type: z.literal('original').optional(),
 });
 
-export const issueProductImageUploadUrlResponseSchema = z.object({
-  key: z.string(),
-  presigned_url: z.string(),
-  method: z.literal('PUT').optional(),
-});
-
 export const bulkMutateShopProductsActionSchema = z.enum([
   'publish',
   'deactivate',
@@ -272,13 +266,4 @@ export const bulkMutateShopProductsRequestSchema = z.object({
   ids: z.array(idSchema).min(1),
   action: bulkMutateShopProductsActionSchema,
   idempotency_key: z.string().min(1),
-});
-
-export const bulkMutateShopProductsResponseSchema = z.object({
-  succeeded_ids: z.array(idSchema),
-  failed: z.array(z.object({
-    id: idSchema,
-    code: z.string(),
-    reason: z.string(),
-  })),
 });

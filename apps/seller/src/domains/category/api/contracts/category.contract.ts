@@ -1,20 +1,18 @@
 import type { z } from 'zod';
+import type { components, operations } from '@arc/schemas/api/generated/openapi';
 import type {
   categoryAttributeSelectSchema,
-  categoryResponseSchema,
-  categorySuggestionSchema,
-  getCategoriesRequestSchema,
-  getCategoriesResponseSchema,
   getCategoryAttributesResponseSchema,
-  getCategorySuggestionsResponseSchema,
 } from '@arc/schemas/api/category/category.schema';
 
-export type GetCategoriesRequest = z.infer<typeof getCategoriesRequestSchema>;
-export type GetCategoriesResponse = z.infer<typeof getCategoriesResponseSchema>;
-export type CategoryResponse = z.infer<typeof categoryResponseSchema>;
+export type GetCategoriesRequest = NonNullable<
+  operations['Category_categories']['parameters']['query']
+>;
+export type GetCategoriesResponse = components['schemas']['CategoryResponseDto'][];
+export type CategoryResponse = components['schemas']['CategoryResponseDto'];
 
 export type CategoryAttributeSelect = z.infer<typeof categoryAttributeSelectSchema>;
 export type GetCategoryAttributesResponse = z.infer<typeof getCategoryAttributesResponseSchema>;
 
-export type CategorySuggestion = z.infer<typeof categorySuggestionSchema>;
-export type GetCategorySuggestionsResponse = z.infer<typeof getCategorySuggestionsResponseSchema>;
+export type CategorySuggestion = components['schemas']['CategorySuggestionResponseDto'];
+export type GetCategorySuggestionsResponse = components['schemas']['CategorySuggestionListResponseDto'];

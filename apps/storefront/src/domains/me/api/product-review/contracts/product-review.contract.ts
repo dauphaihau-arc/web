@@ -1,12 +1,7 @@
-import type { z } from 'zod';
-import type {
-  issueReviewImageUploadRequestSchema,
-  issueReviewImageUploadResponseSchema,
-  myProductReviewResponseSchema,
-  upsertMyProductReviewRequestSchema,
-} from '@arc/schemas/api/me/product-review/product-review.schema';
+import type { components } from '@arc/schemas/api/generated/openapi';
 
-export type UpsertMyProductReviewRequest = z.input<typeof upsertMyProductReviewRequestSchema>;
-export type MyProductReviewResponse = z.infer<typeof myProductReviewResponseSchema>;
-export type IssueReviewImageUploadRequest = z.input<typeof issueReviewImageUploadRequestSchema>;
-export type IssueReviewImageUploadResponse = z.infer<typeof issueReviewImageUploadResponseSchema>;
+export type UpsertMyProductReviewRequest = components['schemas']['UpsertMyProductReviewDto'];
+export type MyProductReviewResponse = components['schemas']['MyProductReviewResponseDto'];
+export type IssueReviewImageUploadRequest = components['schemas']['IssueReviewImageUploadDto'];
+export type IssueReviewImageUploadResponse =
+  components['schemas']['ReviewImageUploadUrlResponseDto'];

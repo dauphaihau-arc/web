@@ -33,11 +33,3 @@ export const shopFinanceSettlementCurrencySchema = z.object({
 export const changeShopFinanceSettlementCurrencyRequestSchema = z.object({
   currency: z.string().trim().length(3),
 })
-
-/** The granted change: the resulting currency, its effective instant, and auto payout. */
-export const shopFinanceSettlementCurrencyChangeSchema = z.object({
-  currency: z.string(),
-  previous_currency: z.string(),
-  effective_from: z.string(),
-  auto_payout_enabled: z.boolean(),
-})

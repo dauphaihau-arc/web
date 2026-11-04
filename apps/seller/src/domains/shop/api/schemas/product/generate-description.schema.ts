@@ -19,7 +19,3 @@ export const generateProductDescriptionRequestSchema = z.object({
   tags: z.array(z.string()).optional(),
   attributes: z.array(generateProductDescriptionRequestAttributeSchema).optional(),
 });
-
-export const generateProductDescriptionResponseSchema = z.object({
-  description: z.string(),
-});
