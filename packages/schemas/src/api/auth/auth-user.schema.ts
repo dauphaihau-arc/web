@@ -8,9 +8,10 @@ import {
 /**
  * Runtime schema for user market preferences.
  *
- * The auth API contract types live in each app's auth-user contract, derived
- * from the generated OpenAPI types. This schema is kept because the register
- * and update-me request schemas build on it at runtime.
+ * Request and response types are derived from the generated OpenAPI contract
+ * (`UserPreferencesDto`, `MePreferencesResponseDto`). This schema is kept as
+ * the runtime validator for user-supplied preference values, which no
+ * generated type can check at runtime.
  */
 export const authPreferencesSchema = z.object({
   region: z.nativeEnum(MarketRegions),

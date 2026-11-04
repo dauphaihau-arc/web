@@ -36,5 +36,3 @@ export const registerFormSchema = z.object({
     .min(USER_CONFIG.MIN_CHAR_PASSWORD, `Use at least ${USER_CONFIG.MIN_CHAR_PASSWORD} characters`)
     .regex(USER_REG_PASSWORD, 'Passwords need 8–16 characters, including an uppercase letter, a lowercase letter, a number, and a symbol'),
 });
-
-export const registerRequestSchema = registerFormSchema;

@@ -4,7 +4,6 @@ import {
   USER_REG_NAME,
   USER_REG_PASSWORD,
 } from '@arc/enums/user';
-import { authPreferencesSchema } from '@arc/schemas/api/auth/auth-user.schema';
 
 export const registerFormSchema = z.object({
   display_name: z
@@ -36,8 +35,4 @@ export const registerFormSchema = z.object({
     .max(USER_CONFIG.MAX_CHAR_PASSWORD, `Use ${USER_CONFIG.MAX_CHAR_PASSWORD} characters or fewer`)
     .min(USER_CONFIG.MIN_CHAR_PASSWORD, `Use at least ${USER_CONFIG.MIN_CHAR_PASSWORD} characters`)
     .regex(USER_REG_PASSWORD, 'Passwords need 8–16 characters, including an uppercase letter, a lowercase letter, a number, and a symbol'),
-});
-
-export const registerRequestSchema = registerFormSchema.extend({
-  preferences: authPreferencesSchema.partial().optional(),
 });
