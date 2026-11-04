@@ -4,7 +4,6 @@ import {
   USER_REG_NAME,
   USER_REG_PASSWORD,
 } from '@arc/enums/user';
-import { authUserEnvelopeSchema } from '@arc/schemas/api/auth/auth-user.schema';
 
 export const registerFormSchema = z.object({
   display_name: z
@@ -39,5 +38,3 @@ export const registerFormSchema = z.object({
 });
 
 export const registerRequestSchema = registerFormSchema;
-
-export const registerResponseSchema = authUserEnvelopeSchema;
