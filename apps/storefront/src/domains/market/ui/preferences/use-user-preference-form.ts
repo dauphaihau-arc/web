@@ -14,11 +14,10 @@ import {
   type PreferenceState,
 } from './preference-options';
 import type { AuthPreferences } from '~/domains/auth/api/contracts/auth-user.contract';
-import type { MarketConfigMarket } from '~/domains/market/api/contracts/market.contract';
-
-type MarketConfigResponse = {
-  markets: MarketConfigMarket[]
-};
+import type {
+  MarketConfigMarket,
+  MarketConfigResponse,
+} from '~/domains/market/api/contracts/market.contract';
 
 type UseUserPreferenceFormParams = {
   currentUserPreferences: ComputedRef<AuthPreferences | undefined>

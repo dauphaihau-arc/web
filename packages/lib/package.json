@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@arc/enums": "workspace:*",
+    "@arc/schemas": "workspace:*",
     "consola": "^3.4.2",
     "dayjs": "^1.11.10",
     "socket.io-client": "^4.8.3"

@@ -1,5 +1,6 @@
 import type { SearchParameters } from 'ofetch'
 import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack'
+import { getApiErrorResponse } from './api-error'
 
 export type RequestBehavior = {
   retryOnWakeUp?: boolean
@@ -294,13 +295,7 @@ export function isRecoverableAuthError(error: unknown) {
     return false
   }
 
-  const fetchError = error as {
-    data?: { code?: unknown }
-    response?: { _data?: { code?: unknown }; data?: { code?: unknown } }
-  }
-  const code = fetchError.data?.code
-    ?? fetchError.response?._data?.code
-    ?? fetchError.response?.data?.code
+  const code = getApiErrorResponse(error)?.code
 
-  return typeof code === 'string' && RECOVERABLE_AUTH_ERROR_CODES[code] === true
+  return code !== undefined && RECOVERABLE_AUTH_ERROR_CODES[code] === true
 }
