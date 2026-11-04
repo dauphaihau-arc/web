@@ -69,7 +69,7 @@ const CATALOGUE: Carrier[] = [
     code: 'vnpost', name: 'VNPOST', tracking_pattern: '^[A-Z]{2}\\d{9}VN$', tracking_hint: 'two letters, nine digits, then VN', observable: true, label_supported: true,
   },
   {
-    code: 'other', name: 'Other', observable: false, label_supported: false,
+    code: 'other', name: 'Other', tracking_pattern: null, tracking_hint: null, observable: false, label_supported: false,
   },
 ];
 

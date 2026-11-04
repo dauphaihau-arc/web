@@ -1,12 +1,7 @@
-import type { z } from 'zod';
-import type {
-  shopOrderPayoutAvailabilitySchema,
-  shopOrderPayoutMethodSchema,
-  shopOrderPayoutSchema,
-  shopOrderPayoutSummarySchema,
-} from '@arc/schemas/api/shop/finance/order-payout.schema';
+import type { components } from '@arc/schemas/api/generated/openapi';
 
-export type ShopOrderPayout = z.infer<typeof shopOrderPayoutSchema>;
-export type ShopOrderPayoutAvailability = z.infer<typeof shopOrderPayoutAvailabilitySchema>;
-export type ShopOrderPayoutMethod = z.infer<typeof shopOrderPayoutMethodSchema>;
-export type ShopOrderPayoutSummary = z.infer<typeof shopOrderPayoutSummarySchema>;
+export type ShopOrderPayout = components['schemas']['ShopOrderPayoutResponseDto'];
+export type ShopOrderPayoutAvailability =
+  components['schemas']['OrderPayoutAvailabilityResponseDto'];
+export type ShopOrderPayoutMethod = components['schemas']['OrderPayoutMethodResponseDto'];
+export type ShopOrderPayoutSummary = components['schemas']['OrderPayoutAttributionResponseDto'];

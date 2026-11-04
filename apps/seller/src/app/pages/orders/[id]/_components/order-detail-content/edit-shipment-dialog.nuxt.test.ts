@@ -45,7 +45,7 @@ const CATALOGUE: Carrier[] = [
     code: 'usps', name: 'USPS', tracking_pattern: '^9\\d{21}$', tracking_hint: '22 digits starting with 9', observable: true, label_supported: true,
   },
   {
-    code: 'other', name: 'Other', observable: false, label_supported: false,
+    code: 'other', name: 'Other', tracking_pattern: null, tracking_hint: null, observable: false, label_supported: false,
   },
 ];
 

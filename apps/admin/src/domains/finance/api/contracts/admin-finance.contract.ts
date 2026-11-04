@@ -1,3 +1,5 @@
+import type { components } from '@arc/schemas/api/generated/openapi';
+
 /**
  * An operator's read of a shop's money facts. The admin finance endpoints
  * serialize the shop-facing payloads unchanged, in the shop's Settlement
@@ -10,11 +12,7 @@
  */
 
 /** The shop's Seller Payable balance, in its Settlement Currency. */
-export interface AdminShopPayable {
-  currency: string
-  available_minor: number
-  not_yet_available_minor: number
-}
+export type AdminShopPayable = components['schemas']['ShopSellerPayableResponseDto'];
 
 /** One Payout, with the frozen quote and the provider's conversion evidence. */
 export interface AdminShopPayout {

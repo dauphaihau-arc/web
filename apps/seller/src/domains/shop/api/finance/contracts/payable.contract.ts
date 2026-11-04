@@ -1,4 +1,3 @@
-import type { z } from 'zod';
-import type { shopFinancePayableSchema } from '@arc/schemas/api/shop/finance/payable.schema';
+import type { components } from '@arc/schemas/api/generated/openapi';
 
-export type ShopFinancePayable = z.infer<typeof shopFinancePayableSchema>;
+export type ShopFinancePayable = components['schemas']['ShopSellerPayableResponseDto'];

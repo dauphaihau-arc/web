@@ -1,6 +1,4 @@
-import type {
-  Carrier,
-  CarrierCatalogueResponse,
-} from '@arc/schemas/api/fulfillment/fulfillment.schema';
+import type { components } from '@arc/schemas/api/generated/openapi';
 
-export type { Carrier, CarrierCatalogueResponse };
+export type Carrier = components['schemas']['CarrierResponseDto'];
+export type CarrierCatalogueResponse = components['schemas']['CarrierListResponseDto'];
