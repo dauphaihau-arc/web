@@ -40,7 +40,9 @@ pnpm generate:api-types
 pnpm generate:api-types -- --check
 ```
 
-- Regenerate after `apps/api/api/openapi.json` changes; do not hand-fix types.
+- Regenerate after `@dauphaihau-arc/api-spec` changes; do not hand-fix types.
+  Installing the package needs `NODE_AUTH_TOKEN` with `read:packages` for the
+  `dauphaihau-arc` scope (see `.npmrc`); Renovate opens the upgrade PRs.
 - `@arc/enums` is hand-written and checked for conformance against the spec,
   not generated.
 - From the repository root, `./scripts/verify api-types` runs the check.
