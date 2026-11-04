@@ -52,6 +52,8 @@ export type CreateMyChatConversationRequest = {
 export type ListMyChatConversationsRequest = {
   page?: number
   limit?: number
+  unread?: boolean
+  q?: string
 };
 
 export type ListMyChatConversationsResponse = {

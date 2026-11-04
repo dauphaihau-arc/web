@@ -1,15 +1,33 @@
 <script lang="ts" setup>
+import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
+import AppTabs from '@arc/ui/patterns/app-tabs/app-tabs.vue'
 import ChatThreadPanel from '@arc/ui/shells/chat-thread-panel.vue'
 import { useMessagesInbox } from './use-messages-inbox'
+import { routes } from '~/shared/navigation/routes'
 
 const props = defineProps<{
   selectedConversationId?: string
+  activeTab?: 'all' | 'unread'
 }>()
+
+const route = useRoute()
+const router = useRouter()
 
 const selectedConversationId = toRef(props, 'selectedConversationId')
 
+const activeTab = computed<'all' | 'unread'>(() =>
+  props.activeTab === 'unread' ? 'unread' : 'all',
+)
+
+const searchInput = ref(typeof route.query.q === 'string' ? route.query.q : '')
+const debouncedSearchInput = refDebounced(searchInput, 400, { maxWait: 800 })
+
+const searchQuery = computed(() => {
+  const value = route.query.q
+  return typeof value === 'string' && value.trim() ? value.trim() : undefined
+})
+
 const {
-  conversationList,
   conversations,
   conversationTimeLabel,
   fetchPreviousPage,
@@ -28,21 +46,93 @@ const {
   selectedConversationResolved,
   selectConversation,
   threadMessages,
-} = useMessagesInbox(selectedConversationId)
+  unreadCount,
+} = useMessagesInbox(selectedConversationId, activeTab, searchQuery)
+
+const tabs = computed(() => [
+  { label: 'All', value: 'all' as const },
+  {
+    label: 'Unread',
+    value: 'unread' as const,
+    ...(unreadCount.value == null ? {} : { badge: unreadCount.value }),
+  },
+])
+
+const emptyText = computed(() => {
+  if (searchQuery.value) {
+    return 'No conversations match your search.'
+  }
+
+  return activeTab.value === 'unread' ? 'No unread conversations.' : 'No buyer conversations yet.'
+})
+
+watch(() => route.query.q, (value) => {
+  const nextSearch = typeof value === 'string' ? value : ''
+
+  if (nextSearch !== searchInput.value) {
+    searchInput.value = nextSearch
+  }
+})
+
+watch(debouncedSearchInput, (value) => {
+  const nextQuery = value.trim() || undefined
+
+  if (nextQuery === searchQuery.value) {
+    return
+  }
+
+  router.replace(routes.messages({
+    conversationId: selectedConversationId.value,
+    tab: activeTab.value === 'unread' ? 'unread' : undefined,
+    q: nextQuery,
+  }))
+})
+
+function handleTabChange(value: string | number) {
+  const nextTab = value === 'unread' ? 'unread' : 'all'
+
+  if (nextTab === activeTab.value) {
+    return
+  }
+
+  router.replace(routes.messages({
+    conversationId: selectedConversationId.value,
+    tab: nextTab === 'unread' ? 'unread' : undefined,
+    q: searchQuery.value,
+  }))
+}
 </script>
 
 <template>
   <ConversationInboxShell container-class="grid h-[calc(100dvh-11rem)] min-h-0 grid-cols-[360px_minmax(0,1fr)] overflow-hidden">
     <ConversationListPanel
-      :total-results="conversationList?.total_results ?? 0"
       :loading="isPendingConversations"
       :empty="conversations.length === 0"
-      empty-text="No buyer conversations yet."
+      :empty-text="emptyText"
       min-height-class="h-[60vh]"
       aside-class="flex min-h-0 flex-col border-r border-border-subtle"
-      header-class="flex min-h-[88px] flex-col justify-center border-b border-border-subtle px-5 py-4"
       list-class="scrollbar-subtle min-h-0 flex-1 overflow-y-auto"
     >
+      <template #toolbar>
+        <div class="px-5 pb-3 pt-4">
+          <UInput
+            v-model="searchInput"
+            :icon="ICON_NAME_BY_ALIAS['searchSolid']"
+            size="lg"
+            placeholder="Search buyers"
+            class="w-full"
+          />
+        </div>
+        <AppTabs
+          variant="link"
+          size="md"
+          aria-label="Message filters"
+          :items="tabs"
+          :model-value="activeTab"
+          @change="handleTabChange"
+        />
+      </template>
+
       <button
         v-for="conversation in conversations"
         :key="conversation.id"
@@ -106,8 +196,8 @@ const {
       :sending="isSendingMessage"
       :has-older-messages="hasPreviousPage"
       :loading-older-messages="isFetchingPreviousPage"
-      list-class="scrollbar-subtle min-h-0 flex-1 space-y-4 overflow-y-auto bg-surface-muted px-6 py-5"
-      composer-class="shrink-0 bg-surface-muted px-6 pb-4"
+      list-class="scrollbar-subtle min-h-0 flex-1 space-y-4 overflow-y-auto bg-surface px-6 pt-5 pb-40"
+      composer-class="px-6 py-4"
       section-class="flex h-full min-h-0 flex-col"
       @update:model-value="messageDraft = $event"
       @load-older-messages="fetchPreviousPage"

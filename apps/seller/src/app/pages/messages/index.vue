@@ -10,6 +10,10 @@ const selectedConversationId = computed(() => {
   const value = route.query.conversation_id
   return typeof value === 'string' ? value : undefined
 })
+
+const activeTab = computed<'all' | 'unread'>(() =>
+  route.query.tab === 'unread' ? 'unread' : 'all',
+)
 </script>
 
 <template>
@@ -21,7 +25,10 @@ const selectedConversationId = computed(() => {
       Respond to buyer conversations and keep support requests moving.
     </template>
     <template #content>
-      <MessagesInbox :selected-conversation-id="selectedConversationId" />
+      <MessagesInbox
+        :selected-conversation-id="selectedConversationId"
+        :active-tab="activeTab"
+      />
     </template>
   </LayoutShopWrapperContent>
 </template>

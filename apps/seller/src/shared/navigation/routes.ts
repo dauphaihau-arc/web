@@ -46,10 +46,16 @@ export const routes = {
   promoCodes: () => createRoute(routePaths.promoCodes),
   promoCodesNew: () => createRoute(`${routePaths.promoCodes}/new`),
   orders: () => createRoute(routePaths.orders),
-  messages: (query?: { conversationId?: string }) =>
+  messages: (query?: { conversationId?: string, tab?: 'unread', q?: string }) =>
     createRoute(
       routePaths.messages,
-      query?.conversationId ? { conversation_id: query.conversationId } : undefined,
+      query?.conversationId || query?.tab || query?.q
+        ? {
+          ...(query.conversationId ? { conversation_id: query.conversationId } : {}),
+          ...(query.tab ? { tab: query.tab } : {}),
+          ...(query.q ? { q: query.q } : {}),
+        }
+        : undefined,
     ),
   orderDetail: (id: string) => createRoute(`${routePaths.orders}/${id}`),
   finances: () => createRoute(routePaths.finances),

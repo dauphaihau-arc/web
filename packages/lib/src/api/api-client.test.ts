@@ -21,7 +21,7 @@ function createClient() {
 }
 
 function authError(status: number, code?: string) {
-  return { status, data: code === undefined ? undefined : { code } };
+  return { status, data: code === undefined ? undefined : { status_code: status, code } };
 }
 
 function countRefreshCalls() {
@@ -46,7 +46,7 @@ describe('isRecoverableAuthError', () => {
   it('reads the code from the raw response body as well', () => {
     expect(isRecoverableAuthError({
       status: 401,
-      response: { _data: { code: 'ACCESS_TOKEN_MISSING' } },
+      response: { _data: { status_code: 401, code: 'ACCESS_TOKEN_MISSING' } },
     })).toBe(true);
   });
 

@@ -4,7 +4,7 @@ export const routePaths = {
   reset: '/reset',
   account: '/account',
   accountAddresses: '/account/addresses',
-  accountMessages: '/account/messages',
+  messages: '/messages',
   orders: '/orders',
   search: '/search',
   cart: '/cart',

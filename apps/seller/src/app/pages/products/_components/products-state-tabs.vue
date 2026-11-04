@@ -1,9 +1,14 @@
 <script lang="ts" setup>
 import type { ProductStates } from '@arc/enums/product'
+import AppTabs from '@arc/ui/patterns/app-tabs/app-tabs.vue'
+import type { AppTabsItem } from '@arc/ui/patterns/app-tabs/app-tabs.vue'
 import { productStateFilterOptions } from './product-state-filter-options'
 import type { ListShopProductsResponse } from '~/domains/shop/api/product/contracts/read.contract'
 
 type StateCounts = ListShopProductsResponse['state_counts']
+
+/** Sentinel for "All": the model holds `undefined` when no state is filtered. */
+const ALL_TAB = 'all'
 
 const props = defineProps<{
   counts?: StateCounts
@@ -11,35 +16,32 @@ const props = defineProps<{
 
 const model = defineModel<ProductStates | undefined>()
 
-const tabsKey = computed(() => JSON.stringify(props.counts ?? {}))
-
-const tabs = computed(() => [
+const tabs = computed<AppTabsItem[]>(() => [
   {
-    label: `All (${props.counts?.all ?? 0})`,
-    value: undefined,
+    label: 'All',
+    value: ALL_TAB,
+    badge: props.counts?.all ?? 0,
   },
   ...productStateFilterOptions.map(option => ({
-    label: `${option.label} (${props.counts?.[option.value as keyof StateCounts] ?? 0})`,
-    value: option.value,
+    label: option.label,
+    value: option.value as ProductStates,
+    badge: props.counts?.[option.value as keyof StateCounts] ?? 0,
   })),
 ])
 
-const activeTabIndex = computed(() =>
-  tabs.value.findIndex(tab => tab.value === model.value),
-)
+const activeTab = computed<string | number>(() => model.value ?? ALL_TAB)
 
-function handleChange(index: number) {
-  model.value = tabs.value[index]?.value
+function handleChange(value: string | number) {
+  model.value = value === ALL_TAB ? undefined : value as ProductStates
 }
 </script>
 
 <template>
   <div class="mb-4 overflow-x-auto">
-    <UTabs
-      :key="tabsKey"
+    <AppTabs
+      aria-label="Product state"
       :items="tabs"
-      :model-value="activeTabIndex"
-      class="min-w-max"
+      :model-value="activeTab"
       @change="handleChange"
     />
   </div>

@@ -75,8 +75,8 @@ function getBaseMarket(): MarketConfigMarket {
     name: MARKET_CONFIG.BASE_REGION,
     defaultCurrency: MARKET_CONFIG.BASE_CURRENCY,
     supportedCurrencies: [MARKET_CONFIG.BASE_CURRENCY],
-    defaultLocale: `${MARKET_CONFIG.BASE_LANGUAGE}-US`,
-    supportedLocales: [`${MARKET_CONFIG.BASE_LANGUAGE}-US`],
+    defaultLocale: 'en-US',
+    supportedLocales: ['en-US'],
     enabled: true,
   };
 }

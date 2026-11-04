@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import AppTabs from '@arc/ui/patterns/app-tabs/app-tabs.vue'
 import type { ShopDashboardTimeRange } from '~/domains/shop/api/dashboard/contracts/dashboard.contract'
 
 const model = defineModel<ShopDashboardTimeRange>({ default: 'last_7_days' })
@@ -13,12 +14,8 @@ const tabs = [
   { label: 'All time', value: 'all_time' },
 ] satisfies Array<{ label: string, value: ShopDashboardTimeRange }>
 
-const activeTabIndex = computed(() =>
-  tabs.findIndex(tab => tab.value === model.value),
-)
-
-function handleChange(index: number) {
-  const tab = tabs[index]
+function handleChange(value: string | number) {
+  const tab = tabs.find(item => item.value === value)
 
   if (tab) {
     model.value = tab.value
@@ -28,10 +25,10 @@ function handleChange(index: number) {
 
 <template>
   <div class="overflow-x-auto">
-    <UTabs
+    <AppTabs
+      aria-label="Dashboard time range"
       :items="tabs"
-      :model-value="activeTabIndex"
-      class="min-w-max"
+      :model-value="model"
       @change="handleChange"
     />
   </div>

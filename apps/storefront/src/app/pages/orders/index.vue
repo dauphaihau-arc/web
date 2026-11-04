@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
+import AppTabs from '@arc/ui/patterns/app-tabs/app-tabs.vue'
 import Empty from '@arc/ui/patterns/empty.vue'
 import ShopItem from '~/domains/me/ui/order-shop/shop-item/shop-item.vue'
 import type { MyOrderListState } from '~/domains/me/api/order/contracts/order.contract'
@@ -80,8 +81,14 @@ const activeFilterLabel = computed(() =>
     filter.state === stateFilter.value,
   )?.label ?? 'All Orders',
 )
-const activeFilterIndex = computed(() =>
-  Math.max(0, filters.findIndex(filter => filter.label === activeFilterLabel.value)),
+const filterTabItems = computed(() =>
+  filters.map(filter => ({
+    label: filter.label,
+    value: filter.slot,
+  })),
+)
+const activeFilterTab = computed(() =>
+  filters.find(filter => filter.state === stateFilter.value)?.slot ?? filters[0].slot,
 )
 
 const queryParams = computed(() => ({
@@ -125,14 +132,12 @@ function selectFilter(filter: typeof filters[number]) {
   })
 }
 
-function handleFilterChange(index: number) {
-  const filter = filters[index]
+function handleFilterChange(value: string | number) {
+  const filter = filters.find(item => item.slot === value)
 
-  if (!filter) {
-    return
+  if (filter) {
+    selectFilter(filter)
   }
-
-  selectFilter(filter)
 }
 
 watch(() => route.query.search, (search) => {
@@ -152,16 +157,20 @@ watch(
 
 <template>
   <div class="mt-8">
-    <h1 class="mb-4 ml-1 text-xl md:mb-6 md:text-2xl">
-      Products you’ve ordered.
-    </h1>
+    <div class="mb-8">
+      <SectionHeader
+        title="Orders"
+        description="Track and manage the products you’ve ordered."
+        heading-class="text-2xl font-semibold text-text-strong md:text-3xl"
+      />
+    </div>
 
     <div class="mb-10 flex flex-col gap-4">
       <div class="-mx-4 min-w-0 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0 lg:overflow-visible lg:pb-0">
-        <UTabs
-          :items="filters"
-          :model-value="activeFilterIndex"
-          :ui="{ list: { width: 'w-max md:w-max lg:w-auto' } }"
+        <AppTabs
+          aria-label="Order status filters"
+          :items="filterTabItems"
+          :model-value="activeFilterTab"
           @change="handleFilterChange"
         />
       </div>
