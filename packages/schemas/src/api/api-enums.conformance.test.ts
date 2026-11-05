@@ -180,6 +180,14 @@ const SPEC_ONLY_ENUMS: Record<string, string> = {
   // Response projection of the CreateShopPromoCodeDto field; no FE enum reads it.
   'components.schemas.ShopPromoCodeResponseDto.properties.visibility':
     'API-only promo-code visibility',
+  // Admin account lifecycle; the admin UI renders the value, no FE enum exists.
+  'components.schemas.UserResponseDto.properties.status':
+    'API-only user account status',
+  'paths./v1/users/{id}.patch.requestBody.content.multipart/form-data.schema.properties.status':
+    'same user account status on the multipart update body',
+  // Manual refund state transitions; no admin UI sends or branches on them.
+  'components.schemas.UpdateAdminOrderRefundDto.properties.action':
+    'API-only refund transition verbs',
 }
 
 interface EnumCandidate {
