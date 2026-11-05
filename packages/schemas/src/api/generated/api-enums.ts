@@ -97,6 +97,8 @@ export const API_ENUM_VALUES = {
   "components.schemas.ShopSettlementCurrencyResponseDto.properties.blocked_reason": ["balance_not_zero", "payout_pending", "change_too_soon"],
   "components.schemas.ShopTransactionResponseDto.properties.source": ["scheduled", "manual"],
   "components.schemas.ShopTransactionResponseDto.properties.type": ["order_income", "refund", "label_charge", "label_refund", "payout"],
+  "components.schemas.UpdateAdminOrderRefundDto.properties.action": ["retry", "mark_succeeded", "mark_failed", "mark_not_required"],
+  "components.schemas.UpdateAdminOrderStatusDto.properties.status": ["canceled", "pending", "checkout_pending", "awaiting_payment", "expired", "paid", "refunded", "completed", "archived"],
   "components.schemas.UpdateMePreferencesDto.properties.currency": ["USD", "AUD", "BRL", "CHF", "CNY", "CZK", "DKK", "EUR", "GBP", "CAD", "HKD", "HUF", "IDR", "ILS", "INR", "JPY", "KRW", "MAD", "MXN", "MYR", "NOK", "NZD", "PHP", "PLN", "SEK", "VND", "SGD", "THB", "TRY", "TWD", "ZAR"],
   "components.schemas.UpdateMePreferencesDto.properties.language": ["en", "la", "fr"],
   "components.schemas.UpdateMePreferencesDto.properties.region": ["United States", "Vietnam"],
@@ -107,6 +109,8 @@ export const API_ENUM_VALUES = {
   "components.schemas.UserPreferencesDto.properties.currency": ["USD", "AUD", "BRL", "CHF", "CNY", "CZK", "DKK", "EUR", "GBP", "CAD", "HKD", "HUF", "IDR", "ILS", "INR", "JPY", "KRW", "MAD", "MXN", "MYR", "NOK", "NZD", "PHP", "PLN", "SEK", "VND", "SGD", "THB", "TRY", "TWD", "ZAR"],
   "components.schemas.UserPreferencesDto.properties.language": ["en", "la", "fr"],
   "components.schemas.UserPreferencesDto.properties.region": ["United States", "Vietnam"],
+  "components.schemas.UserResponseDto.properties.status": ["active", "disabled"],
+  "paths./v1/admin/orders.get.parameters.2": ["canceled", "pending", "checkout_pending", "awaiting_payment", "expired", "paid", "refunded", "completed", "archived"],
   "paths./v1/auth/verify-token.get.parameters.1": ["resetPassword"],
   "paths./v1/me/orders.get.parameters.2": ["canceled", "pending", "checkout_pending", "awaiting_payment", "expired", "paid", "refunded", "completed", "archived"],
   "paths./v1/me/orders.get.parameters.3": ["unfulfilled", "prepared", "partially_shipped", "shipped", "partially_delivered", "delivered", "canceled", "dispatched", "in_transit"],
@@ -130,5 +134,6 @@ export const API_ENUM_VALUES = {
   "paths./v1/shops/{shop_id}/products.get.parameters.3": ["active", "draft", "inactive", "removed", "unavailable"],
   "paths./v1/shops/{shop_id}/reviews.get.parameters.3": ["published", "hidden"],
   "paths./v1/shops/{shop_id}/reviews.get.parameters.5": ["newest", "oldest", "highest_rating", "lowest_rating"],
-  "paths./v1/shops/{shop_id}/shipping-profiles.get.parameters.3": ["draft", "active", "archived"]
+  "paths./v1/shops/{shop_id}/shipping-profiles.get.parameters.3": ["draft", "active", "archived"],
+  "paths./v1/users/{id}.patch.requestBody.content.multipart/form-data.schema.properties.status": ["active", "disabled"]
 } as const

@@ -8,6 +8,7 @@ import type {
   AdminOrderFulfillmentSummary,
   AdminOrderPayoutMethod,
   AdminOrderShipment,
+  AdminOrderShippingSnapshot,
 } from '~/domains/orders/api/contracts/admin-orders.contract';
 import { useAdminOrderProgress } from './use-admin-order-progress';
 
@@ -169,6 +170,37 @@ function deliveredOrder(overrides: Partial<AdminOrderDetailOrder> = {}): AdminOr
     ]),
     ...overrides,
   });
+}
+
+/** A frozen purchase-time quote; the progress strip reads its delivery estimate. */
+function makeShippingQuote(latestDeliveryDate: string): AdminOrderShippingSnapshot {
+  return {
+    shop_id: 'shop-1',
+    currency: 'USD',
+    charge: {
+      currency: 'USD',
+      quantity: 1,
+      base_unit: { product_id: 'prod-1', inventory_id: 'inv-1', one_item_fee_minor: 0 },
+      base_item_fee_minor: 0,
+      base_item_total_minor: 0,
+      additional_items_quantity: 0,
+      additional_components: [],
+      additional_item_fee_minor_total: 0,
+      total_minor: 0,
+    },
+    estimate: {
+      processing_time_min_days: 0,
+      processing_time_max_days: 0,
+      delivery_time_min_days: 1,
+      delivery_time_max_days: 3,
+      combined_min_days: 1,
+      combined_max_days: 3,
+      anchor_at: '2026-10-28T00:00:00.000Z',
+      earliest_delivery_date: latestDeliveryDate,
+      latest_delivery_date: latestDeliveryDate,
+    },
+    units: [],
+  };
 }
 
 function stepsOf(
@@ -589,7 +621,7 @@ describe('useAdminOrderProgress', () => {
     const progress = makeProgress({ prepared: 2, dispatched: 1, outstanding: 2 });
     const order = makeOrder({
       fulfillment: makeFulfillment(progress, [makeShipment()]),
-      shipping: { estimate: { latest_delivery_date: '2026-10-31T00:00:00.000Z' } },
+      shipping: makeShippingQuote('2026-10-31T00:00:00.000Z'),
     });
 
     expect(stateOf(order, 'delivered')).toBe('pending');
@@ -614,11 +646,10 @@ describe('useAdminOrderProgress', () => {
     expectLadderInvariant(stepsOf(order));
   });
 
-  it('omits the estimate when the quote carries no delivery estimate', () => {
+  it('omits the estimate when neither the quote nor legacy shipping carries one', () => {
     const progress = makeProgress({ prepared: 2, dispatched: 1, outstanding: 2 });
     const order = makeOrder({
       fulfillment: makeFulfillment(progress, [makeShipment()]),
-      shipping: { estimate: {} },
     });
 
     expect(step(order, 'delivered').date).toBeUndefined();
@@ -631,7 +662,7 @@ describe('useAdminOrderProgress', () => {
     });
     const order = makeOrder({
       status: 'completed',
-      shipping: { estimate: { latest_delivery_date: '2026-10-31T00:00:00.000Z' } },
+      shipping: makeShippingQuote('2026-10-31T00:00:00.000Z'),
       fulfillment: makeFulfillment(progress, [
         makeShipment({ status: 'delivered', delivered_at: '2026-11-06T10:00:00Z' }),
       ]),
