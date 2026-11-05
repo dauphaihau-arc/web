@@ -1259,7 +1259,8 @@ export interface components {
       shop: string;
       name: string;
       percent_off: number;
-      product_scope: string;
+      /** @enum {string} */
+      product_scope: "all" | "specific";
       /** @description Product public ids (prod_…). */
       product_ids: string[];
       currency: string;
@@ -1268,7 +1269,8 @@ export interface components {
       /** Format: date-time */
       end_at: string;
       timezone: string;
-      status: string;
+      /** @enum {string} */
+      status: "scheduled" | "active" | "ended" | "cancelled";
       /** Format: date-time */
       cancelled_at: string | null;
       /** Format: date-time */
@@ -1354,8 +1356,10 @@ export interface components {
       percent_off: number;
       amount_off: number | null;
       currency: string;
-      visibility: string;
-      product_scope: string;
+      /** @enum {string} */
+      visibility: "public" | "code_only";
+      /** @enum {string} */
+      product_scope: "all" | "specific";
       /** @description Product public ids (prod_…). */
       product_ids: string[];
       /** @enum {string} */
@@ -1372,7 +1376,8 @@ export interface components {
       /** Format: date-time */
       end_at: string;
       timezone: string;
-      status: string;
+      /** @enum {string} */
+      status: "scheduled" | "active" | "ended" | "cancelled";
       /** Format: date-time */
       cancelled_at: string | null;
       /** Format: date-time */
@@ -2282,6 +2287,26 @@ export interface components {
     AssignProductShippingProfileDto: {
       /** Format: uuid */
       shipping_profile_id?: string | null;
+    };
+    ShopProductImportResponseDto: {
+      /** @description Import public id (imp_…). */
+      id: string;
+      /** @enum {string} */
+      status: "queued" | "processing" | "completed" | "failed";
+      filename: string;
+      template_version: string;
+      total_rows: number;
+      processed_rows: number;
+      created_rows: number;
+      failed_rows: number;
+      unprocessed_rows: number;
+      error_message?: string;
+      /** Format: date-time */
+      completed_at?: string;
+      /** Format: date-time */
+      created_at: string;
+      /** Format: date-time */
+      updated_at: string;
     };
     ShopProductReviewImageVariantResponseDto: {
       url: string;
@@ -8577,7 +8602,7 @@ export interface operations {
     responses: {
       201: {
         content: {
-          "application/json": Record<string, never>;
+          "application/json": components["schemas"]["ShopProductImportResponseDto"];
         };
       };
       /** @description Missing XLSX file */
@@ -8638,7 +8663,7 @@ export interface operations {
     responses: {
       200: {
         content: {
-          "application/json": Record<string, never>;
+          "application/json": components["schemas"]["ShopProductImportResponseDto"];
         };
       };
       /** @description Authentication is required */

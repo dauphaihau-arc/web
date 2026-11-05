@@ -42,7 +42,7 @@ const {
   refetch: refetchSales,
 } = useShopGetSales(params)
 
-const statusLabels: Record<PromotionStatus, string> = {
+const statusLabels: Record<ShopSale['status'], string> = {
   [PromotionStatus.SCHEDULED]: 'Scheduled',
   [PromotionStatus.ACTIVE]: 'Active',
   [PromotionStatus.ENDED]: 'Ended',
@@ -55,7 +55,7 @@ type PromotionStatusTone = 'blue' | 'green' | 'gray' | 'red'
  * Lifecycle tone only: a Scheduled Sale is upcoming, an Active one is live,
  * an Ended one is spent, and a Cancelled one was withdrawn deliberately.
  */
-const statusTones: Record<PromotionStatus, PromotionStatusTone> = {
+const statusTones: Record<ShopSale['status'], PromotionStatusTone> = {
   [PromotionStatus.SCHEDULED]: 'blue',
   [PromotionStatus.ACTIVE]: 'green',
   [PromotionStatus.ENDED]: 'gray',
@@ -76,7 +76,7 @@ const columns = [
  * Ended and cancelled Sales have reached a final state: they keep their
  * definition and history but offer no further action.
  */
-function isStoppable(status: PromotionStatus): boolean {
+function isStoppable(status: ShopSale['status']): boolean {
   return status === PromotionStatus.SCHEDULED || status === PromotionStatus.ACTIVE
 }
 
