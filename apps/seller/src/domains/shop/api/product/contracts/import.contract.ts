@@ -1,3 +1,10 @@
+/**
+ * Blocked on the API contract: `ShopProductImport_startImport` and
+ * `ShopProductImport_importDetail` declare their JSON body as
+ * `Record<string, never>` and no import-status component schema exists, so
+ * there is nothing to derive from yet. The shape below mirrors the API's
+ * import record and stays hand-written until the contract publishes it.
+ */
 export type ShopProductImportStatus = 'queued' | 'processing' | 'completed' | 'failed';
 
 export interface ShopProductImportResponse {

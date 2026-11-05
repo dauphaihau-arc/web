@@ -184,8 +184,13 @@ const SPEC_ONLY_ENUMS: Record<string, string> = {
   'components.schemas.ShopOrderExportResponseDto.properties.status':
     'API-only export job status lifecycle',
   // Public product-list sort selector; FE passes literal query strings.
-  'paths./v1/products.get.parameters.1':
+  'paths./v1/products.get.parameters.10':
     'API-only product sort selector',
+  'paths./v1/products/facets.get.parameters.10':
+    'API-only product sort selector, shared with the list operation',
+  // Why automatic payouts are blocked; FE renders the message, not the code.
+  'components.schemas.ShopPayoutSettingsResponseDto.properties.auto_payout_ineligible_reason':
+    'API-only payout eligibility reason codes',
 }
 
 interface EnumCandidate {

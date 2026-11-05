@@ -2539,6 +2539,7 @@ export interface components {
       slug: string;
       shop: components["schemas"]["CheckoutOrderProductShopResponseDto"];
       selected_options: components["schemas"]["CheckoutQuoteSelectedOptionResponseDto"][];
+      /** @description Reserved; always an empty object. */
       shipping: Record<string, never>;
     };
     CheckoutOrderProductInventoryResponseDto: {
@@ -3552,7 +3553,7 @@ export interface components {
       created_at: string;
       shipping_address: components["schemas"]["OrderShippingAddressResponseDto"];
       /** @description Platform Commission the ledger charged on this Order, in the Order currency. */
-      platform_commission_minor: Record<string, unknown> | null;
+      platform_commission_minor: number | null;
     };
     OrderTimelineEventResponseDto: {
       id: string;
@@ -3612,7 +3613,7 @@ export interface components {
        * @description The Settlement Currency this one replaced, or null for the shop's opening currency.
        * @example USD
        */
-      previous_currency: Record<string, unknown> | null;
+      previous_currency: string | null;
       /**
        * @description The platform minimum interval between two changes, in days.
        * @example 90
@@ -3622,7 +3623,7 @@ export interface components {
        * @description When the shop may change Settlement Currency again, or null when it never changed.
        * @example 2027-01-20T09:30:00.000Z
        */
-      next_change_allowed_at: Record<string, unknown> | null;
+      next_change_allowed_at: string | null;
       /**
        * @description Whether automatic payouts may currently pay this shop.
        * @example false
@@ -3699,12 +3700,12 @@ export interface components {
        * @description Human Order number for Order income, Refund, and Label Charge rows; null on Payout rows.
        * @example ORD-1042
        */
-      order_number: Record<string, unknown> | null;
+      order_number: string | null;
       /**
        * @description Human Payout number for Payout rows; null on Order income, Refund, and Label Charge rows.
        * @example PAY-20261019-000042
        */
-      payout_number: Record<string, unknown> | null;
+      payout_number: string | null;
       /**
        * @description What moved the money.
        * @enum {string}
@@ -3719,12 +3720,12 @@ export interface components {
        * @description Gross Order amount in integer minor units of the Settlement Currency: what the buyer paid for Order income (positive), the refunded amount for a Refund (negative); null on Label Charge and Payout rows.
        * @example 12500
        */
-      order_amount_minor: Record<string, unknown> | null;
+      order_amount_minor: number | null;
       /**
        * @description Platform Commission in integer minor units of the Settlement Currency: negative on Order income (fee charged), positive on a Refund (pro-rata reversal); null on Label Charge and Payout rows.
        * @example -2500
        */
-      fees_minor: Record<string, unknown> | null;
+      fees_minor: number | null;
       /**
        * @description The Seller Payable posting in integer minor units of the Settlement Currency: positive for Order income and a Label refund, negative for a Refund and a Label Charge, and the negative payout amount on Payout rows.
        * @example 10000
@@ -3818,42 +3819,42 @@ export interface components {
        * @description The shop Settlement Currency the amount left the balance in; equal to `currency`, kept explicit for the frozen quote.
        * @example USD
        */
-      source_currency: Record<string, unknown> | null;
+      source_currency: string | null;
       /**
        * @description The currency the provider actually transfers in: the platform balance currency this Payout was converted into. Null on Payouts claimed before platform-currency transfers.
        * @example USD
        */
-      transfer_currency: Record<string, unknown> | null;
+      transfer_currency: string | null;
       /**
        * @description The amount the provider transferred, in `transfer_currency` minor units. Null on Payouts claimed before platform-currency transfers.
        * @example 12500
        */
-      transfer_amount_minor: Record<string, unknown> | null;
+      transfer_amount_minor: number | null;
       /**
        * @description The currency that landed in the Payout Account; equal to `currency` for a same-currency payout.
        * @example VND
        */
-      target_currency: Record<string, unknown> | null;
+      target_currency: string | null;
       /**
        * @description The claim-time rate that converted `amount_minor` into `transfer_amount_minor`, as text; `1` for an identity conversion. The provider rate into the account currency is in `provider_fx_rate`.
        * @example 1
        */
-      fx_rate: Record<string, unknown> | null;
+      fx_rate: string | null;
       /**
        * @description The amount that landed in `target_currency` minor units: what the provider derived when it converted. Null until the provider reports one.
        * @example 317500000
        */
-      target_amount_minor: Record<string, unknown> | null;
+      target_amount_minor: number | null;
       /**
        * @description The conversion rate the provider applied, as text exactly as reported. This is authoritative and supersedes `fx_rate`. Null when no conversion happened.
        * @example 25400.0000000000
        */
-      provider_fx_rate: Record<string, unknown> | null;
+      provider_fx_rate: string | null;
       /**
        * @description The historical conversion fee in `source_currency` minor units. The platform charges none, so new Payouts record zero.
        * @example 0
        */
-      fx_fee_minor: Record<string, unknown> | null;
+      fx_fee_minor: number | null;
       /**
        * @description Lifecycle state of the Payout.
        * @example paid
@@ -3869,17 +3870,17 @@ export interface components {
        * @description The platform month the Payout belongs to, as YYYY-MM; null on Payouts that predate the monthly allowance.
        * @example 2026-10
        */
-      period: Record<string, unknown> | null;
+      period: string | null;
       /**
        * @description Why a Blocked or Failed Payout ended as it did; null while pending or paid.
        * @example no_payout_account
        */
-      reason: Record<string, unknown> | null;
+      reason: string | null;
       /**
        * @description Instant the provider accepted the transfer, or null while it has not.
        * @example 2026-10-19T09:15:00.000Z
        */
-      paid_at: Record<string, unknown> | null;
+      paid_at: string | null;
       /**
        * @description Instant the Payout was created by a run or a manual request.
        * @example 2026-10-19T09:15:00.000Z
@@ -3989,6 +3990,18 @@ export interface components {
        */
       countries: string[];
     };
+    PayoutAccountRequirementsResponse: {
+      /**
+       * @description The requirement keys the provider still expects.
+       * @example []
+       */
+      currently_due: string[];
+      /**
+       * @description Why the provider disabled the account, or null when it has not.
+       * @example requirements.past_due
+       */
+      disabled_reason: string | null;
+    };
     PayoutAccountResponseDto: {
       /**
        * @description Internal id of the Payout Account row.
@@ -4004,7 +4017,7 @@ export interface components {
        * @description The provider's connected account id, or null for manual_bank.
        * @example acct_1Q2w3e4r5t6y7u8i
        */
-      provider_account_id: Record<string, unknown> | null;
+      provider_account_id: string | null;
       /**
        * @description ISO 3166-1 alpha-2 country code.
        * @example US
@@ -4035,7 +4048,7 @@ export interface components {
        * @description The provider transfers capability, or null when unrequested.
        * @example active
        */
-      transfers_capability: Record<string, unknown> | null;
+      transfers_capability: string | null;
       /**
        * @description Summary of the requirements still due and why the account is disabled.
        * @example {
@@ -4043,22 +4056,22 @@ export interface components {
        *   "disabled_reason": null
        * }
        */
-      requirements: Record<string, unknown> | null;
+      requirements: components["schemas"]["PayoutAccountRequirementsResponse"] | null;
       /**
        * @description The provider's default currency for the account.
        * @example USD
        */
-      default_currency: Record<string, unknown> | null;
+      default_currency: string | null;
       /**
        * @description The bank's display name as the provider reports it.
        * @example Chase
        */
-      bank_name: Record<string, unknown> | null;
+      bank_name: string | null;
       /**
        * @description The last four digits of the payout account number.
        * @example 6789
        */
-      last4: Record<string, unknown> | null;
+      last4: string | null;
     };
     ShopPayoutAccountResponseDto: {
       /** @description The seller Payout Account, or null when none is onboarded. */
@@ -4083,13 +4096,14 @@ export interface components {
       /**
        * @description Why automatic payouts cannot be enabled, or null when eligible.
        * @example no_payout_account
+       * @enum {string|null}
        */
-      auto_payout_ineligible_reason: Record<string, unknown> | null;
+      auto_payout_ineligible_reason: "no_payout_account" | "payout_account_unverified" | "payout_account_disabled" | "payout_account_country_unsupported" | "settlement_currency_unresolved" | null;
       /**
        * @description 1 while the shop may still withdraw manually this month, 0 once it has, and null when manual withdrawals are unlimited.
        * @example 1
        */
-      manual_withdrawals_remaining: Record<string, unknown> | null;
+      manual_withdrawals_remaining: number | null;
     };
     UpdatePayoutSettingsDto: {
       /**
@@ -4120,7 +4134,7 @@ export interface components {
        * @description Stripe-hosted onboarding URL, or null when the manual_bank adapter is active.
        * @example https://connect.stripe.com/setup/e/acct_1Q2w3e4r5t6y7u8i/abc
        */
-      url: Record<string, unknown> | null;
+      url: string | null;
       /**
        * @description The Payout Account status after starting onboarding.
        * @example onboarding
@@ -6867,33 +6881,33 @@ export interface operations {
   Product_listProducts: {
     parameters: {
       query?: {
-        /** @description Attribute filter, one parameter per attribute where `{attribute_id}` is the attribute id. Repeat the parameter (or pass a comma-separated value) to match any of several option values. Dynamic name: any `attr_*` parameter is accepted, and other unknown parameters are rejected. */
-        "attr_{attribute_id}"?: string[];
-        /** @description Sort order. */
-        order?: "newest" | "price_asc" | "price_desc";
-        /** @description Maximum price in minor units, inclusive. */
-        max_price?: number;
-        /** @description Minimum price in minor units, inclusive. */
-        min_price?: number;
-        /** @description Maker attribution filter. */
-        who_made?: "i_did" | "collective" | "someone_else";
-        /** @description Restrict to digital (`true`) or physical (`false`) products. */
-        is_digital?: boolean;
-        /** @description Title substring filter. */
-        title?: string;
+        /** @description Page number, 1-based. */
+        page?: number;
+        /** @description Page size. */
+        limit?: number;
+        /** @description Category public id; matches products in that category and its descendants. */
+        category_id?: string;
+        /** @description Free-text search over product titles. */
+        search?: string;
         /**
          * @deprecated
          * @description Deprecated alias of `search`; when supplied it takes precedence over `search`.
          */
         s?: string;
-        /** @description Free-text search over product titles. */
-        search?: string;
-        /** @description Category public id; matches products in that category and its descendants. */
-        category_id?: string;
-        /** @description Page size. */
-        limit?: number;
-        /** @description Page number, 1-based. */
-        page?: number;
+        /** @description Title substring filter. */
+        title?: string;
+        /** @description Restrict to digital (`true`) or physical (`false`) products. */
+        is_digital?: boolean;
+        /** @description Maker attribution filter. */
+        who_made?: "i_did" | "collective" | "someone_else";
+        /** @description Minimum price in minor units, inclusive. */
+        min_price?: number;
+        /** @description Maximum price in minor units, inclusive. */
+        max_price?: number;
+        /** @description Sort order. */
+        order?: "newest" | "price_asc" | "price_desc";
+        /** @description Attribute filter, one parameter per attribute where `{attribute_id}` is the attribute id. Repeat the parameter (or pass a comma-separated value) to match any of several option values. Dynamic name: any `attr_*` parameter is accepted, and other unknown parameters are rejected. */
+        "attr_{attribute_id}"?: string[];
       };
     };
     responses: {
@@ -6934,6 +6948,37 @@ export interface operations {
    * @description Returns facets for filtering public products.
    */
   Product_listProductFacets: {
+    parameters: {
+      query?: {
+        /** @description Page number, 1-based. */
+        page?: number;
+        /** @description Page size. */
+        limit?: number;
+        /** @description Category public id; matches products in that category and its descendants. */
+        category_id?: string;
+        /** @description Free-text search over product titles. */
+        search?: string;
+        /**
+         * @deprecated
+         * @description Deprecated alias of `search`; when supplied it takes precedence over `search`.
+         */
+        s?: string;
+        /** @description Title substring filter. */
+        title?: string;
+        /** @description Restrict to digital (`true`) or physical (`false`) products. */
+        is_digital?: boolean;
+        /** @description Maker attribution filter. */
+        who_made?: "i_did" | "collective" | "someone_else";
+        /** @description Minimum price in minor units, inclusive. */
+        min_price?: number;
+        /** @description Maximum price in minor units, inclusive. */
+        max_price?: number;
+        /** @description Sort order. */
+        order?: "newest" | "price_asc" | "price_desc";
+        /** @description Attribute filter, one parameter per attribute where `{attribute_id}` is the attribute id. Repeat the parameter (or pass a comma-separated value) to match any of several option values. Dynamic name: any `attr_*` parameter is accepted, and other unknown parameters are rejected. */
+        "attr_{attribute_id}"?: string[];
+      };
+    };
     responses: {
       /** @description Public product facets. */
       200: {
@@ -8469,8 +8514,15 @@ export interface operations {
       };
     };
     responses: {
+      /** @description XLSX workbook the seller fills in and uploads back. */
       200: {
-        content: never;
+        headers: {
+          /** @description Attachment filename for the template workbook. */
+          "Content-Disposition"?: string;
+        };
+        content: {
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+        };
       };
       /** @description Authentication is required */
       401: {
@@ -8633,8 +8685,15 @@ export interface operations {
       };
     };
     responses: {
+      /** @description CSV report of the import outcome. */
       200: {
-        content: never;
+        headers: {
+          /** @description Attachment filename for the report. */
+          "Content-Disposition"?: string;
+        };
+        content: {
+          "text/csv": string;
+        };
       };
       /** @description Authentication is required */
       401: {
