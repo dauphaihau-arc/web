@@ -58,7 +58,7 @@ export const fulfillmentShipmentSchema = z.object({
   dispatched_at: z.coerce.date().optional(),
   delivered_at: z.coerce.date().optional(),
   voided_at: z.coerce.date().optional(),
-  created_at: z.coerce.date(),
+  created_at: z.string(),
   updated_at: z.coerce.date(),
   items: z.array(fulfillmentShipmentItemSchema),
   updates: z.array(fulfillmentShipmentUpdateSchema),
@@ -85,7 +85,7 @@ export const fulfillmentGroupSchema = z.object({
 
 export const legacyOrderShippingSchema = z.object({
   status: z.string(),
-  updated_at: z.coerce.date(),
+  updated_at: z.string(),
   to_country: z.string(),
   from_countries: z.array(z.string()),
   estimated_delivery: z.coerce.date(),
@@ -172,7 +172,7 @@ export const shipmentRateQuoteSchema = z.object({
   price_minor: z.number().int().nonnegative(),
   currency: z.string(),
   estimated_days: shipmentRateEstimatedDaysSchema,
-  expires_at: z.coerce.date(),
+  expires_at: z.string(),
 })
 
 export const shipmentRatesResponseSchema = z.object({

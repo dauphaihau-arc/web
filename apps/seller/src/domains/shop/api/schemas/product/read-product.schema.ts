@@ -55,7 +55,7 @@ const productVariantApiSchema = z.object({
   selections: z.array(productVariantSelectionSchema).optional(),
   lifecycle_state: z.enum(['active', 'inactive']).optional(),
   image_url: z.string().optional(),
-  removed_at: z.coerce.date().optional(),
+  removed_at: z.string().optional(),
   rank: z.number(),
 });
 
@@ -118,8 +118,8 @@ export const shopProductDetailApiResponseSchema = z.object({
   id: idSchema,
   shop_id: idSchema,
   product_version: z.number().int().nonnegative().optional(),
-  published_at: z.coerce.date().optional(),
-  removed_at: z.coerce.date().optional(),
+  published_at: z.string().optional(),
+  removed_at: z.string().optional(),
   state: z.nativeEnum(ProductStates),
   category_id: z.string().optional(),
   category: z.object({
@@ -143,7 +143,7 @@ export const shopProductDetailApiResponseSchema = z.object({
     rank: z.number(),
     variant_status: z.string(),
     variant_error: z.string().optional(),
-    variants_generated_at: z.coerce.date().optional(),
+    variants_generated_at: z.string().optional(),
     variants: z.array(z.object({
       id: z.string(),
       variant: z.string(),
@@ -206,7 +206,7 @@ export const detailShopProductVariantSchema = z.object({
   selections: z.array(detailShopProductVariantSelectionSchema).default([]),
   lifecycle_state: z.enum(['active', 'inactive']).default('active'),
   image_url: z.string().optional(),
-  removed_at: z.coerce.date().optional(),
+  removed_at: z.string().optional(),
   rank: z.number().optional(),
   inventory: detailShopProductInventorySchema.optional(),
   variant_options: z.array(detailShopProductVariantOptionSchema).optional(),
@@ -216,8 +216,8 @@ export const detailShopProductResponseSchema = z.object({
   product: z.object({
     id: z.string(),
     productVersion: z.number(),
-    publishedAt: z.coerce.date().optional(),
-    removedAt: z.coerce.date().optional(),
+    publishedAt: z.string().optional(),
+    removedAt: z.string().optional(),
     state: z.nativeEnum(ProductStates),
     title: z.string(),
     description: z.string(),

@@ -148,7 +148,7 @@ export const publicProductDetailVariantSchema = z.object({
   selections: z.array(publicProductVariantSelectionSchema).default([]),
   lifecycle_state: z.enum(['active', 'inactive']).default('active'),
   image_url: z.string().optional(),
-  removed_at: z.coerce.date().optional(),
+  removed_at: z.string().optional(),
   rank: z.number(),
 })
 

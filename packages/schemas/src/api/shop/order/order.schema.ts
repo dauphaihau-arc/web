@@ -55,10 +55,10 @@ export const shopOrderExportResponseSchema = z.object({
   processed_rows: z.number(),
   percent: z.number(),
   error_message: z.string().optional(),
-  completed_at: z.coerce.date().optional(),
-  expires_at: z.coerce.date(),
-  created_at: z.coerce.date(),
-  updated_at: z.coerce.date(),
+  completed_at: z.string().optional(),
+  expires_at: z.string(),
+  created_at: z.string(),
+  updated_at: z.string(),
 })
 
 export const shopOrderProductSchema = z.object({
@@ -135,7 +135,7 @@ export const shopOrderSummarySchema = z.object({
   canceled_at: z.coerce.date().optional(),
   cancel_reason: z.string().optional(),
   customer_support_note: z.string().optional(),
-  cancel_requested_at: z.coerce.date().optional(),
+  cancel_requested_at: z.string().optional(),
   created_at: z.coerce.date(),
 }).extend(acceptedShippingFieldsSchema.shape)
 

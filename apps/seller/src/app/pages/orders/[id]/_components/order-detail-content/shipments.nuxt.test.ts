@@ -40,7 +40,7 @@ function buildShipment(input: {
     origin_countries: ['US'],
     prepared_at: new Date(),
     dispatched_at: new Date(),
-    created_at: new Date(),
+    created_at: new Date().toISOString(),
     updated_at: new Date(),
     items: [{ order_item_id: 'item-1', quantity: 1 }],
     updates: [],

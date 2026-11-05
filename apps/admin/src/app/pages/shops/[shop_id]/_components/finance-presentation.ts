@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { ShopPayoutSources } from '@arc/enums/finance';
 import type { AdminPayoutAccount } from '~/domains/finance/api/contracts/admin-finance.contract';
 import type { FinanceStatusMeta } from '~/domains/finance/utils/finance-presentation';
 
@@ -7,8 +8,8 @@ import type { FinanceStatusMeta } from '~/domains/finance/utils/finance-presenta
  * not cover. Unknown server values keep their raw text.
  */
 export const payoutSourceMeta: Record<string, FinanceStatusMeta> = {
-  scheduled: { label: 'Scheduled', tone: 'gray' },
-  manual: { label: 'Manual', tone: 'blue' },
+  [ShopPayoutSources.SCHEDULED]: { label: 'Scheduled', tone: 'gray' },
+  [ShopPayoutSources.MANUAL]: { label: 'Manual', tone: 'blue' },
 };
 
 const PAYOUT_REASON_LABELS: Record<string, string> = {

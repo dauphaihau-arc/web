@@ -1,3 +1,4 @@
+import { ShipmentRateServices } from '@arc/enums/shipping';
 import type {
   ShipmentRateQuote,
   ShipmentRateService,
@@ -17,8 +18,8 @@ export type PackageField = 'weight_grams' | 'length_cm' | 'width_cm' | 'height_c
 export type PackageFactsInput = Record<PackageField, number | string | null | undefined>;
 
 const SERVICE_LABELS: Record<ShipmentRateService, string> = {
-  standard: 'Standard',
-  express: 'Express',
+  [ShipmentRateServices.STANDARD]: 'Standard',
+  [ShipmentRateServices.EXPRESS]: 'Express',
 };
 
 const PACKAGE_LIMITS: Record<PackageField, number> = {
@@ -133,7 +134,7 @@ export function fastestRate(
 export function defaultRateOption(
   rates: readonly ShipmentRateQuote[],
 ): ShipmentRateQuote | undefined {
-  const standard = rates.filter(rate => rate.service === 'standard');
+  const standard = rates.filter(rate => rate.service === ShipmentRateServices.STANDARD);
 
   return cheapestRate(standard.length > 0 ? standard : rates);
 }

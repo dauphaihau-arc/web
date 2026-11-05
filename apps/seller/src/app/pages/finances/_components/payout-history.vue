@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ShopPayoutSources } from '@arc/enums/finance'
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import Empty from '@arc/ui/patterns/empty.vue'
 import DataTable from '@arc/ui/patterns/data-table/data-table.vue'
@@ -38,8 +39,8 @@ const reasonLabels: Record<string, string> = {
 }
 
 const sourceByValue = {
-  scheduled: { label: 'Scheduled', color: 'gray' },
-  manual: { label: 'Manual', color: 'blue' },
+  [ShopPayoutSources.SCHEDULED]: { label: 'Scheduled', color: 'gray' },
+  [ShopPayoutSources.MANUAL]: { label: 'Manual', color: 'blue' },
 } as const satisfies Record<ShopFinancePayout['source'], {
   label: string
   color: 'gray' | 'blue'

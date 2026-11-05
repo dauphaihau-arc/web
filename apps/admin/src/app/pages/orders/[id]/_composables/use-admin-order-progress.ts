@@ -1,5 +1,9 @@
 import dayjs from 'dayjs';
 import { computed, toValue, type MaybeRefOrGetter } from 'vue';
+import {
+  OrderPayoutMethodAccountStatuses,
+  OrderPayoutStates,
+} from '@arc/enums/finance';
 import type { TimelineItem, TimelineItemState } from '@arc/ui/patterns/timeline.vue';
 import type {
   AdminOrderDetailOrder,
@@ -136,7 +140,7 @@ function payoutStep(
   const { availability, payout, payout_method: method } = breakdown;
   const base = { key: 'payout', title: 'Payout', icon: 'revenue' };
 
-  if (payout?.state === 'paid') {
+  if (payout?.state === OrderPayoutStates.PAID) {
     return {
       ...base,
       state: 'completed',
@@ -152,15 +156,21 @@ function payoutStep(
     return { ...base, state: reachedState, description: 'Processing' };
   }
 
-  if (method?.account_status === 'missing') {
+  if (method?.account_status === OrderPayoutMethodAccountStatuses.MISSING) {
     return { ...base, state: reachedState, description: 'Add bank account' };
   }
 
-  if (method?.account_status === 'onboarding' || method?.account_status === 'action_required') {
+  if (
+    method?.account_status === OrderPayoutMethodAccountStatuses.ONBOARDING
+    || method?.account_status === OrderPayoutMethodAccountStatuses.ACTION_REQUIRED
+  ) {
     return { ...base, state: reachedState, description: 'Verifying account' };
   }
 
-  if (method?.account_status === 'restricted' || method?.account_status === 'disabled') {
+  if (
+    method?.account_status === OrderPayoutMethodAccountStatuses.RESTRICTED
+    || method?.account_status === OrderPayoutMethodAccountStatuses.DISABLED
+  ) {
     return { ...base, state: reachedState, description: 'On hold' };
   }
 
