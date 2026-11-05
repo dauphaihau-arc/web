@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ShopTransactionTypes } from '@arc/enums/finance'
 import { formatMinorCurrency } from '@arc/utils'
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import DataTable from '@arc/ui/patterns/data-table/data-table.vue'
@@ -19,11 +20,11 @@ const props = withDefaults(defineProps<{
 })
 
 const typeLabelByValue = {
-  order_income: 'Order income',
-  refund: 'Refund',
-  label_charge: 'Label charge',
-  label_refund: 'Label refund',
-  payout: 'Payout',
+  [ShopTransactionTypes.ORDER_INCOME]: 'Order income',
+  [ShopTransactionTypes.REFUND]: 'Refund',
+  [ShopTransactionTypes.LABEL_CHARGE]: 'Label charge',
+  [ShopTransactionTypes.LABEL_REFUND]: 'Label refund',
+  [ShopTransactionTypes.PAYOUT]: 'Payout',
 } as const satisfies Record<ShopFinanceTransactionType, string>
 
 const statusByValue = {
@@ -138,7 +139,7 @@ function netAmountCell(transaction: ShopFinanceTransaction): MoneyCell {
 
   return {
     label: formatSignedAmount(amount, transaction.currency),
-    tone: transaction.type === 'payout'
+    tone: transaction.type === ShopTransactionTypes.PAYOUT
       ? toneClass.neutral
       : amount > 0
         ? toneClass.positive
@@ -153,7 +154,7 @@ function netAmountCell(transaction: ShopFinanceTransaction): MoneyCell {
  * refund rows show the seller-facing Order number instead of the Order id.
  */
 function formatDocumentNumber(transaction: ShopFinanceTransaction) {
-  if (transaction.type === 'payout') {
+  if (transaction.type === ShopTransactionTypes.PAYOUT) {
     return transaction.reference
   }
 

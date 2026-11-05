@@ -27,7 +27,7 @@ function quote(input: {
     price_minor: input.priceMinor,
     currency: 'USD',
     estimated_days: { min: input.minDays, max: input.maxDays },
-    expires_at: new Date('2026-11-02T12:15:00.000Z'),
+    expires_at: '2026-11-02T12:15:00.000Z',
   };
 }
 
