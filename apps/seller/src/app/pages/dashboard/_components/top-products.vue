@@ -4,11 +4,13 @@ import AppIcon from '@arc/ui/primitives/app-icon.vue'
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import ProductImage from '@arc/ui/primitives/product-image.vue'
 import DashboardPanel from './dashboard-panel.vue'
-import type { ShopDashboardResponse } from '~/domains/shop/api/dashboard/contracts/dashboard.contract'
+import type { components } from '@arc/schemas/api/generated/openapi'
 import { routes } from '~/shared/navigation/routes'
 
+type TopProduct = components['schemas']['ShopDashboardTopProductResponseDto']
+
 const props = defineProps<{
-  products: ShopDashboardResponse['top_selling_products']
+  products: TopProduct[]
   loading: boolean
 }>()
 
@@ -19,18 +21,16 @@ type TopProductRow = {
   quantitySold: number
   orderCount: number
   revenue: string
-  raw: ShopDashboardResponse['top_selling_products'][number]
 }
 
 const rows = computed<TopProductRow[]>(() =>
   props.products.map(product => ({
-    id: product.id,
+    id: product.product_id,
     title: product.title,
     imageUrl: product.image_url,
     quantitySold: product.quantity_sold,
     orderCount: product.order_count,
     revenue: formatMinorCurrency(product.revenue_minor, product.currency),
-    raw: product,
   })),
 )
 

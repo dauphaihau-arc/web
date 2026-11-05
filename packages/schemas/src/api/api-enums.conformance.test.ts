@@ -180,6 +180,12 @@ const SPEC_ONLY_ENUMS: Record<string, string> = {
     'API-only review moderation filter',
   'paths./v1/shops/{shop_id}/reviews.get.parameters.5':
     'API-only review sort selector',
+  // Lifecycle of a queued order export; FE reads it as plain strings.
+  'components.schemas.ShopOrderExportResponseDto.properties.status':
+    'API-only export job status lifecycle',
+  // Public product-list sort selector; FE passes literal query strings.
+  'paths./v1/products.get.parameters.1':
+    'API-only product sort selector',
 }
 
 interface EnumCandidate {

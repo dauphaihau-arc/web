@@ -1,12 +1,12 @@
 import { z } from 'zod'
+import type { components } from '../../generated/openapi'
 import { shopOrderSummarySchema } from '../order/order.schema'
 import { idSchema } from '@arc/schemas/primitives/id.schema'
 
 /**
  * The dashboard response is kept hand-written: the contract types the period
- * bounds as ISO strings while this client models them as instants, types the
- * order status as a plain string instead of `OrderStatuses`, and names the top
- * product id `product_id` where the dashboard UI reads `id`.
+ * bounds as ISO strings while this client models them as instants, and types
+ * the order status as a plain string instead of `OrderStatuses`.
  */
 export const shopDashboardSummarySchema = z.object({
   revenue_minor: z.number(),
@@ -23,8 +23,14 @@ export const shopDashboardRevenuePointSchema = z.object({
   order_count: z.number(),
 })
 
-export const shopDashboardTopProductSchema = z.object({
-  id: idSchema,
+/**
+ * Typed against the generated contract so a wire-key rename fails typecheck
+ * instead of silently typing the UI against a field the API never sends.
+ */
+export const shopDashboardTopProductSchema: z.ZodType<
+  components['schemas']['ShopDashboardTopProductResponseDto']
+> = z.object({
+  product_id: idSchema,
   title: z.string(),
   slug: z.string(),
   image_url: z.string().optional(),
