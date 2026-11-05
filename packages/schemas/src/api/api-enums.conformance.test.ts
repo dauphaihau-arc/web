@@ -19,6 +19,12 @@ const FE_ENUM_EXPORTS = [
   'ShipmentUpdateActorTypes',
   'ShipmentUpdateSources',
   'FulfillmentAggregateStatuses',
+  'ShipmentRateServices',
+  'ShopPayoutSources',
+  'ShopTransactionTypes',
+  'OrderPayoutStates',
+  'PayoutAccountStatuses',
+  'OrderPayoutMethodAccountStatuses',
   'LocalStorageKeys',
   'MarketCurrencies',
   'MarketLanguages',
@@ -94,23 +100,12 @@ const SPEC_ONLY_ENUMS: Record<string, string> = {
   // Review moderation state only returned by seller/order review endpoints.
   'components.schemas.MyProductReviewResponseDto.properties.status':
     'API-only review moderation state',
-  // Payout settlement state, narrower than OrderStatuses/payout method state.
-  'components.schemas.OrderPayoutAttributionResponseDto.properties.state':
-    'API-only payout settlement state',
-  // Payout onboarding lifecycle; admin/seller apps use local literal unions.
-  'components.schemas.OrderPayoutMethodResponseDto.properties.account_status':
-    'API-only payout account lifecycle',
   // Same moderation state as MyProductReviewResponseDto, other projection.
   'components.schemas.OrderReviewResponseDto.properties.status':
     'API-only review moderation state',
   // Response enum narrowed to the only shipping discount kind.
   'components.schemas.OrderShippingDiscountResponseDto.properties.benefit_type':
     'response subset of PromotionBenefitType (`free_shipping`)',
-  // Same payout onboarding lifecycle as the order projection.
-  'components.schemas.PayoutAccountOnboardingResponseDto.properties.status':
-    'API-only payout account lifecycle',
-  'components.schemas.PayoutAccountResponseDto.properties.status':
-    'API-only payout account lifecycle',
   // Request subset of ProductStates; draft/unavailable are server-owned.
   'components.schemas.ProductVariantConfigurationDto.properties.lifecycle_state':
     'request subset of ProductStates (no `draft`/`unavailable`)',
@@ -120,9 +115,6 @@ const SPEC_ONLY_ENUMS: Record<string, string> = {
   // Same app discriminator as LoginDto.
   'components.schemas.ResetPasswordDto.properties.app':
     'app discriminator; each web app pins its own literal',
-  // Carrier service tier returned by shipping quotes.
-  'components.schemas.ShipmentRateDto.properties.service':
-    'API-only carrier service tier',
   // Same narrowed benefit type as the order shipping discount.
   'components.schemas.ShippingDiscountResponseDto.properties.benefit_type':
     'response subset of PromotionBenefitType (`free_shipping`)',
@@ -135,18 +127,9 @@ const SPEC_ONLY_ENUMS: Record<string, string> = {
   // Dashboard period selector; FE passes literal query strings.
   'components.schemas.ShopDashboardPeriodResponseDto.properties.range':
     'API-only dashboard period selector',
-  // Payout trigger, no FE enum.
-  'components.schemas.ShopPayoutResponseDto.properties.source':
-    'API-only payout trigger',
   // Settlement-currency change blockers, displayed as messages.
   'components.schemas.ShopSettlementCurrencyResponseDto.properties.blocked_reason':
     'API-only settlement currency blockers',
-  // Same payout trigger as ShopPayoutResponseDto.
-  'components.schemas.ShopTransactionResponseDto.properties.source':
-    'API-only payout trigger',
-  // Ledger entry kind; no FE enum switches on transaction types.
-  'components.schemas.ShopTransactionResponseDto.properties.type':
-    'API-only ledger entry kind',
   // Refund attempt verbs, not a status enum.
   'components.schemas.UpdateShopOrderRefundDto.properties.action':
     'API-only refund action verbs',

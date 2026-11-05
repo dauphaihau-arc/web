@@ -1,3 +1,4 @@
+import { PayoutAccountStatuses } from '@arc/enums/finance';
 import type { ShopFinancePayoutAccount } from '~/domains/shop/api/finance/contracts/payout-account.contract';
 import {
   useShopFinancePayoutAccount,
@@ -64,23 +65,29 @@ export function usePayoutAccountCard() {
   ));
 
   /** Stripe is still collecting the seller's details for the first time. */
-  const isOnboarding = computed(() => displayAccount.value?.status === 'onboarding');
+  const isOnboarding = computed(() => (
+    displayAccount.value?.status === PayoutAccountStatuses.ONBOARDING
+  ));
 
   /** Stripe needs more information before it can review the account. */
   const isActionRequired = computed(() => (
-    displayAccount.value?.status === 'action_required'
+    displayAccount.value?.status === PayoutAccountStatuses.ACTION_REQUIRED
   ));
 
-  const isActive = computed(() => displayAccount.value?.status === 'active');
+  const isActive = computed(() => (
+    displayAccount.value?.status === PayoutAccountStatuses.ACTIVE
+  ));
 
   /** A restricted or disabled account can receive nothing; explain why. */
   const isBlocked = computed(() => (
-    displayAccount.value?.status === 'restricted'
-    || displayAccount.value?.status === 'disabled'
+    displayAccount.value?.status === PayoutAccountStatuses.RESTRICTED
+    || displayAccount.value?.status === PayoutAccountStatuses.DISABLED
   ));
 
   /** A restricted account can still be fixed by completing Stripe's requirements. */
-  const isRestricted = computed(() => displayAccount.value?.status === 'restricted');
+  const isRestricted = computed(() => (
+    displayAccount.value?.status === PayoutAccountStatuses.RESTRICTED
+  ));
 
   /**
    * Stripe reviews an account outside the app and its webhook can land after the
@@ -90,8 +97,8 @@ export function usePayoutAccountCard() {
    * account, not the frozen snapshot, so polling can still observe the settle.
    */
   const isAwaitingProvider = computed(() => (
-    account.value?.status === 'onboarding'
-    || account.value?.status === 'action_required'
+    account.value?.status === PayoutAccountStatuses.ONBOARDING
+    || account.value?.status === PayoutAccountStatuses.ACTION_REQUIRED
   ));
 
   /**

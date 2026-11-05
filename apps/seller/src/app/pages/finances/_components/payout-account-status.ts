@@ -1,3 +1,4 @@
+import { PayoutAccountStatuses } from '@arc/enums/finance';
 import type { ShopFinancePayoutAccount } from '~/domains/shop/api/finance/contracts/payout-account.contract';
 
 type StatusColor = 'green' | 'gray' | 'yellow' | 'red' | 'blue';
@@ -17,27 +18,27 @@ export const payoutAccountStatusMeta: Record<
   ShopFinancePayoutAccount['status'],
   PayoutAccountStatusMeta
 > = {
-  onboarding: {
+  [PayoutAccountStatuses.ONBOARDING]: {
     label: 'Onboarding',
     color: 'yellow',
     description: 'Stripe is setting up payouts for you. Finish setup to start receiving money.',
   },
-  action_required: {
+  [PayoutAccountStatuses.ACTION_REQUIRED]: {
     label: 'Action required',
     color: 'yellow',
     description: 'Stripe needs a few more details before it can pay you.',
   },
-  active: {
+  [PayoutAccountStatuses.ACTIVE]: {
     label: 'Active',
     color: 'green',
     description: 'Ready to receive payouts.',
   },
-  restricted: {
+  [PayoutAccountStatuses.RESTRICTED]: {
     label: 'Restricted',
     color: 'red',
     description: 'Payouts are limited while Stripe reviews this account.',
   },
-  disabled: {
+  [PayoutAccountStatuses.DISABLED]: {
     label: 'Disabled',
     color: 'gray',
     description: 'Payouts are turned off for this account.',

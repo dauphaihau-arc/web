@@ -1,3 +1,9 @@
+/** Carrier service tier a shipping-rate quote offers. */
+export enum ShipmentRateServices {
+  STANDARD = 'standard',
+  EXPRESS = 'express',
+}
+
 export const SHIPPING_PROFILE_CONFIG = {
   MAX_NAME_CHAR: 80,
   MAX_RATES: 100,
