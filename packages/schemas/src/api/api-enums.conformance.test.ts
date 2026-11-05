@@ -186,6 +186,9 @@ const SPEC_ONLY_ENUMS: Record<string, string> = {
   // Public product-list sort selector; FE passes literal query strings.
   'paths./v1/products.get.parameters.1':
     'API-only product sort selector',
+  // Why automatic payouts are blocked; FE renders the message, not the code.
+  'components.schemas.ShopPayoutSettingsResponseDto.properties.auto_payout_ineligible_reason':
+    'API-only payout eligibility reason codes',
 }
 
 interface EnumCandidate {
