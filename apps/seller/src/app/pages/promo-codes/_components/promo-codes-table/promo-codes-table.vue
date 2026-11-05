@@ -66,7 +66,7 @@ const columns = [
  * ended. Ended and cancelled Promo Codes have reached a final state: they keep
  * their definition and history but offer no further action.
  */
-function isStoppable(status: PromotionStatus): boolean {
+function isStoppable(status: ShopPromoCode['status']): boolean {
   return status === PromotionStatus.SCHEDULED || status === PromotionStatus.ACTIVE
 }
 

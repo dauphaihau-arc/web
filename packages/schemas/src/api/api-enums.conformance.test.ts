@@ -191,6 +191,12 @@ const SPEC_ONLY_ENUMS: Record<string, string> = {
   // Why automatic payouts are blocked; FE renders the message, not the code.
   'components.schemas.ShopPayoutSettingsResponseDto.properties.auto_payout_ineligible_reason':
     'API-only payout eligibility reason codes',
+  // Import job lifecycle; the UI renders status text, no FE enum exists.
+  'components.schemas.ShopProductImportResponseDto.properties.status':
+    'API-only import job status lifecycle',
+  // Response projection of the CreateShopPromoCodeDto field; no FE enum reads it.
+  'components.schemas.ShopPromoCodeResponseDto.properties.visibility':
+    'API-only promo-code visibility',
 }
 
 interface EnumCandidate {

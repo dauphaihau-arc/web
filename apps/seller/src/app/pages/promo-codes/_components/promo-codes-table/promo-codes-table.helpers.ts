@@ -4,14 +4,14 @@ import type { ShopPromoCode } from '~/domains/shop/api/promo-code/contracts/prom
 
 export type PromotionStatusTone = 'blue' | 'green' | 'gray' | 'red';
 
-export const promoCodeStatusLabels: Record<PromotionStatus, string> = {
+export const promoCodeStatusLabels: Record<ShopPromoCode['status'], string> = {
   [PromotionStatus.SCHEDULED]: 'Scheduled',
   [PromotionStatus.ACTIVE]: 'Active',
   [PromotionStatus.ENDED]: 'Ended',
   [PromotionStatus.CANCELLED]: 'Cancelled',
 };
 
-export const promoCodeStatusTones: Record<PromotionStatus, PromotionStatusTone> = {
+export const promoCodeStatusTones: Record<ShopPromoCode['status'], PromotionStatusTone> = {
   [PromotionStatus.SCHEDULED]: 'blue',
   [PromotionStatus.ACTIVE]: 'green',
   [PromotionStatus.ENDED]: 'gray',
