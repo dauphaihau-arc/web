@@ -2,7 +2,6 @@ import { z } from 'zod'
 import { idSchema } from '@arc/schemas/primitives/id.schema'
 
 export const shippingDestinationScopes = ['country', 'everywhere_else'] as const
-export const shippingProfileStatuses = ['draft', 'active', 'archived'] as const
 export const shippingProfileReadinessIssues = [
   'archived',
   'draft',
@@ -30,7 +29,6 @@ export const shippingEstimateSchema = z.object({
 })
 
 export const shippingDestinationScopeSchema = z.enum(shippingDestinationScopes)
-export const shippingProfileStatusSchema = z.enum(shippingProfileStatuses)
 
 export const shippingRateSchema = z.object({
   id: idSchema,
@@ -41,50 +39,6 @@ export const shippingRateSchema = z.object({
   additional_item_fee_minor: z.number().int().nonnegative(),
   delivery_time_min_days: z.number().int().nonnegative().optional(),
   delivery_time_max_days: z.number().int().nonnegative().optional(),
-})
-
-export const shippingRateInputSchema = shippingRateSchema.omit({
-  id: true,
-  position: true,
-})
-
-export const shippingProfileSchema = z.object({
-  id: idSchema,
-  shop_id: idSchema,
-  name: z.string(),
-  status: shippingProfileStatusSchema,
-  version: z.number().int().positive(),
-  // Resolved from the owning Shop. Profiles never store their own currency.
-  currency: z.string(),
-  ship_from_country: z.string().optional(),
-  ship_from_postal: z.string().optional(),
-  processing_time_min_days: z.number().int().nonnegative().optional(),
-  processing_time_max_days: z.number().int().nonnegative().optional(),
-  checkout_ready: z.boolean(),
-  readiness_issues: z.array(z.enum(shippingProfileReadinessIssues)),
-  /** True when this profile is the shop's Default Shipping Profile. */
-  is_default: z.boolean(),
-  assigned_product_count: z.number().int().nonnegative(),
-  published_product_count: z.number().int().nonnegative(),
-  rates: z.array(shippingRateSchema),
-  created_at: z.union([z.string(), z.date()]),
-  updated_at: z.union([z.string(), z.date()]),
-})
-
-export const shippingProfileStatusCountsSchema = z.object({
-  active: z.number().int().nonnegative(),
-  draft: z.number().int().nonnegative(),
-  archived: z.number().int().nonnegative(),
-})
-
-export const shippingProfileListSchema = z.object({
-  results: z.array(shippingProfileSchema),
-  page: z.number().int().positive(),
-  limit: z.number().int().positive(),
-  total_pages: z.number().int().nonnegative(),
-  total_results: z.number().int().nonnegative(),
-  // Counts across every page, so the surface can show that hidden states exist.
-  status_counts: shippingProfileStatusCountsSchema,
 })
 
 export const shippingRatePreviewSchema = z.object({
