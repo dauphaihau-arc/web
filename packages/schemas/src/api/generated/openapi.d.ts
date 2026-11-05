@@ -1267,7 +1267,9 @@ export interface components {
       actor_email?: string;
       request_id?: string;
       /** @description Metadata-only audit summary. */
-      summary: Record<string, never>;
+      summary: {
+        [key: string]: unknown;
+      };
       /** Format: date-time */
       created_at: string;
     };
@@ -5517,9 +5519,11 @@ export interface operations {
         page: number;
         limit: number;
         search?: string;
+        /** @description Action filter. Send a comma-separated list (`action=user.created,user.updated`); repeating the parameter is also accepted. */
         action?: string[];
         actor_email?: string;
         entity_id?: string;
+        /** @description Entity type filter. Send a comma-separated list (`entity_type=user,order`); repeating the parameter is also accepted. */
         entity_type?: string[];
       };
     };
@@ -5785,6 +5789,12 @@ export interface operations {
     };
     requestBody: {
       content: {
+        "application/json": {
+          version: number;
+          display_name?: string;
+          /** @enum {string} */
+          status?: "active" | "disabled";
+        };
         "multipart/form-data": {
           version: number;
           display_name?: string;
@@ -11273,6 +11283,7 @@ export interface operations {
       query: {
         page: number;
         limit: number;
+        /** @description Order status filter. Send a comma-separated list (`status=paid,completed`); repeating the parameter (`status=paid&status=completed`) is also accepted. */
         status?: ("canceled" | "pending" | "checkout_pending" | "awaiting_payment" | "expired" | "paid" | "refunded" | "completed" | "archived")[];
         search?: string;
       };
