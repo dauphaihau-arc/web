@@ -1,56 +1,31 @@
+import type { components, paths } from '@arc/schemas/api/generated/openapi';
+
 /**
  * A platform operator's view of a user account. The list and detail endpoints
  * share one shape, and both carry the account's roles so an operator can tell
  * a seller from a buyer without opening the account.
  */
 
-export type AdminUserStatus = 'active' | 'disabled';
+export type AdminUserStatus = components['schemas']['UserResponseDto']['status'];
 
-export type ListAdminUsersParams = {
-  page: number
-  limit: number
-  search?: string
-  sort?: string
-};
+export type ListAdminUsersParams = paths['/v1/users']['get']['parameters']['query'];
 
-export interface AdminUser {
-  /** Internal user id. */
-  id: string
-  version: number
-  email: string
-  display_name?: string
-  avatar?: string
-  status: string
-  roles: string[]
-}
+export type AdminUser = components['schemas']['UserResponseDto'];
 
-export interface AdminUserListMeta {
-  page: number
-  limit: number
-  total: number
-  total_pages: number
-  has_next_page: boolean
-  has_previous_page: boolean
-}
+export type AdminUserListMeta = components['schemas']['UserListMetaResponseDto'];
 
-export interface AdminUserListResponse {
-  items: AdminUser[]
-  meta: AdminUserListMeta
-}
+export type AdminUserListResponse = components['schemas']['UserListResponseDto'];
 
-export type UpdateAdminUserBody = {
-  version: number
-  display_name?: string
-  status?: AdminUserStatus
-};
+/**
+ * The contract documents the update as a `multipart/form-data` body (the avatar
+ * is a binary part) without a named schema; the admin app still sends the same
+ * scalar fields as JSON and has no avatar upload, so this boundary reuses the
+ * documented form fields as a flat object. Reported as a contract gap.
+ */
+export type UpdateAdminUserBody =
+  paths['/v1/users/{id}']['patch']['requestBody']['content']['multipart/form-data'];
 
-export type CreateAdminUserBody = {
-  email: string
-  password: string
-  display_name?: string
-};
+export type CreateAdminUserBody = components['schemas']['CreateUserDto'];
 
 /** The complete role set for the account; an empty array clears every role. */
-export type AssignAdminUserRolesBody = {
-  roles: string[]
-};
+export type AssignAdminUserRolesBody = components['schemas']['AssignUserRolesDto'];
