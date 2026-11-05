@@ -310,7 +310,7 @@ export interface paths {
   "/v1/products": {
     /**
      * List products
-     * @description Returns public products matching the supplied filters.
+     * @description Returns public products matching the supplied filters. Any query parameter other than those listed here is rejected with `VALIDATION_FAILED`; attribute filters are passed as `attr_<attribute_id>` parameters.
      */
     get: operations["Product_listProducts"];
   };
@@ -962,7 +962,10 @@ export interface components {
       channel: string;
       title: string;
       body: string;
-      data: Record<string, unknown> | null;
+      /** @description Free-form notification payload; null when the notification carries none. */
+      data: {
+        [key: string]: unknown;
+      } | null;
       /** Format: date-time */
       read_at: string | null;
       /** Format: date-time */
@@ -1598,11 +1601,16 @@ export interface components {
     PublicProductSuggestionListResponseDto: {
       items: components["schemas"]["PublicProductSuggestionResponseDto"][];
     };
+    PublicProductListItemImageVariantResponseDto: {
+      url?: string;
+    };
     PublicProductListItemImageResponseDto: {
       url?: string;
       variant?: string;
       /** @description Named image variants keyed by variant name. */
-      variants?: Record<string, never>;
+      variants?: {
+        [key: string]: components["schemas"]["PublicProductListItemImageVariantResponseDto"];
+      };
     };
     PublicProductListItemAutoSaleResponseDto: {
       promotion_id: string;
@@ -1667,6 +1675,12 @@ export interface components {
       average: number;
       count: number;
     };
+    PublicProductImageVariantResponseDto: {
+      url: string;
+      width?: number;
+      height?: number;
+      format?: string;
+    };
     PublicProductImageResponseDto: {
       id: string;
       url: string;
@@ -1676,7 +1690,9 @@ export interface components {
       /** Format: date-time */
       variants_generated_at?: string;
       /** @description Named image variants keyed by variant name. */
-      variants?: Record<string, never>;
+      variants?: {
+        [key: string]: components["schemas"]["PublicProductImageVariantResponseDto"];
+      };
     };
     PublicProductOptionValueResponseDto: {
       id: string;
@@ -1767,7 +1783,9 @@ export interface components {
       url: string;
       rank: number;
       /** @description Named image variants keyed by variant name. */
-      variants?: Record<string, never>;
+      variants?: {
+        [key: string]: components["schemas"]["PublicProductImageVariantResponseDto"];
+      };
     };
     PublicProductReviewAuthorResponseDto: {
       display_name: string;
@@ -1799,7 +1817,9 @@ export interface components {
       /** Format: date-time */
       created_at: string;
       /** @description Named image variants keyed by variant name. */
-      variants?: Record<string, never>;
+      variants?: {
+        [key: string]: components["schemas"]["PublicProductImageVariantResponseDto"];
+      };
       author: components["schemas"]["PublicProductReviewAuthorResponseDto"];
     };
     PublicProductReviewImageListMetaResponseDto: {
@@ -1844,7 +1864,9 @@ export interface components {
       /** Format: date-time */
       variants_generated_at?: string;
       /** @description Named image variants keyed by variant name. */
-      variants?: Record<string, never>;
+      variants?: {
+        [key: string]: components["schemas"]["PublicProductImageVariantResponseDto"];
+      };
     };
     MyProductReviewResponseDto: {
       id: string;
@@ -2261,6 +2283,12 @@ export interface components {
       /** Format: uuid */
       shipping_profile_id?: string | null;
     };
+    ShopProductReviewImageVariantResponseDto: {
+      url: string;
+      width?: number;
+      height?: number;
+      format?: string;
+    };
     ShopProductReviewImageResponseDto: {
       id: string;
       url: string;
@@ -2270,7 +2298,9 @@ export interface components {
       /** Format: date-time */
       variants_generated_at?: string;
       /** @description Generated variant urls keyed by variant name. */
-      variants?: Record<string, never>;
+      variants?: {
+        [key: string]: components["schemas"]["ShopProductReviewImageVariantResponseDto"];
+      };
     };
     ShopProductReviewAuthorResponseDto: {
       id: string;
@@ -3015,6 +3045,12 @@ export interface components {
     OrderInventorySkuResponseDto: {
       sku?: string;
     };
+    OrderReviewImageVariantResponseDto: {
+      url: string;
+      width?: number;
+      height?: number;
+      format?: string;
+    };
     OrderReviewImageResponseDto: {
       id: string;
       url: string;
@@ -3024,7 +3060,10 @@ export interface components {
       variant_error?: string;
       /** Format: date-time */
       variants_generated_at?: string;
-      variants?: Record<string, never>;
+      /** @description Named image variants keyed by variant name. */
+      variants?: {
+        [key: string]: components["schemas"]["OrderReviewImageVariantResponseDto"];
+      };
     };
     OrderReviewResponseDto: {
       id: string;
@@ -3433,6 +3472,36 @@ export interface components {
       column_preset?: "default" | "custom";
       columns?: string[];
     };
+    ShopOrderExportResponseDto: {
+      /** @description Export public id (exp_…). */
+      id: string;
+      /** @enum {string} */
+      status: "queued" | "processing" | "completed" | "failed" | "expired";
+      /** @description File name the completed export is downloaded as. */
+      filename: string;
+      /** @description Number of rows the export will contain once complete. */
+      total_rows: number;
+      /** @description Number of rows written so far. */
+      processed_rows: number;
+      /** @description Progress percentage, 0–100; 100 once completed. */
+      percent: number;
+      /** @description Failure reason when the export failed. */
+      error_message?: string | null;
+      /**
+       * Format: date-time
+       * @description When the export completed.
+       */
+      completed_at?: string | null;
+      /**
+       * Format: date-time
+       * @description When the generated file stops being downloadable.
+       */
+      expires_at: string;
+      /** Format: date-time */
+      created_at: string;
+      /** Format: date-time */
+      updated_at: string;
+    };
     ShopOrderStatusCountsResponseDto: {
       all: number;
       awaiting_payment: number;
@@ -3493,7 +3562,10 @@ export interface components {
       actor_type: string;
       actor_id?: string;
       source?: string;
-      payload?: Record<string, never>;
+      /** @description Event-specific detail, shape varies by event type. */
+      payload?: {
+        [key: string]: unknown;
+      };
     };
     ShopOrderDetailResponseDto: {
       order: components["schemas"]["ShopOrderDetailOrderResponseDto"];
@@ -4118,7 +4190,10 @@ export interface components {
       sender_user_id: string;
       body: string;
       message_type: string;
-      metadata: Record<string, unknown> | null;
+      /** @description Free-form message metadata; null when the message carries none. */
+      metadata: {
+        [key: string]: unknown;
+      } | null;
       /** Format: date-time */
       edited_at: string | null;
       /** Format: date-time */
@@ -4141,7 +4216,10 @@ export interface components {
     };
     SendChatMessageDto: {
       body: string;
-      metadata?: Record<string, never>;
+      /** @description Free-form message metadata. */
+      metadata?: {
+        [key: string]: unknown;
+      };
     };
     ChatMessageEnvelopeResponseDto: {
       message: components["schemas"]["ChatMessageResponseDto"];
@@ -6784,9 +6862,40 @@ export interface operations {
   };
   /**
    * List products
-   * @description Returns public products matching the supplied filters.
+   * @description Returns public products matching the supplied filters. Any query parameter other than those listed here is rejected with `VALIDATION_FAILED`; attribute filters are passed as `attr_<attribute_id>` parameters.
    */
   Product_listProducts: {
+    parameters: {
+      query?: {
+        /** @description Attribute filter, one parameter per attribute where `{attribute_id}` is the attribute id. Repeat the parameter (or pass a comma-separated value) to match any of several option values. Dynamic name: any `attr_*` parameter is accepted, and other unknown parameters are rejected. */
+        "attr_{attribute_id}"?: string[];
+        /** @description Sort order. */
+        order?: "newest" | "price_asc" | "price_desc";
+        /** @description Maximum price in minor units, inclusive. */
+        max_price?: number;
+        /** @description Minimum price in minor units, inclusive. */
+        min_price?: number;
+        /** @description Maker attribution filter. */
+        who_made?: "i_did" | "collective" | "someone_else";
+        /** @description Restrict to digital (`true`) or physical (`false`) products. */
+        is_digital?: boolean;
+        /** @description Title substring filter. */
+        title?: string;
+        /**
+         * @deprecated
+         * @description Deprecated alias of `search`; when supplied it takes precedence over `search`.
+         */
+        s?: string;
+        /** @description Free-text search over product titles. */
+        search?: string;
+        /** @description Category public id; matches products in that category and its descendants. */
+        category_id?: string;
+        /** @description Page size. */
+        limit?: number;
+        /** @description Page number, 1-based. */
+        page?: number;
+      };
+    };
     responses: {
       /** @description Public product list. */
       200: {
@@ -10492,8 +10601,15 @@ export interface operations {
       };
     };
     responses: {
+      /** @description Shop orders as a UTF-8 CSV attachment. */
       200: {
-        content: never;
+        headers: {
+          /** @description Attachment filename suggested for the download. */
+          "Content-Disposition"?: string;
+        };
+        content: {
+          "text/csv": string;
+        };
       };
       /** @description Validation failed */
       400: {
@@ -10549,8 +10665,11 @@ export interface operations {
       };
     };
     responses: {
+      /** @description The queued order export. */
       201: {
-        content: never;
+        content: {
+          "application/json": components["schemas"]["ShopOrderExportResponseDto"];
+        };
       };
       /** @description Validation failed */
       400: {
@@ -10599,8 +10718,11 @@ export interface operations {
       };
     };
     responses: {
+      /** @description The order export and its progress. */
       200: {
-        content: never;
+        content: {
+          "application/json": components["schemas"]["ShopOrderExportResponseDto"];
+        };
       };
       /** @description Authentication is required */
       401: {
@@ -10646,8 +10768,15 @@ export interface operations {
       };
     };
     responses: {
+      /** @description The exported orders as a UTF-8 CSV attachment. */
       200: {
-        content: never;
+        headers: {
+          /** @description Attachment filename suggested for the download. */
+          "Content-Disposition"?: string;
+        };
+        content: {
+          "text/csv": string;
+        };
       };
       /** @description Authentication is required */
       401: {
