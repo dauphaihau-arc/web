@@ -185,6 +185,8 @@ const SPEC_ONLY_ENUMS: Record<string, string> = {
     'API-only user account status',
   'paths./v1/users/{id}.patch.requestBody.content.multipart/form-data.schema.properties.status':
     'same user account status on the multipart update body',
+  'paths./v1/users/{id}.patch.requestBody.content.application/json.schema.properties.status':
+    'same user account status on the JSON update body',
   // Manual refund state transitions; no admin UI sends or branches on them.
   'components.schemas.UpdateAdminOrderRefundDto.properties.action':
     'API-only refund transition verbs',
