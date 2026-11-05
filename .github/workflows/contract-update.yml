@@ -1,0 +1,226 @@
+name: Contract update
+
+# Proposes a bump of the pinned `@dauphaihau-arc/api-spec` version after the api
+# repo publishes to GitHub Packages. Uses the repository token (no bot app):
+# the `contract` CI job already installs the package with the same credential.
+# Never publishes, never merges, never touches the api repository.
+
+on:
+  schedule:
+    - cron: '17 4 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: contract-update
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  packages: read
+  # Only for dispatching ci.yml on the upgrade branch: pulls opened with
+  # GITHUB_TOKEN do not trigger `pull_request` workflows on their own.
+  actions: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.13.0
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Resolve newest stable contract version
+        id: resolve
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CONTRACT_PACKAGE: '@dauphaihau-arc/api-spec'
+        run: |
+          set -euo pipefail
+
+          versions_file="$RUNNER_TEMP/api-spec-versions.json"
+          npm view "$CONTRACT_PACKAGE" versions --json \
+            --registry https://npm.pkg.github.com > "$versions_file"
+
+          node ./scripts/check-contract-update.mjs check \
+            --versions-file "$versions_file" \
+            --package-json package.json
+
+      - name: Install dependencies
+        if: steps.resolve.outputs.newer == 'true'
+        working-directory: ${{ github.workspace }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pnpm install --frozen-lockfile
+
+      - name: Bump pinned contract version
+        if: steps.resolve.outputs.newer == 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CONTRACT_PACKAGE: '@dauphaihau-arc/api-spec'
+          CONTRACT_VERSION: ${{ steps.resolve.outputs.latest }}
+        run: pnpm add -Dw --save-exact "$CONTRACT_PACKAGE@$CONTRACT_VERSION"
+
+      - name: Regenerate API types
+        if: steps.resolve.outputs.newer == 'true'
+        run: pnpm generate:api-types
+
+      - name: Verify generated API types
+        if: steps.resolve.outputs.newer == 'true'
+        run: pnpm generate:api-types -- --check
+
+      - name: Detect changes
+        id: changes
+        if: steps.resolve.outputs.newer == 'true'
+        env:
+          CONTRACT_VERSION: ${{ steps.resolve.outputs.latest }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Bumping to $CONTRACT_VERSION changed no committed file; nothing to open."
+            {
+              echo "### Contract $CONTRACT_VERSION"
+              echo
+              echo "Bump to \`$CONTRACT_VERSION\` produced no file changes; no pull request opened."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          git status --short
+
+      - name: Check for an existing upgrade branch
+        id: branch
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CONTRACT_VERSION: ${{ steps.resolve.outputs.latest }}
+        run: |
+          set -euo pipefail
+
+          branch="contract/api-spec-$CONTRACT_VERSION"
+          echo "name=$branch" >> "$GITHUB_OUTPUT"
+
+          if git ls-remote --exit-code --heads origin "$branch" > /dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+
+            open_pr="$(gh pr list --head "$branch" --state open --json number --jq '.[0].number // empty')"
+            if [ -n "$open_pr" ]; then
+              echo "Branch $branch already has open PR #$open_pr; leaving it untouched."
+              echo "open_pr=$open_pr" >> "$GITHUB_OUTPUT"
+            else
+              echo "Branch $branch already exists without an open PR; leaving it untouched."
+            fi
+
+            {
+              echo "### Contract $CONTRACT_VERSION"
+              echo
+              echo "Branch \`$branch\` already exists, so this run left it alone."
+              if [ -n "$open_pr" ]; then
+                echo "Open pull request: #$open_pr"
+              fi
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          echo "exists=false" >> "$GITHUB_OUTPUT"
+
+      - name: Build pull request body
+        if: steps.branch.outputs.exists == 'false'
+        env:
+          CONTRACT_PREVIOUS: ${{ steps.resolve.outputs.current }}
+          CONTRACT_VERSION: ${{ steps.resolve.outputs.latest }}
+        run: |
+          set -euo pipefail
+
+          node ./scripts/check-contract-update.mjs summary \
+            --from "$CONTRACT_PREVIOUS" \
+            --to "$CONTRACT_VERSION" \
+            --out "$RUNNER_TEMP/contract-pr-body.md"
+
+      - name: Commit and push upgrade branch
+        if: steps.branch.outputs.exists == 'false'
+        env:
+          BRANCH: ${{ steps.branch.outputs.name }}
+          CONTRACT_VERSION: ${{ steps.resolve.outputs.latest }}
+        run: |
+          set -euo pipefail
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git checkout -b "$BRANCH"
+          git add package.json pnpm-lock.yaml packages/schemas/src/api/generated
+          # CI run: husky's pre-commit hook (lint-staged) is for local use only.
+          git commit --no-verify -m "chore(deps): adopt contract $CONTRACT_VERSION"
+          git push origin "$BRANCH"
+
+      - name: Open pull request
+        if: steps.branch.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          BRANCH: ${{ steps.branch.outputs.name }}
+          CONTRACT_VERSION: ${{ steps.resolve.outputs.latest }}
+        run: |
+          set -euo pipefail
+
+          base="$(gh repo view "$REPOSITORY" --json defaultBranchRef --jq '.defaultBranchRef.name')"
+
+          labels=()
+          if gh label list --search api-contract --json name --jq '.[].name' | grep -qx 'api-contract'; then
+            labels=(--label api-contract)
+          fi
+
+          if ! output="$(gh pr create \
+              --base "$base" \
+              --head "$BRANCH" \
+              --title "chore(deps): adopt contract $CONTRACT_VERSION" \
+              --body-file "$RUNNER_TEMP/contract-pr-body.md" \
+              "${labels[@]}" 2>&1)"; then
+            echo "$output"
+
+            {
+              echo "### Contract $CONTRACT_VERSION"
+              echo
+              echo "Branch \`$BRANCH\` was pushed, but opening the pull request failed."
+              echo "Enable **Settings -> Actions -> General -> Workflow permissions ->"
+              echo "Allow GitHub Actions to create and approve pull requests**, then re-run"
+              echo "this workflow, or open the pull request from the branch manually."
+            } >> "$GITHUB_STEP_SUMMARY"
+
+            echo "::error::Branch $BRANCH was pushed, but the pull request could not be created. Enable the repository setting Settings -> Actions -> General -> Workflow permissions -> 'Allow GitHub Actions to create and approve pull requests' and re-run."
+            exit 1
+          fi
+
+          echo "$output"
+          {
+            echo "### Contract $CONTRACT_VERSION"
+            echo
+            echo "Pull request opened: $output"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Dispatch CI on the upgrade branch
+        if: steps.branch.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ steps.branch.outputs.name }}
+        run: |
+          # Pulls created with GITHUB_TOKEN do not trigger `pull_request` runs, so
+          # dispatch CI explicitly on the branch. workflow_dispatch is exempt from
+          # that suppression, and ci.yml runs every job for it.
+          if gh workflow run ci.yml --ref "$BRANCH"; then
+            echo "Dispatched ci.yml on $BRANCH."
+          else
+            echo "::warning::Could not dispatch ci.yml on $BRANCH; run it from the Actions tab."
+          fi
