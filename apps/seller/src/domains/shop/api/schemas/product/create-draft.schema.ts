@@ -119,7 +119,7 @@ export const createDraftProductResponseSchema = z.object({
     })).optional(),
     lifecycle_state: z.enum(['active', 'inactive']).optional(),
     image_url: z.string().optional(),
-    removed_at: z.coerce.date().optional(),
+    removed_at: z.string().optional(),
     rank: z.number(),
   })),
   inventory: z.array(z.object({

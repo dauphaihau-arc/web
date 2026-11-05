@@ -1,15 +1,14 @@
 <script lang="ts" setup>
-import dayjs from 'dayjs'
 import { OrderStatuses } from '@arc/enums/order'
-import { formatMinorCurrency } from '@arc/utils'
+import { formatMinorCurrency, formatShortDateTime } from '@arc/utils'
 import AppIcon from '@arc/ui/primitives/app-icon.vue'
 import LoadingSvg from '@arc/ui/primitives/loading-svg.vue'
 import DashboardPanel from './dashboard-panel.vue'
-import type { ShopOrderSummary } from '~/domains/shop/api/order/contracts/order.contract'
+import type { ShopDashboardRecentOrder } from '~/domains/shop/api/dashboard/contracts/dashboard.contract'
 import { routes } from '~/shared/navigation/routes'
 
 const props = defineProps<{
-  orders: ShopOrderSummary[]
+  orders: ShopDashboardRecentOrder[]
   loading: boolean
 }>()
 
@@ -18,7 +17,7 @@ type RecentOrderRow = {
   orderNumber: string
   customer: string
   total: string
-  status: ShopOrderSummary['status']
+  status: ShopDashboardRecentOrder['status']
   statusLabel: string
   date: string
 }
@@ -31,7 +30,7 @@ const rows = computed<RecentOrderRow[]>(() =>
     total: formatMinorCurrency(order.total_minor, order.currency),
     status: order.status,
     statusLabel: order.status.replaceAll('_', ' '),
-    date: dayjs(order.created_at).format('MMM D, h:mma'),
+    date: formatShortDateTime(order.created_at),
   })),
 )
 
@@ -60,7 +59,7 @@ const desktopTableUi = {
   td: { padding: 'px-0 py-3' },
 } as const
 
-function orderTone(status: ShopOrderSummary['status']) {
+function orderTone(status: ShopDashboardRecentOrder['status']) {
   switch (status) {
     case OrderStatuses.PAID:
     case OrderStatuses.COMPLETED:

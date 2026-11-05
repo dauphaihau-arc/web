@@ -1,6 +1,10 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { FulfillmentAggregateStatuses, ShipmentStatuses } from '@arc/enums/fulfillment';
+import {
+  OrderPayoutMethodAccountStatuses,
+  OrderPayoutStates,
+} from '@arc/enums/finance';
 import { OrderStatuses } from '@arc/enums/order';
 import type { TimelineItem, TimelineItemState } from '@arc/ui/patterns/timeline.vue';
 import type { ShopOrderPayout } from '~/domains/shop/api/finance/contracts/order-payout.contract';
@@ -299,6 +303,19 @@ function deliveredStepDate(
   return formatProgressEstimate(estimate);
 }
 
+/** Why a Payout Account still blocks the money, or undefined when it is usable. */
+const PAYOUT_ACCOUNT_DESCRIPTIONS: Record<
+  ShopOrderPayout['payout_method']['account_status'],
+  string | undefined
+> = {
+  [OrderPayoutMethodAccountStatuses.MISSING]: 'Add bank account',
+  [OrderPayoutMethodAccountStatuses.ONBOARDING]: 'Verifying account',
+  [OrderPayoutMethodAccountStatuses.ACTION_REQUIRED]: 'Verifying account',
+  [OrderPayoutMethodAccountStatuses.RESTRICTED]: 'On hold',
+  [OrderPayoutMethodAccountStatuses.DISABLED]: 'On hold',
+  [OrderPayoutMethodAccountStatuses.ACTIVE]: undefined,
+};
+
 /**
  * The Payout milestone Finance reports for this Order. It only exists when the
  * Order has a payout fact at all, and it only claims completion when Finance
@@ -312,7 +329,7 @@ function payoutMilestone(
 
   const payout = orderPayout.payout;
 
-  if (payout?.state === 'paid') {
+  if (payout?.state === OrderPayoutStates.PAID) {
     return {
       key: 'payout',
       title: 'Payout',
@@ -349,9 +366,9 @@ function payoutMilestone(
 
   // Where the money will go matters before when: an unusable account cannot
   // receive the payout no matter what the schedule says.
-  const accountDescription = payoutAccountDescription(
-    orderPayout.payout_method.account_status,
-  );
+  const accountDescription = PAYOUT_ACCOUNT_DESCRIPTIONS[
+    orderPayout.payout_method.account_status
+  ];
   if (accountDescription) {
     return {
       key: 'payout',
@@ -372,24 +389,6 @@ function payoutMilestone(
     blocked: !orderPayout.availability.recorded,
     done: false,
   };
-}
-
-/** Why a Payout Account still blocks the money, or undefined when it is usable. */
-function payoutAccountDescription(
-  status: ShopOrderPayout['payout_method']['account_status'],
-): string | undefined {
-  switch (status) {
-    case 'missing':
-      return 'Add bank account';
-    case 'onboarding':
-    case 'action_required':
-      return 'Verifying account';
-    case 'restricted':
-    case 'disabled':
-      return 'On hold';
-    case 'active':
-      return undefined;
-  }
 }
 
 /**

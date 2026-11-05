@@ -81,7 +81,7 @@ const RATE_OPTIONS: ShipmentRateQuote[] = [
     price_minor: 480,
     currency: 'USD',
     estimated_days: { min: 3, max: 5 },
-    expires_at: new Date('2026-11-02T12:15:00.000Z'),
+    expires_at: '2026-11-02T12:15:00.000Z',
   },
   {
     quote_id: 'rq_usps_express',
@@ -90,7 +90,7 @@ const RATE_OPTIONS: ShipmentRateQuote[] = [
     price_minor: 768,
     currency: 'USD',
     estimated_days: { min: 1, max: 2 },
-    expires_at: new Date('2026-11-02T12:15:00.000Z'),
+    expires_at: '2026-11-02T12:15:00.000Z',
   },
   {
     quote_id: 'rq_dhl_standard',
@@ -99,7 +99,7 @@ const RATE_OPTIONS: ShipmentRateQuote[] = [
     price_minor: 660,
     currency: 'USD',
     estimated_days: { min: 3, max: 5 },
-    expires_at: new Date('2026-11-02T12:15:00.000Z'),
+    expires_at: '2026-11-02T12:15:00.000Z',
   },
   {
     quote_id: 'rq_dhl_express',
@@ -108,7 +108,7 @@ const RATE_OPTIONS: ShipmentRateQuote[] = [
     price_minor: 1056,
     currency: 'USD',
     estimated_days: { min: 1, max: 2 },
-    expires_at: new Date('2026-11-02T12:15:00.000Z'),
+    expires_at: '2026-11-02T12:15:00.000Z',
   },
   {
     quote_id: 'rq_vnpost_standard',
@@ -117,7 +117,7 @@ const RATE_OPTIONS: ShipmentRateQuote[] = [
     price_minor: 320,
     currency: 'USD',
     estimated_days: { min: 3, max: 5 },
-    expires_at: new Date('2026-11-02T12:15:00.000Z'),
+    expires_at: '2026-11-02T12:15:00.000Z',
   },
   {
     quote_id: 'rq_vnpost_express',
@@ -126,7 +126,7 @@ const RATE_OPTIONS: ShipmentRateQuote[] = [
     price_minor: 512,
     currency: 'USD',
     estimated_days: { min: 1, max: 2 },
-    expires_at: new Date('2026-11-02T12:15:00.000Z'),
+    expires_at: '2026-11-02T12:15:00.000Z',
   },
 ];
 
