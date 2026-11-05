@@ -42,7 +42,14 @@ pnpm generate:api-types -- --check
 
 - Regenerate after `@dauphaihau-arc/api-spec` changes; do not hand-fix types.
   Installing the package needs `NODE_AUTH_TOKEN` with `read:packages` for the
-  `dauphaihau-arc` scope (see `.npmrc`); Renovate opens the upgrade PRs.
+  `dauphaihau-arc` scope (see `.npmrc`).
+- `.github/workflows/contract-update.yml` proposes contract upgrades. It runs
+  daily with the repository `GITHUB_TOKEN` (no bot app), resolves the newest
+  stable published version, pins it exactly, regenerates the types, and opens a
+  PR titled `chore(deps): adopt contract <version>`. The `contract` CI job
+  re-runs `pnpm generate:api-types -- --check` and the app jobs typecheck, lint
+  and test. Prereleases are skipped; major bumps change generated types and
+  need a review before merging. The workflow never merges or publishes.
 - `@arc/enums` is hand-written and checked for conformance against the spec,
   not generated.
 - From the repository root, `./scripts/verify api-types` runs the check.
