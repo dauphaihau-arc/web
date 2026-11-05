@@ -1,4 +1,5 @@
 import { formatMinorCurrency } from '@arc/utils';
+import { PayoutAccountStatuses } from '@arc/enums/finance';
 
 /** The badge tones the shared status badge understands. */
 export type FinanceTone = 'green' | 'gray' | 'yellow' | 'red' | 'blue';
@@ -41,11 +42,11 @@ export function payoutStateTone(state: string): FinanceTone {
  * owns the transitions, so an unknown status keeps its raw value.
  */
 export const payoutAccountStatusMeta: Record<string, FinanceStatusMeta> = {
-  onboarding: { label: 'Onboarding', tone: 'yellow' },
-  action_required: { label: 'Action required', tone: 'yellow' },
-  active: { label: 'Active', tone: 'green' },
-  restricted: { label: 'Restricted', tone: 'red' },
-  disabled: { label: 'Disabled', tone: 'gray' },
+  [PayoutAccountStatuses.ONBOARDING]: { label: 'Onboarding', tone: 'yellow' },
+  [PayoutAccountStatuses.ACTION_REQUIRED]: { label: 'Action required', tone: 'yellow' },
+  [PayoutAccountStatuses.ACTIVE]: { label: 'Active', tone: 'green' },
+  [PayoutAccountStatuses.RESTRICTED]: { label: 'Restricted', tone: 'red' },
+  [PayoutAccountStatuses.DISABLED]: { label: 'Disabled', tone: 'gray' },
 };
 
 export function payoutAccountStatusLabel(status: string) {

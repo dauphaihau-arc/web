@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { ShopPayoutSources } from '@arc/enums/finance'
 import type { ShopFinancePayout } from '~/domains/shop/api/finance/contracts/payout.contract'
 import FilterPopover from '@arc/ui/patterns/data-filter/filter-popover.vue'
 import FilterToolbar from '@arc/ui/patterns/data-filter/filter-toolbar.vue'
@@ -19,8 +20,8 @@ const stateOptions: FilterOption[] = [
 ]
 
 const sourceOptions: FilterOption[] = [
-  { label: 'Scheduled', value: 'scheduled' },
-  { label: 'Manual', value: 'manual' },
+  { label: 'Scheduled', value: ShopPayoutSources.SCHEDULED },
+  { label: 'Manual', value: ShopPayoutSources.MANUAL },
 ]
 
 const appliedStates = ref<ShopFinancePayout['state'][]>([])

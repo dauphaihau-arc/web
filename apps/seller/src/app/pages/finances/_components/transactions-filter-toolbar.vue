@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { ShopTransactionTypes } from '@arc/enums/finance'
 import type {
   ShopFinanceTransactionStatus,
   ShopFinanceTransactionType,
@@ -22,11 +23,11 @@ const emit = defineEmits<{
 
 const typeOptions: Array<{ label: string, value: ShopFinanceTransactionType | '' }> = [
   { label: 'All types', value: '' },
-  { label: 'Order income', value: 'order_income' },
-  { label: 'Refund', value: 'refund' },
-  { label: 'Label charge', value: 'label_charge' },
-  { label: 'Label refund', value: 'label_refund' },
-  { label: 'Payout', value: 'payout' },
+  { label: 'Order income', value: ShopTransactionTypes.ORDER_INCOME },
+  { label: 'Refund', value: ShopTransactionTypes.REFUND },
+  { label: 'Label charge', value: ShopTransactionTypes.LABEL_CHARGE },
+  { label: 'Label refund', value: ShopTransactionTypes.LABEL_REFUND },
+  { label: 'Payout', value: ShopTransactionTypes.PAYOUT },
 ]
 
 const statusOptions: Array<{ label: string, value: ShopFinanceTransactionStatus | '' }> = [
