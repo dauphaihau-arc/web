@@ -150,6 +150,49 @@ export interface paths {
     /** Update current user preferences */
     patch: operations["Me_updateMe"];
   };
+  "/v1/roles": {
+    /**
+     * List assignable roles
+     * @description Returns every role key an operator may assign to a user, sorted by key.
+     */
+    get: operations["Roles_list"];
+  };
+  "/v1/admin/audit-logs": {
+    /** List audit logs */
+    get: operations["AdminAuditLog_list"];
+  };
+  "/v1/admin/audit-logs/export": {
+    /**
+     * Export audit logs as CSV
+     * @description Returns up to the newest 10,000 entries matching the filters as a CSV attachment.
+     */
+    get: operations["AdminAuditLog_export"];
+  };
+  "/v1/users": {
+    /**
+     * List users
+     * @description Paginated user directory. `sort` accepts `field:direction` with the fields createdAt, email, displayName and status.
+     */
+    get: operations["User_users"];
+    /** Create a user */
+    post: operations["User_createUser"];
+  };
+  "/v1/users/{id}": {
+    /** Get a user by id */
+    get: operations["User_user"];
+    /**
+     * Update a user
+     * @description Updates the profile fields and, when sent, replaces the avatar image. The version guards against a stale write.
+     */
+    patch: operations["User_updateUser"];
+  };
+  "/v1/users/{id}/roles": {
+    /**
+     * Replace the roles assigned to a user
+     * @description Replaces the whole role set. An empty array removes every role; the last admin and super admin keep their role.
+     */
+    patch: operations["User_assignRoles"];
+  };
   "/v1/me/addresses": {
     /** List my addresses */
     get: operations["MeAddresses_list"];
@@ -220,6 +263,10 @@ export interface paths {
      * @description Cancels scheduled promo codes and ends active promo codes.
      */
     post: operations["ShopPromoCodes_bulkStop"];
+  };
+  "/v1/admin/shops": {
+    /** List admin shops */
+    get: operations["AdminShop_list"];
   };
   "/v1/shops/{shop_id}/shipping-profiles": {
     /**
@@ -732,6 +779,26 @@ export interface paths {
     /** Handle a signed carrier event */
     post: operations["CarrierWebhook_handle"];
   };
+  "/v1/admin/orders": {
+    /** List admin orders */
+    get: operations["AdminOrder_list"];
+  };
+  "/v1/admin/orders/{order_id}/financial-breakdown": {
+    /** Get admin order financial breakdown */
+    get: operations["AdminOrder_financialBreakdown"];
+  };
+  "/v1/admin/orders/{order_id}": {
+    /** Get admin order detail */
+    get: operations["AdminOrder_detail"];
+  };
+  "/v1/admin/orders/{order_id}/status": {
+    /** Update admin order status */
+    patch: operations["AdminOrder_updateStatus"];
+  };
+  "/v1/admin/orders/{order_id}/refund": {
+    /** Update admin order refund state */
+    patch: operations["AdminOrder_updateRefund"];
+  };
   "/v1/me/orders": {
     /** List my orders */
     get: operations["MeOrder_list"];
@@ -858,6 +925,24 @@ export interface paths {
      * @description For stripe_connect, creates or reuses the Express connected account and returns a Stripe-hosted onboarding URL. For manual_bank, activates the local destination and returns a null URL, which keeps local payouts working without Stripe.
      */
     post: operations["ShopFinance_startPayoutOnboarding"];
+  };
+  "/v1/admin/shops/{shop_id}/commission-schedule": {
+    /** Get the Commission Schedule in force for a shop */
+    get: operations["AdminCommissionSchedule_read"];
+    /** Record or replace a shop commission schedule */
+    put: operations["AdminCommissionSchedule_record"];
+  };
+  "/v1/admin/shops/{shop_id}/finance/payout-account": {
+    /** Get a shop Payout Account */
+    get: operations["AdminPayoutAccount_read"];
+  };
+  "/v1/admin/shops/{shop_id}/finance/payable": {
+    /** Get a shop Seller Payable */
+    get: operations["AdminShopFinance_payable"];
+  };
+  "/v1/admin/shops/{shop_id}/finance/payouts": {
+    /** Get a shop Payout history, including Blocked Payouts */
+    get: operations["AdminShopFinance_payouts"];
   };
   "/v1/webhooks/stripe": {
     /** Handle Stripe webhook events */
@@ -1159,6 +1244,76 @@ export interface components {
     UpdateMeDto: {
       preferences: components["schemas"]["UpdateMePreferencesDto"];
     };
+    RoleResponseDto: {
+      /** @description Stable role key. */
+      key: string;
+      name: string;
+      description?: string;
+    };
+    RoleListResponseDto: {
+      roles: components["schemas"]["RoleResponseDto"][];
+    };
+    AuditLogEntryResponseDto: {
+      /** @description Audit log entry id. */
+      id: string;
+      /** @description Recorded action, e.g. order.status.overridden. */
+      action: string;
+      /** @description Audited entity type, e.g. order or product. */
+      entity_type: string;
+      /** @description Internal audited entity id. */
+      entity_id: string;
+      /** @description Audited entity public id (ord_…). */
+      entity_public_id?: string;
+      actor_email?: string;
+      request_id?: string;
+      /** @description Metadata-only audit summary. */
+      summary: Record<string, never>;
+      /** Format: date-time */
+      created_at: string;
+    };
+    AuditLogListResponseDto: {
+      results: components["schemas"]["AuditLogEntryResponseDto"][];
+      page: number;
+      limit: number;
+      total_pages: number;
+      total_results: number;
+    };
+    UserResponseDto: {
+      /** @description Internal user id. */
+      id: string;
+      version: number;
+      email: string;
+      display_name?: string;
+      avatar?: string;
+      /**
+       * @description Lifecycle status.
+       * @enum {string}
+       */
+      status: "active" | "disabled";
+      roles: string[];
+    };
+    UserListMetaResponseDto: {
+      page: number;
+      limit: number;
+      total: number;
+      total_pages: number;
+      has_next_page: boolean;
+      has_previous_page: boolean;
+    };
+    UserListResponseDto: {
+      items: components["schemas"]["UserResponseDto"][];
+      meta: components["schemas"]["UserListMetaResponseDto"];
+    };
+    CreateUserDto: {
+      display_name?: string;
+      /** Format: email */
+      email: string;
+      password: string;
+    };
+    AssignUserRolesDto: {
+      /** @description Role keys to assign. An empty array removes all roles. */
+      roles: string[];
+    };
     MyAddressResponseDto: {
       /** @description Internal address id. */
       id: string;
@@ -1404,6 +1559,32 @@ export interface components {
       results: components["schemas"]["ShopPromoCodeResponseDto"][];
       succeeded_ids: string[];
       failed: components["schemas"]["BulkItemFailureResponseDto"][];
+    };
+    AdminShopListEntryResponseDto: {
+      /** @description Shop public id (shop_…). */
+      id: string;
+      shop_name: string;
+      slug: string;
+      status: string;
+      currency: string;
+      /** @description Number of products in the shop, all statuses included. */
+      product_count: number;
+      /** @description Owner email address used for support and triage. */
+      owner_email: string;
+      /** @description Owner display name; null when the account has none. */
+      owner_name: string | null;
+      /**
+       * Format: date-time
+       * @description ISO-8601 instant the shop was created.
+       */
+      created_at: string;
+    };
+    AdminShopListResponseDto: {
+      results: components["schemas"]["AdminShopListEntryResponseDto"][];
+      page: number;
+      limit: number;
+      total_pages: number;
+      total_results: number;
     };
     ShippingRateResponseDto: {
       id: string;
@@ -3040,84 +3221,154 @@ export interface components {
       shop_name: string;
       slug: string;
     };
-    OrderPaymentResponseDto: {
+    MyOrderCustomerResponseDto: {
+      email: string;
+    };
+    AdminOrderPaymentTypeResponseDto: {
       type: string;
-      refund_status?: string;
+    };
+    AdminOrderFulfillmentStatusResponseDto: {
+      status: string;
+    };
+    AdminOrderListEntryResponseDto: {
+      /** @description Order public id (ord_…). */
+      id: string;
+      order_number: string;
+      shop: components["schemas"]["OrderShopRefResponseDto"];
+      customer: components["schemas"]["MyOrderCustomerResponseDto"];
+      payment: components["schemas"]["AdminOrderPaymentTypeResponseDto"];
+      status: string;
+      fulfillment: components["schemas"]["AdminOrderFulfillmentStatusResponseDto"];
+      currency: string;
+      total_minor: number;
+      cancel_reason?: string;
       /** Format: date-time */
       refunded_at?: string;
-      refund_failed_reason?: string;
-      card_brand?: string;
-      card_last4?: string;
-      card_funding?: string;
+      /** Format: date-time */
+      created_at: string;
+    };
+    AdminOrderListResponseDto: {
+      results: components["schemas"]["AdminOrderListEntryResponseDto"][];
+      page: number;
+      limit: number;
+      total_pages: number;
+      total_results: number;
+    };
+    OrderPayoutAvailabilityResponseDto: {
+      /**
+       * @description Whether Finance recorded that this Order Seller Payable became available, i.e. that every required unit was delivered.
+       * @example true
+       */
+      recorded: boolean;
+      /**
+       * Format: date-time
+       * @description The delivery the availability followed. Null until it is recorded; never derived from the Order status.
+       * @example 2026-11-02T10:00:00.000Z
+       */
+      available_at: string | null;
+    };
+    OrderPayoutAttributionResponseDto: {
+      /**
+       * @description Public id of the Payout (pay_…).
+       * @example pay_2f5a91c4b7de
+       */
+      id: string;
+      /**
+       * @description `pending` while the Payout provider transfer may still move the money, `paid` once it settled.
+       * @example paid
+       * @enum {string}
+       */
+      state: "pending" | "paid";
+      /**
+       * @description This Order share of the Payout, in minor units of the shop Settlement Currency.
+       * @example 2500
+       */
+      amount_minor: number;
+      /**
+       * Format: date-time
+       * @description Instant the Payout settled. Null while it is still `pending`.
+       * @example 2026-11-03T09:00:00.000Z
+       */
+      paid_at: string | null;
+    };
+    OrderPayoutMethodResponseDto: {
+      /**
+       * @description The shop Payout Account state. `missing` means the shop has no open Payout Account yet; the other values are the provider-reported status.
+       * @example active
+       * @enum {string}
+       */
+      account_status: "missing" | "onboarding" | "action_required" | "active" | "restricted" | "disabled";
+      /**
+       * @description Whether automatic Payout Runs may pay this shop without a manual request.
+       * @example true
+       */
+      auto_payout_enabled: boolean;
+      /**
+       * @description The platform day of month (UTC) on which automatic payouts run.
+       * @example 15
+       */
+      auto_payout_day_of_month: number;
+      /**
+       * Format: date
+       * @description The next automatic run date (UTC, day precision) for an active account with automatic payouts enabled; null otherwise. Never derived from the Order status.
+       * @example 2026-11-15
+       */
+      next_payout_date: string | null;
+    };
+    AdminOrderFinancialBreakdownResponseDto: {
+      /** @description Order public id (ord_…). */
+      order_id: string;
+      /** @description Order currency (ISO 4217). */
+      currency: string;
+      /** @description Platform commission frozen in the ledger for this Order, in minor units. Null when no Journal Entry basis exists. */
+      platform_commission_minor: number | null;
+      /** @description Seller Payable this Order still holds in the ledger, in minor units, refunds already netted. Null when no paid Journal Entry basis exists. */
+      seller_payable_minor: number | null;
+      availability: components["schemas"]["OrderPayoutAvailabilityResponseDto"];
+      /** @description The newest Payout that claimed or paid this Order, or null when no Payout has claimed it yet. */
+      payout: components["schemas"]["OrderPayoutAttributionResponseDto"] | null;
+      payout_method: components["schemas"]["OrderPayoutMethodResponseDto"];
+    };
+    AdminOrderPaymentResponseDto: {
+      type: string;
+      details: Record<string, unknown> | null;
     };
     OrderProductShopRefResponseDto: {
       slug: string;
     };
-    OrderSelectedOptionResponseDto: {
-      option_id: string;
+    AdminOrderSelectedOptionResponseDto: {
+      /** @description Option id. Omitted on snapshots that predate option ids. */
+      option_id?: string;
       option_name: string;
-      value_id: string;
+      /** @description Option value id. Omitted on snapshots that predate option ids. */
+      value_id?: string;
       value: string;
     };
-    OrderProductRefResponseDto: {
+    AdminOrderProductRefResponseDto: {
       /** @description Product public id (prod_…). */
       id: string;
       slug: string;
       shop: components["schemas"]["OrderProductShopRefResponseDto"];
-      selected_options: components["schemas"]["OrderSelectedOptionResponseDto"][];
+      selected_options: components["schemas"]["AdminOrderSelectedOptionResponseDto"][];
       /** @description Reserved; always an empty object. */
       shipping: Record<string, never>;
     };
     OrderInventorySkuResponseDto: {
       sku?: string;
     };
-    OrderReviewImageVariantResponseDto: {
-      url: string;
-      width?: number;
-      height?: number;
-      format?: string;
-    };
-    OrderReviewImageResponseDto: {
-      id: string;
-      url: string;
-      size_bytes?: number;
-      rank: number;
-      variant_status?: string;
-      variant_error?: string;
-      /** Format: date-time */
-      variants_generated_at?: string;
-      /** @description Named image variants keyed by variant name. */
-      variants?: {
-        [key: string]: components["schemas"]["OrderReviewImageVariantResponseDto"];
-      };
-    };
-    OrderReviewResponseDto: {
-      id: string;
-      rating: number;
-      title?: string;
-      body?: string;
-      /** @enum {string} */
-      status: "published" | "hidden";
-      /** Format: date-time */
-      created_at: string;
-      /** Format: date-time */
-      updated_at: string;
-      images: components["schemas"]["OrderReviewImageResponseDto"][];
-    };
-    OrderProductLineResponseDto: {
-      product: components["schemas"]["OrderProductRefResponseDto"];
+    AdminOrderProductLineResponseDto: {
+      product: components["schemas"]["AdminOrderProductRefResponseDto"];
       inventory: components["schemas"]["OrderInventorySkuResponseDto"];
       /** @description Order item internal id. */
       id: string;
       title: string;
       image_url?: string;
-      image_reference?: string;
       quantity: number;
       amount_minor: number;
-      original_amount_minor: number;
+      /** @description Pre-discount amount in minor units, or null when the Order item recorded none. */
+      original_amount_minor: number | null;
       promo_discount_minor: number;
       currency: string;
-      my_review?: components["schemas"]["OrderReviewResponseDto"];
     };
     OrderPromoCodeResponseDto: {
       id: string;
@@ -3215,6 +3466,16 @@ export interface components {
       groups: components["schemas"]["OrderFulfillmentGroupResponseDto"][];
       legacy_shipping: components["schemas"]["OrderLegacyShippingResponseDto"];
     };
+    OrderShippingAddressResponseDto: {
+      full_name: string;
+      address1: string;
+      address2?: string;
+      city: string;
+      country: string;
+      state: string;
+      zip: string;
+      phone?: string;
+    };
     OrderShippingQuoteChargeUnitResponseDto: {
       /** @description Product public id (prod_…). */
       product_id: string;
@@ -3307,6 +3568,122 @@ export interface components {
       waived_minor: number;
       currency: string;
     };
+    AdminOrderDetailOrderResponseDto: {
+      currency: string;
+      subtotal_minor: number;
+      shipping_minor: number;
+      discount_minor: number;
+      sale_discount_minor: number;
+      total_minor: number;
+      /** @description Order public id (ord_…). */
+      id: string;
+      order_number: string;
+      shop: components["schemas"]["OrderShopRefResponseDto"];
+      customer: components["schemas"]["MyOrderCustomerResponseDto"];
+      payment: components["schemas"]["AdminOrderPaymentResponseDto"];
+      status: string;
+      products: components["schemas"]["AdminOrderProductLineResponseDto"][];
+      promo_codes: components["schemas"]["OrderPromoCodeResponseDto"][];
+      fulfillment: components["schemas"]["OrderFulfillmentSummaryResponseDto"];
+      shipping_address: components["schemas"]["OrderShippingAddressResponseDto"];
+      shipping?: components["schemas"]["OrderShippingQuoteResponseDto"];
+      shipping_discount_minor?: number;
+      shipping_discounts?: components["schemas"]["OrderShippingDiscountResponseDto"][];
+      note?: string;
+      /** Format: date-time */
+      canceled_at?: string;
+      cancel_reason?: string;
+      /** Format: date-time */
+      refunded_at?: string;
+      /** Format: date-time */
+      created_at: string;
+    };
+    AdminOrderDetailResponseDto: {
+      order: components["schemas"]["AdminOrderDetailOrderResponseDto"];
+    };
+    UpdateAdminOrderStatusDto: {
+      cancel_reason?: string;
+      /** @enum {string} */
+      status: "canceled" | "pending" | "checkout_pending" | "awaiting_payment" | "expired" | "paid" | "refunded" | "completed" | "archived";
+    };
+    UpdateAdminOrderRefundDto: {
+      /** @enum {string} */
+      action: "retry" | "mark_succeeded" | "mark_failed" | "mark_not_required";
+      reason?: string;
+    };
+    OrderPaymentResponseDto: {
+      type: string;
+      refund_status?: string;
+      /** Format: date-time */
+      refunded_at?: string;
+      refund_failed_reason?: string;
+      card_brand?: string;
+      card_last4?: string;
+      card_funding?: string;
+    };
+    OrderSelectedOptionResponseDto: {
+      option_id: string;
+      option_name: string;
+      value_id: string;
+      value: string;
+    };
+    OrderProductRefResponseDto: {
+      /** @description Product public id (prod_…). */
+      id: string;
+      slug: string;
+      shop: components["schemas"]["OrderProductShopRefResponseDto"];
+      selected_options: components["schemas"]["OrderSelectedOptionResponseDto"][];
+      /** @description Reserved; always an empty object. */
+      shipping: Record<string, never>;
+    };
+    OrderReviewImageVariantResponseDto: {
+      url: string;
+      width?: number;
+      height?: number;
+      format?: string;
+    };
+    OrderReviewImageResponseDto: {
+      id: string;
+      url: string;
+      size_bytes?: number;
+      rank: number;
+      variant_status?: string;
+      variant_error?: string;
+      /** Format: date-time */
+      variants_generated_at?: string;
+      /** @description Named image variants keyed by variant name. */
+      variants?: {
+        [key: string]: components["schemas"]["OrderReviewImageVariantResponseDto"];
+      };
+    };
+    OrderReviewResponseDto: {
+      id: string;
+      rating: number;
+      title?: string;
+      body?: string;
+      /** @enum {string} */
+      status: "published" | "hidden";
+      /** Format: date-time */
+      created_at: string;
+      /** Format: date-time */
+      updated_at: string;
+      images: components["schemas"]["OrderReviewImageResponseDto"][];
+    };
+    OrderProductLineResponseDto: {
+      product: components["schemas"]["OrderProductRefResponseDto"];
+      inventory: components["schemas"]["OrderInventorySkuResponseDto"];
+      /** @description Order item internal id. */
+      id: string;
+      title: string;
+      image_url?: string;
+      image_reference?: string;
+      quantity: number;
+      amount_minor: number;
+      original_amount_minor: number;
+      promo_discount_minor: number;
+      currency: string;
+      my_review?: components["schemas"]["OrderReviewResponseDto"];
+    };
     OrderShopEntryResponseDto: {
       currency: string;
       subtotal_minor: number;
@@ -3338,19 +3715,6 @@ export interface components {
     };
     OrderListResponseDto: {
       order_shops: components["schemas"]["OrderShopEntryResponseDto"][];
-    };
-    MyOrderCustomerResponseDto: {
-      email: string;
-    };
-    OrderShippingAddressResponseDto: {
-      full_name: string;
-      address1: string;
-      address2?: string;
-      city: string;
-      country: string;
-      state: string;
-      zip: string;
-      phone?: string;
     };
     MyOrderDetailOrderShopResponseDto: {
       currency: string;
@@ -3916,67 +4280,6 @@ export interface components {
       /** @description The shop Payouts, newest first. */
       payouts: components["schemas"]["ShopPayoutResponseDto"][];
     };
-    OrderPayoutAvailabilityResponseDto: {
-      /**
-       * @description Whether Finance recorded that this Order Seller Payable became available, i.e. that every required unit was delivered.
-       * @example true
-       */
-      recorded: boolean;
-      /**
-       * Format: date-time
-       * @description The delivery the availability followed. Null until it is recorded; never derived from the Order status.
-       * @example 2026-11-02T10:00:00.000Z
-       */
-      available_at: string | null;
-    };
-    OrderPayoutAttributionResponseDto: {
-      /**
-       * @description Public id of the Payout (pay_…).
-       * @example pay_2f5a91c4b7de
-       */
-      id: string;
-      /**
-       * @description `pending` while the Payout provider transfer may still move the money, `paid` once it settled.
-       * @example paid
-       * @enum {string}
-       */
-      state: "pending" | "paid";
-      /**
-       * @description This Order share of the Payout, in minor units of the shop Settlement Currency.
-       * @example 2500
-       */
-      amount_minor: number;
-      /**
-       * Format: date-time
-       * @description Instant the Payout settled. Null while it is still `pending`.
-       * @example 2026-11-03T09:00:00.000Z
-       */
-      paid_at: string | null;
-    };
-    OrderPayoutMethodResponseDto: {
-      /**
-       * @description The shop Payout Account state. `missing` means the shop has no open Payout Account yet; the other values are the provider-reported status.
-       * @example active
-       * @enum {string}
-       */
-      account_status: "missing" | "onboarding" | "action_required" | "active" | "restricted" | "disabled";
-      /**
-       * @description Whether automatic Payout Runs may pay this shop without a manual request.
-       * @example true
-       */
-      auto_payout_enabled: boolean;
-      /**
-       * @description The platform day of month (UTC) on which automatic payouts run.
-       * @example 15
-       */
-      auto_payout_day_of_month: number;
-      /**
-       * Format: date
-       * @description The next automatic run date (UTC, day precision) for an active account with automatic payouts enabled; null otherwise. Never derived from the Order status.
-       * @example 2026-11-15
-       */
-      next_payout_date: string | null;
-    };
     ShopOrderPayoutResponseDto: {
       /**
        * @description Order public id (ord_…).
@@ -4166,6 +4469,65 @@ export interface components {
        * @enum {string}
        */
       status: "onboarding" | "action_required" | "active" | "restricted" | "disabled";
+    };
+    CurrentCommissionScheduleResponseDto: {
+      /**
+       * @description Instant from which the rate takes effect (ISO-8601).
+       * @example 2026-10-01T00:00:00.000Z
+       */
+      effective_from: string;
+      /**
+       * @description Commission rate in basis points (1500 is 15.00%).
+       * @example 1500
+       */
+      rate_basis_points: number;
+    };
+    AdminShopCommissionScheduleResponseDto: {
+      /**
+       * @description Public id of the shop the schedule belongs to.
+       * @example shp_01HZY4T2M8R6N3Q7W9K1V0B5CD
+       */
+      shop_id: string;
+      /** @description The schedule in force now, or null when the shop has no schedule that has taken effect yet. */
+      schedule: components["schemas"]["CurrentCommissionScheduleResponseDto"] | null;
+    };
+    RecordCommissionScheduleDto: {
+      /**
+       * @description Instant from which the rate takes effect, as an ISO-8601 date string.
+       * @example 2026-11-01T00:00:00.000Z
+       */
+      effective_from: string;
+      /**
+       * @description Commission rate in basis points (1500 is 15.00%). The 0..10000 range is owned by the domain rule, so an out-of-range rate surfaces as INVALID_COMMISSION_RATE.
+       * @example 1500
+       */
+      rate_basis_points: number;
+    };
+    CommissionScheduleResponseDto: {
+      /**
+       * @description Public id of the shop the schedule belongs to.
+       * @example shp_01HZY4T2M8R6N3Q7W9K1V0B5CD
+       */
+      shop_id: string;
+      /**
+       * @description Instant from which the rate takes effect (ISO-8601).
+       * @example 2026-11-01T00:00:00.000Z
+       */
+      effective_from: string;
+      /**
+       * @description Commission rate in basis points (1500 is 15.00%).
+       * @example 1500
+       */
+      rate_basis_points: number;
+    };
+    AdminShopPayoutAccountResponseDto: {
+      /**
+       * @description Public id of the shop the Payout Account belongs to.
+       * @example shop_01HZY4T2M8R6N3Q7W9K1V0B5CD
+       */
+      shop_id: string;
+      /** @description The shop Payout Account, or null when none is onboarded. */
+      payout_account: components["schemas"]["PayoutAccountResponseDto"] | null;
     };
     StripeWebhookAckResponseDto: Record<string, never>;
     CreateChatConversationDto: {
@@ -5092,6 +5454,450 @@ export interface operations {
       };
       /** @description Authentication is required */
       401: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
+  /**
+   * List assignable roles
+   * @description Returns every role key an operator may assign to a user, sorted by key.
+   */
+  Roles_list: {
+    responses: {
+      /** @description Roles sorted by key. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["RoleListResponseDto"];
+        };
+      };
+      /** @description Authentication is required */
+      401: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Missing required permissions */
+      403: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
+  /** List audit logs */
+  AdminAuditLog_list: {
+    parameters: {
+      query: {
+        page: number;
+        limit: number;
+        search?: string;
+        action?: string[];
+        actor_email?: string;
+        entity_id?: string;
+        entity_type?: string[];
+      };
+    };
+    responses: {
+      /** @description Paginated audit trail across audited entity types. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["AuditLogListResponseDto"];
+        };
+      };
+      /** @description Validation failed */
+      400: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Authentication is required */
+      401: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Missing required permissions */
+      403: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
+  /**
+   * Export audit logs as CSV
+   * @description Returns up to the newest 10,000 entries matching the filters as a CSV attachment.
+   */
+  AdminAuditLog_export: {
+    parameters: {
+      query?: {
+        search?: string;
+        action?: string[];
+        actor_email?: string;
+        entity_id?: string;
+        entity_type?: string[];
+      };
+    };
+    responses: {
+      /** @description Audit log entries as a UTF-8 CSV attachment. */
+      200: {
+        headers: {
+          /** @description Attachment filename suggested for the download. */
+          "Content-Disposition"?: string;
+        };
+        content: {
+          "text/csv": string;
+        };
+      };
+      /** @description Validation failed */
+      400: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Authentication is required */
+      401: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Missing required permissions */
+      403: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
+  /**
+   * List users
+   * @description Paginated user directory. `sort` accepts `field:direction` with the fields createdAt, email, displayName and status.
+   */
+  User_users: {
+    parameters: {
+      query: {
+        page: number;
+        limit: number;
+        sort?: string;
+        search?: string;
+      };
+    };
+    responses: {
+      /** @description Paginated user list. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UserListResponseDto"];
+        };
+      };
+      /** @description Validation failed */
+      400: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Authentication is required */
+      401: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Missing required permissions */
+      403: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
+  /** Create a user */
+  User_createUser: {
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateUserDto"];
+      };
+    };
+    responses: {
+      /** @description Created user. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UserResponseDto"];
+        };
+      };
+      /** @description Validation failed */
+      400: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Authentication is required */
+      401: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Only admins can create users */
+      403: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Email is already registered */
+      409: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
+  /** Get a user by id */
+  User_user: {
+    parameters: {
+      path: {
+        id: string;
+      };
+    };
+    responses: {
+      /** @description User detail. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UserResponseDto"];
+        };
+      };
+      /** @description Authentication is required */
+      401: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Missing required permissions */
+      403: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /**
+       * @description User was not found
+       *
+       * User was not found.
+       */
+      404: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
+  /**
+   * Update a user
+   * @description Updates the profile fields and, when sent, replaces the avatar image. The version guards against a stale write.
+   */
+  User_updateUser: {
+    parameters: {
+      path: {
+        id: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "multipart/form-data": {
+          version: number;
+          display_name?: string;
+          /** @enum {string} */
+          status?: "active" | "disabled";
+          /** Format: binary */
+          avatar?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Updated user. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UserResponseDto"];
+        };
+      };
+      /** @description Validation failed */
+      400: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Authentication is required */
+      401: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Only admins can update users */
+      403: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description User was not found */
+      404: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description User was updated by another request. Refresh and retry with the latest version. */
+      409: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
+  /**
+   * Replace the roles assigned to a user
+   * @description Replaces the whole role set. An empty array removes every role; the last admin and super admin keep their role.
+   */
+  User_assignRoles: {
+    parameters: {
+      path: {
+        id: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AssignUserRolesDto"];
+      };
+    };
+    responses: {
+      /** @description Updated user. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["UserResponseDto"];
+        };
+      };
+      /** @description Validation failed */
+      400: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Authentication is required */
+      401: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Only admins can assign user roles */
+      403: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /**
+       * @description User was not found
+       *
+       * User was not found.
+       */
+      404: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Actors cannot change their own roles */
+      409: {
         content: {
           "application/json": components["schemas"]["ApiErrorResponseDto"];
         };
@@ -6037,6 +6843,54 @@ export interface operations {
       };
       /** @description Shop was not found */
       404: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
+  /** List admin shops */
+  AdminShop_list: {
+    parameters: {
+      query: {
+        page: number;
+        limit: number;
+        search?: string;
+      };
+    };
+    responses: {
+      /** @description Paginated admin shop directory. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["AdminShopListResponseDto"];
+        };
+      };
+      /** @description Validation failed */
+      400: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Authentication is required */
+      401: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Missing required permissions */
+      403: {
         content: {
           "application/json": components["schemas"]["ApiErrorResponseDto"];
         };
@@ -10413,6 +11267,261 @@ export interface operations {
       };
     };
   };
+  /** List admin orders */
+  AdminOrder_list: {
+    parameters: {
+      query: {
+        page: number;
+        limit: number;
+        status?: ("canceled" | "pending" | "checkout_pending" | "awaiting_payment" | "expired" | "paid" | "refunded" | "completed" | "archived")[];
+        search?: string;
+      };
+    };
+    responses: {
+      /** @description Paginated admin order list. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["AdminOrderListResponseDto"];
+        };
+      };
+      /** @description Validation failed */
+      400: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Authentication is required */
+      401: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Missing required permissions */
+      403: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
+  /** Get admin order financial breakdown */
+  AdminOrder_financialBreakdown: {
+    parameters: {
+      path: {
+        order_id: string;
+      };
+    };
+    responses: {
+      /** @description Per-order financial breakdown. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["AdminOrderFinancialBreakdownResponseDto"];
+        };
+      };
+      /** @description Authentication is required */
+      401: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Missing required permissions */
+      403: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Order was not found */
+      404: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
+  /** Get admin order detail */
+  AdminOrder_detail: {
+    parameters: {
+      path: {
+        order_id: string;
+      };
+    };
+    responses: {
+      /** @description Admin order detail. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["AdminOrderDetailResponseDto"];
+        };
+      };
+      /** @description Authentication is required */
+      401: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Missing required permissions */
+      403: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Order was not found */
+      404: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
+  /** Update admin order status */
+  AdminOrder_updateStatus: {
+    parameters: {
+      path: {
+        order_id: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateAdminOrderStatusDto"];
+      };
+    };
+    responses: {
+      /** @description Updated admin order detail. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["AdminOrderDetailResponseDto"];
+        };
+      };
+      /** @description Validation failed */
+      400: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Authentication is required */
+      401: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Missing required permissions */
+      403: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Order was not found */
+      404: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
+  /** Update admin order refund state */
+  AdminOrder_updateRefund: {
+    parameters: {
+      path: {
+        order_id: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateAdminOrderRefundDto"];
+      };
+    };
+    responses: {
+      /** @description Updated admin order detail. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["AdminOrderDetailResponseDto"];
+        };
+      };
+      /** @description Validation failed */
+      400: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Authentication is required */
+      401: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Missing required permissions */
+      403: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Order was not found */
+      404: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
   /** List my orders */
   MeOrder_list: {
     parameters: {
@@ -11863,6 +12972,242 @@ export interface operations {
       };
       /** @description Stripe Connect is not configured */
       503: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
+  /** Get the Commission Schedule in force for a shop */
+  AdminCommissionSchedule_read: {
+    parameters: {
+      path: {
+        shop_id: string;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          "application/json": components["schemas"]["AdminShopCommissionScheduleResponseDto"];
+        };
+      };
+      /** @description Authentication is required */
+      401: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Missing required permissions */
+      403: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Shop was not found */
+      404: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
+  /** Record or replace a shop commission schedule */
+  AdminCommissionSchedule_record: {
+    parameters: {
+      path: {
+        shop_id: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RecordCommissionScheduleDto"];
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          "application/json": components["schemas"]["CommissionScheduleResponseDto"];
+        };
+      };
+      /** @description Validation failed */
+      400: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Authentication is required */
+      401: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Missing required permissions */
+      403: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Shop was not found */
+      404: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
+  /** Get a shop Payout Account */
+  AdminPayoutAccount_read: {
+    parameters: {
+      path: {
+        shop_id: string;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          "application/json": components["schemas"]["AdminShopPayoutAccountResponseDto"];
+        };
+      };
+      /** @description Authentication is required */
+      401: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Missing required permissions */
+      403: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Shop was not found */
+      404: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
+  /** Get a shop Seller Payable */
+  AdminShopFinance_payable: {
+    parameters: {
+      path: {
+        shop_id: string;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          "application/json": components["schemas"]["ShopSellerPayableResponseDto"];
+        };
+      };
+      /** @description Authentication is required */
+      401: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Missing required permissions */
+      403: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Shop was not found */
+      404: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
+  /** Get a shop Payout history, including Blocked Payouts */
+  AdminShopFinance_payouts: {
+    parameters: {
+      path: {
+        shop_id: string;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          "application/json": components["schemas"]["ShopPayoutHistoryResponseDto"];
+        };
+      };
+      /** @description Authentication is required */
+      401: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Missing required permissions */
+      403: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Shop was not found */
+      404: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Too Many Requests */
+      429: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
         content: {
           "application/json": components["schemas"]["ApiErrorResponseDto"];
         };
