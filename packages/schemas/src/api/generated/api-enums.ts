@@ -135,5 +135,6 @@ export const API_ENUM_VALUES = {
   "paths./v1/shops/{shop_id}/reviews.get.parameters.3": ["published", "hidden"],
   "paths./v1/shops/{shop_id}/reviews.get.parameters.5": ["newest", "oldest", "highest_rating", "lowest_rating"],
   "paths./v1/shops/{shop_id}/shipping-profiles.get.parameters.3": ["draft", "active", "archived"],
+  "paths./v1/users/{id}.patch.requestBody.content.application/json.schema.properties.status": ["active", "disabled"],
   "paths./v1/users/{id}.patch.requestBody.content.multipart/form-data.schema.properties.status": ["active", "disabled"]
 } as const
