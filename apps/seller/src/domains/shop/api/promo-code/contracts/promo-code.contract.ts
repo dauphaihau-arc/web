@@ -1,22 +1,39 @@
 import type { z } from 'zod';
-import type {
-  bulkStopShopPromoCodesRequestSchema,
-  bulkStopShopPromoCodesResponseSchema,
-  createShopPromoCodeRequestSchema,
-  createShopPromoCodeResponseSchema,
-  listShopPromoCodesRequestSchema,
-  listShopPromoCodesResponseSchema,
-  shopPromoCodeSchema,
-  shopPromoCodeStopResponseSchema,
-} from '~/domains/shop/api/schemas/promo-code/promo-code.schema';
+import type { components, paths } from '@arc/schemas/api/generated/openapi';
+import type { PromotionProductScope, PromotionStatus } from '@arc/enums/promotion';
 import type { createPromoCodeFormSchema } from '~/domains/shop/schemas/promo-code/create-promo-code-form.schema';
 
-export type ShopPromoCode = z.infer<typeof shopPromoCodeSchema>;
-export type CreateShopPromoCodeRequestBody = z.infer<typeof createShopPromoCodeRequestSchema>;
+/**
+ * The contract types `status`, `product_scope` and `visibility` as plain
+ * strings. The seller UI indexes them by `PromotionStatus` and
+ * `PromotionProductScope`, so they are narrowed back to their wire unions.
+ */
+export type ShopPromoCode = Omit<
+  components['schemas']['ShopPromoCodeResponseDto'],
+  'status' | 'product_scope' | 'visibility'
+> & {
+  status: PromotionStatus
+  product_scope: PromotionProductScope
+  visibility: 'public' | 'code_only'
+};
+export type CreateShopPromoCodeRequestBody = components['schemas']['CreateShopPromoCodeDto'];
 export type CreatePromoCodeFormValues = z.infer<typeof createPromoCodeFormSchema>;
-export type CreateShopPromoCodeResponse = z.infer<typeof createShopPromoCodeResponseSchema>;
-export type ListShopPromoCodesRequest = z.infer<typeof listShopPromoCodesRequestSchema>;
-export type ListShopPromoCodesResponse = z.infer<typeof listShopPromoCodesResponseSchema>;
-export type ShopPromoCodeStopResponse = z.infer<typeof shopPromoCodeStopResponseSchema>;
-export type BulkStopShopPromoCodesRequest = z.infer<typeof bulkStopShopPromoCodesRequestSchema>;
-export type BulkStopShopPromoCodesResponse = z.infer<typeof bulkStopShopPromoCodesResponseSchema>;
+export type CreateShopPromoCodeResponse = Omit<
+  components['schemas']['ShopPromoCodeEnvelopeResponseDto'],
+  'promo_code'
+> & { promo_code: ShopPromoCode };
+export type ListShopPromoCodesRequest =
+  paths['/v1/shops/{shop_id}/promo-codes']['get']['parameters']['query'];
+export type ListShopPromoCodesResponse = Omit<
+  components['schemas']['ShopPromoCodeListResponseDto'],
+  'results'
+> & { results: ShopPromoCode[] };
+export type ShopPromoCodeStopResponse = Omit<
+  components['schemas']['ShopPromoCodeEnvelopeResponseDto'],
+  'promo_code'
+> & { promo_code: ShopPromoCode };
+export type BulkStopShopPromoCodesRequest = components['schemas']['BulkStopShopPromoCodesDto'];
+export type BulkStopShopPromoCodesResponse = Omit<
+  components['schemas']['ShopPromoCodeStopListResponseDto'],
+  'results'
+> & { results: ShopPromoCode[] };

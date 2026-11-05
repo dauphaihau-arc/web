@@ -19,8 +19,8 @@ function profile(overrides: Partial<ShippingProfileResource>): ShippingProfileRe
     assigned_product_count: 0,
     published_product_count: 0,
     rates: [],
-    created_at: new Date('2026-01-01T00:00:00.000Z'),
-    updated_at: new Date('2026-01-01T00:00:00.000Z'),
+    created_at: '2026-01-01T00:00:00.000Z',
+    updated_at: '2026-01-01T00:00:00.000Z',
     ...overrides,
   } as ShippingProfileResource;
 }
