@@ -10,15 +10,12 @@ export type CheckoutQuoteResponse = components['schemas']['CheckoutQuoteResponse
 type ApiGuestShippingAddress = components['schemas']['ShippingAddressDto'];
 
 /**
- * The expand-release guest address accepts canonical country and subdivision
- * codes. Display names stay optional so a name-only payload keeps working and
- * so the form can still fall back to a label when no code is available.
+ * The guest address writes canonical country and subdivision codes. Display
+ * names are server-derived response fields and are never accepted as input.
  */
 export type GuestShippingAddressRequest =
   Omit<ApiGuestShippingAddress, 'country' | 'state'> & {
-    country?: string
-    state?: string
-    country_code?: string
+    country_code: string
     state_code?: string
     state_text?: string
   };

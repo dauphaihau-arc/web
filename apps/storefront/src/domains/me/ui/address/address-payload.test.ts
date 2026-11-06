@@ -65,7 +65,7 @@ describe('saved address payload', () => {
     expect(payload).not.toHaveProperty('state');
   });
 
-  it('falls back to display names for a legacy row that cannot be resolved', () => {
+  it('sends no location identity for a row that has no canonical code', () => {
     const payload = toSavedAddressRequest({
       country: 'Atlantis',
       country_code: undefined,
@@ -74,12 +74,11 @@ describe('saved address payload', () => {
       state_text: undefined,
     });
 
-    expect(payload).toMatchObject({
-      country: 'Atlantis',
-      state: 'Old Town',
-    });
+    expect(payload).not.toHaveProperty('country');
     expect(payload).not.toHaveProperty('country_code');
+    expect(payload).not.toHaveProperty('state');
     expect(payload).not.toHaveProperty('state_code');
+    expect(payload).not.toHaveProperty('state_text');
   });
 
   it('omits untouched location fields so the server preserves legacy rows', () => {
@@ -105,7 +104,7 @@ describe('saved address payload', () => {
 });
 
 describe('guest checkout payload', () => {
-  it('keeps the selected codes alongside the display names', () => {
+  it('sends the selected canonical codes without display names', () => {
     const guestAddress = toGuestAddress({
       full_name: 'Ada Lovelace',
       address_1: '1 Analytical Engine Way',
@@ -125,15 +124,15 @@ describe('guest checkout payload', () => {
       address_1: '1 Analytical Engine Way',
       address_2: undefined,
       city: 'Hanoi',
-      country: 'Vietnam',
       country_code: 'VN',
-      state: 'Hanoi',
       state_code: 'VN-01',
       state_text: undefined,
       zip: '100000',
       phone: '0900000000',
     });
     expect(guestAddress).not.toHaveProperty('email');
+    expect(guestAddress).not.toHaveProperty('country');
+    expect(guestAddress).not.toHaveProperty('state');
   });
 });
 

@@ -6,7 +6,18 @@ import type { GetUserAddressesResponse } from '~/domains/me/api/address/contract
 type UserAddress = GetUserAddressesResponse['results'][number];
 type PromoCode = string;
 type CartId = string;
-export type CheckoutAddress = UserAddress | GuestCheckoutAddress;
+
+/**
+ * The guest address kept in checkout state carries the display labels the form
+ * resolved locally so review can render them; the quote/order payloads send
+ * only the canonical codes.
+ */
+export type CheckoutGuestAddress = GuestCheckoutAddress & {
+  country?: string
+  state?: string
+};
+
+export type CheckoutAddress = UserAddress | CheckoutGuestAddress;
 
 export type StateCheckoutNow = {
   tempCartId?: CartId

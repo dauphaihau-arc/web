@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ADDRESS_CONFIG } from '@arc/enums/address';
-import { addressFormSchema as nameBasedAddressFormSchema } from '@arc/schemas/forms/address/address-form.schema';
+import { addressFormSchema as baseAddressFormSchema } from '@arc/schemas/forms/address/address-form.schema';
 import { guestCheckoutFormSchema } from '@arc/schemas/guest-checkout.schema';
 import {
   isPhoneValid,
@@ -185,7 +185,7 @@ export function createCodedAddressFormSchema(
   hasAdministrativeAreas: boolean,
   options: AddressSchemaOptions = {},
 ) {
-  return nameBasedAddressFormSchema
+  return baseAddressFormSchema
     .extend({
       country: z.string().optional(),
       state: z.string().optional(),
@@ -236,9 +236,9 @@ export function createCodedAddressFormSchema(
 }
 
 /**
- * Guest checkout stays name-based (it never sends codes), but mirrors the same
- * subdivision, postcode and phone rules so the form UI can validate before the
- * guest address is converted back to display names.
+ * Guest checkout writes the same canonical codes as a saved address; display
+ * names stay local to the form. It mirrors the saved form's subdivision,
+ * postcode and phone rules so the buyer sees the same validation.
  */
 export function createGuestAddressFormSchema(
   hasAdministrativeAreas: boolean,
@@ -246,7 +246,7 @@ export function createGuestAddressFormSchema(
 ) {
   return guestCheckoutFormSchema
     .extend({
-      country_code: z.string().optional(),
+      country: z.string().optional(),
       state: z.string().optional(),
       state_code: z.string().optional(),
       state_text: z
@@ -265,10 +265,10 @@ export function createGuestAddressFormSchema(
         && options.subdivisionVisible !== false
         && !options.allowLegacySubdivision
       ) {
-        if (!value.state?.trim()) {
+        if (!value.state_code) {
           context.addIssue({
             code: z.ZodIssueCode.custom,
-            path: ['state'],
+            path: ['state_code'],
             message: SUBDIVISION_REQUIRED,
           });
         }

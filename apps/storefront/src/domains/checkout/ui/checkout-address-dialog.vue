@@ -109,9 +109,13 @@ function onSubmitGuestAddress(payload: AddressFormState) {
 
   const { email } = parsed.data
 
-  // Guest checkout keeps the selected canonical codes; country and state
-  // labels remain in the stored address only for display and fallback.
-  checkoutState.value.address = toGuestAddress(parsed.data)
+  // Guest checkout writes canonical codes; the display labels stay in local
+  // checkout state so review can render them.
+  checkoutState.value.address = {
+    ...toGuestAddress(parsed.data),
+    country: payload.country,
+    state: payload.state,
+  }
   checkoutState.value.guestEmail = email
   void dialog.close()
 }

@@ -21,7 +21,6 @@ const GUEST_FIELDS = {
   full_name: 'Ada Lovelace',
   address_1: '1 Analytical Engine Way',
   city: 'London',
-  country: 'United Kingdom',
   country_code: 'GB',
   email: 'ada@example.com',
   phone: '020 7946 0958',
@@ -254,7 +253,6 @@ describe('guest address form schema', () => {
 
     expect(schema.safeParse({
       ...GUEST_FIELDS,
-      country: 'United States',
       country_code: 'US',
       phone: '4155552671',
       state: undefined,
@@ -294,11 +292,28 @@ describe('guest address form schema', () => {
 
     expect(schema.safeParse({
       ...GUEST_FIELDS,
-      country: 'Vietnam',
       country_code: 'VN',
       phone: '0912345678',
-      state: 'Hanoi',
+      state_code: 'VN-01',
       zip: undefined,
     }).success).toBe(true);
+  });
+
+  it('requires a country code instead of accepting a display name', () => {
+    const schema = createGuestAddressFormSchema(false, {
+      countryCode: 'GB',
+      postalCodeRequired: true,
+    });
+
+    const nameOnly = schema.safeParse({
+      ...GUEST_FIELDS,
+      country_code: undefined,
+      country: 'United Kingdom',
+    });
+
+    expect(nameOnly.success).toBe(false);
+    expect(issuesFor(nameOnly)).toContainEqual(expect.objectContaining({
+      path: ['country_code'],
+    }));
   });
 });

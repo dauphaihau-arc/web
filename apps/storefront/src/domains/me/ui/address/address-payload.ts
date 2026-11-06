@@ -59,12 +59,12 @@ export interface SavedAddressRequestOptions {
 }
 
 /**
- * Builds the saved-address payload: coded writes send the canonical codes and a
- * subdivision code or free text, while unresolved legacy rows fall back to the
- * display names the endpoint still accepts during the expand.
+ * Builds the saved-address payload from canonical codes only: `country_code`
+ * is the write identity and the subdivision is a `state_code` or free-text
+ * `state_text`. Display names in the form state stay local to the UI.
  *
  * The update dialog omits location fields that the buyer did not touch so the
- * server preserves legacy text and inactive codes exactly as stored.
+ * server preserves stored text and inactive codes exactly as they are.
  */
 export function toSavedAddressRequest(
   state: AddressFormState,
@@ -78,18 +78,13 @@ export function toSavedAddressRequest(
   delete request.state_code;
   delete request.state_text;
 
-  const location: Pick<
+  const location: Partial<Pick<
     CreateUserAddressRequest,
-    'country' | 'country_code' | 'state' | 'state_code' | 'state_text'
-  > = {};
+    'country_code' | 'state_code' | 'state_text'
+  >> = {};
 
-  if (!options.omitCountry) {
-    if (state.country_code) {
-      location.country_code = state.country_code;
-    }
-    else {
-      location.country = state.country ?? '';
-    }
+  if (!options.omitCountry && state.country_code) {
+    location.country_code = state.country_code;
   }
 
   if (!options.omitSubdivision) {
@@ -97,10 +92,7 @@ export function toSavedAddressRequest(
       location.state_code = state.state_code;
     }
     else if (state.state_text?.trim()) {
-      location.state_text = state.state_text;
-    }
-    else {
-      location.state = state.state ?? '';
+      location.state_text = state.state_text.trim();
     }
   }
 
@@ -111,9 +103,8 @@ export function toSavedAddressRequest(
 }
 
 /**
- * Guest checkout sends the canonical codes the form selected; display names
- * remain in the payload only as the expand-release fallback when a code is
- * missing. The server derives names from codes and ignores the labels.
+ * Guest checkout sends the canonical codes the form selected; the server
+ * derives display names from them.
  */
 export function toGuestAddress(state: AddressFormState): GuestCheckoutAddress {
   return {
@@ -121,10 +112,8 @@ export function toGuestAddress(state: AddressFormState): GuestCheckoutAddress {
     address_1: state.address_1 ?? '',
     address_2: state.address_2,
     city: state.city ?? '',
-    country: state.country ?? '',
-    country_code: state.country_code ?? undefined,
-    state: state.state ?? '',
-    state_code: state.state_code ?? undefined,
+    country_code: state.country_code ?? '',
+    state_code: state.state_code || undefined,
     state_text: state.state_text?.trim() || undefined,
     zip: state.zip ?? '',
     phone: state.phone ?? '',
