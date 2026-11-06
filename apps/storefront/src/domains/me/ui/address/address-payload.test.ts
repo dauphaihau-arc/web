@@ -81,10 +81,31 @@ describe('saved address payload', () => {
     expect(payload).not.toHaveProperty('country_code');
     expect(payload).not.toHaveProperty('state_code');
   });
+
+  it('omits untouched location fields so the server preserves legacy rows', () => {
+    const payload = toSavedAddressRequest(
+      {
+        full_name: 'Ada Lovelace',
+        country: 'Atlantis',
+        state: 'Old Town',
+        state_text: 'Old Town',
+      },
+      { omitCountry: true, omitSubdivision: true },
+    );
+
+    expect(payload).toMatchObject({
+      full_name: 'Ada Lovelace',
+    });
+    expect(payload).not.toHaveProperty('country');
+    expect(payload).not.toHaveProperty('country_code');
+    expect(payload).not.toHaveProperty('state');
+    expect(payload).not.toHaveProperty('state_code');
+    expect(payload).not.toHaveProperty('state_text');
+  });
 });
 
 describe('guest checkout payload', () => {
-  it('strips code-only fields and keeps the name-based shipping address', () => {
+  it('keeps the selected codes alongside the display names', () => {
     const guestAddress = toGuestAddress({
       full_name: 'Ada Lovelace',
       address_1: '1 Analytical Engine Way',
@@ -105,13 +126,13 @@ describe('guest checkout payload', () => {
       address_2: undefined,
       city: 'Hanoi',
       country: 'Vietnam',
+      country_code: 'VN',
       state: 'Hanoi',
+      state_code: 'VN-01',
+      state_text: undefined,
       zip: '100000',
       phone: '0900000000',
     });
-    expect(guestAddress).not.toHaveProperty('country_code');
-    expect(guestAddress).not.toHaveProperty('state_code');
-    expect(guestAddress).not.toHaveProperty('state_text');
     expect(guestAddress).not.toHaveProperty('email');
   });
 });
@@ -156,5 +177,20 @@ describe('legacy address hydration', () => {
     expect(state.state_code).toBeUndefined();
     expect(state.country).toBe('Atlantis');
     expect(state.state).toBe('Old Town');
+  });
+
+  it('preserves a legacy subdivision when editing an existing address', () => {
+    const state: AddressFormState = {
+      country: 'Vietnam',
+      state: 'Hanoi',
+    };
+
+    hydrateAddressCodes(state, COUNTRIES, AREAS, {
+      preserveLegacySubdivision: true,
+    });
+
+    expect(state.country_code).toBe('VN');
+    expect(state.state_code).toBeUndefined();
+    expect(state.state).toBe('Hanoi');
   });
 });

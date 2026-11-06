@@ -15,13 +15,28 @@ import type {
  * build the same body so the accepted quote is the one that gets charged.
  */
 export function toGuestShippingAddress(address: CheckoutAddress) {
+  const codes = address as unknown as Record<string, string | null | undefined>;
+  const countryCode = codes.country_code;
+  const stateCode = codes.state_code;
+  const stateText = codes.state_text?.trim() || undefined;
+  // Codes carry the destination identity; display names remain the
+  // expand-release fallback only when the form has no code to send.
+  const country = countryCode
+    ? { country_code: countryCode }
+    : { country: address.country };
+  const subdivision = stateCode
+    ? { state_code: stateCode }
+    : stateText
+      ? { state_text: stateText }
+      : { state: address.state };
+
   return {
     full_name: address.full_name,
     address_1: address.address_1,
     address_2: address.address_2,
     city: address.city,
-    country: address.country,
-    state: address.state,
+    ...country,
+    ...subdivision,
     zip: address.zip,
     phone: address.phone,
   };
