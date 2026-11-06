@@ -46,8 +46,6 @@ export const API_ENUM_VALUES = {
   "components.schemas.HealthCheckResponseDto.properties.status": ["ok", "error"],
   "components.schemas.HealthComponentResponseDto.properties.status": ["ok", "error"],
   "components.schemas.IssueProductImageUploadDto.properties.asset_type": ["original"],
-  "components.schemas.LocationAddressRuleResponseDto.properties.control": ["text", "select", "tel"],
-  "components.schemas.LocationAddressRuleResponseDto.properties.key": ["full_name", "address_1", "address_2", "city", "subdivision", "zip", "phone"],
   "components.schemas.LoginDto.properties.app": ["storefront", "seller", "admin"],
   "components.schemas.MarketplaceMarketResponseDto.properties.defaultCurrency": ["USD", "AUD", "BRL", "CHF", "CNY", "CZK", "DKK", "EUR", "GBP", "CAD", "HKD", "HUF", "IDR", "ILS", "INR", "JPY", "KRW", "MAD", "MXN", "MYR", "NOK", "NZD", "PHP", "PLN", "SEK", "VND", "SGD", "THB", "TRY", "TWD", "ZAR"],
   "components.schemas.MarketplaceMarketResponseDto.properties.defaultLocale": ["en-US", "vi-VN", "en-VN"],
