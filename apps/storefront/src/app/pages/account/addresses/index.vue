@@ -77,6 +77,9 @@ const showCreateDialog = () => {
             <div>{{ item.city }}</div>
             <div>{{ item.zip }}</div>
           </div>
+          <div v-if="item.state">
+            {{ item.state }}
+          </div>
           <div class="">
             {{ item.country }}
           </div>

@@ -3,6 +3,7 @@ import type { CheckoutAddress } from '~/domains/cart/stores/cart.store.types';
 import type {
   CreateGuestCheckoutQuoteForBuyNowRequest,
   CreateGuestCheckoutQuoteFromCartRequest,
+  GuestShippingAddressRequest,
 } from '~/domains/checkout/api/contracts/checkout.contract';
 import type {
   CreateCheckoutQuoteForBuyNowRequest,
@@ -14,14 +15,22 @@ import type {
  * per-shop promo/note adjustments. Review display and order submission must
  * build the same body so the accepted quote is the one that gets charged.
  */
-export function toGuestShippingAddress(address: CheckoutAddress) {
+export function toGuestShippingAddress(address: CheckoutAddress): GuestShippingAddressRequest {
+  const codes = address as unknown as Record<string, string | null | undefined>;
+  const stateCode = codes.state_code;
+  const stateText = codes.state_text?.trim() || undefined;
+
   return {
     full_name: address.full_name,
     address_1: address.address_1,
     address_2: address.address_2,
     city: address.city,
-    country: address.country,
-    state: address.state,
+    country_code: codes.country_code ?? '',
+    ...(stateCode
+      ? { state_code: stateCode }
+      : stateText
+        ? { state_text: stateText }
+        : {}),
     zip: address.zip,
     phone: address.phone,
   };

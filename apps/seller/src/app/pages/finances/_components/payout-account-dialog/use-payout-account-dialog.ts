@@ -54,9 +54,9 @@ export function usePayoutAccountDialog(options: UsePayoutAccountDialogOptions) {
     (payoutCountriesResponse.value?.countries ?? []).map(code => code.toUpperCase()),
   ));
 
-  const countryOptions = computed(() => (countriesResponse.value?.data ?? [])
-    .filter(country => country.Iso2 && allowedCountryCodes.value.has(country.Iso2.toUpperCase()))
-    .map(country => ({ label: country.name, value: country.Iso2!.toUpperCase() }))
+  const countryOptions = computed(() => (countriesResponse.value ?? [])
+    .filter(country => country.code && allowedCountryCodes.value.has(country.code.toUpperCase()))
+    .map(country => ({ label: country.name, value: country.code.toUpperCase() }))
     .sort((left, right) => left.label.localeCompare(right.label)));
 
   /**
@@ -78,8 +78,8 @@ export function usePayoutAccountDialog(options: UsePayoutAccountDialogOptions) {
 
     // Display names come from the full list so a resumed account whose country
     // has since left the allowlist still reads as a country, not a code.
-    return (countriesResponse.value?.data ?? [])
-      .find(country => country.Iso2?.toUpperCase() === code)?.name ??
+    return (countriesResponse.value ?? [])
+      .find(country => country.code.toUpperCase() === code)?.name ??
       code;
   });
 

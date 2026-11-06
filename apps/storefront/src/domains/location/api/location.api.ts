@@ -1,30 +1,24 @@
 import type {
+  GetAdministrativeAreasResponse,
   GetCountriesResponse,
-  GetStatesByCountryRequest,
-  GetStatesByCountryResponse,
+  GetCountryAddressRulesResponse,
 } from './contracts/location.contract';
 import { apiClient } from '~/domains/_shared/api-client';
 
 export const locationApi = {
   getCountries() {
-    return apiClient.get<GetCountriesResponse>(
-      'https://countriesnow.space/api/v0.1/countries/iso',
-      undefined,
-      {
-        baseURL: '',
-        credentials: undefined,
-      },
+    return apiClient.get<GetCountriesResponse>('locations/countries');
+  },
+
+  getAdministrativeAreas(countryCode: string) {
+    return apiClient.get<GetAdministrativeAreasResponse>(
+      `locations/countries/${encodeURIComponent(countryCode)}/administrative-areas`,
     );
   },
 
-  getStatesByCountry(payload: GetStatesByCountryRequest) {
-    return apiClient.post<GetStatesByCountryResponse>(
-      'https://countriesnow.space/api/v0.1/countries/states',
-      payload,
-      {
-        baseURL: '',
-        credentials: undefined,
-      },
+  getAddressRules(countryCode: string) {
+    return apiClient.get<GetCountryAddressRulesResponse>(
+      `locations/countries/${encodeURIComponent(countryCode)}/address-rules`,
     );
   },
 };

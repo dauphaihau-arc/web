@@ -51,13 +51,17 @@ vi.mock('~/domains/location/queries/countries.query', async () => {
 
   return {
     useGetCountries: () => ({
-      data: computed(() => ({
-        data: [
-          { Iso2: 'US', name: 'United States' },
-          { Iso2: 'VN', name: 'Vietnam' },
-          { Iso2: 'GB', name: 'United Kingdom' },
-        ],
-      })),
+      data: computed(() => [
+        {
+          code: 'US', name: 'United States', has_administrative_areas: true, postal_code_required: true,
+        },
+        {
+          code: 'VN', name: 'Vietnam', has_administrative_areas: false, postal_code_required: false,
+        },
+        {
+          code: 'GB', name: 'United Kingdom', has_administrative_areas: false, postal_code_required: true,
+        },
+      ]),
     }),
   };
 });

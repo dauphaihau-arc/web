@@ -26,8 +26,12 @@ const {
   refetch: vi.fn(),
   countriesState: {
     data: [
-      { Iso2: 'US', name: 'United States' },
-      { Iso2: 'CY', name: 'Cyprus' },
+      {
+        code: 'US', name: 'United States', has_administrative_areas: true, postal_code_required: true,
+      },
+      {
+        code: 'CY', name: 'Cyprus', has_administrative_areas: false, postal_code_required: true,
+      },
     ] as Country[] | undefined,
   },
 }));
@@ -39,7 +43,7 @@ vi.mock('~/domains/location/queries/countries.query', async () => {
 
   return {
     useGetCountries: () => ({
-      data: computed(() => (countriesState.data ? { data: countriesState.data } : undefined)),
+      data: computed(() => countriesState.data),
     }),
   };
 });
@@ -118,8 +122,12 @@ describe('payout account card', () => {
     assign.mockReset();
     onboardingState.isPending.value = false;
     countriesState.data = [
-      { Iso2: 'US', name: 'United States' },
-      { Iso2: 'CY', name: 'Cyprus' },
+      {
+        code: 'US', name: 'United States', has_administrative_areas: true, postal_code_required: true,
+      },
+      {
+        code: 'CY', name: 'Cyprus', has_administrative_areas: false, postal_code_required: true,
+      },
     ];
   });
 
