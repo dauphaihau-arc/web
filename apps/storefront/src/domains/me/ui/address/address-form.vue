@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ADDRESS_CONFIG } from '@arc/enums/address'
-import { addressFormSchema } from '@arc/schemas/forms/address/address-form.schema'
-import { guestCheckoutFormSchema } from '@arc/schemas/guest-checkout.schema'
 import type { FormSubmitEvent } from '#ui/types'
 import { useGetAdministrativeAreas, useGetCountries } from '~/domains/location/queries/countries.query'
-import { findCountryCode } from '~/domains/location/utils/find-country-code'
+import { findCountry, findCountryCode } from '~/domains/location/utils/find-country-code'
+import { hydrateAddressCodes } from './address-payload'
+import { createCodedAddressFormSchema, createGuestAddressFormSchema } from './address-form.schema'
 import type { AddressFormState } from './address-form.types'
 
 const props = withDefaults(defineProps<{
@@ -21,37 +21,74 @@ const emit = defineEmits<{
 
 const formRef = ref()
 
-const schema = computed(() => props.guest ? guestCheckoutFormSchema : addressFormSchema)
-
 const {
   data: dataGetCountries,
   isPending: isPendingGetCountries,
 } = useGetCountries()
 
 /**
- * The endpoints are keyed by ISO code while the saved-address contract stays
- * name-based, so the display name is resolved back to a code for area lookups.
+ * The canonical code drives the select and the administrative-areas lookup;
+ * legacy/guest rows that only carry a display name resolve through the Arc
+ * reference data until their codes are filled in.
  */
 const selectedCountryCode = computed(() =>
-  findCountryCode(dataGetCountries.value, state.value.country))
+  findCountryCode(dataGetCountries.value, state.value.country_code ?? state.value.country))
+
+const selectedCountry = computed(() =>
+  findCountry(dataGetCountries.value, selectedCountryCode.value))
+
+const hasAdministrativeAreas = computed(() =>
+  selectedCountry.value?.has_administrative_areas ?? false)
 
 const {
   data: dataGetAdministrativeAreas,
   isFetching: isFetchingGetAdministrativeAreas,
 } = useGetAdministrativeAreas(selectedCountryCode)
 
-const countriesOptions = computed(() => {
-  return dataGetCountries.value?.map(country => country.name) ?? []
+const schema = computed(() => {
+  return props.guest
+    ? createGuestAddressFormSchema(hasAdministrativeAreas.value)
+    : createCodedAddressFormSchema(hasAdministrativeAreas.value)
 })
 
-const stateOptions = computed(() => {
-  return dataGetAdministrativeAreas.value?.map(area => area.name) ?? []
+const subdivisionFieldName = computed(() => {
+  if (!hasAdministrativeAreas.value) {
+    return 'state_text'
+  }
+  return props.guest ? 'state' : 'state_code'
 })
 
-watch(() => state.value.country, () => {
+watch(
+  [dataGetCountries, dataGetAdministrativeAreas, hasAdministrativeAreas],
+  () => {
+    hydrateAddressCodes(
+      state.value,
+      dataGetCountries.value,
+      dataGetAdministrativeAreas.value,
+    )
+  },
+  { immediate: true },
+)
+
+function onCountryChange(countryCode: string | undefined) {
+  state.value.country_code = countryCode
+  state.value.country = findCountry(dataGetCountries.value, countryCode)?.name
+  state.value.state_code = undefined
+  state.value.state_text = undefined
   state.value.state = undefined
   state.value.zip = undefined
-})
+}
+
+function onStateCodeChange(stateCode: string | undefined) {
+  state.value.state_code = stateCode
+  state.value.state = dataGetAdministrativeAreas.value
+    ?.find(area => area.code === stateCode)?.name
+}
+
+function onStateTextChange(stateText: string | undefined) {
+  state.value.state_text = stateText
+  state.value.state = stateText
+}
 
 function onSubmit(event: FormSubmitEvent<AddressFormState>) {
   emit('submit', event.data)
@@ -134,33 +171,51 @@ defineExpose({
     <UFormGroup
       required
       label="Country"
-      name="country"
+      :name="props.guest ? 'country' : 'country_code'"
       class="mb-4"
     >
       <USelectMenu
-        v-model="state.country"
+        v-model="state.country_code"
         searchable
         :disabled="isPendingGetCountries"
-        :options="countriesOptions"
+        :placeholder="state.country"
+        :options="dataGetCountries ?? []"
+        value-attribute="code"
+        option-attribute="name"
         size="lg"
+        @update:model-value="onCountryChange"
       />
     </UFormGroup>
 
     <div class="mb-4 flex gap-3">
       <UFormGroup
-        required
+        :required="hasAdministrativeAreas"
         label="State/Province"
-        name="state"
+        :name="subdivisionFieldName"
         class="w-1/2"
       >
         <USelectMenu
-          v-model="state.state"
+          v-if="hasAdministrativeAreas"
+          v-model="state.state_code"
           searchable
           :loading="isFetchingGetAdministrativeAreas"
-          :disabled="!state.country || isFetchingGetAdministrativeAreas"
-          :options="stateOptions"
+          :placeholder="state.state"
+          :disabled="!selectedCountryCode || isFetchingGetAdministrativeAreas"
+          :options="dataGetAdministrativeAreas ?? []"
+          value-attribute="code"
+          option-attribute="name"
           size="lg"
           trailing
+          @update:model-value="onStateCodeChange"
+        />
+        <UInput
+          v-else
+          v-model="state.state_text"
+          name="state_text"
+          :disabled="!selectedCountryCode"
+          :maxlength="ADDRESS_CONFIG.MAX_CHAR_CITY"
+          size="lg"
+          @update:model-value="onStateTextChange"
         />
       </UFormGroup>
       <UFormGroup

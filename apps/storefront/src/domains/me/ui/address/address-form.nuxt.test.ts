@@ -49,6 +49,12 @@ const COUNTRIES: Country[] = [
     has_administrative_areas: true,
     postal_code_required: false,
   },
+  {
+    code: 'SG',
+    name: 'Singapore',
+    has_administrative_areas: false,
+    postal_code_required: true,
+  },
 ];
 
 async function render(state: AddressFormState): Promise<VueWrapper> {
@@ -74,6 +80,16 @@ async function chooseCountry(wrapper: VueWrapper, name: string) {
   await nextTick();
 }
 
+async function chooseSubdivision(wrapper: VueWrapper, name: string) {
+  const options = await openOptions(wrapper, 1);
+  const option = options.find(candidate => candidate.text() === name);
+
+  expect(option).toBeDefined();
+  await option!.trigger('mousedown');
+  await flushPromises();
+  await nextTick();
+}
+
 describe('address form location options', () => {
   beforeEach(() => {
     locationState.countries = COUNTRIES;
@@ -94,38 +110,99 @@ describe('address form location options', () => {
 
     const options = await openOptions(wrapper, 0);
 
-    expect(options.map(option => option.text())).toEqual(['United States', 'Vietnam']);
+    expect(options.map(option => option.text())).toEqual(['United States', 'Vietnam', 'Singapore']);
   });
 
-  it('fetches subdivisions for the ISO code of the selected country', async () => {
+  it('selects countries by code while keeping the display name and fetches subdivisions for it', async () => {
     const state = reactive<AddressFormState>({});
     const wrapper = await render(state);
 
     await chooseCountry(wrapper, 'Vietnam');
 
+    expect(state.country_code).toBe('VN');
     expect(state.country).toBe('Vietnam');
     expect(toValue(areaQueryMock.mock.calls.at(-1)![0])).toBe('VN');
 
     const stateOptions = await openOptions(wrapper, 1);
     expect(stateOptions.map(option => option.text())).toEqual(['Hanoi']);
+
+    const hanoi = stateOptions.find(option => option.text() === 'Hanoi');
+    expect(hanoi).toBeDefined();
+    await hanoi!.trigger('mousedown');
+    await flushPromises();
+    await nextTick();
+
+    expect(state.state_code).toBe('VN-01');
+    expect(state.state).toBe('Hanoi');
   });
 
-  it('swaps subdivision options and clears the chosen state when the country changes', async () => {
-    const state = reactive<AddressFormState>({ country: 'Vietnam', state: 'Hanoi' });
+  it('switches the subdivision control from a dropdown to free text based on has_administrative_areas', async () => {
+    const state = reactive<AddressFormState>({});
     const wrapper = await render(state);
 
-    expect((await openOptions(wrapper, 1)).map(option => option.text())).toEqual(['Hanoi']);
+    await chooseCountry(wrapper, 'Vietnam');
+    expect(wrapper.findAll('[role="button"]')).toHaveLength(2);
 
-    // Close the state menu so changing the country does not leave it open.
-    await wrapper.findAll('[role="button"]')[1]!.trigger('click');
-    await flushPromises();
+    await chooseCountry(wrapper, 'Singapore');
+
+    expect(wrapper.findAll('[role="button"]')).toHaveLength(1);
+
+    const stateText = wrapper.find('input[name="state_text"]');
+    expect(stateText.exists()).toBe(true);
+
+    await stateText.setValue('Central Region');
+
+    expect(state.state_text).toBe('Central Region');
+    expect(state.state).toBe('Central Region');
+  });
+
+  it('clears the subdivision and zip when the country changes', async () => {
+    const state = reactive<AddressFormState>({
+      country_code: 'VN',
+      country: 'Vietnam',
+      state_code: 'VN-01',
+      state: 'Hanoi',
+      zip: '100000',
+    });
+    const wrapper = await render(state);
 
     await chooseCountry(wrapper, 'United States');
 
-    expect(toValue(areaQueryMock.mock.calls.at(-1)![0])).toBe('US');
+    expect(state.country_code).toBe('US');
+    expect(state.country).toBe('United States');
+    expect(state.state_code).toBeUndefined();
+    expect(state.state_text).toBeUndefined();
     expect(state.state).toBeUndefined();
+    expect(state.zip).toBeUndefined();
+    expect(toValue(areaQueryMock.mock.calls.at(-1)![0])).toBe('US');
 
     const stateOptions = await openOptions(wrapper, 1);
     expect(stateOptions.map(option => option.text())).toEqual(['California', 'New York']);
+  });
+
+  it('submits canonical country and subdivision codes', async () => {
+    const state = reactive<AddressFormState>({
+      full_name: 'Ada Lovelace',
+      address_1: '1 Analytical Engine Way',
+      city: 'Hanoi',
+      phone: '0900000000',
+    });
+    const wrapper = await render(state);
+
+    await chooseCountry(wrapper, 'Vietnam');
+    await chooseSubdivision(wrapper, 'Hanoi');
+
+    // Choosing a country intentionally clears the ZIP field.
+    state.zip = '100000';
+
+    await wrapper.find('form').trigger('submit');
+    await flushPromises();
+
+    const submitted = wrapper.emitted('submit')?.[0]?.[0] as AddressFormState;
+
+    expect(submitted.country_code).toBe('VN');
+    expect(submitted.country).toBe('Vietnam');
+    expect(submitted.state_code).toBe('VN-01');
+    expect(submitted.state).toBe('Hanoi');
   });
 });

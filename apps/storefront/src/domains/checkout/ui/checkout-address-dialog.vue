@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AddressForm from '~/domains/me/ui/address/address-form.vue'
 import type { AddressFormState } from '~/domains/me/ui/address/address-form.types'
-import type { CreateUserAddressRequest } from '~/domains/me/api/address/contracts/address.contract'
+import { toGuestAddress, toSavedAddressRequest } from '~/domains/me/ui/address/address-payload'
 import type { StateCheckoutCart, StateCheckoutNow } from '~/domains/cart/stores/cart.store.types'
 import { guestCheckoutFormSchema } from '@arc/schemas/guest-checkout.schema'
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
@@ -83,7 +83,7 @@ function selectAddress(id: string | number | boolean) {
 
 async function onSubmitUserAddress(payload: AddressFormState) {
   try {
-    const { address } = await createUserAddress(payload as CreateUserAddressRequest)
+    const { address } = await createUserAddress(toSavedAddressRequest(payload))
 
     checkoutState.value.address = address
     checkoutState.value.guestEmail = ''
@@ -107,9 +107,11 @@ function onSubmitGuestAddress(payload: AddressFormState) {
     return
   }
 
-  const { email, ...address } = parsed.data
+  const { email } = parsed.data
 
-  checkoutState.value.address = address
+  // The checkout DTO stays name-based for guests, so code-only fields are
+  // dropped before the address is stored in checkout state.
+  checkoutState.value.address = toGuestAddress(parsed.data)
   checkoutState.value.guestEmail = email
   void dialog.close()
 }
