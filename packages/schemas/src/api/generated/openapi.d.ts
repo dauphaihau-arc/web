@@ -944,6 +944,18 @@ export interface paths {
     /** Get a shop Payout history, including Blocked Payouts */
     get: operations["AdminShopFinance_payouts"];
   };
+  "/v1/locations/countries": {
+    /** List countries with subdivision availability and postal requiredness */
+    get: operations["Location_listCountries"];
+  };
+  "/v1/locations/countries/{code}/administrative-areas": {
+    /** List active level-1 administrative areas for a country */
+    get: operations["Location_listAdministrativeAreas"];
+  };
+  "/v1/locations/countries/{code}/address-rules": {
+    /** Get merged address-form rules for a country */
+    get: operations["Location_getCountryAddressRules"];
+  };
   "/v1/webhooks/stripe": {
     /** Handle Stripe webhook events */
     post: operations["StripeWebhook_handle"];
@@ -1328,6 +1340,10 @@ export interface components {
       state: string;
       zip: string;
       country: string;
+      /** @description Canonical ISO country code. */
+      country_code?: string | null;
+      /** @description Canonical administrative area code. */
+      state_code?: string | null;
       phone: string;
       is_primary: boolean;
       /** Format: date-time */
@@ -1347,9 +1363,13 @@ export interface components {
       address_1: string;
       address_2?: string;
       city: string;
-      state: string;
       zip: string;
-      country: string;
+      /** @description Canonical ISO alpha-2 country code. The only country identity. */
+      country_code: string;
+      /** @description Canonical administrative-area code; required when the country publishes areas. */
+      state_code?: string | null;
+      /** @description Free-text subdivision, allowed only for countries with no area list. */
+      state_text?: string | null;
       phone: string;
       is_primary?: boolean;
     };
@@ -1361,9 +1381,10 @@ export interface components {
       address_1?: string;
       address_2?: string;
       city?: string;
-      state?: string;
       zip?: string;
-      country?: string;
+      country_code?: string | null;
+      state_code?: string | null;
+      state_text?: string | null;
       phone?: string;
       is_primary?: boolean;
     };
@@ -2984,8 +3005,12 @@ export interface components {
       address_1: string;
       address_2?: string;
       city: string;
-      country: string;
-      state: string;
+      /** @description Canonical ISO alpha-2 country code; names are derived from it. */
+      country_code: string;
+      /** @description Canonical administrative-area code; the display name is derived from it. */
+      state_code?: string;
+      /** @description Free-text subdivision for countries with no administrative-area list. */
+      state_text?: string;
       zip: string;
       phone: string;
     };
@@ -3474,7 +3499,9 @@ export interface components {
       address2?: string;
       city: string;
       country: string;
+      country_code?: Record<string, unknown> | null;
       state: string;
+      state_code?: Record<string, unknown> | null;
       zip: string;
       phone?: string;
     };
@@ -4530,6 +4557,66 @@ export interface components {
       shop_id: string;
       /** @description The shop Payout Account, or null when none is onboarded. */
       payout_account: components["schemas"]["PayoutAccountResponseDto"] | null;
+    };
+    LocationCountryResponseDto: {
+      /**
+       * @description ISO 3166-1 alpha-2 country code.
+       * @example VN
+       */
+      code: string;
+      /** @example Vietnam */
+      name: string;
+      /**
+       * @description Whether active level-1 administrative areas exist for this country.
+       * @example true
+       */
+      has_administrative_areas: boolean;
+      /**
+       * @description Whether a postal code is required for addresses in this country.
+       * @example false
+       */
+      postal_code_required: boolean;
+    };
+    LocationAdministrativeAreaResponseDto: {
+      /**
+       * @description Level-1 administrative area code.
+       * @example VN-01
+       */
+      code: string;
+      /** @example Hanoi */
+      name: string;
+    };
+    LocationAddressRuleResponseDto: {
+      /**
+       * @example zip
+       * @enum {string}
+       */
+      key: "full_name" | "address_1" | "address_2" | "city" | "subdivision" | "zip" | "phone";
+      /** @example Postal code */
+      label: string;
+      /** @example true */
+      visible: boolean;
+      /**
+       * @description Whether the field must be submitted. Hidden fields are never required.
+       * @example true
+       */
+      required: boolean;
+      /**
+       * @example text
+       * @enum {string}
+       */
+      control: "text" | "select" | "tel";
+      /** @example postal-code */
+      autocomplete: string;
+    };
+    LocationCountryAddressRulesResponseDto: {
+      /**
+       * @description ISO 3166-1 alpha-2 country code.
+       * @example JP
+       */
+      country_code: string;
+      /** @description Merged address fields in the order the form should render them. */
+      fields: components["schemas"]["LocationAddressRuleResponseDto"][];
     };
     StripeWebhookAckResponseDto: Record<string, never>;
     CreateChatConversationDto: {
@@ -13219,6 +13306,111 @@ export interface operations {
       };
       /** @description Internal server error */
       500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
+  /** List countries with subdivision availability and postal requiredness */
+  Location_listCountries: {
+    responses: {
+      /** @description Active countries sorted by name. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["LocationCountryResponseDto"][];
+        };
+      };
+      /** @description Dataset unchanged for the supplied If-None-Match validator. */
+      304: {
+        content: never;
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Location reference dataset is unavailable */
+      503: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
+  /** List active level-1 administrative areas for a country */
+  Location_listAdministrativeAreas: {
+    parameters: {
+      path: {
+        /** @description ISO 3166-1 alpha-2 country code. Case-insensitive. */
+        code: string;
+      };
+    };
+    responses: {
+      /** @description Active administrative areas sorted by name. Empty when the country has none. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["LocationAdministrativeAreaResponseDto"][];
+        };
+      };
+      /** @description Dataset unchanged for the supplied If-None-Match validator. */
+      304: {
+        content: never;
+      };
+      /** @description Location country "XX" was not found */
+      404: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Location reference dataset is unavailable */
+      503: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+    };
+  };
+  /** Get merged address-form rules for a country */
+  Location_getCountryAddressRules: {
+    parameters: {
+      path: {
+        /** @description ISO 3166-1 alpha-2 country code. Case-insensitive. */
+        code: string;
+      };
+    };
+    responses: {
+      /** @description Merged library defaults, Arc overrides, and Arc country flags in render order. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["LocationCountryAddressRulesResponseDto"];
+        };
+      };
+      /** @description Dataset unchanged for the supplied If-None-Match validator. */
+      304: {
+        content: never;
+      };
+      /** @description Location country "XX" was not found */
+      404: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": components["schemas"]["ApiErrorResponseDto"];
+        };
+      };
+      /** @description Location reference dataset is unavailable */
+      503: {
         content: {
           "application/json": components["schemas"]["ApiErrorResponseDto"];
         };
