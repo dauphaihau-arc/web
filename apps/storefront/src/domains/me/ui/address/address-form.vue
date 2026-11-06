@@ -6,6 +6,7 @@ import { findCountry, findCountryCode } from '~/domains/location/utils/find-coun
 import { hydrateAddressCodes } from './address-payload'
 import { createCodedAddressFormSchema, createGuestAddressFormSchema } from './address-form.schema'
 import type { AddressFormState } from './address-form.types'
+import PhoneInput from './phone-input.vue'
 
 const props = withDefaults(defineProps<{
   guest?: boolean
@@ -40,15 +41,27 @@ const selectedCountry = computed(() =>
 const hasAdministrativeAreas = computed(() =>
   selectedCountry.value?.has_administrative_areas ?? false)
 
+/**
+ * Postcodes are optional where the selected country says so. The label and the
+ * required marker follow the same flag the schema uses.
+ */
+const postalCodeRequired = computed(() =>
+  selectedCountry.value?.postal_code_required ?? false)
+
 const {
   data: dataGetAdministrativeAreas,
   isFetching: isFetchingGetAdministrativeAreas,
 } = useGetAdministrativeAreas(selectedCountryCode)
 
 const schema = computed(() => {
+  const options = {
+    countryCode: selectedCountryCode.value,
+    postalCodeRequired: postalCodeRequired.value,
+  }
+
   return props.guest
-    ? createGuestAddressFormSchema(hasAdministrativeAreas.value)
-    : createCodedAddressFormSchema(hasAdministrativeAreas.value)
+    ? createGuestAddressFormSchema(hasAdministrativeAreas.value, options)
+    : createCodedAddressFormSchema(hasAdministrativeAreas.value, options)
 })
 
 const subdivisionFieldName = computed(() => {
@@ -77,6 +90,7 @@ function onCountryChange(countryCode: string | undefined) {
   state.value.state_text = undefined
   state.value.state = undefined
   state.value.zip = undefined
+  state.value.phone = undefined
 }
 
 function onStateCodeChange(stateCode: string | undefined) {
@@ -91,7 +105,11 @@ function onStateTextChange(stateText: string | undefined) {
 }
 
 function onSubmit(event: FormSubmitEvent<AddressFormState>) {
-  emit('submit', event.data)
+  // UForm reports the raw state; run the schema a second time to emit its
+  // normalised output (postcode casing/spacing, phone trimming).
+  const parsed = schema.value.parse(event.data) as AddressFormState
+
+  emit('submit', { ...event.data, ...parsed })
 }
 
 defineExpose({
@@ -219,14 +237,14 @@ defineExpose({
         />
       </UFormGroup>
       <UFormGroup
-        required
-        label="Zip/Postal code"
+        :required="postalCodeRequired"
+        :label="postalCodeRequired ? 'Zip/Postal code' : 'Zip/Postal code (optional)'"
         name="zip"
         class="w-1/2"
       >
         <UInput
           v-model="state.zip"
-          v-numeric
+          name="zip"
           :maxlength="ADDRESS_CONFIG.MAX_CHAR_ZIP"
           size="lg"
         />
@@ -238,12 +256,12 @@ defineExpose({
       name="phone"
       class="mb-4"
     >
-      <UInput
+      <PhoneInput
         v-model="state.phone"
-        v-numeric
-        size="lg"
+        name="phone"
+        :country-code="selectedCountryCode"
         :maxlength="ADDRESS_CONFIG.MAX_CHAR_PHONE"
-        type="phone"
+        size="lg"
       />
     </UFormGroup>
 
