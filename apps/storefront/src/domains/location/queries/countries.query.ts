@@ -4,6 +4,7 @@ import { locationApi } from '~/domains/location/api/location.api';
 import type {
   GetAdministrativeAreasResponse,
   GetCountriesResponse,
+  GetCountryAddressRulesResponse,
 } from '~/domains/location/api/contracts/location.contract';
 
 export function useGetCountries(options?: Partial<UseQueryOptions<GetCountriesResponse>>) {
@@ -31,5 +32,17 @@ export function useGetAdministrativeAreas(
     queryFn: () => {
       return locationApi.getAdministrativeAreas(code.value!);
     },
+  });
+}
+
+export function useGetAddressRules(
+  countryCode: MaybeRefOrGetter<string | undefined>,
+) {
+  const code = computed(() => toValue(countryCode)?.trim().toUpperCase() || undefined);
+
+  return useQuery<GetCountryAddressRulesResponse>({
+    enabled: computed(() => !!code.value),
+    queryKey: computed(() => ['get-location-address-rules', code.value]),
+    queryFn: () => locationApi.getAddressRules(code.value!),
   });
 }

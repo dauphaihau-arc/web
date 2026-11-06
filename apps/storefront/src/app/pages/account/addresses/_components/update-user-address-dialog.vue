@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { ADDRESS_CONFIG } from '@arc/enums/address'
-import PhoneInput from '~/domains/me/ui/address/phone-input.vue'
-import LegacySubdivisionField from '~/domains/me/ui/address/legacy-subdivision-field.vue'
+import AddressFormFields from '~/domains/me/ui/address/address-form-fields.vue'
 import {
   type UserAddress,
   useUpdateUserAddressForm,
@@ -17,9 +15,10 @@ const {
   isPendingGetCountries,
   dataGetAdministrativeAreas,
   isPendingGetStates,
-  selectedCountryCode,
   hasAdministrativeAreas,
   postalCodeRequired,
+  fieldRules,
+  selectedCountryCode,
   subdivisionFieldName,
   isLegacySubdivision,
   readOnlySubdivisionLabel,
@@ -49,141 +48,23 @@ const {
       :schema="schema"
       @submit="onSubmit"
     >
-      <UFormGroup
-        required
-        label="Full Name"
-        name="full_name"
-        class="mb-4"
-      >
-        <UInput
-          v-model="stateSubmit.full_name"
-          :maxlength="ADDRESS_CONFIG.MAX_CHAR_FULL_NAME"
-          size="lg"
-        />
-      </UFormGroup>
-      <UFormGroup
-        required
-        label="Street"
-        name="address_1"
-        class="mb-4"
-      >
-        <UInput
-          v-model="stateSubmit.address_1"
-          :maxlength="ADDRESS_CONFIG.MAX_CHAR_ADDRESS"
-          size="lg"
-        />
-      </UFormGroup>
-      <UFormGroup
-        label="Apt / Suite / Other"
-        name="address_2"
-        class="mb-4"
-      >
-        <UInput
-          v-model="stateSubmit.address_2"
-          :maxlength="ADDRESS_CONFIG.MAX_CHAR_ADDRESS"
-          size="lg"
-        />
-      </UFormGroup>
-      <UFormGroup
-        required
-        label="City"
-        name="city"
-        class="mb-4"
-      >
-        <UInput
-          v-model="stateSubmit.city"
-          :maxlength="ADDRESS_CONFIG.MAX_CHAR_CITY"
-          size="lg"
-        />
-      </UFormGroup>
-      <UFormGroup
-        required
-        label="Country"
-        name="country_code"
-        class="mb-4"
-      >
-        <USelectMenu
-          v-model="stateSubmit.country_code"
-          searchable
-          :disabled="isPendingGetCountries"
-          :placeholder="stateSubmit.country"
-          :options="dataGetCountries ?? []"
-          value-attribute="code"
-          option-attribute="name"
-          size="lg"
-          @update:model-value="onCountryChange"
-        />
-      </UFormGroup>
-
-      <div class="mb-4 flex gap-3">
-        <UFormGroup
-          :required="hasAdministrativeAreas && !isLegacySubdivision"
-          label="State/Province"
-          :name="subdivisionFieldName"
-          class="w-1/2"
-        >
-          <LegacySubdivisionField
-            v-if="readOnlySubdivisionLabel"
-            :value="readOnlySubdivisionLabel ?? ''"
-            :action-label="isLegacySubdivision ? 'Choose from list' : undefined"
-            @choose="startChoosingSubdivision"
-          />
-          <USelectMenu
-            v-else-if="hasAdministrativeAreas"
-            v-model="stateSubmit.state_code"
-            searchable
-            :disabled="!selectedCountryCode || isPendingGetStates"
-            :placeholder="stateSubmit.state"
-            :options="dataGetAdministrativeAreas ?? []"
-            value-attribute="code"
-            option-attribute="name"
-            size="lg"
-            trailing
-            @update:model-value="onStateCodeChange"
-          />
-          <UInput
-            v-else
-            v-model="stateSubmit.state_text"
-            name="state_text"
-            :disabled="!selectedCountryCode && !stateSubmit.country"
-            :maxlength="ADDRESS_CONFIG.MAX_CHAR_CITY"
-            size="lg"
-            @update:model-value="onStateTextChange"
-          />
-        </UFormGroup>
-        <UFormGroup
-          :required="postalCodeRequired"
-          :label="postalCodeRequired ? 'Zip/Postal code' : 'Zip/Postal code (optional)'"
-          name="zip"
-          class="w-1/2"
-        >
-          <UInput
-            v-model="stateSubmit.zip"
-            name="zip"
-            :maxlength="ADDRESS_CONFIG.MAX_CHAR_ZIP"
-            size="lg"
-          />
-        </UFormGroup>
-      </div>
-      <UFormGroup
-        required
-        label="Phone"
-        name="phone"
-        class="mb-4"
-      >
-        <PhoneInput
-          v-model="stateSubmit.phone"
-          name="phone"
-          :country-code="selectedCountryCode"
-          :maxlength="ADDRESS_CONFIG.MAX_CHAR_PHONE"
-          size="lg"
-        />
-      </UFormGroup>
-
-      <UCheckbox
-        v-model="stateSubmit.is_primary"
-        label="Set as default"
-        name="is_primary"
+      <AddressFormFields
+        v-model:state="stateSubmit"
+        :fields="fieldRules"
+        :country-code="selectedCountryCode"
+        :countries="dataGetCountries"
+        :is-pending-countries="isPendingGetCountries"
+        :areas="dataGetAdministrativeAreas"
+        :is-fetching-areas="isPendingGetStates"
+        :has-administrative-areas="hasAdministrativeAreas"
+        :postal-code-required="postalCodeRequired"
+        :subdivision-field-name="subdivisionFieldName"
+        :is-legacy-subdivision="isLegacySubdivision"
+        :read-only-subdivision-label="readOnlySubdivisionLabel"
+        @country-change="onCountryChange"
+        @state-code-change="onStateCodeChange"
+        @state-text-change="onStateTextChange"
+        @choose-subdivision="startChoosingSubdivision"
       />
     </UForm>
 

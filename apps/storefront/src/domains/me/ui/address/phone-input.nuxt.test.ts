@@ -81,11 +81,13 @@ describe('phone input', () => {
       attrs: { size: 'lg' },
     });
 
+    expect(vietnam.text()).toContain('🇻🇳');
     expect(vietnam.text()).toContain('+84');
     expect((vietnam.find('input').element as HTMLInputElement).style.paddingInlineStart)
-      .toBe('3rem');
+      .toBe('4.5rem');
+    expect(albania.text()).toContain('🇦🇱');
     expect(albania.text()).toContain('+355');
     expect((albania.find('input').element as HTMLInputElement).style.paddingInlineStart)
-      .toBe('3.25rem');
+      .toBe('4.75rem');
   });
 });

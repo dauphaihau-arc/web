@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ADDRESS_CONFIG } from '@arc/enums/address'
 import type { FormSubmitEvent } from '#ui/types'
-import { useGetAdministrativeAreas, useGetCountries } from '~/domains/location/queries/countries.query'
+import { useGetAddressRules, useGetAdministrativeAreas, useGetCountries } from '~/domains/location/queries/countries.query'
 import { findCountry, findCountryCode } from '~/domains/location/utils/find-country-code'
 import { hydrateAddressCodes } from './address-payload'
 import { createCodedAddressFormSchema, createGuestAddressFormSchema } from './address-form.schema'
+import { fallbackAddressFieldRules, toAddressFieldRules } from './address-field-rules'
 import type { AddressFormState } from './address-form.types'
-import PhoneInput from './phone-input.vue'
+import AddressFormFields from './address-form-fields.vue'
 
 const props = withDefaults(defineProps<{
   guest?: boolean
@@ -53,10 +53,18 @@ const {
   isFetching: isFetchingGetAdministrativeAreas,
 } = useGetAdministrativeAreas(selectedCountryCode)
 
+const { data: dataGetAddressRules } = useGetAddressRules(selectedCountryCode)
+
+const fieldRules = computed(() => dataGetAddressRules.value
+  ? toAddressFieldRules(dataGetAddressRules.value, { guest: props.guest })
+  : fallbackAddressFieldRules({ guest: props.guest }))
+
 const schema = computed(() => {
   const options = {
     countryCode: selectedCountryCode.value,
     postalCodeRequired: postalCodeRequired.value,
+    subdivisionVisible: fieldRules.value.find(rule => rule.key === 'subdivision')?.visible ?? true,
+    postcodeVisible: fieldRules.value.find(rule => rule.key === 'zip')?.visible ?? true,
   }
 
   return props.guest
@@ -125,151 +133,21 @@ defineExpose({
     :schema="schema"
     @submit="onSubmit"
   >
-    <UFormGroup
-      v-if="props.guest"
-      required
-      label="Email"
-      name="email"
-      class="mb-4"
-    >
-      <UInput
-        v-model="state.email"
-        size="lg"
-        type="email"
-        maxlength="320"
-      />
-    </UFormGroup>
-    <UFormGroup
-      required
-      label="Full Name"
-      name="full_name"
-      class="mb-4"
-    >
-      <UInput
-        v-model="state.full_name"
-        :maxlength="ADDRESS_CONFIG.MAX_CHAR_FULL_NAME"
-        size="lg"
-      />
-    </UFormGroup>
-    <UFormGroup
-      required
-      label="Street"
-      name="address_1"
-      class="mb-4"
-    >
-      <UInput
-        v-model="state.address_1"
-        :maxlength="ADDRESS_CONFIG.MAX_CHAR_ADDRESS"
-        size="lg"
-      />
-    </UFormGroup>
-    <UFormGroup
-      label="Apt / Suite / Other"
-      name="address_2"
-      class="mb-4"
-    >
-      <UInput
-        v-model="state.address_2"
-        :maxlength="ADDRESS_CONFIG.MAX_CHAR_ADDRESS"
-        size="lg"
-      />
-    </UFormGroup>
-    <UFormGroup
-      required
-      label="City"
-      name="city"
-      class="mb-4"
-    >
-      <UInput
-        v-model="state.city"
-        :maxlength="ADDRESS_CONFIG.MAX_CHAR_CITY"
-        size="lg"
-      />
-    </UFormGroup>
-    <UFormGroup
-      required
-      label="Country"
-      :name="props.guest ? 'country' : 'country_code'"
-      class="mb-4"
-    >
-      <USelectMenu
-        v-model="state.country_code"
-        searchable
-        :disabled="isPendingGetCountries"
-        :placeholder="state.country"
-        :options="dataGetCountries ?? []"
-        value-attribute="code"
-        option-attribute="name"
-        size="lg"
-        @update:model-value="onCountryChange"
-      />
-    </UFormGroup>
-
-    <div class="mb-4 flex gap-3">
-      <UFormGroup
-        :required="hasAdministrativeAreas"
-        label="State/Province"
-        :name="subdivisionFieldName"
-        class="w-1/2"
-      >
-        <USelectMenu
-          v-if="hasAdministrativeAreas"
-          v-model="state.state_code"
-          searchable
-          :loading="isFetchingGetAdministrativeAreas"
-          :placeholder="state.state"
-          :disabled="!selectedCountryCode || isFetchingGetAdministrativeAreas"
-          :options="dataGetAdministrativeAreas ?? []"
-          value-attribute="code"
-          option-attribute="name"
-          size="lg"
-          trailing
-          @update:model-value="onStateCodeChange"
-        />
-        <UInput
-          v-else
-          v-model="state.state_text"
-          name="state_text"
-          :disabled="!selectedCountryCode"
-          :maxlength="ADDRESS_CONFIG.MAX_CHAR_CITY"
-          size="lg"
-          @update:model-value="onStateTextChange"
-        />
-      </UFormGroup>
-      <UFormGroup
-        :required="postalCodeRequired"
-        :label="postalCodeRequired ? 'Zip/Postal code' : 'Zip/Postal code (optional)'"
-        name="zip"
-        class="w-1/2"
-      >
-        <UInput
-          v-model="state.zip"
-          name="zip"
-          :maxlength="ADDRESS_CONFIG.MAX_CHAR_ZIP"
-          size="lg"
-        />
-      </UFormGroup>
-    </div>
-    <UFormGroup
-      required
-      label="Phone"
-      name="phone"
-      class="mb-4"
-    >
-      <PhoneInput
-        v-model="state.phone"
-        name="phone"
-        :country-code="selectedCountryCode"
-        :maxlength="ADDRESS_CONFIG.MAX_CHAR_PHONE"
-        size="lg"
-      />
-    </UFormGroup>
-
-    <UCheckbox
-      v-if="!props.guest"
-      v-model="state.is_primary"
-      label="Set as default"
-      name="is_primary"
+    <AddressFormFields
+      v-model:state="state"
+      :guest="props.guest"
+      :fields="fieldRules"
+      :country-code="selectedCountryCode"
+      :countries="dataGetCountries"
+      :is-pending-countries="isPendingGetCountries"
+      :areas="dataGetAdministrativeAreas"
+      :is-fetching-areas="isFetchingGetAdministrativeAreas"
+      :has-administrative-areas="hasAdministrativeAreas"
+      :postal-code-required="postalCodeRequired"
+      :subdivision-field-name="subdivisionFieldName"
+      @country-change="onCountryChange"
+      @state-code-change="onStateCodeChange"
+      @state-text-change="onStateTextChange"
     />
   </UForm>
 </template>
