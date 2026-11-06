@@ -10,11 +10,15 @@ import type { AddressFormState } from './address-form.types';
  * A country/subdivision is matched by code or display name from the Arc
  * reference data; when nothing resolves the original name is left untouched so
  * the legacy name-based request stays valid.
+ *
+ * `preserveLegacySubdivision` leaves an existing row's subdivision label alone
+ * so the update dialog can require an explicit replacement choice.
  */
 export function hydrateAddressCodes(
   state: AddressFormState,
   countries: Country[] | undefined,
   areas: AdministrativeArea[] | undefined,
+  options: { preserveLegacySubdivision?: boolean } = {},
 ): void {
   const country = findCountry(countries, state.country_code ?? state.country);
 
@@ -32,6 +36,12 @@ export function hydrateAddressCodes(
     return;
   }
 
+  if (options.preserveLegacySubdivision && !state.state_code) {
+    // Existing rows keep their legacy subdivision until the buyer explicitly
+    // chooses a value from the country's list.
+    return;
+  }
+
   const area = findAdministrativeArea(areas, state.state_code ?? state.state);
 
   if (area) {
@@ -40,12 +50,26 @@ export function hydrateAddressCodes(
   }
 }
 
+export interface SavedAddressRequestOptions {
+  /** Omit the country selection so an untouched legacy country is preserved. */
+  omitCountry?: boolean
+
+  /** Omit the subdivision selection so an untouched legacy value is preserved. */
+  omitSubdivision?: boolean
+}
+
 /**
  * Builds the saved-address payload: coded writes send the canonical codes and a
  * subdivision code or free text, while unresolved legacy rows fall back to the
  * display names the endpoint still accepts during the expand.
+ *
+ * The update dialog omits location fields that the buyer did not touch so the
+ * server preserves legacy text and inactive codes exactly as stored.
  */
-export function toSavedAddressRequest(state: AddressFormState): CreateUserAddressRequest {
+export function toSavedAddressRequest(
+  state: AddressFormState,
+  options: SavedAddressRequestOptions = {},
+): CreateUserAddressRequest {
   const request: AddressFormState = { ...state };
   delete request.email;
   delete request.country;
@@ -57,18 +81,27 @@ export function toSavedAddressRequest(state: AddressFormState): CreateUserAddres
   const location: Pick<
     CreateUserAddressRequest,
     'country' | 'country_code' | 'state' | 'state_code' | 'state_text'
-  > = state.country_code
-    ? { country_code: state.country_code }
-    : { country: state.country ?? '' };
+  > = {};
 
-  if (state.state_code) {
-    location.state_code = state.state_code;
+  if (!options.omitCountry) {
+    if (state.country_code) {
+      location.country_code = state.country_code;
+    }
+    else {
+      location.country = state.country ?? '';
+    }
   }
-  else if (state.state_text?.trim()) {
-    location.state_text = state.state_text;
-  }
-  else {
-    location.state = state.state ?? '';
+
+  if (!options.omitSubdivision) {
+    if (state.state_code) {
+      location.state_code = state.state_code;
+    }
+    else if (state.state_text?.trim()) {
+      location.state_text = state.state_text;
+    }
+    else {
+      location.state = state.state ?? '';
+    }
   }
 
   return {
@@ -78,8 +111,9 @@ export function toSavedAddressRequest(state: AddressFormState): CreateUserAddres
 }
 
 /**
- * Guest checkout keeps its existing name-based shipping-address contract, so
- * code-only fields never leave the storefront for a guest order.
+ * Guest checkout sends the canonical codes the form selected; display names
+ * remain in the payload only as the expand-release fallback when a code is
+ * missing. The server derives names from codes and ignores the labels.
  */
 export function toGuestAddress(state: AddressFormState): GuestCheckoutAddress {
   return {
@@ -88,7 +122,10 @@ export function toGuestAddress(state: AddressFormState): GuestCheckoutAddress {
     address_2: state.address_2,
     city: state.city ?? '',
     country: state.country ?? '',
+    country_code: state.country_code ?? undefined,
     state: state.state ?? '',
+    state_code: state.state_code ?? undefined,
+    state_text: state.state_text?.trim() || undefined,
     zip: state.zip ?? '',
     phone: state.phone ?? '',
   };

@@ -11,21 +11,46 @@ const SUBDIVISION_TOO_LONG = `Keep the state or province to ${ADDRESS_CONFIG.MAX
  * Saved addresses validate the canonical codes. The subdivision requirement
  * follows the selected country: a code where the country has administrative
  * areas, free text where it has none.
+ *
+ * The update dialog allows a legacy country/subdivision to stay untouched:
+ * `allowLegacyCountry` accepts a display name when no code was chosen, and
+ * `allowLegacySubdivision` defers the subdivision requirement until the buyer
+ * explicitly replaces a preserved value.
  */
-export function createCodedAddressFormSchema(hasAdministrativeAreas: boolean) {
+export function createCodedAddressFormSchema(
+  hasAdministrativeAreas: boolean,
+  options: {
+    allowLegacyCountry?: boolean
+    allowLegacySubdivision?: boolean
+  } = {},
+) {
   return nameBasedAddressFormSchema
     .extend({
       country: z.string().optional(),
       state: z.string().optional(),
-      country_code: z.string({ required_error: COUNTRY_REQUIRED }),
+      country_code: z.string().optional(),
       state_code: z.string().optional(),
-      state_text: z
-        .string({ required_error: SUBDIVISION_REQUIRED })
-        .max(ADDRESS_CONFIG.MAX_CHAR_CITY, SUBDIVISION_TOO_LONG)
-        .optional(),
+      state_text: options.allowLegacySubdivision
+        ? z.string().optional()
+        : z
+          .string({ required_error: SUBDIVISION_REQUIRED })
+          .max(ADDRESS_CONFIG.MAX_CHAR_CITY, SUBDIVISION_TOO_LONG)
+          .optional(),
     })
     .superRefine((value, context) => {
-      if (hasAdministrativeAreas) {
+      if (
+        !value.country_code
+        && !(options.allowLegacyCountry && value.country?.trim())
+      ) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['country_code'],
+          message: COUNTRY_REQUIRED,
+        });
+        return;
+      }
+
+      if (hasAdministrativeAreas && !options.allowLegacySubdivision) {
         if (!value.state_code) {
           context.addIssue({
             code: z.ZodIssueCode.custom,

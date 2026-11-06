@@ -1,9 +1,13 @@
 import { z } from 'zod'
 import { createUserAddressRequestSchema } from './api/me/address/address.schema'
 
-export const guestCheckoutAddressSchema = createUserAddressRequestSchema.omit({
-  is_primary: true,
-})
+export const guestCheckoutAddressSchema = createUserAddressRequestSchema
+  .omit({ is_primary: true })
+  .extend({
+    country_code: z.string().optional(),
+    state_code: z.string().optional(),
+    state_text: z.string().optional(),
+  })
 
 export const guestCheckoutContactSchema = z.object({
   email: z

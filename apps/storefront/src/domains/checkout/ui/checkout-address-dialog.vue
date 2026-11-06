@@ -109,8 +109,8 @@ function onSubmitGuestAddress(payload: AddressFormState) {
 
   const { email } = parsed.data
 
-  // The checkout DTO stays name-based for guests, so code-only fields are
-  // dropped before the address is stored in checkout state.
+  // Guest checkout keeps the selected canonical codes; country and state
+  // labels remain in the stored address only for display and fallback.
   checkoutState.value.address = toGuestAddress(parsed.data)
   checkoutState.value.guestEmail = email
   void dialog.close()
