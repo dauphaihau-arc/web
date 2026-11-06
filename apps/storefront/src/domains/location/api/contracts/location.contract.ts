@@ -18,3 +18,17 @@ export type AdministrativeArea = {
 export type GetCountriesResponse = Country[];
 
 export type GetAdministrativeAreasResponse = AdministrativeArea[];
+
+export type LocationAddressFieldRule = {
+  key: string
+  label: string
+  visible: boolean
+  required: boolean
+  control: 'text' | 'select' | 'tel'
+  autocomplete: string
+};
+
+export type GetCountryAddressRulesResponse = {
+  country_code: string
+  fields: LocationAddressFieldRule[]
+};

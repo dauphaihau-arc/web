@@ -11,10 +11,11 @@ import type {
   UpdateUserAddressRequest,
 } from '~/domains/me/api/address/contracts/address.contract';
 import { useUpdateUserAddress } from '~/domains/me/mutations/address/update-address.mutation';
-import { useGetAdministrativeAreas, useGetCountries } from '~/domains/location/queries/countries.query';
+import { useGetAddressRules, useGetAdministrativeAreas, useGetCountries } from '~/domains/location/queries/countries.query';
 import { findCountry, findCountryCode } from '~/domains/location/utils/find-country-code';
 import { hydrateAddressCodes, toSavedAddressRequest } from '~/domains/me/ui/address/address-payload';
 import { createCodedAddressFormSchema } from '~/domains/me/ui/address/address-form.schema';
+import { fallbackAddressFieldRules, toAddressFieldRules } from '~/domains/me/ui/address/address-field-rules';
 import type { AddressFormState } from '~/domains/me/ui/address/address-form.types';
 import { toastCustom } from '~/shared/config/toast';
 
@@ -122,11 +123,19 @@ export function useUpdateUserAddressForm(dataEdit: UserAddress) {
     return undefined;
   });
 
+  const { data: dataGetAddressRules } = useGetAddressRules(selectedCountryCode);
+
+  const fieldRules = computed(() => dataGetAddressRules.value
+    ? toAddressFieldRules(dataGetAddressRules.value)
+    : fallbackAddressFieldRules({ guest: false }));
+
   const schema = computed(() => createCodedAddressFormSchema(hasAdministrativeAreas.value, {
     allowLegacyCountry: !stateSubmit.country_code && !!stateSubmit.country?.trim(),
     allowLegacySubdivision: isLegacySubdivision.value,
     countryCode: selectedCountryCode.value,
     postalCodeRequired: postalCodeRequired.value,
+    subdivisionVisible: fieldRules.value.find(rule => rule.key === 'subdivision')?.visible ?? true,
+    postcodeVisible: fieldRules.value.find(rule => rule.key === 'zip')?.visible ?? true,
     // Rows saved before the international rules keep their original
     // phone/postcode untouched; an unrelated edit must still save. Choosing a
     // new country re-enables validation because those rules are country-scoped.
@@ -160,6 +169,7 @@ export function useUpdateUserAddressForm(dataEdit: UserAddress) {
     stateSubmit.state_code = undefined;
     stateSubmit.state_text = undefined;
     stateSubmit.state = undefined;
+    stateSubmit.city = undefined;
     stateSubmit.zip = undefined;
     stateSubmit.phone = undefined;
   }
@@ -227,6 +237,7 @@ export function useUpdateUserAddressForm(dataEdit: UserAddress) {
     selectedCountryCode,
     hasAdministrativeAreas,
     postalCodeRequired,
+    fieldRules,
     subdivisionFieldName,
     isLegacySubdivision,
     readOnlySubdivisionLabel,

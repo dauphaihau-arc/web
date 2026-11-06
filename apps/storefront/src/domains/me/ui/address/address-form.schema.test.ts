@@ -212,9 +212,56 @@ describe('coded address form schema', () => {
       message: POSTCODE_INVALID,
     }));
   });
+  it('skips postcode validation and serializes an empty value when the field is hidden', () => {
+    const schema = createCodedAddressFormSchema(false, {
+      countryCode: 'GB',
+      postcodeVisible: false,
+      postalCodeRequired: true,
+    });
+    const result = schema.safeParse({
+      ...REQUIRED_FIELDS,
+      country_code: 'GB',
+      phone: '020 7946 0958',
+      zip: 'not-a-postcode',
+    });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.zip).toBe('');
+    }
+  });
+
+  it('does not require a subdivision when the field is hidden', () => {
+    const schema = createCodedAddressFormSchema(true, {
+      countryCode: 'US',
+      postalCodeRequired: true,
+      subdivisionVisible: false,
+    });
+    const withoutSubdivision = { ...US_FIELDS, state_code: undefined };
+
+    expect(schema.safeParse(withoutSubdivision).success).toBe(true);
+  });
 });
 
 describe('guest address form schema', () => {
+  it('applies hidden-field visibility to the guest schema', () => {
+    const schema = createGuestAddressFormSchema(true, {
+      countryCode: 'US',
+      postalCodeRequired: true,
+      postcodeVisible: false,
+      subdivisionVisible: false,
+    });
+
+    expect(schema.safeParse({
+      ...GUEST_FIELDS,
+      country: 'United States',
+      country_code: 'US',
+      phone: '4155552671',
+      state: undefined,
+      zip: undefined,
+    }).success).toBe(true);
+  });
+
   it('applies the same phone and postcode rules as the saved address form', () => {
     const schema = createGuestAddressFormSchema(false, {
       countryCode: 'GB',

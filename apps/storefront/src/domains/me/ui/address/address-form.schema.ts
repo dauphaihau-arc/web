@@ -38,6 +38,12 @@ export interface AddressSchemaOptions {
    */
   postalCodeRequired?: boolean
 
+  /** Whether the form renders the subdivision field for the selected country. */
+  subdivisionVisible?: boolean
+
+  /** Whether the form renders the postcode field for the selected country. */
+  postcodeVisible?: boolean
+
   /**
    * Stored phone/postcode an update may keep untouched. A value equal to the
    * stored one skips the client rules so an unrelated edit can still save;
@@ -55,10 +61,17 @@ function postcodeField(options: AddressSchemaOptions) {
   return z
     .string()
     .optional()
-    .transform(value =>
-      isUnchangedPostcode(value, options.preserveZip)
+    .transform((value) => {
+      if (options.postcodeVisible === false) {
+        // A country without postcodes never serializes whatever stale value
+        // the form state may still hold.
+        return '';
+      }
+
+      return isUnchangedPostcode(value, options.preserveZip)
         ? value
-        : normalizePostcode(value));
+        : normalizePostcode(value);
+    });
 }
 
 function phoneField(options: AddressSchemaOptions) {
@@ -94,6 +107,10 @@ function validatePostcode(
   context: z.RefinementCtx,
   options: AddressSchemaOptions,
 ) {
+  if (options.postcodeVisible === false) {
+    return;
+  }
+
   const zip = value.zip ?? '';
 
   if (isUnchangedPostcode(zip, options.preserveZip)) {
@@ -199,7 +216,11 @@ export function createCodedAddressFormSchema(
       validatePostcode(value, context, options);
       validatePhone(value, context, options);
 
-      if (hasAdministrativeAreas && !options.allowLegacySubdivision) {
+      if (
+        hasAdministrativeAreas
+        && options.subdivisionVisible !== false
+        && !options.allowLegacySubdivision
+      ) {
         if (!value.state_code) {
           context.addIssue({
             code: z.ZodIssueCode.custom,
@@ -239,7 +260,11 @@ export function createGuestAddressFormSchema(
       validatePostcode(value, context, options);
       validatePhone(value, context, options);
 
-      if (hasAdministrativeAreas) {
+      if (
+        hasAdministrativeAreas
+        && options.subdivisionVisible !== false
+        && !options.allowLegacySubdivision
+      ) {
         if (!value.state?.trim()) {
           context.addIssue({
             code: z.ZodIssueCode.custom,

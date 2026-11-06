@@ -2,6 +2,7 @@
 import type { CountryCode } from 'libphonenumber-js'
 import { getCountryCallingCode, parsePhoneNumberFromString } from 'libphonenumber-js'
 import { computed, ref, watch } from 'vue'
+import { toCountryFlag } from '~/domains/location/utils/country-flag'
 
 /**
  * International phone entry: the selected address country supplies the dial
@@ -18,6 +19,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   'update:modelValue': [value: string]
 }>()
+
+const countryEmoji = computed(() => toCountryFlag(props.countryCode))
 
 const dialCode = computed(() => {
   const countryCode = props.countryCode?.trim().toUpperCase()
@@ -44,10 +47,10 @@ const inputStyle = computed(() => {
     return undefined
   }
 
-  // Four-character dial codes need a little more room; three-character codes
-  // keep the tighter spacing that reads better in the form.
+  // Reserve room for the flag emoji plus the dial code. Four-character dial
+  // codes need a little more room than three-character ones.
   return {
-    paddingInlineStart: dialCode.value.length >= 4 ? '3.25rem' : '3rem',
+    paddingInlineStart: dialCode.value.length >= 4 ? '4.75rem' : '4.5rem',
   }
 })
 
@@ -142,7 +145,10 @@ function onBlur() {
       v-if="dialCode"
       #leading
     >
-      <span class="text-sm text-text-muted">{{ dialCode }}</span>
+      <span class="inline-flex items-center gap-1.5 text-sm text-text-muted">
+        <span>{{ countryEmoji }}</span>
+        <span>{{ dialCode }}</span>
+      </span>
     </template>
   </UInput>
 </template>
