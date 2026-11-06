@@ -17,21 +17,18 @@ const guestAddress = {
   full_name: 'Ada Lovelace',
   address_1: '1 Analytical Way',
   city: 'London',
-  country: 'United Kingdom',
   country_code: 'GB',
-  state: 'England',
   state_code: 'ENG',
   zip: 'N1',
   phone: '0700',
 } as unknown as CheckoutAddress;
 
-const legacyGuestAddress = {
+const guestAddressWithoutSubdivisionCode = {
   full_name: 'Ada Lovelace',
   address_1: '1 Analytical Way',
-  city: 'London',
-  country: 'United Kingdom',
-  state: 'England',
-  zip: 'N1',
+  city: 'Singapore',
+  country_code: 'SG',
+  zip: '018956',
   phone: '0700',
 } as unknown as CheckoutAddress;
 
@@ -78,19 +75,25 @@ describe('buildCartQuoteBody', () => {
     });
   });
 
-  it('keeps sending display names when the guest form has no codes', () => {
+  it('sends only the country code when the guest form has no subdivision', () => {
     const body = buildCartQuoteBody({
       isAuthenticated: false,
-      address: legacyGuestAddress,
+      address: guestAddressWithoutSubdivisionCode,
       guestCurrency: 'EUR',
       additionInfoShopCarts: new Map(),
     });
 
-    expect(body).toMatchObject({
+    expect(body).toEqual({
       shipping_address: {
-        country: 'United Kingdom',
-        state: 'England',
+        full_name: 'Ada Lovelace',
+        address_1: '1 Analytical Way',
+        address_2: undefined,
+        city: 'Singapore',
+        country_code: 'SG',
+        zip: '018956',
+        phone: '0700',
       },
+      presentment_currency: 'EUR',
     });
   });
 });

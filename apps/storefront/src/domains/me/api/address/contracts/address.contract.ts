@@ -5,18 +5,19 @@ type GeneratedCreateUserAddressRequest = components['schemas']['CreateMyAddressD
 type GeneratedUpdateUserAddressBody = components['schemas']['UpdateMyAddressDto'];
 
 /**
- * The saved-address API is expanding to canonical location codes. These fields
- * are hand-written here until the api-spec publishes them in the generated
- * contract; `country`/`state` remain the display-name fields and are still
- * accepted as a fallback while the endpoint expands.
+ * The saved-address API writes canonical location codes. These fields are
+ * hand-written here until the api-spec publishes them in the generated
+ * contract; `country_code` is the required write identity and `state_code` /
+ * `state_text` carry the subdivision. Display names are response-only and are
+ * never accepted as input.
  */
 type CodedAddressFields = {
-  country?: string
-  country_code?: string
-  state?: string
+  country_code: string
   state_code?: string
   state_text?: string
 };
+
+type OptionalCodedAddressFields = Partial<CodedAddressFields>;
 
 export type UserAddressItem = GeneratedUserAddressItem & {
   country_code: string | null
@@ -45,7 +46,7 @@ export type CreateUserAddressResponse = Omit<
 export type UpdateUserAddressBody = Omit<
   GeneratedUpdateUserAddressBody,
   'country' | 'state'
-> & CodedAddressFields;
+> & OptionalCodedAddressFields;
 
 export type UpdateUserAddressRequest = UpdateUserAddressBody & { id: UserAddressItem['id'] };
 export type UpdateUserAddressResponse = CreateUserAddressResponse;

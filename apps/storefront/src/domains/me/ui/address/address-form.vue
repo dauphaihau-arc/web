@@ -76,7 +76,7 @@ const subdivisionFieldName = computed(() => {
   if (!hasAdministrativeAreas.value) {
     return 'state_text'
   }
-  return props.guest ? 'state' : 'state_code'
+  return 'state_code'
 })
 
 watch(

@@ -118,7 +118,7 @@ function onStateTextChange(value: string | number | undefined) {
   <UFormGroup
     required
     label="Country"
-    :name="props.guest ? 'country' : 'country_code'"
+    name="country_code"
     class="mb-4"
   >
     <USelectMenu
@@ -175,7 +175,7 @@ function onStateTextChange(value: string | number | undefined) {
         v-else
         :model-value="state.state_text"
         name="state_text"
-        :disabled="!resolvedCountryCode && !state.country"
+        :disabled="!resolvedCountryCode"
         :maxlength="rule.maxLength"
         autocomplete="address-level1"
         size="lg"
