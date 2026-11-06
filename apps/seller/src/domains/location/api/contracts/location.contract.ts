@@ -1,14 +1,13 @@
-import type { z } from 'zod';
-import type {
-  countrySchema,
-  getCountriesResponseSchema,
-  getStatesByCountryRequestSchema,
-  getStatesByCountryResponseSchema,
-  stateSchema,
-} from '@arc/schemas/api/location/location.schema';
+/**
+ * Wire shapes of the Arc location reference endpoints. They are plain public
+ * JSON arrays (no auth envelope) and are hand-written here until the endpoint
+ * publishes a generated client.
+ */
+export type Country = {
+  code: string
+  name: string
+  has_administrative_areas: boolean
+  postal_code_required: boolean
+};
 
-export type Country = z.infer<typeof countrySchema>;
-export type State = z.infer<typeof stateSchema>;
-export type GetCountriesResponse = z.infer<typeof getCountriesResponseSchema>;
-export type GetStatesByCountryRequest = z.infer<typeof getStatesByCountryRequestSchema>;
-export type GetStatesByCountryResponse = z.infer<typeof getStatesByCountryResponseSchema>;
+export type GetCountriesResponse = Country[];

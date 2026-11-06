@@ -50,18 +50,18 @@ const items = computed(() => [
   },
 ])
 
-const countryNameByIso2 = computed(() => new Map(
-  (countriesResponse.value?.data ?? [])
-    .filter(country => country.Iso2)
-    .map(country => [country.Iso2!.toUpperCase(), country.name]),
+const countryNameByCode = computed(() => new Map(
+  (countriesResponse.value ?? [])
+    .filter(country => country.code)
+    .map(country => [country.code.toUpperCase(), country.name]),
 ))
 
-function countryLabel(iso2?: string) {
-  if (!iso2) {
+function countryLabel(code?: string) {
+  if (!code) {
     return ''
   }
 
-  return countryNameByIso2.value.get(iso2.toUpperCase()) ?? iso2
+  return countryNameByCode.value.get(code.toUpperCase()) ?? code
 }
 
 const shippingCoverage = computed(() => {

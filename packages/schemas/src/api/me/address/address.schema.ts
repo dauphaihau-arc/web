@@ -22,8 +22,9 @@ export const createUserAddressRequestSchema = z.object({
   city: z
     .string({ required_error: 'Please enter the city' })
     .max(ADDRESS_CONFIG.MAX_CHAR_CITY, `Keep the city to ${ADDRESS_CONFIG.MAX_CHAR_CITY} characters or fewer`),
-  country: z.string({ required_error: 'Select a country' }),
-  state: z.string({ required_error: 'Select a state or province' }),
+  country_code: z.string({ required_error: 'Select a country' }),
+  state_code: z.string().optional(),
+  state_text: z.string().optional(),
   zip: z
     .string({ required_error: 'Please enter the ZIP or postal code' })
     .max(ADDRESS_CONFIG.MAX_CHAR_ZIP, `Keep the ZIP or postal code to ${ADDRESS_CONFIG.MAX_CHAR_ZIP} characters or fewer`),

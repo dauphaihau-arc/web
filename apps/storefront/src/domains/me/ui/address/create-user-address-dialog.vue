@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AddressForm from '~/domains/me/ui/address/address-form.vue'
 import type { AddressFormState } from '~/domains/me/ui/address/address-form.types'
-import type { CreateUserAddressRequest } from '~/domains/me/api/address/contracts/address.contract'
+import { toSavedAddressRequest } from '~/domains/me/ui/address/address-payload'
 import { toastCustom } from '~/shared/config/toast'
 import { useCreateUserAddress } from '~/domains/me/mutations/address/create-address.mutation'
 
@@ -20,7 +20,7 @@ const {
 
 async function onSubmit(payload: AddressFormState) {
   try {
-    await createUserAddress(payload as CreateUserAddressRequest)
+    await createUserAddress(toSavedAddressRequest(payload))
     await dialog.close()
     await queryClient.invalidateQueries({
       queryKey: ['get-user-addresses'],
