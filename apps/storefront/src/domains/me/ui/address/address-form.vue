@@ -3,7 +3,8 @@ import { ADDRESS_CONFIG } from '@arc/enums/address'
 import { addressFormSchema } from '@arc/schemas/forms/address/address-form.schema'
 import { guestCheckoutFormSchema } from '@arc/schemas/guest-checkout.schema'
 import type { FormSubmitEvent } from '#ui/types'
-import { useGetCountries, useGetStatesByCountry } from '~/domains/location/queries/countries.query'
+import { useGetAdministrativeAreas, useGetCountries } from '~/domains/location/queries/countries.query'
+import { findCountryCode } from '~/domains/location/utils/find-country-code'
 import type { AddressFormState } from './address-form.types'
 
 const props = withDefaults(defineProps<{
@@ -27,24 +28,29 @@ const {
   isPending: isPendingGetCountries,
 } = useGetCountries()
 
+/**
+ * The endpoints are keyed by ISO code while the saved-address contract stays
+ * name-based, so the display name is resolved back to a code for area lookups.
+ */
+const selectedCountryCode = computed(() =>
+  findCountryCode(dataGetCountries.value, state.value.country))
+
 const {
-  data: dataGetStatesByCountry,
-  isFetching: isFetchingGetStates,
-  refetch: refetchGetStatesByCountry,
-} = useGetStatesByCountry(computed(() => state.value.country))
+  data: dataGetAdministrativeAreas,
+  isFetching: isFetchingGetAdministrativeAreas,
+} = useGetAdministrativeAreas(selectedCountryCode)
 
 const countriesOptions = computed(() => {
-  return dataGetCountries.value?.data.map(co => co.name) || []
+  return dataGetCountries.value?.map(country => country.name) ?? []
 })
 
 const stateOptions = computed(() => {
-  return dataGetStatesByCountry.value?.data.states.map(st => st.name) || []
+  return dataGetAdministrativeAreas.value?.map(area => area.name) ?? []
 })
 
 watch(() => state.value.country, () => {
   state.value.state = undefined
   state.value.zip = undefined
-  refetchGetStatesByCountry()
 })
 
 function onSubmit(event: FormSubmitEvent<AddressFormState>) {
@@ -150,8 +156,8 @@ defineExpose({
         <USelectMenu
           v-model="state.state"
           searchable
-          :loading="isFetchingGetStates"
-          :disabled="!state.country || isFetchingGetStates"
+          :loading="isFetchingGetAdministrativeAreas"
+          :disabled="!state.country || isFetchingGetAdministrativeAreas"
           :options="stateOptions"
           size="lg"
           trailing

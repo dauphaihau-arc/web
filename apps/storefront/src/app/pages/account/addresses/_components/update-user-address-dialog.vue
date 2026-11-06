@@ -10,7 +10,8 @@ import type {
 } from '~/domains/me/api/address/contracts/address.contract'
 import { toastCustom } from '~/shared/config/toast'
 import { useUpdateUserAddress } from '~/domains/me/mutations/address/update-address.mutation'
-import { useGetCountries, useGetStatesByCountry } from '~/domains/location/queries/countries.query'
+import { useGetAdministrativeAreas, useGetCountries } from '~/domains/location/queries/countries.query'
+import { findCountryCode } from '~/domains/location/utils/find-country-code'
 
 type UserAddress = GetUserAddressesResponse['results'][number]
 
@@ -39,11 +40,17 @@ const {
   isPending: isPendingGetCountries,
 } = useGetCountries()
 
+/**
+ * The dialog stores a country display name (the update payload stays
+ * name-based); the areas endpoint needs the matching ISO code.
+ */
+const selectedCountryCode = computed(() =>
+  findCountryCode(dataGetCountries.value, stateSubmit.country))
+
 const {
-  data: dataGetStatesByCountry,
+  data: dataGetAdministrativeAreas,
   isFetching: isPendingGetStates,
-  refetch: refetchGetStatesByCountry,
-} = useGetStatesByCountry(computed(() => stateSubmit.country))
+} = useGetAdministrativeAreas(selectedCountryCode)
 
 const {
   mutateAsync: updateUserAddress,
@@ -51,15 +58,11 @@ const {
 } = useUpdateUserAddress()
 
 const countriesOptions = computed(() => {
-  return dataGetCountries.value?.data.map(co => co.name) || []
+  return dataGetCountries.value?.map(country => country.name) ?? []
 })
 
 const stateOptions = computed(() => {
-  return dataGetStatesByCountry.value?.data.states.map(st => st.name) || []
-})
-
-onMounted(() => {
-  refetchGetStatesByCountry()
+  return dataGetAdministrativeAreas.value?.map(area => area.name) ?? []
 })
 
 async function onSubmit(event: FormSubmitEvent<CreateUserAddressRequest>) {
@@ -97,7 +100,6 @@ async function onSubmit(event: FormSubmitEvent<CreateUserAddressRequest>) {
 watch(() => stateSubmit.country, () => {
   stateSubmit.state = undefined
   stateSubmit.zip = undefined
-  refetchGetStatesByCountry()
 })
 </script>
 
