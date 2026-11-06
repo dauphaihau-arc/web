@@ -40,9 +40,8 @@ export function useShippingProfileEditor(
 
   const profileCurrency = computed(() => props.profile?.currency ?? props.shopCurrency ?? 'USD');
 
-  const countryOptions = computed(() => (countriesResponse.value?.data ?? [])
-    .filter(country => country.Iso2)
-    .map(country => ({ label: country.name, value: country.Iso2! })));
+  const countryOptions = computed(() => (countriesResponse.value ?? [])
+    .map(country => ({ label: country.name, value: country.code })));
 
   const state = reactive<ShippingProfileEditorState>(
     toShippingProfileFormState(props.profile, profileCurrency.value),

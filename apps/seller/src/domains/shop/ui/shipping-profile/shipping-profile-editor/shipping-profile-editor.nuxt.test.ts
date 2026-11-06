@@ -7,13 +7,22 @@ import { ShippingProfileReadinessLabels } from '@arc/enums/shipping';
 import { shippingProfileFormSchema } from '../shipping-profile-form.schema';
 import ShippingProfileEditor from './shipping-profile-editor.vue';
 
+const countries = vi.hoisted(() => [
+  {
+    code: 'US', name: 'United States', has_administrative_areas: true, postal_code_required: true,
+  },
+  {
+    code: 'CA', name: 'Canada', has_administrative_areas: true, postal_code_required: true,
+  },
+]);
+
 vi.mock('~/domains/location/queries/countries.query', async () => {
   // `vi.mock` factories are hoisted above the module's own imports, so `vue`
   // cannot be a static import here.
   const { computed } = await import('vue');
 
   return {
-    useGetCountries: () => ({ data: computed(() => ({ data: [] })) }),
+    useGetCountries: () => ({ data: computed(() => countries) }),
   };
 });
 
@@ -32,6 +41,17 @@ async function render() {
 }
 
 describe('shipping profile editor validation', () => {
+  it('offers Arc country names in the ship-from country picker', async () => {
+    const { wrapper } = await render();
+
+    await wrapper.find('[data-testid="shipping-profile-ship-from-country"]').trigger('click');
+    await flushPromises();
+
+    const options = wrapper.findAll('li').map(option => option.text().trim());
+
+    expect(options).toEqual(expect.arrayContaining(['United States', 'Canada']));
+  });
+
   it('holds the required name error until the profile is submitted', async () => {
     const { wrapper, nameInput } = await render();
 
