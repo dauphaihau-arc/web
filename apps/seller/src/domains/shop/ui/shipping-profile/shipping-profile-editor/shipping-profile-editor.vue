@@ -121,6 +121,7 @@ defineExpose({ submit, cancel, isSubmitting })
         >
           <USelectMenu
             v-model="state.ship_from_country"
+            data-testid="shipping-profile-ship-from-country"
             searchable
             clear-search-on-close
             :options="countryOptions"

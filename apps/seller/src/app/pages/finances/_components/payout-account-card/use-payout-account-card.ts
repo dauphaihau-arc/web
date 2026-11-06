@@ -141,10 +141,10 @@ export function usePayoutAccountCard() {
       return '';
     }
 
-    const iso2 = code.toUpperCase();
+    const normalizedCode = code.toUpperCase();
 
-    return (countriesResponse.value?.data ?? [])
-      .find(country => country.Iso2?.toUpperCase() === iso2)?.name ?? code;
+    return (countriesResponse.value ?? [])
+      .find(country => country.code.toUpperCase() === normalizedCode)?.name ?? code;
   });
   const payoutCurrency = computed(() => (
     displayAccount.value?.default_currency ?? displayAccount.value?.currency ?? ''
