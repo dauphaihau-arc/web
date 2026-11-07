@@ -163,9 +163,9 @@ watch(querySuggestion, () => {
                 {{ nameCategory }}
               </p>
               <AppIcon
-                v-if="categoryData.relatedCategories[idx + 1]"
+                v-if="idx !== categoryData.relatedCategories.length - 1"
                 name="play"
-                class="size-3"
+                class="size-2 text-text-strong"
               />
             </div>
           </div>
