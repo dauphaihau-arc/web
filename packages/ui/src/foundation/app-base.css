@@ -76,12 +76,26 @@ input[type=number] {
 
 /** ================== Animations ================== **/
 /* use at nuxt.config.ts file, app.pageTransition */
+/* Opacity only: it is composited, never re-rasterizes the page, and unlike
+   `filter`/`transform`/`will-change` it does not become the containing block for
+   `position: fixed` descendants (dialogs, drawers, slideovers) while it applies. */
 .page-enter-active,
 .page-leave-active {
-  transition: all 0.2s;
+  transition: opacity 0.2s ease;
 }
 .page-enter-from,
 .page-leave-to {
   opacity: 0;
-  filter: blur(1rem);
+}
+
+/* Whole-page fades are a vestibular trigger; honor the OS setting. */
+@media (prefers-reduced-motion: reduce) {
+  .page-enter-active,
+  .page-leave-active {
+    transition: none;
+  }
+  .page-enter-from,
+  .page-leave-to {
+    opacity: 1;
+  }
 }
