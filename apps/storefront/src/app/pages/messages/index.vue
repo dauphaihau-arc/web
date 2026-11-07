@@ -61,7 +61,8 @@ const messageTabItems = computed<AppTabsItem[]>(() => {
     {
       label: 'Unread',
       value: 'unread',
-      ...(count !== undefined ? { badge: count } : {}),
+      // A zero count carries no signal; AppTabs drops zero badges.
+      badge: count,
     },
   ]
 })
@@ -237,6 +238,7 @@ if (import.meta.client) {
           <AppTabs
             variant="link"
             size="md"
+            stretch
             aria-label="Message filters"
             :items="messageTabItems"
             :model-value="activeTab"

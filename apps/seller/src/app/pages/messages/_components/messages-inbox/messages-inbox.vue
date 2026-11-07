@@ -54,7 +54,8 @@ const tabs = computed(() => [
   {
     label: 'Unread',
     value: 'unread' as const,
-    ...(unreadCount.value == null ? {} : { badge: unreadCount.value }),
+    // A zero count carries no signal; AppTabs drops zero badges.
+    badge: unreadCount.value ?? undefined,
   },
 ])
 
@@ -126,6 +127,7 @@ function handleTabChange(value: string | number) {
         <AppTabs
           variant="link"
           size="md"
+          stretch
           aria-label="Message filters"
           :items="tabs"
           :model-value="activeTab"
