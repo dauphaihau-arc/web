@@ -22,5 +22,8 @@ useHead(() => ({
 </script>
 
 <template>
-  <CategoryPageContent :resolution="resolution" />
+  <CategoryPageContent
+    :resolution="resolution"
+    class="mx-auto max-w-home-layout px-4 md:px-12 lg:px-16"
+  />
 </template>

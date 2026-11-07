@@ -12,7 +12,7 @@ const { blocked, checking, checkForUpdate } = useCategoryIdentityBlocked()
 </script>
 
 <template>
-  <div class="pt-12">
+  <div class="mx-auto max-w-home-layout px-4 pt-12 md:px-12 lg:px-16">
     <CategoryIdentityUpdateCard
       v-if="blocked"
       :checking="checking"

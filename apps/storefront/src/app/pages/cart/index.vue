@@ -29,7 +29,7 @@ if (import.meta.client) {
 </script>
 
 <template>
-  <div class="mt-2 py-6 md:py-12">
+  <div class="mx-auto mt-2 max-w-home-layout px-4 py-6 md:p-12 lg:px-16">
     <Empty
       v-if="isPendingGetCart"
       loading

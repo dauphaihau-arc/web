@@ -81,54 +81,56 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <Empty
-    v-if="isLoadingGetOrderShopsByCheckoutSession && cartStore.orderShops.length === 0"
-    loading
-    size="xl"
-    variant="naked"
-    container-class="h-[80vh] w-full"
-  />
-  <Empty
-    v-else-if="isUnknownError"
-    variant="naked"
-    size="xl"
-    :icon="ICON_NAME_BY_ALIAS['warning']"
-    title="Something went wrong"
-    description="We couldn't load your order details. Please try again."
-    container-class="h-[80vh] w-full"
-  />
-  <div
-    v-else-if="orderShops.length > 0"
-    class="mt-20 grid place-content-center text-center"
-  >
-    <div class="mb-4 text-center text-3xl font-medium">
-      Your order is confirmed.
-    </div>
-    <div class=" space-y-4 text-text-subtle">
-      <div>
-        <span
-          v-for="(item, idx) of orderShops"
-          :key="idx"
-        >
-          <span v-if="idx > 0">, </span>
-          <span class="underline underline-offset-2">
-            {{ item.shop.shop_name }}
+  <div class="mx-auto max-w-home-layout px-4 md:px-12 lg:px-16">
+    <Empty
+      v-if="isLoadingGetOrderShopsByCheckoutSession && cartStore.orderShops.length === 0"
+      loading
+      size="xl"
+      variant="naked"
+      container-class="h-[80vh] w-full"
+    />
+    <Empty
+      v-else-if="isUnknownError"
+      variant="naked"
+      size="xl"
+      :icon="ICON_NAME_BY_ALIAS['warning']"
+      title="Something went wrong"
+      description="We couldn't load your order details. Please try again."
+      container-class="h-[80vh] w-full"
+    />
+    <div
+      v-else-if="orderShops.length > 0"
+      class="mt-20 grid place-content-center text-center"
+    >
+      <div class="mb-4 text-center text-3xl font-medium">
+        Your order is confirmed.
+      </div>
+      <div class=" space-y-4 text-text-subtle">
+        <div>
+          <span
+            v-for="(item, idx) of orderShops"
+            :key="idx"
+          >
+            <span v-if="idx > 0">, </span>
+            <span class="underline underline-offset-2">
+              {{ item.shop.shop_name }}
+            </span>
           </span>
-        </span>
-        will start working on this right away.<br />
-        We'll email you as soon as it ships.
-      </div>
-      <div>
-        <UButton
-          size="lg"
-          :to="isAuthenticated ? ROUTES.ORDERS : guestOrdersRoute"
-        >
-          {{ isAuthenticated ? 'View your order' : 'Track your order' }}
-        </UButton>
-      </div>
-      <div class="">
-        Delivery times are estimated. If you're experiencing difficulty with this order, please <br />
-        <span class="underline underline-offset-2">contact the seller</span>. See <span class="underline underline-offset-2">more info</span>.
+          will start working on this right away.<br />
+          We'll email you as soon as it ships.
+        </div>
+        <div>
+          <UButton
+            size="lg"
+            :to="isAuthenticated ? ROUTES.ORDERS : guestOrdersRoute"
+          >
+            {{ isAuthenticated ? 'View your order' : 'Track your order' }}
+          </UButton>
+        </div>
+        <div class="">
+          Delivery times are estimated. If you're experiencing difficulty with this order, please <br />
+          <span class="underline underline-offset-2">contact the seller</span>. See <span class="underline underline-offset-2">more info</span>.
+        </div>
       </div>
     </div>
   </div>

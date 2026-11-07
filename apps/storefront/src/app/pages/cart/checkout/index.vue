@@ -91,49 +91,51 @@ watch(
 </script>
 
 <template>
-  <Empty
-    v-if="isPendingGetCart"
-    loading
-    size="xl"
-    variant="naked"
-    description="Loading your checkout..."
-    container-class="h-[80vh] w-full"
-  />
+  <div class="mx-auto max-w-home-layout px-4 md:px-12 lg:px-16">
+    <Empty
+      v-if="isPendingGetCart"
+      loading
+      size="xl"
+      variant="naked"
+      description="Loading your checkout..."
+      container-class="h-[80vh] w-full"
+    />
 
-  <div
-    v-else-if="dataGetCart?.cart && dataGetCart.cart.shop_groups?.length > 0"
-    class="py-6 md:py-16"
-  >
-    <div class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-16">
-      <div class="lg:col-span-8">
-        <ReviewShippingAndPayment
-          v-model:checkout-state="cartStore.stateCheckoutCart"
-          class="mb-12"
-        />
-
-        <div
-          v-for="shopCart of dataGetCart.cart.shop_groups"
-          :key="shopCart.shop.id"
-        >
-          <ShopCart
-            :shop-cart="shopCart"
-            :quote-shop="quoteShopByShopId.get(shopCart.shop.id)"
-            :checkout-currency="quote?.checkout_currency"
+    <div
+      v-else-if="dataGetCart?.cart && dataGetCart.cart.shop_groups?.length > 0"
+      class="py-6 md:py-16"
+    >
+      <div class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-16">
+        <div class="lg:col-span-8">
+          <ReviewShippingAndPayment
+            v-model:checkout-state="cartStore.stateCheckoutCart"
+            class="mb-12"
           />
-        </div>
-      </div>
 
-      <div class="lg:col-span-4">
-        <div class="w-full md:max-w-[400px] lg:sticky lg:top-24 lg:max-w-none">
-          <SummaryOrderCard
-            :loading="isPendingGetCart"
-            :summary-order="dataGetCart?.summary"
-            :quote="quote ?? undefined"
+          <div
+            v-for="shopCart of dataGetCart.cart.shop_groups"
+            :key="shopCart.shop.id"
           >
-            <template #footer>
-              <CreateOrderBtn />
-            </template>
-          </SummaryOrderCard>
+            <ShopCart
+              :shop-cart="shopCart"
+              :quote-shop="quoteShopByShopId.get(shopCart.shop.id)"
+              :checkout-currency="quote?.checkout_currency"
+            />
+          </div>
+        </div>
+
+        <div class="lg:col-span-4">
+          <div class="w-full md:max-w-[400px] lg:sticky lg:top-24 lg:max-w-none">
+            <SummaryOrderCard
+              :loading="isPendingGetCart"
+              :summary-order="dataGetCart?.summary"
+              :quote="quote ?? undefined"
+            >
+              <template #footer>
+                <CreateOrderBtn />
+              </template>
+            </SummaryOrderCard>
+          </div>
         </div>
       </div>
     </div>

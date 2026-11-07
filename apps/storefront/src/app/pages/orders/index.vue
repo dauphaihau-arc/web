@@ -156,7 +156,7 @@ watch(
 </script>
 
 <template>
-  <div class="mt-8">
+  <div class="mx-auto mt-8 max-w-home-layout px-4 md:px-12 lg:px-16">
     <div class="mb-8">
       <SectionHeader
         title="Orders"

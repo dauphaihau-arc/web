@@ -42,7 +42,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="mx-auto mt-12 max-w-lg">
+  <div class="mx-auto mt-12 max-w-lg px-4 md:px-12 lg:px-16">
     <!--    Send email -->
     <ResetPasswordShell v-if="currentView === ResetPasswordViews.SEND_EMAIL">
       <template #title>

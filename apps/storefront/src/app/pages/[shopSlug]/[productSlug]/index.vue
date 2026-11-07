@@ -115,7 +115,7 @@ watch(productData, (value) => {
 </script>
 
 <template>
-  <div class="mt-6 lg:mt-20">
+  <div class="mx-auto mt-6 max-w-home-layout px-4 md:px-12 lg:mt-20 lg:px-16">
     <div
       v-if="isPendingProduct || product"
       class="space-y-10 lg:space-y-20"

@@ -118,7 +118,7 @@ function openReview(pkg: OrderPackage) {
 </script>
 
 <template>
-  <div class="mt-8 space-y-6">
+  <div class="mx-auto mt-8 max-w-home-layout space-y-6 px-4 md:px-12 lg:px-16">
     <div class="flex flex-col gap-2">
       <NuxtLink
         :to="routes.orders()"
