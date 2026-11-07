@@ -165,7 +165,7 @@ describe('payout account dialog', () => {
       url: 'https://connect.stripe.com/setup/e/acct_1/abc',
       status: 'onboarding',
     });
-    vi.stubGlobal('location', { assign });
+    vi.stubGlobal('location', { assign, href: 'http://localhost:3000/' });
 
     await render();
     await chooseOption('payout-account-country', 'United States');
@@ -180,7 +180,7 @@ describe('payout account dialog', () => {
   it('keeps the country picker and both actions locked from submit until the redirect', async () => {
     const onboarding = Promise.withResolvers<{ url: string, status: string }>();
     startOnboarding.mockImplementation(() => onboarding.promise);
-    vi.stubGlobal('location', { assign });
+    vi.stubGlobal('location', { assign, href: 'http://localhost:3000/' });
 
     await render();
     await chooseOption('payout-account-country', 'United States');
@@ -219,7 +219,7 @@ describe('payout account dialog', () => {
         message: 'PAYOUT_ACCOUNT_COUNTRY_UNSUPPORTED',
       },
     });
-    vi.stubGlobal('location', { assign });
+    vi.stubGlobal('location', { assign, href: 'http://localhost:3000/' });
 
     await render();
     await chooseOption('payout-account-country', 'United States');
@@ -247,7 +247,7 @@ describe('payout account dialog', () => {
 
   it('refreshes the account when onboarding returns no hosted URL', async () => {
     startOnboarding.mockResolvedValue({ url: null, status: 'active' });
-    vi.stubGlobal('location', { assign });
+    vi.stubGlobal('location', { assign, href: 'http://localhost:3000/' });
 
     await render();
     await chooseOption('payout-account-country', 'United States');

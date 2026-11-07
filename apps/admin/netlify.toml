@@ -8,6 +8,7 @@
 # above Netlify's default Node old-space ceiling (~2 GB), which aborts the build
 # with "Ineffective mark-compacts near heap limit".
 [build.environment]
+  NODE_VERSION = "24"
   NODE_OPTIONS = "--max-old-space-size=4096"
 # Installing the workspace needs @dauphaihau-arc/api-spec from GitHub Packages; the
 # site environment must provide NODE_AUTH_TOKEN with read:packages.

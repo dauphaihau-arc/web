@@ -1,0 +1,19 @@
+{
+  // Typed-lint project. Nuxt 4's generated `.nuxt/tsconfig.json` excludes
+  // `src/server` and only includes `test/nuxt`, so every file ESLint lints
+  // needs a project that includes it.
+  "extends": "./.nuxt/tsconfig.json",
+  "include": [
+    "src/**/*",
+    "test/**/*",
+    "e2e/**/*",
+    "scripts/**/*",
+    "*.ts",
+    "*.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".output"
+  ]
+}

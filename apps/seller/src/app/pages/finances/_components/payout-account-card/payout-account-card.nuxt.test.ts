@@ -152,7 +152,7 @@ describe('payout account card', () => {
       url: 'https://connect.stripe.com/setup/e/acct_1/abc',
       status: 'onboarding',
     });
-    vi.stubGlobal('location', { assign });
+    vi.stubGlobal('location', { assign, href: 'http://localhost:3000/' });
 
     const card = await render({ account: account({ status: 'onboarding' }) });
 
@@ -311,7 +311,7 @@ describe('payout account card', () => {
       url: 'https://connect.stripe.com/setup/e/acct_1/restricted',
       status: 'restricted',
     });
-    vi.stubGlobal('location', { assign });
+    vi.stubGlobal('location', { assign, href: 'http://localhost:3000/' });
 
     const card = await render({
       account: account({
@@ -342,7 +342,7 @@ describe('payout account card', () => {
   });
 
   it('keeps the restricted card visible until the hosted redirect navigates', async () => {
-    vi.stubGlobal('location', { assign });
+    vi.stubGlobal('location', { assign, href: 'http://localhost:3000/' });
 
     const { promise: onboardingPromise, resolve: resolveOnboarding } = Promise.withResolvers<{
       url: string

@@ -1,15 +1,16 @@
-import type { Ref } from 'vue';
 import { toastCustom } from '~/shared/config/toast';
 import { useAuthClientConfig } from '~/domains/auth/queries/client-config.query';
 import { useGenerateProductDescription } from '~/domains/shop/mutations/generate-product-description.mutation';
 import type { StateSubmit } from '~/domains/shop/api/product/contracts/form.contract';
 
-type TitleInputRef = Ref<{
+export type TitleInputHandle = {
   input?: {
     focus: () => void
     scrollIntoView: (options?: ScrollIntoViewOptions) => void
   }
-} | undefined>;
+};
+
+export type TitleInputRef = { readonly value: TitleInputHandle | null | undefined };
 
 export function useCreateProductAiDescription({
   stateSubmit,

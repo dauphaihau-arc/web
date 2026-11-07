@@ -24,10 +24,12 @@ import {
 import FormGroupCard from '~/shared/ui/wrapper-form-group-card.vue'
 import { routes } from '~/shared/navigation/routes'
 import type { ShippingProfileResource } from '~/domains/shop/api/shipping-profile/contracts/shipping-profile.contract'
+import type { TitleInputHandle } from './use-create-product-form/use-create-product-ai-description'
 
 const router = useRouter()
 const modal = useModal()
 const sections = PRODUCT_FORM_SECTIONS
+const titleInputRef = useTemplateRef<TitleInputHandle>('titleInputRef')
 
 const {
   btnSubmitRef,
@@ -50,9 +52,8 @@ const {
   shopCurrency,
   singleVariant,
   stateSubmit,
-  titleInputRef,
   validateForm,
-} = useCreateProductForm()
+} = useCreateProductForm({ titleInputRef })
 
 function openShippingProfileEditor(profile?: ShippingProfileResource) {
   modal.open(ShippingProfileEditorDialog, {

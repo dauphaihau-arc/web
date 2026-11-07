@@ -97,7 +97,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 22.13.0
+          node-version: 24.19.0
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
@@ -112,7 +112,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Prepare storefront Nuxt artifacts
-        run: pnpm --filter @arc/storefront exec nuxi prepare
+        run: pnpm --filter @arc/storefront exec nuxt prepare
 
       - name: Lint storefront
         run: pnpm lint:storefront
@@ -140,7 +140,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 22.13.0
+          node-version: 24.19.0
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
@@ -155,7 +155,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Prepare seller Nuxt artifacts
-        run: pnpm --filter @arc/seller exec nuxi prepare
+        run: pnpm --filter @arc/seller exec nuxt prepare
 
       - name: Lint seller
         run: pnpm lint:seller
@@ -183,7 +183,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 22.13.0
+          node-version: 24.19.0
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
@@ -198,7 +198,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Prepare admin Nuxt artifacts
-        run: pnpm --filter @arc/admin exec nuxi prepare
+        run: pnpm --filter @arc/admin exec nuxt prepare
 
       - name: Lint admin
         run: pnpm lint:admin
@@ -224,7 +224,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 22.13.0
+          node-version: 24.19.0
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
