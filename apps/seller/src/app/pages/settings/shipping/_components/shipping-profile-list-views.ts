@@ -58,14 +58,14 @@ const SHIPPING_PROFILE_LIST_VIEW_META: Record<
 
 export function buildShippingProfileListViewTabs(
   counts?: ShippingProfileStatusCounts,
-): Array<{ label: string, value: ShippingProfileListView }> {
+): Array<{ label: string, value: ShippingProfileListView, badge: number }> {
   return SHIPPING_PROFILE_LIST_VIEW_ORDER.map((view) => {
     const meta = SHIPPING_PROFILE_LIST_VIEW_META[view];
-    const count = meta.countedStatuses.reduce(
+    const badge = meta.countedStatuses.reduce(
       (sum, status) => sum + (counts?.[status] ?? 0),
       0,
     );
 
-    return { label: `${meta.label} (${count})`, value: view };
+    return { label: meta.label, value: view, badge };
   });
 }

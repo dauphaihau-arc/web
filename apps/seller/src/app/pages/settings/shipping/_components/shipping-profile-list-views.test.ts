@@ -25,19 +25,14 @@ describe('shipping profile list views', () => {
 
   it('counts each view, with All covering the working states only', () => {
     expect(buildShippingProfileListViewTabs({ active: 2, draft: 1, archived: 4 })).toEqual([
-      { label: 'All (3)', value: SHIPPING_PROFILE_LIST_VIEWS.ALL },
-      { label: 'Active (2)', value: SHIPPING_PROFILE_LIST_VIEWS.ACTIVE },
-      { label: 'Draft (1)', value: SHIPPING_PROFILE_LIST_VIEWS.DRAFT },
-      { label: 'Archived (4)', value: SHIPPING_PROFILE_LIST_VIEWS.ARCHIVED },
+      { label: 'All', value: SHIPPING_PROFILE_LIST_VIEWS.ALL, badge: 3 },
+      { label: 'Active', value: SHIPPING_PROFILE_LIST_VIEWS.ACTIVE, badge: 2 },
+      { label: 'Draft', value: SHIPPING_PROFILE_LIST_VIEWS.DRAFT, badge: 1 },
+      { label: 'Archived', value: SHIPPING_PROFILE_LIST_VIEWS.ARCHIVED, badge: 4 },
     ]);
   });
 
   it('counts zero before the first response arrives', () => {
-    expect(buildShippingProfileListViewTabs().map(tab => tab.label)).toEqual([
-      'All (0)',
-      'Active (0)',
-      'Draft (0)',
-      'Archived (0)',
-    ]);
+    expect(buildShippingProfileListViewTabs().map(tab => tab.badge)).toEqual([0, 0, 0, 0]);
   });
 });

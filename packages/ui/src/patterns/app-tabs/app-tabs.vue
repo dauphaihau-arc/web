@@ -33,6 +33,9 @@ const props = withDefaults(
     modelValue?: string | number
     defaultValue?: string | number
     orientation?: AppTabsOrientation
+
+    /** Split the container width evenly across tabs instead of sizing each to its content. */
+    stretch?: boolean
     ariaLabel?: string
   }>(),
   {
@@ -40,6 +43,7 @@ const props = withDefaults(
     size: 'sm',
     content: false,
     orientation: 'horizontal',
+    stretch: false,
   },
 )
 
@@ -301,7 +305,7 @@ function onTabKeydown(event: KeyboardEvent, index: number) {
 const listClass = computed(() => {
   const isVertical = props.orientation === 'vertical'
   const direction = isVertical ? 'flex-col' : 'flex-row'
-  const display = isVertical ? 'flex w-full' : 'inline-flex'
+  const display = isVertical || props.stretch ? 'flex w-full' : 'inline-flex'
 
   if (props.variant === 'pill') {
     return ['relative rounded-lg bg-surface-muted p-1', display, direction]
@@ -344,6 +348,8 @@ function tabClass(index: number): string[] {
 
   if (isVertical) {
     classes.push('w-full justify-start')
+  } else if (props.stretch) {
+    classes.push('flex-1')
   }
 
   if (props.variant === 'pill') {
@@ -376,6 +382,21 @@ function badgeClass(index: number): string[] {
     'inline-flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full px-1.5 text-[10px] font-semibold leading-none text-text-subtle tabular-nums',
     isActive(index) ? 'bg-surface' : 'bg-surface-control',
   ]
+}
+
+/** Counts above this collapse to `99+` so the pill keeps a stable width. */
+const BADGE_DISPLAY_MAX = 99
+
+// Zero and empty badges carry no signal, so they are not rendered. Keeping the
+// policy here makes every tab strip format counts the same way.
+function visibleBadge(badge: string | number | undefined): string | undefined {
+  if (badge === undefined || badge === '' || badge === 0) {
+    return undefined
+  }
+
+  return typeof badge === 'number' && badge > BADGE_DISPLAY_MAX
+    ? `${BADGE_DISPLAY_MAX}+`
+    : String(badge)
 }
 </script>
 
@@ -419,10 +440,10 @@ function badgeClass(index: number): string[] {
         <span v-if="item.label">{{ item.label }}</span>
 
         <span
-          v-if="item.badge !== undefined && item.badge !== ''"
+          v-if="visibleBadge(item.badge)"
           :class="badgeClass(index)"
         >
-          {{ item.badge }}
+          {{ visibleBadge(item.badge) }}
         </span>
       </button>
     </div>
