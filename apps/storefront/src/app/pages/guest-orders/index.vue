@@ -94,7 +94,7 @@ async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zi
 </script>
 
 <template>
-  <div class="py-12">
+  <div class="mx-auto max-w-home-layout px-4 py-12 md:px-12 lg:px-16">
     <div
       v-if="!hasDirectLookup"
       class="mx-auto mb-12 max-w-sm"

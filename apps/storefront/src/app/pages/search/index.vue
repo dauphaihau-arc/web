@@ -17,5 +17,5 @@ if (!route.query?.q) {
 </script>
 
 <template>
-  <SearchPageContent />
+  <SearchPageContent class="mx-auto max-w-home-layout px-4 md:px-12 lg:px-16" />
 </template>

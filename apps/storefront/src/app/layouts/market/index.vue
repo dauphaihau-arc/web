@@ -11,7 +11,6 @@ onMounted(() => {
 })
 
 const isAccountRoute = ref(false)
-const isHomeRoute = computed(() => route.path === routePaths.home)
 
 /** The header slides away while scrolling down, so the sticky account tabs pin flush to the top. */
 const headerVisible = useHeaderVisibility()
@@ -46,31 +45,35 @@ watch(() => route.path, () => {
   <div>
     <Header />
 
-    <div
-      class="pb-[500px] pt-14"
-      :class="isHomeRoute ? '' : 'mx-auto max-w-home-layout px-4 md:px-12 lg:px-16'"
-    >
+    <!-- No horizontal gutter here: pages own it, so a route change can never resize or
+         re-pad the outgoing page mid-leave (that flick is why this container stayed
+         full-bleed and each page carries its own max-w/gutter). -->
+    <div class="pb-[500px] pt-14">
       <div
         v-if="isAccountRoute"
-        class="mx-auto mt-8 flex min-h-[50vh] max-w-[900px] flex-col gap-6 lg:mt-24 lg:flex-row lg:gap-10"
+        class="px-4 md:px-12 lg:px-16"
       >
-        <UVerticalNavigation
-          class="scrollbar-subtle sticky z-[2] -mx-4 h-fit w-full flex-none overflow-x-auto bg-surface px-4 transition-all duration-200 md:-mx-12 md:px-12 lg:static lg:mx-0 lg:w-1/5 lg:overflow-visible lg:bg-transparent lg:px-0"
-          :class="headerVisible ? 'top-14' : 'top-0'"
-          :links="accountSidebarLinks"
-          :ui="accountNavUi"
+        <div
+          class="mx-auto mt-8 flex min-h-[50vh] max-w-[900px] flex-col gap-6 lg:mt-24 lg:flex-row lg:gap-10"
         >
-          <template #default="{ link }">
-            <span :class="link.disabled && 'opacity-50'">{{ link.label }}</span>
-          </template>
-          <template #icon="{ link }">
-            <AppIcon
-              :name="link.icon ?? ''"
-              :class="link.disabled && 'opacity-50'"
-            />
-          </template>
-        </UVerticalNavigation>
-        <slot />
+          <UVerticalNavigation
+            class="scrollbar-subtle sticky z-[2] -mx-4 h-fit w-full flex-none overflow-x-auto bg-surface px-4 transition-all duration-200 md:-mx-12 md:px-12 lg:static lg:mx-0 lg:w-1/5 lg:overflow-visible lg:bg-transparent lg:px-0"
+            :class="headerVisible ? 'top-14' : 'top-0'"
+            :links="accountSidebarLinks"
+            :ui="accountNavUi"
+          >
+            <template #default="{ link }">
+              <span :class="link.disabled && 'opacity-50'">{{ link.label }}</span>
+            </template>
+            <template #icon="{ link }">
+              <AppIcon
+                :name="link.icon ?? ''"
+                :class="link.disabled && 'opacity-50'"
+              />
+            </template>
+          </UVerticalNavigation>
+          <slot />
+        </div>
       </div>
 
       <div
