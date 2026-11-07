@@ -4,7 +4,7 @@
   "packageManager": "pnpm@9.3.0",
   "scripts": {
     "prepare": "husky install",
-    "dev": "turbo dev --parallel",
+    "dev": "turbo dev",
     "dev:seller": "pnpm --filter @arc/seller dev",
     "dev:admin": "pnpm --filter @arc/admin dev",
     "dev:storefront": "pnpm --filter @arc/storefront dev",
