@@ -1,0 +1,34 @@
+/**
+ * Layout containers and widths, driven by the `--layout-*` tokens in
+ * `design-tokens.css`.
+ *
+ * These are rules, not tokens: the token file is generated from `design-tokens.ts`
+ * and holds the custom properties only.
+ */
+
+.max-w-home-layout {
+  max-width: var(--layout-max-width-home);
+}
+
+.max-w-shop-layout {
+  max-width: var(--layout-max-width-shop);
+}
+
+.w-shop-layout-sidebar {
+  width: var(--layout-shop-sidebar-width);
+}
+
+.w-shop-layout-content {
+  width: calc(100% - var(--layout-shop-sidebar-width));
+  max-width: var(--layout-shop-content-max-width);
+}
+
+.shop-layout-content-inner {
+  width: 100%;
+  padding-left: var(--layout-page-gutter);
+  padding-right: var(--layout-page-gutter);
+}
+
+.bg-layout-shop {
+  background-image: var(--layout-shop-background);
+}
