@@ -5,12 +5,14 @@ type RowInteractionOptions<Row extends { id: string }> = {
   enabled?: Ref<boolean>
   rows: Ref<Row[]>
   onRowClick?: (row: Row) => void
+  /** Template ref the row observers attach to; created locally when omitted. */
+  tableWrapper?: Ref<HTMLElement | null>
 };
 
 export function useRowInteraction<Row extends { id: string }>(
   options: RowInteractionOptions<Row>,
 ) {
-  const tableWrapper = ref<HTMLElement | null>(null);
+  const tableWrapper = options.tableWrapper ?? ref<HTMLElement | null>(null);
   let rowObserver: MutationObserver | null = null;
   let cleanupRowListeners: Array<() => void> = [];
 

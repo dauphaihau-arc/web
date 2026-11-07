@@ -18,9 +18,9 @@ const emit = defineEmits<{
   'uploading-change': [value: boolean]
 }>()
 
+const fileInputRef = useTemplateRef('fileInputRef')
 const {
   canAddMoreImages,
-  fileInputRef,
   hasFailedImages,
   imageProgressLabel,
   imageProgressValue,
@@ -30,7 +30,7 @@ const {
   productOptions,
   removeImage,
   reviewImages,
-} = useItemMediaSection(props, emit)
+} = useItemMediaSection(props, emit, fileInputRef)
 </script>
 
 <template>

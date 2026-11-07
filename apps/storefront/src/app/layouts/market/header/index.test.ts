@@ -7,7 +7,16 @@ import {
 import LayoutMarketHeader from './header.vue';
 
 vi.mock('./cart-mega-menu.vue', () => ({
+  // `defineAsyncComponent` only unwraps `.default` from a module namespace
+  // marked as an ES module; without this it treats the namespace as the
+  // component and probes `__v_isVNode` on it (Vitest 5 throws for that).
+  __esModule: true,
+  __isTeleport: false,
+  __isKeepAlive: false,
+  __isSuspense: false,
+  name: 'CartMegaMenu',
   default: {
+    name: 'CartMegaMenu',
     props: {
       show: {
         type: Boolean,

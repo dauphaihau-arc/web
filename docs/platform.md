@@ -1,18 +1,18 @@
 # Platform
 
-Arc Web uses Nuxt 3 as the frontend application platform for Storefront, Seller, and future Admin applications. The platform standardizes application setup, state management, data fetching, UI foundations, assets, and bundle behavior across apps.
+Arc Web uses Nuxt 4 as the frontend application platform for Storefront, Seller, and future Admin applications. The platform standardizes application setup, state management, data fetching, UI foundations, assets, and bundle behavior across apps.
 
 ## Goals
 
 - Keep Nuxt application setup consistent across apps.
 - Provide shared state and server-state patterns.
 - Keep UI foundations reusable without coupling product workflows.
-- Configure assets, images, and bundle splitting consistently.
+- Configure assets and images consistently.
 - Keep app-specific platform behavior explicit in each app.
 
 ## Nuxt Application Model
 
-Each app uses Nuxt 3 with a consistent application surface:
+Each app uses Nuxt 4 with a consistent application surface:
 
 ```text
 src/app/

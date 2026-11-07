@@ -22,8 +22,12 @@ const ITEMS_PER_STEP = 2;
  * repopulates the same row changes `scrollWidth` without resizing the viewport,
  * which a container ResizeObserver alone would miss.
  */
-export function useCarouselControls(itemCount?: () => number) {
-  const carousel = ref<CarouselExposed | null>(null);
+export function useCarouselControls(
+  itemCount?: () => number,
+  externalCarousel?: Ref<CarouselExposed | null>,
+) {
+  const internalCarousel = ref<CarouselExposed | null>(null);
+  const carousel = externalCarousel ?? internalCarousel;
 
   const container = computed<HTMLElement | null>(() => {
     if (!import.meta.client) {
