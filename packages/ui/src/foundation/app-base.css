@@ -1,0 +1,87 @@
+@import url("./design-tokens.css");
+@import url("./layout.css");
+@import url("./elevation.css");
+@import url("./scroll.css");
+
+/**
+ * Base styles shared by every app (seller, admin, storefront).
+ *
+ * The sibling files hold one concern each: `design-tokens.css` is the generated
+ * `:root` layer, `layout.css` the `--layout-*` consumers, `elevation.css` the
+ * `--shadow-*` consumers, and `scroll.css` the scrollbar/edge-fade affordances.
+ * This file carries the element-level base rules and the page transition.
+ *
+ * Each app pulls this chain in as the first statement of its own `main.css`, which is
+ * the single `css` entry in its `nuxt.config.ts`. Keeping one copy means a rule change
+ * lands everywhere at once — the three apps are styled from the same tokens and run
+ * the same `app.pageTransition` (`name: 'page', mode: 'out-in'`), so the rules below
+ * only make sense as a single contract.
+ *
+ * The files are inlined by `postcss-import` before Tailwind runs, so `@apply` here
+ * resolves against each app's `tailwind.config.ts` (all three extend
+ * `sharedTailwindTheme` from `./design-tokens.ts`).
+ */
+
+/** ================== Base ================== **/
+
+html {
+  scrollbar-gutter: stable;
+}
+
+html[style*="overflow: hidden"] {
+  padding-right: 0 !important;
+}
+
+body {
+  @apply relative min-h-screen dark:bg-black dark:text-white;
+}
+
+/*
+  Remove Arrows/LoadingSvgs from Input Number
+*/
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.surface-backdrop {
+  position: absolute;
+  inset: 0;
+  bottom: -4rem;
+  pointer-events: none;
+  backdrop-filter: blur(0px);
+  background: transparent;
+  -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+  transition:
+    backdrop-filter 300ms,
+    background 300ms;
+  z-index: -1;
+}
+
+.surface-backdrop-active {
+  backdrop-filter: blur(10px);
+  background: linear-gradient(to bottom, var(--surface-overlay) 0%, transparent 100%);
+}
+
+.dark .surface-backdrop-active {
+  background: linear-gradient(to bottom, var(--surface-overlay-dark) 0%, transparent 100%);
+}
+
+/** ================== Animations ================== **/
+/* use at nuxt.config.ts file, app.pageTransition */
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.2s;
+}
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+  filter: blur(1rem);
+}

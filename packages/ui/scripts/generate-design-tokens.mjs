@@ -6,6 +6,9 @@
  * `designLayout`. `design-tokens.spec.ts` asserts the committed file matches this
  * renderer, so drift is a test failure rather than a silent divergence.
  *
+ * The output is the token layer only — consuming rules belong in `layout.css`,
+ * `elevation.css` and `scroll.css`, which are hand-written.
+ *
  * Usage: `node --experimental-strip-types packages/ui/scripts/generate-design-tokens.mjs`
  */
 import { writeFileSync } from 'node:fs';
@@ -63,197 +66,13 @@ function renderVarBlock() {
   return [colors, radii, shadows, layout].map((group) => group.join('\n')).join('\n\n');
 }
 
-/** Rules that are not token definitions; they only consume the generated custom properties. */
-const STATIC_RULES = `.max-w-home-layout {
-  max-width: var(--layout-max-width-home);
-}
-
-.max-w-shop-layout {
-  max-width: var(--layout-max-width-shop);
-}
-
-.w-shop-layout-sidebar {
-  width: var(--layout-shop-sidebar-width);
-}
-
-.w-shop-layout-content {
-  width: calc(100% - var(--layout-shop-sidebar-width));
-  max-width: var(--layout-shop-content-max-width);
-}
-
-.shop-layout-content-inner {
-  width: 100%;
-  padding-left: var(--layout-page-gutter);
-  padding-right: var(--layout-page-gutter);
-}
-
-.bg-layout-shop {
-  background-image: var(--layout-shop-background);
-}
-
-.shadow-border {
-  box-shadow: var(--shadow-border);
-}
-
-.shadow-overlay {
-  box-shadow: var(--shadow-overlay);
-}
-
-.shadow-hero {
-  box-shadow: var(--shadow-hero);
-}
-
-.scrollbar-subtle {
-  scrollbar-width: thin;
-  scrollbar-color: rgb(180 180 180) transparent;
-}
-
-.scrollbar-subtle::-webkit-scrollbar {
-  width: 10px;
-  background: inherit;
-}
-
-.scrollbar-subtle::-webkit-scrollbar-track {
-  background: inherit;
-  border: 0;
-}
-
-.scrollbar-subtle::-webkit-scrollbar-thumb {
-  background-color: rgb(180 180 180);
-  border: 3px solid transparent;
-  border-radius: 999px;
-  background-clip: content-box;
-}
-
-/* Scrolls without showing a scrollbar; for edge-bleeding horizontal strips
-   whose cut-off content already signals there is more to reach. */
-.scrollbar-hidden {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.scrollbar-hidden::-webkit-scrollbar {
-  display: none;
-}
-
-@property --scroll-fade-top {
-  syntax: "<length-percentage>";
-  inherits: false;
-  initial-value: 0;
-}
-
-@property --scroll-fade-bottom {
-  syntax: "<length-percentage>";
-  inherits: false;
-  initial-value: 0;
-}
-
-@property --scroll-fade-left {
-  syntax: "<length-percentage>";
-  inherits: false;
-  initial-value: 0;
-}
-
-@property --scroll-fade-right {
-  syntax: "<length-percentage>";
-  inherits: false;
-  initial-value: 0;
-}
-
-.scroll-fade,
-.scroll-fade-y {
-  --scroll-fade-size: min(12%, 40px);
-  --scroll-fade-top: 0;
-  --scroll-fade-bottom: var(--scroll-fade-size);
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    transparent,
-    black var(--scroll-fade-top),
-    black calc(100% - var(--scroll-fade-bottom)),
-    transparent
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    transparent,
-    black var(--scroll-fade-top),
-    black calc(100% - var(--scroll-fade-bottom)),
-    transparent
-  );
-}
-
-.scroll-fade-x {
-  --scroll-fade-size: min(12%, 40px);
-  --scroll-fade-left: 0;
-  --scroll-fade-right: var(--scroll-fade-size);
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent,
-    black var(--scroll-fade-left),
-    black calc(100% - var(--scroll-fade-right)),
-    transparent
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent,
-    black var(--scroll-fade-left),
-    black calc(100% - var(--scroll-fade-right)),
-    transparent
-  );
-}
-
-@supports (animation-timeline: scroll()) {
-  .scroll-fade,
-  .scroll-fade-y {
-    animation: scroll-fade-y linear both;
-    animation-timeline: scroll(self y);
-  }
-
-  .scroll-fade-x {
-    animation: scroll-fade-x linear both;
-    animation-timeline: scroll(self x);
-  }
-}
-
-@keyframes scroll-fade-y {
-  0% {
-    --scroll-fade-top: 0;
-    --scroll-fade-bottom: var(--scroll-fade-size);
-  }
-
-  8%,
-  92% {
-    --scroll-fade-top: var(--scroll-fade-size);
-    --scroll-fade-bottom: var(--scroll-fade-size);
-  }
-
-  100% {
-    --scroll-fade-top: var(--scroll-fade-size);
-    --scroll-fade-bottom: 0;
-  }
-}
-
-@keyframes scroll-fade-x {
-  0% {
-    --scroll-fade-left: 0;
-    --scroll-fade-right: var(--scroll-fade-size);
-  }
-
-  8%,
-  92% {
-    --scroll-fade-left: var(--scroll-fade-size);
-    --scroll-fade-right: var(--scroll-fade-size);
-  }
-
-  100% {
-    --scroll-fade-left: var(--scroll-fade-size);
-    --scroll-fade-right: 0;
-  }
-}
-`;
-
-/** Returns the complete stylesheet: generated `:root` block plus the static rules. */
+/**
+ * Returns the generated stylesheet: the `:root` custom-property block only.
+ * Rules that consume these tokens live in `layout.css`, `elevation.css` and
+ * `scroll.css`, so this file stays a pure token layer.
+ */
 export function renderDesignTokensCss() {
-  return `:root {\n${renderVarBlock()}\n}\n\n${STATIC_RULES}`;
+  return `:root {\n${renderVarBlock()}\n}\n`;
 }
 
 const runAsScript = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;

@@ -1,0 +1,15 @@
+/**
+ * Elevation utilities, driven by the `--shadow-*` tokens in `design-tokens.css`.
+ */
+
+.shadow-border {
+  box-shadow: var(--shadow-border);
+}
+
+.shadow-overlay {
+  box-shadow: var(--shadow-overlay);
+}
+
+.shadow-hero {
+  box-shadow: var(--shadow-hero);
+}
