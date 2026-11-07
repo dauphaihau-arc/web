@@ -13,11 +13,13 @@ const { data: dataUserAuth } = useGetCurrentUser()
 
 const session_id = route.query['session_id'] as string
 
+// Not thrown: a throw from setup leaves the component without bindings, and Vue renders
+// the template once anyway, so every binding read below would fail. showError marks the
+// payload error and the app renders the 404 page in this page's place.
 if (!session_id && cartStore.orderShops.length === 0) {
-  throw showError({
+  showError({
     statusCode: 404,
     statusMessage: 'Page Not Found',
-    fatal: true,
   })
 }
 
