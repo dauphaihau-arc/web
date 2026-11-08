@@ -16,7 +16,7 @@ const props = defineProps<{
 }>()
 
 const attributesModel = defineModel<ReqAttributeOption[] | undefined>({
-  default: [],
+  default: () => [],
   required: true,
 })
 

@@ -85,8 +85,8 @@ async function openDialog() {
     setup() {
       return () => h(ApplyProductTargets, {
         modelValue: productIds.value,
-        'onUpdate:modelValue': (value: string[]) => {
-          productIds.value = value;
+        'onUpdate:modelValue': (value: string[] | undefined) => {
+          productIds.value = value ?? [];
         },
       });
     },

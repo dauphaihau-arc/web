@@ -19,11 +19,11 @@ const props = withDefaults(
 )
 
 const fileImages = defineModel<File[]>('newFileImages', {
-  default: [],
+  default: () => [],
 })
 
 const idsImageForDelete = defineModel<Required<Pick<ProductImageReference, 'id'>>[]>('idsImageDelete', {
-  default: [],
+  default: () => [],
 })
 
 const toast = useToast()

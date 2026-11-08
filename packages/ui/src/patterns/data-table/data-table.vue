@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import type { PropType } from 'vue'
+import type { PropType, Ref } from 'vue'
+import { useTemplateRef } from 'vue'
 import { useRowInteraction } from './use-row-interaction'
 
 type TableRow = { id: string, [key: string]: unknown }
@@ -70,10 +71,13 @@ const tableModelValue = computed({
 const rowsRef = computed(() => props.rows)
 const clickableRowsRef = toRef(props, 'clickableRows')
 
-const { tableWrapper } = useRowInteraction<TableRow>({
+const tableWrapper = useTemplateRef<HTMLElement>('tableWrapper')
+
+useRowInteraction<TableRow>({
   rows: rowsRef,
   enabled: clickableRowsRef,
   onRowClick: row => emit('row-click', row),
+  tableWrapper: tableWrapper as unknown as Ref<HTMLElement | null>,
 })
 
 const dataSlotColumns = computed(() =>

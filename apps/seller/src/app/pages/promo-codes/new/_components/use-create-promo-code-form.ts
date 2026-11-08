@@ -26,7 +26,7 @@ import { addDurationToLocal, nowLocal } from '~/domains/shop/utils/promotion-sch
 export const CREATE_PROMO_CODE_FORM_ID = 'create-promo-code-form';
 
 /** The slice of `UForm`'s exposed API this form drives from its submit handler. */
-type PromoCodeFormRef = {
+export type PromoCodeFormRef = {
   clear: (path?: string) => void
   setErrors: (errors: FormError[]) => void
 };
@@ -45,13 +45,15 @@ type PromoCodeFormRef = {
 export function useCreatePromoCodeForm(options: {
   /** Resolves the Code field's element, so a server verdict can be reported on it. */
   getCodeElement: () => HTMLElement | null
+  /** Template ref bound on `UForm`; created locally when the caller omits it. */
+  formRef?: { readonly value: PromoCodeFormRef | null }
 }) {
   const router = useRouter();
   const toast = useToast();
 
   // The server owns code uniqueness, so its verdict is reported on the Code
   // field itself rather than as a toast that names no field.
-  const formRef = ref<PromoCodeFormRef | null>(null);
+  const formRef = options.formRef ?? ref<PromoCodeFormRef | null>(null);
 
   const { mutateAsync: createPromoCode, isPending: isPendingCreatePromoCode } = useShopCreatePromoCode();
   const { data: myShop } = useGetMyShop();

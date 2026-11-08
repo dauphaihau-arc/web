@@ -69,7 +69,7 @@ Some modules in `modules` may provide their own auto-imports, for example:
 
 - `@vueuse/nuxt`
 - `@nuxt/ui`
-- `@hebilicious/vue-query-nuxt`
+- `@arc/nuxt-vue-query`
 - `@samk-dev/nuxt-vcalendar`
 
 Those auto-imports come from the module itself, not from this app-level `imports.dirs` setting.

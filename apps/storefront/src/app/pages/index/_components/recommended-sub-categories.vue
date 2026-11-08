@@ -42,7 +42,8 @@ watch(errorGetCategories, (value) => {
 })
 
 const subCategories = computed(() => dataGetCategories.value ?? [])
-const { carousel, canGoPrev, canGoNext, prev, next } = useCarouselControls(() => subCategories.value.length)
+const carousel = useTemplateRef('carousel')
+const { canGoPrev, canGoNext, prev, next } = useCarouselControls(() => subCategories.value.length, carousel)
 
 const redirectPage = (subCategory: Category) => {
   navigateTo(getRoutePath(routes.category(subCategory.slug, subCategory.id)))

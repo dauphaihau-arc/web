@@ -41,7 +41,7 @@ Apps should not import feature code from other apps. Shared behavior should move
 
 Arc Web uses:
 
-- Nuxt 3 for the application framework.
+- Nuxt 4 for the application framework.
 - Pinia for shared state patterns.
 - Vue Query for server-state fetching.
 - Shared UI packages and design tokens for consistent interface behavior.

@@ -4,7 +4,7 @@ import {
   productWhoMadeOpts,
 } from '@arc/enums/product';
 import { ShippingProfileStatuses } from '@arc/enums/shipping';
-import { useCreateProductAiDescription } from './use-create-product-ai-description';
+import { useCreateProductAiDescription, type TitleInputHandle, type TitleInputRef } from './use-create-product-ai-description';
 import { useCreateProductSubmit } from './use-create-product-submit';
 import { useCreateProductSubmitState } from './use-create-product-submit-state';
 import { useCreateProductVariantState } from './use-create-product-variant-state';
@@ -14,12 +14,14 @@ import { SHIPPING_PROFILE_PICKER_QUERY, useShopShippingProfiles } from '~/domain
 import type { FormErrorEvent } from '#ui/types';
 import type { StateSubmit } from '~/domains/shop/api/product/contracts/form.contract';
 
-export function useCreateProductForm() {
+export function useCreateProductForm(
+  options: { titleInputRef?: TitleInputRef } = {},
+) {
   const { data: myShop } = useGetMyShop();
   const { data: shippingProfiles } = useShopShippingProfiles(ref(SHIPPING_PROFILE_PICKER_QUERY));
 
   const fileImages = ref<File[]>([]);
-  const titleInputRef = ref();
+  const titleInputRef = options.titleInputRef ?? ref<TitleInputHandle | null>(null);
   const btnSubmitRef = ref();
   const shippingProfileId = ref<string>();
 

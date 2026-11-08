@@ -1,0 +1,16 @@
+{
+  "name": "@arc/nuxt-vue-query",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/module.ts"
+  },
+  "dependencies": {
+    "@arc/lib": "workspace:*",
+    "@tanstack/vue-query": "^5.45.0",
+    "defu": "^6.1.4"
+  },
+  "peerDependencies": {
+    "@nuxt/kit": "^4.0.0"
+  }
+}
