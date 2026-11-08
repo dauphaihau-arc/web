@@ -124,7 +124,15 @@ jobs:
         run: pnpm --filter @arc/storefront test
 
       - name: Build storefront
+        env:
+          NITRO_PRESET: netlify
         run: pnpm build:storefront
+
+      # `isr` only works on the Netlify preset and breaks silently if a route is
+      # prerendered or the preset regresses, so assert the built artifact.
+      - name: Assert ISR contract
+        working-directory: ${{ github.workspace }}
+        run: node apps/storefront/scripts/assert-isr.mjs
 
   seller:
     needs: changes

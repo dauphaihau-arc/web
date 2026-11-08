@@ -1,0 +1,80 @@
+name: ISR monitor
+
+# Production cache health. The deploy-time probe (isr-probe.yml) only proves the
+# route cached once; this checks it stays cached and keeps a single tracking
+# issue instead of alerting per run.
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: isr-monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      STOREFRONT_PROD_URL: https://arc.hau.sarl
+      ISSUE_TITLE: 'ISR monitor: storefront / not served from cache'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Probe production
+        id: probe
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          ./apps/storefront/scripts/check-isr.sh "$STOREFRONT_PROD_URL" / \
+            --expect 3600 \
+            --control /search \
+            --attempts 3 \
+            --interval 5 \
+            --require-no-cookie 2>&1 | tee isr-monitor.log
+
+      - name: Write summary
+        if: always()
+        run: |
+          {
+            echo '### ISR monitor'
+            echo
+            echo '```'
+            cat isr-monitor.log 2>/dev/null || echo 'no probe output'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Report to tracking issue
+        env:
+          OUTCOME: ${{ steps.probe.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+
+          existing="$(gh issue list --state open --limit 100 --json number,title \
+            --jq '.[] | select(.title == env.ISSUE_TITLE) | .number' | head -n 1)"
+          log="$(cat isr-monitor.log 2>/dev/null || echo 'no probe output')"
+
+          if [[ "$OUTCOME" == "success" ]]; then
+            if [[ -n "$existing" ]]; then
+              gh issue comment "$existing" --body "Recovered: production ISR probe passed — $RUN_URL"
+              gh issue close "$existing"
+            fi
+            exit 0
+          fi
+
+          if [[ -n "$existing" ]]; then
+            gh issue comment "$existing" --body "$(printf 'Still failing — %s\n\n```\n%s\n```' "$RUN_URL" "$log")"
+          else
+            gh issue create --title "$ISSUE_TITLE" \
+              --body "$(printf 'Production ISR probe failed — %s\n\n```\n%s\n```' "$RUN_URL" "$log")"
+          fi
+
+          exit 1

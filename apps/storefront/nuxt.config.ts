@@ -1,5 +1,7 @@
 import { existsSync } from 'node:fs'
+import { writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
+import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { APP_ICON_CLIENT_BUNDLE_ICONS, APP_ICON_COLLECTIONS } from '../../packages/ui/src/foundation/app-icon.constants'
 import { removePageComponents } from '../../packages/ui/src/foundation/nuxt-pages'
@@ -149,6 +151,26 @@ export default defineNuxtConfig({
   hooks: {
     'pages:extend'(pages) {
       removePageComponents(pages)
+    },
+    // ISR is only honoured by the Netlify/Vercel presets, so assert the built
+    // artifact rather than trusting the config source. See scripts/assert-isr.mjs.
+    'nitro:init'(nitro) {
+      if (nitro.options.dev) {
+        return
+      }
+
+      nitro.hooks.hook('compiled', async () => {
+        const contract = {
+          preset: nitro.options.preset,
+          publicDir: nitro.options.output.publicDir,
+          routeRules: nitro.options.routeRules,
+        }
+
+        await writeFile(
+          join(nitro.options.output.dir, 'isr-contract.json'),
+          `${JSON.stringify(contract, null, 2)}\n`,
+        )
+      })
     },
   },
 
