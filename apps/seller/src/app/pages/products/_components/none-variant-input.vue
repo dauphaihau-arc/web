@@ -5,9 +5,9 @@ import type { StateNoneVariant } from '~/domains/shop/api/product/contracts/form
 const props = defineProps<{ disabled?: boolean, currency?: string }>()
 
 const noneVariantModel = defineModel<StateNoneVariant>('noneVariant', {
-  default: {
+  default: () => ({
     stock: 1,
-  },
+  }),
 })
 
 function setAmount(value: string | number) {

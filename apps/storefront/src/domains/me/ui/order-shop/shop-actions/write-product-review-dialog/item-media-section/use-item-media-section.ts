@@ -39,10 +39,10 @@ type ItemMediaSectionEmit = {
 export function useItemMediaSection(
   props: ItemMediaSectionProps,
   emit: ItemMediaSectionEmit,
+  fileInputRef: Ref<HTMLInputElement | null>,
 ) {
   const toast = useToast();
   const runtimeConfig = useRuntimeConfig();
-  const fileInputRef = ref<HTMLInputElement | null>(null);
   const reviewImages = ref<ReviewImageUploadItem[]>([]);
 
   const productOptions = computed(() =>

@@ -1,6 +1,6 @@
 # Admin App
 
-Internal Arc admin portal built with Nuxt 3.
+Internal Arc admin portal built with Nuxt 4.
 
 ## Scope
 

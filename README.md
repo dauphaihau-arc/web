@@ -38,8 +38,8 @@ docs/
 
 ## Requirements
 
-- Node.js `22.13.0`
-- PNPM `8.13.1`
+- Node.js `24.19.0`
+- PNPM `9.3.0`
 
 ## Common commands
 

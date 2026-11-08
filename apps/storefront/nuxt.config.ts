@@ -22,11 +22,10 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         {
-          hid: 'viewport',
           name: 'viewport',
           content: 'width=device-width, initial-scale=1',
         },
-        { hid: 'description', name: 'description', content: pkg.description },
+        { name: 'description', content: pkg.description },
       ],
       link: [
         { rel: 'icon', type: 'image/png', href: '/favicon.png' },
@@ -53,8 +52,10 @@ export default defineNuxtConfig({
   },
 
   srcDir: 'src/',
+  serverDir: 'src/server',
   dir: {
     assets: 'app/assets',
+    public: 'src/public',
     layouts: 'app/layouts',
     middleware: 'app/middleware',
     pages: 'app/pages',
@@ -65,14 +66,13 @@ export default defineNuxtConfig({
 
   modules: [
     '@nuxt/eslint',
-    '@nuxt/devtools',
     '@pinia/nuxt',
     '@nuxt/ui',
     '@vueuse/nuxt',
     'nuxt-security',
     '@formkit/auto-animate/nuxt',
     '@nuxt/image',
-    '@hebilicious/vue-query-nuxt',
+    ['@arc/nuxt-vue-query', { categoryIdentityPolicy: true }],
   ],
 
   icon: {
@@ -100,7 +100,12 @@ export default defineNuxtConfig({
   security: {
     headers: {
       contentSecurityPolicy: false,
-      crossOriginEmbedderPolicy: false
+      crossOriginEmbedderPolicy: false,
+      xFrameOptions: 'DENY',
+      strictTransportSecurity: {
+        maxAge: 31536000,
+        includeSubdomains: true
+      }
     },
   },
 
@@ -115,7 +120,7 @@ export default defineNuxtConfig({
   },
 
   pinia: {
-    storesDirs: ['./src/domains/**/*.store.ts'],
+    storesDirs: ['./domains/**/*.store.ts'],
   },
 
   components: [
@@ -177,17 +182,8 @@ export default defineNuxtConfig({
 
   css: ['~/app/assets/css/main.css'],
 
-  vite: {
-    build: {
-      rollupOptions: {
-        output: {
-          manualChunks,
-        },
-      },
-    },
-  },
-
   image: {
+    dir: 'src/public',
     provider: 'none',
     // The module defu-merges density arrays with its [1, 2] default, so use
     // densities="1" on NuxtImg instances that point at a single stored asset.
@@ -197,19 +193,3 @@ export default defineNuxtConfig({
   },
   compatibilityDate: '2024-08-21',
 })
-
-function manualChunks(id: string): string | undefined {
-  if (id.includes('/node_modules/.pnpm/@vue+') || id.includes('/node_modules/.pnpm/vue@') || id.includes('/node_modules/.pnpm/vue-router@')) {
-    return 'vue'
-  }
-
-  if (id.includes('/node_modules/.pnpm/@nuxt+ui@') || id.includes('/node_modules/.pnpm/@headlessui+vue@') || id.includes('/node_modules/.pnpm/@popperjs+core@') || id.includes('/node_modules/.pnpm/@tanstack+virtual-core@') || id.includes('/node_modules/.pnpm/@tanstack+vue-virtual@')) {
-    return 'ui'
-  }
-
-  if (id.includes('/node_modules/.pnpm/@tanstack+query-core@') || id.includes('/node_modules/.pnpm/@tanstack+vue-query@') || id.includes('/node_modules/.pnpm/@hebilicious+vue-query-nuxt@')) {
-    return 'query'
-  }
-
-  return undefined
-}

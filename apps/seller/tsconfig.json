@@ -6,6 +6,10 @@
     "types": [
       "@pinia/nuxt"
     ],
+    // Nuxt 4 generates `noUncheckedIndexedAccess: true`. The codebase was
+    // written against the Nuxt 3 default, so opt out here and convert call
+    // sites deliberately rather than in the upgrade diff.
+    "noUncheckedIndexedAccess": false,
     // strict settings
     "strict": true,
     "strictNullChecks": true,

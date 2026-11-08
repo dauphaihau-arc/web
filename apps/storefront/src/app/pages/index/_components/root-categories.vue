@@ -13,7 +13,8 @@ const marketStore = useMarketStore()
 const { blocked, checking, checkForUpdate } = useCategoryIdentityBlocked()
 
 const categories = computed(() => data.value ?? [])
-const { carousel, canGoPrev, canGoNext, prev, next } = useCarouselControls(() => categories.value.length)
+const carousel = useTemplateRef('carousel')
+const { canGoPrev, canGoNext, prev, next } = useCarouselControls(() => categories.value.length, carousel)
 
 const categoryImageUrl = (category: Category) => resolveCategoryImageUrl(
   category,

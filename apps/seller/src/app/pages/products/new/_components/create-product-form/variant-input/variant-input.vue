@@ -10,11 +10,11 @@ import ProductVariantInput from '~/app/pages/products/_components/variant-input/
 const props = defineProps<{ countValidate: number, currency?: string }>()
 
 const singleVariantModel = defineModel<StateSingleVariant>('singleVariant', {
-  default: {},
+  default: () => ({}),
 })
 
 const combineVariantModel = defineModel<StateCombineVariant>('combineVariant', {
-  default: {},
+  default: () => ({}),
 })
 
 const variantTypeModel = defineModel<ProductVariantTypes>('variantType', {

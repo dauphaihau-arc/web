@@ -3,14 +3,17 @@ import {
 } from 'vitest';
 
 const {
+  defineNuxtPluginMock,
   defineNuxtRouteMiddlewareMock,
   navigateToMock,
 } = vi.hoisted(() => ({
+  defineNuxtPluginMock: vi.fn((plugin: unknown) => plugin),
   defineNuxtRouteMiddlewareMock: vi.fn((middleware: unknown) => middleware),
   navigateToMock: vi.fn(),
 }));
 
 vi.mock('#app', () => ({
+  defineNuxtPlugin: defineNuxtPluginMock,
   defineNuxtRouteMiddleware: defineNuxtRouteMiddlewareMock,
   navigateTo: navigateToMock,
 }));

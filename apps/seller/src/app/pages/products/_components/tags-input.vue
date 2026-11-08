@@ -3,7 +3,7 @@ import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import { PRODUCT_CONFIG } from '@arc/enums/product'
 
 const tagsModel = defineModel<string[]>({
-  default: [],
+  default: () => [],
 })
 
 const state = reactive({

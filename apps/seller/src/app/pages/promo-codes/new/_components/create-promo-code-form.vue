@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, useTemplateRef } from 'vue'
 import { PromotionBenefitType } from '@arc/enums/promotion'
 import PromotionProductsCard from '~/domains/shop/ui/promotion/promotion-products-card.vue'
 import PromotionScheduleCard from '~/domains/shop/ui/promotion/promotion-schedule-card.vue'
@@ -7,12 +7,12 @@ import FixedFormActions from '~/shared/ui/fixed-form-actions.vue'
 import PromoCodeDetailsCard from './promo-code-details-card.vue'
 import PromoCodeMinimumRequirementsCard from './promo-code-minimum-requirements-card.vue'
 import PromoCodeRedemptionLimitsCard from './promo-code-redemption-limits-card.vue'
-import { CREATE_PROMO_CODE_FORM_ID, useCreatePromoCodeForm } from './use-create-promo-code-form'
+import { CREATE_PROMO_CODE_FORM_ID, useCreatePromoCodeForm, type PromoCodeFormRef } from './use-create-promo-code-form'
 
 const detailsCardRef = ref<{ codeElement: () => HTMLElement | null } | null>(null)
+const formRef = useTemplateRef<PromoCodeFormRef>('formRef')
 
 const {
-  formRef,
   state,
   validate,
   onSubmit,
@@ -30,6 +30,7 @@ const {
   isStoreTimezone,
 } = useCreatePromoCodeForm({
   getCodeElement: () => detailsCardRef.value?.codeElement() ?? null,
+  formRef,
 })
 </script>
 

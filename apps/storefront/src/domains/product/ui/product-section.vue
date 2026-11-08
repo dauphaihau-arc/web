@@ -24,7 +24,8 @@ const props = withDefaults(defineProps<{
 const productItems = computed(() => props.products ?? [])
 const hasProducts = computed(() => productItems.value.length > 0)
 const skeletonItems = computed(() => Array.from({ length: props.limit }, (_, index) => index))
-const { carousel, canGoPrev, canGoNext, prev, next } = useCarouselControls(() => productItems.value.length)
+const carousel = useTemplateRef('carousel')
+const { canGoPrev, canGoNext, prev, next } = useCarouselControls(() => productItems.value.length, carousel)
 </script>
 
 <template>

@@ -1,3 +1,5 @@
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import dauphaihauConfig from '@dauphaihau/eslint-config';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
@@ -77,11 +79,23 @@ function stripDuplicatedPlugins(config) {
 }
 
 function createTypeScriptFilesConfigs({ tailwindConfigPath, tsconfigRootDir } = {}) {
+  // Nuxt 4 generates separate app/server/Node tsconfig projects and excludes
+  // `server/` from the app project, so the ESLint typed-lint project service
+  // cannot place `test/`, `e2e/`, or `server/` files. Each app ships a
+  // `tsconfig.eslint.json` covering everything ESLint lints.
+  const eslintProject = tsconfigRootDir
+    && existsSync(join(tsconfigRootDir, 'tsconfig.eslint.json'))
+    ? './tsconfig.eslint.json'
+    : undefined;
+
   const sharedLanguageOptions = {
     ecmaVersion: 'latest',
     sourceType: 'module',
     parserOptions: {
       tsconfigRootDir,
+      ...(eslintProject
+        ? { projectService: false, project: [eslintProject] }
+        : {}),
     },
   };
 
