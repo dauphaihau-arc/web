@@ -100,7 +100,12 @@ export default defineNuxtConfig({
   security: {
     headers: {
       contentSecurityPolicy: false,
-      crossOriginEmbedderPolicy: false
+      crossOriginEmbedderPolicy: false,
+      xFrameOptions: 'DENY',
+      strictTransportSecurity: {
+        maxAge: 31536000,
+        includeSubdomains: true
+      }
     },
   },
 
