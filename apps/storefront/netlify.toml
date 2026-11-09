@@ -4,8 +4,11 @@
   ignore = "git diff --quiet \"$CACHED_COMMIT_REF\" \"$COMMIT_REF\" -- apps/storefront packages package.json pnpm-lock.yaml pnpm-workspace.yaml"
 
 # Nitro's Netlify server bundling needs the same heap allowance as seller.
+# The preset is pinned so ISR route rules (nuxt.config.ts `isr`) reach the CDN
+# layer instead of silently degrading to the node-server preset.
 [build.environment]
   NODE_VERSION = "24"
   NODE_OPTIONS = "--max-old-space-size=4096"
+  NITRO_PRESET = "netlify"
 # Installing the workspace needs @dauphaihau-arc/api-spec from GitHub Packages; the
 # site environment must provide NODE_AUTH_TOKEN with read:packages.
