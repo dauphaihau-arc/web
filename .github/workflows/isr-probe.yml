@@ -8,9 +8,7 @@ name: ISR probe
 # - deployment_status: requires Netlify to publish GitHub deployment
 #   notifications for the site. At the time of writing it does not, so this is
 #   opportunistic; the scheduled isr-monitor.yml is the automatic safety net.
-# - workflow_dispatch: probe any deploy URL on demand.
-#
-# Production probe failures fail the run; preview failures fail the job only.
+# - workflow_dispatch: probe any deploy URL on demand, defaulting to production.
 
 on:
   deployment_status:
@@ -42,6 +40,7 @@ jobs:
       - name: Resolve deploy URL
         id: target
         env:
+          EVENT_NAME: ${{ github.event_name }}
           ENVIRONMENT: ${{ github.event.deployment_status.environment }}
           ENVIRONMENT_URL: ${{ github.event.deployment_status.environment_url }}
           TARGET_URL: ${{ github.event.deployment_status.target_url }}
@@ -51,7 +50,7 @@ jobs:
 
           if [[ -n "$INPUT_URL" ]]; then
             url="$INPUT_URL"
-          elif [[ "$ENVIRONMENT" == "production" ]]; then
+          elif [[ "$ENVIRONMENT" == "production" || "$EVENT_NAME" == "workflow_dispatch" ]]; then
             url="$STOREFRONT_PROD_URL"
           else
             url="${ENVIRONMENT_URL:-$TARGET_URL}"
@@ -78,9 +77,9 @@ jobs:
           set -o pipefail
           ./apps/storefront/scripts/check-isr.sh "$URL" / \
             --expect 3600 \
-            --control /search \
-            --attempts 10 \
-            --interval 6 \
+            --control /cart \
+            --attempts 8 \
+            --interval 5 \
             --require-no-cookie \
             --payload 2>&1 | tee isr-probe.log
 
