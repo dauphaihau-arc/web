@@ -8,18 +8,18 @@ import { z } from 'zod'
  * zodKeys(userSchema) // Returns ['id', 'name']
  */
 
-export const zodKeys = <T extends z.ZodTypeAny>(schema: T): string[] => {
+export const zodKeys = <T extends z.ZodType>(schema: T): string[] => {
   // make sure schema is not null or undefined
   if (schema === null || schema === undefined) {
     return []
   }
   // check if schema is nullable or optional
   if (schema instanceof z.ZodNullable || schema instanceof z.ZodOptional) {
-    return zodKeys(schema.unwrap())
+    return zodKeys(schema.unwrap() as z.ZodType)
   }
   // check if schema is an array
   if (schema instanceof z.ZodArray) {
-    return zodKeys(schema.element)
+    return zodKeys(schema.element as z.ZodType)
   }
   // check if schema is an object
   if (schema instanceof z.ZodObject) {
