@@ -35,7 +35,7 @@ jobs:
           set -o pipefail
           ./apps/storefront/scripts/check-isr.sh "$STOREFRONT_PROD_URL" / \
             --expect 3600 \
-            --control /search \
+            --control /cart \
             --attempts 3 \
             --interval 5 \
             --require-no-cookie 2>&1 | tee isr-monitor.log
