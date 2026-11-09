@@ -207,19 +207,21 @@ echo "RESULT: ISR is live - cached response validated for $ROUTE"
 
 if [[ -n "$CONTROL" ]]; then
   control_hits=0
-  control_unreachable=0
+  control_answered=0
   echo
   echo "GET ${BASE_URL%/}${CONTROL}  (control, must not be cached)"
 
-  for ((i = 1; i <= 3; i++)); do
+  for ((i = 1; i <= ATTEMPTS; i++)); do
     IFS=$'\x1f' read -r code age ttl verdict cache_status cache_control set_cookie cdn_cache \
       < <(fetch_probe "${BASE_URL%/}${CONTROL}" "$TMP_DIR/control-$i")
 
     if [[ "$code" == "curl-error" ]]; then
-      control_unreachable=$((control_unreachable + 1))
+      echo "  [$i] request failed"
+      sleep "$INTERVAL"
       continue
     fi
 
+    control_answered=$((control_answered + 1))
     echo "  [$i] HTTP $code  verdict=$verdict  cache-status=${cache_status:-<none>}"
 
     case "$verdict" in
@@ -227,8 +229,8 @@ if [[ -n "$CONTROL" ]]; then
     esac
   done
 
-  if ((control_unreachable == 3)); then
-    echo "RESULT: control route unreachable"
+  if ((control_answered == 0)); then
+    echo "RESULT: control route unreachable after $ATTEMPTS attempts - negative control not verified"
     exit 3
   fi
 
