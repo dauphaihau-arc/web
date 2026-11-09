@@ -183,6 +183,17 @@ export const useMarketStore = defineStore('market', () => {
   const marketPreferenceSource = ref<MarketPreferenceSource | null>(null);
   const isMarketReady = ref(false);
   const marketReadyPromise = shallowRef<Promise<void> | null>(null);
+
+  // ISR routes are cached together with their response headers, so a Set-Cookie
+  // written during SSR is replayed from the shared CDN cache to every visitor
+  // and resets their guest preferences. Persist only from the client; the
+  // server still reads the cookie for the initial render.
+  const persistGuestPreferencesCookie = (preferences: AuthPreferences | null) => {
+    if (import.meta.client) {
+      guestPreferencesCookie.value = preferences;
+    }
+  };
+
   const activePreferences = computed(() => {
     return dataUserAuth.value?.user?.preferences ?? guestPreferences.value ?? null;
   });
@@ -192,7 +203,7 @@ export const useMarketStore = defineStore('market', () => {
     source: MarketPreferenceSource,
   ) => {
     guestPreferences.value = preferences;
-    guestPreferencesCookie.value = preferences;
+    persistGuestPreferencesCookie(preferences);
     marketPreferenceSource.value = source;
     isMarketReady.value = true;
   };
@@ -283,7 +294,7 @@ export const useMarketStore = defineStore('market', () => {
   }
 
   watch(guestPreferences, (preferences) => {
-    guestPreferencesCookie.value = sanitizeMarketPreferences(preferences);
+    persistGuestPreferencesCookie(sanitizeMarketPreferences(preferences));
   }, { deep: true });
 
   const clearCategoryRecommendationState = () => {
