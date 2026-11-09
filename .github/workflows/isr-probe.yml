@@ -39,7 +39,7 @@ jobs:
       || (github.event_name == 'status'
         && github.event.state == 'success'
         && github.event.context == 'netlify/unrivaled-manatee-77f112/deploy-preview')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       STOREFRONT_SITE: unrivaled-manatee-77f112
       STOREFRONT_PROD_URL: https://arc.hau.sarl
