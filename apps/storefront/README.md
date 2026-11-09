@@ -32,6 +32,23 @@ A ecommerce marketplace web application  where people come together to make, sel
 - The category and search listings share one filter panel, sort control, and filter state (`provideProductListingFilters`), but each page provides its own instance and facet scope. A listing is scoped by a category or a search keyword; a scope carrying neither issues no facet request, which is why the search page never inherits the category page's assumptions.
 - All category links (header, home root categories, recommendations, subcategories, and the product-detail breadcrumb) are generated through `buildCategoryPath` in `src/shared/navigation/route-paths.ts`, the single canonical URL policy.
 
+## ISR verification
+
+`routeRules` in `nuxt.config.ts` only cache anything when the build runs the Netlify preset, and `isr` silently degrades to a static file if a route is prerendered. Three checks keep that honest:
+
+- `scripts/assert-isr.mjs` runs in CI after `NITRO_PRESET=netlify pnpm build:storefront`. It reads `isr-contract.json`, written into the Nitro output dir by the `nitro:init` hook, and asserts the preset, `/` = 3600 s, `/**` = 300 s, no `isr` combined with `cache: false` / `ssr: false` / `prerender`, and `/` not prerendered into `index.html`.
+- `.github/workflows/isr-probe.yml` probes each deploy preview when Netlify publishes its `netlify/<site>/deploy-preview` commit status, and can be dispatched manually with any URL. Netlify never publishes GitHub Deployments, so there is no `deployment_status` trigger.
+- `.github/workflows/isr-monitor.yml` probes production every 15 minutes and keeps a single tracking issue; production deploys publish no GitHub event.
+
+The probe itself is `scripts/check-isr.sh`:
+
+```bash
+./scripts/check-isr.sh https://arc.hau.sarl / \
+  --expect 3600 --control /cart --require-no-cookie --payload
+```
+
+`--expect` compares `age + ttl` with the configured TTL, `--control` proves a cache-disabled route is never served from cache, `--require-no-cookie` rejects cached responses that replay `Set-Cookie` (a cached `Set-Cookie` reaches every visitor), and `--payload` covers the `_payload.json` used by client-side navigation. Exit codes: `0` pass, `2` not cached, `3` unreachable, `4` contract broken, `5` control route cached.
+
 ## Installation Guide
 
 1. **Clone the GitHub repository**
