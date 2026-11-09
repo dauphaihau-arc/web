@@ -58,17 +58,25 @@ jobs:
 
           if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
             url="${INPUT_URL:-$STOREFRONT_PROD_URL}"
+
+            if [[ "$url" != *"$STOREFRONT_SITE"* && "$url" != "$STOREFRONT_PROD_URL" ]]; then
+              echo "Skipping: $url does not belong to the storefront site"
+              exit 0
+            fi
           else
             url="$STATUS_URL"
+
+            # Netlify also emits a success status when the preview build is
+            # skipped ("Deploy Preview canceled."), whose target_url is the
+            # app.netlify.com deploy page. Only probe real preview URLs.
+            if [[ "$url" != "https://deploy-preview-"*"--$STOREFRONT_SITE.netlify.app"* ]]; then
+              echo "Skipping: $url is not a deploy preview for $STOREFRONT_SITE"
+              exit 0
+            fi
           fi
 
           if [[ -z "$url" ]]; then
             echo "Skipping: no deploy URL available"
-            exit 0
-          fi
-
-          if [[ "$url" != *"$STOREFRONT_SITE"* && "$url" != "$STOREFRONT_PROD_URL" ]]; then
-            echo "Skipping: $url does not belong to the storefront site"
             exit 0
           fi
 
