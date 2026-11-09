@@ -93,7 +93,7 @@ watch(() => state.amount, (value) => {
 
 const schema = computed(() => z.object({
   amount: z.coerce
-    .number({ invalid_type_error: 'Enter an amount greater than 0.' })
+    .number({ error: 'Enter an amount greater than 0.' })
     .positive('Enter an amount greater than 0.')
     .max(
       availableMajor.value,

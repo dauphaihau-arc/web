@@ -16,7 +16,7 @@ export const createSaleFormSchema = z
       .min(1, 'Enter a sale name.')
       .max(255, 'Use 255 characters or fewer.'),
     percent_off: z
-      .number({ invalid_type_error: 'Enter a percentage between 1 and 99.' })
+      .number({ error: 'Enter a percentage between 1 and 99.' })
       .int('Enter a whole percentage between 1 and 99.')
       .min(1, 'Enter a percentage between 1 and 99.')
       .max(99, 'Enter a percentage between 1 and 99.'),
