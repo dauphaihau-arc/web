@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   changes:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       storefront: ${{ steps.filter.outputs.storefront }}
       seller: ${{ steps.filter.outputs.seller }}
@@ -86,7 +86,7 @@ jobs:
   storefront:
     needs: changes
     if: needs.changes.outputs.storefront == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -137,7 +137,7 @@ jobs:
   seller:
     needs: changes
     if: needs.changes.outputs.seller == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -180,7 +180,7 @@ jobs:
   admin:
     needs: changes
     if: needs.changes.outputs.admin == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -221,7 +221,7 @@ jobs:
         run: pnpm build:admin
 
   contract:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
