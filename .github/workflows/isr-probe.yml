@@ -4,14 +4,17 @@ name: ISR probe
 # `isr` can be inert, or served by the wrong cache layer, while the build and the
 # config both still look correct - only the deployed response proves it.
 #
-# Triggers:
-# - deployment_status: requires Netlify to publish GitHub deployment
-#   notifications for the site. At the time of writing it does not, so this is
-#   opportunistic; the scheduled isr-monitor.yml is the automatic safety net.
-# - workflow_dispatch: probe any deploy URL on demand, defaulting to production.
+# Netlify does not create GitHub Deployments, so `deployment_status` never fires
+# for this site. It does publish a commit status per deploy preview, whose
+# target_url is the preview URL:
+#   context: netlify/unrivaled-manatee-77f112/deploy-preview
+# The `status` event carries those, so preview deploys are probed on creation.
+#
+# Production deploys publish no GitHub event; isr-monitor.yml probes production
+# every 15 minutes instead. Manual dispatch probes any URL.
 
 on:
-  deployment_status:
+  status:
   workflow_dispatch:
     inputs:
       url:
@@ -20,7 +23,7 @@ on:
         type: string
 
 concurrency:
-  group: isr-probe-${{ github.event.deployment_status.environment || github.ref }}
+  group: isr-probe-${{ github.event.context || github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -28,7 +31,14 @@ permissions:
 
 jobs:
   probe:
-    if: github.event_name == 'workflow_dispatch' || github.event.deployment_status.state == 'success'
+    # Every commit status on a PR fires this event; filter before allocating
+    # the runner. The site name is repeated inline because job-level `if` has no
+    # access to the job env.
+    if: >
+      github.event_name == 'workflow_dispatch'
+      || (github.event_name == 'status'
+        && github.event.state == 'success'
+        && github.event.context == 'netlify/unrivaled-manatee-77f112/deploy-preview')
     runs-on: ubuntu-latest
     env:
       STOREFRONT_SITE: unrivaled-manatee-77f112
@@ -41,19 +51,15 @@ jobs:
         id: target
         env:
           EVENT_NAME: ${{ github.event_name }}
-          ENVIRONMENT: ${{ github.event.deployment_status.environment }}
-          ENVIRONMENT_URL: ${{ github.event.deployment_status.environment_url }}
-          TARGET_URL: ${{ github.event.deployment_status.target_url }}
+          STATUS_URL: ${{ github.event.target_url }}
           INPUT_URL: ${{ inputs.url }}
         run: |
           set -euo pipefail
 
-          if [[ -n "$INPUT_URL" ]]; then
-            url="$INPUT_URL"
-          elif [[ "$ENVIRONMENT" == "production" || "$EVENT_NAME" == "workflow_dispatch" ]]; then
-            url="$STOREFRONT_PROD_URL"
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            url="${INPUT_URL:-$STOREFRONT_PROD_URL}"
           else
-            url="${ENVIRONMENT_URL:-$TARGET_URL}"
+            url="$STATUS_URL"
           fi
 
           if [[ -z "$url" ]]; then
@@ -61,13 +67,13 @@ jobs:
             exit 0
           fi
 
-          if [[ -z "$INPUT_URL" && "$url" != *"$STOREFRONT_SITE"* && "$url" != "$STOREFRONT_PROD_URL" ]]; then
+          if [[ "$url" != *"$STOREFRONT_SITE"* && "$url" != "$STOREFRONT_PROD_URL" ]]; then
             echo "Skipping: $url does not belong to the storefront site"
             exit 0
           fi
 
           echo "url=$url" >> "$GITHUB_OUTPUT"
-          echo "Probing $url (environment: ${ENVIRONMENT:-manual})"
+          echo "Probing $url"
 
       - name: Probe ISR
         if: steps.target.outputs.url != ''
@@ -90,7 +96,7 @@ jobs:
             echo '### ISR probe'
             echo
             echo "- deploy: ${{ steps.target.outputs.url }}"
-            echo "- environment: ${{ github.event.deployment_status.environment || 'manual' }}"
+            echo "- trigger: ${{ github.event_name }}"
             echo
             echo '```'
             cat isr-probe.log 2>/dev/null || echo 'no probe output'
