@@ -41,20 +41,20 @@ export const createPromoCodeFormSchema = z
       .min(1, 'Enter a promo code.')
       .max(PROMO_CODE_CODE_MAX_LENGTH, `Use ${PROMO_CODE_CODE_MAX_LENGTH} characters or fewer.`),
     percent_off: z
-      .number({ invalid_type_error: 'Enter a percentage between 1 and 99.' })
+      .number({ error: 'Enter a percentage between 1 and 99.' })
       .int('Enter a whole percentage between 1 and 99.')
       .min(1, 'Enter a percentage between 1 and 99.')
       .max(99, 'Enter a percentage between 1 and 99.'),
     benefit_type: z.nativeEnum(PromotionBenefitType),
     amount_off: z
-      .number({ invalid_type_error: 'Enter an amount.' })
+      .number({ error: 'Enter an amount.' })
       .finite('Enter a valid amount.'),
     min_order_type: z.nativeEnum(PromotionMinOrderType),
     min_order_value: z
-      .number({ invalid_type_error: 'Enter an amount.' })
+      .number({ error: 'Enter an amount.' })
       .finite('Enter a valid amount.'),
     min_purchase_quantity: z
-      .number({ invalid_type_error: 'Enter a quantity.' })
+      .number({ error: 'Enter a quantity.' })
       .int('Enter a whole quantity.')
       .finite('Enter a valid quantity.'),
     // Optional redemption limits: an empty value means the dimension is

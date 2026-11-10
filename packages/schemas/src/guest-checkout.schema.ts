@@ -6,10 +6,7 @@ export const guestCheckoutAddressSchema = createUserAddressRequestSchema
 
 export const guestCheckoutContactSchema = z.object({
   email: z
-    .string({
-      required_error: 'Please enter your email address',
-      invalid_type_error: 'Please enter your email address',
-    })
+    .string({ error: 'Please enter your email address' })
     .trim()
     .max(320, 'That email address is too long')
     .email('Enter a full email address, like name@example.com'),

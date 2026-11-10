@@ -1,4 +1,4 @@
-import type { SafeParseReturnType } from 'zod';
+import type { ZodSafeParseResult } from 'zod';
 import { describe, expect, it } from 'vitest';
 import { createCodedAddressFormSchema, createGuestAddressFormSchema } from './address-form.schema';
 import { PHONE_INVALID, POSTCODE_INVALID, POSTCODE_REQUIRED } from './address-validation';
@@ -27,7 +27,7 @@ const GUEST_FIELDS = {
   zip: 'sw1a 1aa',
 };
 
-function issuesFor(result: SafeParseReturnType<unknown, unknown>) {
+function issuesFor(result: ZodSafeParseResult<unknown>) {
   return result.success ? [] : result.error.issues;
 }
 

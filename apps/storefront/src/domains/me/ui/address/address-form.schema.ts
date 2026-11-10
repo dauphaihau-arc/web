@@ -76,7 +76,7 @@ function postcodeField(options: AddressSchemaOptions) {
 
 function phoneField(options: AddressSchemaOptions) {
   return z
-    .string({ required_error: PHONE_REQUIRED })
+    .string({ error: PHONE_REQUIRED })
     .transform(value =>
       isUnchangedPhone(value, options.preservePhone)
         ? value
@@ -194,7 +194,7 @@ export function createCodedAddressFormSchema(
       state_text: options.allowLegacySubdivision
         ? z.string().optional()
         : z
-          .string({ required_error: SUBDIVISION_REQUIRED })
+          .string({ error: SUBDIVISION_REQUIRED })
           .max(ADDRESS_CONFIG.MAX_CHAR_CITY, SUBDIVISION_TOO_LONG)
           .optional(),
       zip: postcodeField(options),

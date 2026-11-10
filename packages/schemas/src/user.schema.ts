@@ -7,8 +7,7 @@ export const userSchema = z.object({
   id: idSchema,
   name: z
     .string({
-      required_error: 'Name is required',
-      invalid_type_error: 'invalid type name',
+      error: issue => issue.input === undefined ? 'Name is required' : 'invalid type name',
     })
     .trim()
     .regex(USER_REG_NAME, 'Name is invalid')
@@ -16,8 +15,7 @@ export const userSchema = z.object({
     .max(USER_CONFIG.MAX_CHAR_NAME, `Name must be no longer than ${USER_CONFIG.MAX_CHAR_NAME} characters`),
   email: z
     .string({
-      required_error: 'Email is required',
-      invalid_type_error: 'invalid type email',
+      error: issue => issue.input === undefined ? 'Email is required' : 'invalid type email',
     })
     .trim()
     .min(USER_CONFIG.MIN_CHAR_EMAIL, `Email must be at least ${USER_CONFIG.MIN_CHAR_EMAIL} characters`)

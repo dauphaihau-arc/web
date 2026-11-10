@@ -10,26 +10,26 @@ import { ADDRESS_CONFIG } from '@arc/enums/address'
  */
 export const createUserAddressRequestSchema = z.object({
   full_name: z
-    .string({ required_error: 'Please enter the recipient’s full name' })
+    .string({ error: 'Please enter the recipient’s full name' })
     .max(ADDRESS_CONFIG.MAX_CHAR_FULL_NAME, `Keep your name to ${ADDRESS_CONFIG.MAX_CHAR_FULL_NAME} characters or fewer`),
   address_1: z
-    .string({ required_error: 'Please enter the street address' })
+    .string({ error: 'Please enter the street address' })
     .max(ADDRESS_CONFIG.MAX_CHAR_ADDRESS, `Keep the street address to ${ADDRESS_CONFIG.MAX_CHAR_ADDRESS} characters or fewer`),
   address_2: z
-    .string({ required_error: 'Please enter the second address line' })
+    .string({ error: 'Please enter the second address line' })
     .max(ADDRESS_CONFIG.MAX_CHAR_ADDRESS, `Keep the second address line to ${ADDRESS_CONFIG.MAX_CHAR_ADDRESS} characters or fewer`)
     .optional(),
   city: z
-    .string({ required_error: 'Please enter the city' })
+    .string({ error: 'Please enter the city' })
     .max(ADDRESS_CONFIG.MAX_CHAR_CITY, `Keep the city to ${ADDRESS_CONFIG.MAX_CHAR_CITY} characters or fewer`),
-  country_code: z.string({ required_error: 'Select a country' }),
+  country_code: z.string({ error: 'Select a country' }),
   state_code: z.string().optional(),
   state_text: z.string().optional(),
   zip: z
-    .string({ required_error: 'Please enter the ZIP or postal code' })
+    .string({ error: 'Please enter the ZIP or postal code' })
     .max(ADDRESS_CONFIG.MAX_CHAR_ZIP, `Keep the ZIP or postal code to ${ADDRESS_CONFIG.MAX_CHAR_ZIP} characters or fewer`),
   phone: z
-    .string({ required_error: 'Please enter a phone number' })
+    .string({ error: 'Please enter a phone number' })
     .max(ADDRESS_CONFIG.MAX_CHAR_PHONE, `Keep the phone number to ${ADDRESS_CONFIG.MAX_CHAR_PHONE} characters or fewer`),
   is_primary: z.boolean().optional(),
 })
