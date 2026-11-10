@@ -3,10 +3,7 @@ import { USER_CONFIG } from '@arc/enums/user'
 
 export const forgotPasswordFormSchema = z.object({
   email: z
-    .string({
-      required_error: 'Please enter your email address',
-      invalid_type_error: 'Please enter your email address',
-    })
+    .string({ error: 'Please enter your email address' })
     .trim()
     .min(1, 'Please enter your email address')
     .max(USER_CONFIG.MAX_CHAR_EMAIL, 'That email address is too long')

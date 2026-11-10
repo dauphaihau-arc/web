@@ -8,8 +8,7 @@ import {
 export const registerFormSchema = z.object({
   display_name: z
     .string({
-      required_error: 'Please enter your name',
-      invalid_type_error: 'Please enter your name',
+      error: 'Please enter your name',
     })
     .trim()
     .min(1, 'Please enter your name')
@@ -18,8 +17,7 @@ export const registerFormSchema = z.object({
     .regex(USER_REG_NAME, 'Use letters and spaces only'),
   email: z
     .string({
-      required_error: 'Please enter your email address',
-      invalid_type_error: 'Please enter your email address',
+      error: 'Please enter your email address',
     })
     .trim()
     .min(1, 'Please enter your email address')
@@ -28,8 +26,7 @@ export const registerFormSchema = z.object({
     .email('Enter a full email address, like name@example.com'),
   password: z
     .string({
-      required_error: 'Please create a password',
-      invalid_type_error: 'Please create a password',
+      error: 'Please create a password',
     })
     .min(1, 'Please create a password')
     .max(USER_CONFIG.MAX_CHAR_PASSWORD, `Use ${USER_CONFIG.MAX_CHAR_PASSWORD} characters or fewer`)
