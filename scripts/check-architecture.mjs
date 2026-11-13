@@ -16,7 +16,7 @@ const webRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const appsRoot = join(webRoot, 'apps')
 const packagesRoot = join(webRoot, 'packages')
 
-const appNames = ['seller', 'storefront']
+const appNames = ['seller', 'storefront', 'admin']
 const sourceExtensions = new Set(['.js', '.jsx', '.mjs', '.cjs', '.ts', '.tsx', '.mts', '.cts', '.vue'])
 const ignoredDirs = new Set(['.git', '.nuxt', '.output', '.turbo', 'coverage', 'dist', 'node_modules'])
 const importPatterns = [
