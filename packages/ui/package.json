@@ -17,7 +17,8 @@
     "./shells/*": "./src/shells/*"
   },
   "scripts": {
-    "generate:tokens": "jiti scripts/generate-design-tokens.mjs"
+    "generate:tokens": "jiti scripts/generate-design-tokens.mjs",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
     "@tanstack/vue-virtual": "^3.13.35"
