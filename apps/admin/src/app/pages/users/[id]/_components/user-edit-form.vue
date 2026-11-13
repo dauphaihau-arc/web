@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { PERMISSIONS } from '@arc/schemas/api/auth/permissions.generated'
 import type { AdminUser } from '~/domains/users/api/contracts/admin-users.contract'
-import { usePermissions } from '~/shared/composables/use-permissions'
+import { usePermissions } from '~/domains/me/composables/use-permissions'
 import { useAdminUserEditForm } from '../_composables/use-admin-user-edit-form'
 
 const props = defineProps<{
