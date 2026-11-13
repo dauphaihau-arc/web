@@ -177,6 +177,8 @@ At the time of writing, the shared layer covers:
 - loading indicator (`primitives/loading-svg.vue`)
 - empty states and headers (`patterns/empty.vue`, `patterns/section-header.vue`)
 - surfaces and state blocks (`patterns/app-panel.vue`, `patterns/app-state-block.vue`)
+- form chrome (`patterns/form/`: rows, group cards, fixed actions, selection bar)
+- schedule cells (`patterns/schedule-cell.vue`)
 - data table wrapper (`patterns/data-table/data-table.vue`)
 - timelines (`patterns/timeline.vue`)
 - dialogs (`patterns/dialog/`)
