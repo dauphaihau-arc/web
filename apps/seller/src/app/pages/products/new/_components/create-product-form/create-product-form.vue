@@ -21,7 +21,7 @@ import {
   ADD_OPTIONS_LABEL,
   REMOVE_OPTIONS_LABEL,
 } from '~/app/pages/products/_components/variant-input/variant-input.constants'
-import FormGroupCard from '~/shared/ui/wrapper-form-group-card.vue'
+import FormGroupCard from '@arc/ui/patterns/form/wrapper-form-group-card.vue'
 import { routes } from '~/shared/navigation/routes'
 import type { ShippingProfileResource } from '~/domains/shop/api/shipping-profile/contracts/shipping-profile.contract'
 import type { TitleInputHandle } from './use-create-product-form/use-create-product-ai-description'

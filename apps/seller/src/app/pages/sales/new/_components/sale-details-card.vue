@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { CreateSaleFormState } from '~/domains/shop/schemas/sale/create-sale-form.schema'
-import WrapperFormGroupCard from '~/shared/ui/wrapper-form-group-card.vue'
+import WrapperFormGroupCard from '@arc/ui/patterns/form/wrapper-form-group-card.vue'
 
 defineProps<{
   disabled: boolean

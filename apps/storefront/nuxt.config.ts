@@ -141,6 +141,7 @@ export default defineNuxtConfig({
     {
       path: uiPackageDir,
       pathPrefix: false,
+      extensions: ['.vue'],
     },
   ],
 

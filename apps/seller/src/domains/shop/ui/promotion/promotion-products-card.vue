@@ -2,7 +2,7 @@
 import { PromotionProductScope } from '@arc/enums/promotion'
 import RadioGroupInput from '@arc/ui/primitives/radio-group-input.vue'
 import ApplyProductTargets from '~/domains/shop/ui/apply-product-targets.vue'
-import WrapperFormGroupCard from '~/shared/ui/wrapper-form-group-card.vue'
+import WrapperFormGroupCard from '@arc/ui/patterns/form/wrapper-form-group-card.vue'
 import { PROMOTION_PRODUCT_SCOPE_OPTIONS } from './promotion.constants'
 
 defineProps<{

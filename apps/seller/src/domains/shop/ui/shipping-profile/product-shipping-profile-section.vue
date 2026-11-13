@@ -7,7 +7,7 @@ import {
 } from '@arc/enums/shipping'
 import type { ShippingProfileResource } from '~/domains/shop/api/shipping-profile/contracts/shipping-profile.contract'
 import { SHIPPING_PROFILE_PICKER_QUERY, useShopShippingProfiles } from '~/domains/shop/queries/shipping-profiles.query'
-import FormGroupCard from '~/shared/ui/wrapper-form-group-card.vue'
+import FormGroupCard from '@arc/ui/patterns/form/wrapper-form-group-card.vue'
 import StatusBadge from '@arc/ui/primitives/status-badge.vue'
 
 withDefaults(defineProps<{
