@@ -190,6 +190,13 @@ const SPEC_ONLY_ENUMS: Record<string, string> = {
   // Manual refund state transitions; no admin UI sends or branches on them.
   'components.schemas.UpdateAdminOrderRefundDto.properties.action':
     'API-only refund transition verbs',
+  // Country address-form descriptors. The FE counterpart is `AddressFieldKey`
+  // plus a control union in `address-field-rules.ts`: it adds `email`, and it
+  // drives inputs from form config rather than an enum, so the value sets differ.
+  'components.schemas.LocationAddressRuleResponseDto.properties.key':
+    'address-form field keys; FE models AddressFieldKey, not an enum tuple',
+  'components.schemas.LocationAddressRuleResponseDto.properties.control':
+    'address-form input control kinds; FE derives controls from field config',
 }
 
 interface EnumCandidate {

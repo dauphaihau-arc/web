@@ -83,6 +83,46 @@ jobs:
           echo "seller=$seller" >> "$GITHUB_OUTPUT"
           echo "admin=$admin" >> "$GITHUB_OUTPUT"
 
+  packages:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.19.0
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Verify lockfile
+        working-directory: ${{ github.workspace }}
+        run: test -f pnpm-lock.yaml
+
+      - name: Install dependencies
+        working-directory: ${{ github.workspace }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pnpm install --frozen-lockfile
+
+      # Shared packages are consumed by every app, so their suite runs on every
+      # change instead of behind the per-app path filter. This is also the only
+      # place the API-enum conformance test runs.
+      - name: Test packages with coverage
+        run: pnpm test:packages:coverage
+
+      - name: Upload package coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-packages
+          path: coverage/packages
+          if-no-files-found: ignore
+
   storefront:
     needs: changes
     if: needs.changes.outputs.storefront == 'true'
@@ -133,6 +173,62 @@ jobs:
       - name: Assert ISR contract
         working-directory: ${{ github.workspace }}
         run: node apps/storefront/scripts/assert-isr.mjs
+
+  # Browser-level guard for the critical journeys tagged `@smoke` (login,
+  # protected routes, checkout redirect/readiness/promotions). Playwright runs
+  # against the generated static output; the specs stub the API at the network
+  # layer, so no backend is provisioned.
+  storefront-smoke:
+    needs: changes
+    if: needs.changes.outputs.storefront == 'true'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.19.0
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Verify lockfile
+        working-directory: ${{ github.workspace }}
+        run: test -f pnpm-lock.yaml
+
+      - name: Install dependencies
+        working-directory: ${{ github.workspace }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pnpm install --frozen-lockfile
+
+      - name: Prepare storefront Nuxt artifacts
+        run: pnpm --filter @arc/storefront exec nuxt prepare
+
+      - name: Install Playwright Chromium
+        run: pnpm --filter @arc/storefront exec playwright install --with-deps chromium
+
+      - name: Build storefront
+        env:
+          NITRO_PRESET: netlify
+        run: pnpm build:storefront
+
+      # The suite regenerates static output and serves it on 127.0.0.1:4110
+      # through the Playwright `webServer` block.
+      - name: Run storefront smoke tests
+        run: pnpm --filter @arc/storefront e2e:smoke
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-storefront-smoke
+          path: apps/storefront/playwright-report
+          if-no-files-found: ignore
 
   seller:
     needs: changes

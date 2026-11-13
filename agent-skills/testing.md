@@ -26,9 +26,11 @@ change needs tests.
 Default environments by layer:
 
 - Unit/domain tests -> Vitest `node`.
-- Component tests that do not need Nuxt app runtime -> Vitest `happy-dom` or `jsdom`.
+- Component tests that need a DOM but not the Nuxt runtime -> `// @vitest-environment happy-dom` docblock inside a `.test.ts`.
 - Nuxt integration tests -> Vitest `nuxt`.
 - Browser journey tests -> Playwright.
+
+All three apps share this split: `vitest.unit.config.ts` collects `*.test.ts` in `node`, `vitest.config.ts` collects only `*.nuxt.test.ts` under Nuxt. Anything that imports `mountSuspended`, `mockNuxtImport`, or relies on Nuxt auto-imports must be named `.nuxt.test.ts`; in the node run it fails with `defineNuxtRouteMiddleware is not defined` rather than passing in the wrong environment. See `docs/test-strategy.md`.
 
 Do not try to cover every component directly. Avoid tests that only prove mount existence, CSS classes, emitted clicks, or direct mutation of component internals. Prefer assertions against user-visible behavior, navigation, data changes, and business outcomes.
 
@@ -60,6 +62,8 @@ From `apps/web`:
 pnpm check
 pnpm test
 pnpm test:packages
+pnpm test:coverage
+pnpm test:packages:coverage
 pnpm check:seller
 pnpm check:storefront
 pnpm test:seller

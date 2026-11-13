@@ -1,5 +1,6 @@
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
+import { coverageConfig } from '../../vitest.coverage'
 
 const srcDir = fileURLToPath(new URL('./src/', import.meta.url))
 const packagesDir = fileURLToPath(new URL('../../packages/', import.meta.url))
@@ -20,6 +21,7 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
+    coverage: coverageConfig('./coverage/unit'),
     include: [
       'src/**/*.test.{ts,tsx}',
       'test/**/*.test.{ts,tsx}',

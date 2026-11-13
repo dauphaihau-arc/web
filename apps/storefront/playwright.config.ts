@@ -14,7 +14,7 @@ const fixturePort = Number(process.env.E2E_FIXTURE_PORT ?? 4310)
 const fixtureBaseURL = `http://127.0.0.1:${fixturePort}`
 
 const staticWebServer = {
-  command: `pnpm e2e:serve && npx serve .output/public --listen tcp://127.0.0.1:${port}`,
+  command: `pnpm e2e:serve && pnpm exec serve .output/public --listen tcp://127.0.0.1:${port}`,
   url: baseURL,
   timeout: 240_000,
   reuseExistingServer: !process.env.CI,

@@ -24,6 +24,7 @@ logs
 playwright-report
 test-results
 test-results-real-api
+coverage
 .conversation
 
 # Local env files
