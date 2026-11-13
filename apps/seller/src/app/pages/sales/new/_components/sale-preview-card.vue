@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PromotionProductScope } from '@arc/enums/promotion'
-import WrapperFormGroupCard from '~/shared/ui/wrapper-form-group-card.vue'
+import WrapperFormGroupCard from '@arc/ui/patterns/form/wrapper-form-group-card.vue'
 import SalePricePreview from './sale-price-preview.vue'
 
 defineProps<{

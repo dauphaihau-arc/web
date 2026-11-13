@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import LayoutShopWrapperContent from '~/app/layouts/shop/wrapper-content.vue'
-import WrapperFormRow from '~/shared/ui/wrapper-form-row.vue'
-import WrapperFormRows from '~/shared/ui/wrapper-form-rows.vue'
+import WrapperFormRow from '@arc/ui/patterns/form/wrapper-form-row.vue'
+import WrapperFormRows from '@arc/ui/patterns/form/wrapper-form-rows.vue'
 import PayoutSettingsToggle from './_components/payout-settings-toggle.vue'
 import SettlementCurrencySetting from './_components/settlement-currency-setting.vue'
 import { useGetMyShop } from '~/domains/shop/queries/my-shop.query'

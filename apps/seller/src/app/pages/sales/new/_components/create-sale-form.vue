@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import PromotionProductsCard from '~/domains/shop/ui/promotion/promotion-products-card.vue'
 import PromotionScheduleCard from '~/domains/shop/ui/promotion/promotion-schedule-card.vue'
-import FixedFormActions from '~/shared/ui/fixed-form-actions.vue'
+import FixedFormActions from '@arc/ui/patterns/form/fixed-form-actions.vue'
 import SaleDetailsCard from './sale-details-card.vue'
 import SalePreviewCard from './sale-preview-card.vue'
 import { CREATE_SALE_FORM_ID, useCreateSaleForm } from './use-create-sale-form'

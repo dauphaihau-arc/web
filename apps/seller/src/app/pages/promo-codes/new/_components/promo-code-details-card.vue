@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { PromotionBenefitType } from '@arc/enums/promotion'
 import RadioGroupInput from '@arc/ui/primitives/radio-group-input.vue'
 import type { CreatePromoCodeFormState } from '~/domains/shop/schemas/promo-code/create-promo-code-form.schema'
-import WrapperFormGroupCard from '~/shared/ui/wrapper-form-group-card.vue'
+import WrapperFormGroupCard from '@arc/ui/patterns/form/wrapper-form-group-card.vue'
 import {
   PROMO_CODE_BENEFIT_OPTIONS,
   PROMO_CODE_CODE_MAX_LENGTH,
