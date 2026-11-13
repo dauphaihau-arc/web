@@ -175,9 +175,10 @@ jobs:
         run: node apps/storefront/scripts/assert-isr.mjs
 
   # Browser-level guard for the critical journeys tagged `@smoke` (login,
-  # protected routes, checkout redirect/readiness/promotions). Playwright runs
-  # against the generated static output; the specs stub the API at the network
-  # layer, so no backend is provisioned.
+  # protected routes, checkout redirect/readiness/promotions). It runs against
+  # the built Node server in SSR mode with the deterministic fixture backend,
+  # because the static `generate` path prerenders routes and needs a live API
+  # that CI does not provision. The specs also stub the API in the browser.
   storefront-smoke:
     needs: changes
     if: needs.changes.outputs.storefront == 'true'
@@ -212,14 +213,14 @@ jobs:
       - name: Install Playwright Chromium
         run: pnpm --filter @arc/storefront exec playwright install --with-deps chromium
 
-      - name: Build storefront
-        env:
-          NITRO_PRESET: netlify
-        run: pnpm build:storefront
+      - name: Build storefront for SSR
+        run: pnpm --filter @arc/storefront e2e:ssr:build
 
-      # The suite regenerates static output and serves it on 127.0.0.1:4110
-      # through the Playwright `webServer` block.
+      # `E2E_MODE=ssr` launches `.output/server/index.mjs` plus the fixture
+      # server on 127.0.0.1:4310 through the Playwright `webServer` block.
       - name: Run storefront smoke tests
+        env:
+          E2E_MODE: ssr
         run: pnpm --filter @arc/storefront e2e:smoke
 
       - name: Upload Playwright report

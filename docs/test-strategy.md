@@ -99,7 +99,7 @@ Workflow `.github/workflows/ci.yml`:
 | `changes` | every PR/push | path filter producing `storefront`, `seller`, `admin` scopes |
 | `packages` | every PR/push | `test:packages:coverage`, uploads `coverage-packages` |
 | `storefront` | storefront or shared change | lint, typecheck, unit + nuxt, Netlify build, ISR artifact assert |
-| `storefront-smoke` | storefront or shared change | `build:storefront`, `e2e:smoke`, uploads `playwright-report-storefront-smoke` |
+| `storefront-smoke` | storefront or shared change | `e2e:ssr:build`, then `E2E_MODE=ssr e2e:smoke` against the fixture backend, uploads `playwright-report-storefront-smoke` |
 | `seller` | seller or shared change | lint, typecheck, unit + nuxt, build |
 | `admin` | admin or shared change | lint, typecheck, unit + nuxt, build |
 | `contract` | every PR/push | generated API types match the pinned contract |
@@ -113,8 +113,11 @@ Not in CI, by design or by omission:
 - Seller Playwright — needs an externally provisioned API and seeded fixtures.
 - Storefront real-API category journey — needs a migrated PostgreSQL harness from
   the API checkout.
-- Storefront SSR-mode specs — covered locally and via `e2e:ssr`; the `@smoke`
-  suite runs the static build in CI.
+- Storefront static-mode suite — its `webServer` runs `nuxt generate`, which
+  prerenders routes and needs a live API that CI does not provision. CI runs the
+  `@smoke` subset in SSR mode against the deterministic fixture instead.
+- Storefront full SSR suite — same fixture, but the whole flow set is local; CI
+  runs only the `@smoke` subset.
 
 ## Adding tests
 
