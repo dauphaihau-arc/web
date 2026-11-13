@@ -2,7 +2,7 @@
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import { PERMISSIONS } from '@arc/schemas/api/auth/permissions.generated'
 import LayoutAdminWrapperContent from '~/app/layouts/admin/wrapper-content.vue'
-import { usePermissions } from '~/shared/composables/use-permissions'
+import { usePermissions } from '~/domains/me/composables/use-permissions'
 import { routes } from '~/shared/navigation/routes'
 import UsersFilterToolbar from './users-filter-toolbar.vue'
 import UsersPermissionState from './users-permission-state.vue'

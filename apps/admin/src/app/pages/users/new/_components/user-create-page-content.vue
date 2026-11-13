@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { PERMISSIONS } from '@arc/schemas/api/auth/permissions.generated'
 import LayoutAdminWrapperContent from '~/app/layouts/admin/wrapper-content.vue'
-import { usePermissions } from '~/shared/composables/use-permissions'
+import { usePermissions } from '~/domains/me/composables/use-permissions'
 import { routes } from '~/shared/navigation/routes'
 import UsersPermissionState from '../../_components/users-permission-state.vue'
 import UserCreateForm from './user-create-form.vue'

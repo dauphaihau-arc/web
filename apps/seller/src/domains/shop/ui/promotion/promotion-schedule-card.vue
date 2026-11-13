@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import RadioGroupInput from '@arc/ui/primitives/radio-group-input.vue'
-import WrapperFormGroupCard from '~/shared/ui/wrapper-form-group-card.vue'
+import WrapperFormGroupCard from '@arc/ui/patterns/form/wrapper-form-group-card.vue'
 import { PROMOTION_START_MODE_OPTIONS } from './promotion.constants'
 import PromotionScheduleRangeInput from './promotion-schedule-range-input.vue'
 

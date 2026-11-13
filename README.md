@@ -7,8 +7,8 @@ Nuxt monorepo for ARC web applications and shared frontend packages.
 | App | Purpose |
 |----------|----------|
 | Storefront | Customer marketplace |
-| Seller | Seller management dashboard |
-| Admin | Planned internal operations app |
+| Seller | Seller management portal |
+| Admin | Internal operations portal |
 
 ## Repository Structure
 
@@ -26,8 +26,9 @@ docs/
 ## Documentation
 
 - [Architecture overview](docs/architecture/overview.md)
-- [Application structure](docs/architecture/application-structure.md)
 - [Monorepo architecture](docs/architecture/monorepo.md)
+- [Application structure](docs/architecture/application-structure.md)
+- [Design system](docs/architecture/design-system/design-system.md)
 - [Platform](docs/platform.md)
 - [Deployment and CI/CD](docs/deployment.md)
 - [Seller browser tests](docs/seller-e2e.md)
@@ -47,6 +48,7 @@ Run these from `apps/web`.
 
 - Start storefront: `pnpm dev:storefront`
 - Start seller: `pnpm dev:seller`
+- Start admin: `pnpm dev:admin`
 - Build an app: `pnpm build:<app>`
 - Generate static output: `pnpm generate:<app>`
 - Preview a built app: `pnpm preview:<app>`
@@ -59,6 +61,7 @@ Available app names:
 
 - `storefront`
 - `seller`
+- `admin`
 
 Shared package commands:
 

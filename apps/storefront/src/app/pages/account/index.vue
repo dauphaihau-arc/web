@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import MarketCurrencySelect from '~/domains/market/ui/preferences/market-currency-select.vue'
 import MarketRegionSelect from '~/domains/market/ui/preferences/market-region-select.vue'
-import WrapperFormRow from '~/shared/ui/wrapper-form-row.vue'
-import WrapperFormRows from '~/shared/ui/wrapper-form-rows.vue'
+import WrapperFormRow from '@arc/ui/patterns/form/wrapper-form-row.vue'
+import WrapperFormRows from '@arc/ui/patterns/form/wrapper-form-rows.vue'
 import type { PreferenceState } from '~/domains/market/ui/preferences/preference-options'
 import { useUpdateMarketPreferences } from '~/domains/market/ui/preferences/use-update-market-preferences'
 import { useUserPreferenceForm } from '~/domains/market/ui/preferences/use-user-preference-form'

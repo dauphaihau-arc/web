@@ -2,8 +2,23 @@
   "name": "@arc/ui",
   "private": true,
   "type": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    "./directives/input-directives": "./src/directives/input-directives.ts",
+    "./features/*": "./src/features/*",
+    "./foundation/app-config": "./src/foundation/app-config.ts",
+    "./foundation/app-icon.constants": "./src/foundation/app-icon.constants.ts",
+    "./foundation/design-tokens": "./src/foundation/design-tokens.ts",
+    "./foundation/nuxt-pages": "./src/foundation/nuxt-pages.ts",
+    "./patterns/*": "./src/patterns/*",
+    "./patterns/data-filter/summary": "./src/patterns/data-filter/summary.ts",
+    "./patterns/data-filter/types": "./src/patterns/data-filter/types.ts",
+    "./primitives/*": "./src/primitives/*",
+    "./shells/*": "./src/shells/*"
+  },
   "scripts": {
-    "generate:tokens": "jiti scripts/generate-design-tokens.mjs"
+    "generate:tokens": "jiti scripts/generate-design-tokens.mjs",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
     "@tanstack/vue-virtual": "^3.13.35"
