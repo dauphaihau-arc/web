@@ -1,7 +1,7 @@
 import { PERMISSIONS } from '@arc/schemas/api/auth/permissions.generated';
 import { readApiError } from '~/shared/lib/api-error';
 import type { AdminUser } from '~/domains/users/api/contracts/admin-users.contract';
-import { usePermissions } from '~/shared/composables/use-permissions';
+import { usePermissions } from '~/domains/me/composables/use-permissions';
 import { useAdminRoles } from '~/domains/users/queries/roles.query';
 import { useAssignAdminUserRoles } from '~/domains/users/mutations/assign-roles.mutation';
 

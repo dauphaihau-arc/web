@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "ESNext",
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": false,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitOverride": true,
+    "module": "preserve",
+    "noEmit": true,
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "moduleResolution": "Bundler",
+    "useDefineForClassFields": true,
+    "noImplicitThis": true,
+    "allowSyntheticDefaultImports": true,
+    "types": [],
+    "paths": {
+      "@arc/composables": ["./composables/src/index.ts"],
+      "@arc/composables/*": ["./composables/src/*"],
+      "@arc/contracts": ["./contracts/src/index.ts"],
+      "@arc/contracts/*": ["./contracts/src/*"],
+      "@arc/enums": ["./enums/src/index.ts"],
+      "@arc/enums/*": ["./enums/src/*"],
+      "@arc/lib": ["./lib/src/index.ts"],
+      "@arc/lib/*": ["./lib/src/*"],
+      "@arc/models": ["./models/src/index.ts"],
+      "@arc/models/*": ["./models/src/*"],
+      "@arc/nuxt-vue-query": ["./nuxt-vue-query/src/module.ts"],
+      "@arc/schemas": ["./schemas/src/index.ts"],
+      "@arc/schemas/*": ["./schemas/src/*"],
+      "@arc/utils": ["./utils/src/index.ts"],
+      "@arc/utils/*": ["./utils/src/*"]
+    }
+  }
+}

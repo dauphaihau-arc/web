@@ -73,7 +73,7 @@ Shared dependencies may be split into stable bundles when it improves caching an
 ## Related Docs
 
 - `docs/architecture/application-structure.md`
-- `docs/architecture/design-system.md`
+- `docs/architecture/design-system/design-system.md`
 - `docs/architecture/rendering-strategies.md`
 - `docs/operations/runtime-config.md`
 ```

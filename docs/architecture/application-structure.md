@@ -56,6 +56,6 @@ Avoid importing domain feature code across apps. Cross-app reuse should happen t
 ## Related Docs
 
 - `docs/architecture/monorepo.md`
-- `docs/architecture/design-system.md`
+- `docs/architecture/design-system/design-system.md`
 - `docs/fe-type-boundaries.md`
 - `docs/nuxt-auto-imports.md`

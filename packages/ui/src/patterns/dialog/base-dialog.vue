@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { toValue } from 'vue'
 import type { ComputedRef, Ref } from 'vue'
 import ShortcutHint from '../../primitives/shortcut-hint.vue'
 

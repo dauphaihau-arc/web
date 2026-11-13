@@ -8,7 +8,7 @@ import {
   ADMIN_ORDER_ACTION_STATUSES,
   readRefundStatus,
 } from '~/domains/orders/utils/order-presentation'
-import { usePermissions } from '~/shared/composables/use-permissions'
+import { usePermissions } from '~/domains/me/composables/use-permissions'
 
 const props = defineProps<{
   orderId: string

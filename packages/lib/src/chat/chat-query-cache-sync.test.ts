@@ -119,7 +119,9 @@ describe('createChatQuerySyncHandler conversation lists', () => {
     const filtered = queryClient.getQueryData<{ results: BaseChatConversation[] }>(filteredKey);
     expect(filtered?.results).toEqual([other]);
 
-    const invalidatedKeys = invalidateSpy.mock.calls.map(([filters]) => filters?.queryKey);
+    const invalidatedKeys = invalidateSpy.mock.calls.map(([filters]) => (
+      typeof filters === 'function' ? undefined : filters?.queryKey
+    ));
     expect(invalidatedKeys).toEqual([filteredKey]);
   });
 

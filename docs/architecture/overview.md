@@ -51,8 +51,8 @@ Arc Web uses:
 
 - `docs/architecture/monorepo.md`
 - `docs/architecture/application-structure.md`
-- `docs/architecture/design-tokens.md`
-- `docs/architecture/design-system.md`
+- `docs/architecture/design-system/design-system.md`
+- `docs/architecture/design-system/design-tokens.md`
 - `docs/architecture/rendering-strategies.md`
 - `docs/architecture/refresh-token/README.md`
 - `docs/deployment.md`

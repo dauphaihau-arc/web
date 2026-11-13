@@ -5,7 +5,7 @@ import { PERMISSIONS } from '@arc/schemas/api/auth/permissions.generated'
 import { getRoutePath, isRouteActive, routes } from '~/shared/navigation/routes'
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
 import { useLogout } from '~/domains/auth/mutations/logout.mutation'
-import { usePermissions } from '~/shared/composables/use-permissions'
+import { usePermissions } from '~/domains/me/composables/use-permissions'
 
 type NavigationItem = {
   title: string

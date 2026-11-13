@@ -10,8 +10,8 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="flex min-h-10 items-center justify-between gap-3 rounded-md border border-gray-200 px-3 py-2">
-    <span class="text-sm text-gray-900">{{ value }}</span>
+  <div class="flex min-h-10 items-center justify-between gap-3 rounded-md border border-border-subtle px-3 py-2">
+    <span class="text-sm text-text-strong">{{ value }}</span>
     <UButton
       v-if="actionLabel"
       :padded="false"
