@@ -2,6 +2,9 @@
   "name": "@arc/utils",
   "private": true,
   "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
   "exports": {
     ".": "./src/index.ts",
     "./*": "./src/*"
