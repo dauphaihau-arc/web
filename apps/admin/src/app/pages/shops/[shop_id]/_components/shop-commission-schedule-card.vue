@@ -8,7 +8,7 @@ import {
   formatCommissionPercent,
   parseCommissionPercentToBasisPoints,
 } from '~/domains/finance/utils/finance-presentation'
-import { usePermissions } from '~/shared/composables/use-permissions'
+import { usePermissions } from '~/domains/me/composables/use-permissions'
 import { formatFinanceDateTime, toDateTimeLocalValue } from './finance-presentation'
 
 const props = defineProps<{
