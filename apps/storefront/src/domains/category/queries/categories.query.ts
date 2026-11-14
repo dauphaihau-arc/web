@@ -17,13 +17,30 @@ export function useGetCategories(
   });
 }
 
+export async function fetchRootCategories(options?: {
+  signal?: AbortSignal
+  retryOnWakeUp?: boolean
+}): Promise<Category[]> {
+  const response = await categoryApi.getCategories(
+    undefined,
+    { signal: options?.signal },
+    { retryOnWakeUp: options?.retryOnWakeUp },
+  );
+
+  return response.map(normalizeCategory);
+}
+
+export const rootCategoriesQueryOptions = {
+  queryKey: ['get-root-categories'],
+  // Market switches still refetch: `invalidateMarketSensitiveQueries` lists this
+  // key. The stale window only stops the post-hydration refetch of data the SSR
+  // payload already carries.
+  staleTime: 5 * 60_000,
+  queryFn: () => fetchRootCategories(),
+} as const;
+
 export function useGetRootCategories() {
   return useQuery<Category[]>({
-    queryKey: ['get-root-categories'],
-    queryFn: async () => {
-      const response = await categoryApi.getCategories();
-
-      return response.map(normalizeCategory);
-    },
+    ...rootCategoriesQueryOptions,
   });
 }

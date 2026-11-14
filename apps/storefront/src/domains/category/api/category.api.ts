@@ -5,6 +5,8 @@ import type {
   GetCategorySuggestionsResponse,
   CategoryResolutionResponse,
 } from './contracts/category.contract';
+import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack';
+import type { RequestBehavior } from '@arc/lib';
 import { apiClient } from '~/domains/_shared/api-client';
 
 export const categoryApi = {
@@ -38,10 +40,16 @@ export const categoryApi = {
     );
   },
 
-  getCategories(params?: GetCategoriesRequest) {
+  getCategories(
+    params?: GetCategoriesRequest,
+    options?: NitroFetchOptions<NitroFetchRequest>,
+    behavior?: RequestBehavior,
+  ) {
     return apiClient.get<GetCategoriesResponse>(
       '/categories',
       params,
+      options,
+      behavior,
     );
   },
 
