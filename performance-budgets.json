@@ -1,0 +1,17 @@
+{
+  "storefront": {
+    "clientJsGzipBytes": 524288,
+    "clientCssGzipBytes": 26624,
+    "largestChunkBytes": 157286
+  },
+  "seller": {
+    "clientJsGzipBytes": 786432,
+    "clientCssGzipBytes": 29696,
+    "largestChunkBytes": 401408
+  },
+  "admin": {
+    "clientJsGzipBytes": 352256,
+    "clientCssGzipBytes": 21504,
+    "largestChunkBytes": 115343
+  }
+}

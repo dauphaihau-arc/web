@@ -35,3 +35,6 @@ coverage
 # Netlify local metadata
 .netlify
 .turbo
+
+# Lighthouse CI reports
+.lighthouseci

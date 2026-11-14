@@ -168,6 +168,9 @@ jobs:
           NITRO_PRESET: netlify
         run: pnpm build:storefront
 
+      - name: Check storefront bundle budget
+        run: node ./scripts/check-bundle-budget.mjs storefront
+
       # `isr` only works on the Netlify preset and breaks silently if a route is
       # prerendered or the preset regresses, so assert the built artifact.
       - name: Assert ISR contract
@@ -274,6 +277,9 @@ jobs:
       - name: Build seller
         run: pnpm build:seller
 
+      - name: Check seller bundle budget
+        run: node ./scripts/check-bundle-budget.mjs seller
+
   admin:
     needs: changes
     if: needs.changes.outputs.admin == 'true'
@@ -316,6 +322,9 @@ jobs:
 
       - name: Build admin
         run: pnpm build:admin
+
+      - name: Check admin bundle budget
+        run: node ./scripts/check-bundle-budget.mjs admin
 
   contract:
     runs-on: ubuntu-24.04
