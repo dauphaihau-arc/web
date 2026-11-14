@@ -97,7 +97,8 @@ Two layers, deliberately different in strictness.
 **Bundle budgets** are the blocking PR gate. `performance-budgets.json` holds,
 per app, the total client JS gzip size, total client CSS gzip size, and the raw
 size of the largest single JS chunk. `scripts/check-bundle-budget.mjs` reads the
-built `.output/public/_nuxt` directory and fails when a limit is exceeded:
+built client assets (`.output/public/_nuxt`, or `dist/_nuxt` for the Netlify
+preset) and fails when a limit is exceeded:
 
 ```bash
 pnpm build:storefront

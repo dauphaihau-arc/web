@@ -9,9 +9,9 @@
  * Usage: node scripts/check-bundle-budget.mjs <app> [<app>...]
  *        node scripts/check-bundle-budget.mjs storefront seller admin
  */
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import {
-  basename, dirname, join, resolve, 
+  basename, dirname, join, resolve,
 } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
@@ -55,17 +55,20 @@ for (const app of apps) {
     continue;
   }
 
-  const assetsDir = join(rootDir, 'apps', app, '.output', 'public', '_nuxt');
+  // Nitro writes public assets where the preset expects them: `.output/public`
+  // for the node-server layout, `dist` for the Netlify preset.
+  const assetsDir = [
+    join(rootDir, 'apps', app, '.output', 'public', '_nuxt'),
+    join(rootDir, 'apps', app, 'dist', '_nuxt'),
+  ].find(path => existsSync(path));
 
-  let files;
-  try {
-    files = readdirSync(assetsDir);
-  }
-  catch {
-    console.error(`${app}: ${assetsDir} not found — run \`pnpm build:${app}\` first`);
+  if (!assetsDir) {
+    console.error(`${app}: no client assets found (looked for .output/public/_nuxt and dist/_nuxt) — run \`pnpm build:${app}\` first`);
     failed = true;
     continue;
   }
+
+  const files = readdirSync(assetsDir);
 
   const jsFiles = files.filter(file => file.endsWith('.js'));
   const cssFiles = files.filter(file => file.endsWith('.css'));
