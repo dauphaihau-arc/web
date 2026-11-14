@@ -20,6 +20,9 @@ module.exports = {
       numberOfRuns: 3,
     },
     assert: {
+      // The default is `optimistic`, which reports the best run for max*
+      // assertions. Median keeps the nightly number comparable across days.
+      aggregationMethod: 'median',
       assertions: {
         // Field-stable signals: layout stability and page weight.
         'cumulative-layout-shift': ['error', { maxNumericValue: 0.1 }],
