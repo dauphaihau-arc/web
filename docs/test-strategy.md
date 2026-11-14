@@ -122,8 +122,22 @@ more than the landing page; only server-rendered routes are meaningful, since
 checkout, cart, account, orders, and guest orders are `ssr: false` shells.
 
 `lighthouserc.cjs` gates on stable signals only: CLS and total page weight are
-errors, LCP and TBT are warnings. Field data (RUM) remains the source of truth
-for whether the site is fast; Lighthouse exists to catch regressions.
+errors, LCP and TBT are warnings. Assertions aggregate runs by median (LHCI's
+default is `optimistic`, which reports the best run for max* thresholds).
+
+The storefront home route is the only page where the initial render was tuned:
+`src/app/pages/index/index.vue` prefetches the first product rail on the server
+(2.5 s budget) so the LCP image ships in the HTML with `priority`, and the
+below-fold sections are `defineLazyHydrationComponent('visible', …)` so their
+chunks and query setup wait for the scroll. Everything else on the page still
+fetches client-side by design: the home route is ISR-cached per URL, so
+currency-dependent data stays on the client.
+
+Field data is the source of truth for whether the site is fast, but there is no
+RUM collector in this stack yet: the API's observability is backend-only
+(Prometheus scrape, Loki logs, OTEL traces, Sentry), so browser vitals have no
+destination. Until one exists, treat LCP warnings as lab signal only and do not
+add client instrumentation that cannot be recorded.
 
 ## CI gates
 

@@ -1,4 +1,4 @@
-import type { UseQueryOptions } from '@tanstack/vue-query';
+import type { QueryClient, UseQueryOptions } from '@tanstack/vue-query';
 import type { ComputedRef } from 'vue';
 import { MARKET_CONFIG } from '@arc/enums/market';
 import { categoryIdentityQueryPolicy } from '@arc/lib';
@@ -133,16 +133,54 @@ export function useGetRecentlyViewedProducts(
   });
 }
 
+/**
+ * Values that identify the priced product view. Kept as plain strings because
+ * the guest/user preference unions and the `MARKET_CONFIG` fallbacks use
+ * different literal types for the same values.
+ */
+export type ProductMarketContext = {
+  currency: string
+  language: string
+  region: string
+};
+
+export function useProductMarketContext() {
+  const marketStore = useMarketStore();
+
+  return computed((): ProductMarketContext => ({
+    currency: marketStore.activePreferences?.currency ?? MARKET_CONFIG.BASE_CURRENCY,
+    language: marketStore.activePreferences?.language ?? MARKET_CONFIG.BASE_LANGUAGE,
+    region: marketStore.activePreferences?.region ?? MARKET_CONFIG.BASE_REGION,
+  }));
+}
+
+export function trendingProductsQueryKey(
+  params: { limit?: number } | undefined,
+  market: ProductMarketContext,
+) {
+  return ['get-trending-products', params, market] as const;
+}
+
+/**
+ * SSR prefetch for the first home rail. The server already resolves the market
+ * context in the current-user plugin, so the rendered HTML can carry the card
+ * images instead of waiting for hydration, a client API round trip, and image
+ * discovery. Must stay in sync with `useGetTrendingProducts` via
+ * `trendingProductsQueryKey`.
+ */
+export function prefetchTrendingProducts(queryClient: QueryClient, limit: number) {
+  return queryClient.prefetchQuery({
+    queryKey: trendingProductsQueryKey({ limit }, useProductMarketContext().value),
+    queryFn: () => productApi.getTrending(limit) as Promise<GetProductRecommendationsResponse>,
+  });
+}
+
 export function useGetTrendingProducts(
   params: ComputedRef<{ limit?: number } | undefined>,
   options?: Partial<UseQueryOptions<GetProductRecommendationsResponse>>,
 ) {
   const marketStore = useMarketStore();
-  const marketContext = computed(() => ({
-    currency: marketStore.activePreferences?.currency ?? MARKET_CONFIG.BASE_CURRENCY,
-    language: marketStore.activePreferences?.language ?? MARKET_CONFIG.BASE_LANGUAGE,
-    region: marketStore.activePreferences?.region ?? MARKET_CONFIG.BASE_REGION,
-  }));
+  const marketContext = useProductMarketContext();
 
   return useQuery<GetProductRecommendationsResponse>({
     enabled: computed(() => marketStore.isMarketReady),
@@ -150,7 +188,7 @@ export function useGetTrendingProducts(
     refetchOnMount: 'always',
     refetchOnWindowFocus: true,
     ...options,
-    queryKey: computed(() => ['get-trending-products', params.value, marketContext.value]),
+    queryKey: computed(() => trendingProductsQueryKey(params.value, marketContext.value)),
     queryFn: () => productApi.getTrending(params.value?.limit) as Promise<GetProductRecommendationsResponse>,
   });
 }
