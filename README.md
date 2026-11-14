@@ -32,11 +32,6 @@ docs/
 - [Platform](docs/platform.md)
 - [Deployment and CI/CD](docs/deployment.md)
 - [Test strategy](docs/test-strategy.md)
-- [Seller browser tests](docs/seller-e2e.md)
-- [Frontend type boundaries](docs/fe-type-boundaries.md)
-- [Nuxt auto imports](docs/nuxt-auto-imports.md)
-- [Architecture decisions](docs/adrs/)
-- [Troubleshooting](docs/troubleshooting/)
 
 ## Requirements
 

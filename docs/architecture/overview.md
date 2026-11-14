@@ -55,4 +55,6 @@ Arc Web uses:
 - `docs/architecture/design-system/design-tokens.md`
 - `docs/architecture/rendering-strategies.md`
 - `docs/architecture/refresh-token/README.md`
+- `docs/adrs/`
+- `docs/troubleshooting/`
 - `docs/deployment.md`

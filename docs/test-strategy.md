@@ -170,3 +170,7 @@ Not in CI, by design or by omission:
    reason; never edit `packages/schemas/src/api/generated/`.
 5. Run the narrowest command that exercises the change, then `pnpm check` before
    opening the PR when the change crosses app or package boundaries.
+
+## Related Docs
+
+- `docs/seller-e2e.md` — seller browser suite setup and fixtures.
