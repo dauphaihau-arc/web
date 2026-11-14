@@ -90,6 +90,40 @@ each other. There are no thresholds: coverage is a diagnostic, and the review
 question stays "does the changed behavior have the smallest test that proves
 it?" rather than "did the percentage move?".
 
+## Performance gates
+
+Two layers, deliberately different in strictness.
+
+**Bundle budgets** are the blocking PR gate. `performance-budgets.json` holds,
+per app, the total client JS gzip size, total client CSS gzip size, and the raw
+size of the largest single JS chunk. `scripts/check-bundle-budget.mjs` reads the
+built `.output/public/_nuxt` directory and fails when a limit is exceeded:
+
+```bash
+pnpm build:storefront
+node scripts/check-bundle-budget.mjs storefront
+node scripts/check-bundle-budget.mjs storefront seller admin
+```
+
+Totals catch distributed growth; the largest-chunk limit catches one heavy
+dependency without penalizing legitimate route splitting. Limits start at the
+current size plus headroom, so raise `performance-budgets.json` in the same PR as
+the feature that needs it, with a reason, and ratchet the number down when a win
+lands. Each app CI job runs the check right after its build.
+
+**Lighthouse** is a nightly diagnostic, not a PR gate. Production pages sit
+behind ISR and a real API; a PR-time score would compare cached and uncached
+renders and jitter on shared runners. `.github/workflows/perf.yml` runs
+`lhci autorun` nightly and on demand against the deployed storefront, with three
+runs per URL and filesystem reports uploaded as the `lighthouse-reports`
+artifact. Set the repository variable `LHCI_URLS` (comma-separated) to measure
+more than the landing page; only server-rendered routes are meaningful, since
+checkout, cart, account, orders, and guest orders are `ssr: false` shells.
+
+`lighthouserc.cjs` gates on stable signals only: CLS and total page weight are
+errors, LCP and TBT are warnings. Field data (RUM) remains the source of truth
+for whether the site is fast; Lighthouse exists to catch regressions.
+
 ## CI gates
 
 Workflow `.github/workflows/ci.yml`:
@@ -98,11 +132,14 @@ Workflow `.github/workflows/ci.yml`:
 |---|---|---|
 | `changes` | every PR/push | path filter producing `storefront`, `seller`, `admin` scopes |
 | `packages` | every PR/push | `test:packages:coverage`, uploads `coverage-packages` |
-| `storefront` | storefront or shared change | lint, typecheck, unit + nuxt, Netlify build, ISR artifact assert |
+| `storefront` | storefront or shared change | lint, typecheck, unit + nuxt, Netlify build, bundle budget, ISR artifact assert |
 | `storefront-smoke` | storefront or shared change | `e2e:ssr:build`, then `E2E_MODE=ssr e2e:smoke` against the fixture backend, uploads `playwright-report-storefront-smoke` |
-| `seller` | seller or shared change | lint, typecheck, unit + nuxt, build |
-| `admin` | admin or shared change | lint, typecheck, unit + nuxt, build |
+| `seller` | seller or shared change | lint, typecheck, unit + nuxt, build, bundle budget |
+| `admin` | admin or shared change | lint, typecheck, unit + nuxt, build, bundle budget |
 | `contract` | every PR/push | generated API types match the pinned contract |
+
+`.github/workflows/perf.yml` is separate: nightly and manual Lighthouse runs
+against production, never a PR gate.
 
 Package changes mark all three app scopes dirty, so a shared-package change
 cannot land while an app job fails. The package job runs unconditionally because
