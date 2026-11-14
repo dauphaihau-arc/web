@@ -52,6 +52,11 @@ jobs:
       - name: Run Lighthouse CI
         env:
           LHCI_URLS: ${{ vars.LHCI_URLS }}
+          # The healthcheck looks for an upload credential even though
+          # `upload.target: filesystem` posts no statuses. LHCI reads
+          # `LHCI_GITHUB_TOKEN` (yargs `.env('LHCI')` -> `githubToken`), not
+          # `GITHUB_TOKEN`.
+          LHCI_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # `dlx` keeps the Lighthouse toolchain out of the workspace install that
         # every PR job pays for; this workflow is the only consumer.
         run: pnpm dlx @lhci/cli@0.16.1 autorun
