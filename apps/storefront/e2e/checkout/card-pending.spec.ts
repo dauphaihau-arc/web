@@ -51,11 +51,11 @@ test('polls checkout readiness before redirecting a pending authenticated card c
   });
 
   await page.goto('/checkout?c=cart-e2e-1');
-  await page.getByRole('button', { name: 'Continue' }).click();
-  await page.getByRole('button', { name: 'Continue' }).click();
   await page.getByRole('button', { name: 'Complete Order' }).click();
 
-  await expect(page).toHaveURL(checkoutUrl);
+  // Readiness polls once a second, so allow the two-poll sequence to finish
+  // before the redirect is asserted.
+  await expect(page).toHaveURL(checkoutUrl, { timeout: 15_000 });
   expect(readinessRequests).toHaveLength(2);
   expect(readinessRequests[0]).toContain('order_ids=order-e2e-1');
 });

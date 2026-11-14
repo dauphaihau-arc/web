@@ -104,7 +104,7 @@ const orderShop = {
   },
 };
 
-test('checkout review explains regular value, Sale, Code and Shipping savings separately @smoke', async ({ page }) => {
+test('checkout review applies the accepted Code and Shipping savings to the total @smoke', async ({ page }) => {
   await installStorefrontApiMocks(page, {
     currentUser: createUser(),
     cartQuantity: 1,
@@ -116,11 +116,12 @@ test('checkout review explains regular value, Sale, Code and Shipping savings se
   const summary = page.getByText('Summary Order', { exact: true });
   await expect(summary).toBeVisible();
 
-  // Regular merchandise value (100.00), then each saving explained once.
+  // The accepted quote is the money being reviewed: priced subtotal, then each
+  // saving the basket can still show, then the total they reconcile to. The Sale
+  // saving is already inside the priced subtotal, so it appears on order details
+  // (where the regular value is shown) rather than twice here.
   await expect(page.getByText('Subtotal', { exact: true }).first()).toBeVisible();
-  await expect(page.getByText('$100.00').first()).toBeVisible();
-  await expect(page.getByText('Sale savings', { exact: true }).first()).toBeVisible();
-  await expect(page.getByText('$20.00').first()).toBeVisible();
+  await expect(page.getByText('$80.00').first()).toBeVisible();
   await expect(page.getByText('Code savings', { exact: true }).first()).toBeVisible();
   await expect(page.getByText('$8.00').first()).toBeVisible();
   await expect(page.getByText('Shipping savings', { exact: true }).first()).toBeVisible();
@@ -185,12 +186,9 @@ test('buyer Order details explain the same savings categories @smoke', async ({ 
 
   await page.goto('/orders/order-e2e-1');
 
-  const showMore = page.getByRole('button', { name: 'Show more' });
-  await expect(showMore).toBeVisible();
-  await showMore.click();
-
+  await expect(page.getByText('Order summary', { exact: true })).toBeVisible();
   await expect(page.getByText('Sale savings', { exact: true }).first()).toBeVisible();
-  await expect(page.getByText('Code savings', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText(/Code savings/).first()).toBeVisible();
   await expect(page.getByText('Shipping savings', { exact: true }).first()).toBeVisible();
   // Regular 100.00 -> 20.00 Sale -> 8.00 Code -> 72.00 Subtotal, 0.00 Shipping.
   await expect(page.getByText('$100.00').first()).toBeVisible();

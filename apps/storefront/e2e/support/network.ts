@@ -314,6 +314,7 @@ export async function installStorefrontApiMocks(
     total_minor: 1200,
     expires_at: '2026-09-04T01:00:00.000Z',
     items: [],
+    shops: [],
   };
   const checkoutOrderResponse = options.checkoutOrderResponse ?? {
     checkout_session_url: 'https://checkout.stripe.com/e2e-session',
