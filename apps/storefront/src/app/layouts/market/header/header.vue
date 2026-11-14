@@ -118,7 +118,7 @@ async function toggleCartMenu() {
           Arc
         </NuxtLink>
 
-        <div class=" justify-self-center">
+        <div class="min-w-0 justify-self-center">
           <Categories class="mx-3 hidden lg:block" />
           <CartMegaMenu
             v-if="hasLoadedCartMegaMenu && isDesktop"
