@@ -67,7 +67,7 @@ async function loadCategories(
   // SSR gets one attempt: the wake-up recovery would spend the render budget in
   // retry delays, and its timers outlive the request that owns the Nuxt context.
   const pending = queryClient
-    .fetchQuery({
+    .query({
       ...rootCategoriesQueryOptions,
       retry: false,
       queryFn: () => fetchRootCategories({

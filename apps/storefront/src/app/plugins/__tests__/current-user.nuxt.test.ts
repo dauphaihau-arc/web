@@ -37,8 +37,7 @@ describe('current-user plugin', () => {
 
   it('bootstraps current user and market store on app start', async () => {
     const queryClient = {
-      fetchQuery: vi.fn().mockResolvedValue({ user: null }),
-      prefetchQuery: vi.fn().mockResolvedValue(undefined),
+      query: vi.fn().mockResolvedValue({ user: null }),
     };
     const ensureMarketReady = vi.fn().mockResolvedValue(undefined);
 
@@ -49,12 +48,11 @@ describe('current-user plugin', () => {
 
     await plugin({} as never);
 
-    expect(queryClient.fetchQuery).toHaveBeenCalledTimes(1);
-    expect(queryClient.fetchQuery).toHaveBeenCalledWith(expect.objectContaining({
+    expect(queryClient.query).toHaveBeenCalledTimes(1);
+    expect(queryClient.query).toHaveBeenCalledWith(expect.objectContaining({
       queryKey: ['current-user'],
       staleTime: 0,
     }));
-    expect(queryClient.prefetchQuery).not.toHaveBeenCalled();
     expect(ensureMarketReady).toHaveBeenCalledTimes(1);
   });
 });

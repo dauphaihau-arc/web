@@ -38,10 +38,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
   let resolveRequest: (() => Promise<CategoryResolution>) | undefined;
 
   if (identity) {
-    resolveRequest = () => queryClient.fetchQuery(categoryResolutionQueryOptions(identity.publicId));
+    resolveRequest = () => queryClient.query(categoryResolutionQueryOptions(identity.publicId));
   }
   else if (legacyPath) {
-    resolveRequest = () => queryClient.fetchQuery(legacyPathResolutionQueryOptions(legacyPath));
+    resolveRequest = () => queryClient.query(legacyPathResolutionQueryOptions(legacyPath));
   }
 
   if (!resolveRequest) {

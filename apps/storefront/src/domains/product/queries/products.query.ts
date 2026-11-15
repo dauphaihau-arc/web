@@ -169,7 +169,7 @@ export function trendingProductsQueryKey(
  * `trendingProductsQueryKey`.
  */
 export function prefetchTrendingProducts(queryClient: QueryClient, limit: number) {
-  return queryClient.prefetchQuery({
+  return queryClient.query({
     queryKey: trendingProductsQueryKey({ limit }, useProductMarketContext().value),
     queryFn: () => productApi.getTrending(limit) as Promise<GetProductRecommendationsResponse>,
   });

@@ -27,7 +27,7 @@ export function useCreateShop() {
         });
       }
 
-      await queryClient.fetchQuery(currentUserQueryOptions);
+      await queryClient.query(currentUserQueryOptions);
     },
   });
 }

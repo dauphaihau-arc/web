@@ -5,14 +5,14 @@ export default defineNuxtPlugin(async () => {
   const marketStore = useMarketStore();
 
   if (import.meta.client) {
-    void queryClient.fetchQuery({
+    void queryClient.query({
       ...currentUserQueryOptions,
       staleTime: 0,
     }).catch(() => {});
     void marketStore.ensureMarketReady().catch(() => {});
   }
   else {
-    await queryClient.prefetchQuery(currentUserQueryOptions).catch(() => {});
+    await queryClient.query(currentUserQueryOptions).catch(() => {});
     await marketStore.ensureMarketReady().catch(() => {});
   }
 });

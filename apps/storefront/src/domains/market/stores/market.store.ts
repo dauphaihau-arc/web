@@ -240,9 +240,9 @@ export const useMarketStore = defineStore('market', () => {
 
     marketReadyPromise.value = (async () => {
       const [currentUser, ipData, marketConfig] = await Promise.all([
-        queryClient.ensureQueryData(currentUserQueryOptions).catch(() => undefined),
+        queryClient.query({ ...currentUserQueryOptions, staleTime: 'static' }).catch(() => undefined),
         getIpData().catch(() => undefined),
-        queryClient.fetchQuery(marketConfigQueryOptions).catch(() => undefined),
+        queryClient.query(marketConfigQueryOptions).catch(() => undefined),
       ]);
       const userPreferences = currentUser?.user?.preferences;
 

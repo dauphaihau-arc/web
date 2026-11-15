@@ -49,10 +49,10 @@ const CATEGORIES = [
   { id: '2', name: 'Art' },
 ];
 
-function createQueryClient(fetchQuery = vi.fn().mockResolvedValue(CATEGORIES)) {
+function createQueryClient(query = vi.fn().mockResolvedValue(CATEGORIES)) {
   return {
-    queryClient: { fetchQuery, setQueryData: vi.fn() },
-    fetchQuery,
+    queryClient: { query, setQueryData: vi.fn() },
+    query,
   };
 }
 
@@ -70,11 +70,11 @@ describe('root-categories prefetch', () => {
   it('seeds the request query client with the fetched categories', async () => {
     getRequestMarketHeadersMock.mockReturnValue(US_HEADERS);
     const { prefetchRootCategories } = await import('../root-categories');
-    const { queryClient, fetchQuery } = createQueryClient();
+    const { queryClient, query } = createQueryClient();
 
     await prefetchRootCategories(queryClient as never);
 
-    expect(fetchQuery).toHaveBeenCalledTimes(1);
+    expect(query).toHaveBeenCalledTimes(1);
     expect(queryClient.setQueryData).toHaveBeenCalledWith(
       ['get-root-categories'],
       CATEGORIES,
@@ -95,7 +95,7 @@ describe('root-categories prefetch', () => {
     const second = createQueryClient();
     await prefetchRootCategories(second.queryClient as never);
 
-    expect(second.fetchQuery).not.toHaveBeenCalled();
+    expect(second.query).not.toHaveBeenCalled();
     expect(second.queryClient.setQueryData).toHaveBeenCalledWith(
       ['get-root-categories'],
       CATEGORIES,
@@ -122,8 +122,8 @@ describe('root-categories prefetch', () => {
     });
     await prefetchRootCategories(vn.queryClient as never);
 
-    expect(us.fetchQuery).toHaveBeenCalledTimes(1);
-    expect(vn.fetchQuery).toHaveBeenCalledTimes(1);
+    expect(us.query).toHaveBeenCalledTimes(1);
+    expect(vn.query).toHaveBeenCalledTimes(1);
   });
 
   it('refetches once the cached list goes stale', async () => {
@@ -140,8 +140,8 @@ describe('root-categories prefetch', () => {
       const second = createQueryClient();
       await prefetchRootCategories(second.queryClient as never);
 
-      expect(first.fetchQuery).toHaveBeenCalledTimes(1);
-      expect(second.fetchQuery).toHaveBeenCalledTimes(1);
+      expect(first.query).toHaveBeenCalledTimes(1);
+      expect(second.query).toHaveBeenCalledTimes(1);
     }
     finally {
       vi.useRealTimers();
@@ -170,11 +170,11 @@ describe('root-categories prefetch', () => {
       ensureMarketReady: vi.fn().mockResolvedValue(undefined),
     });
     const { prefetchRootCategories } = await import('../root-categories');
-    const { queryClient, fetchQuery } = createQueryClient();
+    const { queryClient, query } = createQueryClient();
 
     await prefetchRootCategories(queryClient as never);
 
-    expect(fetchQuery).not.toHaveBeenCalled();
+    expect(query).not.toHaveBeenCalled();
     expect(queryClient.setQueryData).not.toHaveBeenCalled();
     expect(logMock.info).toHaveBeenCalledWith(
       '[root-categories][SSR] market not ready, skipping prefetch',
@@ -184,12 +184,12 @@ describe('root-categories prefetch', () => {
   it('aborts the request when the render budget expires so nothing runs past the request', async () => {
     getRequestMarketHeadersMock.mockReturnValue({ ...US_HEADERS, 'X-Locale': 'en-US-abort' });
     const { prefetchRootCategories } = await import('../root-categories');
-    const fetchQuery = vi.fn((options: { queryFn: () => Promise<unknown> }) => options.queryFn());
-    const { queryClient } = createQueryClient(fetchQuery as never);
+    const query = vi.fn((options: { queryFn: () => Promise<unknown> }) => options.queryFn());
+    const { queryClient } = createQueryClient(query as never);
 
     await prefetchRootCategories(queryClient as never, { waitBudgetMs: 10 });
 
-    expect(fetchQuery).toHaveBeenCalledWith(expect.objectContaining({ retry: false }));
+    expect(query).toHaveBeenCalledWith(expect.objectContaining({ retry: false }));
     expect(fetchRootCategoriesMock).toHaveBeenCalledWith({
       signal: expect.any(AbortSignal),
       retryOnWakeUp: false,
