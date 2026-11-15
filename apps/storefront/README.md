@@ -13,6 +13,8 @@ A ecommerce marketplace web application  where people come together to make, sel
 
 ## Rendering and session recovery
 
+The policy behind these route rules is in [`docs/performance/rendering-strategies.md`](../../docs/performance/rendering-strategies.md).
+
 - Home uses one-hour ISR; other public routes retain the five-minute ISR default.
 - Category listings (`/c/**`) and search use uncached SSR so market and filter results are not shared through ISR.
 - Success, guest orders, cart, checkout, account, orders, and password reset remain client-rendered with ISR and Nitro caching explicitly disabled.

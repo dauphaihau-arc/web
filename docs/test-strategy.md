@@ -92,7 +92,8 @@ it?" rather than "did the percentage move?".
 
 ## Performance gates
 
-Two layers, deliberately different in strictness.
+Two layers, deliberately different in strictness. What each gate is protecting —
+the per-route techniques and their time budgets — is in `docs/performance/README.md`.
 
 **Bundle budgets** are the blocking PR gate. `performance-budgets.json` holds,
 per app, the total client JS gzip size, total client CSS gzip size, and the raw
