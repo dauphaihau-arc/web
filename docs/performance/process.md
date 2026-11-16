@@ -31,4 +31,4 @@ uncached ISR renders and turn shared-runner jitter into merge noise.
 
 - [README.md](./README.md)
 - [measurement.md](./measurement.md) — the layers and thresholds
-- `docs/test-strategy.md` §Performance gates
+- `docs/test-strategy/test-strategy.md` §Performance gates

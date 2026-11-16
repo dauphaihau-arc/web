@@ -28,6 +28,7 @@
     "e2e:video:headed": "PLAYWRIGHT_VIDEO_MODE=on playwright test --config ./playwright.config.ts --headed",
     "e2e:video:mp4": "pnpm e2e:video && node ./scripts/convert-playwright-videos-to-mp4.mjs",
     "e2e:video:mp4:headed": "pnpm e2e:video:headed && node ./scripts/convert-playwright-videos-to-mp4.mjs",
+    "e2e:visual": "playwright test --config ./playwright.visual.config.ts",
     "lint": "eslint --cache .",
     "lint:fix": "eslint --cache --fix .",
     "docker:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",

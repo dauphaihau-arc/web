@@ -234,6 +234,73 @@ jobs:
           path: apps/storefront/playwright-report
           if-no-files-found: ignore
 
+  # Pixel guard for the storefront surfaces a broken stylesheet would be seen on
+  # (product detail, cart, guest orders, login dialog). Baselines are committed
+  # as `*-linux.png` because Playwright keys snapshots by platform; regenerate
+  # them with the `Visual baselines` workflow (visual-baselines.yml), never with
+  # a laptop `--update-snapshots`, which writes a `-darwin` file CI cannot use.
+  #
+  # The job runs inside the same Playwright image that workflow uses, so
+  # comparison and baseline generation share one font stack and browser build.
+  # A bare `ubuntu-24.04` runner would render with a different font set and fail
+  # every baseline on the first run.
+  storefront-visual:
+    needs: changes
+    if: needs.changes.outputs.storefront == 'true'
+    runs-on: ubuntu-24.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      options: --user 1001
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.19.0
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Verify lockfile
+        working-directory: ${{ github.workspace }}
+        run: test -f pnpm-lock.yaml
+
+      - name: Install dependencies
+        working-directory: ${{ github.workspace }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pnpm install --frozen-lockfile
+
+      - name: Prepare storefront Nuxt artifacts
+        run: pnpm --filter @arc/storefront exec nuxt prepare
+
+      # The image already ships the Chromium build matching @playwright/test and
+      # the font packages the renderer needs; only the shell must be node-owned.
+      - name: Run storefront visual regression
+        run: pnpm --filter @arc/storefront e2e:visual
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-storefront-visual
+          path: apps/storefront/playwright-report-visual
+          if-no-files-found: ignore
+
+      # actual/expected/diff triples: the report shows the slider, the raw files
+      # are what you commit when a diff is intentional.
+      - name: Upload visual diffs
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-visual-diffs
+          path: apps/storefront/test-results-visual
+          if-no-files-found: ignore
+
   seller:
     needs: changes
     if: needs.changes.outputs.seller == 'true'

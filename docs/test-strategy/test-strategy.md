@@ -11,12 +11,16 @@ runs locally and in CI, and what is deliberately not covered.
 | App unit | Vitest | `node` | Pure functions, schemas, mappers, presentation helpers, query keys |
 | App Nuxt integration | Vitest + `@nuxt/test-utils` | `nuxt` (happy-dom) | Middleware, plugins, composables, stores, mounted components using auto-imports, routing, providers |
 | Storefront browser | Playwright | Static `generate` + `serve`, or SSR Node server | Critical journeys tagged `@smoke` plus category/checkout/guest-order flows |
+| Storefront visual | Playwright screenshots | Static `generate` + `serve`, rendered in the Playwright Linux image | Layout of product detail, cart, guest orders, login dialog |
 | Seller browser | Playwright | Two dev bundles against an externally provisioned API | Category contract generation handshake |
 | Real-API journey | Playwright | Built SSR server + real API + PostgreSQL | Category canonical redirects with persisted rows |
 
-There are no snapshot-only, visual, or coverage-gated tests. Assertions target
-user-visible behavior, navigation, network payloads, and business outcomes; tests
-that only prove a component mounts or a class exists are out of scope.
+There are no snapshot-only or coverage-gated tests. Visual regression is the one
+screenshot layer, and it is deliberately narrow: four surfaces, no retries, a 1%
+pixel tolerance — see `docs/test-strategy/visual-regression.md`. Everywhere else,
+assertions target user-visible behavior, navigation, network payloads, and
+business outcomes; tests that only prove a component mounts or a class exists are
+out of scope.
 
 ## Suite layout
 
@@ -25,7 +29,7 @@ that only prove a component mounts or a class exists are out of scope.
 | `packages/*` | 17 files / 92 tests | — | — |
 | `apps/seller` | 23 / 213 | 44 / 280 | 3 / 4 |
 | `apps/admin` | 3 / 57 | 4 / 20 | — |
-| `apps/storefront` | 20 / 170 | 20 / 115 | 9 / 47 (`@smoke` + flows), 1 / 7 real-API |
+| `apps/storefront` | 20 / 170 | 20 / 115 | 9 / 47 (`@smoke` + flows), 1 / 7 real-API, 4 / 4 visual |
 
 All three apps use the same split:
 
@@ -70,6 +74,7 @@ Browser suites:
 | `pnpm --filter @arc/storefront e2e` | Static `generate` + `serve`, all storefront specs |
 | `pnpm --filter @arc/storefront e2e:smoke` | Same server, only specs titled `@smoke` |
 | `pnpm --filter @arc/storefront e2e:ssr` | Builds `.output`, launches the Node server against the deterministic SSR fixture |
+| `pnpm --filter @arc/storefront e2e:visual` | Visual regression against the committed baselines (static build, Chromium) |
 | `CATEGORY_E2E_API_ORIGIN=… npx playwright test --config ./playwright.category-redirect.config.ts` | Real API + PostgreSQL harness, run from `apps/storefront` |
 | `pnpm --filter @arc/seller e2e` | Requires `SELLER_E2E_API_ORIGIN` and `SELLER_E2E_FIXTURES_JSON` from the API checkout's `e2e:seller` launcher |
 
@@ -150,12 +155,18 @@ Workflow `.github/workflows/ci.yml`:
 | `packages` | every PR/push | `test:packages:coverage`, uploads `coverage-packages` |
 | `storefront` | storefront or shared change | lint, typecheck, unit + nuxt, Netlify build, bundle budget, ISR artifact assert |
 | `storefront-smoke` | storefront or shared change | `e2e:ssr:build`, then `E2E_MODE=ssr e2e:smoke` against the fixture backend, uploads `playwright-report-storefront-smoke` |
+| `storefront-visual` | storefront or shared change | `e2e:visual` inside the Playwright image, uploads `playwright-report-storefront-visual` and, on failure, `playwright-visual-diffs` |
 | `seller` | seller or shared change | lint, typecheck, unit + nuxt, build, bundle budget |
 | `admin` | admin or shared change | lint, typecheck, unit + nuxt, build, bundle budget |
 | `contract` | every PR/push | generated API types match the pinned contract |
 
 `.github/workflows/perf.yml` is separate: nightly and manual Lighthouse runs
 against production, never a PR gate.
+
+`.github/workflows/visual-baselines.yml` is also separate: a manual dispatch that
+regenerates the visual `*-linux.png` baselines in the same Playwright image the
+gate uses and uploads them as `visual-baselines-linux`. Baselines are never
+generated on a laptop, because Playwright keys snapshots by platform.
 
 Package changes mark all three app scopes dirty, so a shared-package change
 cannot land while an app job fails. The package job runs unconditionally because
@@ -183,9 +194,13 @@ Not in CI, by design or by omission:
 4. For API contracts, extend the `SPEC_ONLY_ENUMS` allowlist in
    `packages/schemas/src/api/api-enums.conformance.test.ts` with a reviewable
    reason; never edit `packages/schemas/src/api/generated/`.
-5. Run the narrowest command that exercises the change, then `pnpm check` before
+5. A stylesheet or layout change whose failure mode is "the page looks wrong" gets
+   a visual spec in `apps/storefront/e2e-visual/`, not a class assertion; see
+   `docs/test-strategy/visual-regression.md`.
+6. Run the narrowest command that exercises the change, then `pnpm check` before
    opening the PR when the change crosses app or package boundaries.
 
 ## Related Docs
 
+- `docs/test-strategy/visual-regression.md` — the visual layer: coverage, Linux-only baselines, determinism contract.
 - `docs/seller-e2e.md` — seller browser suite setup and fixtures.

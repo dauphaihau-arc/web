@@ -1,7 +1,7 @@
 # Measurement
 
 Four layers, deliberately different in strictness. Mechanism and commands are in
-`docs/test-strategy.md` §Performance gates; this file records what each layer can
+`docs/test-strategy/test-strategy.md` §Performance gates; this file records what each layer can
 and cannot tell you.
 
 | Layer | What runs | Strength |
@@ -46,4 +46,4 @@ be recorded.
 
 - [README.md](./README.md)
 - [process.md](./process.md) — when a budget may move
-- `docs/test-strategy.md`
+- `docs/test-strategy/test-strategy.md`

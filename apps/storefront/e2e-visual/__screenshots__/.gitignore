@@ -1,0 +1,5 @@
+# Playwright selects a snapshot per platform. Baselines are rendered on Linux
+# (see scripts/run-visual-linux.mjs); a laptop-generated file must never be
+# committed, or CI compares against a different font rasteriser.
+*-darwin.png
+*-win32.png

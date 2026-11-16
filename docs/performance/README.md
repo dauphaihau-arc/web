@@ -7,7 +7,7 @@ This folder is the performance record, one file per topic. It is not a catalogue
 of everything Nuxt can do — it describes what this codebase does and why.
 Route-level rendering policy lives in
 `docs/performance/rendering-strategies.md`; CI commands and thresholds live in
-`docs/test-strategy.md`.
+`docs/test-strategy/test-strategy.md`.
 
 The stack is Nuxt 4.6.4 with Vue Query 5 for server state.
 
@@ -85,6 +85,6 @@ that do matter in the repo are covered by
 
 - `docs/performance/rendering-strategies.md`
 - `docs/platform.md`
-- `docs/test-strategy.md`
+- `docs/test-strategy/test-strategy.md`
 - `docs/deployment.md`
 - `apps/storefront/README.md` (ISR verification)

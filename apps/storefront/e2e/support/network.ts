@@ -31,7 +31,7 @@ type E2EAddress = {
   created_at: string
 };
 
-type StorefrontMockOptions = {
+export type StorefrontMockOptions = {
   currentUser?: E2EUser | null
   loginUser?: E2EUser
   cartQuantity?: number
@@ -338,6 +338,13 @@ export async function installStorefrontApiMocks(
     const url = new URL(request.url());
     const { pathname } = url;
     const method = request.method();
+
+    // A document request is the app itself, never an API call. Without this a
+    // page route that matches an API path — `/cart`, whose GET is also the cart
+    // endpoint — would render JSON instead of the page.
+    if (request.resourceType() === 'document') {
+      return route.continue();
+    }
 
     if (pathname === '/api/ip-data' && method === 'GET') {
       return fulfillJSON(route, buildIpData());

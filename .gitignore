@@ -22,8 +22,10 @@ logs
 .idea
 .vscode
 playwright-report
+playwright-report-visual
 test-results
 test-results-real-api
+test-results-visual
 coverage
 .conversation
 

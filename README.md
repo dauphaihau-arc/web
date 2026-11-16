@@ -33,7 +33,7 @@ docs/
 - [Performance](docs/performance/README.md)
 - [Rendering strategies](docs/performance/rendering-strategies.md)
 - [Deployment and CI/CD](docs/deployment.md)
-- [Test strategy](docs/test-strategy.md)
+- [Test strategy](docs/test-strategy/test-strategy.md)
 
 ## Requirements
 
