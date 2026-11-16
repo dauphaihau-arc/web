@@ -70,10 +70,13 @@ Nuxt provides route-based code splitting by default. Apps can add lazy loading f
 
 Shared dependencies may be split into stable bundles when it improves caching and reduces repeated download cost.
 
+Bundle budgets, SSR fetch budgets, and the per-route performance techniques are documented in `docs/performance/README.md`.
+
 ## Related Docs
 
+- `docs/performance/README.md`
 - `docs/architecture/application-structure.md`
 - `docs/architecture/design-system/design-system.md`
-- `docs/architecture/rendering-strategies.md`
+- `docs/performance/rendering-strategies.md`
 - `docs/operations/runtime-config.md`
 ```

@@ -1,0 +1,110 @@
+name: Visual baselines
+
+# Regenerates the storefront visual-regression baselines on Linux and publishes
+# them as an artifact. This is the only supported way to refresh a `*-linux.png`:
+# Playwright keys snapshots by platform, so `--update-snapshots` on a laptop writes
+# a `-darwin.png` that CI ignores (and `__screenshots__/.gitignore` rejects).
+#
+# The run uses the same image as the `storefront-visual` job in ci.yml, so the
+# artifact it produces is bit-identical to what the comparison expects.
+#
+# Apply the result: download `visual-baselines-linux`, replace
+# apps/storefront/e2e-visual/__screenshots__/, review the changed PNGs, commit.
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch to regenerate the baselines from
+        required: true
+        default: production
+        type: string
+      spec:
+        description: Optional Playwright file filter (for example cart.spec.ts)
+        required: false
+        default: ''
+        type: string
+
+concurrency:
+  group: visual-baselines-${{ inputs.branch }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+      options: --user 1001
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.branch }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.19.0
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Verify lockfile
+        working-directory: ${{ github.workspace }}
+        run: test -f pnpm-lock.yaml
+
+      - name: Install dependencies
+        working-directory: ${{ github.workspace }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pnpm install --frozen-lockfile
+
+      - name: Prepare storefront Nuxt artifacts
+        run: pnpm --filter @arc/storefront exec nuxt prepare
+
+      # `webServer` in the visual config builds and serves the static output.
+      # `--update-snapshots=all` rewrites every baseline the run touches; the
+      # uploaded folder is then the complete set for this revision.
+      - name: Regenerate baselines
+        run: |
+          pnpm --filter @arc/storefront exec playwright test \
+            --config ./playwright.visual.config.ts \
+            --update-snapshots=all \
+            ${{ inputs.spec }}
+
+      - name: Upload baselines
+        uses: actions/upload-artifact@v7
+        with:
+          name: visual-baselines-linux
+          path: apps/storefront/e2e-visual/__screenshots__
+          if-no-files-found: error
+
+      - name: Summarise
+        run: |
+          {
+            echo "## Visual baselines for \`${{ inputs.branch }}\`"
+            echo
+            echo "Download \`visual-baselines-linux\`, replace"
+            echo "\`apps/storefront/e2e-visual/__screenshots__/\`, then review the changed PNGs and commit."
+            echo
+            echo '```'
+            find apps/storefront/e2e-visual/__screenshots__ -name '*-linux.png' | sort
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # A failed run still leaves the produced images on the runner's disk; keep
+      # them when the suite itself fails so a flaky spec can be inspected.
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-storefront-visual-baselines
+          path: apps/storefront/playwright-report-visual
+          if-no-files-found: ignore

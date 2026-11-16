@@ -30,8 +30,10 @@ docs/
 - [Application structure](docs/architecture/application-structure.md)
 - [Design system](docs/architecture/design-system/design-system.md)
 - [Platform](docs/platform.md)
+- [Performance](docs/performance/README.md)
+- [Rendering strategies](docs/performance/rendering-strategies.md)
 - [Deployment and CI/CD](docs/deployment.md)
-- [Test strategy](docs/test-strategy.md)
+- [Test strategy](docs/test-strategy/test-strategy.md)
 
 ## Requirements
 

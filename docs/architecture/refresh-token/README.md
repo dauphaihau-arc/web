@@ -162,6 +162,6 @@ The rotation policy is covered by:
 ## Related Docs
 
 - `docs/architecture/overview.md`
-- `docs/architecture/rendering-strategies.md`
+- `docs/performance/rendering-strategies.md`
 - `docs/fe-type-boundaries.md`
 - `docs/deployment.md`
