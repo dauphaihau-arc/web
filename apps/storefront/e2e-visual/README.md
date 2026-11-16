@@ -24,10 +24,13 @@ a real API is not reproducible, so those wait until the fixtures cover them.
 pnpm e2e:visual
 ```
 
-`e2e:visual` serves the static build through `webServer`, so it rebuilds
-`.output/public` on the first run or when `reuseExistingServer` is false on CI.
-Point it at an already-served app with `E2E_BASE_URL=http://host:port` to skip
-the build.
+`e2e:visual` serves the static build through `webServer`, so every run rebuilds
+`.output/public` with a pinned environment (`API_BASE_URL=http://127.0.0.1:9`,
+`API_VERSION=1`, empty `ASSET_HOST`). A local `.env` never participates: the
+baselines must not depend on a developer's API host. The API base has to be a
+closed port — an empty value makes the app's `/v/**` calls loop back into its own
+prerender and leaves `.output/public` without client assets. Point the suite at an
+already-served app with `E2E_BASE_URL=http://host:port` to skip the build.
 
 ## Why baselines are Linux-only
 

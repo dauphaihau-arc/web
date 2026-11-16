@@ -52,10 +52,20 @@ export default defineConfig({
   webServer: externalBaseURL
     ? undefined
     : {
-        command: `pnpm e2e:serve && pnpm exec serve .output/public --listen tcp://127.0.0.1:${port}`,
+        // The static build is pinned instead of inheriting `.env`, because the
+        // baselines must not depend on a developer's local API host. The API base
+        // must be a *closed port*: an empty value makes the app's `/v/**` calls
+        // loop back into its own prerender (`Loop detected while prerendering`),
+        // which stalls the build and leaves `.output/public` without assets.
+        command: [
+          'API_BASE_URL=http://127.0.0.1:9 API_VERSION=1 ASSET_HOST= NUXT_PUBLIC_CATEGORY_IDENTITY_CONTRACT_VERSION=2 pnpm e2e:serve',
+          `pnpm exec serve .output/public --listen tcp://127.0.0.1:${port}`,
+        ].join(' && '),
         url: baseURL,
         timeout: 240_000,
-        reuseExistingServer: !process.env.CI,
+        // Always rebuild: reusing whatever answered on the port would compare
+        // against an output built with a different API base.
+        reuseExistingServer: false,
       },
   projects: [
     {
