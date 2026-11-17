@@ -67,6 +67,7 @@
     "@arc/ui": "workspace:*",
     "@arc/utils": "workspace:*",
     "@formkit/auto-animate": "^0.10.2",
+    "@nuxt/fonts": "^1.2.0",
     "@nuxt/ui": "^2.22.3",
     "@pinia/nuxt": "^1.0.3",
     "@tailwindcss/typography": "^0.5.10",
