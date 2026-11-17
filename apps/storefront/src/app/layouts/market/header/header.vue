@@ -113,7 +113,7 @@ async function toggleCartMenu() {
         <NuxtLink
           id="brand"
           :to="ROUTES.HOME"
-          class="-ms-1 h-fit p-1 text-xl font-bold"
+          class="-ms-1 h-fit p-1 font-brand text-xl font-bold"
         >
           Arc
         </NuxtLink>

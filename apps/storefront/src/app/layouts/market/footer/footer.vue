@@ -133,7 +133,7 @@ const secondaryLinks = [
   <footer class="footer">
     <div class="mx-auto max-w-home-layout px-4 md:px-12 lg:px-16">
       <div class="grid grid-cols-1 gap-1 pb-0 pt-8 lg:grid-cols-5 lg:gap-32 lg:py-8">
-        <div class="text-xl font-semibold text-text-strong">
+        <div class="font-brand text-xl font-semibold text-text-strong">
           Arc
         </div>
 

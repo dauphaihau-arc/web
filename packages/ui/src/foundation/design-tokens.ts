@@ -93,6 +93,15 @@ export const designLayout = {
   layoutShopBackground: 'linear-gradient(to top, #f4f4f5, #f4f4f5, #fafafa)',
 } as const
 
+/**
+ * Custom faces only: body copy keeps Tailwind's system `sans` stack.
+ * `brand` is the wordmark, `heading` is applied to headings inside `.layout-content`.
+ */
+export const designFonts: Record<string, string[]> = {
+  brand: ['Sora', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+  heading: ['Plus Jakarta Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+}
+
 export const designTokenClasses = {
   shadow: {
     border: 'shadow-border',
@@ -104,6 +113,7 @@ export const designTokenClasses = {
 export const sharedTailwindTheme = {
   extend: {
     colors: designColors,
+    fontFamily: designFonts,
     borderRadius: designRadii,
     boxShadow: designShadows,
     maxWidth: {

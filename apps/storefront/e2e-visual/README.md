@@ -63,8 +63,9 @@ what a raw `page.goto` leaves open:
 
 - API responses come from `e2e/support/network.ts`, never the network.
 - Cross-origin images are answered with a transparent pixel, every other
-  cross-origin request is aborted. A missing webfont degrades to the system
-  fallback instead of changing latency per run.
+  cross-origin request is aborted. Same-origin build assets still load, including
+  `_nuxt/fonts/*.woff2`; `document.fonts.ready` settles them, so a font change
+  changes baselines and needs a regeneration.
 - Color mode is forced to light, animations are disabled by the screenshot
   options, and `reducedMotion: 'reduce'` is set in the config.
 - `waitForVisualReady` waits for a content marker, `document.fonts.ready`, a

@@ -53,7 +53,8 @@ Every spec goes through `openVisualPage` and `waitForVisualReady`
 - API responses come from `apps/storefront/e2e/support/network.ts`, never from a
   live API.
 - Cross-origin images are answered with a transparent pixel and other
-  cross-origin assets are aborted, so a CDN or webfont cannot change the capture.
+  cross-origin assets are aborted. Same-origin build assets still load, including
+  `_nuxt/fonts/*.woff2`, so a font change intentionally changes the baselines.
 - Color mode is forced to light, animations are disabled by the screenshot
   options, and the config sets `reducedMotion: 'reduce'`, `locale: 'en-US'`,
   `timezoneId: 'UTC'`, `deviceScaleFactor: 1`.

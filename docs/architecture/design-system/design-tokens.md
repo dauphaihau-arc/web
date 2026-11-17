@@ -10,6 +10,7 @@ Design tokens define the shared visual vocabulary for Arc Web. One module is the
 - `designRadii` — panel, dialog, chip, button
 - `designShadows` — border, overlay, hero
 - `designLayout` — page and shop layout metrics
+- `designFonts` — brand and heading families (Tailwind utilities only)
 - `sharedTailwindTheme` — the Tailwind `theme.extend` object
 - `designTokenClasses` — class-name references used by `sharedAppConfig`
 
@@ -49,8 +50,11 @@ The generated file holds variables only. Hand-written consumer rules live in `la
 | Radius | `designRadii` | `--radius-panel`, `--radius-dialog`, `--radius-chip`, `--radius-button` | `rounded-panel`, `rounded-dialog`, `rounded-chip`, `rounded-button` |
 | Shadow | `designShadows` | `--shadow-border`, `--shadow-overlay`, `--shadow-hero` | `shadow-border`, `shadow-overlay`, `shadow-hero` |
 | Layout | `designLayout` | `--layout-*` | `max-w-home-layout`, `max-w-shop-layout`, `max-w-shop-layout-content`, `w-shop-layout-sidebar`, `p-page-gutter`, `bg-layout-shop` |
+| Font | `designFonts` | none | `font-brand`, `font-heading` |
 
 `designLayout` maps to fixed CSS variable suffixes (`--layout-max-width-home`, `--layout-shop-background`, …); the generator keeps those public names stable.
+
+`designFonts` is the one group with no CSS output: it feeds `sharedTailwindTheme` only, so `design-tokens.css` and its drift spec are unaffected by font changes. A font custom property would require extending the generator and the spec.
 
 ## Surface Ladder
 

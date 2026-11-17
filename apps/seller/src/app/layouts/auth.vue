@@ -13,14 +13,14 @@ const storefrontAppURL = computed(() => {
         <NuxtLink
           :to="storefrontAppURL"
           external
-          class="inline-flex rounded-lg px-2 py-1 text-sm font-semibold tracking-[0.2em] text-text-strong transition hover:text-text-subtle"
+          class="inline-flex rounded-lg px-2 py-1 font-brand text-sm font-semibold tracking-[0.2em] text-text-strong transition hover:text-text-subtle"
         >
           ARC
         </NuxtLink>
       </div>
     </header>
 
-    <main class="flex flex-1 items-center px-4 pb-10 sm:px-6 lg:px-8">
+    <main class="layout-content flex flex-1 items-center px-4 pb-10 sm:px-6 lg:px-8">
       <div class="mx-auto w-full max-w-5xl">
         <slot />
       </div>

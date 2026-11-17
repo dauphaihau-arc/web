@@ -4,6 +4,7 @@ import { createRequire } from 'node:module'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { APP_ICON_CLIENT_BUNDLE_ICONS, APP_ICON_COLLECTIONS } from '../../packages/ui/src/foundation/app-icon.constants'
+import { sharedFonts } from '../../packages/ui/src/foundation/nuxt-fonts'
 import { removePageComponents } from '../../packages/ui/src/foundation/nuxt-pages'
 import pkg from './package.json'
 
@@ -74,6 +75,7 @@ export default defineNuxtConfig({
     'nuxt-security',
     '@formkit/auto-animate/nuxt',
     '@nuxt/image',
+    '@nuxt/fonts',
     ['@arc/nuxt-vue-query', { categoryIdentityPolicy: true }],
   ],
 
@@ -204,6 +206,8 @@ export default defineNuxtConfig({
   },
 
   css: ['~/app/assets/css/main.css'],
+
+  fonts: sharedFonts,
 
   image: {
     dir: 'src/public',
