@@ -37,6 +37,15 @@ body {
 }
 
 /*
+ * Headings use the display face only inside page content (`.layout-content` is
+ * set by each app's layout shell). Scoping beats a bare `h1…h6` rule: header,
+ * sidebar, footer, dialog and third-party markup keep the system font.
+ */
+.layout-content :is(h1, h2, h3, h4, h5, h6) {
+  @apply font-heading;
+}
+
+/*
   Remove Arrows/LoadingSvgs from Input Number
 */
 /* Chrome, Safari, Edge, Opera */

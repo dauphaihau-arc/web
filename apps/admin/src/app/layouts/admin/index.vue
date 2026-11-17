@@ -11,7 +11,7 @@ import Sidebar from './sidebar.vue'
       <div class="h-full w-shop-layout-sidebar shrink-0" />
 
       <div class="relative z-[2] h-full grow bg-white">
-        <main class="min-h-screen pt-10">
+        <main class="layout-content min-h-screen pt-10">
           <div class="shop-layout-content-inner">
             <slot />
           </div>

@@ -17,7 +17,7 @@ useSeoMeta({
       <div class="flex h-full flex-col justify-between gap-10">
         <div class="space-y-4">
           <p class="text-text-on-dark text-sm font-semibold uppercase tracking-[0.28em]">
-            Arc Seller
+            <span class="font-brand">Arc</span> Seller
           </p>
           <h1 class="max-w-md text-4xl font-bold leading-tight">
             Create your account to start selling on Arc.

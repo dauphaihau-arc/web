@@ -47,11 +47,15 @@ flowchart LR
   base --> main["app main.css (only css entry)"]
   tw --> tailwind["app tailwind.config.ts"]
   appConfig --> appcfg["app src/app.config.ts"]
+  fontsrc["foundation/fonts + nuxt-fonts.ts"] --> nuxtfonts["@nuxt/fonts (local provider)"]
+  tw --> nuxtfonts
+  nuxtfonts --> fonts["_nuxt/fonts hashed assets"]
 ```
 
 All three apps wire the same pieces:
 
 - `nuxt.config.ts` aliases `@arc/ui` to `packages/ui/src`, lists `packages/ui/src` in `components` (auto-import, `pathPrefix: false`, `extensions: ['.vue']`), and uses `~/app/assets/css/main.css` as the only `css` entry.
+- `nuxt.config.ts` adds `@nuxt/fonts` and spreads `sharedFonts` from `packages/ui/src/foundation/nuxt-fonts.ts`; its `local.dirs` points at `packages/ui/src/foundation/fonts`, so each app emits the same two faces from its own origin.
 - `tailwind.config.ts` spreads `sharedTailwindTheme` and includes `../../packages/ui/src/**` in `content`.
 - `src/app.config.ts` is a three-line re-export of `sharedAppConfig`.
 
@@ -66,6 +70,29 @@ Never hand-edit `design-tokens.css`; regenerate it after changing the token modu
 ```bash
 pnpm --filter @arc/ui generate:tokens
 ```
+
+## Typography
+
+Hybrid system: body copy and UI chrome keep Tailwind's system `sans` stack; the
+two custom faces are limited to headings and the brand.
+
+| Role | Utility | Applied where |
+|---|---|---|
+| Body, nav, forms, tables | `font-sans` (default) | nowhere explicitly; do not set it |
+| Headings in page content | `font-heading` | `.layout-content :is(h1…h6)` in `app-base.css` |
+| Arc wordmark | `font-brand` | the `Arc`/`ARC` node only |
+
+`designFonts` in `foundation/design-tokens.ts` is the source; `sharedTailwindTheme`
+turns it into `font-heading` and `font-brand`. `.layout-content` is set by each
+layout shell around route content, so header, sidebar, footer, dialogs, and
+third-party markup keep the system font. Wordmarks opt in with `font-brand`; do
+not use Sora for sentences.
+
+Files and `@nuxt/fonts` configuration live in `foundation/fonts/` and
+`foundation/nuxt-fonts.ts`. Both faces are self-hosted build assets, with the
+metric-matched fallback and the Latin+Vietnamese subset rationale documented in
+[`docs/performance/fonts-css.md`](../../performance/fonts-css.md) and
+[`foundation/fonts/README.md`](../../../packages/ui/src/foundation/fonts/README.md).
 
 ## Nuxt UI Theme Layer
 
@@ -170,6 +197,8 @@ Each package has its own `tsconfig.json` extending `packages/tsconfig.base.json`
 ## Related Docs
 
 - [`design-tokens.md`](./design-tokens.md)
+- [ADR-002: Hybrid typography with self-hosted brand faces](../../adrs/002-hybrid-typography-and-self-hosted-fonts.md)
+- [`docs/performance/fonts-css.md`](../../performance/fonts-css.md)
 - `docs/architecture/application-structure.md`
 - `docs/architecture/monorepo.md`
 - `docs/fe-type-boundaries.md`

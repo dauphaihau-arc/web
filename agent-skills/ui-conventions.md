@@ -18,6 +18,14 @@ Use this file when changing visible UI, user flows, or reusable components.
 - `packages/ui/src/foundation/design-tokens.ts` is the single source of truth. `design-tokens.css` is generated from it: run `pnpm --filter @arc/ui generate:tokens`. Never hand-edit the CSS.
 - Do not add new gray ramps or one-off hex values. `customGray` is retired.
 
+## Typography
+
+- Body copy, navigation, forms, and tables stay on Tailwind's system `sans` stack. Never set `font-family` on `body` or a layout shell.
+- Headings inside route content get `font-heading` through `.layout-content` in `app-base.css`. Do not add `font-heading` per heading, and do not widen the selector to bare `h1…h6`.
+- `font-brand` (Sora) is only for the `Arc`/`ARC` wordmark; never for sentences, buttons, or data.
+- The faces load through `@nuxt/fonts` from `packages/ui/src/foundation/fonts`. Do not add a Google Fonts link, a provider `@import`, or a third family without updating `docs/performance/fonts-css.md` and `packages/ui/src/foundation/fonts/README.md`.
+- Stay within the loaded axes: Sora `100 800`, Plus Jakarta Sans `200 800`.
+
 ## Interaction Rules
 
 - Use existing form, table, dialog, toast, loading, and empty-state patterns in the app.

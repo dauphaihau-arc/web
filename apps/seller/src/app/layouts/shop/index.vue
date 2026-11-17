@@ -13,7 +13,7 @@ import Sidebar from './sidebar/sidebar.vue'
 
       <div class="relative z-[2] h-full grow bg-white">
         <Header />
-        <main class="min-h-screen pt-20">
+        <main class="layout-content min-h-screen pt-20">
           <div class="shop-layout-content-inner">
             <slot />
           </div>

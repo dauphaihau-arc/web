@@ -20,8 +20,10 @@ the geometry before the data arrives.
 - **No content inserted above existing content** on load: header categories arrive
   either in the HTML or as the same-height placeholders (see
   [data-fetching.md](./data-fetching.md)).
-- **No font swap shift.** There are no web fonts, so there is no fallback metric
-  mismatch. See [fonts-css.md](./fonts-css.md).
+- **Bounded font swap shift.** Headings and wordmarks swap from a metric-matched
+  fallback (`size-adjust`, ascent/descent overrides) to the self-hosted face;
+  body copy is always the system font. Only two faces load, and only inside page
+  content and the wordmark. See [fonts-css.md](./fonts-css.md).
 
 ## Related
 

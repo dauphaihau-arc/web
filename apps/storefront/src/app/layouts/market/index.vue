@@ -48,7 +48,7 @@ watch(() => route.path, () => {
     <!-- No horizontal gutter here: pages own it, so a route change can never resize or
          re-pad the outgoing page mid-leave (that flick is why this container stayed
          full-bleed and each page carries its own max-w/gutter). -->
-    <div class="pb-[500px] pt-14">
+    <div class="layout-content pb-[500px] pt-14">
       <div
         v-if="isAccountRoute"
         class="px-4 md:px-12 lg:px-16"

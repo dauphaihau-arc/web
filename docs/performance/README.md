@@ -57,7 +57,7 @@ PR that lands the win.
 | Measure first | [measurement.md](./measurement.md) | PR budget, nightly Lighthouse, deploy probes, no RUM |
 | Reduce JavaScript | [javascript.md](./javascript.md) | route splitting, lazy hydration, bundled icons |
 | Images and media | [images.md](./images.md) | stored variants, `provider: 'none'`, one priority image |
-| CSS and fonts | [fonts-css.md](./fonts-css.md) | system font stack, CSS budget, opacity-only transitions |
+| CSS and fonts | [fonts-css.md](./fonts-css.md) | system body, self-hosted heading/brand faces, CSS budget, opacity-only transitions |
 | Rendering strategy | [rendering-strategies.md](./rendering-strategies.md) | CSR default + SSR allowlist, ISR |
 | Runtime and framework | [runtime.md](./runtime.md) | intent-loaded megamenus, paginated lists |
 | Layout stability | [layout-stability.md](./layout-stability.md) | CLS gate, reserved geometry |

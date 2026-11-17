@@ -20,10 +20,11 @@ Use these files as the primary UI configuration sources:
 
 - tokens: `src/foundation/design-tokens.ts`
 - shared CSS token utilities: `src/foundation/design-tokens.css`
+- fonts: `src/foundation/nuxt-fonts.ts` + `src/foundation/fonts/`
 - Nuxt UI defaults: `src/foundation/app-config.ts`
 - icon aliases and bundles: `src/foundation/app-icon.constants.ts`
 
-If a color, radius, shadow, layout width, or shared utility is repeated in app code, move it here first instead of copying it again.
+If a color, radius, shadow, layout width, font role, or shared utility is repeated in app code, move it here first instead of copying it again.
 
 ## Component Tiers
 
