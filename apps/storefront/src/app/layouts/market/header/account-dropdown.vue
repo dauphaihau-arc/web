@@ -3,12 +3,15 @@ import type { DropdownItem } from '#ui/types'
 import { routes } from '~/shared/navigation/routes'
 import { useLogout } from '~/domains/auth/mutations/logout.mutation'
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 
 const emit = defineEmits<{
   hoverTrigger: []
 }>()
 
 const { data: dataUserAuth } = useGetCurrentUser()
+const { t } = useI18n()
+const { localizePath } = useLocalizedRoute()
 const {
   mutate: logout,
   isPending: isPendingLogout,
@@ -21,24 +24,24 @@ type UserDropdownItem = Omit<DropdownItem, 'icon'> & {
 const itemsUserDropdown = computed<UserDropdownItem[][]>(() => [
   [
     {
-      label: 'Orders',
+      label: t('header.account.menu.orders'),
       icon: 'orders',
-      click: () => navigateTo(routes.orders()),
+      click: () => navigateTo(localizePath(routes.orders())),
     },
     {
-      label: 'Messages',
+      label: t('header.account.menu.messages'),
       icon: 'message',
-      click: () => navigateTo(routes.messages()),
+      click: () => navigateTo(localizePath(routes.messages())),
     },
     {
-      label: 'Account',
+      label: t('header.account.menu.account'),
       icon: 'account',
-      click: () => navigateTo(routes.account()),
+      click: () => navigateTo(localizePath(routes.account())),
     },
   ],
   [
     {
-      label: 'Logout',
+      label: t('header.account.menu.logout'),
       icon: 'logout',
       disabled: isPendingLogout.value,
       click: () => {
@@ -74,7 +77,7 @@ const userInitial = computed(() => {
 
     <template #default="{ open: isAccountDropdownOpen }">
       <UTooltip
-        text="My account"
+        :text="$t('header.account.tooltip')"
         :prevent="isAccountDropdownOpen"
       >
         <UButton

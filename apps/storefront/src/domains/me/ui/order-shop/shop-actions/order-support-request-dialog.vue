@@ -2,6 +2,7 @@
 import type { FormSubmitEvent } from '#ui/types'
 import type { RequestOrderSupportRequest } from '~/domains/me/api/order/contracts/order.contract'
 import { useRequestOrderSupport } from '~/domains/me/mutations/orders/request-support.mutation'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 
 const props = defineProps<{
   orderId: string
@@ -9,6 +10,7 @@ const props = defineProps<{
 }>()
 
 const dialog = useModal()
+const t = useAccountTranslator()
 const formRef = ref()
 const state = reactive<RequestOrderSupportRequest>({
   support_note: props.initialNote ?? '',
@@ -27,8 +29,8 @@ async function onSubmit(event: FormSubmitEvent<RequestOrderSupportRequest>) {
 
 <template>
   <BaseDialog
-    title="Help with order"
-    description="Describe the issue or question for this order. Support will review your request."
+    :title="t('account.orders.supportDialog.title')"
+    :description="t('account.orders.supportDialog.description')"
   >
     <UForm
       ref="formRef"
@@ -37,7 +39,7 @@ async function onSubmit(event: FormSubmitEvent<RequestOrderSupportRequest>) {
     >
       <UFormGroup
         required
-        label="Support request"
+        :label="t('account.orders.supportDialog.label')"
         name="support_note"
       >
         <UTextarea
@@ -55,13 +57,13 @@ async function onSubmit(event: FormSubmitEvent<RequestOrderSupportRequest>) {
           :disabled="isPending"
           @click="dialog.close"
         >
-          Close
+          {{ t('account.common.close') }}
         </UButton>
         <UButton
           :loading="isPending"
           @click="formRef?.submit"
         >
-          Send request
+          {{ t('account.orders.supportDialog.send') }}
         </UButton>
       </DialogActions>
     </template>

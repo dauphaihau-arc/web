@@ -6,6 +6,7 @@ import {
   type CategoryIdentityStatus,
 } from '@arc/lib';
 import { CATEGORY_IDENTITY_CONTRACT } from '@arc/enums/category';
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route';
 
 let adapter: CategoryIdentityClientAdapter | undefined;
 
@@ -82,6 +83,7 @@ export function handleCategoryIdentityRequestError(error: unknown): void {
  * affected surface at once.
  */
 export function useCategoryIdentityBlocked() {
+  const { localizePath } = useLocalizedRoute();
   const status = useState<CategoryIdentityStatus>(CATEGORY_IDENTITY_STATUS_KEY, () => 'unavailable');
   const checking = useState<boolean>(CATEGORY_IDENTITY_CHECKING_KEY, () => false);
   const queryClient = import.meta.client ? useQueryClient() : undefined;
@@ -118,7 +120,7 @@ export function useCategoryIdentityBlocked() {
           // category route cannot rebuild its query from the URL alone. Return
           // to a known-good page and refetch, rather than leaving a permanently
           // disabled query behind.
-          await navigateTo('/');
+          await navigateTo(localizePath('/'));
           await queryClient?.refetchQueries();
         }
       }

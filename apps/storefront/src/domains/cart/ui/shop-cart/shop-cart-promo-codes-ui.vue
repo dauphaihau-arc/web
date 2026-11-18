@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
+import { PromoCodeIneligibleReason, PromotionBenefitType, PromotionMinOrderType } from '@arc/enums/promotion'
+import type { MarketCurrencies } from '@arc/enums/market'
+import formatCurrency from '@arc/utils/format-currency'
+import dayjs from 'dayjs'
 import type { CartPromoCodeItem } from '~/domains/cart/api/contracts/cart.contract'
 import { useGetCartPromoCodes } from '~/domains/cart/queries/cart-promo-codes.query'
-import { formatPromoCodeDiscount, formatPromoCodeExpiration, formatPromoCodeIneligibleReason, formatPromoCodeMinimum } from '~/domains/cart/utils/promo-code-display'
 import { usePromoCodeSelection } from './use-promo-code-selection'
+import { useShopCartCopy } from './use-shop-cart-copy'
 
 const props = withDefaults(defineProps<{
   shopId: string
@@ -45,8 +49,69 @@ const {
 
 const promoCodes = computed<CartPromoCodeItem[]>(() => dataPromoCodes.value?.promo_codes ?? [])
 
-const COMBINATION_HINT
-  = 'Apply up to 2 promo codes per shop: 1 free-shipping code and 1 product-discount code.'
+const t = useShopCartCopy()
+
+const EXPIRATION_FORMAT = 'MMM DD, YYYY'
+
+function promoCodeDiscountLabel(promoCode: CartPromoCodeItem): string {
+  if (promoCode.benefit_type === PromotionBenefitType.FREE_SHIPPING) {
+    return t('cart.promo.freeShipping')
+  }
+
+  if (promoCode.benefit_type === PromotionBenefitType.PERCENTAGE) {
+    return promoCode.percent_off == null
+      ? t('cart.promo.discount')
+      : t('cart.promo.percentOff', { percent: promoCode.percent_off })
+  }
+
+  return promoCode.amount_off == null
+    ? t('cart.promo.discount')
+    : t('cart.promo.amountOff', {
+        amount: formatCurrency(promoCode.amount_off, promoCode.currency as MarketCurrencies),
+      })
+}
+
+function promoCodeMinimumLabel(promoCode: CartPromoCodeItem): string {
+  if (promoCode.min_order_type === PromotionMinOrderType.ORDER_TOTAL) {
+    return promoCode.min_order_value == null
+      ? t('cart.promo.noMinimum')
+      : t('cart.promo.minimumSpend', {
+          amount: formatCurrency(promoCode.min_order_value, promoCode.currency as MarketCurrencies),
+        })
+  }
+
+  if (promoCode.min_order_type === PromotionMinOrderType.PURCHASE_QUANTITY) {
+    return promoCode.min_purchase_quantity == null
+      ? t('cart.promo.noMinimumQuantity')
+      : t('cart.promo.minimumQuantity', { count: promoCode.min_purchase_quantity })
+  }
+
+  return t('cart.promo.noMinimum')
+}
+
+function promoCodeExpirationLabel(promoCode: CartPromoCodeItem): string {
+  const expiresAt = dayjs(promoCode.end_date)
+
+  return expiresAt.isValid()
+    ? t('cart.promo.expires', { date: expiresAt.format(EXPIRATION_FORMAT) })
+    : ''
+}
+
+function promoCodeIneligibleLabel(reason: CartPromoCodeItem['ineligible_reason']): string {
+  const keys: Record<PromoCodeIneligibleReason, string> = {
+    [PromoCodeIneligibleReason.EXPIRED]: 'cart.promo.ineligible.expired',
+    [PromoCodeIneligibleReason.NOT_STARTED]: 'cart.promo.ineligible.notStarted',
+    [PromoCodeIneligibleReason.USAGE_LIMIT_REACHED]: 'cart.promo.ineligible.usageLimitReached',
+    [PromoCodeIneligibleReason.USER_USAGE_LIMIT_REACHED]: 'cart.promo.ineligible.userUsageLimitReached',
+    [PromoCodeIneligibleReason.AUTHENTICATION_REQUIRED]: 'cart.promo.ineligible.authenticationRequired',
+    [PromoCodeIneligibleReason.PRODUCT_SCOPE]: 'cart.promo.ineligible.productScope',
+    [PromoCodeIneligibleReason.MIN_ORDER_VALUE]: 'cart.promo.ineligible.minOrderValue',
+    [PromoCodeIneligibleReason.MIN_PRODUCTS]: 'cart.promo.ineligible.minProducts',
+    [PromoCodeIneligibleReason.ZERO_BENEFIT]: 'cart.promo.ineligible.zeroBenefit',
+  }
+
+  return reason == null ? '' : t(keys[reason])
+}
 
 const {
   isValidating,
@@ -93,13 +158,13 @@ function accept() {
         :class="['w-fit', open && 'bg-surface-hover text-text-strong']"
         :disabled="props.disabled"
       >
-        Apply shop promo codes
+        {{ t('cart.promo.applyShop') }}
       </UButton>
 
       <template #panel>
         <div class="w-[min(92vw,380px)] p-4">
           <div class="mb-4 text-sm font-semibold text-text-strong">
-            {{ props.shopName ? `${props.shopName} Promo Code` : 'Promo Code' }}
+            {{ props.shopName ? t('cart.promo.shopTitle', { shop: props.shopName }) : t('cart.promo.title') }}
           </div>
 
           <UAlert
@@ -114,7 +179,7 @@ function accept() {
           <UFormGroup
             name="code"
             :error="inputError"
-            label="Promo code"
+            :label="t('cart.promo.codeLabel')"
           >
             <UButtonGroup orientation="horizontal">
               <UInput
@@ -129,7 +194,7 @@ function accept() {
                 :disabled="props.disabledAdd || props.disabled || isValidating"
                 @click="stageTypedCode"
               >
-                Apply
+                {{ t('cart.promo.apply') }}
               </UButton>
             </UButtonGroup>
           </UFormGroup>
@@ -165,14 +230,14 @@ function accept() {
               loading
               variant="naked"
               size="lg"
-              description="Loading promo codes..."
+              :description="t('cart.promo.loading')"
             />
             <Empty
               v-else-if="isErrorPromoCodes"
               variant="naked"
               size="lg"
               :icon="ICON_NAME_BY_ALIAS['warning']"
-              description="Could not load promo codes for this shop."
+              :description="t('cart.promo.loadError')"
             />
             <Empty
               v-else-if="promoCodes.length === 0"
@@ -180,8 +245,8 @@ function accept() {
               size="lg"
               class="-mx-4"
               :icon="ICON_NAME_BY_ALIAS['ticketPercent']"
-              title="No promo codes available for this shop."
-              description="Enter an applicable promo code in the field above."
+              :title="t('cart.promo.emptyTitle')"
+              :description="t('cart.promo.emptyDescription')"
             />
             <div
               v-else
@@ -202,14 +267,14 @@ function accept() {
                   {{ promoCode.code }}
                 </span>
                 <span class="flex flex-col items-end gap-1 text-right text-xs text-text-muted">
-                  <span>{{ formatPromoCodeDiscount(promoCode) }}</span>
-                  <span>{{ formatPromoCodeMinimum(promoCode) }}</span>
-                  <span>{{ formatPromoCodeExpiration(promoCode) }}</span>
+                  <span>{{ promoCodeDiscountLabel(promoCode) }}</span>
+                  <span>{{ promoCodeMinimumLabel(promoCode) }}</span>
+                  <span>{{ promoCodeExpirationLabel(promoCode) }}</span>
                   <span
-                    v-if="formatPromoCodeIneligibleReason(promoCode.ineligible_reason)"
+                    v-if="promoCodeIneligibleLabel(promoCode.ineligible_reason)"
                     class="text-state-warning-text"
                   >
-                    {{ formatPromoCodeIneligibleReason(promoCode.ineligible_reason) }}
+                    {{ promoCodeIneligibleLabel(promoCode.ineligible_reason) }}
                   </span>
                 </span>
               </button>
@@ -224,12 +289,12 @@ function accept() {
               class="text-xs text-text-muted"
               aria-live="polite"
             >
-              {{ selectedCount === 1 ? '1 promo code selected' : `${selectedCount} promo codes selected` }}
+              {{ selectedCount === 1 ? t('cart.promo.selectedOne') : t('cart.promo.selectedMany', { count: selectedCount }) }}
             </p>
 
             <UTooltip
               v-if="canSelectTwoPromoCodes"
-              :text="COMBINATION_HINT"
+              :text="t('cart.promo.combinationHint')"
               :popper="{ placement: 'top-start' }"
               :ui="{
                 width: 'max-w-[12rem]',
@@ -249,14 +314,14 @@ function accept() {
               color="gray"
               @click="cancel"
             >
-              Cancel
+              {{ t('cart.promo.cancel') }}
             </UButton>
             <UButton
               :loading="props.isApplying"
               :disabled="props.disabled || !canAccept"
               @click="accept"
             >
-              Apply
+              {{ t('cart.promo.apply') }}
             </UButton>
           </div>
         </div>

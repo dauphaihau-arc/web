@@ -1,7 +1,6 @@
 import { log } from '@arc/lib';
 import { MARKET_CONFIG } from '@arc/enums/market';
 import { PaymentTypes } from '@arc/enums/order';
-import { FetchError } from 'ofetch';
 import { useCartStore } from '~/domains/cart/stores/cart.store';
 import { useGetCart } from '~/domains/cart/queries/cart.query';
 import { useCreateGuestCheckoutQuoteForBuyNow } from '~/domains/checkout/mutations/create-checkout-quote-buy-now.mutation';
@@ -21,7 +20,8 @@ import { useGetCurrentUser } from '~/domains/me/queries/current-user.query';
 import { ROUTES } from '~/shared/config/enums/routes';
 import { toastCustom } from '~/shared/config/toast';
 import { routes } from '~/shared/navigation/routes';
-import { getBackendErrorMessage } from '~/shared/utils/backend-error';
+import { reportApiError } from '~/shared/utils/api-error-copy';
+import { useErrorCopy } from '~/shared/composables/use-error-copy';
 import type { CheckoutAddress } from '~/domains/cart/stores/cart.store.types';
 import type {
   CreateGuestCheckoutQuoteForBuyNowRequest,
@@ -40,6 +40,7 @@ export function useSubmitBuyNowCheckout() {
   const cartStore = useCartStore();
   const marketStore = useMarketStore();
   const toast = useToast();
+  const errorT = useErrorCopy();
   const { data: dataUserAuth } = useGetCurrentUser();
   const route = useRoute();
   const tempCartId = route.query['c'] as string;
@@ -211,7 +212,7 @@ export function useSubmitBuyNowCheckout() {
     catch (error) {
       cartStore.stateCheckoutNow.isPendingCreateOrder = false;
       const checkoutFailure = resolveCheckoutFailure(error);
-      const checkoutFailureCopy = getCheckoutFailureCopy(checkoutFailure);
+      const checkoutFailureCopy = getCheckoutFailureCopy(checkoutFailure, errorT);
 
       const droppedPromoCodes = checkoutFailure === 'prices_changed'
         ? await refreshAcceptedQuote()
@@ -221,24 +222,15 @@ export function useSubmitBuyNowCheckout() {
         await getCart();
       }
 
-      const backendMessage = getBackendErrorMessage(error);
+      reportApiError(error, 'create-buy-now-order');
 
-      const droppedPromoCodesCopy = getDroppedPromoCodesToast(droppedPromoCodes);
+      const droppedPromoCodesCopy = getDroppedPromoCodesToast(droppedPromoCodes, errorT);
 
       toast.add({
         ...toastCustom.error,
         title: droppedPromoCodesCopy?.title ?? checkoutFailureCopy.title,
         description: droppedPromoCodesCopy?.description ?? checkoutFailureCopy.description ??
-          (error instanceof FetchError && !backendMessage
-            ? `Request failed with status ${error.status ?? 'unknown'}`
-            : undefined),
-        ...(checkoutFailure === 'unknown' && backendMessage
-          ? { title: backendMessage }
-          : {}),
-        ...(error instanceof FetchError && !backendMessage
-          && checkoutFailure === 'unknown'
-          ? { description: `Request failed with status ${error.status ?? 'unknown'}` }
-          : {}),
+          (checkoutFailure === 'unknown' ? errorT('errors.generic.description') : undefined),
       });
     }
   }

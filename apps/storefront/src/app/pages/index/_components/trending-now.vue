@@ -20,8 +20,8 @@ const { data, isPending } = useGetTrendingProducts(
 
 <template>
   <ProductSection
-    title="Trending Now"
-    description="Popular products people are viewing right now"
+    :title="$t('home.trending.title')"
+    :description="$t('home.trending.description')"
     :products="data?.items"
     :loading="isPending"
     :limit="limit"

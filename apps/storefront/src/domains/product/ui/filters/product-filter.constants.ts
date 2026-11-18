@@ -28,19 +28,19 @@ export type ProductFilterState = {
 };
 
 export const isDigitalOpts = [
-  { value: 'all', label: 'All' },
-  { value: 'true', label: 'Digital' },
-  { value: 'false', label: 'Physical' },
+  { value: 'all', labelKey: 'catalog.filters.format.all' },
+  { value: 'true', labelKey: 'catalog.filters.format.digital' },
+  { value: 'false', labelKey: 'catalog.filters.format.physical' },
 ];
 
 export const productWhoMadeOpts = [
   {
     value: 'all',
-    label: 'All',
+    labelKey: 'catalog.filters.whoMade.all',
   },
   {
     value: ProductWhoMade.I_DID,
-    label: 'Handmade',
+    labelKey: 'catalog.filters.whoMade.handmade',
   },
 ];
 

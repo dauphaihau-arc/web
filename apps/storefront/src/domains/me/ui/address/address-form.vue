@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
+import { ADDRESS_CONFIG } from '@arc/enums/address'
 import { useGetAddressRules, useGetAdministrativeAreas, useGetCountries } from '~/domains/location/queries/countries.query'
 import { findCountry, findCountryCode } from '~/domains/location/utils/find-country-code'
 import { hydrateAddressCodes } from './address-payload'
-import { createCodedAddressFormSchema, createGuestAddressFormSchema } from './address-form.schema'
+import { createCodedAddressFormSchema, createGuestAddressFormSchema, type AddressSchemaMessages } from './address-form.schema'
 import { fallbackAddressFieldRules, toAddressFieldRules } from './address-field-rules'
 import type { AddressFormState } from './address-form.types'
 import AddressFormFields from './address-form-fields.vue'
@@ -21,6 +22,19 @@ const emit = defineEmits<{
 }>()
 
 const formRef = ref()
+const { t } = useI18n()
+
+const schemaMessages = computed<AddressSchemaMessages>(() => ({
+  countryRequired: t('checkout.address.errors.countryRequired'),
+  subdivisionRequired: t('checkout.address.errors.subdivisionRequired'),
+  subdivisionTooLong: t('checkout.address.errors.subdivisionTooLong', { count: ADDRESS_CONFIG.MAX_CHAR_CITY }),
+  phoneRequired: t('checkout.address.errors.phoneRequired'),
+  phoneInvalid: t('checkout.address.errors.phoneInvalid'),
+  phoneTooLong: t('checkout.address.errors.phoneTooLong', { count: ADDRESS_CONFIG.MAX_CHAR_PHONE }),
+  postcodeRequired: t('checkout.address.errors.postcodeRequired'),
+  postcodeInvalid: t('checkout.address.errors.postcodeInvalid'),
+  postcodeTooLong: t('checkout.address.errors.postcodeTooLong', { count: ADDRESS_CONFIG.MAX_CHAR_ZIP }),
+}))
 
 const {
   data: dataGetCountries,
@@ -65,6 +79,7 @@ const schema = computed(() => {
     postalCodeRequired: postalCodeRequired.value,
     subdivisionVisible: fieldRules.value.find(rule => rule.key === 'subdivision')?.visible ?? true,
     postcodeVisible: fieldRules.value.find(rule => rule.key === 'zip')?.visible ?? true,
+    messages: schemaMessages.value,
   }
 
   return props.guest

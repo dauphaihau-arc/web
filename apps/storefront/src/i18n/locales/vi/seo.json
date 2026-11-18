@@ -1,0 +1,61 @@
+{
+  "seo": {
+    "siteName": "Arc Storefront",
+    "pages": {
+      "home": {
+        "title": "Khám phá sản phẩm từ những người bán độc lập",
+        "description": "Mua sắm sản phẩm thịnh hành, hàng mới về và sản phẩm bán chạy từ những người bán độc lập trên Arc Storefront."
+      },
+      "category": {
+        "title": "{name}",
+        "titleFallback": "Mua sắm theo danh mục",
+        "description": "Khám phá {name} và tìm sản phẩm từ những người bán độc lập trên Arc Storefront.",
+        "descriptionFallback": "Duyệt sản phẩm theo danh mục và khám phá điều mới lạ trên Arc Storefront."
+      },
+      "search": {
+        "title": "Kết quả tìm kiếm cho \"{query}\"",
+        "titleFallback": "Tìm kiếm sản phẩm",
+        "description": "Kết quả tìm kiếm cho \"{query}\" trên Arc Storefront.",
+        "descriptionFallback": "Tìm kiếm sản phẩm từ những người bán độc lập trên Arc Storefront."
+      },
+      "product": {
+        "title": "{name}",
+        "titleFallback": "Chi tiết sản phẩm",
+        "description": "Mua {name} từ {shop} trên Arc Storefront.",
+        "descriptionFallback": "Xem chi tiết sản phẩm, giá cả và đánh giá trên Arc Storefront."
+      },
+      "cart": {
+        "title": "Giỏ hàng của bạn",
+        "description": "Xem lại các sản phẩm trong giỏ hàng trước khi thanh toán."
+      },
+      "checkout": {
+        "title": "Thanh toán",
+        "description": "Xem lại thông tin giao hàng và thanh toán để hoàn tất đơn hàng."
+      },
+      "account": {
+        "title": "Tài khoản của bạn",
+        "description": "Quản lý hồ sơ, địa chỉ và tùy chọn mua sắm của bạn."
+      },
+      "orders": {
+        "title": "Đơn hàng của bạn",
+        "description": "Theo dõi, xem lại và quản lý đơn hàng của bạn."
+      },
+      "auth": {
+        "title": "Đặt lại mật khẩu",
+        "description": "Yêu cầu liên kết đặt lại mật khẩu hoặc chọn mật khẩu mới cho tài khoản của bạn."
+      },
+      "messages": {
+        "title": "Tin nhắn",
+        "description": "Trò chuyện với người bán về đơn hàng và sản phẩm bạn quan tâm."
+      },
+      "success": {
+        "title": "Đơn hàng đã xác nhận",
+        "description": "Đơn hàng của bạn đã được xác nhận. Xem lại chi tiết và các bước tiếp theo."
+      },
+      "guestOrders": {
+        "title": "Đơn hàng khách",
+        "description": "Tra cứu và theo dõi đơn hàng đặt mà không cần tài khoản."
+      }
+    }
+  }
+}

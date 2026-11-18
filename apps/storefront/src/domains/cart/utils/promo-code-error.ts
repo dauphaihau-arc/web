@@ -1,5 +1,9 @@
 import { FetchError } from 'ofetch';
-import { getBackendErrorCode, getBackendErrorMessage } from '~/shared/utils/backend-error';
+import { getBackendErrorCode } from '~/shared/utils/backend-error';
+import {
+  translateError,
+  type ErrorTranslator,
+} from '~/shared/utils/api-error-copy';
 
 /**
  * The apply-time copy for each server code. A sentence, unlike the picker's
@@ -8,38 +12,42 @@ import { getBackendErrorCode, getBackendErrorMessage } from '~/shared/utils/back
  * rejections carry a distinct code so the client can say why precisely
  * (exhausted, wrong products, minimum not met) instead of the one-size message.
  */
-const APPLY_CODE_MESSAGE: Record<string, string> = {
-  PROMOTION_CODE_NOT_FOUND: 'Promo code not found',
-  PROMOTION_NOT_STARTED: 'This promo code is not active yet',
-  PROMOTION_EXPIRED: 'This promo code has ended',
-  PROMOTION_USAGE_LIMIT_REACHED: 'This promo code has been fully redeemed',
-  PROMOTION_USER_USAGE_LIMIT_REACHED: 'You have already used this promo code',
-  PROMOTION_AUTHENTICATION_REQUIRED: 'Sign in to use this promo code',
-  PROMOTION_PRODUCT_SCOPE_MISMATCH: 'This promo code does not apply to the items in your cart',
-  PROMOTION_MIN_ORDER_VALUE_NOT_MET: 'Your cart does not meet this promo code\'s minimum spend',
-  PROMOTION_MIN_PRODUCTS_NOT_MET: 'Add more eligible items to use this promo code',
-  PROMOTION_ZERO_BENEFIT: 'This promo code gives no savings on your cart',
-  PROMOTION_SLOT_CONFLICT: 'This promo code cannot be combined with the selected promotion codes',
-  PROMOTION_CURRENCY_CONVERSION_UNAVAILABLE: 'This promo code cannot be applied in this currency',
+const APPLY_CODE_KEY: Record<string, string> = {
+  PROMOTION_CODE_NOT_FOUND: 'errors.promo.codeNotFound',
+  PROMOTION_NOT_STARTED: 'errors.promo.notStarted',
+  PROMOTION_EXPIRED: 'errors.promo.expired',
+  PROMOTION_USAGE_LIMIT_REACHED: 'errors.promo.usageLimitReached',
+  PROMOTION_USER_USAGE_LIMIT_REACHED: 'errors.promo.userUsageLimitReached',
+  PROMOTION_AUTHENTICATION_REQUIRED: 'errors.promo.authenticationRequired',
+  PROMOTION_PRODUCT_SCOPE_MISMATCH: 'errors.promo.productScopeMismatch',
+  PROMOTION_MIN_ORDER_VALUE_NOT_MET: 'errors.promo.minOrderValueNotMet',
+  PROMOTION_MIN_PRODUCTS_NOT_MET: 'errors.promo.minProductsNotMet',
+  PROMOTION_ZERO_BENEFIT: 'errors.promo.zeroBenefit',
+  PROMOTION_SLOT_CONFLICT: 'errors.promo.slotConflict',
+  PROMOTION_CURRENCY_CONVERSION_UNAVAILABLE: 'errors.promo.currencyConversionUnavailable',
 };
 
 /**
  * Maps a promo code apply/pricing failure to the inline message the picker
- * shows. The server's exact code is rendered with precise copy; a code the
- * client does not know yet falls back to the server's own message, and any
- * other failure still surfaces a message so the picker never closes silently.
+ * shows. A known server code renders precise localized copy; an unknown code
+ * renders the shared generic error rather than the server's English message.
+ * Responses that never reached the server keep the action-specific fallback so
+ * the picker never closes silently.
  */
-export function resolvePromoCodeErrorMessage(error: unknown): string {
+export function resolvePromoCodeErrorMessage(
+  error: unknown,
+  t: ErrorTranslator = translateError,
+): string {
   const code = getBackendErrorCode(error);
-  const knownCopy = code ? APPLY_CODE_MESSAGE[code] : undefined;
+  const knownKey = code ? APPLY_CODE_KEY[code] : undefined;
 
-  if (knownCopy) {
-    return knownCopy;
+  if (knownKey) {
+    return t(knownKey);
   }
 
   if (error instanceof FetchError) {
-    return getBackendErrorMessage(error) ?? 'Promo code cannot be applied';
+    return t('errors.generic.title');
   }
 
-  return 'Add promo code failed';
+  return t('errors.promo.applyFailed');
 }

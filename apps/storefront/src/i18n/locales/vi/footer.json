@@ -1,0 +1,43 @@
+{
+  "footer": {
+    "shop": {
+      "title": "Mua sắm",
+      "giftCards": "Thẻ quà tặng",
+      "registry": "Arc Registry",
+      "sitemap": "Sơ đồ trang",
+      "blog": "Blog Arc",
+      "unitedKingdom": "Arc Vương quốc Anh",
+      "germany": "Arc Đức",
+      "canada": "Arc Canada"
+    },
+    "sell": {
+      "title": "Bán hàng",
+      "sellerHandbook": "Cẩm nang người bán",
+      "teams": "Đội ngũ",
+      "forums": "Diễn đàn",
+      "affiliates": "Đối tác liên kết & Nhà sáng tạo"
+    },
+    "about": {
+      "title": "Giới thiệu",
+      "company": "Arc, Inc.",
+      "policies": "Chính sách",
+      "news": "Tin tức",
+      "investors": "Nhà đầu tư",
+      "careers": "Tuyển dụng"
+    },
+    "support": {
+      "title": "Hỗ trợ",
+      "orderStatus": "Trạng thái đơn hàng",
+      "delivery": "Giao hàng",
+      "returns": "Trả hàng",
+      "summaryOptions": "Tùy chọn tóm tắt",
+      "contactUs": "Liên hệ với chúng tôi"
+    },
+    "legal": {
+      "guides": "Hướng dẫn",
+      "terms": "Điều khoản sử dụng",
+      "privacy": "Chính sách quyền riêng tư"
+    },
+    "copyright": "© {year} Arc Inc."
+  }
+}

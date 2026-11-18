@@ -32,10 +32,9 @@ export enum MarketCurrencies {
   ZAR = 'ZAR',
 }
 
-export enum MarketLanguages {
+export enum StorefrontLanguages {
   EN = 'en',
-  LA = 'la',
-  FR = 'fr',
+  VI = 'vi',
 }
 
 export enum MarketRegions {
@@ -49,7 +48,7 @@ export const MARKET_REGION_EMOJIS = {
 }
 
 export const MARKET_CONFIG = {
-  BASE_LANGUAGE: MarketLanguages.EN,
+  BASE_LANGUAGE: StorefrontLanguages.EN,
   BASE_REGION: MarketRegions.UNITED_STATES,
   BASE_CURRENCY: MarketCurrencies.USD,
 }

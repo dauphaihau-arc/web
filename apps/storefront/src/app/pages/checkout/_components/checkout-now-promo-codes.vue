@@ -4,6 +4,7 @@ import { PROMO_CODE_CONFIG } from '@arc/enums/promotion'
 import { useCartStore } from '~/domains/cart/stores/cart.store'
 import { resolvePromoCodeErrorMessage } from '~/domains/cart/utils/promo-code-error'
 import { useUpdateCart } from '~/domains/cart/mutations/update-cart.mutation'
+import { useErrorCopy } from '~/shared/composables/use-error-copy'
 import ShopCartPromoCodesUi from '~/domains/cart/ui/shop-cart/shop-cart-promo-codes-ui.vue'
 import type { GetCartResponse } from '~/domains/cart/api/contracts/cart.contract'
 
@@ -14,6 +15,8 @@ const props = defineProps<{
 
 const cartStore = useCartStore()
 const queryClient = useQueryClient()
+const { t } = useI18n()
+const errorT = useErrorCopy()
 const route = useRoute()
 
 const tempCartId = route.query['c'] as string
@@ -89,7 +92,7 @@ async function acceptCodes(codes: string[]) {
   }
   catch (error) {
     // Failure keeps the staged selection and surfaces the reason in the panel.
-    state.panelError = resolvePromoCodeErrorMessage(error)
+    state.panelError = resolvePromoCodeErrorMessage(error, errorT)
   }
 }
 
@@ -110,7 +113,7 @@ async function removeCode(code: string) {
   catch {
     // Surface the failure in the picker panel instead of a floating toast, and
     // open it so the message is actually visible where the promo code lives.
-    state.panelError = 'Delete promo code failed'
+    state.panelError = t('cart.promo.deleteFailed')
     state.open = true
   }
 }

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { GetPublicProductReviewsResponse } from '~/domains/product/api/contracts/product.contract'
 import { resolveProductImageUrl } from '~/domains/product/utils/product-image-url'
+import { useLocaleFormatters } from '~/domains/market/composables/use-locale-formatters'
 
 const props = defineProps<{
   reviews: GetPublicProductReviewsResponse
@@ -13,18 +14,14 @@ const emit = defineEmits<{
 }>()
 
 const config = useRuntimeConfig()
+const { t } = useI18n()
+const { formatDate } = useLocaleFormatters()
 const visibleReviews = computed(() => props.reviews.items)
 const shouldShowPagination = computed(() => props.reviews.meta.total > props.reviews.meta.limit)
 const skeletonCount = computed(() => Math.max(1, props.reviews.meta.limit || 4))
 
 function formatReviewDate(value: string | Date) {
-  const date = typeof value === 'string' ? new Date(value) : value
-
-  return new Intl.DateTimeFormat('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  }).format(date)
+  return formatDate(value)
 }
 
 function getReviewDateLabel(review: GetPublicProductReviewsResponse['items'][number]) {
@@ -36,7 +33,7 @@ function getReviewDateLabel(review: GetPublicProductReviewsResponse['items'][num
     : review.updated_at
 
   if (updatedAt.getTime() > createdAt.getTime()) {
-    return `Updated ${formatReviewDate(updatedAt)}`
+    return t('catalog.reviews.updated', { date: formatReviewDate(updatedAt) })
   }
 
   return formatReviewDate(createdAt)
@@ -102,7 +99,7 @@ function getReviewImageSrc(review: GetPublicProductReviewsResponse['items'][numb
         v-if="visibleReviews.length === 0"
         class="rounded-3xl border border-border-subtle bg-surface-muted px-6 py-8 text-sm text-text-muted"
       >
-        No reviews match the selected filters.
+        {{ $t('catalog.reviews.noMatch') }}
       </div>
 
       <article
@@ -156,14 +153,14 @@ function getReviewImageSrc(review: GetPublicProductReviewsResponse['items'][numb
                   {{ review.title }}
                 </h3>
                 <p class="text-text max-w-4xl text-sm">
-                  {{ review.body || 'Customer left a star rating for this item.' }}
+                  {{ review.body || $t('catalog.reviews.starOnly') }}
                 </p>
               </div>
 
               <NuxtImg
                 v-if="getReviewImageSrc(review)"
                 :src="getReviewImageSrc(review) ?? undefined"
-                :alt="review.title || `Review photo from ${review.author.display_name}`"
+                :alt="review.title || $t('catalog.reviews.photoAlt', { name: review.author.display_name })"
                 densities="1"
                 width="176"
                 height="176"

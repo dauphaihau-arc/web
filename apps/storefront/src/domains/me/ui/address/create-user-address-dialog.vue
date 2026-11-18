@@ -7,6 +7,7 @@ import { useCreateUserAddress } from '~/domains/me/mutations/address/create-addr
 
 const toast = useToast()
 const dialog = useModal()
+const { t } = useI18n()
 const queryClient = useQueryClient()
 
 const formRef = ref()
@@ -29,7 +30,7 @@ async function onSubmit(payload: AddressFormState) {
   catch {
     toast.add({
       ...toastCustom.error,
-      title: 'Create address failed',
+      title: t('checkout.address.createFailed'),
     })
   }
 }
@@ -42,7 +43,7 @@ async function onSubmit(payload: AddressFormState) {
         inner: '-top-10',
       },
     }"
-    title="Add new address"
+    :title="t('checkout.address.addNew')"
   >
     <AddressForm
       ref="formRef"
@@ -58,7 +59,7 @@ async function onSubmit(payload: AddressFormState) {
           :disabled="isPendingCreateAddress"
           @click="dialog.close"
         >
-          Cancel
+          {{ t('common.cancel') }}
         </UButton>
         <UButton
           size="md"
@@ -66,7 +67,7 @@ async function onSubmit(payload: AddressFormState) {
           :loading="isPendingCreateAddress"
           @click="formRef?.submit"
         >
-          Save
+          {{ t('common.save') }}
         </UButton>
       </DialogActions>
     </template>

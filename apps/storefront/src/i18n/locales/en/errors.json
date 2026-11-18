@@ -1,0 +1,107 @@
+{
+  "errors": {
+    "generic": {
+      "title": "Something went wrong",
+      "description": "Please try again in a moment."
+    },
+    "validation": {
+      "required": "This field is required",
+      "emailRequired": "Please enter your email address",
+      "emailInvalid": "Enter a valid email address, including the name and domain",
+      "emailTooLong": "That email address is too long",
+      "emailTooShort": "That email address looks too short",
+      "nameRequired": "Please enter your name",
+      "nameCharacters": "Use letters and spaces only",
+      "nameMaxLength": "Keep your name to {count} characters or fewer",
+      "nameMinLength": "Your name needs at least {count} characters",
+      "passwordRequired": "Please create a password",
+      "passwordMinLength": "Use at least {count} characters",
+      "passwordMaxLength": "Use {count} characters or fewer",
+      "passwordStrength": "Passwords need 8–16 characters, including an uppercase letter, a lowercase letter, a number, and a symbol",
+      "passwordRequirements": "Include an uppercase letter, a lowercase letter, a number, and a symbol",
+      "passwordMismatch": "This password does not match. Try again.",
+      "generic": "Please check the highlighted fields and try again."
+    },
+    "cart": {
+      "addFailed": "Add product to cart failed",
+      "updateFailed": "Update cart failed",
+      "deleteFailed": "Delete product cart failed",
+      "applyPromoFailed": "Apply promo code failed",
+      "stockUnavailable": {
+        "title": "Stock no longer available",
+        "description": "The requested quantity is no longer available. Update your selection and try again."
+      },
+      "itemUnavailable": {
+        "title": "This item is no longer available"
+      },
+      "checkoutUnavailable": {
+        "title": "Unable to start checkout",
+        "description": "This item is no longer available for immediate checkout."
+      }
+    },
+    "promo": {
+      "codeNotFound": "Promo code not found",
+      "notStarted": "This promo code is not active yet",
+      "expired": "This promo code has ended",
+      "usageLimitReached": "This promo code has been fully redeemed",
+      "userUsageLimitReached": "You have already used this promo code",
+      "authenticationRequired": "Sign in to use this promo code",
+      "productScopeMismatch": "This promo code does not apply to the items in your cart",
+      "minOrderValueNotMet": "Your cart does not meet this promo code's minimum spend",
+      "minProductsNotMet": "Add more eligible items to use this promo code",
+      "zeroBenefit": "This promo code gives no savings on your cart",
+      "slotConflict": "This promo code cannot be combined with the selected promotion codes",
+      "currencyConversionUnavailable": "This promo code cannot be applied in this currency",
+      "cannotApply": "Promo code cannot be applied",
+      "applyFailed": "Add promo code failed",
+      "removed": {
+        "title": "Promo code removed",
+        "titlePlural": "Promo codes removed",
+        "description": "{codes} was removed because it is no longer available. Review the updated total and confirm your order again.",
+        "descriptionPlural": "{codes} were removed because they are no longer available. Review the updated total and confirm your order again."
+      }
+    },
+    "checkout": {
+      "quoteExpired": {
+        "title": "Quote expired",
+        "description": "Your checkout quote expired. Review the latest totals and try again."
+      },
+      "cartChanged": {
+        "title": "Cart changed",
+        "description": "Your items or totals changed since review. We refreshed checkout for you."
+      },
+      "pricesChanged": {
+        "title": "Prices changed",
+        "description": "The prices in your cart changed since you reviewed them, so we refreshed your totals. Review the new total and confirm your order again."
+      },
+      "stockUnavailable": {
+        "title": "Stock no longer reservable",
+        "description": "Some items are no longer available in the requested quantity. Review the updated cart."
+      },
+      "reservationUnavailable": {
+        "title": "Reserved stock was released",
+        "description": "Your reserved inventory is no longer available. Review the refreshed checkout and try again."
+      },
+      "sessionPending": {
+        "title": "Checkout still preparing",
+        "description": "Your secure checkout session is taking longer than expected. Please try again."
+      }
+    },
+    "auth": {
+      "invalidCredentials": "Incorrect email or password",
+      "forbidden": "This account cannot access the customer site",
+      "inactiveUser": "This account is not active",
+      "portalAccessDenied": "This account cannot access this storefront",
+      "emailRegistered": "This email is already registered. Try logging in instead.",
+      "invalidResetToken": "This password reset link is invalid",
+      "resetTokenExpired": "This password reset link has expired",
+      "logoutFailed": "Something went wrong on our end. Please try again",
+      "generic": "Something went wrong on our end. Please try again"
+    },
+    "review": {
+      "submitted": "Review submitted",
+      "submitFailed": "Unable to submit review",
+      "imageUploadFailed": "Unable to upload review image"
+    }
+  }
+}

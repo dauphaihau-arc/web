@@ -1,0 +1,33 @@
+{
+  "home": {
+    "trending": {
+      "title": "Đang thịnh hành",
+      "description": "Những sản phẩm phổ biến mọi người đang xem ngay lúc này"
+    },
+    "bestSellers": {
+      "title": "Bán chạy nhất",
+      "description": "Những sản phẩm khách hàng mua nhiều nhất"
+    },
+    "newArrivals": {
+      "title": "Hàng mới về",
+      "description": "Những sản phẩm mới được đăng bán gần đây"
+    },
+    "recentlyViewed": {
+      "title": "Đã xem gần đây"
+    },
+    "becauseYouViewed": {
+      "title": "Vì bạn đã xem"
+    },
+    "continueExploring": {
+      "title": "Tiếp tục khám phá {category}",
+      "description": "Những lựa chọn phổ biến từ danh mục bạn đã xem"
+    },
+    "rootCategories": {
+      "title": "Mua sắm theo danh mục"
+    },
+    "recommendedSubCategories": {
+      "title": "Khám phá thêm trong danh mục này",
+      "description": "Quay lại các danh mục con liên quan đến lần xem gần nhất của bạn"
+    }
+  }
+}

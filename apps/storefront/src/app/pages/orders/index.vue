@@ -6,15 +6,21 @@ import ShopItem from '~/domains/me/ui/order-shop/shop-item/shop-item.vue'
 import type { MyOrderListState } from '~/domains/me/api/order/contracts/order.contract'
 import { routes } from '~/shared/navigation/routes'
 import { useGetOrderShops } from '~/domains/me/queries/orders/order-shops.query'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 
+usePageSeo({ area: 'orders' })
+
 const route = useRoute()
 const router = useRouter()
+const t = useAccountTranslator()
+const { localizePath } = useLocalizedRoute()
 
 type OrderFilter = {
   slot: string
-  label: string
+  labelKey: string
   state?: MyOrderListState
 }
 
@@ -30,37 +36,37 @@ const orderStateValues = [
 const filters = [
   {
     slot: 'all-orders',
-    label: 'All Orders',
+    labelKey: 'account.orders.tabs.all',
     state: undefined,
   },
   {
     slot: 'to-pay',
-    label: 'Awaiting Summary',
+    labelKey: 'account.orders.tabs.awaitingSummary',
     state: 'awaiting_payment',
   },
   {
     slot: 'processing',
-    label: 'Processing',
+    labelKey: 'account.orders.tabs.processing',
     state: 'processing',
   },
   {
     slot: 'shipped',
-    label: 'Shipped',
+    labelKey: 'account.orders.tabs.shipped',
     state: 'shipped',
   },
   {
     slot: 'delivered',
-    label: 'Delivered',
+    labelKey: 'account.orders.tabs.delivered',
     state: 'delivered',
   },
   {
     slot: 'canceled',
-    label: 'Canceled',
+    labelKey: 'account.orders.tabs.canceled',
     state: 'canceled',
   },
   {
     slot: 'refunded',
-    label: 'Refunded',
+    labelKey: 'account.orders.tabs.refunded',
     state: 'refunded',
   },
 ] satisfies OrderFilter[]
@@ -76,14 +82,9 @@ const stateFilter = computed(() =>
     ? route.query.state as MyOrderListState
     : undefined,
 )
-const activeFilterLabel = computed(() =>
-  filters.find(filter =>
-    filter.state === stateFilter.value,
-  )?.label ?? 'All Orders',
-)
 const filterTabItems = computed(() =>
   filters.map(filter => ({
-    label: filter.label,
+    label: t(filter.labelKey),
     value: filter.slot,
   })),
 )
@@ -103,7 +104,7 @@ const {
 } = useGetOrderShops(queryParams)
 
 const orderShops = computed(() => dataGetOrderShops.value?.order_shops ?? [])
-const isFiltering = computed(() => !!state.search.trim() || activeFilterLabel.value !== 'All Orders')
+const isFiltering = computed(() => !!state.search.trim() || !!stateFilter.value)
 
 function syncQuery(nextQuery: {
   search?: string
@@ -122,7 +123,7 @@ function syncQuery(nextQuery: {
     return
   }
 
-  router.replace(routes.orders(targetQuery))
+  router.replace(localizePath(routes.orders(targetQuery)))
 }
 
 function selectFilter(filter: typeof filters[number]) {
@@ -159,8 +160,8 @@ watch(
   <div class="mx-auto mt-8 max-w-home-layout px-4 md:px-12 lg:px-16">
     <div class="mb-8">
       <SectionHeader
-        title="Orders"
-        description="Track and manage the products you’ve ordered."
+        :title="t('account.orders.title')"
+        :description="t('account.orders.description')"
         heading-class="text-2xl font-semibold text-text-strong md:text-3xl"
       />
     </div>
@@ -168,7 +169,7 @@ watch(
     <div class="mb-10 flex flex-col gap-4">
       <div class="-mx-4 min-w-0 overflow-x-auto px-4 pb-2 md:mx-0 md:px-0 lg:overflow-visible lg:pb-0">
         <AppTabs
-          aria-label="Order status filters"
+          :aria-label="t('account.orders.filterAria')"
           :items="filterTabItems"
           :model-value="activeFilterTab"
           @change="handleFilterChange"
@@ -178,7 +179,7 @@ watch(
       <UInput
         v-model="state.search"
         :icon="ICON_NAME_BY_ALIAS['searchSolid']"
-        placeholder="Search by order number, product, or shop"
+        :placeholder="t('account.orders.searchPlaceholder')"
         class="w-full max-w-md"
         size="lg"
       />
@@ -190,7 +191,7 @@ watch(
       variant="naked"
       size="lg"
       class="min-h-[60vh]"
-      title="Loading orders"
+      :title="t('account.orders.loading')"
     />
 
     <div v-else-if="orderShops.length > 0">
@@ -213,11 +214,11 @@ watch(
       variant="naked"
       size="lg"
       icon="search"
-      title="No orders match this filter."
-      description="Try a different search term or pick another order status."
+      :title="t('account.orders.emptyFilteredTitle')"
+      :description="t('account.orders.emptyFilteredDescription')"
       :actions="[{
-        label: 'Clear filters',
-        to: routes.orders(),
+        label: t('account.orders.clearFilters'),
+        to: localizePath(routes.orders()),
         color: 'gray',
       }]"
     />
@@ -227,11 +228,11 @@ watch(
       variant="naked"
       size="lg"
       icon="orders"
-      title="Your orders is empty."
-      description="Orders you place will show up here."
+      :title="t('account.orders.emptyTitle')"
+      :description="t('account.orders.emptyDescription')"
       :actions="[{
-        label: 'Browse shops',
-        to: routes.home(),
+        label: t('account.orders.browseShops'),
+        to: localizePath(routes.home()),
         color: 'gray',
       }]"
     />

@@ -1,0 +1,107 @@
+{
+  "errors": {
+    "generic": {
+      "title": "Đã xảy ra lỗi",
+      "description": "Vui lòng thử lại sau giây lát."
+    },
+    "validation": {
+      "required": "Trường này là bắt buộc",
+      "emailRequired": "Vui lòng nhập địa chỉ email của bạn",
+      "emailInvalid": "Nhập địa chỉ email hợp lệ, gồm tên và tên miền",
+      "emailTooLong": "Địa chỉ email này quá dài",
+      "emailTooShort": "Địa chỉ email này có vẻ quá ngắn",
+      "nameRequired": "Vui lòng nhập tên của bạn",
+      "nameCharacters": "Chỉ dùng chữ cái và khoảng trắng",
+      "nameMaxLength": "Giữ tên trong {count} ký tự hoặc ít hơn",
+      "nameMinLength": "Tên cần có ít nhất {count} ký tự",
+      "passwordRequired": "Vui lòng tạo mật khẩu",
+      "passwordMinLength": "Dùng ít nhất {count} ký tự",
+      "passwordMaxLength": "Dùng {count} ký tự hoặc ít hơn",
+      "passwordStrength": "Mật khẩu cần 8–16 ký tự, gồm chữ hoa, chữ thường, số và ký hiệu",
+      "passwordRequirements": "Bao gồm chữ hoa, chữ thường, số và ký hiệu",
+      "passwordMismatch": "Mật khẩu này không khớp. Hãy thử lại.",
+      "generic": "Vui lòng kiểm tra các trường được đánh dấu và thử lại."
+    },
+    "cart": {
+      "addFailed": "Không thể thêm sản phẩm vào giỏ hàng",
+      "updateFailed": "Không thể cập nhật giỏ hàng",
+      "deleteFailed": "Không thể xóa sản phẩm khỏi giỏ hàng",
+      "applyPromoFailed": "Không thể áp dụng mã khuyến mãi",
+      "stockUnavailable": {
+        "title": "Mặt hàng không còn đủ số lượng",
+        "description": "Số lượng yêu cầu không còn khả dụng. Hãy cập nhật lựa chọn và thử lại."
+      },
+      "itemUnavailable": {
+        "title": "Mặt hàng này không còn khả dụng"
+      },
+      "checkoutUnavailable": {
+        "title": "Không thể bắt đầu thanh toán",
+        "description": "Mặt hàng này không còn khả dụng để thanh toán ngay."
+      }
+    },
+    "promo": {
+      "codeNotFound": "Không tìm thấy mã khuyến mãi",
+      "notStarted": "Mã khuyến mãi này chưa có hiệu lực",
+      "expired": "Mã khuyến mãi này đã kết thúc",
+      "usageLimitReached": "Mã khuyến mãi này đã được dùng hết",
+      "userUsageLimitReached": "Bạn đã dùng mã khuyến mãi này rồi",
+      "authenticationRequired": "Đăng nhập để dùng mã khuyến mãi này",
+      "productScopeMismatch": "Mã khuyến mãi này không áp dụng cho các mặt hàng trong giỏ của bạn",
+      "minOrderValueNotMet": "Giỏ hàng của bạn chưa đạt mức chi tiêu tối thiểu của mã khuyến mãi này",
+      "minProductsNotMet": "Thêm mặt hàng đủ điều kiện để dùng mã khuyến mãi này",
+      "zeroBenefit": "Mã khuyến mãi này không giúp bạn tiết kiệm cho giỏ hàng",
+      "slotConflict": "Mã khuyến mãi này không thể kết hợp với các mã đã chọn",
+      "currencyConversionUnavailable": "Mã khuyến mãi này không thể áp dụng với đơn vị tiền tệ này",
+      "cannotApply": "Không thể áp dụng mã khuyến mãi",
+      "applyFailed": "Áp dụng mã khuyến mãi thất bại",
+      "removed": {
+        "title": "Đã xóa mã khuyến mãi",
+        "titlePlural": "Đã xóa các mã khuyến mãi",
+        "description": "{codes} đã bị xóa vì không còn khả dụng. Hãy xem lại tổng tiền đã cập nhật và xác nhận đơn hàng lần nữa.",
+        "descriptionPlural": "{codes} đã bị xóa vì chúng không còn khả dụng. Hãy xem lại tổng tiền đã cập nhật và xác nhận đơn hàng lần nữa."
+      }
+    },
+    "checkout": {
+      "quoteExpired": {
+        "title": "Báo giá đã hết hạn",
+        "description": "Báo giá thanh toán của bạn đã hết hạn. Hãy xem lại tổng tiền mới nhất và thử lại."
+      },
+      "cartChanged": {
+        "title": "Giỏ hàng đã thay đổi",
+        "description": "Các mặt hàng hoặc tổng tiền đã thay đổi kể từ khi bạn xem. Chúng tôi đã làm mới trang thanh toán."
+      },
+      "pricesChanged": {
+        "title": "Giá đã thay đổi",
+        "description": "Giá trong giỏ hàng của bạn đã thay đổi kể từ khi bạn xem, nên chúng tôi đã làm mới tổng tiền. Hãy xem lại tổng mới và xác nhận đơn hàng lần nữa."
+      },
+      "stockUnavailable": {
+        "title": "Không thể giữ hàng",
+        "description": "Một số mặt hàng không còn đủ số lượng yêu cầu. Hãy xem lại giỏ hàng đã cập nhật."
+      },
+      "reservationUnavailable": {
+        "title": "Hàng đã giữ đã được giải phóng",
+        "description": "Hàng đã giữ của bạn không còn khả dụng. Hãy xem lại trang thanh toán đã làm mới và thử lại."
+      },
+      "sessionPending": {
+        "title": "Đang chuẩn bị thanh toán",
+        "description": "Phiên thanh toán an toàn của bạn mất nhiều thời gian hơn dự kiến. Vui lòng thử lại."
+      }
+    },
+    "auth": {
+      "invalidCredentials": "Email hoặc mật khẩu không đúng",
+      "forbidden": "Tài khoản này không thể truy cập trang khách hàng",
+      "inactiveUser": "Tài khoản này chưa được kích hoạt",
+      "portalAccessDenied": "Tài khoản này không thể truy cập cửa hàng này",
+      "emailRegistered": "Email này đã được đăng ký. Hãy thử đăng nhập.",
+      "invalidResetToken": "Liên kết đặt lại mật khẩu không hợp lệ",
+      "resetTokenExpired": "Liên kết đặt lại mật khẩu đã hết hạn",
+      "logoutFailed": "Đã xảy ra lỗi từ phía chúng tôi. Vui lòng thử lại",
+      "generic": "Đã xảy ra lỗi từ phía chúng tôi. Vui lòng thử lại"
+    },
+    "review": {
+      "submitted": "Đã gửi đánh giá",
+      "submitFailed": "Không thể gửi đánh giá",
+      "imageUploadFailed": "Không thể tải ảnh đánh giá lên"
+    }
+  }
+}

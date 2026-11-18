@@ -1,0 +1,9 @@
+{
+  "preferences": {
+    "title": "Update your settings",
+    "description": "Set where you live, what language you speak and the currency you use.",
+    "region": "Region",
+    "language": "Language",
+    "currency": "Currency"
+  }
+}

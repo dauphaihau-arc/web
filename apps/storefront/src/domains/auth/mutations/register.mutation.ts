@@ -4,11 +4,13 @@ import { authApi } from '~/domains/auth/api/auth.api';
 import { useGetCart } from '~/domains/cart/queries/cart.query';
 import { useMergeCart } from '~/domains/cart/mutations/merge-cart.mutation';
 import { invalidateMarketSensitiveQueries } from '~/domains/market/queries/market-sensitive-queries';
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route';
 
 export function useRegister() {
   const queryClient = useQueryClient();
   const { refetch: getCart } = useGetCart();
   const { mutateAsync: mergeCart } = useMergeCart();
+  const { localizePath } = useLocalizedRoute();
 
   return useMutation({
     mutationKey: ['register'],
@@ -24,7 +26,7 @@ export function useRegister() {
 
         const redirectPath = consumePostAuthRedirect();
         if (redirectPath) {
-          navigateTo(redirectPath);
+          navigateTo(localizePath(redirectPath));
         }
       }
     },

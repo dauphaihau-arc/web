@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import StatusBadge from '@arc/ui/primitives/status-badge.vue'
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 import {
   orderPackageStatusText,
   orderPackageTone,
@@ -20,16 +21,30 @@ const props = withDefaults(defineProps<{
   showStages: true,
 })
 
+const t = useAccountTranslator()
+
+const packageLabel = computed(() => t('account.orders.package.title', {
+  index: props.orderPackage.index,
+  total: props.orderPackage.total,
+}))
+
 const trackingText = computed(() => {
   const {
     carrierName, trackingNumber, state, trackingUnverified,
   } = props.orderPackage
-  const trackingLabel = trackingUnverified ? `${trackingNumber} (unverified)` : trackingNumber
+  const trackingLabel = trackingUnverified
+    ? t('account.orders.package.unverified', { tracking: trackingNumber })
+    : trackingNumber
 
-  if (carrierName && trackingLabel) return `Carrier: ${carrierName} · Tracking: ${trackingLabel}`
-  if (trackingLabel) return `Tracking: ${trackingLabel}`
-  if (carrierName) return `Carrier: ${carrierName}`
-  if (state === 'preparing') return 'Tracking available once shipped'
+  if (carrierName && trackingLabel) {
+    return t('account.orders.package.carrierTracking', {
+      carrier: carrierName,
+      tracking: trackingLabel,
+    })
+  }
+  if (trackingLabel) return t('account.orders.package.tracking', { tracking: trackingLabel })
+  if (carrierName) return t('account.orders.package.carrier', { carrier: carrierName })
+  if (state === 'preparing') return t('account.orders.package.trackingAvailableOnceShipped')
 
   return ''
 })
@@ -53,7 +68,7 @@ const showTrackingToggle = computed(() => hasTrackingHistory.value && props.orde
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div class="flex flex-wrap items-center gap-2">
         <h3 class="text-base font-medium text-text-strong">
-          {{ showPackageIndex ? `Package ${orderPackage.index} of ${orderPackage.total}` : 'Shipment details' }}
+          {{ showPackageIndex ? packageLabel : t('account.orders.package.shipmentDetails') }}
         </h3>
 
         <StatusBadge
@@ -76,7 +91,9 @@ const showTrackingToggle = computed(() => hasTrackingHistory.value && props.orde
     <PackageProgressSteps
       v-if="showStages && orderPackage.stages.length"
       :stages="orderPackage.stages"
-      :label="showPackageIndex ? `Package ${orderPackage.index} of ${orderPackage.total} progress` : 'Shipment progress'"
+      :label="showPackageIndex
+        ? t('account.orders.package.progress', { index: orderPackage.index, total: orderPackage.total })
+        : t('account.orders.package.shipmentProgress')"
       class="mt-5"
     />
 
@@ -104,7 +121,7 @@ const showTrackingToggle = computed(() => hasTrackingHistory.value && props.orde
         :aria-expanded="trackingOpen"
         @click="trackingOpen = !trackingOpen"
       >
-        Track package
+        {{ t('account.orders.package.trackPackage') }}
       </UButton>
 
       <slot name="actions" />

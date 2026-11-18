@@ -9,6 +9,7 @@ import type { CartProductItem } from '../api/contracts/cart.contract';
 export interface CartVariantMergeState {
   mergeItem?: CartProductItem
   mergedQuantity: number
+  availableStock: number
   maxAddableQuantity: number
   exceedsStock: boolean
   mergeNote: string
@@ -35,6 +36,7 @@ export function resolveCartVariantMerge(input: {
   return {
     mergeItem,
     mergedQuantity,
+    availableStock,
     maxAddableQuantity,
     exceedsStock,
     mergeNote: mergeItem && !exceedsStock

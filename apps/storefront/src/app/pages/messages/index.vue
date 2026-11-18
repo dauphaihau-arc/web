@@ -12,6 +12,8 @@ import {
   getConversationTimeLabel,
 } from '~/domains/me/ui/chat/storefront-chat-conversation.helpers'
 import { routes } from '~/shared/navigation/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 import { createStorefrontChatEventsClient } from '~/domains/me/realtime/chat-events.client'
 import {
   useMyChatConversations,
@@ -22,9 +24,13 @@ type MessagesTab = 'all' | 'unread'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 
+usePageSeo({ area: 'messages' })
+
 const route = useRoute()
 const router = useRouter()
 const queryClient = useQueryClient()
+const t = useAccountTranslator()
+const { localizePath } = useLocalizedRoute()
 
 const chatEventsClient = import.meta.client
   ? createStorefrontChatEventsClient(queryClient)
@@ -57,9 +63,9 @@ const messageTabItems = computed<AppTabsItem[]>(() => {
   const count = unreadCount.value?.unread_count
 
   return [
-    { label: 'All', value: 'all' },
+    { label: t('account.messages.all'), value: 'all' },
     {
-      label: 'Unread',
+      label: t('account.messages.unread'),
       value: 'unread',
       // A zero count carries no signal; AppTabs drops zero badges.
       badge: count,
@@ -83,10 +89,12 @@ const conversations = computed<MyChatConversation[]>(() => conversationList.valu
 
 const emptyText = computed(() => {
   if (activeSearch.value) {
-    return 'No conversations match your search.'
+    return t('account.messages.emptySearch')
   }
 
-  return activeTab.value === 'unread' ? 'No unread conversations.' : 'No conversations yet.'
+  return activeTab.value === 'unread'
+    ? t('account.messages.emptyUnread')
+    : t('account.messages.emptyAll')
 })
 
 const selectedConversation = computed<MyChatConversation | null>(() => {
@@ -126,7 +134,7 @@ function syncQuery(
     return
   }
 
-  const target = routes.messages(nextQuery)
+  const target = localizePath(routes.messages(nextQuery))
 
   if (history === 'push') {
     router.push(target)
@@ -159,11 +167,11 @@ watch(
       return
     }
 
-    router.replace(routes.messages({
+    router.replace(localizePath(routes.messages({
       conversationId: firstConversation.id,
       tab: activeTab.value === 'unread' ? 'unread' : undefined,
       q: activeSearch.value,
-    }))
+    })))
   },
   { immediate: true },
 )
@@ -210,8 +218,8 @@ if (import.meta.client) {
   <div class="mx-auto mt-8 max-w-home-layout px-4 md:px-12 lg:px-16">
     <div class="mb-8">
       <SectionHeader
-        title="Messages"
-        description="Talk directly with sellers about products and orders."
+        :title="t('account.messages.title')"
+        :description="t('account.messages.description')"
         heading-class="text-2xl font-semibold text-text-strong md:text-3xl"
       />
     </div>
@@ -229,7 +237,7 @@ if (import.meta.client) {
             <UInput
               v-model="state.q"
               :icon="ICON_NAME_BY_ALIAS['searchSolid']"
-              placeholder="Search shops"
+              :placeholder="t('account.messages.searchShops')"
               size="lg"
               class="w-full"
             />
@@ -239,7 +247,7 @@ if (import.meta.client) {
             variant="link"
             size="md"
             stretch
-            aria-label="Message filters"
+            :aria-label="t('account.messages.filtersAria')"
             :items="messageTabItems"
             :model-value="activeTab"
             @change="handleTabChange"
@@ -256,22 +264,22 @@ if (import.meta.client) {
         >
           <div class="flex items-start gap-3">
             <div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-surface-control text-sm font-semibold text-text-strong">
-              {{ getConversationShopInitial(conversation) }}
+              {{ getConversationShopInitial(conversation, t) }}
             </div>
 
             <div class="min-w-0 flex-1">
               <div class="flex items-start justify-between gap-3">
                 <div class="truncate text-sm font-semibold text-text-strong">
-                  {{ getConversationShopName(conversation) }}
+                  {{ getConversationShopName(conversation, t) }}
                 </div>
                 <div class="shrink-0 text-xs text-text-muted">
-                  {{ getConversationTimeLabel(conversation) }}
+                  {{ getConversationTimeLabel(conversation, t) }}
                 </div>
               </div>
 
               <div class="mt-1 flex items-center justify-between gap-2">
                 <div class="truncate text-xs text-text-muted">
-                  {{ getConversationLatestMessagePreview(conversation) }}
+                  {{ getConversationLatestMessagePreview(conversation, t) }}
                 </div>
                 <UBadge
                   v-if="conversation.buyer_unread_count > 0"

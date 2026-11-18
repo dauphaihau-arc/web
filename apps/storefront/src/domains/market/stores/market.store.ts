@@ -1,6 +1,6 @@
 import { StorageSerializers, useStorage } from '@vueuse/core';
 import { LocalStorageKeys } from '@arc/enums/local-storage-keys';
-import type { MarketCurrencies, MarketLanguages } from '@arc/enums/market';
+import type { MarketCurrencies } from '@arc/enums/market';
 import { MARKET_CONFIG } from '@arc/enums/market';
 import { SessionStorageKeys } from '@arc/enums/session-storage-keys';
 import type { AuthPreferences } from '~/domains/auth/api/contracts/auth-user.contract';
@@ -26,28 +26,6 @@ const COUNTRY_TO_MARKET_MAP: Record<string, string> = {
   US: 'United States',
   VN: 'Vietnam',
 };
-
-function getBrowserLocale() {
-  if (!import.meta.client) {
-    return '';
-  }
-
-  return navigator.languages?.[0] || navigator.language || '';
-}
-
-function localeToMarketLanguage(locale: string, supportedLocales: string[]) {
-  const languageCode = locale.split('-')[0]?.toLowerCase();
-
-  if (!languageCode) {
-    return undefined;
-  }
-
-  const matchedLocale = supportedLocales.find((supportedLocale) => {
-    return supportedLocale.split('-')[0]?.toLowerCase() === languageCode;
-  });
-
-  return matchedLocale?.split('-')[0]?.toLowerCase() as MarketLanguages | undefined;
-}
 
 function resolveSupportedMarket(countryName: string | undefined, enabledMarkets: MarketConfigMarket[]) {
   if (!countryName) {
@@ -180,6 +158,17 @@ export const useMarketStore = defineStore('market', () => {
     },
   );
 
+  // `useStorage` hydrates the raw localStorage value after setup, which bypasses
+  // the sanitisation above. Normalise once so retired language codes migrate to
+  // English while the stored region and currency survive.
+  const hydratedGuestPreferences = sanitizeMarketPreferences(guestPreferences.value);
+  if (
+    hydratedGuestPreferences
+    && hydratedGuestPreferences.language !== guestPreferences.value?.language
+  ) {
+    guestPreferences.value = hydratedGuestPreferences;
+  }
+
   const marketPreferenceSource = ref<MarketPreferenceSource | null>(null);
   const isMarketReady = ref(false);
   const marketReadyPromise = shallowRef<Promise<void> | null>(null);
@@ -267,15 +256,13 @@ export const useMarketStore = defineStore('market', () => {
         (ipData as IpDataResponse).country_name,
         enabledMarkets,
       ) ?? getBaseMarket();
-      const language = localeToMarketLanguage(
-        getBrowserLocale(),
-        market.supportedLocales,
-      ) ?? localeToMarketLanguage(market.defaultLocale, market.supportedLocales) ??
-      MARKET_CONFIG.BASE_LANGUAGE;
 
+      // Market detection may seed the region and currency, never the
+      // Storefront Language: the URL decides the UI language, and a first
+      // visit without an explicit preference is always English.
       markMarketReady({
         currency: resolveMarketCurrency((ipData as IpDataResponse).currency?.code, market),
-        language,
+        language: MARKET_CONFIG.BASE_LANGUAGE,
         region: market.name,
       }, marketConfig ? 'ip_lookup' : 'fallback');
     })();

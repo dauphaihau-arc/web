@@ -1,4 +1,9 @@
 import { getBackendErrorCode, getBackendErrorMessage } from '~/shared/utils/backend-error';
+import {
+  translateError,
+  type ErrorCopy,
+  type ErrorTranslator,
+} from '~/shared/utils/api-error-copy';
 
 export type CheckoutFailureKind =
   | 'quote_expired'
@@ -55,59 +60,63 @@ export function resolveCheckoutFailure(error: unknown): CheckoutFailureKind {
  */
 export function getDroppedPromoCodesToast(
   codes: readonly string[],
-): { title: string, description: string } | undefined {
+  t: ErrorTranslator = translateError,
+): ErrorCopy | undefined {
   if (codes.length === 0) {
     return undefined;
   }
 
   const isPlural = codes.length > 1;
+  const joinedCodes = codes.join(', ');
 
   return {
-    title: isPlural ? 'Promo codes removed' : 'Promo code removed',
-    description: `${codes.join(', ')} ${isPlural ? 'were' : 'was'} removed because ${
-      isPlural ? 'they are' : 'it is'
-    } no longer available. Review the updated total and confirm your order again.`,
+    title: t(isPlural ? 'errors.promo.removed.titlePlural' : 'errors.promo.removed.title'),
+    description: t(
+      isPlural ? 'errors.promo.removed.descriptionPlural' : 'errors.promo.removed.description',
+      { codes: joinedCodes },
+    ),
   };
 }
 
-export function getCheckoutFailureCopy(kind: CheckoutFailureKind): {
-  title: string
-  description?: string
-} {
+export function getCheckoutFailureCopy(
+  kind: CheckoutFailureKind,
+  t: ErrorTranslator = translateError,
+): ErrorCopy {
   switch (kind) {
     case 'quote_expired':
       return {
-        title: 'Quote expired',
-        description: 'Your checkout quote expired. Review the latest totals and try again.',
+        title: t('errors.checkout.quoteExpired.title'),
+        description: t('errors.checkout.quoteExpired.description'),
       };
     case 'cart_changed':
       return {
-        title: 'Cart changed',
-        description: 'Your items or totals changed since review. We refreshed checkout for you.',
+        title: t('errors.checkout.cartChanged.title'),
+        description: t('errors.checkout.cartChanged.description'),
       };
     case 'prices_changed':
       return {
-        title: 'Prices changed',
-        description: 'The prices in your cart changed since you reviewed them, so we refreshed your totals. Review the new total and confirm your order again.',
+        title: t('errors.checkout.pricesChanged.title'),
+        description: t('errors.checkout.pricesChanged.description'),
       };
     case 'stock_unavailable':
       return {
-        title: 'Stock no longer reservable',
-        description: 'Some items are no longer available in the requested quantity. Review the updated cart.',
+        title: t('errors.checkout.stockUnavailable.title'),
+        description: t('errors.checkout.stockUnavailable.description'),
       };
     case 'reservation_unavailable':
       return {
-        title: 'Reserved stock was released',
-        description: 'Your reserved inventory is no longer available. Review the refreshed checkout and try again.',
+        title: t('errors.checkout.reservationUnavailable.title'),
+        description: t('errors.checkout.reservationUnavailable.description'),
       };
     case 'checkout_session_pending':
       return {
-        title: 'Checkout still preparing',
-        description: 'Your secure checkout session is taking longer than expected. Please try again.',
+        title: t('errors.checkout.sessionPending.title'),
+        description: t('errors.checkout.sessionPending.description'),
       };
     default:
       return {
-        title: 'Create order failed',
+        title: t('errors.generic.title'),
+        description: t('errors.generic.description'),
       };
   }
 }

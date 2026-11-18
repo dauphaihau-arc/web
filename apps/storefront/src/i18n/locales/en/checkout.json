@@ -1,0 +1,80 @@
+{
+  "checkout": {
+    "loading": "Loading your checkout...",
+    "quoteError": {
+      "title": "Could not load shipping and totals",
+      "description": "Please review your address and try again."
+    },
+    "actions": {
+      "completeOrder": "Complete Order"
+    },
+    "review": {
+      "shippingAddress": "Shipping address",
+      "noAddress": "No shipping address selected yet.",
+      "changeAddress": "Change",
+      "addAddress": "Add shipping address",
+      "paymentMethod": "Payment method"
+    },
+    "payment": {
+      "card": {
+        "label": "Credit / Debit Card",
+        "description": "We support Mastercard, Visa and Stripe"
+      },
+      "cash": {
+        "label": "Cash on delivery",
+        "description": "Pay with cash when your order is delivered"
+      }
+    },
+    "address": {
+      "addNew": "Add new address",
+      "shippingTitle": "Shipping address",
+      "noSaved": "You have no saved addresses yet.",
+      "createFailed": "Create address failed",
+      "back": "Back",
+      "optional": "{label} (optional)",
+      "chooseFromList": "Choose from list",
+      "setAsDefault": "Set as default",
+      "fields": {
+        "email": "Email",
+        "country": "Country",
+        "fullName": "Full Name",
+        "street": "Street",
+        "address2": "Apt / Suite / Other",
+        "city": "City",
+        "state": "State",
+        "stateProvince": "State/Province",
+        "provinceCity": "Province/City",
+        "prefecture": "Prefecture",
+        "district": "District",
+        "zipCode": "ZIP code",
+        "postcode": "Postcode",
+        "postalCode": "Postal code",
+        "zipPostalCode": "Zip/Postal code",
+        "phone": "Phone"
+      },
+      "errors": {
+        "countryRequired": "Select a country",
+        "subdivisionRequired": "Select a state or province",
+        "subdivisionTooLong": "Keep the state or province to {count} characters or fewer",
+        "phoneRequired": "Please enter a phone number",
+        "phoneInvalid": "Enter a valid phone number for the selected country",
+        "phoneTooLong": "Keep the phone number to {count} characters or fewer",
+        "postcodeRequired": "Please enter the ZIP or postal code",
+        "postcodeInvalid": "Enter a valid ZIP or postal code for the selected country",
+        "postcodeTooLong": "Keep the ZIP or postal code to {count} characters or fewer"
+      }
+    },
+    "success": {
+      "errorTitle": "Something went wrong",
+      "errorDescription": "We couldn't load your order details. Please try again.",
+      "title": "Your order is confirmed.",
+      "working": "{shops} will start working on this right away.",
+      "emailSoon": "We'll email you as soon as it ships.",
+      "viewOrder": "View your order",
+      "trackOrder": "Track your order",
+      "deliveryNotice": "Delivery times are estimated. If you're experiencing difficulty with this order, please {contactSeller}. See {moreInfo}.",
+      "contactSeller": "contact the seller",
+      "moreInfo": "more info"
+    }
+  }
+}

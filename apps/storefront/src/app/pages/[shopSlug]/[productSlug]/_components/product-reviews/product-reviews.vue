@@ -16,6 +16,7 @@ const reviewPage = ref(1)
 const reviewLimit = 4
 const reviewRating = ref<ReviewRatingFilter>()
 const reviewHasComment = ref(false)
+const { t } = useI18n()
 
 const reviewQueryParams = computed(() => ({
   page: reviewPage.value,
@@ -38,7 +39,8 @@ const averageLabel = computed(() => reviewAverage.value.toFixed(1))
 
 const reviewCountLabel = computed(() => {
   const count = reviewCount.value
-  return `${count} review${count === 1 ? '' : 's'}`
+
+  return t(count === 1 ? 'catalog.reviews.countOne' : 'catalog.reviews.countMany', { count })
 })
 
 function getRatingCount(rating: ReviewRatingFilter) {
@@ -76,7 +78,7 @@ watch(
     >
       <div class="space-y-3">
         <h2 class="text-text text-xl font-semibold tracking-tight">
-          Reviews for this item
+          {{ $t('catalog.reviews.title') }}
         </h2>
 
         <div class="flex items-center gap-4">
@@ -93,7 +95,7 @@ watch(
           </div>
           <div>
             <div class="text-text text-base font-medium">
-              Item average
+              {{ $t('catalog.reviews.average') }}
             </div>
             <div class="text-sm text-text-muted">
               {{ reviewCountLabel }}
@@ -122,7 +124,7 @@ watch(
             class="transition"
             @click="toggleHasComment"
           >
-            Has Comment ({{ reviews?.summary.filters.has_comment ?? 0 }})
+            {{ $t('catalog.reviews.hasComment', { count: reviews?.summary.filters.has_comment ?? 0 }) }}
           </UButton>
         </div>
 
@@ -136,7 +138,7 @@ watch(
             class="transition"
             @click="toggleRating(ratingOption)"
           >
-            {{ ratingOption }} Star ({{ getRatingCount(ratingOption) }})
+            {{ $t('catalog.reviews.ratingFilter', { rating: ratingOption, count: getRatingCount(ratingOption) }) }}
           </UButton>
         </div>
       </div>

@@ -4,11 +4,15 @@ import { ROUTES } from '~/shared/config/enums/routes'
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
 import { useGetCheckoutOrderShopsByCheckoutSession } from '~/domains/checkout/queries/order-shops.query'
 import { routes } from '~/shared/navigation/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 
 definePageMeta({ layout: 'market' })
 
+usePageSeo({ area: 'success' })
+
 const route = useRoute()
 const cartStore = useCartStore()
+const { localizePath } = useLocalizedRoute()
 const { data: dataUserAuth } = useGetCurrentUser()
 
 const session_id = route.query['session_id'] as string
@@ -63,6 +67,9 @@ const guestOrdersRoute = computed(() => {
   })
 })
 
+const orderLink = computed(() =>
+  localizePath(isAuthenticated.value ? ROUTES.ORDERS : guestOrdersRoute.value))
+
 const orderShops = computed(() => {
   if (dataGetOrderShopsByCheckoutSession.value?.order_shops) {
     return dataGetOrderShopsByCheckoutSession.value.order_shops
@@ -96,8 +103,8 @@ onUnmounted(() => {
       variant="naked"
       size="xl"
       :icon="ICON_NAME_BY_ALIAS['warning']"
-      title="Something went wrong"
-      description="We couldn't load your order details. Please try again."
+      :title="$t('checkout.success.errorTitle')"
+      :description="$t('checkout.success.errorDescription')"
       container-class="h-[80vh] w-full"
     />
     <div
@@ -105,33 +112,48 @@ onUnmounted(() => {
       class="mt-20 grid place-content-center text-center"
     >
       <div class="mb-4 text-center text-3xl font-medium">
-        Your order is confirmed.
+        {{ $t('checkout.success.title') }}
       </div>
       <div class=" space-y-4 text-text-subtle">
         <div>
-          <span
-            v-for="(item, idx) of orderShops"
-            :key="idx"
+          <i18n-t
+            keypath="checkout.success.working"
+            tag="div"
           >
-            <span v-if="idx > 0">, </span>
-            <span class="underline underline-offset-2">
-              {{ item.shop.shop_name }}
-            </span>
-          </span>
-          will start working on this right away.<br />
-          We'll email you as soon as it ships.
+            <template #shops>
+              <span
+                v-for="(item, idx) of orderShops"
+                :key="idx"
+              >
+                <span v-if="idx > 0">, </span>
+                <span class="underline underline-offset-2">
+                  {{ item.shop.shop_name }}
+                </span>
+              </span>
+            </template>
+          </i18n-t>
+          {{ $t('checkout.success.emailSoon') }}
         </div>
         <div>
           <UButton
             size="lg"
-            :to="isAuthenticated ? ROUTES.ORDERS : guestOrdersRoute"
+            :to="orderLink"
           >
-            {{ isAuthenticated ? 'View your order' : 'Track your order' }}
+            {{ isAuthenticated ? $t('checkout.success.viewOrder') : $t('checkout.success.trackOrder') }}
           </UButton>
         </div>
         <div class="">
-          Delivery times are estimated. If you're experiencing difficulty with this order, please <br />
-          <span class="underline underline-offset-2">contact the seller</span>. See <span class="underline underline-offset-2">more info</span>.
+          <i18n-t
+            keypath="checkout.success.deliveryNotice"
+            tag="span"
+          >
+            <template #contactSeller>
+              <span class="underline underline-offset-2">{{ $t('checkout.success.contactSeller') }}</span>
+            </template>
+            <template #moreInfo>
+              <span class="underline underline-offset-2">{{ $t('checkout.success.moreInfo') }}</span>
+            </template>
+          </i18n-t>
         </div>
       </div>
     </div>

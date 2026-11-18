@@ -1,0 +1,43 @@
+{
+  "footer": {
+    "shop": {
+      "title": "Shop",
+      "giftCards": "Gift cards",
+      "registry": "Arc Registry",
+      "sitemap": "Sitemap",
+      "blog": "Arc blog",
+      "unitedKingdom": "Arc United Kingdom",
+      "germany": "Arc Germany",
+      "canada": "Arc Canada"
+    },
+    "sell": {
+      "title": "Sell",
+      "sellerHandbook": "Seller handbook",
+      "teams": "Teams",
+      "forums": "Forums",
+      "affiliates": "Affiliates & Creators"
+    },
+    "about": {
+      "title": "About",
+      "company": "Arc, Inc.",
+      "policies": "Policies",
+      "news": "News",
+      "investors": "Investors",
+      "careers": "Careers"
+    },
+    "support": {
+      "title": "Support",
+      "orderStatus": "Order status",
+      "delivery": "Delivery",
+      "returns": "Returns",
+      "summaryOptions": "Summary options",
+      "contactUs": "Contact us"
+    },
+    "legal": {
+      "guides": "Guides",
+      "terms": "Terms of Use",
+      "privacy": "Privacy Policy"
+    },
+    "copyright": "© {year} Arc Inc."
+  }
+}

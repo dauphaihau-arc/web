@@ -49,7 +49,7 @@ translations were wired: its config pointed at a missing `i18n.config.ts`, its l
 unused stubs, and nothing rendered translated strings.
 
 Language-bearing request headers come from the market preferences store, typed by
-`MarketLanguages` in `packages/enums/src/market.ts`. Reintroduce a localization layer only when a
+`StorefrontLanguages` in `packages/enums/src/market.ts`. Reintroduce a localization layer only when a
 second locale actually needs to render.
 
 ## UI Foundation

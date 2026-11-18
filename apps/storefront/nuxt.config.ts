@@ -3,6 +3,7 @@ import { writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import type { NuxtI18nOptions } from '@nuxtjs/i18n'
 import { APP_ICON_CLIENT_BUNDLE_ICONS, APP_ICON_COLLECTIONS } from '../../packages/ui/src/foundation/app-icon.constants'
 import { sharedFonts } from '../../packages/ui/src/foundation/nuxt-fonts'
 import { removePageComponents } from '../../packages/ui/src/foundation/nuxt-pages'
@@ -17,6 +18,37 @@ const debugEntry = require.resolve('debug/src/index.js')
 
 const assetHost = process.env.ASSET_HOST || ''
 const awsHostBucketAlias = assetHost.replace(/\/+$/, '')
+
+// Every locale/area pair is a separate lazy-loaded resource so a new area can
+// be filled in by one domain slice without touching the module config.
+const localeFiles = ['common.json', 'header.json', 'footer.json', 'home.json', 'preferences.json', 'catalog.json', 'cart.json', 'checkout.json', 'account.json', 'errors.json', 'seo.json']
+
+// `lazy` no longer exists in @nuxtjs/i18n v10 (locale files are always loaded
+// on demand), but it stays part of the storefront i18n contract so the config
+// reads the same across apps.
+const i18nOptions: NuxtI18nOptions & { lazy?: boolean } = {
+  strategy: 'prefix_except_default',
+  defaultLocale: 'en',
+  vueI18n: './i18n.config.ts',
+  restructureDir: 'src/i18n',
+  langDir: 'locales',
+  lazy: true,
+  detectBrowserLanguage: false,
+  locales: [
+    {
+      code: 'en',
+      language: 'en-US',
+      name: 'English',
+      files: localeFiles.map(file => `en/${file}`),
+    },
+    {
+      code: 'vi',
+      language: 'vi-VN',
+      name: 'Tiếng Việt',
+      files: localeFiles.map(file => `vi/${file}`),
+    },
+  ],
+}
 
 export default defineNuxtConfig({
   app: {
@@ -76,8 +108,11 @@ export default defineNuxtConfig({
     '@formkit/auto-animate/nuxt',
     '@nuxt/image',
     '@nuxt/fonts',
+    '@nuxtjs/i18n',
     ['@arc/nuxt-vue-query', { categoryIdentityPolicy: true }],
   ],
+
+  i18n: i18nOptions,
 
   icon: {
     fallbackToApi: false,
@@ -120,6 +155,9 @@ export default defineNuxtConfig({
       assetHost: process.env.ASSET_HOST,
       categoryIdentityContractVersion: process.env.NUXT_PUBLIC_CATEGORY_IDENTITY_CONTRACT_VERSION,
       sellerAppURL: process.env.SELLER_APP_URL || 'http://localhost:4002',
+      // Absolute origin for canonical/hreflang links. Unset in previews and
+      // tests so the composable falls back to the request origin.
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || '',
     },
   },
 
@@ -177,19 +215,33 @@ export default defineNuxtConfig({
     },
   },
 
+  // The Vietnamese routes are real, separately cached URLs; every policy is
+  // mirrored under `/vi/**` so the prefix never falls through to `/**`.
   routeRules: {
     '/': { isr: 3600 },
+    '/vi': { isr: 3600 },
     '/c/**': { ssr: true, isr: false, cache: false },
+    '/vi/c/**': { ssr: true, isr: false, cache: false },
     '/search': { ssr: true, isr: false, cache: false },
+    '/vi/search': { ssr: true, isr: false, cache: false },
     '/success': { ssr: false, isr: false, cache: false },
+    '/vi/success': { ssr: false, isr: false, cache: false },
     '/guest-orders/**': { ssr: false, isr: false, cache: false },
+    '/vi/guest-orders/**': { ssr: false, isr: false, cache: false },
     '/cart/**': { ssr: false, isr: false, cache: false },
+    '/vi/cart/**': { ssr: false, isr: false, cache: false },
     '/checkout/**': { ssr: false, isr: false, cache: false },
+    '/vi/checkout/**': { ssr: false, isr: false, cache: false },
     '/account/**': { ssr: false, isr: false, cache: false },
+    '/vi/account/**': { ssr: false, isr: false, cache: false },
     '/messages': { ssr: false, isr: false, cache: false },
+    '/vi/messages': { ssr: false, isr: false, cache: false },
     '/orders/**': { ssr: false, isr: false, cache: false },
+    '/vi/orders/**': { ssr: false, isr: false, cache: false },
     '/reset/**': { ssr: false, isr: false, cache: false },
+    '/vi/reset/**': { ssr: false, isr: false, cache: false },
     '/**': { isr: 300 },
+    '/vi/**': { isr: 300 },
   },
 
   nitro: {
@@ -197,6 +249,8 @@ export default defineNuxtConfig({
       ignore: [
         '/search',
         '/success',
+        '/vi/search',
+        '/vi/success',
       ],
     },
   },

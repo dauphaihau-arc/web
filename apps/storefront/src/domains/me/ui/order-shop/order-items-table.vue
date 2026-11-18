@@ -2,6 +2,7 @@
 import { formatMinorCurrency } from '@arc/utils'
 import DataTable from '@arc/ui/patterns/data-table/data-table.vue'
 import ProductImage from '@arc/ui/primitives/product-image.vue'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 
 /**
  * Line-item table for purchased or about-to-be-purchased quantities: the
@@ -27,21 +28,23 @@ const props = defineProps<{
   rows: OrderItemRow[]
 }>()
 
+const t = useAccountTranslator()
+
 /**
  * Quantity and unit price collapse into the item cell below `md`, matching the
  * previous stacked layout on small screens.
  */
-const columns = [
-  { key: 'items', label: 'Items' },
-  { key: 'qty', label: 'Qty', class: 'hidden w-16 text-center md:table-cell', rowClass: 'hidden md:table-cell' },
-  { key: 'unit', label: 'Unit price', class: 'hidden w-40 text-right md:table-cell', rowClass: 'hidden md:table-cell' },
-  { key: 'amount', label: 'Amount', class: 'w-24 text-left md:w-40 md:text-right' },
-]
+const columns = computed(() => [
+  { key: 'items', label: t('account.common.items') },
+  { key: 'qty', label: t('account.common.qty'), class: 'hidden w-16 text-center md:table-cell', rowClass: 'hidden md:table-cell' },
+  { key: 'unit', label: t('account.common.unitPrice'), class: 'hidden w-40 text-right md:table-cell', rowClass: 'hidden md:table-cell' },
+  { key: 'amount', label: t('account.common.amount'), class: 'w-24 text-left md:w-40 md:text-right' },
+])
 
-const emptyState = {
+const emptyState = computed(() => ({
   icon: 'i-heroicons-shopping-bag-20-solid',
-  label: 'No items.',
-}
+  label: t('account.orders.itemsEmpty'),
+}))
 </script>
 
 <template>
@@ -74,7 +77,7 @@ const emptyState = {
             {{ label }}
           </div>
           <div class="text-sm text-text-muted md:hidden">
-            Qty: {{ row.quantity }} · Unit price: {{ formatMinorCurrency(row.unitPriceMinor, row.currency) }}
+            {{ t('account.common.qty') }}: {{ row.quantity }} · {{ t('account.common.unitPrice') }}: {{ formatMinorCurrency(row.unitPriceMinor, row.currency) }}
           </div>
           <slot
             name="row-actions"
@@ -100,7 +103,7 @@ const emptyState = {
           <span class="line-through">
             {{ formatMinorCurrency(row.originalUnitPriceMinor, row.currency) }}
           </span>
-          <span v-if="row.percentOff"> ({{ row.percentOff }}% off)</span>
+          <span v-if="row.percentOff"> ({{ t('account.common.percentOff', { percent: row.percentOff }) }})</span>
         </div>
       </div>
     </template>

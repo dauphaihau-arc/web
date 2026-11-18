@@ -3,6 +3,7 @@ import { useCartStore } from '~/domains/cart/stores/cart.store'
 import { useSubmitBuyNowCheckout } from '~/domains/checkout/composables/use-submit-buy-now-checkout'
 
 const cartStore = useCartStore()
+const { t } = useI18n()
 const { submitBuyNowCheckout } = useSubmitBuyNowCheckout()
 </script>
 
@@ -16,7 +17,7 @@ const { submitBuyNowCheckout } = useSubmitBuyNowCheckout()
       :ui="{ rounded: 'shadow-border' }"
       @click="submitBuyNowCheckout"
     >
-      Complete Order
+      {{ t('checkout.actions.completeOrder') }}
     </UButton>
   </div>
 </template>

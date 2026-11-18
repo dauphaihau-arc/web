@@ -1,0 +1,122 @@
+{
+  "catalog": {
+    "sort": {
+      "label": "Sort by:",
+      "title": "Sort By",
+      "featured": "Featured",
+      "newest": "Newest",
+      "priceHighLow": "Price: High-Low",
+      "priceLowHigh": "Price: Low-High"
+    },
+    "filters": {
+      "title": "Filter",
+      "all": "All filters",
+      "close": "Close filters",
+      "apply": "Apply",
+      "clear": "Clear ({count})",
+      "reset": "Reset filters",
+      "sections": {
+        "format": "Item format",
+        "price": "Price ({currency})",
+        "priceShort": "Shop By Price",
+        "type": "Item type",
+        "attributes": "Attributes"
+      },
+      "format": {
+        "all": "All",
+        "digital": "Digital",
+        "physical": "Physical"
+      },
+      "whoMade": {
+        "all": "All",
+        "handmade": "Handmade"
+      },
+      "price": {
+        "min": "Low",
+        "max": "High",
+        "to": "to"
+      }
+    },
+    "pricePresets": {
+      "any": "Any price",
+      "custom": "Custom",
+      "under": "Under {amount}",
+      "over": "Over {amount}"
+    },
+    "search": {
+      "title": "Search Results",
+      "resultsForOne": "{count} result for \"{query}\"",
+      "resultsForMany": "{count} results for \"{query}\"",
+      "noResults": "No results for \"{query}\"",
+      "emptyDescription": "Try a more specific product name, fewer words, or a different keyword."
+    },
+    "results": {
+      "loadErrorTitle": "Couldn't load products",
+      "loadErrorDescription": "Something went wrong while loading this listing. Please try again.",
+      "noResultsTitle": "No results found",
+      "noResultsDescription": "Try adjusting or clearing your filters.",
+      "emptyTitle": "No products here yet",
+      "emptyDescription": "Try another category or browse all products."
+    },
+    "product": {
+      "from": "from",
+      "percentOff": "({percent}% off)",
+      "quantity": "Quantity",
+      "addToCart": "Add to cart",
+      "buyNow": "Buy it now",
+      "selectVariant": "Select a {name}",
+      "variant": "variant",
+      "details": "Product details",
+      "shippingPolicies": "Shipping and return policies",
+      "meetSellers": "Meet your sellers"
+    },
+    "stock": {
+      "backInStock": "Back in stock",
+      "outOfStock": "Out of stock",
+      "lowStock": "Low stock",
+      "lowInStock": "Low in stock, only {count} left"
+    },
+    "shipping": {
+      "worldwide": "Ships worldwide",
+      "toCountry": "Ships to {country}",
+      "notAvailable": "Shipping coverage not available"
+    },
+    "seller": {
+      "questions": "Questions about this item? Start a direct conversation with {shop}.",
+      "message": "Message {shop}",
+      "chatSubtitle": "Ask about this product directly from here.",
+      "closeChat": "Close seller chat",
+      "loadingConversation": "Loading conversation..."
+    },
+    "reviews": {
+      "title": "Reviews for this item",
+      "average": "Item average",
+      "countOne": "{count} review",
+      "countMany": "{count} reviews",
+      "hasComment": "Has Comment ({count})",
+      "ratingFilter": "{rating} Star ({count})",
+      "noMatch": "No reviews match the selected filters.",
+      "starOnly": "Customer left a star rating for this item.",
+      "photosTitle": "Photos from reviews",
+      "photoAlt": "Review photo from {name}",
+      "updated": "Updated {date}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "toasts": {
+      "outOfStock": "Out of stock",
+      "unableCheckout": "Unable to start checkout",
+      "addFailed": "Add product to cart failed",
+      "added": "Added to cart",
+      "requestFailed": "Request failed with status {status}",
+      "unknownStatus": "unknown"
+    },
+    "form": {
+      "required": "Required"
+    },
+    "errors": {
+      "pageNotFound": "Page Not Found",
+      "productNotFound": "Product Not Found"
+    }
+  }
+}

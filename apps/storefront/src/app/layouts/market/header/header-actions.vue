@@ -28,6 +28,7 @@ const NotificationPopover = defineAsyncComponent({
 
 const modal = useModal()
 const config = useRuntimeConfig()
+const { t } = useI18n()
 const isShowCategoryMenu = ref(false)
 
 const {
@@ -47,10 +48,12 @@ const isAdminUser = computed(() => hasAdminRole(dataUserAuth.value?.user))
 
 const sellerCtaLabel = computed(() => {
   if (!dataUserAuth.value?.user) {
-    return 'Seller Center'
+    return t('header.seller.center')
   }
 
-  return hasSellerAccess(dataUserAuth.value.user) ? 'Manage Shop' : 'Start Selling'
+  return hasSellerAccess(dataUserAuth.value.user)
+    ? t('header.seller.manageShop')
+    : t('header.seller.startSelling')
 })
 
 const hasCustomerAccountAccess = computed(() => hasCustomerAccess(dataUserAuth.value?.user))
@@ -96,7 +99,7 @@ function handleCartHover() {
 
 <template>
   <div class="-me-1.5 flex h-fit items-center gap-2 justify-self-end">
-    <UTooltip text="Search">
+    <UTooltip :text="$t('header.search.tooltip')">
       <UButton
         square
         color="gray"
@@ -125,7 +128,7 @@ function handleCartHover() {
         />
       </template>
       <template v-else>
-        <UTooltip text="Sign in">
+        <UTooltip :text="$t('header.account.signIn')">
           <UButton
             data-testid="header-sign-in-trigger"
             square
@@ -155,7 +158,7 @@ function handleCartHover() {
       </UButton>
     </UTooltip>
 
-    <UTooltip text="Cart">
+    <UTooltip :text="$t('header.cart.tooltip')">
       <UChip
         :text="totalProductCarts"
         :show="totalProductCarts > 0"
@@ -186,7 +189,7 @@ function handleCartHover() {
       square
       color="gray"
       variant="ghost"
-      aria-label="Open menu"
+      :aria-label="$t('header.menu.open')"
       @click="isShowCategoryMenu = true"
     >
       <AppIcon name="menu" />

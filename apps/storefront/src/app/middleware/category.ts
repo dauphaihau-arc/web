@@ -3,6 +3,7 @@ import { categoryResolutionQueryOptions } from '~/domains/category/queries/categ
 import { legacyPathResolutionQueryOptions } from '~/domains/category/queries/legacy-path-resolution.query';
 import { categoryRedirectTarget } from '~/domains/category/utils/category-canonical-redirect';
 import type { CategoryResolution } from '~/domains/category/utils/category.normalizer';
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route';
 import {
   CATEGORY_LEGACY_ROUTE_PARAM,
   CATEGORY_ROUTE_PARAM,
@@ -24,6 +25,7 @@ import {
  * 404 and no listing/facet request is issued; a backend failure stays an error.
  */
 export default defineNuxtRouteMiddleware(async (to) => {
+  const { localizePath } = useLocalizedRoute();
   const identity = parseCategorySegment(to.params[CATEGORY_ROUTE_PARAM]);
   const legacyPath = identity ? undefined : legacyPathOf(to);
 
@@ -69,7 +71,13 @@ export default defineNuxtRouteMiddleware(async (to) => {
     throw createError({ statusCode: 500, statusMessage: 'Something went wrong' });
   }
 
-  const target = categoryRedirectTarget(resolution, to);
+  // The resolver returns a language-neutral canonical path; localize it
+  // before comparing so an already-canonical `/vi/c/...` URL is not
+  // redirected to its unprefixed English counterpart.
+  const target = categoryRedirectTarget({
+    ...resolution,
+    canonicalPath: localizePath(resolution.canonicalPath),
+  }, to);
 
   if (target) {
     return navigateTo(target, { redirectCode: 301, replace: true });

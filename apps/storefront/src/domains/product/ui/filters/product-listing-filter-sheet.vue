@@ -26,7 +26,18 @@ const emit = defineEmits<{
 }>()
 
 const { state, sortOrder } = useProductListingFilters()
+const { t } = useI18n()
 const { currency, pricePresetOpts } = usePricePresetOptions()
+
+const formatOptions = computed(() => isDigitalOpts.map(option => ({
+  value: option.value,
+  label: t(option.labelKey),
+})))
+
+const whoMadeOptions = computed(() => productWhoMadeOpts.map(option => ({
+  value: option.value,
+  label: t(option.labelKey),
+})))
 
 // Edits are staged on a draft so the sheet commits exactly one route query on
 // Apply instead of pushing on every toggle.
@@ -60,21 +71,21 @@ const sheetFacets = computed(() => {
 
 const sheetTitle = computed(() => {
   if (showAll.value) {
-    return 'Filter'
+    return t('catalog.filters.title')
   }
 
   if (showSort.value) {
-    return 'Sort By'
+    return t('catalog.sort.title')
   }
 
-  return sheetFacets.value[0]?.attributeName ?? 'Filter'
+  return sheetFacets.value[0]?.attributeName ?? t('catalog.filters.title')
 })
 
 const draftCount = computed(() => countActiveFilters(draft))
 
 const sortRadioOptions = computed(() => PRODUCT_SORT_OPTIONS.map(option => ({
   value: option.id,
-  label: option.label,
+  label: t(option.labelKey),
 })))
 
 watch(() => props.panel, (panel) => {
@@ -133,7 +144,7 @@ function isOptionSelected(facetKey: string, optionKey: string) {
           variant="ghost"
           square
           size="lg"
-          aria-label="Close filters"
+          :aria-label="$t('catalog.filters.close')"
           @click="emit('update:panel', null)"
         >
           <AppIcon name="xMarkSolid" />
@@ -146,7 +157,7 @@ function isOptionSelected(facetKey: string, optionKey: string) {
             v-if="showAll"
             class="mb-3 text-base font-semibold"
           >
-            Sort By
+            {{ $t('catalog.sort.title') }}
           </h3>
           <RadioGroupInput
             v-model="draftSort"
@@ -158,22 +169,22 @@ function isOptionSelected(facetKey: string, optionKey: string) {
           <UDivider class="my-5" />
           <section>
             <h3 class="mb-3 text-base font-semibold">
-              Item format
+              {{ $t('catalog.filters.sections.format') }}
             </h3>
             <RadioGroupInput
               v-model="draft.isDigital"
-              :options="isDigitalOpts"
+              :options="formatOptions"
             />
           </section>
 
           <UDivider class="my-5" />
           <section>
             <h3 class="mb-3 text-base font-semibold">
-              Item type
+              {{ $t('catalog.filters.sections.type') }}
             </h3>
             <RadioGroupInput
               v-model="draft.whoMade"
-              :options="productWhoMadeOpts"
+              :options="whoMadeOptions"
             />
           </section>
         </template>
@@ -212,7 +223,7 @@ function isOptionSelected(facetKey: string, optionKey: string) {
           <UDivider class="my-5" />
           <section>
             <h3 class="mb-3 text-base font-semibold">
-              Shop By Price
+              {{ $t('catalog.filters.sections.priceShort') }}
             </h3>
             <MinMaxPrice
               :price="draft.price"
@@ -235,14 +246,14 @@ function isOptionSelected(facetKey: string, optionKey: string) {
           :disabled="draftCount === 0"
           @click="clearDraft"
         >
-          Clear ({{ draftCount }})
+          {{ $t('catalog.filters.clear', { count: draftCount }) }}
         </UButton>
         <UButton
           block
           size="lg"
           @click="apply"
         >
-          Apply
+          {{ $t('catalog.filters.apply') }}
         </UButton>
       </div>
     </div>

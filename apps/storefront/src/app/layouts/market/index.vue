@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import Footer from './footer/footer.vue'
 import Header from './header/header.vue'
-import { accountSidebarLinks } from '~/shared/navigation/menu'
+import { useAccountSidebarLinks } from '~/shared/navigation/menu'
 import { routePaths } from '~/shared/navigation/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 
 const route = useRoute()
+const { localizePath } = useLocalizedRoute()
+const accountSidebarLinks = useAccountSidebarLinks()
 
 onMounted(() => {
   window.scrollTo(0, 0)
@@ -37,7 +40,7 @@ const accountNavUi = {
 }
 
 watch(() => route.path, () => {
-  isAccountRoute.value = route.path.startsWith(routePaths.account)
+  isAccountRoute.value = route.path.startsWith(localizePath(routePaths.account))
 }, { immediate: true })
 </script>
 

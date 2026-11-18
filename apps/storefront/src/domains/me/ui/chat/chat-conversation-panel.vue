@@ -21,6 +21,8 @@ import {
   getRoutePath,
   routes,
 } from '~/shared/navigation/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 import { useMyMarkChatRead } from '~/domains/me/mutations/chat/mark-read.mutation'
 import { useMyChatMessages } from '~/domains/me/queries/chat/messages.query'
 import { useMySendChatMessage } from '~/domains/me/mutations/chat/send-message.mutation'
@@ -29,6 +31,7 @@ const props = withDefaults(defineProps<{
   conversationId?: string
   initialConversation?: MyChatConversation | null
   emptyStateText?: string
+  emptyMessagesText?: string
   showHeader?: boolean
   autofocusComposer?: boolean
   /** Mobile/tablet inbox shows a back control to return to the conversation list. */
@@ -36,7 +39,8 @@ const props = withDefaults(defineProps<{
 }>(), {
   conversationId: undefined,
   initialConversation: null,
-  emptyStateText: 'Select a conversation to read and reply.',
+  emptyStateText: undefined,
+  emptyMessagesText: undefined,
   showHeader: true,
   autofocusComposer: false,
   showBackButton: false,
@@ -45,6 +49,17 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
   back: []
 }>()
+
+const t = useAccountTranslator()
+
+const resolvedEmptyStateText = computed(() =>
+  props.emptyStateText ?? t('account.messages.selectConversation'),
+)
+const resolvedEmptyMessagesText = computed(() =>
+  props.emptyMessagesText ?? t('account.messages.noMessages'),
+)
+
+const { localizePath } = useLocalizedRoute()
 
 const messageDraft = ref('')
 const queryClient = useQueryClient()
@@ -175,7 +190,7 @@ function toProductReferenceDisplay(message: MyChatMessage) {
     ? formatMinorCurrency(snapshot.amount_minor, snapshot.currency)
     : undefined
   const statusLabel = productReference.current?.in_stock === false
-    ? 'Currently unavailable'
+    ? t('account.common.unavailable')
     : undefined
 
   return {
@@ -183,7 +198,7 @@ function toProductReferenceDisplay(message: MyChatMessage) {
     imageUrl: snapshot.image_url,
     priceLabel,
     statusLabel,
-    href: getRoutePath(routes.productDetail(snapshot.shop_slug, snapshot.product_slug)),
+    href: localizePath(getRoutePath(routes.productDetail(snapshot.shop_slug, snapshot.product_slug))),
   }
 }
 
@@ -209,7 +224,8 @@ async function handleSendMessage() {
     :has-conversation="!!conversationId && !!selectedConversation"
     :loading="isPendingMessages"
     :empty="messages.length === 0"
-    :empty-state-text="emptyStateText"
+    :empty-state-text="resolvedEmptyStateText"
+    :empty-messages-text="resolvedEmptyMessagesText"
     :messages="threadMessages"
     :model-value="messageDraft"
     :sending="isSendingMessage"
@@ -235,21 +251,21 @@ async function handleSendMessage() {
           variant="ghost"
           :padded="false"
           :icon="ICON_NAME_BY_ALIAS.chevronLeft"
-          aria-label="Back to conversations"
+          :aria-label="t('account.messages.back')"
           @click="emit('back')"
         />
 
         <div class="flex min-w-0 items-center gap-3">
           <div class="flex size-11 shrink-0 items-center justify-center rounded-full bg-surface-control text-base font-semibold text-text-strong">
-            {{ getConversationShopInitial(selectedConversation) }}
+            {{ getConversationShopInitial(selectedConversation, t) }}
           </div>
 
           <div class="min-w-0">
             <div class="truncate text-lg font-semibold text-text-strong">
-              {{ getConversationShopName(selectedConversation) }}
+              {{ getConversationShopName(selectedConversation, t) }}
             </div>
             <div class="truncate text-sm text-text-muted">
-              Conversation
+              {{ t('account.messages.conversation') }}
             </div>
           </div>
         </div>

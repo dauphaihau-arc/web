@@ -16,9 +16,11 @@ const props = withDefaults(defineProps<{
   showHeading: true,
 })
 
+const { localizePath } = useLocalizedRoute()
+
 const breadcrumbLinks = computed(() => props.ancestry.map(entry => ({
   label: entry.name,
-  to: buildCategoryPath(entry.slug, entry.id),
+  to: localizePath(buildCategoryPath(entry.slug, entry.id)),
 })))
 </script>
 

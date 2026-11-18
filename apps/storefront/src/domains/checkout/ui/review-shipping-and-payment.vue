@@ -8,6 +8,7 @@ import { useGetUserAddresses } from '~/domains/me/queries/address/addresses.quer
 const checkoutState = defineModel<StateCheckoutCart | StateCheckoutNow>('checkoutState', { required: true })
 
 const dialog = useModal()
+const { t } = useI18n()
 
 const { data: dataUserAuth } = useGetCurrentUser()
 const isAuthenticated = computed(() => !!dataUserAuth.value?.user)
@@ -55,7 +56,7 @@ function changeAddress() {
     <div class="flex flex-col gap-6 md:flex-row md:gap-20">
       <div>
         <div class="mb-1 font-semibold">
-          Shipping address
+          {{ t('checkout.review.shippingAddress') }}
         </div>
 
         <div
@@ -80,7 +81,7 @@ function changeAddress() {
           v-else
           class="my-2 text-sm text-text-muted"
         >
-          No shipping address selected yet.
+          {{ t('checkout.review.noAddress') }}
         </div>
 
         <UButton
@@ -89,13 +90,13 @@ function changeAddress() {
           :disabled="checkoutState.isPendingCreateOrder"
           @click="changeAddress"
         >
-          {{ checkoutState.address ? 'Change' : 'Add shipping address' }}
+          {{ checkoutState.address ? t('checkout.review.changeAddress') : t('checkout.review.addAddress') }}
         </UButton>
       </div>
 
       <div>
         <div class="mb-1 font-semibold">
-          Payment method
+          {{ t('checkout.review.paymentMethod') }}
         </div>
         <PaymentOptions
           v-model="paymentType"

@@ -3,13 +3,16 @@ import dayjs from 'dayjs'
 import { PaymentTypes } from '@arc/enums/order'
 import type { ElementType } from '@arc/contracts/utils'
 import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract'
-import { paymentMethodLabel } from './order-detail-presentation'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
+import { paymentMethodLabel, refundStatusLabel } from './order-detail-presentation'
 
 type OrderShop = ElementType<GetOrderShopsResponse['order_shops']>
 
 defineProps<{
   orderShop: OrderShop
 }>()
+
+const t = useAccountTranslator()
 
 /** Dividerless card with the header sitting close to its body. */
 const cardUi = {
@@ -23,7 +26,7 @@ const cardUi = {
   <UCard :ui="cardUi">
     <template #header>
       <div class="font-medium">
-        Payment
+        {{ t('account.orders.summary.payment') }}
       </div>
     </template>
 
@@ -32,20 +35,27 @@ const cardUi = {
         v-if="orderShop.payment.type === PaymentTypes.CARD"
         class="first-letter:capitalize"
       >
-        {{ paymentMethodLabel(orderShop.payment) }}
+        {{ paymentMethodLabel(orderShop.payment, t) }}
       </div>
       <div v-else>
-        Cash
+        {{ t('account.orders.summary.cash') }}
       </div>
 
       <div
         v-if="orderShop.payment.refund_status"
         class="pt-2"
       >
-        Refund: {{ orderShop.payment.refund_status.replaceAll('_', ' ') }}
-        <span v-if="orderShop.payment.refunded_at">
-          on {{ dayjs(orderShop.payment.refunded_at).format('MMM DD, YYYY HH:mm') }}
-        </span>
+        <template v-if="orderShop.payment.refunded_at">
+          {{ t('account.orders.summary.refundOn', {
+            status: refundStatusLabel(orderShop.payment.refund_status, t),
+            date: dayjs(orderShop.payment.refunded_at).format('MMM DD, YYYY HH:mm'),
+          }) }}
+        </template>
+        <template v-else>
+          {{ t('account.orders.summary.refund', {
+            status: refundStatusLabel(orderShop.payment.refund_status, t),
+          }) }}
+        </template>
         <div v-if="orderShop.payment.refund_failed_reason">
           {{ orderShop.payment.refund_failed_reason }}
         </div>

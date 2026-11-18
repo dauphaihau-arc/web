@@ -15,6 +15,8 @@ import {
   type OrderPackage,
 } from '~/domains/me/ui/order-shop/order-detail-presentation'
 import { routes } from '~/shared/navigation/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 import { useGetOrderById } from '~/domains/me/queries/orders/order-shops.query'
 import {
   mergeOrderShopWithLiveUpdate,
@@ -22,6 +24,8 @@ import {
 } from '~/domains/me/realtime/order-live-updates'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
+
+usePageSeo({ area: 'orders' })
 
 /** Detail cards render as single surfaces with the header close to the body. */
 const dividerlessCardUi = {
@@ -34,6 +38,9 @@ const route = useRoute()
 const orderId = computed(() => String(route.params.id ?? ''))
 
 const dialog = useModal()
+const t = useAccountTranslator()
+const { localizePath } = useLocalizedRoute()
+const ordersPath = computed(() => localizePath(routes.orders()))
 
 const {
   data: dataOrder,
@@ -53,7 +60,7 @@ const displayOrderShop = computed(() => {
 })
 
 const orderPackages = computed(() => (
-  displayOrderShop.value ? buildOrderPackages(displayOrderShop.value).packages : []
+  displayOrderShop.value ? buildOrderPackages(displayOrderShop.value, t).packages : []
 ))
 
 const awaitingLines = computed(() => (
@@ -121,14 +128,14 @@ function openReview(pkg: OrderPackage) {
   <div class="mx-auto mt-8 max-w-home-layout space-y-6 px-4 md:px-12 lg:px-16">
     <div class="flex flex-col gap-2">
       <NuxtLink
-        :to="routes.orders()"
+        :to="ordersPath"
         class="text-primary inline-flex w-fit items-center gap-1 text-sm font-medium hover:underline"
       >
         <AppIcon
           name="chevronLeftSolid"
           size="xs"
         />
-        Orders
+        {{ t('account.orders.detail.back') }}
       </NuxtLink>
 
       <Empty
@@ -137,7 +144,7 @@ function openReview(pkg: OrderPackage) {
         variant="naked"
         size="lg"
         class="min-h-[60vh]"
-        title="Loading order"
+        :title="t('account.orders.detail.loading')"
       />
 
       <OrderHeading
@@ -160,11 +167,11 @@ function openReview(pkg: OrderPackage) {
         variant="outline"
         size="lg"
         icon="search"
-        title="Order not found"
-        description="We couldn't find this order. It may have been removed, or the link is incorrect."
+        :title="t('account.orders.detail.notFoundTitle')"
+        :description="t('account.orders.detail.notFoundDescription')"
         :actions="[{
-          label: 'View orders',
-          to: routes.orders(),
+          label: t('account.orders.detail.viewOrders'),
+          to: ordersPath,
           color: 'gray',
         }]"
       />
@@ -193,7 +200,9 @@ function openReview(pkg: OrderPackage) {
               size="sm"
               @click="openReview(pkg)"
             >
-              {{ packageReviewed(pkg) ? 'Edit review' : 'Write a review' }}
+              {{ packageReviewed(pkg)
+                ? t('account.orders.actions.editReview')
+                : t('account.orders.actions.writeReview') }}
             </UButton>
           </template>
         </OrderPackageCard>
@@ -210,7 +219,7 @@ function openReview(pkg: OrderPackage) {
         <UCard :ui="dividerlessCardUi">
           <template #header>
             <div class="font-medium">
-              Shipping address
+              {{ t('account.orders.detail.shippingAddress') }}
             </div>
           </template>
 
@@ -220,7 +229,7 @@ function openReview(pkg: OrderPackage) {
           >
             <div class="space-y-1">
               <div class="text-xs font-bold uppercase tracking-wide text-text-strong">
-                Name
+                {{ t('account.common.name') }}
               </div>
               <div class="text-text-muted">
                 {{ shippingAddress.full_name }}
@@ -229,7 +238,7 @@ function openReview(pkg: OrderPackage) {
 
             <div class="space-y-1">
               <div class="text-xs font-bold uppercase tracking-wide text-text-strong">
-                Address
+                {{ t('account.common.address') }}
               </div>
               <div class="text-text-muted">
                 <div class="space-y-1">
@@ -248,7 +257,7 @@ function openReview(pkg: OrderPackage) {
               class="space-y-1"
             >
               <div class="text-xs font-bold uppercase tracking-wide text-text-strong">
-                Country
+                {{ t('account.common.country') }}
               </div>
               <div class="text-text-muted">
                 {{ shippingAddress.country }}
@@ -260,7 +269,7 @@ function openReview(pkg: OrderPackage) {
               class="space-y-1"
             >
               <div class="text-xs font-bold uppercase tracking-wide text-text-strong">
-                Phone
+                {{ t('account.common.phone') }}
               </div>
               <div class="text-text-muted">
                 {{ shippingAddress.phone }}

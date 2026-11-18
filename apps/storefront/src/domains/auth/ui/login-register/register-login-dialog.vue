@@ -40,7 +40,7 @@ watch(() => dataUserAuth.value?.user, () => {
     width="w-full sm:max-w-[400px]"
   >
     <h1 class="mb-4 text-3xl font-bold">
-      {{ isLoginForm ? 'Log in' : 'Create your account' }}
+      {{ isLoginForm ? $t('account.auth.login.title') : $t('account.auth.register.title') }}
     </h1>
 
     <LoginForm v-if="isLoginForm" />
@@ -48,14 +48,14 @@ watch(() => dataUserAuth.value?.user, () => {
 
     <div class="mt-3 flex items-center">
       <p class="text-sm text-text-strong">
-        {{ isLoginForm ? 'New to Arc?' : 'Already a Arc user?' }}
+        {{ isLoginForm ? $t('account.auth.dialog.newUser') : $t('account.auth.dialog.existingUser') }}
       </p>
       <UButton
         variant="link"
         class="pl-1"
         @click="isLoginForm = !isLoginForm"
       >
-        {{ isLoginForm ? 'Register' : 'Log in' }}
+        {{ isLoginForm ? $t('account.auth.register.submit') : $t('account.auth.login.submit') }}
       </UButton>
     </div>
   </BaseDialog>

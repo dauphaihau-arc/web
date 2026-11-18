@@ -15,6 +15,7 @@ const props = defineProps<{
 }>()
 
 const config = useRuntimeConfig()
+const { t } = useI18n()
 const carousel = ref<CarouselRef | null>(null)
 const skeletonItems = Array.from({ length: 4 }, (_, index) => `review-image-skeleton-${index + 1}`)
 const arrowButtonClass = 'absolute top-1/2 -translate-y-1/2 rounded-full bg-white text-text shadow-sm ring-1 ring-black/5 transition-all hover:bg-white hover:text-text hover:shadow-md active:scale-95'
@@ -75,7 +76,7 @@ const resolvedItems = computed(() => {
       return {
         id: image.id,
         src,
-        alt: image.review_title || `Review photo from ${image.author.display_name}`,
+        alt: image.review_title || t('catalog.reviews.photoAlt', { name: image.author.display_name }),
       }
     })
     .filter((image): image is { id: string, src: string, alt: string } => image !== null)
@@ -162,7 +163,7 @@ watch(
     class="space-y-4"
   >
     <h3 class="text-text text-xl font-medium leading-tight tracking-tight">
-      Photos from reviews
+      {{ $t('catalog.reviews.photosTitle') }}
     </h3>
 
     <div
@@ -199,7 +200,7 @@ watch(
           variant="ghost"
           :icon="ICON_NAME_BY_ALIAS['chevronLeftSolid']"
           :class="[arrowButtonClass, 'left-4']"
-          aria-label="Previous"
+          :aria-label="$t('catalog.reviews.previous')"
           @click="onClick"
         />
       </template>
@@ -210,7 +211,7 @@ watch(
           variant="ghost"
           :icon="ICON_NAME_BY_ALIAS['chevronRightSolid']"
           :class="[arrowButtonClass, 'right-4']"
-          aria-label="Next"
+          :aria-label="$t('catalog.reviews.next')"
           @click="handleNext(onClick, disabled)"
         />
       </template>

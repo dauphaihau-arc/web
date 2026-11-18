@@ -3,6 +3,8 @@ import type { FetchError } from 'ofetch';
 import { cartApi } from '~/domains/cart/api/cart.api';
 import type { ApplyCartPromoCodeRequest, ApplyCartPromoCodeResponse } from '~/domains/cart/api/contracts/cart.contract';
 import { toastCustom } from '~/shared/config/toast';
+import { useErrorCopy } from '~/shared/composables/use-error-copy';
+import { reportApiError } from '~/shared/utils/api-error-copy';
 
 /**
  * Applies one promo code for one shop and returns the validated promo code
@@ -13,11 +15,14 @@ export function useApplyCartPromoCode(
   options?: MutationOptions<ApplyCartPromoCodeResponse, FetchError, ApplyCartPromoCodeRequest>,
 ) {
   const toast = useToast();
+  const t = useErrorCopy();
   return useMutation({
-    onError() {
+    onError(error) {
+      reportApiError(error, 'apply-cart-promo-code');
+
       toast.add({
         ...toastCustom.error,
-        title: 'Apply promo code failed',
+        title: t('errors.cart.applyPromoFailed'),
       });
     },
     ...options,

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ProductImage from '@arc/ui/primitives/product-image.vue'
 import { formatMinorCurrency } from '@arc/utils'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 import type { OrderPackageLine } from './order-detail-presentation'
 
 defineOptions({ name: 'OrderItemLines' })
@@ -8,6 +9,8 @@ defineOptions({ name: 'OrderItemLines' })
 defineProps<{
   lines: OrderPackageLine[]
 }>()
+
+const t = useAccountTranslator()
 </script>
 
 <template>
@@ -38,7 +41,7 @@ defineProps<{
         </div>
 
         <div class="text-sm text-text-muted">
-          Qty {{ line.quantity }} × {{ formatMinorCurrency(line.unitPriceMinor, line.currency) }}
+          {{ t('account.common.qty') }} {{ line.quantity }} × {{ formatMinorCurrency(line.unitPriceMinor, line.currency) }}
         </div>
       </div>
 

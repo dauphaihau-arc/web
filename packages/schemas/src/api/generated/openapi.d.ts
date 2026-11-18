@@ -1045,8 +1045,8 @@ export interface components {
       defaultCurrency: "USD" | "AUD" | "BRL" | "CHF" | "CNY" | "CZK" | "DKK" | "EUR" | "GBP" | "CAD" | "HKD" | "HUF" | "IDR" | "ILS" | "INR" | "JPY" | "KRW" | "MAD" | "MXN" | "MYR" | "NOK" | "NZD" | "PHP" | "PLN" | "SEK" | "VND" | "SGD" | "THB" | "TRY" | "TWD" | "ZAR";
       supportedCurrencies: ("USD" | "AUD" | "BRL" | "CHF" | "CNY" | "CZK" | "DKK" | "EUR" | "GBP" | "CAD" | "HKD" | "HUF" | "IDR" | "ILS" | "INR" | "JPY" | "KRW" | "MAD" | "MXN" | "MYR" | "NOK" | "NZD" | "PHP" | "PLN" | "SEK" | "VND" | "SGD" | "THB" | "TRY" | "TWD" | "ZAR")[];
       /** @enum {string} */
-      defaultLocale: "en-US" | "vi-VN" | "en-VN";
-      supportedLocales: ("en-US" | "vi-VN" | "en-VN")[];
+      defaultLocale: "en-US" | "vi-US" | "vi-VN" | "en-VN";
+      supportedLocales: ("en-US" | "vi-US" | "vi-VN" | "en-VN")[];
       enabled: boolean;
     };
     MarketplaceConfigResponseDto: {
@@ -1140,7 +1140,7 @@ export interface components {
       /** @enum {string} */
       region?: "United States" | "Vietnam";
       /** @enum {string} */
-      language?: "en" | "la" | "fr";
+      language?: "en" | "vi";
       /** @enum {string} */
       currency?: "USD" | "AUD" | "BRL" | "CHF" | "CNY" | "CZK" | "DKK" | "EUR" | "GBP" | "CAD" | "HKD" | "HUF" | "IDR" | "ILS" | "INR" | "JPY" | "KRW" | "MAD" | "MXN" | "MYR" | "NOK" | "NZD" | "PHP" | "PLN" | "SEK" | "VND" | "SGD" | "THB" | "TRY" | "TWD" | "ZAR";
     };
@@ -1155,7 +1155,7 @@ export interface components {
       /** @enum {string} */
       region: "United States" | "Vietnam";
       /** @enum {string} */
-      language: "en" | "la" | "fr";
+      language: "en" | "vi";
       /** @enum {string} */
       currency: "USD" | "AUD" | "BRL" | "CHF" | "CNY" | "CZK" | "DKK" | "EUR" | "GBP" | "CAD" | "HKD" | "HUF" | "IDR" | "ILS" | "INR" | "JPY" | "KRW" | "MAD" | "MXN" | "MYR" | "NOK" | "NZD" | "PHP" | "PLN" | "SEK" | "VND" | "SGD" | "THB" | "TRY" | "TWD" | "ZAR";
     };
@@ -1249,7 +1249,7 @@ export interface components {
       /** @enum {string} */
       region?: "United States" | "Vietnam";
       /** @enum {string} */
-      language?: "en" | "la" | "fr";
+      language?: "en" | "vi";
       /** @enum {string} */
       currency?: "USD" | "AUD" | "BRL" | "CHF" | "CNY" | "CZK" | "DKK" | "EUR" | "GBP" | "CAD" | "HKD" | "HUF" | "IDR" | "ILS" | "INR" | "JPY" | "KRW" | "MAD" | "MXN" | "MYR" | "NOK" | "NZD" | "PHP" | "PLN" | "SEK" | "VND" | "SGD" | "THB" | "TRY" | "TWD" | "ZAR";
     };

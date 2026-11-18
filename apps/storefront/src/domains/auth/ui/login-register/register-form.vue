@@ -10,7 +10,12 @@ import type { RegisterRequest as RegisterBody } from '~/domains/auth/api/contrac
 import { registerFormSchema } from '~/domains/auth/api/schemas/register.schema'
 import { getBackendErrorCode } from '~/shared/utils/backend-error'
 import { appendPasswordError } from '~/domains/auth/utils/password-policy'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
+import { useErrorCopy } from '~/shared/composables/use-error-copy'
+import { localizeFormErrors } from '~/domains/auth/utils/validation-message'
 
+const t = useAccountTranslator()
+const errorT = useErrorCopy()
 const invalidEmails: string[] = []
 const formRef = ref()
 const unknownErrorServerMsg = ref('')
@@ -58,13 +63,13 @@ const validateForm = (stateValidate: Partial<RegisterBody> & { display_name?: st
     appendPasswordError(errors, 'password', stateValidate.password, authClientConfig.value)
   }
 
-  return errors
+  return localizeFormErrors(errors, errorT)
 }
 
 async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
   formRef.value.clear()
   if (invalidEmails.includes(event.data.email)) {
-    formRef.value.setErrors([{ path: 'email', message: 'This email is already registered. Try logging in instead.' }])
+    formRef.value.setErrors([{ path: 'email', message: t('account.auth.register.emailRegistered') }])
     return
   }
 
@@ -79,11 +84,11 @@ async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
   catch (error) {
     if (error instanceof FetchError) {
       if (getBackendErrorCode(error) === 'EMAIL_ALREADY_REGISTERED') {
-        formRef.value.setErrors([{ path: 'email', message: 'This email is already registered. Try logging in instead.' }])
+        formRef.value.setErrors([{ path: 'email', message: t('account.auth.register.emailRegistered') }])
         invalidEmails.push(event.data.email)
         return
       }
-      unknownErrorServerMsg.value = 'Something went wrong on our end. Please try again'
+      unknownErrorServerMsg.value = t('account.auth.register.genericError')
     }
   }
 }
@@ -116,7 +121,7 @@ async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
         @submit="onSubmit"
       >
         <UFormGroup
-          label="Name"
+          :label="$t('account.auth.register.name')"
           name="display_name"
           class="mb-4"
         >
@@ -128,7 +133,7 @@ async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
         </UFormGroup>
 
         <UFormGroup
-          label="Email"
+          :label="$t('account.auth.register.email')"
           name="email"
           class="mb-4"
         >
@@ -140,7 +145,7 @@ async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
         </UFormGroup>
 
         <UFormGroup
-          label="Password"
+          :label="$t('account.auth.register.password')"
           name="password"
           class="mb-2"
         >
@@ -160,7 +165,7 @@ async function onSubmit(event: FormSubmitEvent<RegisterBody>) {
           type="submit"
           class="mt-8"
         >
-          Register
+          {{ $t('account.auth.register.submit') }}
         </UButton>
       </UForm>
     </div>

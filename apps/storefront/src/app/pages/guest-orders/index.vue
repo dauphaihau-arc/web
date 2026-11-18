@@ -12,11 +12,17 @@ import {
 } from '~/domains/me/ui/order-shop/order-detail-presentation'
 import { useLookupGuestOrders } from '~/domains/checkout/queries/guest-orders.query'
 import { routes } from '~/shared/navigation/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 
 definePageMeta({ layout: 'market' })
 
+usePageSeo({ area: 'guestOrders' })
+
 const route = useRoute()
 const router = useRouter()
+const { localizePath } = useLocalizedRoute()
+const t = useAccountTranslator()
 const hasDirectLookup = computed(() =>
   !!route.query.session_id
   || !!route.query.token
@@ -58,7 +64,7 @@ const orderShops = computed(() => data.value?.order_shops ?? [])
 
 /** One view model per order so packages and awaiting lines are derived once. */
 const orderViews = computed(() => orderShops.value.map((orderShop) => {
-  const packages = buildOrderPackages(orderShop).packages
+  const packages = buildOrderPackages(orderShop, t).packages
 
   return {
     orderShop,
@@ -84,11 +90,11 @@ onMounted(async () => {
 })
 
 async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zip: string }>) {
-  await router.push(routes.guestOrders({
+  await router.push(localizePath(routes.guestOrders({
     email: state.email,
     orderId: state.order_id,
     zip: state.zip,
-  }))
+  })))
   await refetch()
 }
 </script>
@@ -100,10 +106,10 @@ async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zi
       class="mx-auto mb-12 max-w-sm"
     >
       <h1 class="mb-2 text-3xl font-medium">
-        Track your guest order
+        {{ t('account.guestOrders.title') }}
       </h1>
       <p class="text-text-subtle">
-        Enter the email, order number, and shipping ZIP/postal code used at checkout.
+        {{ t('account.guestOrders.description') }}
       </p>
     </div>
 
@@ -118,7 +124,7 @@ async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zi
       >
         <UFormGroup
           required
-          label="Email"
+          :label="t('account.common.email')"
           name="email"
         >
           <UInput
@@ -129,7 +135,7 @@ async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zi
         </UFormGroup>
         <UFormGroup
           required
-          label="Order number"
+          :label="t('account.common.orderNumber')"
           name="order_id"
         >
           <UInput
@@ -139,7 +145,7 @@ async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zi
         </UFormGroup>
         <UFormGroup
           required
-          label="ZIP / Postal code"
+          :label="t('account.common.zip')"
           name="zip"
         >
           <UInput
@@ -151,7 +157,7 @@ async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zi
           type="submit"
           size="lg"
         >
-          Find order
+          {{ t('account.guestOrders.find') }}
         </UButton>
       </UForm>
     </UCard>
@@ -162,7 +168,7 @@ async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zi
       variant="naked"
       size="lg"
       class="min-h-[40vh]"
-      title="Loading your order details"
+      :title="t('account.guestOrders.loading')"
     />
     <div v-else-if="orderShops.length > 0">
       <div
@@ -204,8 +210,8 @@ async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zi
       variant="outline"
       size="lg"
       icon="search"
-      title="No guest orders found"
-      description="We couldn't match that email, order number, and ZIP / postal code. Check the details and try again."
+      :title="t('account.guestOrders.notFoundTitle')"
+      :description="t('account.guestOrders.notFoundDescription')"
     />
   </div>
 </template>

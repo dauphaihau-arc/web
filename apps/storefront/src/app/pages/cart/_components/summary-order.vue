@@ -3,12 +3,15 @@ import { formatMinorCurrency } from '@arc/utils'
 import SummaryOrderCard from '~/domains/cart/ui/summary-order-card.vue'
 import { useGetCart } from '~/domains/cart/queries/cart.query'
 import { routes } from '~/shared/navigation/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 
 const {
   isPending: isPendingGetCart,
   data: dataGetCart,
 } = useGetCart()
 const router = useRouter()
+const { localizePath } = useLocalizedRoute()
+const { t } = useI18n()
 
 const isTotalOrderInvalid = computed(() => {
   const totalMinor = dataGetCart.value?.summary.total_minor
@@ -23,12 +26,12 @@ const isTotalOrderInvalid = computed(() => {
 
 const proceedLabel = computed(() => {
   return dataGetCart.value?.requires_sign_in_for_checkout
-    ? 'Sign in to checkout'
-    : 'Proceed to checkout'
+    ? t('cart.summary.signInToCheckout')
+    : t('cart.summary.proceedToCheckout')
 })
 
 function proceedToCheckout() {
-  router.push(routes.cartCheckout())
+  router.push(localizePath(routes.cartCheckout()))
 }
 </script>
 
@@ -42,8 +45,9 @@ function proceedToCheckout() {
         v-if="isTotalOrderInvalid"
         class="text-state-danger-text"
       >
-        The total amount due must be no more than
-        {{ formatMinorCurrency(dataGetCart?.checkout_policy?.max_order_total_minor, dataGetCart?.summary.currency) }}
+        {{ t('cart.summary.totalLimit', {
+          amount: formatMinorCurrency(dataGetCart?.checkout_policy?.max_order_total_minor, dataGetCart?.summary.currency),
+        }) }}
       </div>
 
       <UButton

@@ -3,6 +3,7 @@ import { formatMinorCurrency } from '@arc/utils'
 import ProductCardImage from '~/domains/product/ui/product-card-image.vue'
 import type { GetProductsResponseItem } from '~/domains/product/api/contracts/product.contract'
 import { routes } from '~/shared/navigation/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 import { resolveProductImageUrl } from '~/domains/product/utils/product-image-url'
 
 const props = defineProps<{
@@ -14,6 +15,8 @@ const props = defineProps<{
 }>()
 
 const config = useRuntimeConfig()
+const { localizePath } = useLocalizedRoute()
+const { t } = useI18n()
 
 const imageUrl = computed(() => {
   return resolveProductImageUrl(
@@ -35,7 +38,7 @@ const displayAmount = computed(() => {
 
   const maxAmount = pricing.max_amount_minor
   return {
-    prefix: maxAmount != null && maxAmount > pricing.min_amount_minor ? 'from' : undefined,
+    prefix: maxAmount != null && maxAmount > pricing.min_amount_minor ? t('catalog.product.from') : undefined,
     amount: formatMinorCurrency(pricing.min_amount_minor, pricing.currency),
   }
 })
@@ -47,7 +50,7 @@ const displayAmount = computed(() => {
       'relative flex w-full cursor-pointer flex-col gap-2',
       props.fill ? 'h-full' : '',
     ]"
-    :to="routes.productDetail(props.product.shop.slug, props.product.slug)"
+    :to="localizePath(routes.productDetail(props.product.shop.slug, props.product.slug))"
   >
     <ProductCardImage
       :src="imageUrl"

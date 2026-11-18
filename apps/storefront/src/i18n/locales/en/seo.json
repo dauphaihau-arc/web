@@ -1,0 +1,61 @@
+{
+  "seo": {
+    "siteName": "Arc Storefront",
+    "pages": {
+      "home": {
+        "title": "Discover products from independent sellers",
+        "description": "Shop trending products, new arrivals, and best sellers from independent sellers on Arc Storefront."
+      },
+      "category": {
+        "title": "{name}",
+        "titleFallback": "Shop by category",
+        "description": "Browse {name} and discover products from independent sellers on Arc Storefront.",
+        "descriptionFallback": "Browse products by category and discover something new on Arc Storefront."
+      },
+      "search": {
+        "title": "Search results for \"{query}\"",
+        "titleFallback": "Search products",
+        "description": "Search results for \"{query}\" on Arc Storefront.",
+        "descriptionFallback": "Search products from independent sellers on Arc Storefront."
+      },
+      "product": {
+        "title": "{name}",
+        "titleFallback": "Product details",
+        "description": "Shop {name} from {shop} on Arc Storefront.",
+        "descriptionFallback": "View product details, pricing, and reviews on Arc Storefront."
+      },
+      "cart": {
+        "title": "Your cart",
+        "description": "Review the items in your cart before checking out."
+      },
+      "checkout": {
+        "title": "Checkout",
+        "description": "Review your shipping and payment details to complete your order."
+      },
+      "account": {
+        "title": "Your account",
+        "description": "Manage your profile, addresses, and shopping preferences."
+      },
+      "orders": {
+        "title": "Your orders",
+        "description": "Track, review, and manage your orders."
+      },
+      "auth": {
+        "title": "Reset your password",
+        "description": "Request a password reset link or choose a new password for your account."
+      },
+      "messages": {
+        "title": "Messages",
+        "description": "Chat with sellers about your orders and the products you love."
+      },
+      "success": {
+        "title": "Order confirmed",
+        "description": "Your order is confirmed. Review the details and next steps."
+      },
+      "guestOrders": {
+        "title": "Guest orders",
+        "description": "Look up and track an order placed without an account."
+      }
+    }
+  }
+}

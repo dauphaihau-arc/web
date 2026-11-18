@@ -2,10 +2,12 @@ import { getPricePresetRanges } from '~/domains/product/ui/filters/product-filte
 
 /**
  * Currency-scoped price preset options shared by the desktop filter panel and
- * the mobile filter sheet, so both render the same ranges and labels.
+ * the mobile filter sheet, so both render the same ranges and labels. Labels
+ * come from the active locale so the preset copy follows the browsing locale.
  */
 export function usePricePresetOptions() {
   const marketStore = useMarketStore();
+  const { t } = useI18n();
 
   const currency = computed(() => marketStore.guestPreferences?.currency ?? 'USD');
 
@@ -13,16 +15,16 @@ export function usePricePresetOptions() {
     const ranges = getPricePresetRanges(currency.value);
 
     return [
-      { value: 'all', label: 'Any price' },
+      { value: 'all', label: t('catalog.pricePresets.any') },
       ...ranges.map(range => ({
         value: range.value,
         label: range.min !== undefined && range.max !== undefined
           ? `${formatPriceValue(range.min)}-${formatPriceValue(range.max)}`
           : range.max !== undefined
-            ? `Under ${formatPriceValue(range.max)}`
-            : `Over ${formatPriceValue(range.min ?? 0)}`,
+            ? t('catalog.pricePresets.under', { amount: formatPriceValue(range.max) })
+            : t('catalog.pricePresets.over', { amount: formatPriceValue(range.min ?? 0) }),
       })),
-      { value: 'custom', label: 'Custom' },
+      { value: 'custom', label: t('catalog.pricePresets.custom') },
     ];
   });
 

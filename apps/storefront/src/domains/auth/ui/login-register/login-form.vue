@@ -8,7 +8,22 @@ import { useAuthClientConfig } from '~/domains/auth/queries/client-config.query'
 import { useLogin } from '~/domains/auth/mutations/login.mutation'
 import type { LoginRequest as LoginBody } from '~/domains/auth/api/contracts/login.contract'
 import { appendPasswordError } from '~/domains/auth/utils/password-policy'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
+import { useErrorCopy } from '~/shared/composables/use-error-copy'
+import { localizeFormErrors } from '~/domains/auth/utils/validation-message'
 
+const t = useAccountTranslator()
+const errorT = useErrorCopy()
+const localizedRoute = (() => {
+  try {
+    return useLocalizedRoute()
+  }
+  catch {
+    return null
+  }
+})()
+const resetPath = computed(() => localizedRoute ? localizedRoute.localizePath(ROUTES.RESET) : ROUTES.RESET)
 const unknownErrorServerMsg = ref('')
 const invalidUsers = new Map<LoginBody['email'], LoginBody['password'][]>()
 const stateSubmit: Partial<LoginBody> = reactive({})
@@ -34,14 +49,14 @@ const validateForm = (stateValidate: Partial<LoginBody>): FormError[] => {
 
   appendPasswordError(errors, 'password', stateValidate.password, authClientConfig.value)
 
-  return errors
+  return localizeFormErrors(errors, errorT)
 }
 
 async function onSubmit(event: FormSubmitEvent<LoginBody>) {
   const { email, password } = event.data
   const invalidUser = invalidUsers.get(email)
   if (invalidUser && invalidUser.includes(password)) {
-    unknownErrorServerMsg.value = 'Incorrect email or password'
+    unknownErrorServerMsg.value = t('account.auth.login.incorrect')
     return
   }
 
@@ -57,14 +72,14 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
         else {
           invalidUsers.set(email, [password])
         }
-        unknownErrorServerMsg.value = 'Incorrect email or password'
+        unknownErrorServerMsg.value = t('account.auth.login.incorrect')
         return
       }
       if (error.status === StatusCodes.FORBIDDEN) {
-        unknownErrorServerMsg.value = 'This account cannot access the customer site'
+        unknownErrorServerMsg.value = t('account.auth.login.forbidden')
         return
       }
-      unknownErrorServerMsg.value = 'Something went wrong on our end. Please try again'
+      unknownErrorServerMsg.value = t('account.auth.login.genericError')
     }
   }
 }
@@ -93,7 +108,7 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
         @submit="onSubmit"
       >
         <UFormGroup
-          label="Email"
+          :label="t('account.auth.login.email')"
           name="email"
           class="mb-4"
         >
@@ -105,7 +120,7 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
         </UFormGroup>
 
         <UFormGroup
-          label="Password"
+          :label="t('account.auth.login.password')"
           name="password"
           class="mb-2"
         >
@@ -118,7 +133,7 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
         </UFormGroup>
 
         <NuxtLink
-          :to="ROUTES.RESET"
+          :to="resetPath"
           :aria-disabled="isPendingLogin || undefined"
           :tabindex="isPendingLogin ? -1 : undefined"
           class="aria-disabled:pointer-events-none aria-disabled:opacity-50"
@@ -127,7 +142,7 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
             variant="link"
             class="mb-4 pl-0"
           >
-            Forget Password?
+            {{ t('account.auth.login.forgot') }}
           </UButton>
         </NuxtLink>
 
@@ -139,7 +154,7 @@ async function onSubmit(event: FormSubmitEvent<LoginBody>) {
           block
           type="submit"
         >
-          Log in
+          {{ t('account.auth.login.submit') }}
         </UButton>
       </UForm>
     </div>

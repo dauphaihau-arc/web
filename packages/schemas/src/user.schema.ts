@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { USER_CONFIG, USER_REG_NAME, USER_REG_PASSWORD } from '@arc/enums/user'
 import { idSchema } from '@arc/schemas/primitives/id.schema'
-import { MarketCurrencies, MarketLanguages, MarketRegions } from '@arc/enums/market'
+import { MarketCurrencies, MarketRegions, StorefrontLanguages } from '@arc/enums/market'
 
 export const userSchema = z.object({
   id: idSchema,
@@ -32,7 +32,7 @@ export const userSchema = z.object({
   shop: idSchema.optional(),
   market_preferences: z.object({
     region: z.nativeEnum(MarketRegions).default(MarketRegions.UNITED_STATES),
-    language: z.nativeEnum(MarketLanguages).default(MarketLanguages.EN),
+    language: z.nativeEnum(StorefrontLanguages).default(StorefrontLanguages.EN),
     currency: z.nativeEnum(MarketCurrencies).default(MarketCurrencies.USD),
   }).optional(),
   updated_at: z.date(),

@@ -6,6 +6,7 @@ import { CATEGORY_ROUTE_PARAM, parseCategorySegment } from '~/shared/navigation/
 definePageMeta({ layout: 'market', middleware: 'category' })
 
 const route = useRoute()
+const { t } = useI18n()
 
 // Identity is parsed from the URL and resolved by the `category` middleware
 // during SSR/navigation before this page renders; the resolution is read back
@@ -14,11 +15,25 @@ const route = useRoute()
 const publicId = computed(() => parseCategorySegment(route.params[CATEGORY_ROUTE_PARAM])?.publicId)
 const { data: resolution } = useResolvedCategory(publicId)
 
-useHead(() => ({
-  link: resolution.value?.canonicalPath
-    ? [{ rel: 'canonical', href: resolution.value.canonicalPath }]
-    : [],
-}))
+const categoryName = computed(() => resolution.value?.category.name)
+
+usePageSeo({
+  area: 'category',
+  title: computed(() => (
+    categoryName.value
+      ? t('seo.pages.category.title', { name: categoryName.value })
+      : undefined
+  )),
+  description: computed(() => (
+    categoryName.value
+      ? t('seo.pages.category.description', { name: categoryName.value })
+      : undefined
+  )),
+  // The resolver returns a language-neutral canonical path; `usePageSeo`
+  // applies the active locale prefix, so `/vi/c/...` never canonicalizes to
+  // its unprefixed English counterpart.
+  canonicalPath: computed(() => resolution.value?.canonicalPath),
+})
 </script>
 
 <template>

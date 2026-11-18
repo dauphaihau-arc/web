@@ -152,7 +152,7 @@ function buildMarketConfig() {
         defaultCurrency: 'USD',
         supportedCurrencies: ['USD', 'EUR'],
         defaultLocale: 'en-US',
-        supportedLocales: ['en-US'],
+        supportedLocales: ['en-US', 'vi-US'],
         enabled: true,
       },
     ],
@@ -386,6 +386,25 @@ export async function installStorefrontApiMocks(
       return fulfillJSON(route, currentUser);
     }
 
+    if (pathname.endsWith('/me') && method === 'PATCH') {
+      if (!currentUser) {
+        return fulfillJSON(route, { message: 'Unauthorized' }, 401);
+      }
+
+      const body = await request.postDataJSON() as {
+        preferences?: Partial<E2EUser['preferences']>
+      };
+      currentUser = {
+        ...currentUser,
+        preferences: {
+          ...currentUser.preferences,
+          ...body.preferences,
+        },
+      };
+
+      return fulfillJSON(route, currentUser);
+    }
+
     if (pathname.endsWith('/auth/login') && method === 'POST') {
       currentUser = loginUser;
       cartQuantity = options.cartQuantityAfterLogin ?? cartQuantity;
@@ -403,6 +422,11 @@ export async function installStorefrontApiMocks(
     }
 
     if (pathname.endsWith('/cart/merge') && method === 'POST') {
+      return fulfillJSON(route, buildCart(cartQuantity));
+    }
+
+    if (pathname.endsWith('/cart/items') && method === 'POST') {
+      cartQuantity += 1;
       return fulfillJSON(route, buildCart(cartQuantity));
     }
 

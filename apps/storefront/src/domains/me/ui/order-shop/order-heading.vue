@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import dayjs from 'dayjs'
 import StatusBadge from '@arc/ui/primitives/status-badge.vue'
 import type { ElementType } from '@arc/contracts/utils'
 import { formatMinorCurrency } from '@arc/utils'
 import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
+import { useLocaleFormatters } from '~/domains/market/composables/use-locale-formatters'
 import {
   buildOrderPackages,
   fulfillmentStatusLabel,
@@ -20,7 +21,10 @@ const props = defineProps<{
   orderShop: OrderShop
 }>()
 
-const orderPackages = computed(() => buildOrderPackages(props.orderShop))
+const t = useAccountTranslator()
+const { formatDate } = useLocaleFormatters()
+
+const orderPackages = computed(() => buildOrderPackages(props.orderShop, t))
 const packageCount = computed(() => orderPackages.value.counts.total)
 
 /** The header badge must never contradict the stepper rendered below it. */
@@ -28,7 +32,7 @@ const fulfillmentBadge = computed(() => {
   const packages = orderPackages.value.packages
 
   if (packageCount.value === 0) {
-    return { label: 'Awaiting shipment', tone: 'yellow' as const }
+    return { label: t('account.orders.progress.awaitingShipment'), tone: 'yellow' as const }
   }
 
   const [pkg] = packages
@@ -38,7 +42,7 @@ const fulfillmentBadge = computed(() => {
   }
 
   return {
-    label: fulfillmentStatusLabel(props.orderShop.fulfillment.status),
+    label: fulfillmentStatusLabel(props.orderShop.fulfillment.status, t),
     tone: fulfillmentStatusTone(props.orderShop.fulfillment.status),
   }
 })
@@ -47,15 +51,28 @@ const fulfillmentBadge = computed(() => {
 const metaParts = computed(() => {
   const items = orderItemsCount(props.orderShop)
   const packages = packageCount.value
-  const itemLabel = `${items} ${items === 1 ? 'item' : 'items'}`
+  const itemLabel = t(
+    items === 1 ? 'account.orders.meta.item' : 'account.orders.meta.items',
+    { count: items },
+  )
 
   return [
-    `Sold by ${props.orderShop.shop.shop_name}`,
-    `Placed on ${dayjs(props.orderShop.created_at).format('MMM DD, YYYY')}`,
+    t('account.orders.meta.soldBy', { shop: props.orderShop.shop.shop_name }),
+    t('account.orders.meta.placedOn', {
+      date: formatDate(props.orderShop.created_at, { year: 'numeric', month: 'short', day: 'numeric' }),
+    }),
     packages > 0
-      ? `${itemLabel} in ${packages} ${packages === 1 ? 'package' : 'packages'}`
+      ? t('account.orders.meta.itemsInPackages', {
+          items: itemLabel,
+          packages: t(
+            packages === 1 ? 'account.orders.meta.package' : 'account.orders.meta.packages',
+            { count: packages },
+          ),
+        })
       : itemLabel,
-    `Total ${formatMinorCurrency(props.orderShop.total_minor, props.orderShop.currency)}`,
+    t('account.orders.meta.total', {
+      total: formatMinorCurrency(props.orderShop.total_minor, props.orderShop.currency),
+    }),
   ]
 })
 </script>
@@ -65,12 +82,12 @@ const metaParts = computed(() => {
     <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
       <div class="flex flex-wrap items-center gap-3">
         <h1 class="text-xl md:text-2xl">
-          Order #{{ orderShop.order_number }}
+          {{ t('account.orders.detail.orderHeading', { number: orderShop.order_number }) }}
         </h1>
 
         <StatusBadge
           :color="orderStatusTone(orderShop.status)"
-          :label="orderStatusLabel(orderShop.status)"
+          :label="orderStatusLabel(orderShop.status, t)"
           size="md"
           class="shrink-0 self-center capitalize"
         />

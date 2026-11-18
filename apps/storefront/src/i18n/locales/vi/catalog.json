@@ -1,0 +1,122 @@
+{
+  "catalog": {
+    "sort": {
+      "label": "Sắp xếp theo:",
+      "title": "Sắp xếp theo",
+      "featured": "Nổi bật",
+      "newest": "Mới nhất",
+      "priceHighLow": "Giá: Cao-Thấp",
+      "priceLowHigh": "Giá: Thấp-Cao"
+    },
+    "filters": {
+      "title": "Bộ lọc",
+      "all": "Tất cả bộ lọc",
+      "close": "Đóng bộ lọc",
+      "apply": "Áp dụng",
+      "clear": "Xóa ({count})",
+      "reset": "Đặt lại bộ lọc",
+      "sections": {
+        "format": "Định dạng sản phẩm",
+        "price": "Giá ({currency})",
+        "priceShort": "Mua theo giá",
+        "type": "Loại sản phẩm",
+        "attributes": "Thuộc tính"
+      },
+      "format": {
+        "all": "Tất cả",
+        "digital": "Kỹ thuật số",
+        "physical": "Vật lý"
+      },
+      "whoMade": {
+        "all": "Tất cả",
+        "handmade": "Thủ công"
+      },
+      "price": {
+        "min": "Thấp",
+        "max": "Cao",
+        "to": "đến"
+      }
+    },
+    "pricePresets": {
+      "any": "Mọi mức giá",
+      "custom": "Tùy chỉnh",
+      "under": "Dưới {amount}",
+      "over": "Trên {amount}"
+    },
+    "search": {
+      "title": "Kết quả tìm kiếm",
+      "resultsForOne": "{count} kết quả cho \"{query}\"",
+      "resultsForMany": "{count} kết quả cho \"{query}\"",
+      "noResults": "Không có kết quả cho \"{query}\"",
+      "emptyDescription": "Hãy thử tên sản phẩm cụ thể hơn, ít từ hơn hoặc một từ khóa khác."
+    },
+    "results": {
+      "loadErrorTitle": "Không thể tải sản phẩm",
+      "loadErrorDescription": "Đã xảy ra lỗi khi tải danh mục này. Vui lòng thử lại.",
+      "noResultsTitle": "Không tìm thấy kết quả",
+      "noResultsDescription": "Hãy thử điều chỉnh hoặc xóa bộ lọc.",
+      "emptyTitle": "Chưa có sản phẩm tại đây",
+      "emptyDescription": "Hãy thử một danh mục khác hoặc xem tất cả sản phẩm."
+    },
+    "product": {
+      "from": "từ",
+      "percentOff": "(giảm {percent}%)",
+      "quantity": "Số lượng",
+      "addToCart": "Thêm vào giỏ hàng",
+      "buyNow": "Mua ngay",
+      "selectVariant": "Chọn {name}",
+      "variant": "biến thể",
+      "details": "Chi tiết sản phẩm",
+      "shippingPolicies": "Chính sách vận chuyển và đổi trả",
+      "meetSellers": "Gặp người bán"
+    },
+    "stock": {
+      "backInStock": "Đã có hàng trở lại",
+      "outOfStock": "Hết hàng",
+      "lowStock": "Sắp hết hàng",
+      "lowInStock": "Sắp hết hàng, chỉ còn {count}"
+    },
+    "shipping": {
+      "worldwide": "Giao hàng toàn cầu",
+      "toCountry": "Giao đến {country}",
+      "notAvailable": "Chưa có thông tin phạm vi giao hàng"
+    },
+    "seller": {
+      "questions": "Có câu hỏi về sản phẩm này? Bắt đầu trò chuyện trực tiếp với {shop}.",
+      "message": "Nhắn tin cho {shop}",
+      "chatSubtitle": "Hỏi trực tiếp về sản phẩm này tại đây.",
+      "closeChat": "Đóng trò chuyện với người bán",
+      "loadingConversation": "Đang tải cuộc trò chuyện..."
+    },
+    "reviews": {
+      "title": "Đánh giá cho sản phẩm này",
+      "average": "Điểm trung bình",
+      "countOne": "{count} đánh giá",
+      "countMany": "{count} đánh giá",
+      "hasComment": "Có bình luận ({count})",
+      "ratingFilter": "{rating} sao ({count})",
+      "noMatch": "Không có đánh giá nào phù hợp với bộ lọc đã chọn.",
+      "starOnly": "Khách hàng đã để lại đánh giá sao cho sản phẩm này.",
+      "photosTitle": "Ảnh từ đánh giá",
+      "photoAlt": "Ảnh đánh giá từ {name}",
+      "updated": "Đã cập nhật {date}",
+      "previous": "Trước",
+      "next": "Tiếp"
+    },
+    "toasts": {
+      "outOfStock": "Hết hàng",
+      "unableCheckout": "Không thể bắt đầu thanh toán",
+      "addFailed": "Thêm sản phẩm vào giỏ hàng thất bại",
+      "added": "Đã thêm vào giỏ hàng",
+      "requestFailed": "Yêu cầu thất bại với mã trạng thái {status}",
+      "unknownStatus": "không xác định"
+    },
+    "form": {
+      "required": "Bắt buộc"
+    },
+    "errors": {
+      "pageNotFound": "Không tìm thấy trang",
+      "productNotFound": "Không tìm thấy sản phẩm"
+    }
+  }
+}

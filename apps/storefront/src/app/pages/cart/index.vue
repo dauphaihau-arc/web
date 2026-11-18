@@ -7,6 +7,9 @@ import { useGetCart } from '~/domains/cart/queries/cart.query'
 
 definePageMeta({ layout: 'market' })
 
+usePageSeo({ area: 'cart' })
+
+const { t } = useI18n()
 const cartStore = useCartStore()
 
 const {
@@ -35,13 +38,13 @@ if (import.meta.client) {
       loading
       size="xl"
       variant="naked"
-      description="Loading your cart..."
+      :description="t('cart.page.loading')"
       container-class="h-[80vh] w-full"
     />
     <div v-else-if="dataGetCart?.cart && dataGetCart.cart.shop_groups?.length > 0">
       <div>
         <h1 class="mb-4 text-xl font-medium md:text-2xl">
-          {{ dataGetCart?.cart?.total_quantity }} products in your cart
+          {{ t('cart.page.productCount', { count: dataGetCart?.cart?.total_quantity ?? 0 }) }}
         </h1>
 
         <div class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-16">
@@ -66,7 +69,7 @@ if (import.meta.client) {
       variant="naked"
       size="2xl"
       :icon="ICON_NAME_BY_ALIAS['cart']"
-      title="Your cart is empty."
+      :title="t('cart.page.empty')"
       container-class="h-[80vh] w-full"
     />
   </div>

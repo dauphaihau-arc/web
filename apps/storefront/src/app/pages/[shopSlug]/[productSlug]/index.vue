@@ -15,6 +15,7 @@ definePageMeta({ layout: 'market' })
 
 const route = useRoute()
 const marketStore = useMarketStore()
+const { t } = useI18n()
 const { mutate: recordProductView } = useRecordProductView()
 
 const shopSlug = route.params.shopSlug as string
@@ -31,7 +32,7 @@ const {
     else {
       throw showError({
         statusCode: 404,
-        statusMessage: 'Product Not Found',
+        statusMessage: t('catalog.errors.productNotFound'),
         fatal: true,
       })
     }
@@ -44,6 +45,23 @@ const {
   selectedInventory,
   stockNotice,
 } = useLiveProductInventory(productData)
+
+usePageSeo({
+  area: 'product',
+  title: computed(() => (
+    product.value
+      ? t('seo.pages.product.title', { name: product.value.title })
+      : undefined
+  )),
+  description: computed(() => (
+    product.value
+      ? t('seo.pages.product.description', {
+          name: product.value.title,
+          shop: product.value.shop.shop_name,
+        })
+      : undefined
+  )),
+})
 
 function toRecentProductView(input: NonNullable<typeof productData.value>): GetProductsResponseItem {
   const amountValues = input.inventory

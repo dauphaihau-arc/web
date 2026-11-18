@@ -6,6 +6,7 @@ import CartShopQuantity from '~/domains/cart/ui/shop-cart/cart-shop-quantity.vue
 import CartVariantsProduct from './variants-product.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { routes } from '~/shared/navigation/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 import { useDeleteProductCart } from '~/domains/cart/mutations/delete-product.mutation'
 import type { CartProductItem } from '~/domains/cart/api/cart.shared'
 import type { GetCartResponse } from '~/domains/cart/api/contracts/cart.contract'
@@ -16,6 +17,8 @@ const props = defineProps<{
 }>()
 
 const route = useRoute()
+const { localizePath } = useLocalizedRoute()
+const { t } = useI18n()
 const queryClient = useQueryClient()
 
 const {
@@ -60,7 +63,7 @@ const {
 })
 
 const goToDetailProduct = () => {
-  navigateTo(routes.productDetail(props.productCart.product.shop.slug, props.productCart.product.slug))
+  navigateTo(localizePath(routes.productDetail(props.productCart.product.shop.slug, props.productCart.product.slug)))
 }
 
 const displayAmount = computed(() => formatMinorCurrency(
@@ -83,7 +86,7 @@ const compareAtAmount = computed(() =>
     class="mb-8 flex gap-4"
   >
     <div
-      v-if="route.path === ROUTES.CART"
+      v-if="route.path === localizePath(ROUTES.CART)"
       class="flex flex-col justify-center"
     >
       <CartCheckboxOrderProduct
@@ -121,19 +124,19 @@ const compareAtAmount = computed(() =>
         />
 
         <div class="flex gap-5">
-          <UTooltip text="Feature not available">
+          <UTooltip :text="t('cart.product.featureUnavailable')">
             <div class="flex cursor-pointer items-center gap-1">
               <AppIcon name="edit" />
-              <p>Edit</p>
+              <p>{{ t('cart.product.edit') }}</p>
             </div>
           </UTooltip>
           <div
-            v-if="route.path === ROUTES.CART"
+            v-if="route.path === localizePath(ROUTES.CART)"
             class="flex cursor-pointer items-center gap-1"
             @click.once="deleteProductCart()"
           >
             <AppIcon name="trash" />
-            <p>Remove</p>
+            <p>{{ t('cart.product.remove') }}</p>
           </div>
         </div>
       </div>

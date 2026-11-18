@@ -42,6 +42,8 @@ if (import.meta.server) {
 }
 
 definePageMeta({ layout: 'market' })
+
+usePageSeo({ area: 'home' })
 </script>
 
 <template>

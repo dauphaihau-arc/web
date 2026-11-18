@@ -38,6 +38,31 @@ const props = withDefaults(defineProps<{
 
 const state = defineModel<AddressFormState>('state', { required: true })
 
+const { t } = useI18n()
+
+/**
+ * The location service labels each field per country (Prefecture, District,
+ * Province/City…). Matching the known labels to catalog keys keeps the English
+ * copy identical while letting the same field render in the buyer's locale.
+ */
+const FIELD_LABEL_KEYS: Record<string, string> = {
+  'Full Name': 'checkout.address.fields.fullName',
+  'Street': 'checkout.address.fields.street',
+  'Apt / Suite / Other': 'checkout.address.fields.address2',
+  'City': 'checkout.address.fields.city',
+  'Phone': 'checkout.address.fields.phone',
+  'Email': 'checkout.address.fields.email',
+  'State': 'checkout.address.fields.state',
+  'State/Province': 'checkout.address.fields.stateProvince',
+  'Province/City': 'checkout.address.fields.provinceCity',
+  'Prefecture': 'checkout.address.fields.prefecture',
+  'District': 'checkout.address.fields.district',
+  'ZIP code': 'checkout.address.fields.zipCode',
+  'Postcode': 'checkout.address.fields.postcode',
+  'Postal code': 'checkout.address.fields.postalCode',
+  'Zip/Postal code': 'checkout.address.fields.zipPostalCode',
+}
+
 const emit = defineEmits<{
   countryChange: [countryCode: string | undefined]
   stateCodeChange: [stateCode: string | undefined]
@@ -67,9 +92,12 @@ const legacySubdivisionValue = computed(() =>
 const usesLegacySubdivision = computed(() => Boolean(legacySubdivisionValue.value))
 
 function fieldLabel(rule: AddressFieldRule) {
+  const labelKey = FIELD_LABEL_KEYS[rule.label]
+  const label = labelKey ? t(labelKey) : rule.label
+
   return rule.key === 'zip' && !rule.required
-    ? `${rule.label} (optional)`
-    : rule.label
+    ? t('checkout.address.optional', { label })
+    : label
 }
 
 function fieldName(rule: AddressFieldRule) {
@@ -101,7 +129,7 @@ function onStateTextChange(value: string | number | undefined) {
   <UFormGroup
     v-if="props.guest"
     required
-    label="Email"
+    :label="t('checkout.address.fields.email')"
     name="email"
     class="mb-4"
   >
@@ -117,7 +145,7 @@ function onStateTextChange(value: string | number | undefined) {
 
   <UFormGroup
     required
-    label="Country"
+    :label="t('checkout.address.fields.country')"
     name="country_code"
     class="mb-4"
   >
@@ -154,7 +182,7 @@ function onStateTextChange(value: string | number | undefined) {
       <LegacySubdivisionField
         v-if="usesLegacySubdivision"
         :value="legacySubdivisionValue ?? ''"
-        :action-label="props.isLegacySubdivision ? 'Choose from list' : undefined"
+        :action-label="props.isLegacySubdivision ? t('checkout.address.chooseFromList') : undefined"
         @choose="emit('chooseSubdivision')"
       />
       <USelectMenu
@@ -195,7 +223,7 @@ function onStateTextChange(value: string | number | undefined) {
   <UCheckbox
     v-if="!props.guest"
     v-model="state.is_primary"
-    label="Set as default"
+    :label="t('checkout.address.setAsDefault')"
     name="is_primary"
   />
 </template>

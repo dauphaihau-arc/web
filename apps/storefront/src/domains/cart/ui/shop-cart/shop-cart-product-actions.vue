@@ -4,6 +4,7 @@ import { applyPricedCartUpdate } from '~/domains/cart/utils/apply-priced-cart-up
 import type { CartProductItem } from '~/domains/cart/api/cart.shared'
 import type { GetCartResponse } from '~/domains/cart/api/contracts/cart.contract'
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
+import { useShopCartCopy } from './use-shop-cart-copy'
 
 const props = defineProps<{
   productCart: CartProductItem
@@ -11,6 +12,7 @@ const props = defineProps<{
 }>()
 
 const queryClient = useQueryClient()
+const t = useShopCartCopy()
 
 const {
   mutate: deleteProductCart,
@@ -30,10 +32,10 @@ const {
       variant="ghost"
       :icon="ICON_NAME_BY_ALIAS['trash']"
       color="gray"
-      aria-label="Remove"
+      :aria-label="t('cart.product.remove')"
       @click.once="deleteProductCart()"
     >
-      <span class="hidden md:inline">Remove</span>
+      <span class="hidden md:inline">{{ t('cart.product.remove') }}</span>
     </UButton>
   </div>
 </template>

@@ -17,6 +17,7 @@ const props = defineProps<{
 const modal = useModal()
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 
 const { data: currentUser } = useGetCurrentUser()
 
@@ -32,19 +33,19 @@ const hasAttemptedAutoOpenChat = ref(false)
 const items = computed(() => [
   {
     id: 'info',
-    label: 'Product details',
+    label: t('catalog.product.details'),
     defaultOpen: true,
     content: props.product?.description ?? '',
   },
   {
     id: 'shipping',
-    label: 'Shipping and return policies',
+    label: t('catalog.product.shippingPolicies'),
     defaultOpen: true,
     content: '',
   },
   {
     id: 'seller',
-    label: 'Meet your sellers',
+    label: t('catalog.product.meetSellers'),
     defaultOpen: true,
     content: props.product?.shop.shop_name ?? '',
   },
@@ -73,9 +74,11 @@ const shippingCoverage = computed(() => {
   const labels = destinations.map((destination) => {
     switch (destination.destination_scope) {
       case 'everywhere_else':
-        return 'Ships worldwide'
+        return t('catalog.shipping.worldwide')
       case 'country':
-        return destination.destination_country ? `Ships to ${countryLabel(destination.destination_country)}` : ''
+        return destination.destination_country
+          ? t('catalog.shipping.toCountry', { country: countryLabel(destination.destination_country) })
+          : ''
       default:
         return ''
     }
@@ -205,7 +208,7 @@ watch(
             class="flex gap-2 text-text-subtle"
           >
             <AppIcon name="location" />
-            Shipping coverage not available
+            {{ $t('catalog.shipping.notAvailable') }}
           </div>
         </div>
 
@@ -214,14 +217,14 @@ watch(
           class="space-y-3 px-1"
         >
           <div class="text-sm text-text-subtle">
-            Questions about this item? Start a direct conversation with {{ props.product?.shop.shop_name }}.
+            {{ $t('catalog.seller.questions', { shop: props.product?.shop.shop_name }) }}
           </div>
           <UButton
             color="gray"
             :loading="isOpeningChat"
             @click="openSellerChat"
           >
-            Message {{ props.product?.shop.shop_name }}
+            {{ $t('catalog.seller.message', { shop: props.product?.shop.shop_name }) }}
           </UButton>
         </div>
 
@@ -256,7 +259,7 @@ watch(
                   {{ props.product?.shop.shop_name }}
                 </div>
                 <div class="text-xs text-text-muted">
-                  Ask about this product directly from here.
+                  {{ $t('catalog.seller.chatSubtitle') }}
                 </div>
               </div>
 
@@ -264,7 +267,7 @@ watch(
                 color="gray"
                 variant="ghost"
                 :icon="ICON_NAME_BY_ALIAS['x']"
-                aria-label="Close seller chat"
+                :aria-label="$t('catalog.seller.closeChat')"
                 class="-mr-2"
                 @click="isSellerChatOpen = false"
               />
@@ -276,7 +279,7 @@ watch(
                 :initial-conversation="activeConversation"
                 :show-header="false"
                 autofocus-composer
-                empty-state-text="Loading conversation..."
+                :empty-state-text="$t('catalog.seller.loadingConversation')"
               />
             </div>
           </div>

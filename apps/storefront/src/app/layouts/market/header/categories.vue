@@ -3,6 +3,7 @@ import type { Category } from '@arc/models/category'
 import { getRoutePath, routes } from '~/shared/navigation/routes'
 import { useGetRootCategories } from '~/domains/category/queries/categories.query'
 import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-guard'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 
 const props = withDefaults(defineProps<{
   orientation?: 'horizontal' | 'vertical'
@@ -22,6 +23,7 @@ const {
 
 const marketStore = useMarketStore()
 const { blocked } = useCategoryIdentityBlocked()
+const { localizePath } = useLocalizedRoute()
 
 const isVertical = computed(() => props.orientation === 'vertical')
 
@@ -62,7 +64,7 @@ const items = computed(() => {
 function redirectByCategory(rootCategory: Category) {
   marketStore.userActivities.rootCategoryProductVisited = rootCategory
   emit('select', rootCategory)
-  navigateTo(getRoutePath(routes.category(rootCategory.slug, rootCategory.id)))
+  navigateTo(localizePath(getRoutePath(routes.category(rootCategory.slug, rootCategory.id))))
 }
 </script>
 

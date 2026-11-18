@@ -48,14 +48,14 @@ function updateMaxPrice(value: unknown) {
     <div class="mt-3 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
       <UInput
         :model-value="props.minPrice"
-        placeholder="Low"
+        :placeholder="$t('catalog.filters.price.min')"
         :disabled="props.price !== 'custom'"
         @update:model-value="updateMinPrice"
       />
-      <span class="text-sm text-text-subtle">to</span>
+      <span class="text-sm text-text-subtle">{{ $t('catalog.filters.price.to') }}</span>
       <UInput
         :model-value="props.maxPrice"
-        placeholder="High"
+        :placeholder="$t('catalog.filters.price.max')"
         :disabled="props.price !== 'custom'"
         @update:model-value="updateMaxPrice"
       />

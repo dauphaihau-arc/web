@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import dayjs from 'dayjs'
 import { formatShippingEstimateRange } from '@arc/utils'
 import { FulfillmentAggregateStatuses, ShipmentStatuses } from '@arc/enums/fulfillment'
 import type { ElementType } from '@arc/contracts/utils'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
+import { useLocaleFormatters } from '~/domains/market/composables/use-locale-formatters'
 import type {
   FulfillmentGroup,
   FulfillmentShipment,
@@ -16,35 +17,38 @@ const props = withDefaults(defineProps<{
   display: 'summary',
 })
 
-const aggregateStatusLabel: Record<FulfillmentAggregateStatuses, string> = {
-  [FulfillmentAggregateStatuses.UNFULFILLED]: 'Preparing order',
-  [FulfillmentAggregateStatuses.PREPARED]: 'Preparing order',
-  [FulfillmentAggregateStatuses.PARTIALLY_SHIPPED]: 'Partially shipped',
-  [FulfillmentAggregateStatuses.SHIPPED]: 'Shipped',
-  [FulfillmentAggregateStatuses.PARTIALLY_DELIVERED]: 'Partially delivered',
-  [FulfillmentAggregateStatuses.DELIVERED]: 'Delivered',
-  [FulfillmentAggregateStatuses.CANCELED]: 'Canceled',
+const t = useAccountTranslator()
+const { formatDate: formatLocaleDate } = useLocaleFormatters()
+
+const aggregateStatusLabelKey: Record<FulfillmentAggregateStatuses, string> = {
+  [FulfillmentAggregateStatuses.UNFULFILLED]: 'account.orders.fulfillment.preparingOrder',
+  [FulfillmentAggregateStatuses.PREPARED]: 'account.orders.fulfillment.preparingOrder',
+  [FulfillmentAggregateStatuses.PARTIALLY_SHIPPED]: 'account.orders.fulfillment.partiallyShipped',
+  [FulfillmentAggregateStatuses.SHIPPED]: 'account.orders.fulfillment.shipped',
+  [FulfillmentAggregateStatuses.PARTIALLY_DELIVERED]: 'account.orders.fulfillment.partiallyDelivered',
+  [FulfillmentAggregateStatuses.DELIVERED]: 'account.orders.fulfillment.delivered',
+  [FulfillmentAggregateStatuses.CANCELED]: 'account.orders.fulfillment.canceled',
   // Legacy order-level projection: no per-quantity facts, so transit reports as shipped.
-  [FulfillmentAggregateStatuses.DISPATCHED]: 'Shipped',
-  [FulfillmentAggregateStatuses.IN_TRANSIT]: 'Shipped',
+  [FulfillmentAggregateStatuses.DISPATCHED]: 'account.orders.fulfillment.shipped',
+  [FulfillmentAggregateStatuses.IN_TRANSIT]: 'account.orders.fulfillment.shipped',
 }
 
-const shipmentStatusLabel: Record<ShipmentStatuses, string> = {
-  [ShipmentStatuses.PREPARED]: 'Prepared',
-  [ShipmentStatuses.DISPATCHED]: 'Dispatched',
-  [ShipmentStatuses.IN_TRANSIT]: 'In transit',
-  [ShipmentStatuses.DELIVERED]: 'Delivered',
-  [ShipmentStatuses.VOIDED]: 'Voided',
+const shipmentStatusLabelKey: Record<ShipmentStatuses, string> = {
+  [ShipmentStatuses.PREPARED]: 'account.orders.fulfillment.prepared',
+  [ShipmentStatuses.DISPATCHED]: 'account.orders.fulfillment.dispatched',
+  [ShipmentStatuses.IN_TRANSIT]: 'account.orders.fulfillment.inTransit',
+  [ShipmentStatuses.DELIVERED]: 'account.orders.fulfillment.delivered',
+  [ShipmentStatuses.VOIDED]: 'account.orders.fulfillment.voided',
 }
 
 function formatDate(value: string | Date | undefined | null): string {
   if (!value) return ''
-  return dayjs(value).isValid() ? dayjs(value).format('MMM DD, YYYY') : ''
+  return formatLocaleDate(value, { year: 'numeric', month: 'short', day: 'numeric' })
 }
 
 function formatShortDate(value: string | Date | undefined | null): string {
   if (!value) return ''
-  return dayjs(value).isValid() ? dayjs(value).format('MMM DD') : ''
+  return formatLocaleDate(value, { month: 'short', day: 'numeric' })
 }
 
 const fulfillment = computed(() => props.orderShop.fulfillment)
@@ -73,7 +77,8 @@ const hasLegacy = computed(() => {
 })
 
 function productTitleForItem(orderItemId: string): string {
-  return props.orderShop.products.find(product => product.id === orderItemId)?.title ?? 'Unknown item'
+  return props.orderShop.products.find(product => product.id === orderItemId)?.title
+    ?? t('account.orders.shippingInfo.unknownItem')
 }
 
 const expandedShipmentItems = ref<string | null>(null)
@@ -97,8 +102,12 @@ function shipmentItemCount(shipment: FulfillmentShipment): number {
 
 function shipmentItemSummary(shipment: FulfillmentShipment): string {
   const count = shipmentItemCount(shipment)
-  const itemLabel = count === 1 ? 'item' : 'items'
-  return `${count} ${itemLabel} ${shipmentStatusLabel[shipment.status].toLowerCase()}`
+  const itemWord = count === 1
+    ? t('account.orders.shippingInfo.itemWordSingular')
+    : t('account.orders.shippingInfo.itemWordPlural')
+  const status = t(shipmentStatusLabelKey[shipment.status]).toLowerCase()
+
+  return t('account.orders.shippingInfo.itemSummary', { count, itemWord, status })
 }
 
 function isCompactCompleteShipment(
@@ -136,14 +145,14 @@ const visibleShipments = computed(() => fulfillment.value.groups.flatMap(group =
 <template>
   <div>
     <div class="text-2xl font-medium">
-      {{ aggregateStatusLabel[fulfillment.status] }}
+      {{ t(aggregateStatusLabelKey[fulfillment.status]) }}
     </div>
 
     <div
       v-if="estimateLabel"
       class="mt-2 text-sm text-text-muted"
     >
-      Estimated delivery: {{ estimateLabel }}
+      {{ t('account.orders.shippingInfo.estimatedDelivery', { range: estimateLabel }) }}
     </div>
 
     <div
@@ -151,7 +160,7 @@ const visibleShipments = computed(() => fulfillment.value.groups.flatMap(group =
       class="mt-4 space-y-6"
     >
       <div class="text-sm font-medium text-text-strong">
-        Shipping
+        {{ t('account.orders.shippingInfo.shipping') }}
       </div>
 
       <div
@@ -163,23 +172,26 @@ const visibleShipments = computed(() => fulfillment.value.groups.flatMap(group =
           v-if="visibleShipments.length > 1"
           class="text-xs font-medium text-text-strong"
         >
-          Shipment {{ shipmentIndex + 1 }} of {{ visibleShipments.length }}
+          {{ t('account.orders.shippingInfo.shipmentOf', {
+            index: shipmentIndex + 1,
+            total: visibleShipments.length,
+          }) }}
         </div>
         <div class="font-medium">
-          {{ shipmentStatusLabel[shipment.status] }}
+          {{ t(shipmentStatusLabelKey[shipment.status]) }}
         </div>
         <div v-if="shipment.carrier || shipment.carrier_name">
-          Carrier: {{ shipment.carrier_name ?? shipment.carrier }}
+          {{ t('account.orders.shippingInfo.carrier', { carrier: shipment.carrier_name ?? shipment.carrier }) }}
         </div>
         <div v-if="shipment.tracking_number">
-          Tracking: {{ shipment.tracking_number }}
+          {{ t('account.orders.shippingInfo.tracking', { tracking: shipment.tracking_number }) }}
           <span
             v-if="shipment.carrier_observable === false"
             class="text-xs text-text-subtle"
-          >(unverified)</span>
+          >{{ t('account.orders.shippingInfo.unverified') }}</span>
         </div>
         <div v-if="shipment.shipment_note">
-          Note: {{ shipment.shipment_note }}
+          {{ t('account.orders.shippingInfo.note', { note: shipment.shipment_note }) }}
         </div>
         <div
           v-if="isCompactCompleteShipment(groupItems, shipment)"
@@ -192,12 +204,14 @@ const visibleShipments = computed(() => fulfillment.value.groups.flatMap(group =
             variant="ghost"
             @click="toggleShipmentItems(shipment.id)"
           >
-            {{ areShipmentItemsExpanded(shipment.id) ? 'Hide items' : 'View items' }}
+            {{ areShipmentItemsExpanded(shipment.id)
+              ? t('account.orders.shippingInfo.hideItems')
+              : t('account.orders.shippingInfo.viewItems') }}
           </UButton>
         </div>
         <div v-if="!isCompactCompleteShipment(groupItems, shipment) || areShipmentItemsExpanded(shipment.id)">
           <div class="text-xs uppercase tracking-wider text-text-subtle">
-            Items
+            {{ t('account.orders.shippingInfo.items') }}
           </div>
           <ul class="list-inside list-disc">
             <li
@@ -210,13 +224,13 @@ const visibleShipments = computed(() => fulfillment.value.groups.flatMap(group =
         </div>
         <div class="space-y-0.5 text-xs">
           <div v-if="shipment.prepared_at">
-            Prepared {{ formatDate(shipment.prepared_at) }}
+            {{ t('account.orders.shippingInfo.prepared', { date: formatDate(shipment.prepared_at) }) }}
           </div>
           <div v-if="shipment.dispatched_at">
-            Dispatched {{ formatDate(shipment.dispatched_at) }}
+            {{ t('account.orders.shippingInfo.dispatched', { date: formatDate(shipment.dispatched_at) }) }}
           </div>
           <div v-if="shipment.delivered_at">
-            Delivered {{ formatDate(shipment.delivered_at) }}
+            {{ t('account.orders.shippingInfo.delivered', { date: formatDate(shipment.delivered_at) }) }}
           </div>
         </div>
       </div>
@@ -227,33 +241,33 @@ const visibleShipments = computed(() => fulfillment.value.groups.flatMap(group =
       class="mt-4 space-y-3 border border-dashed border-border-subtle p-3 text-[15px] text-text-muted"
     >
       <div class="text-xs font-medium uppercase tracking-wider text-text-subtle">
-        Legacy shipping
+        {{ t('account.orders.shippingInfo.legacyShipping') }}
       </div>
       <div>
-        Status: {{ legacy.status }}
+        {{ t('account.orders.shippingInfo.status', { status: legacy.status }) }}
       </div>
       <div v-if="legacy.updated_at">
-        Updated {{ formatDate(legacy.updated_at) }}
+        {{ t('account.orders.shippingInfo.updated', { date: formatDate(legacy.updated_at) }) }}
       </div>
       <div v-if="legacy.estimated_delivery">
-        Estimated delivery: {{ formatShortDate(legacy.estimated_delivery) }}
+        {{ t('account.orders.shippingInfo.estimatedDelivery', { range: formatShortDate(legacy.estimated_delivery) }) }}
       </div>
       <div v-if="legacy.carrier || legacy.tracking_number">
         <div v-if="legacy.carrier">
-          Carrier: {{ legacy.carrier }}
+          {{ t('account.orders.shippingInfo.carrier', { carrier: legacy.carrier }) }}
         </div>
         <div v-if="legacy.tracking_number">
-          Tracking: {{ legacy.tracking_number }}
+          {{ t('account.orders.shippingInfo.tracking', { tracking: legacy.tracking_number }) }}
         </div>
       </div>
       <div v-if="legacy.note">
-        Note: {{ legacy.note }}
+        {{ t('account.orders.shippingInfo.note', { note: legacy.note }) }}
       </div>
       <div v-if="legacy.shipped_at">
-        Shipped {{ formatDate(legacy.shipped_at) }}
+        {{ t('account.orders.shippingInfo.shipped', { date: formatDate(legacy.shipped_at) }) }}
       </div>
       <div v-if="legacy.delivered_at">
-        Delivered {{ formatDate(legacy.delivered_at) }}
+        {{ t('account.orders.shippingInfo.delivered', { date: formatDate(legacy.delivered_at) }) }}
       </div>
     </div>
   </div>

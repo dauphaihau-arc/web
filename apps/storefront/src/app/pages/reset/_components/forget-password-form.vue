@@ -44,7 +44,7 @@ async function onSubmit(event: FormSubmitEvent<ForgotPasswordRequest>) {
     @submit="onSubmit"
   >
     <UFormGroup
-      label="Email"
+      :label="$t('account.reset.request.email')"
       name="email"
       class="mb-4"
     >
@@ -62,7 +62,7 @@ async function onSubmit(event: FormSubmitEvent<ForgotPasswordRequest>) {
       type="submit"
       class="mt-6"
     >
-      Continue
+      {{ $t('account.reset.request.continue') }}
     </UButton>
   </UForm>
 </template>

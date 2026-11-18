@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import type { ElementType } from '@arc/contracts/utils'
 import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 
 defineProps<{
   orderShop: ElementType<GetOrderShopsResponse['order_shops']>
 }>()
+
+const t = useAccountTranslator()
 </script>
 
 <template>
@@ -16,7 +19,7 @@ defineProps<{
       v-if="orderShop.note"
       class="md:min-w-[15%] md:max-w-[50%]"
     >
-      <div>Shop Note</div>
+      <div>{{ t('account.orders.shopItem.shopNote') }}</div>
       <div class="text-wrap text-text-muted">
         {{ orderShop.note }}
       </div>
@@ -24,7 +27,7 @@ defineProps<{
 
     <div v-if="orderShop.promo_codes.length > 0">
       <div class="mb-1">
-        Promo Codes
+        {{ t('account.orders.shopItem.promoCodes') }}
       </div>
       <div class="flex gap-4">
         <div
