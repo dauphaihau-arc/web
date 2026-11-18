@@ -12,7 +12,8 @@ import {
   getProductOptionMode,
   resolveInventoryBySelection,
 } from '~/domains/product/utils/product-options';
-import { getBackendErrorCode, getBackendErrorMessage } from '~/shared/utils/backend-error';
+import { getBackendErrorCode } from '~/shared/utils/backend-error';
+import { reportApiError } from '~/shared/utils/api-error-copy';
 import { toastCustom } from '~/shared/config/toast';
 import type { CartProductItem } from '~/domains/cart/api/cart.shared';
 import type { GetCartResponse, UpdateCartRequest } from '~/domains/cart/api/contracts/cart.contract';
@@ -191,9 +192,11 @@ export function useCartItemOptionsEdit(input: {
         return;
       }
 
+      reportApiError(error, 'update-cart-item-options');
+
       toast.add({
         ...toastCustom.error,
-        title: getBackendErrorMessage(error) ?? t('cart.options.toastUpdateFailed'),
+        title: t('cart.options.toastUpdateFailed'),
       });
     }
   }

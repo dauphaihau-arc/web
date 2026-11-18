@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import dayjs from 'dayjs'
 import StatusBadge from '@arc/ui/primitives/status-badge.vue'
 import type { ElementType } from '@arc/contracts/utils'
 import { formatMinorCurrency } from '@arc/utils'
 import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract'
 import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
+import { useLocaleFormatters } from '~/domains/market/composables/use-locale-formatters'
 import {
   buildOrderPackages,
   fulfillmentStatusLabel,
@@ -22,6 +22,7 @@ const props = defineProps<{
 }>()
 
 const t = useAccountTranslator()
+const { formatDate } = useLocaleFormatters()
 
 const orderPackages = computed(() => buildOrderPackages(props.orderShop, t))
 const packageCount = computed(() => orderPackages.value.counts.total)
@@ -58,7 +59,7 @@ const metaParts = computed(() => {
   return [
     t('account.orders.meta.soldBy', { shop: props.orderShop.shop.shop_name }),
     t('account.orders.meta.placedOn', {
-      date: dayjs(props.orderShop.created_at).format('MMM DD, YYYY'),
+      date: formatDate(props.orderShop.created_at, { year: 'numeric', month: 'short', day: 'numeric' }),
     }),
     packages > 0
       ? t('account.orders.meta.itemsInPackages', {

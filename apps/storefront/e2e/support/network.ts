@@ -425,6 +425,11 @@ export async function installStorefrontApiMocks(
       return fulfillJSON(route, buildCart(cartQuantity));
     }
 
+    if (pathname.endsWith('/cart/items') && method === 'POST') {
+      cartQuantity += 1;
+      return fulfillJSON(route, buildCart(cartQuantity));
+    }
+
     if (pathname.endsWith('/cart') && method === 'GET') {
       return fulfillJSON(route, buildCart(cartQuantity));
     }

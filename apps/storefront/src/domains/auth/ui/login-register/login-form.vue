@@ -10,8 +10,11 @@ import type { LoginRequest as LoginBody } from '~/domains/auth/api/contracts/log
 import { appendPasswordError } from '~/domains/auth/utils/password-policy'
 import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
+import { useErrorCopy } from '~/shared/composables/use-error-copy'
+import { localizeFormErrors } from '~/domains/auth/utils/validation-message'
 
 const t = useAccountTranslator()
+const errorT = useErrorCopy()
 const localizedRoute = (() => {
   try {
     return useLocalizedRoute()
@@ -46,7 +49,7 @@ const validateForm = (stateValidate: Partial<LoginBody>): FormError[] => {
 
   appendPasswordError(errors, 'password', stateValidate.password, authClientConfig.value)
 
-  return errors
+  return localizeFormErrors(errors, errorT)
 }
 
 async function onSubmit(event: FormSubmitEvent<LoginBody>) {

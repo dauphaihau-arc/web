@@ -7,7 +7,10 @@ import { applyPricedCartUpdate } from '~/domains/cart/utils/apply-priced-cart-up
 import { getAddToCartFailureCopy, resolveAddToCartFailure } from '~/domains/cart/utils/cart-error';
 import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract';
 import { getBackendErrorMessage } from '~/shared/utils/backend-error';
+import { reportApiError } from '~/shared/utils/api-error-copy';
+import { useErrorCopy } from '~/shared/composables/use-error-copy';
 import { routes } from '~/shared/navigation/routes';
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route';
 import { toastCustom } from '~/shared/config/toast';
 import {
   buildVariantSelectOptions,
@@ -48,6 +51,8 @@ export function useAddToCartForm({
 }: UseAddToCartFormOptions) {
   const queryClient = useQueryClient();
   const toast = useToast();
+  const errorT = useErrorCopy();
+  const { localizePath } = useLocalizedRoute();
 
   const {
     mutateAsync: addProductToCart,
@@ -275,7 +280,7 @@ export function useAddToCartForm({
           oldData => applyPricedCartUpdate(oldData, response) ?? response,
         );
         // eslint-disable-next-line id-length -- `c` is the checkout route's cart param.
-        navigateTo(routes.checkout({ c: response.cart.id }));
+        navigateTo(localizePath(routes.checkout({ c: response.cart.id })));
         return;
       }
 
@@ -300,7 +305,7 @@ export function useAddToCartForm({
     }
     catch (error) {
       const failure = resolveAddToCartFailure(error);
-      const failureCopy = getAddToCartFailureCopy(failure, { isBuyNow: input.isBuyNow });
+      const failureCopy = getAddToCartFailureCopy(failure, { isBuyNow: input.isBuyNow, t: errorT });
       const backendMessage = getBackendErrorMessage(error);
       const requestFailedDescription = error instanceof FetchError && !backendMessage
         ? translate('catalog.toasts.requestFailed', {
@@ -308,16 +313,12 @@ export function useAddToCartForm({
         })
         : undefined;
 
+      reportApiError(error, 'add-to-cart');
+
       toast.add({
         ...toastCustom.error,
         title: failureCopy.title,
         description: failureCopy.description ?? requestFailedDescription,
-        ...(failure === 'unknown' && backendMessage
-          ? { title: backendMessage }
-          : {}),
-        ...(error instanceof FetchError && !backendMessage && failure === 'unknown'
-          ? { description: requestFailedDescription }
-          : {}),
       });
     }
   }

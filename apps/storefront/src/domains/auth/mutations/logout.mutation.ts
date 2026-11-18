@@ -3,6 +3,8 @@ import { toastCustom } from '~/shared/config/toast';
 import { authApi } from '~/domains/auth/api/auth.api';
 import { useWebPushNotifications } from '~/domains/me/composables/use-web-push-notifications';
 import { useLocalizedRoute } from '~/shared/composables/use-localized-route';
+import { useErrorCopy } from '~/shared/composables/use-error-copy';
+import { reportApiError } from '~/shared/utils/api-error-copy';
 import type { GetCartResponse } from '~/domains/cart/api/contracts/cart.contract';
 
 const storefrontUserScopedQueryKeys = [
@@ -18,6 +20,7 @@ const storefrontUserScopedQueryKeys = [
 
 export function useLogout() {
   const toast = useToast();
+  const t = useErrorCopy();
   const queryClient = useQueryClient();
   const { disable } = useWebPushNotifications();
   const { localizePath } = useLocalizedRoute();
@@ -43,10 +46,12 @@ export function useLogout() {
       queryClient.setQueryData(['current-user'], { user: null });
       navigateTo(localizePath(routes.home()));
     },
-    onError() {
+    onError(error) {
+      reportApiError(error, 'logout');
+
       toast.add({
         ...toastCustom.error,
-        title: 'Something went wrong on our end. Please try again',
+        title: t('errors.auth.logoutFailed'),
       });
     },
   });

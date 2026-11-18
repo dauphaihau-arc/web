@@ -7,6 +7,8 @@ import catalogEn from './locales/en/catalog.json';
 import cartEn from './locales/en/cart.json';
 import checkoutEn from './locales/en/checkout.json';
 import accountEn from './locales/en/account.json';
+import errorsEn from './locales/en/errors.json';
+import seoEn from './locales/en/seo.json';
 import commonVi from './locales/vi/common.json';
 import headerVi from './locales/vi/header.json';
 import footerVi from './locales/vi/footer.json';
@@ -16,6 +18,8 @@ import catalogVi from './locales/vi/catalog.json';
 import cartVi from './locales/vi/cart.json';
 import checkoutVi from './locales/vi/checkout.json';
 import accountVi from './locales/vi/account.json';
+import errorsVi from './locales/vi/errors.json';
+import seoVi from './locales/vi/seo.json';
 
 /**
  * English is the default locale and the fallback for every key. Supplying both
@@ -37,6 +41,8 @@ export default defineI18nConfig(() => ({
       ...cartEn,
       ...checkoutEn,
       ...accountEn,
+      ...errorsEn,
+      ...seoEn,
     },
     vi: {
       ...commonVi,
@@ -48,6 +54,8 @@ export default defineI18nConfig(() => ({
       ...cartVi,
       ...checkoutVi,
       ...accountVi,
+      ...errorsVi,
+      ...seoVi,
     },
   },
 }));

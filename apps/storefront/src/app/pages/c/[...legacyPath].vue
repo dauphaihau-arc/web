@@ -8,6 +8,8 @@ import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-
 // sees the scoped update card instead of a blank page.
 definePageMeta({ layout: 'market', middleware: 'category' })
 
+usePageSeo({ area: 'category' })
+
 const { blocked, checking, checkForUpdate } = useCategoryIdentityBlocked()
 </script>
 

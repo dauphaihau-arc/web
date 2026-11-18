@@ -14,9 +14,13 @@ import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
 import { toastCustom } from '~/shared/config/toast'
 import { useWebPushNotifications } from '~/domains/me/composables/use-web-push-notifications'
 import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
+import { getUnexpectedErrorCopy } from '~/shared/utils/api-error-copy'
+import { useErrorCopy } from '~/shared/composables/use-error-copy'
 import type { FormSubmitEvent } from '#ui/types'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
+
+usePageSeo({ area: 'account' })
 
 const { data: currentUser } = useGetCurrentUser()
 const toast = useToast()
@@ -24,6 +28,7 @@ const marketStore = useMarketStore()
 const preferencesFormRef = ref()
 const { locale } = useI18n()
 const t = useAccountTranslator()
+const errorT = useErrorCopy()
 const {
   status,
   permission,
@@ -123,9 +128,12 @@ async function saveMarketPreferences(_event: FormSubmitEvent<PreferenceState>) {
     })
   }
   catch (error) {
+    const copy = getUnexpectedErrorCopy(error, errorT, 'account preferences')
+
     toast.add({
       ...toastCustom.error,
-      title: error instanceof Error ? error.message : t('account.profile.preferencesFailedToast'),
+      title: copy.title,
+      description: copy.description,
     })
   }
 }
@@ -156,9 +164,12 @@ async function onNotificationToggle(next: boolean) {
     }
   }
   catch (error) {
+    const copy = getUnexpectedErrorCopy(error, errorT, 'account notifications')
+
     toast.add({
       ...toastCustom.error,
-      title: error instanceof Error ? error.message : t('account.profile.notifications.failedToast'),
+      title: copy.title,
+      description: copy.description,
     })
   }
   finally {

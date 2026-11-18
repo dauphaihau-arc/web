@@ -8,9 +8,13 @@ import { ROUTES } from '~/shared/config/enums/routes'
 import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 import type { ResetPasswordForm as ResetPasswordBody } from '~/domains/auth/api/contracts/reset-password.contract'
 import { appendPasswordError } from '~/domains/auth/utils/password-policy'
+import { resolveAuthErrorMessage } from '~/domains/auth/utils/auth-error'
+import { localizeFormErrors } from '~/domains/auth/utils/validation-message'
+import { useErrorCopy } from '~/shared/composables/use-error-copy'
 
 const authStore = useAuthStore()
 const { t } = useI18n()
+const errorT = useErrorCopy()
 const { localizePath } = useLocalizedRoute()
 
 const formRef = ref()
@@ -40,14 +44,14 @@ const validateForm = (stateValidate: Partial<ResetPasswordBody>): FormError[] =>
 
   appendPasswordError(errors, 'password', stateValidate.password, authClientConfig.value)
 
-  return errors
+  return localizeFormErrors(errors, errorT)
 }
 
 async function onSubmit(event: FormSubmitEvent<ResetPasswordBody>) {
   formRef.value.clear()
   const { password, passwordConfirm } = event.data
   if (password !== passwordConfirm) {
-    formRef.value.setErrors([{ path: 'passwordConfirm', message: 'This password does not match. Try again.' }])
+    formRef.value.setErrors([{ path: 'passwordConfirm', message: errorT('errors.validation.passwordMismatch') }])
     return
   }
 
@@ -55,8 +59,9 @@ async function onSubmit(event: FormSubmitEvent<ResetPasswordBody>) {
     await resetPassword(password)
     resetPasswordSuccess.value = true
   }
-  catch {
-    unknownErrorServerMsg.value = t('account.reset.form.genericError')
+  catch (error) {
+    unknownErrorServerMsg.value = resolveAuthErrorMessage(error, errorT)
+      ?? t('account.reset.form.genericError')
   }
 }
 </script>

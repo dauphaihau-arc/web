@@ -46,6 +46,23 @@ const {
   stockNotice,
 } = useLiveProductInventory(productData)
 
+usePageSeo({
+  area: 'product',
+  title: computed(() => (
+    product.value
+      ? t('seo.pages.product.title', { name: product.value.title })
+      : undefined
+  )),
+  description: computed(() => (
+    product.value
+      ? t('seo.pages.product.description', {
+          name: product.value.title,
+          shop: product.value.shop.shop_name,
+        })
+      : undefined
+  )),
+})
+
 function toRecentProductView(input: NonNullable<typeof productData.value>): GetProductsResponseItem {
   const amountValues = input.inventory
     .map(inventory => inventory.amount_minor)

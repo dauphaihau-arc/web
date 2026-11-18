@@ -53,6 +53,28 @@ export function getBackendErrorCode(error: unknown): string | undefined {
   return undefined;
 }
 
+export function getBackendErrorRequestId(error: unknown): string | undefined {
+  const data = getBackendErrorPayload(error);
+
+  if (typeof data?.request_id === 'string' && data.request_id.trim()) {
+    return data.request_id;
+  }
+
+  return undefined;
+}
+
+export function getBackendErrorStatus(error: unknown): number | undefined {
+  const data = getBackendErrorPayload(error);
+
+  if (typeof data?.status_code === 'number') {
+    return data.status_code;
+  }
+
+  return error instanceof FetchError && typeof error.status === 'number'
+    ? error.status
+    : undefined;
+}
+
 export function getBackendErrorMessage(error: unknown): string | undefined {
   if (!(error instanceof FetchError)) {
     return undefined;

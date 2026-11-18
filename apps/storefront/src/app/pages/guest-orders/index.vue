@@ -17,6 +17,8 @@ import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 
 definePageMeta({ layout: 'market' })
 
+usePageSeo({ area: 'guestOrders' })
+
 const route = useRoute()
 const router = useRouter()
 const { localizePath } = useLocalizedRoute()

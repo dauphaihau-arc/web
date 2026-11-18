@@ -21,7 +21,7 @@ const awsHostBucketAlias = assetHost.replace(/\/+$/, '')
 
 // Every locale/area pair is a separate lazy-loaded resource so a new area can
 // be filled in by one domain slice without touching the module config.
-const localeFiles = ['common.json', 'header.json', 'footer.json', 'home.json', 'preferences.json', 'catalog.json', 'cart.json', 'checkout.json', 'account.json']
+const localeFiles = ['common.json', 'header.json', 'footer.json', 'home.json', 'preferences.json', 'catalog.json', 'cart.json', 'checkout.json', 'account.json', 'errors.json', 'seo.json']
 
 // `lazy` no longer exists in @nuxtjs/i18n v10 (locale files are always loaded
 // on demand), but it stays part of the storefront i18n contract so the config
@@ -155,6 +155,9 @@ export default defineNuxtConfig({
       assetHost: process.env.ASSET_HOST,
       categoryIdentityContractVersion: process.env.NUXT_PUBLIC_CATEGORY_IDENTITY_CONTRACT_VERSION,
       sellerAppURL: process.env.SELLER_APP_URL || 'http://localhost:4002',
+      // Absolute origin for canonical/hreflang links. Unset in previews and
+      // tests so the composable falls back to the request origin.
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || '',
     },
   },
 

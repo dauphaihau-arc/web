@@ -12,6 +12,8 @@ import { useVerifyToken } from '~/domains/auth/queries/verify-token.query'
 
 definePageMeta({ layout: 'market' })
 
+usePageSeo({ area: 'auth' })
+
 const route = useRoute()
 const authStore = useAuthStore()
 const { localizePath } = useLocalizedRoute()

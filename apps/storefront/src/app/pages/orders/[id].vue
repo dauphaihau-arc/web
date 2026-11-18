@@ -25,6 +25,8 @@ import {
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 
+usePageSeo({ area: 'orders' })
+
 /** Detail cards render as single surfaces with the header close to the body. */
 const dividerlessCardUi = {
   divide: 'divide-y-0',

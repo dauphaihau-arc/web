@@ -24,6 +24,8 @@ type MessagesTab = 'all' | 'unread'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 
+usePageSeo({ area: 'messages' })
+
 const route = useRoute()
 const router = useRouter()
 const queryClient = useQueryClient()

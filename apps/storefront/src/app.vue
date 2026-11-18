@@ -5,9 +5,15 @@ const { status, isUnknown, isPending, isError, waitForBackend } = useBackendStat
 const queryClient = useQueryClient()
 
 // The URL is the rendering source of truth for the locale, so the document
-// language follows the active route (`/` -> en, `/vi/**` -> vi).
-const { locale } = useI18n()
-useHead(() => ({ htmlAttrs: { lang: locale.value } }))
+// language follows the active route (`/` -> en, `/vi/**` -> vi). The title
+// suffix is translated here rather than in nuxt.config so every page title
+// reads naturally in both languages.
+const { locale, t } = useI18n()
+useHead(() => ({
+  htmlAttrs: { lang: locale.value },
+  titleTemplate: (title?: string) =>
+    title ? `${title} - ${t('seo.siteName')}` : t('seo.siteName'),
+}))
 
 // The page renders unconditionally, on the server and on the client. It used to
 // sit behind an `isReady` gate fed by a client-only readiness probe, which meant

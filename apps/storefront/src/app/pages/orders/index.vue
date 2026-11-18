@@ -11,6 +11,8 @@ import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 
+usePageSeo({ area: 'orders' })
+
 const route = useRoute()
 const router = useRouter()
 const t = useAccountTranslator()

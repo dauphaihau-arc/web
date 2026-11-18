@@ -5,6 +5,7 @@ import {
 import type { CartPromoCodeItem } from '~/domains/cart/api/contracts/cart.contract';
 import { useApplyCartPromoCode } from '~/domains/cart/mutations/apply-cart-promo-code.mutation';
 import { resolvePromoCodeErrorMessage } from '~/domains/cart/utils/promo-code-error';
+import { useErrorCopy } from '~/shared/composables/use-error-copy';
 import { useShopCartCopy } from './use-shop-cart-copy';
 
 type ManualPromoCodeSlot = 'shipping' | 'discount';
@@ -31,6 +32,7 @@ export function usePromoCodeSelection(input: {
   cartId: () => string | undefined
 }) {
   const t = useShopCartCopy();
+  const errorT = useErrorCopy();
   const { mutateAsync: applyPromoCode, isPending: isValidating } = useApplyCartPromoCode({ onError: undefined });
 
   const stagedAdds = ref<string[]>([]);
@@ -180,7 +182,7 @@ export function usePromoCodeSelection(input: {
       input.code.value = '';
     }
     catch (error) {
-      inputError.value = resolvePromoCodeErrorMessage(error);
+      inputError.value = resolvePromoCodeErrorMessage(error, errorT);
     }
   }
 

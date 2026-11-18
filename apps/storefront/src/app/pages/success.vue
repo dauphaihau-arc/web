@@ -8,6 +8,8 @@ import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 
 definePageMeta({ layout: 'market' })
 
+usePageSeo({ area: 'success' })
+
 const route = useRoute()
 const cartStore = useCartStore()
 const { localizePath } = useLocalizedRoute()

@@ -174,7 +174,7 @@ describe('shop shipping info', () => {
     expect(text).toContain('2 items delivered');
     expect(text).toContain('View items');
     expect(text).not.toContain('2 × Ceramic Mug');
-    expect(text).toContain('Mar 02, 2026');
+    expect(text).toContain('Mar 1, 2026');
 
     await wrapper.get('button').trigger('click');
     expect(wrapper.text()).toContain('2 × Ceramic Mug');

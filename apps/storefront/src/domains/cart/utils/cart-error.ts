@@ -1,4 +1,12 @@
-import { getBackendErrorCode, getBackendErrorMessage } from '~/shared/utils/backend-error';
+import {
+  getBackendErrorCode,
+  getBackendErrorMessage,
+} from '~/shared/utils/backend-error';
+import {
+  translateError,
+  type ErrorCopy,
+  type ErrorTranslator,
+} from '~/shared/utils/api-error-copy';
 
 export type AddToCartFailureKind =
   | 'out_of_stock'
@@ -37,30 +45,36 @@ export function resolveAddToCartFailure(error: unknown): AddToCartFailureKind {
   return 'unknown';
 }
 
+/**
+ * Localized copy for an add-to-cart or buy-now refusal. The stock and
+ * availability kinds map to known codes; anything else falls back to the
+ * action's generic copy. The translator defaults to the English catalog so
+ * unit tests and non-component callers stay deterministic.
+ */
 export function getAddToCartFailureCopy(
   kind: AddToCartFailureKind,
-  options: { isBuyNow: boolean },
-): {
-  title: string
-  description?: string
-} {
+  options: { isBuyNow: boolean, t?: ErrorTranslator },
+): ErrorCopy {
+  const t = options.t ?? translateError;
+
   if (options.isBuyNow) {
     switch (kind) {
       case 'quantity_exceeds_stock':
       case 'out_of_stock':
         return {
-          title: 'Stock no longer available',
-          description: 'The requested quantity is no longer available. Update your selection and try again.',
+          title: t('errors.cart.stockUnavailable.title'),
+          description: t('errors.cart.stockUnavailable.description'),
         };
       case 'product_unavailable':
       case 'inventory_not_found':
         return {
-          title: 'Unable to start checkout',
-          description: 'This item is no longer available for immediate checkout.',
+          title: t('errors.cart.checkoutUnavailable.title'),
+          description: t('errors.cart.checkoutUnavailable.description'),
         };
       default:
         return {
-          title: 'Unable to start checkout',
+          title: t('errors.generic.title'),
+          description: t('errors.generic.description'),
         };
     }
   }
@@ -69,17 +83,18 @@ export function getAddToCartFailureCopy(
     case 'quantity_exceeds_stock':
     case 'out_of_stock':
       return {
-        title: 'Stock no longer available',
-        description: 'The requested quantity is no longer available. Update your selection and try again.',
+        title: t('errors.cart.stockUnavailable.title'),
+        description: t('errors.cart.stockUnavailable.description'),
       };
     case 'product_unavailable':
     case 'inventory_not_found':
       return {
-        title: 'This item is no longer available',
+        title: t('errors.cart.itemUnavailable.title'),
       };
     default:
       return {
-        title: 'Add product to cart failed',
+        title: t('errors.generic.title'),
+        description: t('errors.generic.description'),
       };
   }
 }

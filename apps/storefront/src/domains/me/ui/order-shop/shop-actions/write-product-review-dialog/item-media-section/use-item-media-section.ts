@@ -10,6 +10,7 @@ import { uploadReviewImage } from '~/domains/me/mutations/product-reviews/upload
 import { resolveProductImageUrl } from '~/domains/product/utils/product-image-url';
 import { resolveStorageKeyFromPublicUrl } from '~/shared/utils/storage-public-url';
 import { useAccountTranslator } from '~/domains/me/ui/account-i18n';
+import { useErrorCopy } from '~/shared/composables/use-error-copy';
 
 type ProductReview = ResponseGetOrderShopsProduct['my_review'];
 
@@ -44,6 +45,7 @@ export function useItemMediaSection(
 ) {
   const toast = useToast();
   const t = useAccountTranslator();
+  const errorT = useErrorCopy();
   const runtimeConfig = useRuntimeConfig();
   const reviewImages = ref<ReviewImageUploadItem[]>([]);
 
@@ -154,9 +156,9 @@ export function useItemMediaSection(
       image.error = undefined;
       syncImageKeys();
     }
-    catch (error) {
+    catch {
       image.status = 'failed';
-      image.error = error instanceof Error ? error.message : t('account.orders.reviewDialog.unableToUpload');
+      image.error = errorT('errors.review.imageUploadFailed');
       syncImageKeys();
 
       toast.add({

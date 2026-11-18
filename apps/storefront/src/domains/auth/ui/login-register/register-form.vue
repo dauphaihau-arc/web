@@ -11,8 +11,11 @@ import { registerFormSchema } from '~/domains/auth/api/schemas/register.schema'
 import { getBackendErrorCode } from '~/shared/utils/backend-error'
 import { appendPasswordError } from '~/domains/auth/utils/password-policy'
 import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
+import { useErrorCopy } from '~/shared/composables/use-error-copy'
+import { localizeFormErrors } from '~/domains/auth/utils/validation-message'
 
 const t = useAccountTranslator()
+const errorT = useErrorCopy()
 const invalidEmails: string[] = []
 const formRef = ref()
 const unknownErrorServerMsg = ref('')
@@ -60,7 +63,7 @@ const validateForm = (stateValidate: Partial<RegisterBody> & { display_name?: st
     appendPasswordError(errors, 'password', stateValidate.password, authClientConfig.value)
   }
 
-  return errors
+  return localizeFormErrors(errors, errorT)
 }
 
 async function onSubmit(event: FormSubmitEvent<RegisterBody>) {

@@ -6,6 +6,8 @@ import type {
   AddProductToCartResponse,
 } from '~/domains/cart/api/contracts/cart.contract';
 import { toastCustom } from '~/shared/config/toast';
+import { useErrorCopy } from '~/shared/composables/use-error-copy';
+import { reportApiError } from '~/shared/utils/api-error-copy';
 
 export function useAddProductToCart(
   options?: MutationOptions<
@@ -17,17 +19,20 @@ export function useAddProductToCart(
   },
 ) {
   const toast = useToast();
+  const t = useErrorCopy();
   const showErrorToast = options?.showErrorToast ?? true;
 
   return useMutation({
-    onError() {
+    onError(error) {
       if (!showErrorToast) {
         return;
       }
 
+      reportApiError(error, 'add-product-to-cart');
+
       toast.add({
         ...toastCustom.error,
-        title: 'Add product to cart failed',
+        title: t('errors.cart.addFailed'),
       });
     },
     ...options,

@@ -9,6 +9,8 @@ import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 
+usePageSeo({ area: 'account' })
+
 const dialog = useModal()
 const t = useAccountTranslator()
 

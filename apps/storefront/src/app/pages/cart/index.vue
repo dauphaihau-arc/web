@@ -7,6 +7,8 @@ import { useGetCart } from '~/domains/cart/queries/cart.query'
 
 definePageMeta({ layout: 'market' })
 
+usePageSeo({ area: 'cart' })
+
 const { t } = useI18n()
 const cartStore = useCartStore()
 

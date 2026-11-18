@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import dayjs from 'dayjs'
 import type { ElementType } from '@arc/contracts/utils'
 import { PaymentTypes } from '@arc/enums/order'
 import { formatMinorCurrency } from '@arc/utils'
 import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract'
 import { paymentMethodLabel, refundStatusLabel } from '~/domains/me/ui/order-shop/order-detail-presentation'
 import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
+import { useLocaleFormatters } from '~/domains/market/composables/use-locale-formatters'
 
 const props = defineProps<{
   orderShop: ElementType<GetOrderShopsResponse['order_shops']>
 }>()
 
 const t = useAccountTranslator()
+const { formatDate } = useLocaleFormatters()
 
 const showMore = ref(false)
 
@@ -64,7 +65,7 @@ const shippingDiscountMinor = computed(() => props.orderShop.shipping_discount_m
           <template v-if="orderShop.payment.refunded_at">
             {{ t('account.orders.summary.refundOn', {
               status: refundStatusLabel(orderShop.payment.refund_status, t),
-              date: dayjs(orderShop.payment.refunded_at).format('MMM DD, YYYY HH:mm'),
+              date: formatDate(orderShop.payment.refunded_at, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
             }) }}
           </template>
           <template v-else>

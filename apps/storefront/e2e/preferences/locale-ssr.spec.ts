@@ -91,5 +91,73 @@ test.describe('locale on the server and in API request headers', () => {
     await expect(page.locator('html')).toHaveAttribute('lang', 'vi');
     await expect(page.getByText(/Sắp xếp theo:/)).toBeVisible({ timeout: 20_000 });
     await expect(page.getByRole('button', { name: 'Đặt lại bộ lọc' })).toBeVisible();
+
+    // The category resolver returns a language-neutral canonical path, so the
+    // page must add the URL locale instead of canonicalizing to `/c/...`.
+    const origin = new URL(page.url()).origin;
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      '/vi/c/gaming-laptops-c1',
+    );
+    await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
+      'href',
+      `${origin}/c/gaming-laptops-c1`,
+    );
+    await expect(page.locator('link[rel="alternate"][hreflang="vi"]')).toHaveAttribute(
+      'href',
+      `${origin}/vi/c/gaming-laptops-c1`,
+    );
   });
+
+  for (const localeCase of [
+    {
+      label: 'English',
+      locale: 'en',
+      path: '/',
+      canonicalPath: '/',
+      enPath: '/',
+      viPath: '/vi',
+      title: /Discover products from independent sellers/,
+    },
+    {
+      label: 'Vietnamese',
+      locale: 'vi',
+      path: '/vi',
+      canonicalPath: '/vi',
+      enPath: '/',
+      viPath: '/vi',
+      title: /Khám phá sản phẩm từ những người bán độc lập/,
+    },
+  ]) {
+    test(`${localeCase.label} root emits a translated title, self-canonical, and reciprocal alternates`, async ({ page }) => {
+      const response = await page.goto(localeCase.path);
+      expect(response?.status()).toBe(200);
+
+      const origin = new URL(page.url()).origin;
+
+      await expect(page.locator('html')).toHaveAttribute('lang', localeCase.locale);
+      await expect(page).toHaveTitle(localeCase.title);
+      await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /Arc Storefront/);
+
+      // The canonical stays on the locale the buyer requested: `/vi` must never
+      // canonicalize to the unprefixed English URL.
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+        'href',
+        localeCase.canonicalPath,
+      );
+
+      await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
+        'href',
+        `${origin}${localeCase.enPath}`,
+      );
+      await expect(page.locator('link[rel="alternate"][hreflang="vi"]')).toHaveAttribute(
+        'href',
+        `${origin}${localeCase.viPath}`,
+      );
+      await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute(
+        'href',
+        `${origin}${localeCase.enPath}`,
+      );
+    });
+  }
 });

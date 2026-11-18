@@ -10,6 +10,8 @@ import { toastCustom } from '~/shared/config/toast'
 
 definePageMeta({ layout: 'market', middleware: ['checkout'] })
 
+usePageSeo({ area: 'checkout' })
+
 const route = useRoute()
 const cartStore = useCartStore()
 const toast = useToast()

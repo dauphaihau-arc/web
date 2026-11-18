@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { GetPublicProductReviewsResponse } from '~/domains/product/api/contracts/product.contract'
 import { resolveProductImageUrl } from '~/domains/product/utils/product-image-url'
+import { useLocaleFormatters } from '~/domains/market/composables/use-locale-formatters'
 
 const props = defineProps<{
   reviews: GetPublicProductReviewsResponse
@@ -13,19 +14,14 @@ const emit = defineEmits<{
 }>()
 
 const config = useRuntimeConfig()
-const { t, locale } = useI18n()
+const { t } = useI18n()
+const { formatDate } = useLocaleFormatters()
 const visibleReviews = computed(() => props.reviews.items)
 const shouldShowPagination = computed(() => props.reviews.meta.total > props.reviews.meta.limit)
 const skeletonCount = computed(() => Math.max(1, props.reviews.meta.limit || 4))
 
 function formatReviewDate(value: string | Date) {
-  const date = typeof value === 'string' ? new Date(value) : value
-
-  return new Intl.DateTimeFormat(locale.value === 'vi' ? 'vi-VN' : 'en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  }).format(date)
+  return formatDate(value)
 }
 
 function getReviewDateLabel(review: GetPublicProductReviewsResponse['items'][number]) {

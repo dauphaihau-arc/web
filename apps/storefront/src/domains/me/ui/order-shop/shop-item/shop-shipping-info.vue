@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import dayjs from 'dayjs'
 import { formatShippingEstimateRange } from '@arc/utils'
 import { FulfillmentAggregateStatuses, ShipmentStatuses } from '@arc/enums/fulfillment'
 import type { ElementType } from '@arc/contracts/utils'
 import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
+import { useLocaleFormatters } from '~/domains/market/composables/use-locale-formatters'
 import type {
   FulfillmentGroup,
   FulfillmentShipment,
@@ -18,6 +18,7 @@ const props = withDefaults(defineProps<{
 })
 
 const t = useAccountTranslator()
+const { formatDate: formatLocaleDate } = useLocaleFormatters()
 
 const aggregateStatusLabelKey: Record<FulfillmentAggregateStatuses, string> = {
   [FulfillmentAggregateStatuses.UNFULFILLED]: 'account.orders.fulfillment.preparingOrder',
@@ -42,12 +43,12 @@ const shipmentStatusLabelKey: Record<ShipmentStatuses, string> = {
 
 function formatDate(value: string | Date | undefined | null): string {
   if (!value) return ''
-  return dayjs(value).isValid() ? dayjs(value).format('MMM DD, YYYY') : ''
+  return formatLocaleDate(value, { year: 'numeric', month: 'short', day: 'numeric' })
 }
 
 function formatShortDate(value: string | Date | undefined | null): string {
   if (!value) return ''
-  return dayjs(value).isValid() ? dayjs(value).format('MMM DD') : ''
+  return formatLocaleDate(value, { month: 'short', day: 'numeric' })
 }
 
 const fulfillment = computed(() => props.orderShop.fulfillment)
