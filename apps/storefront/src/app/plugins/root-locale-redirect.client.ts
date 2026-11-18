@@ -1,4 +1,4 @@
-import { MarketLanguages } from '@arc/enums/market';
+import { StorefrontLanguages } from '@arc/enums/market';
 import { routePaths } from '~/shared/navigation/routes';
 
 /**
@@ -23,7 +23,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       return;
     }
 
-    if (marketStore.activePreferences?.language !== MarketLanguages.VI) {
+    if (marketStore.activePreferences?.language !== StorefrontLanguages.VI) {
       return;
     }
 

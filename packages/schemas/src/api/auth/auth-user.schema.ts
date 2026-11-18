@@ -1,8 +1,8 @@
 import { z } from 'zod'
 import {
   MarketCurrencies,
-  MarketLanguages,
   MarketRegions,
+  StorefrontLanguages,
 } from '@arc/enums/market'
 
 /**
@@ -15,6 +15,6 @@ import {
  */
 export const authPreferencesSchema = z.object({
   region: z.nativeEnum(MarketRegions),
-  language: z.nativeEnum(MarketLanguages),
+  language: z.nativeEnum(StorefrontLanguages),
   currency: z.nativeEnum(MarketCurrencies),
 })

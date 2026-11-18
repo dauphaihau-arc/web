@@ -1,22 +1,20 @@
-import { MARKET_CONFIG, MarketLanguages } from '@arc/enums/market';
+import { MARKET_CONFIG, StorefrontLanguages } from '@arc/enums/market';
 import type { MarketCurrencies, MarketRegions } from '@arc/enums/market';
 
 export type LanguageOption = {
-  id: MarketLanguages
+  id: StorefrontLanguages
   label: string
 };
 
 export type PreferenceState = {
   region: MarketRegions
-  language: MarketLanguages
+  language: StorefrontLanguages
   currency: MarketCurrencies
 };
 
-const languageOptionById: Record<MarketLanguages, LanguageOption> = {
-  [MarketLanguages.EN]: { id: MarketLanguages.EN, label: 'English (US)' },
-  [MarketLanguages.LA]: { id: MarketLanguages.LA, label: 'Latin (LA)' },
-  [MarketLanguages.FR]: { id: MarketLanguages.FR, label: 'Français (FR)' },
-  [MarketLanguages.VI]: { id: MarketLanguages.VI, label: 'Tiếng Việt' },
+const languageOptionById: Record<StorefrontLanguages, LanguageOption> = {
+  [StorefrontLanguages.EN]: { id: StorefrontLanguages.EN, label: 'English (US)' },
+  [StorefrontLanguages.VI]: { id: StorefrontLanguages.VI, label: 'Tiếng Việt' },
 };
 
 const languageOptionByCode = new Map(
@@ -29,7 +27,7 @@ export function localeToLanguageOption(locale: string): LanguageOption | undefin
   const languageCode = locale.split('-')[0]?.toLowerCase();
 
   return languageCode
-    ? languageOptionByCode.get(languageCode as MarketLanguages)
+    ? languageOptionByCode.get(languageCode as StorefrontLanguages)
     : undefined;
 }
 
@@ -38,7 +36,7 @@ export function localeToLanguageOption(locale: string): LanguageOption | undefin
  * preferences form. The URL is the source of truth while a dialog is open, so
  * a stale stored preference must never win over it.
  */
-export function urlLocaleToFormLanguage(locale: string): MarketLanguages {
+export function urlLocaleToFormLanguage(locale: string): StorefrontLanguages {
   return localeToLanguageOption(locale)?.id ?? defaultLanguageOption.id;
 }
 

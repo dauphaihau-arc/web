@@ -1,4 +1,4 @@
-import type { MarketLanguages } from '@arc/enums/market';
+import type { StorefrontLanguages } from '@arc/enums/market';
 
 /**
  * Navigates to the same page, query, and hash under another URL locale.
@@ -12,7 +12,7 @@ export function useLanguageNavigation() {
   const route = useRoute();
   const { $i18n } = useNuxtApp();
 
-  async function navigateToLanguage(language: MarketLanguages) {
+  async function navigateToLanguage(language: StorefrontLanguages) {
     const defaultLocale = $i18n.defaultLocale;
     const currentLocale = $i18n.locale.value;
     const currentPrefix = `/${currentLocale}`;

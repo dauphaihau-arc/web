@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { MarketLanguages } from '@arc/enums/market'
+import type { StorefrontLanguages } from '@arc/enums/market'
 import type { LanguageOption } from './preference-options'
 
 const props = withDefaults(defineProps<{
-  modelValue: MarketLanguages
+  modelValue: StorefrontLanguages
   options: LanguageOption[]
   disabled?: boolean
   size?: 'md' | 'lg' | 'xl'
@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<{
 })
 
 const emit = defineEmits<{
-  'update:modelValue': [value: MarketLanguages]
+  'update:modelValue': [value: StorefrontLanguages]
 }>()
 
 const selected = computed({

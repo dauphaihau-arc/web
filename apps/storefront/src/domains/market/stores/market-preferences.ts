@@ -2,12 +2,27 @@ import { LocalStorageKeys } from '@arc/enums/local-storage-keys';
 import {
   MARKET_CONFIG,
   MarketCurrencies,
-  MarketLanguages,
   MarketRegions,
+  StorefrontLanguages,
 } from '@arc/enums/market';
 import type { AuthPreferences } from '~/domains/auth/api/contracts/auth-user.contract';
 
 export const GUEST_PREFERENCES_COOKIE_KEY = LocalStorageKeys.GUEST_PREFERENCES;
+
+/**
+ * Languages stored by older storefront versions. They are no longer selectable;
+ * guests who still carry one fall back to English while keeping the region and
+ * currency they chose.
+ */
+const LEGACY_LANGUAGE_MIGRATIONS: Record<string, StorefrontLanguages | undefined> = {
+  la: StorefrontLanguages.EN,
+  fr: StorefrontLanguages.EN,
+};
+
+function normalizeStorefrontLanguage(language: string): StorefrontLanguages | undefined {
+  return LEGACY_LANGUAGE_MIGRATIONS[language] ??
+    Object.values(StorefrontLanguages).find(value => value === language);
+}
 
 export function getFallbackMarketPreferences(): AuthPreferences {
   return {
@@ -25,15 +40,17 @@ export function sanitizeMarketPreferences(
   }
 
   const currency = preferences.currency as MarketCurrencies | undefined;
-  const language = preferences.language as MarketLanguages | undefined;
+  const language = preferences.language;
   const region = preferences.region as MarketRegions | undefined;
+  const normalizedLanguage = language
+    ? normalizeStorefrontLanguage(language)
+    : undefined;
 
   if (
     !currency
-    || !language
+    || !normalizedLanguage
     || !region
     || !Object.values(MarketCurrencies).includes(currency)
-    || !Object.values(MarketLanguages).includes(language)
     || !Object.values(MarketRegions).includes(region)
   ) {
     return null;
@@ -41,7 +58,7 @@ export function sanitizeMarketPreferences(
 
   return {
     currency,
-    language,
+    language: normalizedLanguage,
     region,
   };
 }

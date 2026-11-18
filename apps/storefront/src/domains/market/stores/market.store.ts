@@ -158,6 +158,17 @@ export const useMarketStore = defineStore('market', () => {
     },
   );
 
+  // `useStorage` hydrates the raw localStorage value after setup, which bypasses
+  // the sanitisation above. Normalise once so retired language codes migrate to
+  // English while the stored region and currency survive.
+  const hydratedGuestPreferences = sanitizeMarketPreferences(guestPreferences.value);
+  if (
+    hydratedGuestPreferences
+    && hydratedGuestPreferences.language !== guestPreferences.value?.language
+  ) {
+    guestPreferences.value = hydratedGuestPreferences;
+  }
+
   const marketPreferenceSource = ref<MarketPreferenceSource | null>(null);
   const isMarketReady = ref(false);
   const marketReadyPromise = shallowRef<Promise<void> | null>(null);

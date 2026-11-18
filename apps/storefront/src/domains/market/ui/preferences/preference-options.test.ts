@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { MarketLanguages } from '@arc/enums/market';
+import { StorefrontLanguages } from '@arc/enums/market';
 import {
   defaultLanguageOption,
   localeToLanguageOption,
@@ -9,19 +9,17 @@ import {
 describe('localeToLanguageOption', () => {
   it('maps both Vietnamese locales to the Vietnamese Storefront Language', () => {
     expect(localeToLanguageOption('vi-VN')).toEqual({
-      id: MarketLanguages.VI,
+      id: StorefrontLanguages.VI,
       label: 'Tiếng Việt',
     });
     expect(localeToLanguageOption('vi-US')).toEqual({
-      id: MarketLanguages.VI,
+      id: StorefrontLanguages.VI,
       label: 'Tiếng Việt',
     });
   });
 
-  it('keeps the existing language mappings', () => {
-    expect(localeToLanguageOption('en-US')?.id).toBe(MarketLanguages.EN);
-    expect(localeToLanguageOption('fr-FR')?.id).toBe(MarketLanguages.FR);
-    expect(localeToLanguageOption('la-LA')?.id).toBe(MarketLanguages.LA);
+  it('maps English locales to the English Storefront Language', () => {
+    expect(localeToLanguageOption('en-US')?.id).toBe(StorefrontLanguages.EN);
   });
 
   it('returns undefined for an unsupported locale', () => {
@@ -29,14 +27,14 @@ describe('localeToLanguageOption', () => {
   });
 
   it('keeps English as the base language option', () => {
-    expect(defaultLanguageOption.id).toBe(MarketLanguages.EN);
+    expect(defaultLanguageOption.id).toBe(StorefrontLanguages.EN);
   });
 });
 
 describe('urlLocaleToFormLanguage', () => {
   it('maps the URL locale to the language shown in the preferences form', () => {
-    expect(urlLocaleToFormLanguage('vi-VN')).toBe(MarketLanguages.VI);
-    expect(urlLocaleToFormLanguage('en-US')).toBe(MarketLanguages.EN);
+    expect(urlLocaleToFormLanguage('vi-VN')).toBe(StorefrontLanguages.VI);
+    expect(urlLocaleToFormLanguage('en-US')).toBe(StorefrontLanguages.EN);
   });
 
   it('falls back to the base language for an unsupported URL locale', () => {

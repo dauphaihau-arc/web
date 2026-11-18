@@ -1,8 +1,8 @@
 import {
   MARKET_CONFIG,
   MarketCurrencies,
-  MarketLanguages,
   MarketRegions,
+  StorefrontLanguages,
 } from '@arc/enums/market';
 import {
   defaultCurrencyOption,
@@ -37,7 +37,7 @@ type UseUserPreferenceFormParams = {
    * market normalisation. The preferences dialog uses it so the URL locale is
    * never silently replaced by a stale Buyer Language Preference.
    */
-  languageOverride?: MaybeRef<MarketLanguages | undefined>
+  languageOverride?: MaybeRef<StorefrontLanguages | undefined>
 };
 
 export function useUserPreferenceForm({
@@ -97,7 +97,7 @@ export function useUserPreferenceForm({
     }
 
     const region = toMarketEnum(Object.values(MarketRegions), preferences.region);
-    const language = toMarketEnum(Object.values(MarketLanguages), preferences.language);
+    const language = toMarketEnum(Object.values(StorefrontLanguages), preferences.language);
     const currency = toMarketEnum(Object.values(MarketCurrencies), preferences.currency);
 
     if (region && language && currency) {

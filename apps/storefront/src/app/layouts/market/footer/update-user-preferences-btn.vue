@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MARKET_REGION_EMOJIS, MarketCurrencies, type MarketLanguages } from '@arc/enums/market'
+import { MARKET_REGION_EMOJIS, MarketCurrencies, type StorefrontLanguages } from '@arc/enums/market'
 import BaseDialog from '@arc/ui/patterns/dialog/base-dialog.vue'
 import DialogActions from '@arc/ui/patterns/dialog/dialog-actions.vue'
 import MarketPreferencesForm from '~/domains/market/ui/preferences/market-preferences-form.vue'
@@ -38,7 +38,7 @@ const currentUserPreferences = computed(() => {
   return currentUserData.value?.user?.preferences || marketStore.guestPreferences || undefined
 })
 
-const urlLanguage = computed<MarketLanguages>(() => urlLocaleToFormLanguage(locale.value))
+const urlLanguage = computed<StorefrontLanguages>(() => urlLocaleToFormLanguage(locale.value))
 
 const {
   currencyOptions,
