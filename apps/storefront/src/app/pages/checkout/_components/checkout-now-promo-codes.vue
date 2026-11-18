@@ -14,6 +14,7 @@ const props = defineProps<{
 
 const cartStore = useCartStore()
 const queryClient = useQueryClient()
+const { t } = useI18n()
 const route = useRoute()
 
 const tempCartId = route.query['c'] as string
@@ -110,7 +111,7 @@ async function removeCode(code: string) {
   catch {
     // Surface the failure in the picker panel instead of a floating toast, and
     // open it so the message is actually visible where the promo code lives.
-    state.panelError = 'Delete promo code failed'
+    state.panelError = t('cart.promo.deleteFailed')
     state.open = true
   }
 }

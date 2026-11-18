@@ -10,6 +10,7 @@ import { usePricePresetOptions } from '~/domains/product/ui/filters/use-price-pr
 import { useSearchProducts } from '../_composables/use-search-products'
 
 const route = useRoute()
+const { t } = useI18n()
 
 const searchQuery = computed(() => String(route.query.q ?? '').trim())
 
@@ -25,15 +26,16 @@ const {
   error,
 } = useSearchProducts(searchQuery)
 
-const resultSummary = computed(() => {
-  if ((total.value ?? 0) === 1) {
-    return '1 result'
-  }
+const resultsSummary = computed(() => {
+  const count = total.value ?? 0
 
-  return `${total.value ?? 0} results`
+  return t(count === 1 ? 'catalog.search.resultsForOne' : 'catalog.search.resultsForMany', {
+    count,
+    query: searchQuery.value,
+  })
 })
 
-const emptyTitle = computed(() => `No results for "${searchQuery.value}"`)
+const emptyTitle = computed(() => t('catalog.search.noResults', { query: searchQuery.value }))
 
 // One filter/sort state for every surface on this page: the desktop sidebar
 // panel, the mobile filter bar and sheet, and the sort control all read and
@@ -61,10 +63,10 @@ const showsToolbarTopPadding = computed(() => scrollY.value > 10)
       >
         <div>
           <h1 class="text-lg font-semibold text-text-strong">
-            Search Results
+            {{ $t('catalog.search.title') }}
           </h1>
           <p class="text-sm text-text-subtle">
-            {{ resultSummary }} for "{{ searchQuery }}"
+            {{ resultsSummary }}
           </p>
         </div>
         <ProductListingFilterBar :scope="facetScope" />
@@ -86,7 +88,7 @@ const showsToolbarTopPadding = computed(() => scrollY.value > 10)
             heading-class="font-semibold"
             :icon="ICON_NAME_BY_ALIAS.search"
             :title="emptyTitle"
-            description="Try a more specific product name, fewer words, or a different keyword."
+            :description="$t('catalog.search.emptyDescription')"
           />
         </template>
       </ProductResults>
@@ -97,10 +99,10 @@ const showsToolbarTopPadding = computed(() => scrollY.value > 10)
       <div class="mb-6 flex items-start justify-between gap-6">
         <div>
           <h1 class="text-2xl font-semibold text-text-strong">
-            Search Results
+            {{ $t('catalog.search.title') }}
           </h1>
           <p class="mt-1 text-sm text-text-subtle">
-            {{ resultSummary }} for "{{ searchQuery }}"
+            {{ resultsSummary }}
           </p>
         </div>
         <SortProductsBy />
@@ -127,7 +129,7 @@ const showsToolbarTopPadding = computed(() => scrollY.value > 10)
               heading-class="font-semibold"
               :icon="ICON_NAME_BY_ALIAS.search"
               :title="emptyTitle"
-              description="Try a more specific product name, fewer words, or a different keyword."
+              :description="$t('catalog.search.emptyDescription')"
             />
           </template>
         </ProductResults>

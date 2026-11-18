@@ -16,6 +16,7 @@ const props = withDefaults(defineProps<{
 })
 
 const marketStore = useMarketStore()
+const { localizePath } = useLocalizedRoute()
 const { blocked, checking, checkForUpdate } = useCategoryIdentityBlocked()
 
 const isHorizontal = computed(() => props.orientation === 'horizontal')
@@ -34,7 +35,7 @@ onMounted(() => {
 })
 
 const redirectPage = (category: Category) => {
-  navigateTo(buildCategoryPath(category.slug, category.id))
+  navigateTo(localizePath(buildCategoryPath(category.slug, category.id)))
 }
 </script>
 

@@ -2,6 +2,7 @@
 import { formatMinorCurrency } from '@arc/utils'
 import type { CartSummary } from '~/domains/cart/api/cart.shared'
 import type { CheckoutQuoteResponse } from '~/domains/me/api/order/contracts/order.contract'
+import { useShopCartCopy } from './shop-cart/use-shop-cart-copy'
 
 /**
  * The basket-level mirror of the per-shop summaries: the merchandise breakdown
@@ -23,6 +24,8 @@ const props = withDefaults(defineProps<{
   summaryOrder: undefined,
   quote: undefined,
 })
+
+const t = useShopCartCopy()
 
 const currency = computed(() => props.quote?.checkout_currency ?? props.summaryOrder?.currency ?? '')
 const merchandiseSubtotalMinor = computed(
@@ -57,7 +60,7 @@ const selectedQuantity = computed(() => props.summaryOrder?.total_selected_quant
   <UCard v-if="props.summaryOrder">
     <div class="space-y-7">
       <legend class="mb-1 text-xl font-bold text-text-subtle">
-        Summary Order
+        {{ t('cart.summary.title') }}
       </legend>
       <div
         v-if="props.loading"
@@ -71,9 +74,9 @@ const selectedQuantity = computed(() => props.summaryOrder?.total_selected_quant
       >
         <div class="flex justify-between">
           <div class="title">
-            <div>Subtotal</div>
+            <div>{{ t('cart.summary.subtotal') }}</div>
             <div v-if="discountMinor > 0">
-              Code savings
+              {{ t('cart.summary.codeSavings') }}
             </div>
           </div>
           <div class="price">
@@ -93,9 +96,9 @@ const selectedQuantity = computed(() => props.summaryOrder?.total_selected_quant
           class="flex justify-between"
         >
           <div class="title">
-            <div>Shipping</div>
+            <div>{{ t('cart.summary.shipping') }}</div>
             <div v-if="shippingDiscountMinor > 0">
-              Shipping savings
+              {{ t('cart.summary.shippingSavings') }}
             </div>
           </div>
           <div class="price">
@@ -113,7 +116,7 @@ const selectedQuantity = computed(() => props.summaryOrder?.total_selected_quant
         />
         <div class="flex justify-between gap-3">
           <div class="text-lg font-medium">
-            Total ({{ selectedQuantity }} {{ selectedQuantity > 1 ? 'products' : 'product' }})
+            {{ t('cart.summary.totalWithCount', { count: selectedQuantity, label: t(selectedQuantity > 1 ? 'cart.summary.products' : 'cart.summary.product') }) }}
           </div>
           <div :class="['price', totalMinor > 0 && 'text-text-strong']">
             {{ formatMinorCurrency(totalMinor, currency) }}

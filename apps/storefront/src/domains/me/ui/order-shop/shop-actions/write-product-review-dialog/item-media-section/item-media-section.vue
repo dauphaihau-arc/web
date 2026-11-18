@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { MAX_REVIEW_IMAGES } from './item-media-section.constants'
 import { useItemMediaSection } from './use-item-media-section'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 import type { ResponseGetOrderShopsProduct } from '~/domains/me/api/order/contracts/order.contract'
 
 type ProductReview = ResponseGetOrderShopsProduct['my_review']
@@ -17,6 +18,8 @@ const emit = defineEmits<{
   'update:imageKeys': [value: string[]]
   'uploading-change': [value: boolean]
 }>()
+
+const t = useAccountTranslator()
 
 const fileInputRef = useTemplateRef('fileInputRef')
 const {
@@ -37,7 +40,7 @@ const {
   <div class="space-y-4">
     <UFormGroup
       required
-      label="Item"
+      :label="t('account.orders.reviewDialog.item')"
       name="orderItemId"
     >
       <USelectMenu
@@ -53,10 +56,10 @@ const {
       <div class="flex items-center justify-between gap-3">
         <div>
           <h3 class="text-sm font-medium text-text-strong">
-            Photos
+            {{ t('account.orders.reviewDialog.photos') }}
           </h3>
           <p class="text-sm text-text-subtle">
-            Add up to {{ MAX_REVIEW_IMAGES }} photos. PNG, JPG, WEBP, up to 8 MB each.
+            {{ t('account.orders.reviewDialog.photosHint', { count: MAX_REVIEW_IMAGES }) }}
           </p>
         </div>
       </div>
@@ -94,11 +97,11 @@ const {
 
         <div class="">
           <p class="text-base font-semibold text-text-strong">
-            Upload product image(s)
+            {{ t('account.orders.reviewDialog.uploadTitle') }}
           </p>
           <p class="text-sm text-text-muted">
-            <span class="font-medium text-text-strong underline underline-offset-2">Click to browse</span>
-            your files (8 MB max each)
+            <span class="font-medium text-text-strong underline underline-offset-2">{{ t('account.orders.reviewDialog.uploadBrowse') }}</span>
+            {{ t('account.orders.reviewDialog.uploadHint') }}
           </p>
         </div>
       </div>
@@ -185,8 +188,8 @@ const {
         v-if="hasFailedImages"
         color="red"
         variant="soft"
-        title="Some images failed to upload"
-        description="Remove the failed image and try selecting it again."
+        :title="t('account.orders.reviewDialog.failedTitle')"
+        :description="t('account.orders.reviewDialog.failedDescription')"
       />
     </div>
   </div>

@@ -2,7 +2,6 @@
 import { formatMinorCurrency } from '@arc/utils'
 import ProductCardImage from '~/domains/product/ui/product-card-image.vue'
 import type { GetProductsResponseItem } from '~/domains/product/api/contracts/product.contract'
-import { getProductStockNotice } from '~/domains/product/utils/product-stock'
 import { resolveProductImageUrl } from '~/domains/product/utils/product-image-url'
 import { routes } from '~/shared/navigation/routes'
 import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
@@ -16,6 +15,7 @@ const props = withDefaults(defineProps<{
 
 const router = useRouter()
 const { localizePath } = useLocalizedRoute()
+const { t } = useI18n()
 const config = useRuntimeConfig()
 
 const imageUrl = computed(() => {
@@ -28,10 +28,10 @@ const imageUrl = computed(() => {
 
 const stockNotice = computed(() => {
   if (!props.product.availability.in_stock) {
-    return getProductStockNotice(0)
+    return t('catalog.stock.outOfStock')
   }
 
-  return props.product.availability.low_stock ? 'Low stock' : ''
+  return props.product.availability.low_stock ? t('catalog.stock.lowStock') : ''
 })
 
 const displayAmount = computed(() => {
@@ -42,7 +42,7 @@ const displayAmount = computed(() => {
 
   const minAmount = formatMinorCurrency(pricing.min_amount_minor, pricing.currency)
   if (pricing.max_amount_minor != null && pricing.max_amount_minor > pricing.min_amount_minor) {
-    return `from ${minAmount}`
+    return `${t('catalog.product.from')} ${minAmount}`
   }
 
   return minAmount
@@ -116,7 +116,7 @@ const hasDiscount = computed(() => {
             v-if="props.showSalePercent"
             class="text-sm text-text-muted"
           >
-            ({{ salePercent }}% off)
+            {{ $t('catalog.product.percentOff', { percent: salePercent }) }}
           </p>
         </template>
       </div>

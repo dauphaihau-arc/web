@@ -7,19 +7,21 @@ import ForgetPasswordForm from './_components/forget-password-form.vue'
 import ResetPasswordForm from './_components/reset-password-form.vue'
 import SendEmailSuccess from './_components/send-email-success.vue'
 import { routes } from '~/shared/navigation/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 import { useVerifyToken } from '~/domains/auth/queries/verify-token.query'
 
 definePageMeta({ layout: 'market' })
 
 const route = useRoute()
 const authStore = useAuthStore()
+const { localizePath } = useLocalizedRoute()
 const token = route.query?.t as string
 
 useVerifyToken(token, {
   onResponse({ response }) {
     if (response.status === StatusCodes.OK) {
       authStore.tokenResetPassword = token
-      navigateTo(routes.reset({ v: 1 }))
+      navigateTo(localizePath(routes.reset({ v: 1 })))
       currentView.value = ResetPasswordViews.RESET_PASSWORD
     }
     else {
@@ -36,7 +38,7 @@ const changeView = (step: ResetPasswordViews) => {
 
 onMounted(() => {
   if (route.query?.v) {
-    navigateTo(routes.reset())
+    navigateTo(localizePath(routes.reset()))
   }
 })
 </script>
@@ -46,11 +48,10 @@ onMounted(() => {
     <!--    Send email -->
     <ResetPasswordShell v-if="currentView === ResetPasswordViews.SEND_EMAIL">
       <template #title>
-        Reset your password
+        {{ $t('account.reset.request.title') }}
       </template>
       <template #subtitle>
-        Enter the email address associated with
-        your account and we'll send you a link to reset your password.
+        {{ $t('account.reset.request.subtitle') }}
       </template>
       <template #content>
         <ForgetPasswordForm @change-view="changeView" />
@@ -60,7 +61,7 @@ onMounted(() => {
     <!--  Send email success -->
     <ResetPasswordShell v-if="currentView === ResetPasswordViews.SEND_EMAIL_SUCCESS">
       <template #title>
-        Check your email
+        {{ $t('account.reset.sent.title') }}
       </template>
       <template #content>
         <SendEmailSuccess @change-view="changeView" />
@@ -76,13 +77,13 @@ onMounted(() => {
             class="mb-3 size-7 text-black"
           />
           <div>
-            This password reset link has expired.
+            {{ $t('account.reset.expired.message') }}
           </div>
           <UButton
             variant="link"
             @click="currentView = ResetPasswordViews.SEND_EMAIL"
           >
-            Try resetting your password again.
+            {{ $t('account.reset.expired.retry') }}
           </UButton>
         </div>
       </template>

@@ -11,10 +11,20 @@ withDefaults(defineProps<{
 
 const paymentType = defineModel<PaymentTypes>({ required: true })
 
-const paymentOptions = [
-  { value: PaymentTypes.CARD, label: 'Credit / Debit Card', description: 'We support Mastercard, Visa and Stripe' },
-  { value: PaymentTypes.CASH, label: 'Cash on delivery', description: 'Pay with cash when your order is delivered' },
-]
+const { t } = useI18n()
+
+const paymentOptions = computed(() => [
+  {
+    value: PaymentTypes.CARD,
+    label: t('checkout.payment.card.label'),
+    description: t('checkout.payment.card.description'),
+  },
+  {
+    value: PaymentTypes.CASH,
+    label: t('checkout.payment.cash.label'),
+    description: t('checkout.payment.cash.description'),
+  },
+])
 </script>
 
 <template>

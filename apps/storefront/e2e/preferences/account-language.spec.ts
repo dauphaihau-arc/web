@@ -40,4 +40,6 @@ test('the buyer account page exposes the language setting below Region', async (
 
   await expect(page).toHaveURL(/\/vi\/account$/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'vi');
+  await expect(page.getByRole('heading', { name: 'Tài khoản' })).toBeVisible();
+  await expect(page.getByText('Tùy chọn thị trường', { exact: true })).toBeVisible();
 });

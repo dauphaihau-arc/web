@@ -21,7 +21,7 @@ const awsHostBucketAlias = assetHost.replace(/\/+$/, '')
 
 // Every locale/area pair is a separate lazy-loaded resource so a new area can
 // be filled in by one domain slice without touching the module config.
-const localeFiles = ['common.json', 'header.json', 'footer.json', 'home.json', 'preferences.json']
+const localeFiles = ['common.json', 'header.json', 'footer.json', 'home.json', 'preferences.json', 'catalog.json', 'cart.json', 'checkout.json', 'account.json']
 
 // `lazy` no longer exists in @nuxtjs/i18n v10 (locale files are always loaded
 // on demand), but it stays part of the storefront i18n contract so the config
@@ -29,6 +29,7 @@ const localeFiles = ['common.json', 'header.json', 'footer.json', 'home.json', '
 const i18nOptions: NuxtI18nOptions & { lazy?: boolean } = {
   strategy: 'prefix_except_default',
   defaultLocale: 'en',
+  vueI18n: './i18n.config.ts',
   restructureDir: 'src/i18n',
   langDir: 'locales',
   lazy: true,

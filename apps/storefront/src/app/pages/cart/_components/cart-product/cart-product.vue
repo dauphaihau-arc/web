@@ -18,6 +18,7 @@ const props = defineProps<{
 
 const route = useRoute()
 const { localizePath } = useLocalizedRoute()
+const { t } = useI18n()
 const queryClient = useQueryClient()
 
 const {
@@ -85,7 +86,7 @@ const compareAtAmount = computed(() =>
     class="mb-8 flex gap-4"
   >
     <div
-      v-if="route.path === ROUTES.CART"
+      v-if="route.path === localizePath(ROUTES.CART)"
       class="flex flex-col justify-center"
     >
       <CartCheckboxOrderProduct
@@ -123,19 +124,19 @@ const compareAtAmount = computed(() =>
         />
 
         <div class="flex gap-5">
-          <UTooltip text="Feature not available">
+          <UTooltip :text="t('cart.product.featureUnavailable')">
             <div class="flex cursor-pointer items-center gap-1">
               <AppIcon name="edit" />
-              <p>Edit</p>
+              <p>{{ t('cart.product.edit') }}</p>
             </div>
           </UTooltip>
           <div
-            v-if="route.path === ROUTES.CART"
+            v-if="route.path === localizePath(ROUTES.CART)"
             class="flex cursor-pointer items-center gap-1"
             @click.once="deleteProductCart()"
           >
             <AppIcon name="trash" />
-            <p>Remove</p>
+            <p>{{ t('cart.product.remove') }}</p>
           </div>
         </div>
       </div>

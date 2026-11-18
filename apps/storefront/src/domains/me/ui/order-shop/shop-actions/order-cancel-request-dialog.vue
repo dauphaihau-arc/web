@@ -2,12 +2,14 @@
 import type { FormSubmitEvent } from '#ui/types'
 import type { RequestOrderCancelRequest } from '~/domains/me/api/order/contracts/order.contract'
 import { useRequestOrderCancel } from '~/domains/me/mutations/orders/request-cancel.mutation'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 
 const props = defineProps<{
   orderId: string
 }>()
 
 const dialog = useModal()
+const t = useAccountTranslator()
 const formRef = ref()
 const state = reactive<RequestOrderCancelRequest>({
   cancel_reason: '',
@@ -26,7 +28,7 @@ async function onSubmit(event: FormSubmitEvent<RequestOrderCancelRequest>) {
 const actions = computed(() => [
   {
     id: 'keep-order',
-    label: 'Keep order',
+    label: t('account.orders.cancelDialog.keepOrder'),
     variant: 'secondary' as const,
     allowWhileInputFocused: true,
     disabled: isPending,
@@ -34,7 +36,7 @@ const actions = computed(() => [
   },
   {
     id: 'cancel-order',
-    label: 'Cancel order',
+    label: t('account.orders.cancelDialog.cancelOrder'),
     variant: 'danger' as const,
     allowWhileInputFocused: true,
     loading: isPending,
@@ -45,8 +47,8 @@ const actions = computed(() => [
 
 <template>
   <BaseDialog
-    title="Cancel order"
-    description="This is available before the order ships. Add an optional reason for the cancellation."
+    :title="t('account.orders.cancelDialog.title')"
+    :description="t('account.orders.cancelDialog.description')"
     :actions="actions"
     actions-full-width
   >
@@ -56,7 +58,7 @@ const actions = computed(() => [
       @submit="onSubmit"
     >
       <UFormGroup
-        label="Reason"
+        :label="t('account.common.reason')"
         name="cancel_reason"
       >
         <UTextarea

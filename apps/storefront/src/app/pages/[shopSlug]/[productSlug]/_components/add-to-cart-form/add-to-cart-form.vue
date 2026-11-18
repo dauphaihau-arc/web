@@ -18,6 +18,7 @@ const props = defineProps<{
 const inventorySelectedModel = defineModel<Inventory>('inventorySelected')
 
 const formRef = ref()
+const { t } = useI18n()
 
 const state = reactive({
   isBuyNow: false,
@@ -46,6 +47,7 @@ const {
 } = useAddToCartForm({
   product,
   inventorySelectedModel,
+  translate: (key, named) => t(key, named ?? {}),
 })
 
 async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
@@ -96,7 +98,7 @@ async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
       >
         <USelectMenu
           v-model="stateSubmit.variantOption"
-          :placeholder="`Select a ${product.options[0]?.name ?? 'variant'}`"
+          :placeholder="$t('catalog.product.selectVariant', { name: product.options[0]?.name ?? $t('catalog.product.variant') })"
           size="lg"
           :options="variantOptions"
           value-attribute="value"
@@ -111,7 +113,7 @@ async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
       >
         <USelectMenu
           v-model="stateSubmit.variantSubOption"
-          :placeholder="`Select a ${product.options[1]?.name ?? 'variant'}`"
+          :placeholder="$t('catalog.product.selectVariant', { name: product.options[1]?.name ?? $t('catalog.product.variant') })"
           size="lg"
           :options="subVariantOptions"
           value-attribute="value"
@@ -121,7 +123,7 @@ async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
 
       <div>
         <label class="mb-1 block text-sm font-medium text-text-subtle">
-          Quantity
+          {{ $t('catalog.product.quantity') }}
         </label>
         <UButtonGroup
           size="lg"
@@ -159,7 +161,7 @@ async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
         :disabled="isPendingAddProductToCart || isOutOfStock"
         @click="state.isBuyNow = false"
       >
-        Add to cart
+        {{ $t('catalog.product.addToCart') }}
       </UButton>
       <UButton
         size="xl"
@@ -167,7 +169,7 @@ async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
         :disabled="isPendingAddProductToCart || isOutOfStock"
         @click="state.isBuyNow = true"
       >
-        Buy it now
+        {{ $t('catalog.product.buyNow') }}
       </UButton>
     </div>
   </UForm>

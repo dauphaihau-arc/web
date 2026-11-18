@@ -13,6 +13,8 @@ const props = defineProps<{
   error?: unknown
   hasActiveFilters?: boolean
 }>()
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -46,8 +48,8 @@ const props = defineProps<{
       class="mb-16 min-h-[320px]"
       heading-class="font-semibold"
       :icon="ICON_NAME_BY_ALIAS['warning']"
-      title="Couldn't load products"
-      description="Something went wrong while loading this listing. Please try again."
+      :title="$t('catalog.results.loadErrorTitle')"
+      :description="$t('catalog.results.loadErrorDescription')"
     />
 
     <template v-else>
@@ -71,10 +73,10 @@ const props = defineProps<{
             class="mb-16 min-h-[320px]"
             heading-class="font-semibold"
             :icon="ICON_NAME_BY_ALIAS[props.hasActiveFilters ? 'search' : 'product']"
-            :title="props.hasActiveFilters ? 'No results found' : 'No products here yet'"
+            :title="props.hasActiveFilters ? t('catalog.results.noResultsTitle') : t('catalog.results.emptyTitle')"
             :description="props.hasActiveFilters
-              ? 'Try adjusting or clearing your filters.'
-              : 'Try another category or browse all products.'"
+              ? t('catalog.results.noResultsDescription')
+              : t('catalog.results.emptyDescription')"
           />
         </slot>
       </template>

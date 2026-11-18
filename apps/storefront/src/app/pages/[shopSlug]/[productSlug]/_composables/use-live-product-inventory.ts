@@ -5,7 +5,6 @@ import {
 import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract';
 import type { ProductInventoryUpdatedRealtimeEvent } from '~/domains/product/realtime/product-inventory-events';
 import { createProductInventoryEventsClient } from '~/domains/product/realtime/product-inventory-events.client';
-import { getProductStockNotice } from '~/domains/product/utils/product-stock';
 import { getProductOptionMode } from '~/domains/product/utils/product-options';
 
 type UseLiveProductInventoryReturn = {
@@ -21,6 +20,7 @@ export function useLiveProductInventory(
   const inventorySelected = ref<GetDetailProductBySlugResponse['inventory'][number]>();
   const inventoryStockById = ref<Record<string, number>>({});
   const backInStockInventoryId = ref<string | null>(null);
+  const { t } = useI18n();
 
   const product = computed<GetDetailProductBySlugResponse | undefined>(() => {
     const currentProduct = sourceProduct.value;
@@ -82,10 +82,21 @@ export function useLiveProductInventory(
       return '';
     }
 
-    return getProductStockNotice(inventory.stock, {
-      backInStock: backInStockInventoryId.value === inventory.id,
-      lowStockThreshold: product.value?.stock_notice_threshold,
-    });
+    if (backInStockInventoryId.value === inventory.id && inventory.stock > 0) {
+      return t('catalog.stock.backInStock');
+    }
+
+    if (inventory.stock <= 0) {
+      return t('catalog.stock.outOfStock');
+    }
+
+    const lowStockThreshold = product.value?.stock_notice_threshold;
+
+    if (lowStockThreshold != null && inventory.stock < lowStockThreshold) {
+      return t('catalog.stock.lowInStock', { count: inventory.stock });
+    }
+
+    return '';
   });
 
   const shouldSubscribeToInventoryEvents = computed(() => {

@@ -1,0 +1,91 @@
+{
+  "cart": {
+    "page": {
+      "loading": "Loading your cart...",
+      "productCount": "{count} products in your cart",
+      "empty": "Your cart is empty."
+    },
+    "summary": {
+      "title": "Summary Order",
+      "subtotal": "Subtotal",
+      "codeSavings": "Code savings",
+      "shipping": "Shipping",
+      "shippingSavings": "Shipping savings",
+      "estimatedDelivery": "Estimated delivery: {range}",
+      "total": "Total",
+      "totalWithCount": "Total ({count} {label})",
+      "product": "product",
+      "products": "products",
+      "totalLimit": "The total amount due must be no more than {amount}",
+      "signInToCheckout": "Sign in to checkout",
+      "proceedToCheckout": "Proceed to checkout"
+    },
+    "product": {
+      "featureUnavailable": "Feature not available",
+      "edit": "Edit",
+      "remove": "Remove"
+    },
+    "note": {
+      "add": "Add a note to {shop}"
+    },
+    "promo": {
+      "applyShop": "Apply shop promo codes",
+      "shopTitle": "{shop} Promo Code",
+      "title": "Promo Code",
+      "codeLabel": "Promo code",
+      "apply": "Apply",
+      "loading": "Loading promo codes...",
+      "loadError": "Could not load promo codes for this shop.",
+      "emptyTitle": "No promo codes available for this shop.",
+      "emptyDescription": "Enter an applicable promo code in the field above.",
+      "combinationHint": "Apply up to 2 promo codes per shop: 1 free-shipping code and 1 product-discount code.",
+      "selectedOne": "1 promo code selected",
+      "selectedMany": "{count} promo codes selected",
+      "freeShipping": "Free shipping",
+      "percentOff": "{percent}% off",
+      "amountOff": "{amount} off",
+      "discount": "Discount",
+      "noMinimum": "No minimum",
+      "minimumSpend": "Minimum spend {amount}",
+      "noMinimumQuantity": "No minimum quantity",
+      "minimumQuantity": "Minimum quantity {count}",
+      "expires": "Expires {date}",
+      "ineligible": {
+        "expired": "Expired",
+        "notStarted": "Not started yet",
+        "usageLimitReached": "Fully redeemed",
+        "userUsageLimitReached": "You have used this promo code",
+        "authenticationRequired": "Sign in to use this promo code",
+        "productScope": "Not applicable to items in this cart",
+        "minOrderValue": "Add more to use this promo code",
+        "minProducts": "Add more items to use this promo code",
+        "zeroBenefit": "No saving on this cart"
+      },
+      "deleteFailed": "Delete promo code failed",
+      "alreadyApplied": "Promo code already applied",
+      "slotConflict": "Only one promo code per slot per shop",
+      "onlyOneSlot": "Only one {slot} promo code per shop",
+      "slotShipping": "shipping",
+      "slotDiscount": "discount",
+      "cancel": "Cancel"
+    },
+    "options": {
+      "editTitle": "Edit options",
+      "loading": "Loading options...",
+      "loadError": "Could not load product options.",
+      "empty": "This product has no options to edit.",
+      "selectPlaceholder": "Select a {option}",
+      "apply": "Apply",
+      "addInstead": "Add {count} instead",
+      "mergeNote": "Merges with your other line{label} — {from} → {to}.",
+      "stockRemaining": "Only {stock} left in stock; this line has {quantity}.",
+      "stockAll": "Your cart already holds all {stock} available.",
+      "stockMerge": "Only {stock} left in stock. Your cart already holds {held}, so only {addable} more can be added.",
+      "toastMerged": "Merged into your existing line — {total} total",
+      "toastUpdated": "Product options updated",
+      "toastStockError": "Not enough stock to merge into that line. Reduce the quantity and try again.",
+      "toastUpdateFailed": "Update product options failed",
+      "cancel": "Cancel"
+    }
+  }
+}

@@ -15,6 +15,7 @@ definePageMeta({ layout: 'market' })
 
 const route = useRoute()
 const marketStore = useMarketStore()
+const { t } = useI18n()
 const { mutate: recordProductView } = useRecordProductView()
 
 const shopSlug = route.params.shopSlug as string
@@ -31,7 +32,7 @@ const {
     else {
       throw showError({
         statusCode: 404,
-        statusMessage: 'Product Not Found',
+        statusMessage: t('catalog.errors.productNotFound'),
         fatal: true,
       })
     }

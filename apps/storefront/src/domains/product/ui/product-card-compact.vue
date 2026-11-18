@@ -16,6 +16,7 @@ const props = defineProps<{
 
 const config = useRuntimeConfig()
 const { localizePath } = useLocalizedRoute()
+const { t } = useI18n()
 
 const imageUrl = computed(() => {
   return resolveProductImageUrl(
@@ -37,7 +38,7 @@ const displayAmount = computed(() => {
 
   const maxAmount = pricing.max_amount_minor
   return {
-    prefix: maxAmount != null && maxAmount > pricing.min_amount_minor ? 'from' : undefined,
+    prefix: maxAmount != null && maxAmount > pricing.min_amount_minor ? t('catalog.product.from') : undefined,
     amount: formatMinorCurrency(pricing.min_amount_minor, pricing.currency),
   }
 })

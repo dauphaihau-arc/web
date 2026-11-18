@@ -7,6 +7,7 @@ const emit = defineEmits<{
   changeView: [value: ResetPasswordViews]
 }>()
 
+const { t } = useI18n()
 const toast = useToast()
 const authStore = useAuthStore()
 
@@ -25,7 +26,7 @@ async function resendEmail() {
   catch {
     toast.add({
       ...toastCustom.error,
-      title: 'Something went wrong on our end. Please try again',
+      title: t('account.reset.request.genericError'),
     })
   }
 }
@@ -35,48 +36,44 @@ async function resendEmail() {
   <div>
     <div v-if="!isResendEmail">
       <p class="font-light">
-        Thanks! If
+        {{ $t('account.reset.sent.messagePrefix') }}
         <span class="font-medium">{{ authStore.emailRequestForgetPassword }}</span>
-        matches an email we have on file,
-        then we've sent you an email
-        containing further instructions for resetting your password.
+        {{ $t('account.reset.sent.messageSuffix') }}
       </p>
       <p class="font-light">
-        If you haven't received an email in 5 minutes, check your spam,
+        {{ $t('account.reset.sent.helpPrefix') }}
         <UButton
           variant="link"
           class="font-base p-0"
           :disabled="isPendingResend"
           @click="resendEmail"
         >
-          resend
-        </UButton>, or
+          {{ $t('account.reset.sent.resend') }}
+        </UButton>{{ $t('account.reset.sent.helpOr') }}
         <UButton
           variant="link"
           class="font-base p-0"
           @click="emit('changeView', ResetPasswordViews.SEND_EMAIL)"
         >
-          try a different email
-        </UButton>
-        .
+          {{ $t('account.reset.sent.differentEmail') }}
+        </UButton>.
       </p>
     </div>
     <div v-else>
       <p class="font-light">
-        We've resent password reset instructions to
+        {{ $t('account.reset.sent.resentPrefix') }}
         <span class="font-medium">{{ authStore.emailRequestForgetPassword }}</span>
-        if it is an email on file.
+        {{ $t('account.reset.sent.resentSuffix') }}
       </p>
       <p class="text-base font-light">
-        Please check again. If you still haven't received an email
+        {{ $t('account.reset.sent.checkAgain') }}
         <UButton
           variant="link"
           class="p-0 text-base"
           @click="emit('changeView', ResetPasswordViews.SEND_EMAIL)"
         >
-          try a different email
-        </UButton>
-        .
+          {{ $t('account.reset.sent.tryDifferentEmail') }}
+        </UButton>.
       </p>
     </div>
   </div>

@@ -5,10 +5,13 @@ import type { FormError, FormSubmitEvent } from '#ui/types'
 import { useAuthClientConfig } from '~/domains/auth/queries/client-config.query'
 import { useResetPassword } from '~/domains/auth/mutations/reset-password.mutation'
 import { ROUTES } from '~/shared/config/enums/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 import type { ResetPasswordForm as ResetPasswordBody } from '~/domains/auth/api/contracts/reset-password.contract'
 import { appendPasswordError } from '~/domains/auth/utils/password-policy'
 
 const authStore = useAuthStore()
+const { t } = useI18n()
+const { localizePath } = useLocalizedRoute()
 
 const formRef = ref()
 const resetPasswordSuccess = ref(false)
@@ -53,7 +56,7 @@ async function onSubmit(event: FormSubmitEvent<ResetPasswordBody>) {
     resetPasswordSuccess.value = true
   }
   catch {
-    unknownErrorServerMsg.value = 'Something went wrong on our end. Please try again'
+    unknownErrorServerMsg.value = t('account.reset.form.genericError')
   }
 }
 </script>
@@ -62,7 +65,7 @@ async function onSubmit(event: FormSubmitEvent<ResetPasswordBody>) {
   <div>
     <ResetPasswordShell v-if="!resetPasswordSuccess">
       <template #title>
-        Reset your password
+        {{ $t('account.reset.form.title') }}
       </template>
       <template #content>
         <div class="space-y-5">
@@ -89,7 +92,7 @@ async function onSubmit(event: FormSubmitEvent<ResetPasswordBody>) {
             @submit="onSubmit"
           >
             <UFormGroup
-              label="New password"
+              :label="$t('account.reset.form.newPassword')"
               name="password"
               class="mb-4"
             >
@@ -101,7 +104,7 @@ async function onSubmit(event: FormSubmitEvent<ResetPasswordBody>) {
               />
             </UFormGroup>
             <UFormGroup
-              label="Confirm your password"
+              :label="$t('account.reset.form.confirmPassword')"
               name="passwordConfirm"
               class="mb-8"
             >
@@ -120,7 +123,7 @@ async function onSubmit(event: FormSubmitEvent<ResetPasswordBody>) {
               block
               type="submit"
             >
-              Save
+              {{ $t('account.reset.form.save') }}
             </UButton>
           </UForm>
         </div>
@@ -129,15 +132,15 @@ async function onSubmit(event: FormSubmitEvent<ResetPasswordBody>) {
 
     <ResetPasswordShell v-else>
       <template #title>
-        You've successfully changed your password
+        {{ $t('account.reset.success.title') }}
       </template>
       <template #content>
-        <NuxtLink :to="ROUTES.HOME">
+        <NuxtLink :to="localizePath(ROUTES.HOME)">
           <UButton
             size="xl"
             block
           >
-            Continue to shopping
+            {{ $t('account.reset.success.continue') }}
           </UButton>
         </NuxtLink>
       </template>

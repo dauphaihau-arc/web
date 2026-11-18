@@ -1,0 +1,91 @@
+{
+  "cart": {
+    "page": {
+      "loading": "Đang tải giỏ hàng của bạn...",
+      "productCount": "{count} sản phẩm trong giỏ hàng của bạn",
+      "empty": "Giỏ hàng của bạn đang trống."
+    },
+    "summary": {
+      "title": "Tóm tắt đơn hàng",
+      "subtotal": "Tạm tính",
+      "codeSavings": "Tiết kiệm từ mã",
+      "shipping": "Phí vận chuyển",
+      "shippingSavings": "Tiết kiệm phí vận chuyển",
+      "estimatedDelivery": "Dự kiến giao hàng: {range}",
+      "total": "Tổng cộng",
+      "totalWithCount": "Tổng cộng ({count} {label})",
+      "product": "sản phẩm",
+      "products": "sản phẩm",
+      "totalLimit": "Tổng số tiền phải trả không được vượt quá {amount}",
+      "signInToCheckout": "Đăng nhập để thanh toán",
+      "proceedToCheckout": "Tiến hành thanh toán"
+    },
+    "product": {
+      "featureUnavailable": "Tính năng chưa khả dụng",
+      "edit": "Chỉnh sửa",
+      "remove": "Xóa"
+    },
+    "note": {
+      "add": "Thêm ghi chú cho {shop}"
+    },
+    "promo": {
+      "applyShop": "Áp dụng mã khuyến mãi của shop",
+      "shopTitle": "Mã khuyến mãi của {shop}",
+      "title": "Mã khuyến mãi",
+      "codeLabel": "Mã khuyến mãi",
+      "apply": "Áp dụng",
+      "loading": "Đang tải mã khuyến mãi...",
+      "loadError": "Không thể tải mã khuyến mãi cho shop này.",
+      "emptyTitle": "Shop này chưa có mã khuyến mãi.",
+      "emptyDescription": "Nhập mã khuyến mãi hợp lệ vào ô bên trên.",
+      "combinationHint": "Áp dụng tối đa 2 mã khuyến mãi mỗi shop: 1 mã miễn phí vận chuyển và 1 mã giảm giá sản phẩm.",
+      "selectedOne": "Đã chọn 1 mã khuyến mãi",
+      "selectedMany": "Đã chọn {count} mã khuyến mãi",
+      "freeShipping": "Miễn phí vận chuyển",
+      "percentOff": "Giảm {percent}%",
+      "amountOff": "Giảm {amount}",
+      "discount": "Giảm giá",
+      "noMinimum": "Không yêu cầu tối thiểu",
+      "minimumSpend": "Chi tiêu tối thiểu {amount}",
+      "noMinimumQuantity": "Không yêu cầu số lượng tối thiểu",
+      "minimumQuantity": "Số lượng tối thiểu {count}",
+      "expires": "Hết hạn {date}",
+      "ineligible": {
+        "expired": "Đã hết hạn",
+        "notStarted": "Chưa bắt đầu",
+        "usageLimitReached": "Đã được sử dụng hết",
+        "userUsageLimitReached": "Bạn đã sử dụng mã này",
+        "authenticationRequired": "Đăng nhập để sử dụng mã này",
+        "productScope": "Không áp dụng cho sản phẩm trong giỏ hàng",
+        "minOrderValue": "Mua thêm để sử dụng mã này",
+        "minProducts": "Thêm sản phẩm để sử dụng mã này",
+        "zeroBenefit": "Không có ưu đãi cho giỏ hàng này"
+      },
+      "deleteFailed": "Xóa mã khuyến mãi thất bại",
+      "alreadyApplied": "Mã khuyến mãi đã được áp dụng",
+      "slotConflict": "Chỉ được áp dụng một mã khuyến mãi mỗi loại cho mỗi shop",
+      "onlyOneSlot": "Chỉ được áp dụng một mã khuyến mãi {slot} cho mỗi shop",
+      "slotShipping": "vận chuyển",
+      "slotDiscount": "giảm giá",
+      "cancel": "Hủy"
+    },
+    "options": {
+      "editTitle": "Chỉnh sửa tùy chọn",
+      "loading": "Đang tải tùy chọn...",
+      "loadError": "Không thể tải tùy chọn sản phẩm.",
+      "empty": "Sản phẩm này không có tùy chọn để chỉnh sửa.",
+      "selectPlaceholder": "Chọn {option}",
+      "apply": "Áp dụng",
+      "addInstead": "Thêm {count} thay thế",
+      "mergeNote": "Được gộp vào dòng hiện có của bạn{label} — {from} → {to}.",
+      "stockRemaining": "Chỉ còn {stock} trong kho; dòng này đang có {quantity}.",
+      "stockAll": "Giỏ hàng của bạn đã giữ toàn bộ {stock} sản phẩm có sẵn.",
+      "stockMerge": "Chỉ còn {stock} trong kho. Giỏ hàng của bạn đã giữ {held}, nên chỉ có thể thêm {addable} sản phẩm nữa.",
+      "toastMerged": "Đã gộp vào dòng hiện có của bạn — tổng {total}",
+      "toastUpdated": "Đã cập nhật tùy chọn sản phẩm",
+      "toastStockError": "Không đủ hàng để gộp vào dòng đó. Giảm số lượng và thử lại.",
+      "toastUpdateFailed": "Cập nhật tùy chọn sản phẩm thất bại",
+      "cancel": "Hủy"
+    }
+  }
+}

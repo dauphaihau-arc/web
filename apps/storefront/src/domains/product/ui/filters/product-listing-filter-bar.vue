@@ -17,6 +17,7 @@ const props = defineProps<{
 }>()
 
 const { state, sortOrder } = useProductListingFilters()
+const { t } = useI18n()
 
 const { facets } = useProductFacets({
   scope: () => props.scope,
@@ -28,9 +29,11 @@ const activePanel = ref<string | null>(null)
 
 const activeFilterCount = computed(() => countActiveFilters(state))
 
-const sortLabel = computed(() =>
-  PRODUCT_SORT_OPTIONS.find(option => option.id === sortOrder.value)?.label ?? '',
-)
+const sortLabel = computed(() => {
+  const option = PRODUCT_SORT_OPTIONS.find(item => item.id === sortOrder.value)
+
+  return option ? t(option.labelKey) : ''
+})
 
 function facetSelectedCount(facetKey: string) {
   return state.attributeFilters.find(filter => filter.facetKey === facetKey)
@@ -45,7 +48,7 @@ function facetSelectedCount(facetKey: string) {
       color="gray"
       class="whitespace-nowrap rounded-full text-text-strong"
       :class="activeFilterCount > 0 ? 'ring-text-strong' : 'ring-border-subtle'"
-      aria-label="All filters"
+      :aria-label="$t('catalog.filters.all')"
       @click="activePanel = 'all'"
     >
       <AppIcon

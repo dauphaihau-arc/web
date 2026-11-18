@@ -18,7 +18,18 @@ const props = defineProps<{
 }>()
 
 const { state, isResetDisabled, resetFilters } = useProductListingFilters()
+const { t } = useI18n()
 const { currency, pricePresetOpts } = usePricePresetOptions()
+
+const formatOptions = computed(() => isDigitalOpts.map(option => ({
+  value: option.value,
+  label: t(option.labelKey),
+})))
+
+const whoMadeOptions = computed(() => productWhoMadeOpts.map(option => ({
+  value: option.value,
+  label: t(option.labelKey),
+})))
 
 // Same request as the facet panel below (shared query key), read here to decide
 // whether the section has anything to show at all.
@@ -35,23 +46,23 @@ const hasAttributeFacets = computed(() => isFacetsLoading.value || facets.value.
 const filterItems = computed(() => [
   {
     id: 'format',
-    label: 'Item format',
+    label: t('catalog.filters.sections.format'),
     defaultOpen: true,
   },
   {
     id: 'price',
-    label: `Price (${currency.value})`,
+    label: t('catalog.filters.sections.price', { currency: currency.value }),
     defaultOpen: true,
   },
   {
     id: 'type',
-    label: 'Item type',
+    label: t('catalog.filters.sections.type'),
     defaultOpen: true,
   },
   ...(hasAttributeFacets.value
     ? [{
         id: 'attributes',
-        label: 'Attributes',
+        label: t('catalog.filters.sections.attributes'),
         defaultOpen: true,
       }]
     : []),
@@ -92,7 +103,7 @@ const filterItems = computed(() => [
         >
           <RadioGroupInput
             v-model="state.isDigital"
-            :options="isDigitalOpts"
+            :options="formatOptions"
           />
         </div>
 
@@ -117,7 +128,7 @@ const filterItems = computed(() => [
         >
           <RadioGroupInput
             v-model="state.whoMade"
-            :options="productWhoMadeOpts"
+            :options="whoMadeOptions"
           />
         </div>
 
@@ -141,7 +152,7 @@ const filterItems = computed(() => [
       :disabled="isResetDisabled"
       @click="resetFilters"
     >
-      Reset filters
+      {{ $t('catalog.filters.reset') }}
     </UButton>
   </div>
 </template>

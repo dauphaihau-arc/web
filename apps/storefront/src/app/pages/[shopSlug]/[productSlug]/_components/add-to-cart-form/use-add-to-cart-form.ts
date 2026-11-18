@@ -27,14 +27,24 @@ type AddToCartProduct = Pick<
   'inventory' | 'options' | 'variants'
 >;
 
+type Translate = (key: string, named?: Record<string, string | number>) => string;
+
 interface UseAddToCartFormOptions {
   product: Ref<AddToCartProduct>
   inventorySelectedModel: Ref<Inventory | undefined>
+  /**
+   * Locale translator supplied by the form component. The composable can be
+   * exercised outside a component setup (unit tests), where `useI18n` has no
+   * instance, so the caller owns locale resolution and this falls back to the
+   * key itself.
+   */
+  translate?: Translate
 }
 
 export function useAddToCartForm({
   product,
   inventorySelectedModel,
+  translate = key => key,
 }: UseAddToCartFormOptions) {
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -146,14 +156,14 @@ export function useAddToCartForm({
       if (!stateValidate.variantOption) {
         errors.push({
           path: 'variantOption',
-          message: 'Required',
+          message: translate('catalog.form.required'),
         });
       }
 
       if (optionMode.value === 'combine' && !stateValidate.variantSubOption) {
         errors.push({
           path: 'variantSubOption',
-          message: 'Required',
+          message: translate('catalog.form.required'),
         });
       }
     }
@@ -237,7 +247,7 @@ export function useAddToCartForm({
     if (inventory.stock <= 0) {
       toast.add({
         ...toastCustom.error,
-        title: 'Out of stock',
+        title: translate('catalog.toasts.outOfStock'),
       });
       return;
     }
@@ -255,7 +265,7 @@ export function useAddToCartForm({
         if (response.cart === null || !response.cart?.id) {
           toast.add({
             ...toastCustom.error,
-            title: 'Unable to start checkout',
+            title: translate('catalog.toasts.unableCheckout'),
           });
           return;
         }
@@ -274,7 +284,7 @@ export function useAddToCartForm({
       if (response.cart === null) {
         toast.add({
           ...toastCustom.error,
-          title: 'Add product to cart failed',
+          title: translate('catalog.toasts.addFailed'),
         });
         return;
       }
@@ -285,26 +295,28 @@ export function useAddToCartForm({
       );
       toast.add({
         ...toastCustom.success,
-        title: 'Added to cart',
+        title: translate('catalog.toasts.added'),
       });
     }
     catch (error) {
       const failure = resolveAddToCartFailure(error);
       const failureCopy = getAddToCartFailureCopy(failure, { isBuyNow: input.isBuyNow });
       const backendMessage = getBackendErrorMessage(error);
+      const requestFailedDescription = error instanceof FetchError && !backendMessage
+        ? translate('catalog.toasts.requestFailed', {
+          status: error.status ?? translate('catalog.toasts.unknownStatus'),
+        })
+        : undefined;
 
       toast.add({
         ...toastCustom.error,
         title: failureCopy.title,
-        description: failureCopy.description ??
-          (error instanceof FetchError && !backendMessage
-            ? `Request failed with status ${error.status ?? 'unknown'}`
-            : undefined),
+        description: failureCopy.description ?? requestFailedDescription,
         ...(failure === 'unknown' && backendMessage
           ? { title: backendMessage }
           : {}),
         ...(error instanceof FetchError && !backendMessage && failure === 'unknown'
-          ? { description: `Request failed with status ${error.status ?? 'unknown'}` }
+          ? { description: requestFailedDescription }
           : {}),
       });
     }

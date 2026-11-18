@@ -39,7 +39,7 @@ const {
         inner: '-top-10',
       },
     }"
-    title="Update address"
+    :title="$t('account.addresses.updateTitle')"
   >
     <UForm
       ref="formRef"
@@ -76,7 +76,7 @@ const {
           :disabled="isPendingUpdateAddress"
           @click="dialog.close"
         >
-          Cancel
+          {{ $t('account.common.cancel') }}
         </UButton>
         <UButton
           size="md"
@@ -84,7 +84,7 @@ const {
           :loading="isPendingUpdateAddress"
           @click="formRef?.submit"
         >
-          Save
+          {{ $t('account.common.save') }}
         </UButton>
       </DialogActions>
     </template>

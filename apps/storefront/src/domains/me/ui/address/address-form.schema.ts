@@ -3,23 +3,32 @@ import { ADDRESS_CONFIG } from '@arc/enums/address';
 import { addressFormSchema as baseAddressFormSchema } from '@arc/schemas/forms/address/address-form.schema';
 import { guestCheckoutFormSchema } from '@arc/schemas/guest-checkout.schema';
 import {
+  DEFAULT_ADDRESS_VALIDATION_MESSAGES,
   isPhoneValid,
   isPostcodeValid,
   isUnchangedPhone,
   isUnchangedPostcode,
   normalizePhone,
   normalizePostcode,
-  PHONE_INVALID,
-  PHONE_REQUIRED,
-  PHONE_TOO_LONG,
-  POSTCODE_INVALID,
-  POSTCODE_REQUIRED,
-  POSTCODE_TOO_LONG,
+  type AddressValidationMessages,
 } from './address-validation';
 
 const COUNTRY_REQUIRED = 'Select a country';
 const SUBDIVISION_REQUIRED = 'Select a state or province';
 const SUBDIVISION_TOO_LONG = `Keep the state or province to ${ADDRESS_CONFIG.MAX_CHAR_CITY} characters or fewer`;
+
+export interface AddressSchemaMessages extends AddressValidationMessages {
+  countryRequired: string
+  subdivisionRequired: string
+  subdivisionTooLong: string
+}
+
+const DEFAULT_ADDRESS_SCHEMA_MESSAGES: AddressSchemaMessages = {
+  ...DEFAULT_ADDRESS_VALIDATION_MESSAGES,
+  countryRequired: COUNTRY_REQUIRED,
+  subdivisionRequired: SUBDIVISION_REQUIRED,
+  subdivisionTooLong: SUBDIVISION_TOO_LONG,
+};
 
 export interface AddressSchemaOptions {
   /** Accept a stored display name when no canonical country code was chosen. */
@@ -51,12 +60,19 @@ export interface AddressSchemaOptions {
    */
   preservePhone?: string
   preserveZip?: string
+
+  /** Localized copy for the schema's validation issues. */
+  messages?: Partial<AddressSchemaMessages>
 }
 
 /**
  * Shared phone/postcode field shapes: normalize on parse, except for an
  * untouched stored value, which is passed through exactly as the row holds it.
  */
+function resolveMessages(options: AddressSchemaOptions): AddressSchemaMessages {
+  return { ...DEFAULT_ADDRESS_SCHEMA_MESSAGES, ...options.messages };
+}
+
 function postcodeField(options: AddressSchemaOptions) {
   return z
     .string()
@@ -74,9 +90,9 @@ function postcodeField(options: AddressSchemaOptions) {
     });
 }
 
-function phoneField(options: AddressSchemaOptions) {
+function phoneField(options: AddressSchemaOptions, messages: AddressSchemaMessages) {
   return z
-    .string({ error: PHONE_REQUIRED })
+    .string({ error: messages.phoneRequired })
     .transform(value =>
       isUnchangedPhone(value, options.preservePhone)
         ? value
@@ -106,6 +122,7 @@ function validatePostcode(
   value: ValidationValues,
   context: z.RefinementCtx,
   options: AddressSchemaOptions,
+  messages: AddressSchemaMessages,
 ) {
   if (options.postcodeVisible === false) {
     return;
@@ -118,19 +135,19 @@ function validatePostcode(
   }
 
   if (zip.length > ADDRESS_CONFIG.MAX_CHAR_ZIP) {
-    addIssue(context, 'zip', POSTCODE_TOO_LONG);
+    addIssue(context, 'zip', messages.postcodeTooLong);
     return;
   }
 
   if (!zip) {
     if (options.postalCodeRequired ?? true) {
-      addIssue(context, 'zip', POSTCODE_REQUIRED);
+      addIssue(context, 'zip', messages.postcodeRequired);
     }
     return;
   }
 
   if (!isPostcodeValid(zip, value.country_code?.trim() || options.countryCode)) {
-    addIssue(context, 'zip', POSTCODE_INVALID);
+    addIssue(context, 'zip', messages.postcodeInvalid);
   }
 }
 
@@ -138,6 +155,7 @@ function validatePhone(
   value: ValidationValues,
   context: z.RefinementCtx,
   options: AddressSchemaOptions,
+  messages: AddressSchemaMessages,
 ) {
   const phone = value.phone ?? '';
 
@@ -146,12 +164,12 @@ function validatePhone(
   }
 
   if (!phone) {
-    addIssue(context, 'phone', PHONE_REQUIRED);
+    addIssue(context, 'phone', messages.phoneRequired);
     return;
   }
 
   if (phone.length > ADDRESS_CONFIG.MAX_CHAR_PHONE) {
-    addIssue(context, 'phone', PHONE_TOO_LONG);
+    addIssue(context, 'phone', messages.phoneTooLong);
     return;
   }
 
@@ -164,7 +182,7 @@ function validatePhone(
   }
 
   if (!isPhoneValid(phone, countryCode)) {
-    addIssue(context, 'phone', PHONE_INVALID);
+    addIssue(context, 'phone', messages.phoneInvalid);
   }
 }
 
@@ -185,6 +203,8 @@ export function createCodedAddressFormSchema(
   hasAdministrativeAreas: boolean,
   options: AddressSchemaOptions = {},
 ) {
+  const messages = resolveMessages(options);
+
   return baseAddressFormSchema
     .extend({
       country: z.string().optional(),
@@ -194,11 +214,11 @@ export function createCodedAddressFormSchema(
       state_text: options.allowLegacySubdivision
         ? z.string().optional()
         : z
-          .string({ error: SUBDIVISION_REQUIRED })
-          .max(ADDRESS_CONFIG.MAX_CHAR_CITY, SUBDIVISION_TOO_LONG)
+          .string({ error: messages.subdivisionRequired })
+          .max(ADDRESS_CONFIG.MAX_CHAR_CITY, messages.subdivisionTooLong)
           .optional(),
       zip: postcodeField(options),
-      phone: phoneField(options),
+      phone: phoneField(options, messages),
     })
     .superRefine((value, context) => {
       if (
@@ -208,13 +228,13 @@ export function createCodedAddressFormSchema(
         context.addIssue({
           code: z.ZodIssueCode.custom,
           path: ['country_code'],
-          message: COUNTRY_REQUIRED,
+          message: messages.countryRequired,
         });
         return;
       }
 
-      validatePostcode(value, context, options);
-      validatePhone(value, context, options);
+      validatePostcode(value, context, options, messages);
+      validatePhone(value, context, options, messages);
 
       if (
         hasAdministrativeAreas
@@ -225,7 +245,7 @@ export function createCodedAddressFormSchema(
           context.addIssue({
             code: z.ZodIssueCode.custom,
             path: ['state_code'],
-            message: SUBDIVISION_REQUIRED,
+            message: messages.subdivisionRequired,
           });
         }
         return;
@@ -244,6 +264,8 @@ export function createGuestAddressFormSchema(
   hasAdministrativeAreas: boolean,
   options: AddressSchemaOptions = {},
 ) {
+  const messages = resolveMessages(options);
+
   return guestCheckoutFormSchema
     .extend({
       country: z.string().optional(),
@@ -251,14 +273,14 @@ export function createGuestAddressFormSchema(
       state_code: z.string().optional(),
       state_text: z
         .string()
-        .max(ADDRESS_CONFIG.MAX_CHAR_CITY, SUBDIVISION_TOO_LONG)
+        .max(ADDRESS_CONFIG.MAX_CHAR_CITY, messages.subdivisionTooLong)
         .optional(),
       zip: postcodeField(options),
-      phone: phoneField(options),
+      phone: phoneField(options, messages),
     })
     .superRefine((value, context) => {
-      validatePostcode(value, context, options);
-      validatePhone(value, context, options);
+      validatePostcode(value, context, options, messages);
+      validatePhone(value, context, options, messages);
 
       if (
         hasAdministrativeAreas
@@ -269,7 +291,7 @@ export function createGuestAddressFormSchema(
           context.addIssue({
             code: z.ZodIssueCode.custom,
             path: ['state_code'],
-            message: SUBDIVISION_REQUIRED,
+            message: messages.subdivisionRequired,
           });
         }
         return;

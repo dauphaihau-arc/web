@@ -84,4 +84,12 @@ test.describe('locale on the server and in API request headers', () => {
 
     await expect(page).toHaveURL(/\/vi$/);
   });
+
+  test('a Vietnamese category page renders translated catalog copy', async ({ page }) => {
+    await page.goto('/vi/c/gaming-laptops-c1');
+
+    await expect(page.locator('html')).toHaveAttribute('lang', 'vi');
+    await expect(page.getByText(/Sắp xếp theo:/)).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByRole('button', { name: 'Đặt lại bộ lọc' })).toBeVisible();
+  });
 });

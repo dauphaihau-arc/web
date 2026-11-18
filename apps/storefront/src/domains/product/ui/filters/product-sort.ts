@@ -2,19 +2,22 @@
  * Product listing sort options shared by the desktop toolbar select and the
  * mobile filter sheet. `featured` is the default and is never written to the
  * route query, so it doubles as "no explicit order".
+ *
+ * Labels are locale keys, not display copy: the surfaces resolve them with
+ * `useI18n` so the stored sort id stays language-neutral.
  */
 export type ProductSortId = 'featured' | 'newest' | 'price_asc' | 'price_desc';
 
 export type ProductSortOption = {
   id: ProductSortId
-  label: string
+  labelKey: string
 };
 
 export const PRODUCT_SORT_OPTIONS: ProductSortOption[] = [
-  { id: 'featured', label: 'Featured' },
-  { id: 'newest', label: 'Newest' },
-  { id: 'price_desc', label: 'Price: High-Low' },
-  { id: 'price_asc', label: 'Price: Low-High' },
+  { id: 'featured', labelKey: 'catalog.sort.featured' },
+  { id: 'newest', labelKey: 'catalog.sort.newest' },
+  { id: 'price_desc', labelKey: 'catalog.sort.priceHighLow' },
+  { id: 'price_asc', labelKey: 'catalog.sort.priceLowHigh' },
 ];
 
 export const DEFAULT_PRODUCT_SORT_ID: ProductSortId = 'featured';

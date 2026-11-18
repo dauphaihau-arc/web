@@ -13,6 +13,7 @@ import { useGetMarketConfig } from '~/domains/market/queries/config.query'
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
 import { toastCustom } from '~/shared/config/toast'
 import { useWebPushNotifications } from '~/domains/me/composables/use-web-push-notifications'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 import type { FormSubmitEvent } from '#ui/types'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
@@ -22,6 +23,7 @@ const toast = useToast()
 const marketStore = useMarketStore()
 const preferencesFormRef = ref()
 const { locale } = useI18n()
+const t = useAccountTranslator()
 const {
   status,
   permission,
@@ -117,13 +119,13 @@ async function saveMarketPreferences(_event: FormSubmitEvent<PreferenceState>) {
 
     toast.add({
       ...toastCustom.success,
-      title: 'Preferences updated',
+      title: t('account.profile.preferencesUpdatedToast'),
     })
   }
   catch (error) {
     toast.add({
       ...toastCustom.error,
-      title: error instanceof Error ? error.message : 'Failed to update preferences',
+      title: error instanceof Error ? error.message : t('account.profile.preferencesFailedToast'),
     })
   }
 }
@@ -141,7 +143,7 @@ async function onNotificationToggle(next: boolean) {
       if (enabled) {
         toast.add({
           ...toastCustom.success,
-          title: 'Browser notifications enabled',
+          title: t('account.profile.notifications.enabledToast'),
         })
       }
     }
@@ -149,14 +151,14 @@ async function onNotificationToggle(next: boolean) {
       await disable()
       toast.add({
         ...toastCustom.success,
-        title: 'Browser notifications disabled',
+        title: t('account.profile.notifications.disabledToast'),
       })
     }
   }
   catch (error) {
     toast.add({
       ...toastCustom.error,
-      title: error instanceof Error ? error.message : 'Failed to update browser notifications',
+      title: error instanceof Error ? error.message : t('account.profile.notifications.failedToast'),
     })
   }
   finally {
@@ -173,14 +175,14 @@ onMounted(() => {
 <template>
   <div>
     <h3 class="text-2xl font-medium">
-      Account
+      {{ t('account.profile.title') }}
     </h3>
     <div class="mt-3 space-y-3">
       <UCard>
         <div class="space-y-3">
           <div>
             <div class="font-medium">
-              Name
+              {{ t('account.common.name') }}
             </div>
             <div class="font-light text-text-subtle">
               {{ currentUser?.user?.display_name }}
@@ -188,7 +190,7 @@ onMounted(() => {
           </div>
           <div>
             <div class="font-medium">
-              Email
+              {{ t('account.common.email') }}
             </div>
             <div class="font-light text-text-subtle">
               {{ currentUser?.user?.email }}
@@ -204,18 +206,18 @@ onMounted(() => {
       >
         <WrapperFormRows>
           <template #title>
-            Market preferences
+            {{ t('account.profile.preferences.title') }}
           </template>
           <template #subtitle>
-            Choose the region, language, and currency used for storefront browsing.
+            {{ t('account.profile.preferences.description') }}
           </template>
           <WrapperFormRow
-            label="Region"
-            description="Used for storefront browsing and product availability."
+            :label="t('account.profile.preferences.region')"
+            :description="t('account.profile.preferences.regionDescription')"
           >
             <MarketRegionSelect
               v-model="preferenceState.region"
-              aria-label="Region"
+              :aria-label="t('account.profile.preferences.region')"
               :options="regionOptions"
               :disabled="isSavingPreferences"
               :pending="isPendingGetMarketConfig"
@@ -225,12 +227,12 @@ onMounted(() => {
           </WrapperFormRow>
 
           <WrapperFormRow
-            label="Language"
-            description="Storefront text, dates, and numbers use this language."
+            :label="t('account.profile.preferences.language')"
+            :description="t('account.profile.preferences.languageDescription')"
           >
             <MarketLanguageSelect
               v-model="preferenceState.language"
-              aria-label="Language"
+              :aria-label="t('account.profile.preferences.language')"
               :options="accountLanguageOptions"
               :disabled="isSavingPreferences"
               size="lg"
@@ -239,12 +241,12 @@ onMounted(() => {
           </WrapperFormRow>
 
           <WrapperFormRow
-            label="Currency"
-            description="Prices and totals are shown in this currency."
+            :label="t('account.profile.preferences.currency')"
+            :description="t('account.profile.preferences.currencyDescription')"
           >
             <MarketCurrencySelect
               v-model="preferenceState.currency"
-              aria-label="Currency"
+              :aria-label="t('account.profile.preferences.currency')"
               :options="currencyOptions"
               :disabled="isSavingPreferences"
               size="lg"
@@ -259,7 +261,7 @@ onMounted(() => {
               :disabled="!isDirty || isSavingPreferences"
               @click="preferencesFormRef?.submit"
             >
-              Save preferences
+              {{ t('account.profile.preferences.save') }}
             </UButton>
           </div>
         </WrapperFormRows>
@@ -267,12 +269,12 @@ onMounted(() => {
 
       <WrapperFormRows>
         <WrapperFormRow
-          label="Browser notifications"
-          description="Receive order updates as browser notifications when this device is subscribed."
+          :label="t('account.profile.notifications.label')"
+          :description="t('account.profile.notifications.description')"
         >
           <div class="flex flex-col items-end gap-1">
             <UToggle
-              aria-label="Browser notifications"
+              :aria-label="t('account.profile.notifications.label')"
               :model-value="isEnabled"
               :loading="isPending || status === 'syncing'"
               :disabled="!isSupported || permission === 'denied' || isPending || status === 'syncing'"
@@ -282,7 +284,7 @@ onMounted(() => {
               v-if="permission === 'denied'"
               class="text-right text-xs text-state-danger-text"
             >
-              Browser permission is blocked. Re-enable notifications in your browser settings first.
+              {{ t('account.profile.notifications.blocked') }}
             </p>
           </div>
         </WrapperFormRow>

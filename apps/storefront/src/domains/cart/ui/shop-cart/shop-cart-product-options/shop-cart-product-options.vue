@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import { useCartItemOptionsEdit } from './use-cart-item-options-edit'
+import { useShopCartCopy } from '../use-shop-cart-copy'
 import type { CartProductItem } from '~/domains/cart/api/cart.shared'
 
 const props = withDefaults(defineProps<{
@@ -33,6 +34,57 @@ const {
   productCart: toRef(props, 'productCart'),
   siblingItems: toRef(props, 'siblingItems'),
 })
+
+const t = useShopCartCopy()
+
+/**
+ * The merge state carries the numbers; the labels are rendered here so the
+ * picker's copy follows the buyer's locale.
+ */
+const mergeNoteLabel = computed(() => {
+  const mergeItem = mergeState.value.mergeItem
+
+  if (!mergeItem || mergeState.value.exceedsStock) {
+    return ''
+  }
+
+  const label = mergeItem.inventory.selected_options
+    .map(option => `${option.option_name}: ${option.value}`)
+    .join(', ')
+
+  return t('cart.options.mergeNote', {
+    label: label ? ` (${label})` : '',
+    from: mergeItem.quantity,
+    to: mergeState.value.mergedQuantity,
+  })
+})
+
+const stockWarningLabel = computed(() => {
+  const state = mergeState.value
+
+  if (!state.exceedsStock) {
+    return ''
+  }
+
+  if (!state.mergeItem) {
+    return t('cart.options.stockRemaining', {
+      stock: state.maxAddableQuantity,
+      quantity: props.productCart.quantity,
+    })
+  }
+
+  if (state.maxAddableQuantity === 0) {
+    return t('cart.options.stockAll', {
+      stock: state.availableStock,
+    })
+  }
+
+  return t('cart.options.stockMerge', {
+    stock: state.mergeItem.quantity + state.maxAddableQuantity,
+    held: state.mergeItem.quantity,
+    addable: state.maxAddableQuantity,
+  })
+})
 </script>
 
 <template>
@@ -61,7 +113,7 @@ const {
       <template #panel>
         <div class="w-[min(92vw,300px)] p-4">
           <div class="mb-4 text-sm font-semibold text-text-strong">
-            Edit options
+            {{ t('cart.options.editTitle') }}
           </div>
 
           <UAlert
@@ -77,21 +129,21 @@ const {
             v-if="isPendingProduct"
             loading
             variant="naked"
-            description="Loading options..."
+            :description="t('cart.options.loading')"
           />
           <Empty
             v-else-if="isErrorProduct"
             variant="naked"
             size="sm"
             :icon="ICON_NAME_BY_ALIAS['warning']"
-            description="Could not load product options."
+            :description="t('cart.options.loadError')"
           />
           <Empty
             v-else-if="optionMode === 'none'"
             variant="naked"
             size="sm"
             :icon="ICON_NAME_BY_ALIAS['product']"
-            description="This product has no options to edit."
+            :description="t('cart.options.empty')"
           />
           <div
             v-else
@@ -103,7 +155,7 @@ const {
             >
               <USelectMenu
                 v-model="selectedValues[0]"
-                :placeholder="`Select a ${product?.options[0]?.name ?? 'variant'}`"
+                :placeholder="t('cart.options.selectPlaceholder', { option: product?.options[0]?.name ?? 'variant' })"
                 size="lg"
                 :options="variantOptions"
                 value-attribute="value"
@@ -118,7 +170,7 @@ const {
             >
               <USelectMenu
                 v-model="selectedValues[1]"
-                :placeholder="`Select a ${product?.options[1]?.name ?? 'variant'}`"
+                :placeholder="t('cart.options.selectPlaceholder', { option: product?.options[1]?.name ?? 'variant' })"
                 size="lg"
                 :options="subVariantOptions"
                 value-attribute="value"
@@ -127,17 +179,17 @@ const {
             </UFormGroup>
 
             <p
-              v-if="mergeState.mergeNote"
+              v-if="mergeNoteLabel"
               class="text-xs text-text-muted"
             >
-              {{ mergeState.mergeNote }}
+              {{ mergeNoteLabel }}
             </p>
 
             <p
-              v-if="mergeState.stockWarning"
+              v-if="stockWarningLabel"
               class="text-xs text-state-warning-text"
             >
-              {{ mergeState.stockWarning }}
+              {{ stockWarningLabel }}
             </p>
           </div>
 
@@ -146,7 +198,7 @@ const {
               color="gray"
               @click="cancel"
             >
-              Cancel
+              {{ t('cart.options.cancel') }}
             </UButton>
             <UButton
               v-if="canApplyReduced"
@@ -154,14 +206,14 @@ const {
               :disabled="props.disabled"
               @click="apply(mergeState.maxAddableQuantity)"
             >
-              Add {{ mergeState.maxAddableQuantity }} instead
+              {{ t('cart.options.addInstead', { count: mergeState.maxAddableQuantity }) }}
             </UButton>
             <UButton
               :loading="isPendingUpdate"
               :disabled="props.disabled || !canApply"
               @click="apply()"
             >
-              Apply
+              {{ t('cart.options.apply') }}
             </UButton>
           </div>
         </div>

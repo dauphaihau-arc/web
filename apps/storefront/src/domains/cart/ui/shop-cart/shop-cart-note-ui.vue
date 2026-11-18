@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ORDER_CONFIG } from '@arc/enums/order'
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
+import { useShopCartCopy } from './use-shop-cart-copy'
 
 const props = withDefaults(defineProps<{
   shopName?: string
@@ -12,6 +13,8 @@ const props = withDefaults(defineProps<{
 
 const note = defineModel<string>('note', { required: true })
 const showInput = defineModel<boolean>('showInput', { required: true })
+
+const t = useShopCartCopy()
 </script>
 
 <template>
@@ -24,7 +27,7 @@ const showInput = defineModel<boolean>('showInput', { required: true })
       class="mb-2 w-fit"
       @click="showInput = !showInput"
     >
-      Add a note to {{ props.shopName }}
+      {{ t('cart.note.add', { shop: props.shopName ?? '' }) }}
     </UButton>
 
     <UTextarea

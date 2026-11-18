@@ -8,24 +8,13 @@ import type { UpsertMyProductReviewRequest } from '~/domains/me/api/product-revi
 import { toastCustom } from '~/shared/config/toast'
 import { useUpsertMyProductReview } from '~/domains/me/mutations/product-reviews/upsert-review.mutation'
 import { resolveStorageKeyFromPublicUrl } from '~/shared/utils/storage-public-url'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 
 type OrderShop = GetOrderShopsResponse['order_shops'][number]
 
 type ReviewFormState = UpsertMyProductReviewRequest & {
   orderItemId: string
 }
-
-const ratingOptions: ReadonlyArray<{
-  value: number
-  label: string
-  icon: AppIconAlias
-}> = [
-  { value: 1, label: 'Bad', icon: 'ratingVeryBad' },
-  { value: 2, label: 'Poor', icon: 'ratingBad' },
-  { value: 3, label: 'Okay', icon: 'ratingNeutral' },
-  { value: 4, label: 'Good', icon: 'ratingGood' },
-  { value: 5, label: 'Excellent', icon: 'ratingExcellent' },
-]
 
 const props = withDefaults(defineProps<{
   orderShop: OrderShop
@@ -34,6 +23,20 @@ const props = withDefaults(defineProps<{
 }>(), {
   orderItemIds: undefined,
 })
+
+const t = useAccountTranslator()
+
+const ratingOptions = computed<ReadonlyArray<{
+  value: number
+  label: string
+  icon: AppIconAlias
+}>>(() => [
+  { value: 1, label: t('account.orders.reviewDialog.ratings.bad'), icon: 'ratingVeryBad' },
+  { value: 2, label: t('account.orders.reviewDialog.ratings.poor'), icon: 'ratingBad' },
+  { value: 3, label: t('account.orders.reviewDialog.ratings.okay'), icon: 'ratingNeutral' },
+  { value: 4, label: t('account.orders.reviewDialog.ratings.good'), icon: 'ratingGood' },
+  { value: 5, label: t('account.orders.reviewDialog.ratings.excellent'), icon: 'ratingExcellent' },
+])
 
 const dialog = useModal()
 const toast = useToast()
@@ -72,8 +75,8 @@ async function onSubmit(event: FormSubmitEvent<ReviewFormState>) {
   if (isUploadingImages.value) {
     toast.add({
       ...toastCustom.warning,
-      title: 'Images are still uploading',
-      description: 'Wait for uploads to finish before submitting your review.',
+      title: t('account.orders.reviewDialog.imagesUploadingToast'),
+      description: t('account.orders.reviewDialog.imagesUploadingDescription'),
     })
     return
   }
@@ -115,8 +118,12 @@ watch(() => state.orderItemId, () => {
 
 <template>
   <BaseDialog
-    :title="isEditMode ? 'Edit your review' : 'Write a review'"
-    :description="isEditMode ? 'Update your rating, notes, or photos for this item.' : 'Share what arrived well and what other shoppers should know about this item.'"
+    :title="isEditMode
+      ? t('account.orders.reviewDialog.editTitle')
+      : t('account.orders.reviewDialog.title')"
+    :description="isEditMode
+      ? t('account.orders.reviewDialog.editDescription')
+      : t('account.orders.reviewDialog.description')"
   >
     <UForm
       ref="formRef"
@@ -135,7 +142,7 @@ watch(() => state.orderItemId, () => {
 
         <UFormGroup
           required
-          label="Rating"
+          :label="t('account.common.rating')"
           name="rating"
         >
           <div class="grid grid-cols-2 gap-2 sm:grid-cols-5">
@@ -147,7 +154,7 @@ watch(() => state.orderItemId, () => {
               size="sm"
               type="button"
               class="h-auto flex-col justify-center gap-1 py-2 text-center leading-tight"
-              :aria-label="`Rate this product ${option.label}`"
+              :aria-label="t('account.orders.reviewDialog.ratingAria', { label: option.label })"
               @click="setRating(option.value)"
             >
               <AppIcon
@@ -160,25 +167,25 @@ watch(() => state.orderItemId, () => {
         </UFormGroup>
 
         <UFormGroup
-          label="Headline"
+          :label="t('account.orders.reviewDialog.headline')"
           name="title"
         >
           <UInput
             v-model="state.title"
             :maxlength="120"
-            placeholder="Short summary"
+            :placeholder="t('account.orders.reviewDialog.headlinePlaceholder')"
           />
         </UFormGroup>
 
         <UFormGroup
-          label="Review"
+          :label="t('account.common.review')"
           name="body"
         >
           <UTextarea
             v-model="state.body"
             :rows="6"
             :maxlength="5000"
-            placeholder="What stood out once you received it?"
+            :placeholder="t('account.orders.reviewDialog.reviewPlaceholder')"
           />
         </UFormGroup>
       </div>
@@ -191,14 +198,18 @@ watch(() => state.orderItemId, () => {
           :disabled="submitDisabled"
           @click="dialog.close"
         >
-          Close
+          {{ t('account.common.close') }}
         </UButton>
         <UButton
           :loading="isPending"
           :disabled="submitDisabled"
           @click="formRef?.submit"
         >
-          {{ isUploadingImages ? 'Uploading photos...' : isEditMode ? 'Update review' : 'Submit review' }}
+          {{ isUploadingImages
+            ? t('account.orders.reviewDialog.uploading')
+            : isEditMode
+              ? t('account.orders.reviewDialog.update')
+              : t('account.orders.reviewDialog.submit') }}
         </UButton>
       </DialogActions>
     </template>

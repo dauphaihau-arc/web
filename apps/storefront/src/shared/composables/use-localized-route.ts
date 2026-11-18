@@ -15,17 +15,22 @@ import type { RouteLocationRaw } from 'vue-router';
  */
 export function useLocalizedRoute() {
   const router = useRouter();
-  const { $i18n } = useNuxtApp();
+  const nuxtApp = useNuxtApp();
+  const i18n = nuxtApp.$i18n as {
+    locale?: { value?: string }
+    defaultLocale?: string
+  } | undefined;
+  const defaultLocale = i18n?.defaultLocale ?? 'en';
 
   function localizePath(target: RouteLocationRaw): string {
-    const locale = $i18n.locale.value;
+    const locale = i18n?.locale?.value ?? defaultLocale;
     const prefix = `/${locale}`;
     const resolved = router.resolve(target);
 
-    const alreadyLocalized = locale !== $i18n.defaultLocale
+    const alreadyLocalized = locale !== defaultLocale
       && (resolved.path === prefix || resolved.path.startsWith(`${prefix}/`));
 
-    if (locale === $i18n.defaultLocale || alreadyLocalized) {
+    if (locale === defaultLocale || alreadyLocalized) {
       return resolved.fullPath;
     }
 

@@ -1,0 +1,80 @@
+{
+  "checkout": {
+    "loading": "Đang tải thông tin thanh toán...",
+    "quoteError": {
+      "title": "Không thể tải phí vận chuyển và tổng tiền",
+      "description": "Vui lòng kiểm tra địa chỉ và thử lại."
+    },
+    "actions": {
+      "completeOrder": "Hoàn tất đơn hàng"
+    },
+    "review": {
+      "shippingAddress": "Địa chỉ giao hàng",
+      "noAddress": "Chưa chọn địa chỉ giao hàng.",
+      "changeAddress": "Thay đổi",
+      "addAddress": "Thêm địa chỉ giao hàng",
+      "paymentMethod": "Phương thức thanh toán"
+    },
+    "payment": {
+      "card": {
+        "label": "Thẻ tín dụng / ghi nợ",
+        "description": "Chúng tôi hỗ trợ Mastercard, Visa và Stripe"
+      },
+      "cash": {
+        "label": "Thanh toán khi nhận hàng",
+        "description": "Thanh toán bằng tiền mặt khi đơn hàng được giao"
+      }
+    },
+    "address": {
+      "addNew": "Thêm địa chỉ mới",
+      "shippingTitle": "Địa chỉ giao hàng",
+      "noSaved": "Bạn chưa có địa chỉ nào được lưu.",
+      "createFailed": "Tạo địa chỉ thất bại",
+      "back": "Quay lại",
+      "optional": "{label} (không bắt buộc)",
+      "chooseFromList": "Chọn từ danh sách",
+      "setAsDefault": "Đặt làm mặc định",
+      "fields": {
+        "email": "Email",
+        "country": "Quốc gia",
+        "fullName": "Họ và tên",
+        "street": "Đường",
+        "address2": "Căn hộ / Tòa nhà / Khác",
+        "city": "Thành phố",
+        "state": "Bang",
+        "stateProvince": "Bang/Tỉnh",
+        "provinceCity": "Tỉnh/Thành phố",
+        "prefecture": "Tỉnh",
+        "district": "Quận",
+        "zipCode": "Mã ZIP",
+        "postcode": "Mã bưu chính",
+        "postalCode": "Mã bưu chính",
+        "zipPostalCode": "Mã ZIP/Bưu chính",
+        "phone": "Số điện thoại"
+      },
+      "errors": {
+        "countryRequired": "Chọn quốc gia",
+        "subdivisionRequired": "Chọn bang hoặc tỉnh",
+        "subdivisionTooLong": "Giữ bang hoặc tỉnh trong tối đa {count} ký tự",
+        "phoneRequired": "Vui lòng nhập số điện thoại",
+        "phoneInvalid": "Nhập số điện thoại hợp lệ cho quốc gia đã chọn",
+        "phoneTooLong": "Giữ số điện thoại trong tối đa {count} ký tự",
+        "postcodeRequired": "Vui lòng nhập mã ZIP hoặc mã bưu chính",
+        "postcodeInvalid": "Nhập mã ZIP hoặc mã bưu chính hợp lệ cho quốc gia đã chọn",
+        "postcodeTooLong": "Giữ mã ZIP hoặc mã bưu chính trong tối đa {count} ký tự"
+      }
+    },
+    "success": {
+      "errorTitle": "Đã xảy ra lỗi",
+      "errorDescription": "Không thể tải chi tiết đơn hàng của bạn. Vui lòng thử lại.",
+      "title": "Đơn hàng của bạn đã được xác nhận.",
+      "working": "{shops} sẽ bắt đầu xử lý ngay.",
+      "emailSoon": "Chúng tôi sẽ gửi email ngay khi đơn hàng được giao đi.",
+      "viewOrder": "Xem đơn hàng của bạn",
+      "trackOrder": "Theo dõi đơn hàng của bạn",
+      "deliveryNotice": "Thời gian giao hàng chỉ là ước tính. Nếu bạn gặp sự cố với đơn hàng này, vui lòng {contactSeller}. Xem {moreInfo}.",
+      "contactSeller": "liên hệ người bán",
+      "moreInfo": "thêm thông tin"
+    }
+  }
+}

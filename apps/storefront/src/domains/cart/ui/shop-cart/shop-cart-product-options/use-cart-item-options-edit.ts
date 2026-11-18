@@ -16,6 +16,7 @@ import { getBackendErrorCode, getBackendErrorMessage } from '~/shared/utils/back
 import { toastCustom } from '~/shared/config/toast';
 import type { CartProductItem } from '~/domains/cart/api/cart.shared';
 import type { GetCartResponse, UpdateCartRequest } from '~/domains/cart/api/contracts/cart.contract';
+import { useShopCartCopy } from '../use-shop-cart-copy';
 
 /**
  * Editing one cart line's variant. Resolves the product's option selects and
@@ -34,6 +35,7 @@ export function useCartItemOptionsEdit(input: {
   const cartStore = useCartStore();
   const queryClient = useQueryClient();
   const toast = useToast();
+  const t = useShopCartCopy();
 
   const open = ref(false);
   const selectedValues = ref<string[]>([]);
@@ -177,21 +179,21 @@ export function useCartItemOptionsEdit(input: {
       toast.add({
         ...toastCustom.success,
         title: mergingItem
-          ? `Merged into your existing line — ${mergedTotal} total`
-          : 'Product options updated',
+          ? t('cart.options.toastMerged', { total: mergedTotal })
+          : t('cart.options.toastUpdated'),
       });
     }
     catch (error) {
       // Stock can drop between the picker's snapshot and the write; the panel
       // states that instead of closing behind a toast.
       if (getBackendErrorCode(error) === 'CART_QUANTITY_EXCEEDS_STOCK') {
-        panelError.value = 'Not enough stock to merge into that line. Reduce the quantity and try again.';
+        panelError.value = t('cart.options.toastStockError');
         return;
       }
 
       toast.add({
         ...toastCustom.error,
-        title: getBackendErrorMessage(error) ?? 'Update product options failed',
+        title: getBackendErrorMessage(error) ?? t('cart.options.toastUpdateFailed'),
       });
     }
   }

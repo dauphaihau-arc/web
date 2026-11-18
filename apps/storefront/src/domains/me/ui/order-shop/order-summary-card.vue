@@ -2,12 +2,15 @@
 import type { ElementType } from '@arc/contracts/utils'
 import { formatMinorCurrency } from '@arc/utils'
 import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 
 type OrderShop = ElementType<GetOrderShopsResponse['order_shops']>
 
 const props = defineProps<{
   orderShop: OrderShop
 }>()
+
+const t = useAccountTranslator()
 
 const regularMerchandiseMinor = computed(() => props.orderShop.subtotal_minor + props.orderShop.sale_discount_minor)
 const saleDiscountMinor = computed(() => props.orderShop.sale_discount_minor)
@@ -16,7 +19,9 @@ const shippingDiscountMinor = computed(() => props.orderShop.shipping_discount_m
 
 const codeSavingsLabel = computed(() => {
   const codes = props.orderShop.promo_codes.map(promoCode => promoCode.code)
-  return codes.length > 0 ? `Code savings (${codes.join(', ')})` : 'Code savings'
+  return codes.length > 0
+    ? t('account.orders.summary.codeSavingsWithCodes', { codes: codes.join(', ') })
+    : t('account.orders.summary.codeSavings')
 })
 
 /** Dividerless card with the header sitting close to its body. */
@@ -31,13 +36,13 @@ const cardUi = {
   <UCard :ui="cardUi">
     <template #header>
       <div class="font-medium">
-        Order summary
+        {{ t('account.orders.summary.title') }}
       </div>
     </template>
 
     <div>
       <div class="flex justify-between gap-4 py-1 text-sm">
-        <span>Subtotal</span>
+        <span>{{ t('account.common.subtotal') }}</span>
         <span class="text-right">{{ formatMinorCurrency(regularMerchandiseMinor, orderShop.currency) }}</span>
       </div>
 
@@ -45,7 +50,7 @@ const cardUi = {
         v-if="saleDiscountMinor > 0"
         class="flex justify-between gap-4 py-1 text-sm"
       >
-        <span>Sale savings</span>
+        <span>{{ t('account.orders.summary.saleSavings') }}</span>
         <span class="text-right">−{{ formatMinorCurrency(saleDiscountMinor, orderShop.currency) }}</span>
       </div>
 
@@ -58,7 +63,7 @@ const cardUi = {
       </div>
 
       <div class="flex justify-between gap-4 py-1 text-sm">
-        <span>Shipping</span>
+        <span>{{ t('account.common.shipping') }}</span>
         <span class="text-right">{{ formatMinorCurrency(orderShop.shipping_minor, orderShop.currency) }}</span>
       </div>
 
@@ -66,14 +71,14 @@ const cardUi = {
         v-if="shippingDiscountMinor > 0"
         class="flex justify-between gap-4 py-1 text-sm"
       >
-        <span>Shipping savings</span>
+        <span>{{ t('account.orders.summary.shippingSavings') }}</span>
         <span class="text-right">{{ formatMinorCurrency(shippingDiscountMinor, orderShop.currency) }}</span>
       </div>
 
       <UDivider class="my-2" />
 
       <div class="flex justify-between gap-4 py-1 text-sm font-semibold text-text-strong">
-        <span>Total</span>
+        <span>{{ t('account.common.total') }}</span>
         <span class="text-right">{{ formatMinorCurrency(orderShop.total_minor, orderShop.currency) }}</span>
       </div>
     </div>

@@ -9,6 +9,7 @@ import { toastCustom } from '~/shared/config/toast';
 import { uploadReviewImage } from '~/domains/me/mutations/product-reviews/upload-review-image.mutation';
 import { resolveProductImageUrl } from '~/domains/product/utils/product-image-url';
 import { resolveStorageKeyFromPublicUrl } from '~/shared/utils/storage-public-url';
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n';
 
 type ProductReview = ResponseGetOrderShopsProduct['my_review'];
 
@@ -42,12 +43,15 @@ export function useItemMediaSection(
   fileInputRef: Ref<HTMLInputElement | null>,
 ) {
   const toast = useToast();
+  const t = useAccountTranslator();
   const runtimeConfig = useRuntimeConfig();
   const reviewImages = ref<ReviewImageUploadItem[]>([]);
 
   const productOptions = computed(() =>
     props.products.map(product => ({
-      label: `${buildProductLabel(product)}${product.my_review ? ' (reviewed)' : ''}`,
+      label: product.my_review
+        ? t('account.orders.reviewDialog.reviewed', { product: buildProductLabel(product) })
+        : buildProductLabel(product),
       value: product.id,
     })),
   );
@@ -83,7 +87,7 @@ export function useItemMediaSection(
     if (remainingSlots <= 0) {
       toast.add({
         ...toastCustom.warning,
-        title: `You can add up to ${MAX_REVIEW_IMAGES} photos`,
+        title: t('account.orders.reviewDialog.addPhotoLimit', { count: MAX_REVIEW_IMAGES }),
       });
       resetFileInput();
       return;
@@ -92,7 +96,12 @@ export function useItemMediaSection(
     if (files.length > remainingSlots) {
       toast.add({
         ...toastCustom.warning,
-        title: `Only ${remainingSlots} more photo${remainingSlots === 1 ? '' : 's'} can be added`,
+        title: t(
+          remainingSlots === 1
+            ? 'account.orders.reviewDialog.onlyMorePhotos'
+            : 'account.orders.reviewDialog.onlyMorePhotosPlural',
+          { count: remainingSlots },
+        ),
       });
     }
 
@@ -100,7 +109,7 @@ export function useItemMediaSection(
       if (!file.type.startsWith('image/')) {
         toast.add({
           ...toastCustom.error,
-          title: `"${file.name}" is not an image`,
+          title: t('account.orders.reviewDialog.notImage', { name: file.name }),
         });
         continue;
       }
@@ -108,7 +117,7 @@ export function useItemMediaSection(
       if (file.size > MAX_REVIEW_IMAGE_BYTES) {
         toast.add({
           ...toastCustom.error,
-          title: `"${file.name}" is larger than 8 MB`,
+          title: t('account.orders.reviewDialog.tooLarge', { name: file.name }),
         });
         continue;
       }
@@ -147,12 +156,12 @@ export function useItemMediaSection(
     }
     catch (error) {
       image.status = 'failed';
-      image.error = error instanceof Error ? error.message : 'Unable to upload image';
+      image.error = error instanceof Error ? error.message : t('account.orders.reviewDialog.unableToUpload');
       syncImageKeys();
 
       toast.add({
         ...toastCustom.error,
-        title: 'Review image upload failed',
+        title: t('account.orders.reviewDialog.uploadFailedTitle'),
         description: image.error,
       });
     }
@@ -206,7 +215,7 @@ export function useItemMediaSection(
       previewUrl: resolveProductImageUrl(image, runtimeConfig.public.assetHost, 'thumb_1x1') ??
         image.url ??
         '',
-      displayName: `Review photo ${index + 1}`,
+      displayName: t('account.orders.reviewDialog.reviewPhoto', { index: index + 1 }),
       sizeLabel: image.size_bytes ? formatFileSize(image.size_bytes) : '',
       isObjectUrl: false,
       status: 'uploaded',
@@ -229,7 +238,7 @@ export function useItemMediaSection(
 
   function imageProgressLabel(image: ReviewImageUploadItem) {
     if (image.status === 'failed') {
-      return 'Failed';
+      return t('account.orders.reviewDialog.failedLabel');
     }
 
     return `${imageProgressValue(image.status)}%`;

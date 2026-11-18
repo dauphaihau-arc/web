@@ -5,10 +5,12 @@ import { useDeleteUserAddress } from '~/domains/me/mutations/address/delete-addr
 import { useGetUserAddresses } from '~/domains/me/queries/address/addresses.query'
 import UpdateUserAddressDialog from './_components/update-user-address-dialog.vue'
 import CreateUserAddressDialog from '~/domains/me/ui/address/create-user-address-dialog.vue'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 
 definePageMeta({ layout: 'market', middleware: ['auth'] })
 
 const dialog = useModal()
+const t = useAccountTranslator()
 
 const {
   isPending: isPendingGetUserAddresses,
@@ -41,7 +43,7 @@ const showCreateDialog = () => {
 <template>
   <div class="w-full">
     <h3 class="mb-4 text-2xl font-medium">
-      Your shipping addresses
+      {{ t('account.addresses.title') }}
     </h3>
     <UButton
       color="primary"
@@ -49,7 +51,7 @@ const showCreateDialog = () => {
       class="w-full sm:w-auto"
       @click="showCreateDialog"
     >
-      Add a new address
+      {{ t('account.addresses.add') }}
     </UButton>
 
     <div
@@ -89,7 +91,7 @@ const showCreateDialog = () => {
               variant="link"
               @click="showUpdateDialog(item)"
             >
-              Edit
+              {{ t('account.common.edit') }}
             </UButton>
             <UButton
               :padded="false"
@@ -97,7 +99,7 @@ const showCreateDialog = () => {
               :disabled="isPendingDeleteUserAddresses"
               @click="deleteUserAddress(item.id)"
             >
-              Delete
+              {{ t('account.common.delete') }}
             </UButton>
           </div>
         </div>

@@ -7,6 +7,8 @@ import OrderCancelRequestDialog from './order-cancel-request-dialog.vue'
 import OrderSupportRequestDialog from './order-support-request-dialog.vue'
 import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract'
 import { routes } from '~/shared/navigation/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 
 const props = withDefaults(defineProps<{
   orderShop: ElementType<GetOrderShopsResponse['order_shops']>
@@ -20,6 +22,10 @@ const props = withDefaults(defineProps<{
 })
 
 const dialog = useModal()
+const t = useAccountTranslator()
+const { localizePath } = useLocalizedRoute()
+
+const viewOrderPath = computed(() => localizePath(routes.orderDetail(props.orderShop.id)))
 
 const canCancelOrder = computed(() =>
   [OrderStatuses.PAID, OrderStatuses.PENDING].includes(props.orderShop.status)
@@ -41,7 +47,9 @@ const hasReviewedAllProducts = computed(() =>
   && props.orderShop.products.every(product => Boolean(product.my_review)),
 )
 const reviewButtonLabel = computed(() =>
-  hasReviewedAllProducts.value ? 'Edit review' : 'Write review',
+  hasReviewedAllProducts.value
+    ? t('account.orders.actions.editReview')
+    : t('account.orders.actions.writeReview'),
 )
 
 function openCancelDialog() {
@@ -76,9 +84,9 @@ function openReviewDialog() {
         :block="props.orientation === 'stack'"
         size="md"
         color="gray"
-        :to="routes.orderDetail(props.orderShop.id)"
+        :to="viewOrderPath"
       >
-        View order
+        {{ t('account.orders.actions.viewOrder') }}
       </UButton>
       <UButton
         v-if="canWriteReview"
@@ -94,7 +102,7 @@ function openReviewDialog() {
         color="gray"
         @click="openSupportDialog"
       >
-        Help with order
+        {{ t('account.orders.actions.helpWithOrder') }}
       </UButton>
       <UButton
         v-if="canCancelOrder"
@@ -103,7 +111,7 @@ function openReviewDialog() {
         color="gray"
         @click="openCancelDialog"
       >
-        Cancel order
+        {{ t('account.orders.actions.cancelOrder') }}
       </UButton>
       <!--      <UTooltip text="Feature not available"> -->
       <!--        <UButton -->

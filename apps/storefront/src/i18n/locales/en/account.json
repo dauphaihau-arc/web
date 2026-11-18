@@ -1,0 +1,372 @@
+{
+  "account": {
+    "common": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "address": "Address",
+      "country": "Country",
+      "orderNumber": "Order number",
+      "zip": "ZIP / Postal code",
+      "edit": "Edit",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "save": "Save",
+      "close": "Close",
+      "reason": "Reason",
+      "rating": "Rating",
+      "review": "Review",
+      "items": "Items",
+      "qty": "Qty",
+      "unitPrice": "Unit price",
+      "amount": "Amount",
+      "percentOff": "{percent}% off",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "total": "Total",
+      "shopFallback": "Shop",
+      "unavailable": "Currently unavailable"
+    },
+    "profile": {
+      "title": "Account",
+      "preferences": {
+        "title": "Market preferences",
+        "description": "Choose the region, language, and currency used for storefront browsing.",
+        "region": "Region",
+        "regionDescription": "Used for storefront browsing and product availability.",
+        "language": "Language",
+        "languageDescription": "Storefront text, dates, and numbers use this language.",
+        "currency": "Currency",
+        "currencyDescription": "Prices and totals are shown in this currency.",
+        "save": "Save preferences"
+      },
+      "notifications": {
+        "label": "Browser notifications",
+        "description": "Receive order updates as browser notifications when this device is subscribed.",
+        "blocked": "Browser permission is blocked. Re-enable notifications in your browser settings first.",
+        "enabledToast": "Browser notifications enabled",
+        "disabledToast": "Browser notifications disabled",
+        "failedToast": "Failed to update browser notifications"
+      },
+      "preferencesUpdatedToast": "Preferences updated",
+      "preferencesFailedToast": "Failed to update preferences"
+    },
+    "addresses": {
+      "title": "Your shipping addresses",
+      "updateTitle": "Update address",
+      "add": "Add a new address"
+    },
+    "orders": {
+      "title": "Orders",
+      "itemsEmpty": "No items.",
+      "description": "Track and manage the products you’ve ordered.",
+      "filterAria": "Order status filters",
+      "searchPlaceholder": "Search by order number, product, or shop",
+      "loading": "Loading orders",
+      "emptyFilteredTitle": "No orders match this filter.",
+      "emptyFilteredDescription": "Try a different search term or pick another order status.",
+      "clearFilters": "Clear filters",
+      "emptyTitle": "Your orders is empty.",
+      "emptyDescription": "Orders you place will show up here.",
+      "browseShops": "Browse shops",
+      "tabs": {
+        "all": "All Orders",
+        "awaitingSummary": "Awaiting Summary",
+        "processing": "Processing",
+        "shipped": "Shipped",
+        "delivered": "Delivered",
+        "canceled": "Canceled",
+        "refunded": "Refunded"
+      },
+      "detail": {
+        "back": "Orders",
+        "loading": "Loading order",
+        "orderHeading": "Order #{number}",
+        "notFoundTitle": "Order not found",
+        "notFoundDescription": "We couldn't find this order. It may have been removed, or the link is incorrect.",
+        "viewOrders": "View orders",
+        "shippingAddress": "Shipping address"
+      },
+      "statuses": {
+        "canceled": "canceled",
+        "pending": "pending",
+        "checkoutPending": "checkout pending",
+        "awaitingPayment": "awaiting payment",
+        "expired": "expired",
+        "paid": "paid",
+        "refunded": "refunded",
+        "completed": "completed",
+        "archived": "archived",
+        "preparing": "Preparing",
+        "inTransit": "In transit",
+        "delivered": "Delivered",
+        "shipped": "Shipped"
+      },
+      "fulfillment": {
+        "preparingOrder": "Preparing order",
+        "partiallyShipped": "Partially shipped",
+        "shipped": "Shipped",
+        "partiallyDelivered": "Partially delivered",
+        "delivered": "Delivered",
+        "canceled": "Canceled",
+        "prepared": "Prepared",
+        "dispatched": "Dispatched",
+        "inTransit": "In transit",
+        "voided": "Voided"
+      },
+      "carrierEvents": {
+        "labelCreated": "Label created",
+        "pickedUp": "Picked up",
+        "inTransit": "In transit",
+        "outForDelivery": "Out for delivery",
+        "delivered": "Delivered",
+        "deliveryFailed": "Delivery failed",
+        "returned": "Returned to sender"
+      },
+      "progress": {
+        "orderPlaced": "Order placed",
+        "packed": "Packed",
+        "shipped": "Shipped",
+        "delivered": "Delivered",
+        "inTransit": "In transit",
+        "sellerPreparing": "Seller is preparing",
+        "shipsBy": "Ships by {date}",
+        "estimate": "Est. {range}",
+        "orderProgress": "Order progress",
+        "awaitingShipment": "Awaiting shipment",
+        "itemsAwaitingShipment": "Items awaiting shipment",
+        "noTrackingYet": "No tracking number yet"
+      },
+      "package": {
+        "title": "Package {index} of {total}",
+        "shipmentDetails": "Shipment details",
+        "progress": "Package {index} of {total} progress",
+        "shipmentProgress": "Shipment progress",
+        "trackingAvailableOnceShipped": "Tracking available once shipped",
+        "trackPackage": "Track package",
+        "carrier": "Carrier: {carrier}",
+        "carrierTracking": "Carrier: {carrier} · Tracking: {tracking}",
+        "tracking": "Tracking: {tracking}",
+        "unverified": "{tracking} (unverified)"
+      },
+      "packageCounts": {
+        "delivered": "{count} delivered",
+        "inTransit": "{count} in transit",
+        "preparing": "{count} preparing",
+        "canceled": "{count} canceled"
+      },
+      "summary": {
+        "title": "Order summary",
+        "saleSavings": "Sale savings",
+        "codeSavings": "Code savings",
+        "codeSavingsWithCodes": "Code savings ({codes})",
+        "shippingSavings": "Shipping savings",
+        "payment": "Payment",
+        "paymentMethod": "Payment Method",
+        "card": "Card",
+        "cash": "Cash",
+        "refund": "Refund: {status}",
+        "refundOn": "Refund: {status} on {date}",
+        "showMore": "Show more",
+        "showLess": "Show less"
+      },
+      "refunds": {
+        "pending": "pending",
+        "succeeded": "succeeded",
+        "failed": "failed",
+        "notRequired": "not required"
+      },
+      "actions": {
+        "viewOrder": "View order",
+        "helpWithOrder": "Help with order",
+        "cancelOrder": "Cancel order",
+        "writeReview": "Write review",
+        "editReview": "Edit review",
+        "buyAgain": "Buy this again",
+        "viewOrderAria": "View order {number}",
+        "orderedFrom": "Ordered from {shop} on {date}",
+        "orderedFromPrefix": "Ordered from",
+        "orderedOn": "on {date}",
+        "shopLinkUnavailable": "redirect to homepage shop not available"
+      },
+      "meta": {
+        "soldBy": "Sold by {shop}",
+        "placedOn": "Placed on {date}",
+        "item": "{count} item",
+        "items": "{count} items",
+        "package": "{count} package",
+        "packages": "{count} packages",
+        "itemsInPackages": "{items} in {packages}",
+        "total": "Total {total}"
+      },
+      "cancelDialog": {
+        "title": "Cancel order",
+        "description": "This is available before the order ships. Add an optional reason for the cancellation.",
+        "keepOrder": "Keep order",
+        "cancelOrder": "Cancel order"
+      },
+      "supportDialog": {
+        "title": "Help with order",
+        "description": "Describe the issue or question for this order. Support will review your request.",
+        "label": "Support request",
+        "send": "Send request"
+      },
+      "reviewDialog": {
+        "title": "Write a review",
+        "editTitle": "Edit your review",
+        "description": "Share what arrived well and what other shoppers should know about this item.",
+        "editDescription": "Update your rating, notes, or photos for this item.",
+        "item": "Item",
+        "photos": "Photos",
+        "photosHint": "Add up to {count} photos. PNG, JPG, WEBP, up to 8 MB each.",
+        "uploadTitle": "Upload product image(s)",
+        "uploadBrowse": "Click to browse",
+        "uploadHint": "your files (8 MB max each)",
+        "uploading": "Uploading photos...",
+        "update": "Update review",
+        "submit": "Submit review",
+        "ratingAria": "Rate this product {label}",
+        "headline": "Headline",
+        "headlinePlaceholder": "Short summary",
+        "reviewPlaceholder": "What stood out once you received it?",
+        "ratings": {
+          "bad": "Bad",
+          "poor": "Poor",
+          "okay": "Okay",
+          "good": "Good",
+          "excellent": "Excellent"
+        },
+        "imagesUploadingToast": "Images are still uploading",
+        "imagesUploadingDescription": "Wait for uploads to finish before submitting your review.",
+        "failedTitle": "Some images failed to upload",
+        "failedDescription": "Remove the failed image and try selecting it again.",
+        "addPhotoLimit": "You can add up to {count} photos",
+        "onlyMorePhotos": "Only {count} more photo can be added",
+        "onlyMorePhotosPlural": "Only {count} more photos can be added",
+        "notImage": "\"{name}\" is not an image",
+        "tooLarge": "\"{name}\" is larger than 8 MB",
+        "uploadFailedTitle": "Review image upload failed",
+        "unableToUpload": "Unable to upload image",
+        "failedLabel": "Failed",
+        "reviewed": "{product} (reviewed)",
+        "reviewPhoto": "Review photo {index}"
+      },
+      "shippingInfo": {
+        "estimatedDelivery": "Estimated delivery: {range}",
+        "shipping": "Shipping",
+        "shipmentOf": "Shipment {index} of {total}",
+        "carrier": "Carrier: {carrier}",
+        "tracking": "Tracking: {tracking}",
+        "unverified": "(unverified)",
+        "note": "Note: {note}",
+        "itemSummary": "{count} {itemWord} {status}",
+        "itemWordSingular": "item",
+        "itemWordPlural": "items",
+        "viewItems": "View items",
+        "hideItems": "Hide items",
+        "items": "Items",
+        "prepared": "Prepared {date}",
+        "dispatched": "Dispatched {date}",
+        "delivered": "Delivered {date}",
+        "legacyShipping": "Legacy shipping",
+        "status": "Status: {status}",
+        "updated": "Updated {date}",
+        "shipped": "Shipped {date}",
+        "unknownItem": "Unknown item"
+      },
+      "shopItem": {
+        "shopNote": "Shop Note",
+        "promoCodes": "Promo Codes"
+      }
+    },
+    "guestOrders": {
+      "title": "Track your guest order",
+      "description": "Enter the email, order number, and shipping ZIP/postal code used at checkout.",
+      "find": "Find order",
+      "loading": "Loading your order details",
+      "notFoundTitle": "No guest orders found",
+      "notFoundDescription": "We couldn't match that email, order number, and ZIP / postal code. Check the details and try again."
+    },
+    "messages": {
+      "title": "Messages",
+      "description": "Talk directly with sellers about products and orders.",
+      "all": "All",
+      "unread": "Unread",
+      "filtersAria": "Message filters",
+      "searchShops": "Search shops",
+      "emptySearch": "No conversations match your search.",
+      "emptyUnread": "No unread conversations.",
+      "emptyAll": "No conversations yet.",
+      "selectConversation": "Select a conversation to read and reply.",
+      "noMessages": "No messages yet.",
+      "yesterday": "Yesterday",
+      "productPrefix": "Product: {name}",
+      "productShared": "Product shared",
+      "conversation": "Conversation",
+      "back": "Back to conversations"
+    },
+    "auth": {
+      "login": {
+        "title": "Log in",
+        "email": "Email",
+        "password": "Password",
+        "forgot": "Forget Password?",
+        "submit": "Log in",
+        "incorrect": "Incorrect email or password",
+        "forbidden": "This account cannot access the customer site",
+        "genericError": "Something went wrong on our end. Please try again"
+      },
+      "register": {
+        "title": "Create your account",
+        "name": "Name",
+        "email": "Email",
+        "password": "Password",
+        "submit": "Register",
+        "emailRegistered": "This email is already registered. Try logging in instead.",
+        "genericError": "Something went wrong on our end. Please try again"
+      },
+      "dialog": {
+        "newUser": "New to Arc?",
+        "existingUser": "Already a Arc user?"
+      }
+    },
+    "reset": {
+      "request": {
+        "title": "Reset your password",
+        "subtitle": "Enter the email address associated with your account and we'll send you a link to reset your password.",
+        "email": "Email",
+        "continue": "Continue",
+        "genericError": "Something went wrong on our end. Please try again"
+      },
+      "sent": {
+        "title": "Check your email",
+        "messagePrefix": "Thanks! If",
+        "messageSuffix": "matches an email we have on file, then we've sent you an email containing further instructions for resetting your password.",
+        "helpPrefix": "If you haven't received an email in 5 minutes, check your spam,",
+        "resend": "resend",
+        "helpOr": ", or",
+        "differentEmail": "try a different email",
+        "resentPrefix": "We've resent password reset instructions to",
+        "resentSuffix": "if it is an email on file.",
+        "checkAgain": "Please check again. If you still haven't received an email",
+        "tryDifferentEmail": "try a different email"
+      },
+      "expired": {
+        "message": "This password reset link has expired.",
+        "retry": "Try resetting your password again."
+      },
+      "form": {
+        "title": "Reset your password",
+        "mismatch": "This password does not match. Try again.",
+        "genericError": "Something went wrong on our end. Please try again",
+        "newPassword": "New password",
+        "confirmPassword": "Confirm your password",
+        "save": "Save"
+      },
+      "success": {
+        "title": "You've successfully changed your password",
+        "continue": "Continue to shopping"
+      }
+    }
+  }
+}

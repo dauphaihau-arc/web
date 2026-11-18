@@ -12,6 +12,7 @@ definePageMeta({ layout: 'market' })
 
 const cartStore = useCartStore()
 const toast = useToast()
+const { t } = useI18n()
 
 const {
   isPending: isPendingGetCart,
@@ -66,8 +67,8 @@ async function refreshQuote() {
 
     toast.add({
       ...toastCustom.error,
-      title: 'Could not load shipping and totals',
-      description: 'Please review your address and try again.',
+      title: t('checkout.quoteError.title'),
+      description: t('checkout.quoteError.description'),
     })
   }
 }
@@ -97,7 +98,7 @@ watch(
       loading
       size="xl"
       variant="naked"
-      description="Loading your checkout..."
+      :description="t('checkout.loading')"
       container-class="h-[80vh] w-full"
     />
 

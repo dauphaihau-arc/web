@@ -5,6 +5,7 @@ import {
 import type { CartPromoCodeItem } from '~/domains/cart/api/contracts/cart.contract';
 import { useApplyCartPromoCode } from '~/domains/cart/mutations/apply-cart-promo-code.mutation';
 import { resolvePromoCodeErrorMessage } from '~/domains/cart/utils/promo-code-error';
+import { useShopCartCopy } from './use-shop-cart-copy';
 
 type ManualPromoCodeSlot = 'shipping' | 'discount';
 
@@ -29,6 +30,7 @@ export function usePromoCodeSelection(input: {
   shopId: () => string
   cartId: () => string | undefined
 }) {
+  const t = useShopCartCopy();
   const { mutateAsync: applyPromoCode, isPending: isValidating } = useApplyCartPromoCode({ onError: undefined });
 
   const stagedAdds = ref<string[]>([]);
@@ -145,7 +147,7 @@ export function usePromoCodeSelection(input: {
 
     if (!next) return;
     if (pendingCodes.value.includes(next) || inputCodes.value.includes(next)) {
-      inputError.value = 'Promo code already applied';
+      inputError.value = t('cart.promo.alreadyApplied');
       return;
     }
 
@@ -164,8 +166,12 @@ export function usePromoCodeSelection(input: {
       if (pendingCodes.value.some(code => !promoCodes.includes(code))) {
         const typedBenefitType = appliedPromoCodes.find(promoCode => promoCode.code === next)?.benefit_type;
         inputError.value = typedBenefitType === undefined
-          ? 'Only one promo code per slot per shop'
-          : `Only one ${promoCodeSlot(typedBenefitType)} promo code per shop`;
+          ? t('cart.promo.slotConflict')
+          : t('cart.promo.onlyOneSlot', {
+            slot: t(promoCodeSlot(typedBenefitType) === 'shipping'
+              ? 'cart.promo.slotShipping'
+              : 'cart.promo.slotDiscount'),
+          });
         return;
       }
 

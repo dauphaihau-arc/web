@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { formatMinorCurrency } from '@arc/utils'
 import type { CartShopGroup } from '~/domains/cart/api/cart.shared'
+import { useShopCartCopy } from './use-shop-cart-copy'
 
 const props = defineProps<{
   shopCart: CartShopGroup
@@ -13,6 +14,8 @@ const props = defineProps<{
  * and its total row is suppressed when it would only repeat a unit price
  * already printed on the lines; see `hasSelectedItems` and `showTotal`.
  */
+const t = useShopCartCopy()
+
 const currency = computed(() => props.shopCart.currency)
 
 const merchandiseTotalMinor = computed(() => props.shopCart.total_minor)
@@ -50,8 +53,8 @@ const showTotal = computed(
     <template v-if="codeSavingsMinor > 0">
       <div class="flex justify-between">
         <div class="title">
-          <div>Subtotal</div>
-          <div>Code savings</div>
+          <div>{{ t('cart.summary.subtotal') }}</div>
+          <div>{{ t('cart.summary.codeSavings') }}</div>
         </div>
         <div class="price">
           <div>
@@ -69,7 +72,7 @@ const showTotal = computed(
       class="flex justify-between"
     >
       <div class="font-semibold">
-        Total
+        {{ t('cart.summary.total') }}
       </div>
       <div class="font-semibold">
         {{ formatMinorCurrency(totalMinor, currency) }}

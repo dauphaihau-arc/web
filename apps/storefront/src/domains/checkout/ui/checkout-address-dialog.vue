@@ -13,6 +13,7 @@ const checkoutState = defineModel<StateCheckoutCart | StateCheckoutNow>('checkou
 
 const dialog = useModal()
 const toast = useToast()
+const { t } = useI18n()
 const queryClient = useQueryClient()
 
 const formRef = ref()
@@ -64,9 +65,9 @@ const addressIdSelected = ref<string>(
 
 const dialogTitle = computed(() => {
   if (activeView.value === 'form' && isAuthenticated.value) {
-    return 'Add new address'
+    return t('checkout.address.addNew')
   }
-  return 'Shipping address'
+  return t('checkout.address.shippingTitle')
 })
 
 function selectAddress(id: string | number | boolean) {
@@ -95,7 +96,7 @@ async function onSubmitUserAddress(payload: AddressFormState) {
   catch {
     toast.add({
       ...toastCustom.error,
-      title: 'Create address failed',
+      title: t('checkout.address.createFailed'),
     })
   }
 }
@@ -164,7 +165,7 @@ function onSubmitGuestAddress(payload: AddressFormState) {
         v-else
         class="text-sm text-text-muted"
       >
-        You have no saved addresses yet.
+        {{ t('checkout.address.noSaved') }}
       </p>
     </div>
 
@@ -183,7 +184,7 @@ function onSubmitGuestAddress(payload: AddressFormState) {
           size="md"
           @click="view = 'form'"
         >
-          Add new address
+          {{ t('checkout.address.addNew') }}
         </UButton>
 
         <template v-else-if="isAuthenticated">
@@ -192,14 +193,14 @@ function onSubmitGuestAddress(payload: AddressFormState) {
             color="gray"
             @click="view = 'list'"
           >
-            Back
+            {{ t('checkout.address.back') }}
           </UButton>
           <UButton
             size="md"
             type="submit"
             @click="formRef?.submit"
           >
-            Save
+            {{ t('common.save') }}
           </UButton>
         </template>
 
@@ -209,7 +210,7 @@ function onSubmitGuestAddress(payload: AddressFormState) {
           type="submit"
           @click="formRef?.submit"
         >
-          Save
+          {{ t('common.save') }}
         </UButton>
       </DialogActions>
     </template>

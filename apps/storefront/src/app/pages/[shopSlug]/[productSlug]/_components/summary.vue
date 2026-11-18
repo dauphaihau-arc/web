@@ -144,7 +144,7 @@ const filledStars = computed(() => {
               v-if="salePercent"
               class="text-base text-text-muted"
             >
-              ({{ salePercent }}% off)
+              {{ $t('catalog.product.percentOff', { percent: salePercent }) }}
             </div>
           </div>
         </div>

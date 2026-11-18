@@ -10,6 +10,7 @@ import ShopShippingInfo from './shop-shipping-info.vue'
 import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract'
 import { routes } from '~/shared/navigation/routes'
 import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 import {
   mergeOrderShopWithLiveUpdate,
   useOrderLiveUpdates,
@@ -42,6 +43,8 @@ const orderedAt = computed(() => {
   }
   return ''
 })
+
+const t = useAccountTranslator()
 
 const { getUpdate } = useOrderLiveUpdates()
 
@@ -89,7 +92,7 @@ const productLinkByItemId = computed(() => new Map(
  * screen. Otherwise the card itself carries the link to the detail page.
  */
 const detailLink = computed(() =>
-  props.showDetailLink ? routes.orderDetail(props.orderShop.id) : undefined,
+  props.showDetailLink ? localizePath(routes.orderDetail(props.orderShop.id)) : undefined,
 )
 </script>
 
@@ -114,7 +117,7 @@ const detailLink = computed(() =>
           v-if="detailLink"
           :to="detailLink"
           class="absolute inset-0 z-0 lg:hidden"
-          :aria-label="`View order ${displayOrderShop.order_number}`"
+          :aria-label="t('account.orders.actions.viewOrderAria', { number: displayOrderShop.order_number })"
         />
         <div
           v-if="props.showOrderSummaryStrip"
@@ -124,11 +127,11 @@ const detailLink = computed(() =>
             <div class="text-xs font-medium uppercase tracking-[0.14em] text-text-muted">
               {{ displayOrderShop.order_number }}
             </div>
-            Ordered from
-            <UTooltip text="redirect to homepage shop not available">
+            {{ t('account.orders.actions.orderedFromPrefix') }}
+            <UTooltip :text="t('account.orders.actions.shopLinkUnavailable')">
               <span class="text-text-strong underline underline-offset-2">{{ props.orderShop?.shop?.shop_name }}</span>
             </UTooltip>
-            on {{ orderedAt }}
+            {{ t('account.orders.actions.orderedOn', { date: orderedAt }) }}
           </div>
           <div class="flex items-center gap-3">
             <div>
@@ -146,7 +149,7 @@ const detailLink = computed(() =>
               :padded="false"
               size="sm"
             >
-              Buy this again
+              {{ t('account.orders.actions.buyAgain') }}
             </UButton>
           </template>
         </OrderItemsTable>

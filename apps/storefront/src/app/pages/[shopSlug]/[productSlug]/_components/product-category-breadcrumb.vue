@@ -7,6 +7,8 @@ const props = defineProps<{
   categoryPath?: GetDetailProductBySlugResponse['category_path']
 }>()
 
+const { localizePath } = useLocalizedRoute()
+
 const breadcrumbLinks = computed(() => {
   const categoryPath = props.categoryPath
 
@@ -16,7 +18,7 @@ const breadcrumbLinks = computed(() => {
 
   return categoryPath.map(category => ({
     label: category.name,
-    to: buildCategoryPath(category.slug, category.id),
+    to: localizePath(buildCategoryPath(category.slug, category.id)),
   }))
 })
 </script>

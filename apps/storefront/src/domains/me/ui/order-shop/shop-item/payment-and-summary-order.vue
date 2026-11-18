@@ -4,11 +4,14 @@ import type { ElementType } from '@arc/contracts/utils'
 import { PaymentTypes } from '@arc/enums/order'
 import { formatMinorCurrency } from '@arc/utils'
 import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract'
-import { paymentMethodLabel } from '~/domains/me/ui/order-shop/order-detail-presentation'
+import { paymentMethodLabel, refundStatusLabel } from '~/domains/me/ui/order-shop/order-detail-presentation'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 
 const props = defineProps<{
   orderShop: ElementType<GetOrderShopsResponse['order_shops']>
 }>()
+
+const t = useAccountTranslator()
 
 const showMore = ref(false)
 
@@ -27,7 +30,9 @@ const shippingDiscountMinor = computed(() => props.orderShop.shipping_discount_m
       :trailing-icon="showMore ? 'i-material-symbols:keyboard-arrow-up' : 'i-material-symbols:keyboard-arrow-down'"
       @click="showMore = !showMore"
     >
-      Show {{ showMore ? 'less':'more' }}
+      {{ showMore
+        ? t('account.orders.summary.showLess')
+        : t('account.orders.summary.showMore') }}
     </UButton>
 
     <div
@@ -39,27 +44,34 @@ const shippingDiscountMinor = computed(() => props.orderShop.shipping_discount_m
         class="space-y-1.5"
       >
         <div class="font-bold">
-          Payment Method
+          {{ t('account.orders.summary.paymentMethod') }}
         </div>
         <div
           v-if="orderShop?.payment?.type === PaymentTypes.CARD"
           class="space-y-0.5"
         >
           <div class="first-letter:capitalize">
-            {{ paymentMethodLabel(orderShop.payment) }}
+            {{ paymentMethodLabel(orderShop.payment, t) }}
           </div>
         </div>
         <div v-else-if="orderShop.payment.type === PaymentTypes.CASH">
-          Cash
+          {{ t('account.orders.summary.cash') }}
         </div>
         <div
           v-if="orderShop.payment.refund_status"
           class="pt-2 text-sm text-text-subtle"
         >
-          Refund: {{ orderShop.payment.refund_status.replaceAll('_', ' ') }}
-          <span v-if="orderShop.payment.refunded_at">
-            on {{ dayjs(orderShop.payment.refunded_at).format('MMM DD, YYYY HH:mm') }}
-          </span>
+          <template v-if="orderShop.payment.refunded_at">
+            {{ t('account.orders.summary.refundOn', {
+              status: refundStatusLabel(orderShop.payment.refund_status, t),
+              date: dayjs(orderShop.payment.refunded_at).format('MMM DD, YYYY HH:mm'),
+            }) }}
+          </template>
+          <template v-else>
+            {{ t('account.orders.summary.refund', {
+              status: refundStatusLabel(orderShop.payment.refund_status, t),
+            }) }}
+          </template>
           <div v-if="orderShop.payment.refund_failed_reason">
             {{ orderShop.payment.refund_failed_reason }}
           </div>
@@ -70,12 +82,12 @@ const shippingDiscountMinor = computed(() => props.orderShop.shipping_discount_m
         <div class="flex flex-col gap-2">
           <div class="flex justify-between">
             <div class="title">
-              <div>Subtotal</div>
+              <div>{{ t('account.common.subtotal') }}</div>
               <div v-if="saleDiscountMinor > 0">
-                Sale savings
+                {{ t('account.orders.summary.saleSavings') }}
               </div>
               <div v-if="codeDiscountMinor > 0">
-                Code savings
+                {{ t('account.orders.summary.codeSavings') }}
               </div>
             </div>
             <div class="price">
@@ -92,9 +104,9 @@ const shippingDiscountMinor = computed(() => props.orderShop.shipping_discount_m
           </div>
           <div class="flex justify-between">
             <div class="title">
-              <div>Shipping</div>
+              <div>{{ t('account.common.shipping') }}</div>
               <div v-if="shippingDiscountMinor > 0">
-                Shipping savings
+                {{ t('account.orders.summary.shippingSavings') }}
               </div>
             </div>
             <div class="price">
@@ -109,7 +121,7 @@ const shippingDiscountMinor = computed(() => props.orderShop.shipping_discount_m
           <UDivider class="my-3" />
           <div class="flex justify-between font-semibold text-text-strong">
             <div class="title">
-              Total
+              {{ t('account.common.total') }}
             </div>
             <div class="price">
               {{ formatMinorCurrency(orderShop.total_minor, orderShop.currency) }}

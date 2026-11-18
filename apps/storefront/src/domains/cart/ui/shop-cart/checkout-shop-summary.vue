@@ -2,6 +2,7 @@
 import { formatMinorCurrency, formatShippingEstimateRange } from '@arc/utils'
 import type { CartShopGroup } from '~/domains/cart/api/cart.shared'
 import type { CheckoutQuoteShop } from '~/domains/me/api/order/contracts/order.contract'
+import { useShopCartCopy } from './use-shop-cart-copy'
 
 /**
  * Per-shop money in the checkout review: the merchandise total, any code saving
@@ -72,15 +73,17 @@ const totalMinor = computed(
   () => props.quoteShop?.total_minor
     ?? (props.shopCart.total_minor - props.shopCart.discount_minor),
 )
+
+const t = useShopCartCopy()
 </script>
 
 <template>
   <div>
     <div class="flex justify-between">
       <div class="title">
-        <div>Subtotal</div>
+        <div>{{ t('cart.summary.subtotal') }}</div>
         <div v-if="codeSavingsMinor > 0">
-          Code savings
+          {{ t('cart.summary.codeSavings') }}
         </div>
       </div>
       <div class="price">
@@ -101,9 +104,9 @@ const totalMinor = computed(
       class="flex justify-between"
     >
       <div class="title">
-        <div>Shipping</div>
+        <div>{{ t('cart.summary.shipping') }}</div>
         <div v-if="shippingDiscountMinor > 0">
-          Shipping savings
+          {{ t('cart.summary.shippingSavings') }}
         </div>
       </div>
       <div class="price">
@@ -119,7 +122,7 @@ const totalMinor = computed(
       v-if="estimateLabel"
       class="mt-1 text-sm text-text-muted"
     >
-      Estimated delivery: {{ estimateLabel }}
+      {{ t('cart.summary.estimatedDelivery', { range: estimateLabel }) }}
     </div>
     <UDivider
       v-if="typeof shippingMinor === 'number'"
@@ -127,7 +130,7 @@ const totalMinor = computed(
     />
     <div class="flex justify-between">
       <div class="font-semibold">
-        Total
+        {{ t('cart.summary.total') }}
       </div>
       <div class="font-semibold">
         {{ formatMinorCurrency(totalMinor, displayCurrency) }}

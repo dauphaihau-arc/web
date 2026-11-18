@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ElementType } from '@arc/contracts/utils'
 import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract'
+import { useAccountTranslator } from '~/domains/me/ui/account-i18n'
 import {
   buildOrderPackages,
   buildOrderStages,
@@ -14,13 +15,15 @@ const props = defineProps<{
   orderShop: OrderShop
 }>()
 
-const summary = computed(() => buildOrderPackages(props.orderShop))
+const t = useAccountTranslator()
+
+const summary = computed(() => buildOrderPackages(props.orderShop, t))
 
 const stages = computed<OrderPackageStage[]>(() => {
   const { packages, counts } = summary.value
 
   if (counts.total === 0) {
-    return buildOrderStages(props.orderShop)
+    return buildOrderStages(props.orderShop, t)
   }
   if (counts.total === 1) {
     return packages[0]?.stages ?? []
@@ -43,13 +46,13 @@ const cardUi = {
   >
     <template #header>
       <div class="font-medium">
-        Order progress
+        {{ t('account.orders.progress.orderProgress') }}
       </div>
     </template>
 
     <PackageProgressSteps
       :stages="stages"
-      label="Order progress"
+      :label="t('account.orders.progress.orderProgress')"
     />
   </UCard>
 </template>

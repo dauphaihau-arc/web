@@ -1,0 +1,372 @@
+{
+  "account": {
+    "common": {
+      "name": "Tên",
+      "email": "Email",
+      "phone": "Điện thoại",
+      "address": "Địa chỉ",
+      "country": "Quốc gia",
+      "orderNumber": "Mã đơn hàng",
+      "zip": "Mã ZIP / bưu chính",
+      "edit": "Chỉnh sửa",
+      "delete": "Xóa",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "close": "Đóng",
+      "reason": "Lý do",
+      "rating": "Đánh giá",
+      "review": "Nhận xét",
+      "items": "Sản phẩm",
+      "qty": "SL",
+      "unitPrice": "Đơn giá",
+      "amount": "Số tiền",
+      "percentOff": "giảm {percent}%",
+      "subtotal": "Tạm tính",
+      "shipping": "Vận chuyển",
+      "total": "Tổng cộng",
+      "shopFallback": "Cửa hàng",
+      "unavailable": "Hiện không có sẵn"
+    },
+    "profile": {
+      "title": "Tài khoản",
+      "preferences": {
+        "title": "Tùy chọn thị trường",
+        "description": "Chọn khu vực, ngôn ngữ và đơn vị tiền tệ dùng khi duyệt cửa hàng.",
+        "region": "Khu vực",
+        "regionDescription": "Dùng để duyệt cửa hàng và xác định sản phẩm có sẵn.",
+        "language": "Ngôn ngữ",
+        "languageDescription": "Văn bản, ngày tháng và số liệu của cửa hàng dùng ngôn ngữ này.",
+        "currency": "Tiền tệ",
+        "currencyDescription": "Giá và tổng tiền được hiển thị bằng đơn vị tiền tệ này.",
+        "save": "Lưu tùy chọn"
+      },
+      "notifications": {
+        "label": "Thông báo trên trình duyệt",
+        "description": "Nhận cập nhật đơn hàng qua thông báo trình duyệt khi thiết bị này đã đăng ký.",
+        "blocked": "Quyền thông báo trên trình duyệt đang bị chặn. Hãy bật lại thông báo trong cài đặt trình duyệt trước.",
+        "enabledToast": "Đã bật thông báo trên trình duyệt",
+        "disabledToast": "Đã tắt thông báo trên trình duyệt",
+        "failedToast": "Không thể cập nhật thông báo trên trình duyệt"
+      },
+      "preferencesUpdatedToast": "Đã cập nhật tùy chọn",
+      "preferencesFailedToast": "Không thể cập nhật tùy chọn"
+    },
+    "addresses": {
+      "title": "Địa chỉ giao hàng của bạn",
+      "updateTitle": "Cập nhật địa chỉ",
+      "add": "Thêm địa chỉ mới"
+    },
+    "orders": {
+      "title": "Đơn hàng",
+      "itemsEmpty": "Không có sản phẩm.",
+      "description": "Theo dõi và quản lý các sản phẩm bạn đã đặt.",
+      "filterAria": "Bộ lọc trạng thái đơn hàng",
+      "searchPlaceholder": "Tìm theo mã đơn hàng, sản phẩm hoặc cửa hàng",
+      "loading": "Đang tải đơn hàng",
+      "emptyFilteredTitle": "Không có đơn hàng nào khớp bộ lọc này.",
+      "emptyFilteredDescription": "Hãy thử từ khóa khác hoặc chọn trạng thái đơn hàng khác.",
+      "clearFilters": "Xóa bộ lọc",
+      "emptyTitle": "Đơn hàng của bạn đang trống.",
+      "emptyDescription": "Các đơn hàng bạn đặt sẽ xuất hiện tại đây.",
+      "browseShops": "Duyệt cửa hàng",
+      "tabs": {
+        "all": "Tất cả đơn hàng",
+        "awaitingSummary": "Chờ tạm tính",
+        "processing": "Đang xử lý",
+        "shipped": "Đã gửi",
+        "delivered": "Đã giao",
+        "canceled": "Đã hủy",
+        "refunded": "Đã hoàn tiền"
+      },
+      "detail": {
+        "back": "Đơn hàng",
+        "loading": "Đang tải đơn hàng",
+        "orderHeading": "Đơn hàng #{number}",
+        "notFoundTitle": "Không tìm thấy đơn hàng",
+        "notFoundDescription": "Chúng tôi không thể tìm thấy đơn hàng này. Đơn có thể đã bị xóa hoặc liên kết không đúng.",
+        "viewOrders": "Xem đơn hàng",
+        "shippingAddress": "Địa chỉ giao hàng"
+      },
+      "statuses": {
+        "canceled": "đã hủy",
+        "pending": "đang chờ",
+        "checkoutPending": "chờ thanh toán",
+        "awaitingPayment": "chờ thanh toán",
+        "expired": "đã hết hạn",
+        "paid": "đã thanh toán",
+        "refunded": "đã hoàn tiền",
+        "completed": "đã hoàn tất",
+        "archived": "đã lưu trữ",
+        "preparing": "Đang chuẩn bị",
+        "inTransit": "Đang vận chuyển",
+        "delivered": "Đã giao",
+        "shipped": "Đã gửi"
+      },
+      "fulfillment": {
+        "preparingOrder": "Đang chuẩn bị đơn",
+        "partiallyShipped": "Đã gửi một phần",
+        "shipped": "Đã gửi",
+        "partiallyDelivered": "Đã giao một phần",
+        "delivered": "Đã giao",
+        "canceled": "Đã hủy",
+        "prepared": "Đã chuẩn bị",
+        "dispatched": "Đã xuất kho",
+        "inTransit": "Đang vận chuyển",
+        "voided": "Đã hủy bỏ"
+      },
+      "carrierEvents": {
+        "labelCreated": "Đã tạo nhãn",
+        "pickedUp": "Đã lấy hàng",
+        "inTransit": "Đang vận chuyển",
+        "outForDelivery": "Đang giao hàng",
+        "delivered": "Đã giao",
+        "deliveryFailed": "Giao hàng thất bại",
+        "returned": "Đã hoàn về người gửi"
+      },
+      "progress": {
+        "orderPlaced": "Đã đặt hàng",
+        "packed": "Đã đóng gói",
+        "shipped": "Đã gửi",
+        "delivered": "Đã giao",
+        "inTransit": "Đang vận chuyển",
+        "sellerPreparing": "Người bán đang chuẩn bị",
+        "shipsBy": "Gửi trước {date}",
+        "estimate": "Dự kiến {range}",
+        "orderProgress": "Tiến trình đơn hàng",
+        "awaitingShipment": "Chờ gửi hàng",
+        "itemsAwaitingShipment": "Sản phẩm chờ gửi",
+        "noTrackingYet": "Chưa có mã vận đơn"
+      },
+      "package": {
+        "title": "Kiện {index}/{total}",
+        "shipmentDetails": "Chi tiết kiện hàng",
+        "progress": "Tiến trình kiện {index}/{total}",
+        "shipmentProgress": "Tiến trình kiện hàng",
+        "trackingAvailableOnceShipped": "Mã vận đơn sẽ có sau khi gửi hàng",
+        "trackPackage": "Theo dõi kiện hàng",
+        "carrier": "Đơn vị vận chuyển: {carrier}",
+        "carrierTracking": "Đơn vị vận chuyển: {carrier} · Mã vận đơn: {tracking}",
+        "tracking": "Mã vận đơn: {tracking}",
+        "unverified": "{tracking} (chưa xác minh)"
+      },
+      "packageCounts": {
+        "delivered": "{count} đã giao",
+        "inTransit": "{count} đang vận chuyển",
+        "preparing": "{count} đang chuẩn bị",
+        "canceled": "{count} đã hủy"
+      },
+      "summary": {
+        "title": "Tóm tắt đơn hàng",
+        "saleSavings": "Tiết kiệm khuyến mãi",
+        "codeSavings": "Tiết kiệm mã giảm giá",
+        "codeSavingsWithCodes": "Tiết kiệm mã ({codes})",
+        "shippingSavings": "Tiết kiệm vận chuyển",
+        "payment": "Thanh toán",
+        "paymentMethod": "Phương thức thanh toán",
+        "card": "Thẻ",
+        "cash": "Tiền mặt",
+        "refund": "Hoàn tiền: {status}",
+        "refundOn": "Hoàn tiền: {status} vào {date}",
+        "showMore": "Xem thêm",
+        "showLess": "Thu gọn"
+      },
+      "refunds": {
+        "pending": "đang chờ",
+        "succeeded": "thành công",
+        "failed": "thất bại",
+        "notRequired": "không cần"
+      },
+      "actions": {
+        "viewOrder": "Xem đơn hàng",
+        "helpWithOrder": "Trợ giúp đơn hàng",
+        "cancelOrder": "Hủy đơn hàng",
+        "writeReview": "Viết đánh giá",
+        "editReview": "Sửa đánh giá",
+        "buyAgain": "Mua lại",
+        "viewOrderAria": "Xem đơn hàng {number}",
+        "orderedFrom": "Đặt từ {shop} vào {date}",
+        "orderedFromPrefix": "Đặt từ",
+        "orderedOn": "vào {date}",
+        "shopLinkUnavailable": "chuyển đến cửa hàng trang chủ chưa khả dụng"
+      },
+      "meta": {
+        "soldBy": "Bán bởi {shop}",
+        "placedOn": "Đặt ngày {date}",
+        "item": "{count} sản phẩm",
+        "items": "{count} sản phẩm",
+        "package": "{count} kiện",
+        "packages": "{count} kiện",
+        "itemsInPackages": "{items} trong {packages}",
+        "total": "Tổng {total}"
+      },
+      "cancelDialog": {
+        "title": "Hủy đơn hàng",
+        "description": "Chỉ khả dụng trước khi đơn hàng được gửi. Bạn có thể thêm lý do hủy (không bắt buộc).",
+        "keepOrder": "Giữ đơn hàng",
+        "cancelOrder": "Hủy đơn hàng"
+      },
+      "supportDialog": {
+        "title": "Trợ giúp đơn hàng",
+        "description": "Mô tả sự cố hoặc câu hỏi về đơn hàng này. Bộ phận hỗ trợ sẽ xem xét yêu cầu của bạn.",
+        "label": "Yêu cầu hỗ trợ",
+        "send": "Gửi yêu cầu"
+      },
+      "reviewDialog": {
+        "title": "Viết đánh giá",
+        "editTitle": "Sửa đánh giá của bạn",
+        "description": "Chia sẻ điều bạn hài lòng và những gì người mua khác nên biết về sản phẩm này.",
+        "editDescription": "Cập nhật xếp hạng, nhận xét hoặc ảnh cho sản phẩm này.",
+        "item": "Sản phẩm",
+        "photos": "Ảnh",
+        "photosHint": "Thêm tối đa {count} ảnh. PNG, JPG, WEBP, tối đa 8 MB mỗi ảnh.",
+        "uploadTitle": "Tải ảnh sản phẩm lên",
+        "uploadBrowse": "Nhấp để chọn",
+        "uploadHint": "tệp của bạn (tối đa 8 MB mỗi tệp)",
+        "uploading": "Đang tải ảnh...",
+        "update": "Cập nhật đánh giá",
+        "submit": "Gửi đánh giá",
+        "ratingAria": "Đánh giá sản phẩm này {label}",
+        "headline": "Tiêu đề",
+        "headlinePlaceholder": "Tóm tắt ngắn",
+        "reviewPlaceholder": "Điều gì nổi bật khi bạn nhận hàng?",
+        "ratings": {
+          "bad": "Tệ",
+          "poor": "Kém",
+          "okay": "Tạm được",
+          "good": "Tốt",
+          "excellent": "Xuất sắc"
+        },
+        "imagesUploadingToast": "Ảnh vẫn đang tải lên",
+        "imagesUploadingDescription": "Vui lòng đợi tải ảnh xong trước khi gửi đánh giá.",
+        "failedTitle": "Một số ảnh tải lên thất bại",
+        "failedDescription": "Hãy xóa ảnh bị lỗi và thử chọn lại.",
+        "addPhotoLimit": "Bạn chỉ có thể thêm tối đa {count} ảnh",
+        "onlyMorePhotos": "Chỉ có thể thêm {count} ảnh nữa",
+        "onlyMorePhotosPlural": "Chỉ có thể thêm {count} ảnh nữa",
+        "notImage": "\"{name}\" không phải là ảnh",
+        "tooLarge": "\"{name}\" lớn hơn 8 MB",
+        "uploadFailedTitle": "Tải ảnh đánh giá thất bại",
+        "unableToUpload": "Không thể tải ảnh lên",
+        "failedLabel": "Thất bại",
+        "reviewed": "{product} (đã đánh giá)",
+        "reviewPhoto": "Ảnh đánh giá {index}"
+      },
+      "shippingInfo": {
+        "estimatedDelivery": "Dự kiến giao hàng: {range}",
+        "shipping": "Vận chuyển",
+        "shipmentOf": "Kiện {index}/{total}",
+        "carrier": "Đơn vị vận chuyển: {carrier}",
+        "tracking": "Mã vận đơn: {tracking}",
+        "unverified": "(chưa xác minh)",
+        "note": "Ghi chú: {note}",
+        "itemSummary": "{count} {itemWord} {status}",
+        "itemWordSingular": "sản phẩm",
+        "itemWordPlural": "sản phẩm",
+        "viewItems": "Xem sản phẩm",
+        "hideItems": "Ẩn sản phẩm",
+        "items": "Sản phẩm",
+        "prepared": "Đã chuẩn bị {date}",
+        "dispatched": "Đã xuất kho {date}",
+        "delivered": "Đã giao {date}",
+        "legacyShipping": "Vận chuyển cũ",
+        "status": "Trạng thái: {status}",
+        "updated": "Cập nhật {date}",
+        "shipped": "Đã gửi {date}",
+        "unknownItem": "Sản phẩm không xác định"
+      },
+      "shopItem": {
+        "shopNote": "Ghi chú cửa hàng",
+        "promoCodes": "Mã giảm giá"
+      }
+    },
+    "guestOrders": {
+      "title": "Theo dõi đơn hàng khách",
+      "description": "Nhập email, mã đơn hàng và mã ZIP / bưu chính đã dùng khi thanh toán.",
+      "find": "Tìm đơn hàng",
+      "loading": "Đang tải chi tiết đơn hàng của bạn",
+      "notFoundTitle": "Không tìm thấy đơn hàng khách",
+      "notFoundDescription": "Chúng tôi không thể khớp email, mã đơn hàng và mã ZIP / bưu chính đó. Hãy kiểm tra lại thông tin và thử lại."
+    },
+    "messages": {
+      "title": "Tin nhắn",
+      "description": "Trao đổi trực tiếp với người bán về sản phẩm và đơn hàng.",
+      "all": "Tất cả",
+      "unread": "Chưa đọc",
+      "filtersAria": "Bộ lọc tin nhắn",
+      "searchShops": "Tìm cửa hàng",
+      "emptySearch": "Không có cuộc trò chuyện nào khớp tìm kiếm của bạn.",
+      "emptyUnread": "Không có cuộc trò chuyện chưa đọc.",
+      "emptyAll": "Chưa có cuộc trò chuyện nào.",
+      "selectConversation": "Chọn một cuộc trò chuyện để đọc và trả lời.",
+      "noMessages": "Chưa có tin nhắn nào.",
+      "yesterday": "Hôm qua",
+      "productPrefix": "Sản phẩm: {name}",
+      "productShared": "Đã chia sẻ sản phẩm",
+      "conversation": "Cuộc trò chuyện",
+      "back": "Quay lại danh sách trò chuyện"
+    },
+    "auth": {
+      "login": {
+        "title": "Đăng nhập",
+        "email": "Email",
+        "password": "Mật khẩu",
+        "forgot": "Quên mật khẩu?",
+        "submit": "Đăng nhập",
+        "incorrect": "Email hoặc mật khẩu không đúng",
+        "forbidden": "Tài khoản này không thể truy cập trang khách hàng",
+        "genericError": "Đã xảy ra lỗi từ phía chúng tôi. Vui lòng thử lại"
+      },
+      "register": {
+        "title": "Tạo tài khoản",
+        "name": "Tên",
+        "email": "Email",
+        "password": "Mật khẩu",
+        "submit": "Đăng ký",
+        "emailRegistered": "Email này đã được đăng ký. Hãy thử đăng nhập.",
+        "genericError": "Đã xảy ra lỗi từ phía chúng tôi. Vui lòng thử lại"
+      },
+      "dialog": {
+        "newUser": "Mới đến với Arc?",
+        "existingUser": "Đã là người dùng Arc?"
+      }
+    },
+    "reset": {
+      "request": {
+        "title": "Đặt lại mật khẩu",
+        "subtitle": "Nhập địa chỉ email gắn với tài khoản của bạn và chúng tôi sẽ gửi liên kết để đặt lại mật khẩu.",
+        "email": "Email",
+        "continue": "Tiếp tục",
+        "genericError": "Đã xảy ra lỗi từ phía chúng tôi. Vui lòng thử lại"
+      },
+      "sent": {
+        "title": "Kiểm tra email của bạn",
+        "messagePrefix": "Cảm ơn! Nếu",
+        "messageSuffix": "khớp với email chúng tôi có, chúng tôi đã gửi cho bạn email chứa hướng dẫn đặt lại mật khẩu.",
+        "helpPrefix": "Nếu bạn không nhận được email trong 5 phút, hãy kiểm tra thư rác,",
+        "resend": "gửi lại",
+        "helpOr": ", hoặc",
+        "differentEmail": "thử email khác",
+        "resentPrefix": "Chúng tôi đã gửi lại hướng dẫn đặt lại mật khẩu đến",
+        "resentSuffix": "nếu đó là email chúng tôi có.",
+        "checkAgain": "Vui lòng kiểm tra lại. Nếu bạn vẫn chưa nhận được email",
+        "tryDifferentEmail": "thử email khác"
+      },
+      "expired": {
+        "message": "Liên kết đặt lại mật khẩu này đã hết hạn.",
+        "retry": "Thử đặt lại mật khẩu lần nữa."
+      },
+      "form": {
+        "title": "Đặt lại mật khẩu",
+        "mismatch": "Mật khẩu không khớp. Vui lòng thử lại.",
+        "genericError": "Đã xảy ra lỗi từ phía chúng tôi. Vui lòng thử lại",
+        "newPassword": "Mật khẩu mới",
+        "confirmPassword": "Xác nhận mật khẩu của bạn",
+        "save": "Lưu"
+      },
+      "success": {
+        "title": "Bạn đã đổi mật khẩu thành công",
+        "continue": "Tiếp tục mua sắm"
+      }
+    }
+  }
+}

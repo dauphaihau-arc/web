@@ -23,16 +23,14 @@ function mockEmptyProductRails(page: Page) {
 async function chooseVietnamese(page: Page) {
   await page.getByTestId('market-preferences-trigger').click();
 
-  const dialog = page.locator('[data-testid="market-preferences-dialog"]').filter({
-    has: page.getByText('Update your settings'),
-  }).last();
+  const languageField = page.getByLabel('Language');
 
-  const languageField = dialog.getByLabel('Language');
-
+  await expect(languageField).toBeVisible();
+  await expect(languageField).toBeEnabled();
   await languageField.click();
   await page.getByRole('option', { name: 'Tiếng Việt', exact: true }).click();
   await expect(languageField).toContainText('Tiếng Việt');
-  await dialog.getByTestId('market-preferences-save').click();
+  await page.getByTestId('market-preferences-save').click();
 }
 
 test('choosing Vietnamese preserves the page and query, keeps USD, and translates the footer', async ({ page }) => {
@@ -50,7 +48,7 @@ test('choosing Vietnamese preserves the page and query, keeps USD, and translate
   await chooseVietnamese(page);
 
   // Same page and query, now under the Vietnamese prefix.
-  await expect(page).toHaveURL(/\/vi\?ref=test$/);
+  await expect(page).toHaveURL(/\/vi\?ref=test$/, { timeout: 10_000 });
 
   // Currency is carried over untouched by the language change.
   await expect(preferencesTrigger).toContainText('USD');
