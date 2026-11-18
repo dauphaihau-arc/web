@@ -4,6 +4,7 @@ import HeaderActions from './header-actions.vue'
 import Categories from './categories.vue'
 import ScreenPanel from './screen-panel.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 
 const loadCartMegaMenu = () => import('./cart-mega-menu.vue')
 const loadSearchAllMegaMenu = () => import('./search-all-mega-menu.vue')
@@ -18,6 +19,7 @@ const SearchAllMegaMenu = defineAsyncComponent({
 })
 
 const route = useRoute()
+const { localizePath } = useLocalizedRoute()
 const isShowCart = ref(false)
 const isShowSearch = ref(false)
 const hasLoadedCartMegaMenu = ref(false)
@@ -112,7 +114,7 @@ async function toggleCartMenu() {
       >
         <NuxtLink
           id="brand"
-          :to="ROUTES.HOME"
+          :to="localizePath(ROUTES.HOME)"
           class="-ms-1 h-fit p-1 font-brand text-xl font-bold"
         >
           Arc
@@ -146,7 +148,7 @@ async function toggleCartMenu() {
     <ScreenPanel
       v-if="hasLoadedSearchAllMegaMenu && !isDesktop"
       v-model="isShowSearch"
-      close-label="Close search"
+      :close-label="$t('header.search.close')"
       close-test-id="header-search-close"
     >
       <SearchAllMegaMenu
@@ -158,7 +160,7 @@ async function toggleCartMenu() {
     <ScreenPanel
       v-if="hasLoadedCartMegaMenu && !isDesktop"
       v-model="isShowCart"
-      close-label="Close cart"
+      :close-label="$t('header.cart.close')"
       close-test-id="header-cart-close"
     >
       <CartMegaMenu

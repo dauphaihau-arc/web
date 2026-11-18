@@ -13,13 +13,13 @@ const open = defineModel<boolean>({ required: true })
   >
     <div class="flex h-full flex-col bg-surface">
       <div class="flex items-center justify-between gap-4 border-b border-border-subtle px-5 py-4">
-        <span class="text-lg font-semibold">Categories</span>
+        <span class="text-lg font-semibold">{{ $t('header.categories.title') }}</span>
         <UButton
           color="gray"
           variant="ghost"
           square
           :icon="ICON_NAME_BY_ALIAS['xMarkSolid']"
-          aria-label="Close menu"
+          :aria-label="$t('header.categories.close')"
           @click="open = false"
         />
       </div>

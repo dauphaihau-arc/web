@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import type { CurrencyOption } from '@arc/utils/currency-options'
 import type { FormSubmitEvent } from '#ui/types'
-import type { PreferenceState } from './preference-options'
+import type { LanguageOption, PreferenceState } from './preference-options'
 import MarketCurrencySelect from './market-currency-select.vue'
+import MarketLanguageSelect from './market-language-select.vue'
 import MarketRegionSelect from './market-region-select.vue'
 
 const props = withDefaults(defineProps<{
   state: PreferenceState
   regionOptions: string[]
   currencyOptions: CurrencyOption[]
+  languageOptions: LanguageOption[]
   disabled?: boolean
   isPendingMarketConfig?: boolean
   bodyClass?: string
@@ -36,7 +38,7 @@ defineExpose({
   >
     <div :class="props.bodyClass">
       <UFormGroup
-        label="Region"
+        :label="$t('preferences.region')"
         name="region"
         required
         class="mb-4"
@@ -50,7 +52,20 @@ defineExpose({
       </UFormGroup>
 
       <UFormGroup
-        label="Currency"
+        :label="$t('preferences.language')"
+        name="language"
+        required
+        class="mb-4"
+      >
+        <MarketLanguageSelect
+          v-model="preferenceState.language"
+          :disabled="props.disabled"
+          :options="props.languageOptions"
+        />
+      </UFormGroup>
+
+      <UFormGroup
+        :label="$t('preferences.currency')"
         name="currency"
         required
         class="mb-4"

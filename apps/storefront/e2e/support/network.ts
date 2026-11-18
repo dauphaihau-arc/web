@@ -152,7 +152,7 @@ function buildMarketConfig() {
         defaultCurrency: 'USD',
         supportedCurrencies: ['USD', 'EUR'],
         defaultLocale: 'en-US',
-        supportedLocales: ['en-US'],
+        supportedLocales: ['en-US', 'vi-US'],
         enabled: true,
       },
     ],
@@ -382,6 +382,25 @@ export async function installStorefrontApiMocks(
       if (!currentUser) {
         return fulfillJSON(route, { message: 'Unauthorized' }, 401);
       }
+
+      return fulfillJSON(route, currentUser);
+    }
+
+    if (pathname.endsWith('/me') && method === 'PATCH') {
+      if (!currentUser) {
+        return fulfillJSON(route, { message: 'Unauthorized' }, 401);
+      }
+
+      const body = await request.postDataJSON() as {
+        preferences?: Partial<E2EUser['preferences']>
+      };
+      currentUser = {
+        ...currentUser,
+        preferences: {
+          ...currentUser.preferences,
+          ...body.preferences,
+        },
+      };
 
       return fulfillJSON(route, currentUser);
     }

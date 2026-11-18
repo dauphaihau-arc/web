@@ -5,6 +5,7 @@ import type { GetProductsResponseItem } from '~/domains/product/api/contracts/pr
 import { getProductStockNotice } from '~/domains/product/utils/product-stock'
 import { resolveProductImageUrl } from '~/domains/product/utils/product-image-url'
 import { routes } from '~/shared/navigation/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 
 const props = withDefaults(defineProps<{
   product: GetProductsResponseItem
@@ -14,6 +15,7 @@ const props = withDefaults(defineProps<{
 })
 
 const router = useRouter()
+const { localizePath } = useLocalizedRoute()
 const config = useRuntimeConfig()
 
 const imageUrl = computed(() => {
@@ -86,7 +88,7 @@ const hasDiscount = computed(() => {
 <template>
   <div
     class="group flex w-full cursor-pointer flex-col gap-1.5"
-    @click="() => router.push(routes.productDetail(props.product.shop.slug, props.product.slug))"
+    @click="() => router.push(localizePath(routes.productDetail(props.product.shop.slug, props.product.slug)))"
   >
     <ProductCardImage
       :src="imageUrl"

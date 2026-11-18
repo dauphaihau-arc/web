@@ -1,0 +1,51 @@
+{
+  "header": {
+    "search": {
+      "tooltip": "Tìm kiếm",
+      "placeholder": "Tìm kiếm...",
+      "suggestions": "Sản phẩm gợi ý",
+      "minLength": "Nhập ít nhất {count} ký tự để tìm kiếm.",
+      "noResults": "Không có sản phẩm phù hợp.",
+      "pressEnter": "Nhấn Enter để tìm kiếm \"{query}\".",
+      "close": "Đóng tìm kiếm"
+    },
+    "cart": {
+      "tooltip": "Giỏ hàng",
+      "title": "Giỏ hàng",
+      "review": "Xem giỏ hàng",
+      "moreItems": "Thêm {count} sản phẩm trong giỏ hàng của bạn",
+      "empty": "Giỏ hàng của bạn đang trống.",
+      "close": "Đóng giỏ hàng"
+    },
+    "account": {
+      "tooltip": "Tài khoản của tôi",
+      "signIn": "Đăng nhập",
+      "menu": {
+        "orders": "Đơn hàng",
+        "messages": "Tin nhắn",
+        "account": "Tài khoản",
+        "logout": "Đăng xuất"
+      },
+      "nav": {
+        "account": "Tài khoản",
+        "addresses": "Địa chỉ"
+      }
+    },
+    "seller": {
+      "center": "Trung tâm người bán",
+      "manageShop": "Quản lý cửa hàng",
+      "startSelling": "Bắt đầu bán hàng"
+    },
+    "categories": {
+      "title": "Danh mục",
+      "close": "Đóng menu"
+    },
+    "menu": {
+      "open": "Mở menu"
+    },
+    "notifications": {
+      "tooltip": "Thông báo",
+      "empty": "Chưa có thông báo nào."
+    }
+  }
+}

@@ -44,7 +44,10 @@ export function useUpdateMarketPreferences() {
 
       marketStore.guestPreferences = preferences;
 
-      await invalidateMarketSensitiveQueries(queryClient);
+      // Persisting the preference is the transaction; refreshing active queries
+      // must not hold the dialog open or delay the locale navigation. The
+      // invalidation still refetches in the background.
+      void invalidateMarketSensitiveQueries(queryClient).catch(() => undefined);
 
       return preferences;
     }

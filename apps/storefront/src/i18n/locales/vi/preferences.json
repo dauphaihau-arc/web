@@ -1,0 +1,9 @@
+{
+  "preferences": {
+    "title": "Cập nhật cài đặt của bạn",
+    "description": "Chọn nơi bạn sống, ngôn ngữ bạn sử dụng và đơn vị tiền tệ bạn dùng.",
+    "region": "Khu vực",
+    "language": "Ngôn ngữ",
+    "currency": "Tiền tệ"
+  }
+}

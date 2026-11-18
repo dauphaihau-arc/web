@@ -12,11 +12,13 @@ import {
 } from '~/domains/me/ui/order-shop/order-detail-presentation'
 import { useLookupGuestOrders } from '~/domains/checkout/queries/guest-orders.query'
 import { routes } from '~/shared/navigation/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 
 definePageMeta({ layout: 'market' })
 
 const route = useRoute()
 const router = useRouter()
+const { localizePath } = useLocalizedRoute()
 const hasDirectLookup = computed(() =>
   !!route.query.session_id
   || !!route.query.token
@@ -84,11 +86,11 @@ onMounted(async () => {
 })
 
 async function onSubmit(_: FormSubmitEvent<{ email: string, order_id: string, zip: string }>) {
-  await router.push(routes.guestOrders({
+  await router.push(localizePath(routes.guestOrders({
     email: state.email,
     orderId: state.order_id,
     zip: state.zip,
-  }))
+  })))
   await refetch()
 }
 </script>

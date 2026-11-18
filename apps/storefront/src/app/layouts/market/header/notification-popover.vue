@@ -5,12 +5,14 @@ import type { NotificationItem } from '~/domains/me/api/notifications/contracts/
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
 import { useMarkAllMyNotificationsAsRead, useMarkMyNotificationAsRead } from '~/domains/me/mutations/notifications/notifications.mutation'
 import { useGetMyNotifications, useGetMyNotificationUnreadCount } from '~/domains/me/queries/notifications/notifications.query'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 
 type NotificationPopoverClickItem = Pick<NotificationItem, 'id' | 'read_at'> & {
   data?: NotificationItem['data']
 }
 
 const { data: currentUser } = useGetCurrentUser()
+const { localizePath } = useLocalizedRoute()
 const notificationsQuery = useGetMyNotifications({ page: 1, limit: 8 })
 const unreadCountQuery = useGetMyNotificationUnreadCount()
 const { mutateAsync: markAsRead, isPending: isMarkingOne } = useMarkMyNotificationAsRead()
@@ -25,10 +27,10 @@ function getNotificationTarget(notification: NotificationPopoverClickItem) {
     : null
 
   if (orderId) {
-    return routes.orderDetail(orderId)
+    return localizePath(routes.orderDetail(orderId))
   }
 
-  return routes.orders()
+  return localizePath(routes.orders())
 }
 
 async function handleNotificationClick(notification: NotificationPopoverClickItem, close: () => void) {
@@ -55,8 +57,8 @@ async function handleMarkAll(close: () => void) {
     :error="notificationsQuery.isError.value"
     :is-marking-all="isMarkingAll"
     :is-marking-one="isMarkingOne"
-    empty-text="No notifications yet."
-    tooltip-text="Notifications"
+    :empty-text="$t('header.notifications.empty')"
+    :tooltip-text="$t('header.notifications.tooltip')"
     @mark-all="handleMarkAll"
     @item-click="handleNotificationClick"
   />

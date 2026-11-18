@@ -2,7 +2,6 @@ import {
   MARKET_CONFIG,
   type MarketRegions,
 } from '@arc/enums/market';
-import type { AuthPreferences } from '~/domains/auth/api/contracts/auth-user.contract';
 import { getFallbackMarketPreferences } from '~/domains/market/stores/market-preferences';
 
 const REQUEST_MARKET_HEADER_NAMES = {
@@ -22,10 +21,19 @@ const REGION_TO_LOCALE_REGION: Record<MarketRegions, string> = {
   Vietnam: 'VN',
 };
 
-function resolveLocaleLanguage(): AuthPreferences['language'] {
-  const marketStore = useMarketStore();
+/**
+ * The header language comes from the URL locale, never from the persisted
+ * Buyer Language Preference: `/vi/**` must talk to the API in Vietnamese even
+ * when the stored preference (or the market default) still says English.
+ *
+ * This reads the Nuxt i18n composer rather than `useI18n()` because headers are
+ * also built from mutation callbacks and other places without a component
+ * instance, where vue-i18n's `useI18n()` throws.
+ */
+function resolveLocaleLanguage(): string {
+  const { $i18n } = useNuxtApp();
 
-  return marketStore.activePreferences?.language ?? MARKET_CONFIG.BASE_LANGUAGE;
+  return $i18n.locale.value || MARKET_CONFIG.BASE_LANGUAGE;
 }
 
 export function getRequestMarketHeaders(): Record<string, string> {

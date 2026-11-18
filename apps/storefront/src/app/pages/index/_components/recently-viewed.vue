@@ -24,7 +24,7 @@ const recentProducts = computed(() => props.products?.length
 
 <template>
   <ProductSection
-    title="Recently viewed"
+    :title="$t('home.recentlyViewed.title')"
     :products="recentProducts"
     :loading="props.loading && recentProducts.length === 0"
     :limit="props.limit"

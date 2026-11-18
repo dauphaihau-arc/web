@@ -6,6 +6,7 @@ import CartShopQuantity from '~/domains/cart/ui/shop-cart/cart-shop-quantity.vue
 import CartVariantsProduct from './variants-product.vue'
 import { ROUTES } from '~/shared/config/enums/routes'
 import { routes } from '~/shared/navigation/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 import { useDeleteProductCart } from '~/domains/cart/mutations/delete-product.mutation'
 import type { CartProductItem } from '~/domains/cart/api/cart.shared'
 import type { GetCartResponse } from '~/domains/cart/api/contracts/cart.contract'
@@ -16,6 +17,7 @@ const props = defineProps<{
 }>()
 
 const route = useRoute()
+const { localizePath } = useLocalizedRoute()
 const queryClient = useQueryClient()
 
 const {
@@ -60,7 +62,7 @@ const {
 })
 
 const goToDetailProduct = () => {
-  navigateTo(routes.productDetail(props.productCart.product.shop.slug, props.productCart.product.slug))
+  navigateTo(localizePath(routes.productDetail(props.productCart.product.shop.slug, props.productCart.product.slug)))
 }
 
 const displayAmount = computed(() => formatMinorCurrency(

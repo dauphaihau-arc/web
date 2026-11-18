@@ -3,12 +3,14 @@ import { formatMinorCurrency } from '@arc/utils'
 import SummaryOrderCard from '~/domains/cart/ui/summary-order-card.vue'
 import { useGetCart } from '~/domains/cart/queries/cart.query'
 import { routes } from '~/shared/navigation/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 
 const {
   isPending: isPendingGetCart,
   data: dataGetCart,
 } = useGetCart()
 const router = useRouter()
+const { localizePath } = useLocalizedRoute()
 
 const isTotalOrderInvalid = computed(() => {
   const totalMinor = dataGetCart.value?.summary.total_minor
@@ -28,7 +30,7 @@ const proceedLabel = computed(() => {
 })
 
 function proceedToCheckout() {
-  router.push(routes.cartCheckout())
+  router.push(localizePath(routes.cartCheckout()))
 }
 </script>
 

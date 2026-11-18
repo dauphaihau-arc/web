@@ -31,7 +31,7 @@ const recommendedProducts = computed(() => data.value?.items ?? [])
 <template>
   <ProductSection
     v-if="anchorProduct && recommendedProducts.length > 0"
-    title="Because you viewed"
+    :title="$t('home.becauseYouViewed.title')"
     :description="anchorProduct.title"
     :products="recommendedProducts"
     :limit="limit"

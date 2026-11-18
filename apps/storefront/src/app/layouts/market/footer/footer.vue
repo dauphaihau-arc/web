@@ -1,132 +1,66 @@
 <script setup lang="ts">
 import UpdateUserPreferencesBtn from './update-user-preferences-btn.vue'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 
-const primaryLinks = [
-  {
-    title: 'Shop',
-    links: [
-      {
-        title: 'Gift cards',
-        link: '/',
-      },
-      {
-        title: 'Arc Registry',
-        link: '/',
-      },
-      {
-        title: 'Sitemap',
-        link: '/',
-      },
-      {
-        title: 'Arc blog',
-        link: '/',
-      },
-      {
-        title: 'Arc United Kingdom',
-        link: '/',
-      },
-      {
-        title: 'Arc Germany',
-        link: '/',
-      },
-      {
-        title: 'Arc Canada',
-        link: '/',
-      },
-    ],
-  },
-  {
-    title: 'Sell',
-    links: [
-      {
-        title: 'Seller handbook',
-        link: '/',
-      },
-      {
-        title: 'Teams',
-        link: '/',
-      },
-      {
-        title: 'Forums',
-        link: '/',
-      },
-      {
-        title: 'Affiliates & Creators',
-        link: '/',
-      },
-    ],
-  },
-  {
-    title: 'About',
-    links: [
-      {
-        title: 'Arc, Inc.',
-        link: '/',
-      },
-      {
-        title: 'Policies',
-        link: '/',
-      },
-      {
-        title: 'News',
-        link: '/',
-      },
-      {
-        title: 'Investors',
-        link: '/',
-      },
-      {
-        title: 'Careers',
-        link: '/',
-      },
-    ],
-  },
-  {
-    title: 'Support',
-    links: [
-      {
-        title: 'Order status',
-        link: '/',
-      },
-      {
-        title: 'Delivery',
-        link: '/',
-      },
-      {
-        title: 'Returns',
-        link: '/',
-      },
-      {
-        title: 'Summary options',
-        link: '/',
-      },
-      {
-        title: 'Contact us',
-        link: '/',
-      },
-    ],
-  },
-]
+const { t } = useI18n()
+const { localizePath } = useLocalizedRoute()
 
-const accordionItems = primaryLinks.map(section => ({
+const homeLink = () => localizePath('/')
+
+const primaryLinks = computed(() => [
+  {
+    title: t('footer.shop.title'),
+    links: [
+      { title: t('footer.shop.giftCards'), link: homeLink() },
+      { title: t('footer.shop.registry'), link: homeLink() },
+      { title: t('footer.shop.sitemap'), link: homeLink() },
+      { title: t('footer.shop.blog'), link: homeLink() },
+      { title: t('footer.shop.unitedKingdom'), link: homeLink() },
+      { title: t('footer.shop.germany'), link: homeLink() },
+      { title: t('footer.shop.canada'), link: homeLink() },
+    ],
+  },
+  {
+    title: t('footer.sell.title'),
+    links: [
+      { title: t('footer.sell.sellerHandbook'), link: homeLink() },
+      { title: t('footer.sell.teams'), link: homeLink() },
+      { title: t('footer.sell.forums'), link: homeLink() },
+      { title: t('footer.sell.affiliates'), link: homeLink() },
+    ],
+  },
+  {
+    title: t('footer.about.title'),
+    links: [
+      { title: t('footer.about.company'), link: homeLink() },
+      { title: t('footer.about.policies'), link: homeLink() },
+      { title: t('footer.about.news'), link: homeLink() },
+      { title: t('footer.about.investors'), link: homeLink() },
+      { title: t('footer.about.careers'), link: homeLink() },
+    ],
+  },
+  {
+    title: t('footer.support.title'),
+    links: [
+      { title: t('footer.support.orderStatus'), link: homeLink() },
+      { title: t('footer.support.delivery'), link: homeLink() },
+      { title: t('footer.support.returns'), link: homeLink() },
+      { title: t('footer.support.summaryOptions'), link: homeLink() },
+      { title: t('footer.support.contactUs'), link: homeLink() },
+    ],
+  },
+])
+
+const accordionItems = computed(() => primaryLinks.value.map(section => ({
   label: section.title,
   links: section.links,
-}))
+})))
 
-const secondaryLinks = [
-  {
-    title: 'Guides',
-    link: '/',
-  },
-  {
-    title: 'Terms of Use',
-    link: '/',
-  },
-  {
-    title: 'Privacy Policy',
-    link: '/',
-  },
-]
+const secondaryLinks = computed(() => [
+  { title: t('footer.legal.guides'), link: homeLink() },
+  { title: t('footer.legal.terms'), link: homeLink() },
+  { title: t('footer.legal.privacy'), link: homeLink() },
+])
 </script>
 
 <template>
@@ -201,7 +135,7 @@ const secondaryLinks = [
 
         <div class="flex flex-wrap items-center gap-x-4 gap-y-1 lg:flex-nowrap">
           <div class="pt-1 text-xs">
-            © {{ new Date().getFullYear() }} Arc Inc.
+            {{ $t('footer.copyright', { year: new Date().getFullYear() }) }}
           </div>
           <div
             v-for="item in secondaryLinks"

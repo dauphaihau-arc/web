@@ -4,6 +4,11 @@ import BackendWakeUpOverlay from '@arc/ui/shells/backend-wake-up-overlay.vue'
 const { status, isUnknown, isPending, isError, waitForBackend } = useBackendStatus()
 const queryClient = useQueryClient()
 
+// The URL is the rendering source of truth for the locale, so the document
+// language follows the active route (`/` -> en, `/vi/**` -> vi).
+const { locale } = useI18n()
+useHead(() => ({ htmlAttrs: { lang: locale.value } }))
+
 // The page renders unconditionally, on the server and on the client. It used to
 // sit behind an `isReady` gate fed by a client-only readiness probe, which meant
 // every route shipped a content-free splash and made hydration plus one API

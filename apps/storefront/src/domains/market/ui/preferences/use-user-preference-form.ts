@@ -10,7 +10,8 @@ import {
   type CurrencyOption,
 } from '@arc/utils/currency-options';
 import {
-  computed, reactive, watch, type ComputedRef, type Ref,
+  computed, reactive, unref, watch,
+  type ComputedRef, type MaybeRef, type Ref,
 } from 'vue';
 import {
   defaultLanguageOption,
@@ -31,11 +32,18 @@ function toMarketEnum<T extends string>(values: readonly T[], value: string): T 
 type UseUserPreferenceFormParams = {
   currentUserPreferences: ComputedRef<AuthPreferences | undefined>
   marketConfig: Ref<MarketConfigResponse | undefined>
+  /**
+   * When provided, this language wins over the stored preference during
+   * market normalisation. The preferences dialog uses it so the URL locale is
+   * never silently replaced by a stale Buyer Language Preference.
+   */
+  languageOverride?: MaybeRef<MarketLanguages | undefined>
 };
 
 export function useUserPreferenceForm({
   currentUserPreferences,
   marketConfig,
+  languageOverride,
 }: UseUserPreferenceFormParams) {
   const state = reactive<PreferenceState>({
     region: MARKET_CONFIG.BASE_REGION,
@@ -94,7 +102,7 @@ export function useUserPreferenceForm({
 
     if (region && language && currency) {
       state.region = region;
-      state.language = language;
+      state.language = (languageOverride ? unref(languageOverride) : undefined) ?? language;
       state.currency = currency;
     }
   }
@@ -112,12 +120,24 @@ export function useUserPreferenceForm({
     });
     state.currency = nextCurrency?.id ?? market.defaultCurrency;
 
+    // The form's language fallback is always English rather than the market
+    // default: the preferences form persists a Buyer Language Preference, it
+    // does not decide which URL locale is rendered.
+    const overrideLanguage = languageOverride ? unref(languageOverride) : undefined;
+
+    if (overrideLanguage && state.language === overrideLanguage) {
+      // The URL locale is the source of truth while the dialog is open, so the
+      // stored preference must never replace it during normalisation. Once the
+      // buyer picks another language this branch falls through and the usual
+      // market validation applies.
+      state.language = overrideLanguage;
+      return;
+    }
+
     const preferredLanguage = currentUserPreferences.value?.language;
     const nextLanguage = languageOptions.value.find((option) => {
       return option.id === preferredLanguage || option.id === state.language;
-    }) ??
-    localeToLanguageOption(market.defaultLocale) ??
-    defaultLanguageOption;
+    }) ?? defaultLanguageOption;
 
     state.language = nextLanguage.id;
   }

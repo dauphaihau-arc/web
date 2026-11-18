@@ -2,6 +2,7 @@
 import ProductCardImage from '~/domains/product/ui/product-card-image.vue'
 import { routes } from '~/shared/navigation/routes'
 import { useGetCart } from '~/domains/cart/queries/cart.query'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 
 const props = withDefaults(defineProps<{
   show: boolean
@@ -10,6 +11,7 @@ const props = withDefaults(defineProps<{
   variant: 'mega',
 })
 
+const { localizePath } = useLocalizedRoute()
 const isScreenVariant = computed(() => props.variant === 'screen')
 const contentClass = computed(() => (isScreenVariant.value
   ? 'px-12  pb-8'
@@ -61,12 +63,12 @@ const remainProductCart = computed(() => {
       <div :class="contentClass">
         <div class="mb-4 flex justify-between gap-3">
           <div :class="[textClass.title, 'font-semibold']">
-            Cart
+            {{ $t('header.cart.title') }}
           </div>
           <UButton
             v-if="(!isScreenVariant || isTabletUp) && dataGetCart?.cart?.total_quantity"
-            :to="routes.cart()"
-            label="Review Cart"
+            :to="localizePath(routes.cart())"
+            :label="$t('header.cart.review')"
           >
             <template #trailing>
               <AppIcon name="arrowRight" />
@@ -89,9 +91,11 @@ const remainProductCart = computed(() => {
                 <NuxtLink
                   class="flex items-center gap-6"
                   :to="
-                    routes.productDetail(
-                      productCart.product.shop.slug,
-                      productCart.product.slug,
+                    localizePath(
+                      routes.productDetail(
+                        productCart.product.shop.slug,
+                        productCart.product.slug,
+                      ),
                     )
                   "
                 >
@@ -126,14 +130,14 @@ const remainProductCart = computed(() => {
               v-if="remainProductCart > 0"
               class="text-text-strong"
             >
-              {{ remainProductCart }} more products in your Cart
+              {{ $t('header.cart.moreItems', { count: remainProductCart }) }}
             </div>
           </div>
           <div
             v-else
             :class="[textClass.empty, 'text-text-strong']"
           >
-            Your cart is empty.
+            {{ $t('header.cart.empty') }}
           </div>
         </div>
 
@@ -145,8 +149,8 @@ const remainProductCart = computed(() => {
           <UButton
             block
             size="lg"
-            :to="routes.cart()"
-            label="Review Cart"
+            :to="localizePath(routes.cart())"
+            :label="$t('header.cart.review')"
           >
             <template #trailing>
               <AppIcon name="arrowRight" />

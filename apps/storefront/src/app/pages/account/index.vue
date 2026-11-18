@@ -1,9 +1,12 @@
 <script lang="ts" setup>
 import MarketCurrencySelect from '~/domains/market/ui/preferences/market-currency-select.vue'
+import MarketLanguageSelect from '~/domains/market/ui/preferences/market-language-select.vue'
 import MarketRegionSelect from '~/domains/market/ui/preferences/market-region-select.vue'
 import WrapperFormRow from '@arc/ui/patterns/form/wrapper-form-row.vue'
 import WrapperFormRows from '@arc/ui/patterns/form/wrapper-form-rows.vue'
 import type { PreferenceState } from '~/domains/market/ui/preferences/preference-options'
+import { urlLocaleToFormLanguage, withUrlLanguageOption } from '~/domains/market/ui/preferences/preference-options'
+import { useLanguageNavigation } from '~/shared/composables/use-language-navigation'
 import { useUpdateMarketPreferences } from '~/domains/market/ui/preferences/use-update-market-preferences'
 import { useUserPreferenceForm } from '~/domains/market/ui/preferences/use-user-preference-form'
 import { useGetMarketConfig } from '~/domains/market/queries/config.query'
@@ -18,6 +21,7 @@ const { data: currentUser } = useGetCurrentUser()
 const toast = useToast()
 const marketStore = useMarketStore()
 const preferencesFormRef = ref()
+const { locale } = useI18n()
 const {
   status,
   permission,
@@ -41,13 +45,23 @@ const currentUserPreferences = computed(() => {
   return currentUser.value?.user?.preferences || marketStore.guestPreferences || undefined
 })
 
+const urlLanguage = computed(() => urlLocaleToFormLanguage(locale.value))
+
 const {
   currencyOptions,
+  languageOptions,
   regionOptions,
   state: preferenceState,
 } = useUserPreferenceForm({
   currentUserPreferences,
   marketConfig,
+  languageOverride: computed(() => urlLanguage.value),
+})
+
+// Keep the URL language selectable even if the selected market does not
+// advertise it; the account page always mirrors the rendered locale.
+const accountLanguageOptions = computed(() => {
+  return withUrlLanguageOption(languageOptions.value, locale.value)
 })
 
 const {
@@ -55,13 +69,18 @@ const {
   submitPreferences,
 } = useUpdateMarketPreferences()
 
-type PreferenceBaseline = Pick<PreferenceState, 'region' | 'currency'>
+const {
+  navigateToLanguage,
+} = useLanguageNavigation()
+
+type PreferenceBaseline = Pick<PreferenceState, 'region' | 'language' | 'currency'>
 
 const preferenceBaseline = ref<PreferenceBaseline | null>(null)
 
 function snapshotPreferenceBaseline() {
   preferenceBaseline.value = {
     region: preferenceState.region,
+    language: preferenceState.language,
     currency: preferenceState.currency,
   }
 }
@@ -72,6 +91,7 @@ const isDirty = computed(() => {
   }
 
   return preferenceState.region !== preferenceBaseline.value.region
+    || preferenceState.language !== preferenceBaseline.value.language
     || preferenceState.currency !== preferenceBaseline.value.currency
 })
 
@@ -82,10 +102,19 @@ watch(currentUserPreferences, () => {
   snapshotPreferenceBaseline()
 }, { immediate: true, flush: 'post' })
 
-async function saveMarketPreferences(event: FormSubmitEvent<PreferenceState>) {
+async function saveMarketPreferences(_event: FormSubmitEvent<PreferenceState>) {
   try {
-    await submitPreferences(event.data)
+    const language = preferenceState.language
+    const languageChanged = language !== urlLanguage.value
+
+    await submitPreferences(preferenceState)
     snapshotPreferenceBaseline()
+
+    if (languageChanged) {
+      await navigateToLanguage(language)
+      return
+    }
+
     toast.add({
       ...toastCustom.success,
       title: 'Preferences updated',
@@ -178,7 +207,7 @@ onMounted(() => {
             Market preferences
           </template>
           <template #subtitle>
-            Choose the region and currency used for storefront browsing.
+            Choose the region, language, and currency used for storefront browsing.
           </template>
           <WrapperFormRow
             label="Region"
@@ -190,6 +219,20 @@ onMounted(() => {
               :options="regionOptions"
               :disabled="isSavingPreferences"
               :pending="isPendingGetMarketConfig"
+              size="lg"
+              class="w-full md:ms-auto md:max-w-52"
+            />
+          </WrapperFormRow>
+
+          <WrapperFormRow
+            label="Language"
+            description="Storefront text, dates, and numbers use this language."
+          >
+            <MarketLanguageSelect
+              v-model="preferenceState.language"
+              aria-label="Language"
+              :options="accountLanguageOptions"
+              :disabled="isSavingPreferences"
               size="lg"
               class="w-full md:ms-auto md:max-w-52"
             />

@@ -7,11 +7,13 @@ import { useGetCategories } from '~/domains/category/queries/categories.query'
 import { getRoutePath, routes } from '~/shared/navigation/routes'
 import { CATEGORY_IMAGE_VARIANTS, CATEGORY_IMAGE_VARIANT_SIZES, resolveCategoryImageUrl } from '~/domains/category/utils/category-image'
 import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-guard'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 
 const skeletonItems = Array.from({ length: 4 }, (_, index) => index)
 
 const marketStore = useMarketStore()
 const { blocked } = useCategoryIdentityBlocked()
+const { localizePath } = useLocalizedRoute()
 
 const categoryImageUrl = (category: Category) => resolveCategoryImageUrl(
   category,
@@ -46,7 +48,7 @@ const carousel = useTemplateRef('carousel')
 const { canGoPrev, canGoNext, prev, next } = useCarouselControls(() => subCategories.value.length, carousel)
 
 const redirectPage = (subCategory: Category) => {
-  navigateTo(getRoutePath(routes.category(subCategory.slug, subCategory.id)))
+  navigateTo(localizePath(getRoutePath(routes.category(subCategory.slug, subCategory.id))))
 }
 </script>
 
@@ -72,10 +74,10 @@ const redirectPage = (subCategory: Category) => {
     <div v-else-if="subCategories.length > 0">
       <div class="mx-auto mb-6 max-w-home-layout px-4 md:px-12 lg:px-16">
         <h3 class="text-lg font-medium">
-          Explore more in this category
+          {{ $t('home.recommendedSubCategories.title') }}
         </h3>
         <p class="text-md text-text-strong">
-          Jump back into subcategories related to your last browse
+          {{ $t('home.recommendedSubCategories.description') }}
         </p>
       </div>
       <div class="relative xl:mx-auto xl:max-w-home-layout xl:px-16">

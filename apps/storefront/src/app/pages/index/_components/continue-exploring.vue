@@ -70,8 +70,8 @@ const subCategories = computed(() => {
       <ProductSection
         v-for="(cg, i) of subCategories"
         :key="i"
-        :title="`Continue exploring ${cg.categoryName}`"
-        description="Popular picks from a category you visited"
+        :title="$t('home.continueExploring.title', { category: cg.categoryName })"
+        :description="$t('home.continueExploring.description')"
         :products="cg.items"
         :limit="limit"
       />

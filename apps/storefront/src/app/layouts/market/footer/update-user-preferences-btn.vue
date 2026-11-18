@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { MARKET_REGION_EMOJIS, MarketCurrencies } from '@arc/enums/market'
+import { MARKET_REGION_EMOJIS, MarketCurrencies, type MarketLanguages } from '@arc/enums/market'
 import BaseDialog from '@arc/ui/patterns/dialog/base-dialog.vue'
 import DialogActions from '@arc/ui/patterns/dialog/dialog-actions.vue'
 import MarketPreferencesForm from '~/domains/market/ui/preferences/market-preferences-form.vue'
+import { defaultLanguageOption, localeToLanguageOption, urlLocaleToFormLanguage, withUrlLanguageOption } from '~/domains/market/ui/preferences/preference-options'
+import { useLanguageNavigation } from '~/shared/composables/use-language-navigation'
 import { useUpdateMarketPreferences } from '~/domains/market/ui/preferences/use-update-market-preferences'
 import { useUserPreferenceForm } from '~/domains/market/ui/preferences/use-user-preference-form'
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
 import { useGetMarketConfig } from '~/domains/market/queries/config.query'
+
+const { locale } = useI18n()
 
 const marketStore = useMarketStore()
 const isOpenDialog = ref(false)
@@ -20,6 +24,10 @@ const {
 } = useUpdateMarketPreferences()
 
 const {
+  navigateToLanguage,
+} = useLanguageNavigation()
+
+const {
   data: marketConfig,
   isPending: isPendingGetMarketConfig,
 } = useGetMarketConfig({
@@ -30,19 +38,56 @@ const currentUserPreferences = computed(() => {
   return currentUserData.value?.user?.preferences || marketStore.guestPreferences || undefined
 })
 
+const urlLanguage = computed<MarketLanguages>(() => urlLocaleToFormLanguage(locale.value))
+
 const {
   currencyOptions,
+  languageOptions,
   regionOptions,
   selectedCurrencyOption,
   state,
 } = useUserPreferenceForm({
   currentUserPreferences,
   marketConfig,
+  // While the dialog is open the URL locale wins over the stored preference.
+  languageOverride: computed(() => isOpenDialog.value ? urlLanguage.value : undefined),
+})
+
+// The language control must stay usable even when the selected market does not
+// advertise the language the URL is currently rendered in.
+const dialogLanguageOptions = computed(() => {
+  return withUrlLanguageOption(languageOptions.value, locale.value)
+})
+
+const selectedLanguageOption = computed(() => {
+  return localeToLanguageOption(state.language) ?? defaultLanguageOption
+})
+
+function openDialog() {
+  state.language = urlLanguage.value
+  isOpenDialog.value = true
+}
+
+// Hydrating stored preferences can land after the dialog opened; the URL
+// locale still has to be the language shown there.
+watch(currentUserPreferences, () => {
+  if (isOpenDialog.value) {
+    state.language = urlLanguage.value
+  }
 })
 
 const onSubmit = async () => {
+  const language = state.language
+  const languageChanged = language !== urlLanguage.value
+
   await submitPreferences(state)
   isOpenDialog.value = false
+
+  if (languageChanged) {
+    await navigateToLanguage(language)
+    return
+  }
+
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 </script>
@@ -52,7 +97,7 @@ const onSubmit = async () => {
     <div
       data-testid="market-preferences-trigger"
       class="-ml-3 flex items-center gap-6 lg:ml-0"
-      @click="isOpenDialog = true"
+      @click="openDialog"
     >
       <div class="flex items-center gap-5">
         <div
@@ -63,7 +108,7 @@ const onSubmit = async () => {
             <span>{{ MARKET_REGION_EMOJIS[state.region] }}</span>
             <span>{{ state.region }}</span>
           </div>
-          <!-- <UDivider
+          <UDivider
             orientation="vertical"
             class="h-5 w-2"
           />
@@ -72,8 +117,8 @@ const onSubmit = async () => {
               name="languages"
               class="h-4"
             />
-            {{ state.language.label }}
-          </div> -->
+            {{ selectedLanguageOption.label }}
+          </div>
           <UDivider
             orientation="vertical"
             class="h-5 w-2"
@@ -102,13 +147,14 @@ const onSubmit = async () => {
           },
         },
       }"
-      title="Update your settings"
-      description="Set where you live, what language you speak and the currency you use."
+      :title="$t('preferences.title')"
+      :description="$t('preferences.description')"
     >
       <MarketPreferencesForm
         ref="formRef"
         :state="state"
         :region-options="regionOptions"
+        :language-options="dialogLanguageOptions"
         :currency-options="currencyOptions"
         :disabled="isSavingPreferences"
         :is-pending-market-config="isPendingGetMarketConfig"
@@ -124,7 +170,7 @@ const onSubmit = async () => {
             color="gray"
             @click="isOpenDialog = false"
           >
-            Cancel
+            {{ $t('common.cancel') }}
           </UButton>
           <UButton
             data-testid="market-preferences-save"
@@ -133,7 +179,7 @@ const onSubmit = async () => {
             size="md"
             @click="formRef?.submit"
           >
-            Save
+            {{ $t('common.save') }}
           </UButton>
         </DialogActions>
       </template>

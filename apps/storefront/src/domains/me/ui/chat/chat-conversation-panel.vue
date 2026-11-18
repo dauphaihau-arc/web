@@ -21,6 +21,7 @@ import {
   getRoutePath,
   routes,
 } from '~/shared/navigation/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 import { useMyMarkChatRead } from '~/domains/me/mutations/chat/mark-read.mutation'
 import { useMyChatMessages } from '~/domains/me/queries/chat/messages.query'
 import { useMySendChatMessage } from '~/domains/me/mutations/chat/send-message.mutation'
@@ -45,6 +46,8 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
   back: []
 }>()
+
+const { localizePath } = useLocalizedRoute()
 
 const messageDraft = ref('')
 const queryClient = useQueryClient()
@@ -183,7 +186,7 @@ function toProductReferenceDisplay(message: MyChatMessage) {
     imageUrl: snapshot.image_url,
     priceLabel,
     statusLabel,
-    href: getRoutePath(routes.productDetail(snapshot.shop_slug, snapshot.product_slug)),
+    href: localizePath(getRoutePath(routes.productDetail(snapshot.shop_slug, snapshot.product_slug))),
   }
 }
 

@@ -17,8 +17,8 @@ const { data, isPending } = useGetBestSellerProducts(
 
 <template>
   <ProductSection
-    title="Best Sellers"
-    description="Top products customers are buying the most"
+    :title="$t('home.bestSellers.title')"
+    :description="$t('home.bestSellers.description')"
     :products="data?.items"
     :loading="isPending"
     :limit="limit"

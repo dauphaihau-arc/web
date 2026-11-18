@@ -32,6 +32,16 @@ function sendJson(response, status, body, origin) {
   response.end(payload);
 }
 
+const MARKET_HEADER_NAMES = ['x-market-code', 'x-currency', 'x-locale', 'x-channel'];
+
+function recordedMarketHeaders(request) {
+  return Object.fromEntries(
+    MARKET_HEADER_NAMES
+      .map(name => [name, request.headers[name]])
+      .filter(([, value]) => typeof value === 'string'),
+  );
+}
+
 const server = createServer((request, response) => {
   const origin = request.headers.origin;
   const requestUrl = new URL(request.url ?? '/', `http://${HOST}:${PORT}`);
@@ -58,7 +68,7 @@ const server = createServer((request, response) => {
   // an expected request.
   if (requestUrl.pathname === '/v1/me/events' && request.method === 'GET') {
     requestLog.push({
-      method: 'GET', path: requestUrl.pathname, search: '', unexpected: false,
+      method: 'GET', path: requestUrl.pathname, search: '', unexpected: false, headers: recordedMarketHeaders(request),
     });
     response.writeHead(200, {
       'content-type': 'text/event-stream',
@@ -79,6 +89,7 @@ const server = createServer((request, response) => {
     path: requestUrl.pathname,
     search: requestUrl.search,
     unexpected: result === null,
+    headers: recordedMarketHeaders(request),
   };
   requestLog.push(entry);
 

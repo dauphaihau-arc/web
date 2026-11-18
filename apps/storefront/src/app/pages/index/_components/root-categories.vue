@@ -7,9 +7,11 @@ import { getRoutePath, routes } from '~/shared/navigation/routes'
 import { useGetRootCategories } from '~/domains/category/queries/categories.query'
 import { CATEGORY_IMAGE_VARIANTS, CATEGORY_IMAGE_VARIANT_SIZES, resolveCategoryImageUrl } from '~/domains/category/utils/category-image'
 import { useCategoryIdentityBlocked } from '~/domains/_shared/category-identity-guard'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 
 const { data } = useGetRootCategories()
 const marketStore = useMarketStore()
+const { localizePath } = useLocalizedRoute()
 const { blocked, checking, checkForUpdate } = useCategoryIdentityBlocked()
 
 const categories = computed(() => data.value ?? [])
@@ -23,7 +25,7 @@ const categoryImageUrl = (category: Category) => resolveCategoryImageUrl(
 
 const redirectByCategory = (category: Category) => {
   marketStore.userActivities.rootCategoryProductVisited = category
-  navigateTo(getRoutePath(routes.category(category.slug, category.id)))
+  navigateTo(localizePath(getRoutePath(routes.category(category.slug, category.id))))
 }
 </script>
 
@@ -41,7 +43,7 @@ const redirectByCategory = (category: Category) => {
   <div v-else-if="categories.length > 0">
     <div class="mx-auto mb-3 max-w-home-layout px-4 md:px-12 lg:px-16">
       <h3 class="break-words text-lg font-medium">
-        Shop by category
+        {{ $t('home.rootCategories.title') }}
       </h3>
     </div>
     <div class="relative xl:mx-auto xl:max-w-home-layout xl:px-16">

@@ -2,6 +2,7 @@ import { routes } from '~/shared/navigation/routes';
 import { toastCustom } from '~/shared/config/toast';
 import { authApi } from '~/domains/auth/api/auth.api';
 import { useWebPushNotifications } from '~/domains/me/composables/use-web-push-notifications';
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route';
 import type { GetCartResponse } from '~/domains/cart/api/contracts/cart.contract';
 
 const storefrontUserScopedQueryKeys = [
@@ -19,6 +20,7 @@ export function useLogout() {
   const toast = useToast();
   const queryClient = useQueryClient();
   const { disable } = useWebPushNotifications();
+  const { localizePath } = useLocalizedRoute();
 
   return useMutation({
     mutationKey: ['logout'],
@@ -39,7 +41,7 @@ export function useLogout() {
       }
 
       queryClient.setQueryData(['current-user'], { user: null });
-      navigateTo(routes.home());
+      navigateTo(localizePath(routes.home()));
     },
     onError() {
       toast.add({

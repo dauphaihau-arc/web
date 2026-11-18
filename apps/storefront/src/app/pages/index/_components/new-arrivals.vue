@@ -17,8 +17,8 @@ const { data, isPending } = useGetProducts(computed(() => ({
 
 <template>
   <ProductSection
-    title="New Arrivals"
-    description="Fresh listings recently added to the marketplace"
+    :title="$t('home.newArrivals.title')"
+    :description="$t('home.newArrivals.description')"
     :products="data?.items"
     :loading="isPending"
     :limit="limit"

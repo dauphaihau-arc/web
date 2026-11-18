@@ -1,0 +1,33 @@
+{
+  "home": {
+    "trending": {
+      "title": "Trending Now",
+      "description": "Popular products people are viewing right now"
+    },
+    "bestSellers": {
+      "title": "Best Sellers",
+      "description": "Top products customers are buying the most"
+    },
+    "newArrivals": {
+      "title": "New Arrivals",
+      "description": "Fresh listings recently added to the marketplace"
+    },
+    "recentlyViewed": {
+      "title": "Recently viewed"
+    },
+    "becauseYouViewed": {
+      "title": "Because you viewed"
+    },
+    "continueExploring": {
+      "title": "Continue exploring {category}",
+      "description": "Popular picks from a category you visited"
+    },
+    "rootCategories": {
+      "title": "Shop by category"
+    },
+    "recommendedSubCategories": {
+      "title": "Explore more in this category",
+      "description": "Jump back into subcategories related to your last browse"
+    }
+  }
+}

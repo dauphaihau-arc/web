@@ -9,6 +9,7 @@ import ShopActions from '../shop-actions/shop-actions.vue'
 import ShopShippingInfo from './shop-shipping-info.vue'
 import type { GetOrderShopsResponse } from '~/domains/me/api/order/contracts/order.contract'
 import { routes } from '~/shared/navigation/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 import {
   mergeOrderShopWithLiveUpdate,
   useOrderLiveUpdates,
@@ -72,10 +73,12 @@ const itemRows = computed(() => displayOrderShop.value.products.map((product) =>
   }
 }))
 
+const { localizePath } = useLocalizedRoute()
+
 const productLinkByItemId = computed(() => new Map(
   displayOrderShop.value.products.map(product => [
     product.id,
-    routes.productDetail(product.product.shop.slug, product.product.slug),
+    localizePath(routes.productDetail(product.product.shop.slug, product.product.slug)),
   ]),
 ))
 

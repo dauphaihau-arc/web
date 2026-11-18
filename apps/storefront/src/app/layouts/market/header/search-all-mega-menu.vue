@@ -3,6 +3,7 @@ import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
 import type { ProductSuggestion } from '~/domains/product/api/contracts/product.contract'
 import { useGetProductSuggestions } from '~/domains/product/queries/products.query'
 import { routes } from '~/shared/navigation/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 
 const props = withDefaults(defineProps<{
   show: boolean
@@ -11,6 +12,7 @@ const props = withDefaults(defineProps<{
   variant: 'mega',
 })
 
+const { localizePath } = useLocalizedRoute()
 const isScreenVariant = computed(() => props.variant === 'screen')
 const contentClass = computed(() => (isScreenVariant.value
   ? 'px-4 pb-8 md:px-12'
@@ -57,7 +59,7 @@ const redirectSearch = () => {
     return
   }
 
-  router.push(routes.search({ q: trimmedSearch.value }))
+  router.push(localizePath(routes.search({ q: trimmedSearch.value })))
 }
 
 watchDebounced(
@@ -117,7 +119,7 @@ function getHighlightedParts(text: string) {
 }
 
 function openSuggestedProduct(product: ProductSuggestion) {
-  router.push(routes.productDetail(product.shop.slug, product.slug))
+  router.push(localizePath(routes.productDetail(product.shop.slug, product.slug)))
 }
 </script>
 
@@ -132,7 +134,7 @@ function openSuggestedProduct(product: ProductSuggestion) {
           v-model="state.search"
           :icon="ICON_NAME_BY_ALIAS['searchSolid']"
           :padded="false"
-          placeholder="Search..."
+          :placeholder="$t('header.search.placeholder')"
           variant="none"
           autofocus
           class="w-full"
@@ -151,7 +153,7 @@ function openSuggestedProduct(product: ProductSuggestion) {
             class="mt-8"
           >
             <div class="mb-2 ml-4 text-[12px] text-text-muted">
-              Suggested Products
+              {{ $t('header.search.suggestions') }}
             </div>
 
             <div class="ml-2 flex flex-col gap-1">
@@ -184,21 +186,21 @@ function openSuggestedProduct(product: ProductSuggestion) {
           v-if="props.show && state.search.trim().length > 0 && state.search.trim().length < MIN_SEARCH_LENGTH"
           class="ml-4 mt-6 text-[12px] text-text-muted"
         >
-          Type at least {{ MIN_SEARCH_LENGTH }} characters to search.
+          {{ $t('header.search.minLength', { count: MIN_SEARCH_LENGTH }) }}
         </div>
 
         <div
           v-else-if="shouldShowNoResults"
           class="ml-4 mt-6 text-[12px] text-text-muted"
         >
-          No matching products.
+          {{ $t('header.search.noResults') }}
         </div>
 
         <div
           v-else-if="trimmedSearch && suggestedProducts.length === 0 && !isFetchingGetSuggestions"
           class="ml-4 mt-6 text-[12px] text-text-muted"
         >
-          Press Enter to search for "{{ trimmedSearch }}".
+          {{ $t('header.search.pressEnter', { query: trimmedSearch }) }}
         </div>
       </div>
     </div>
