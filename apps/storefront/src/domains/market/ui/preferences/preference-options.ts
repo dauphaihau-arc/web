@@ -16,24 +16,19 @@ const languageOptionById: Record<MarketLanguages, LanguageOption> = {
   [MarketLanguages.EN]: { id: MarketLanguages.EN, label: 'English (US)' },
   [MarketLanguages.LA]: { id: MarketLanguages.LA, label: 'Latin (LA)' },
   [MarketLanguages.FR]: { id: MarketLanguages.FR, label: 'Français (FR)' },
+  [MarketLanguages.VI]: { id: MarketLanguages.VI, label: 'Tiếng Việt' },
 };
+
+const languageOptionByCode = new Map(
+  Object.values(languageOptionById).map(option => [option.id, option]),
+);
 
 export const defaultLanguageOption = languageOptionById[MARKET_CONFIG.BASE_LANGUAGE];
 
 export function localeToLanguageOption(locale: string): LanguageOption | undefined {
   const languageCode = locale.split('-')[0]?.toLowerCase();
 
-  if (languageCode === MarketLanguages.EN) {
-    return languageOptionById[MarketLanguages.EN];
-  }
-
-  if (languageCode === MarketLanguages.FR) {
-    return languageOptionById[MarketLanguages.FR];
-  }
-
-  if (languageCode === MarketLanguages.LA) {
-    return languageOptionById[MarketLanguages.LA];
-  }
-
-  return undefined;
+  return languageCode
+    ? languageOptionByCode.get(languageCode as MarketLanguages)
+    : undefined;
 }

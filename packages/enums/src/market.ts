@@ -36,6 +36,7 @@ export enum MarketLanguages {
   EN = 'en',
   LA = 'la',
   FR = 'fr',
+  VI = 'vi',
 }
 
 export enum MarketRegions {
