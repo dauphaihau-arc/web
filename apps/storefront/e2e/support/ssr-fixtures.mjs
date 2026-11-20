@@ -238,6 +238,57 @@ export const PRODUCT_ATTRIBUTES_BY_ID = {
   ],
 };
 
+export const PRODUCT_DETAIL_BY_SLUG = {
+  'artisan-shop/handmade-ring': {
+    id: 'product-e2e-1',
+    category_id: '101',
+    title: 'Handmade Ring',
+    slug: 'handmade-ring',
+    variant_type: 'none',
+    variant_group_name: '',
+    variant_sub_group_name: '',
+    stock_notice_threshold: 2,
+    shop: {
+      id: 'shop-e2e-1',
+      slug: 'artisan-shop',
+      shop_name: 'Artisan Shop',
+      owner_user_id: 'owner-1',
+    },
+    images: [],
+    variants: [],
+    review_summary: { average: 0, count: 0 },
+    shipping: { destinations: [] },
+    inventory: [
+      {
+        id: 'inventory-usd',
+        amount_minor: 1234,
+        original_amount_minor: 1500,
+        currency: 'USD',
+        stock: 10,
+        variant_label: null,
+        sub_variant_label: null,
+      },
+    ],
+  },
+};
+
+/** Empty but contract-shaped payloads for the product page side panels. */
+export const PRODUCT_REVIEWS = {
+  items: [],
+  summary: {
+    average: 0,
+    count: 0,
+    breakdown: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+    filters: { has_images: 0, has_comment: 0 },
+  },
+  meta: { total: 0, page: 1, limit: 4 },
+};
+
+export const PRODUCT_REVIEW_IMAGES = {
+  items: [],
+  meta: { next_cursor: undefined, has_more: false },
+};
+
 export const FACETS_BY_ID = {
   1: [
     {
@@ -391,9 +442,9 @@ const MARKET_CONFIG = {
       code: 'US',
       name: 'United States',
       defaultCurrency: 'USD',
-      supportedCurrencies: ['USD'],
+      supportedCurrencies: ['USD', 'EUR'],
       defaultLocale: 'en-US',
-      supportedLocales: ['en-US'],
+      supportedLocales: ['en-US', 'vi-US'],
       enabled: true,
     },
   ],
@@ -520,6 +571,37 @@ export function resolveFixtureRequest(method, requestUrl) {
     }
 
     return { status: 200, body: resolution };
+  }
+
+  const productBySlugMatch = /^\/products\/by-slug\/([^/]+)\/([^/]+)(\/[^/]+)?$/.exec(path);
+
+  if (productBySlugMatch) {
+    const key = `${decodeURIComponent(productBySlugMatch[1])}/${decodeURIComponent(productBySlugMatch[2])}`;
+    const suffix = productBySlugMatch[3] ?? '';
+    const detail = PRODUCT_DETAIL_BY_SLUG[key];
+
+    if (!detail) {
+      return { status: 404, body: { message: 'product not found' } };
+    }
+
+    if (method === 'GET' && suffix === '') {
+      return { status: 200, body: detail };
+    }
+    if (method === 'GET' && suffix === '/reviews') {
+      return { status: 200, body: PRODUCT_REVIEWS };
+    }
+    if (method === 'GET' && suffix === '/review-images') {
+      return { status: 200, body: PRODUCT_REVIEW_IMAGES };
+    }
+    if (method === 'GET' && suffix === '/recommendation-sections') {
+      return { status: 200, body: { sections: [] } };
+    }
+    if (method === 'GET' && suffix === '/recommendations') {
+      return { status: 200, body: { items: [] } };
+    }
+    if (method === 'POST' && suffix === '/views') {
+      return { status: 200, body: { success: true } };
+    }
   }
 
   if (method === 'GET' && path === '/products/facets') {

@@ -1,10 +1,12 @@
 import { expect, test } from '@playwright/test';
 import { installStorefrontApiMocks } from '../support/network';
+import { waitForHydration } from '../support/hydration';
 
 test('the sign-in dialog renders in Vietnamese on /vi', async ({ page }) => {
   await installStorefrontApiMocks(page, { currentUser: null });
 
   await page.goto('/vi');
+  await waitForHydration(page);
   await page.getByTestId('header-sign-in-trigger').click();
 
   await expect(page.getByRole('heading', { name: 'Đăng nhập' })).toBeVisible();

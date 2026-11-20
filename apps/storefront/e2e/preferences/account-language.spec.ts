@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { createUser } from '../support/factories';
 import { installStorefrontApiMocks } from '../support/network';
+import { waitForHydration } from '../support/hydration';
 
 /**
  * Static-suite coverage for the language field on the buyer account page.
@@ -13,6 +14,7 @@ test('the buyer account page exposes the language setting below Region', async (
   });
 
   await page.goto('/account');
+  await waitForHydration(page);
 
   const preferences = page.locator('form').filter({ has: page.getByText('Market preferences') }).first();
 

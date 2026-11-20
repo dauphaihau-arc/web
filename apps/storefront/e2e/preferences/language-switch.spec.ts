@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { installStorefrontApiMocks } from '../support/network';
+import { waitForHydration } from '../support/hydration';
 
 /**
  * Static-suite coverage for the preferences language field.
@@ -38,6 +39,7 @@ test('choosing Vietnamese preserves the page and query, keeps USD, and translate
   await mockEmptyProductRails(page);
 
   await page.goto('/?ref=test');
+  await waitForHydration(page);
 
   const footer = page.locator('footer');
   const preferencesTrigger = page.getByTestId('market-preferences-trigger');
@@ -57,4 +59,29 @@ test('choosing Vietnamese preserves the page and query, keeps USD, and translate
   // the English strings after the client-side locale switch.
   await expect(footer.getByText('Mua sắm', { exact: true }).filter({ visible: true })).toHaveText('Mua sắm');
   await expect(footer.getByText('Trạng thái đơn hàng', { exact: true }).filter({ visible: true })).toHaveText('Trạng thái đơn hàng');
+});
+
+/**
+ * Proves the language switch carries over to localised catalog content, not
+ * just chrome. The category surface only renders server-side, so this runs in
+ * SSR mode against the seeded category fixture (`/c/gaming-laptops-c1`).
+ */
+test('choosing Vietnamese on a category page keeps the category and translates catalog copy', async ({ page }) => {
+  test.skip(process.env.E2E_MODE !== 'ssr', 'Needs the SSR category fixture');
+
+  await page.goto('/c/gaming-laptops-c1');
+  await waitForHydration(page);
+
+  await expect(page).toHaveURL(/\/c\/gaming-laptops-c1$/);
+  await expect(
+    page.getByText('Sort by:', { exact: true }).filter({ visible: true }).first(),
+  ).toBeVisible({ timeout: 20_000 });
+
+  await chooseVietnamese(page);
+
+  // The category path is language-neutral, so only the locale prefix is added.
+  await expect(page).toHaveURL(/\/vi\/c\/gaming-laptops-c1$/, { timeout: 10_000 });
+  await expect(page.locator('html')).toHaveAttribute('lang', 'vi');
+  await expect(page.getByText(/Sắp xếp theo:/).first()).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByRole('button', { name: 'Đặt lại bộ lọc' }).first()).toBeVisible();
 });

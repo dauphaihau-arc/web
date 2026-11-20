@@ -1,4 +1,5 @@
 import type { Page, Route } from '@playwright/test';
+import { CATEGORY_IDENTITY_CONTRACT } from '@arc/enums/category';
 import { createUser, type E2ENotification, type E2EUser } from './factories';
 
 type CheckoutOrderResponse = {
@@ -356,6 +357,14 @@ export async function installStorefrontApiMocks(
 
     if (pathname.endsWith('/auth/client-config') && method === 'GET') {
       return fulfillJSON(route, defaultAuthClientConfig);
+    }
+
+    if (pathname.endsWith('/categories/contract') && method === 'GET') {
+      return fulfillJSON(route, { version: CATEGORY_IDENTITY_CONTRACT.VERSION });
+    }
+
+    if (pathname.endsWith('/categories/suggestions') && method === 'GET') {
+      return fulfillJSON(route, { categories: [] });
     }
 
     if (pathname.endsWith('/categories') && method === 'GET') {
