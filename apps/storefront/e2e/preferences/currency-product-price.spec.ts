@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { installStorefrontApiMocks } from '../support/network';
+import { waitForHydration } from '../support/hydration';
 
 test('updates storefront product pricing after changing currency preferences', async ({ page }) => {
   await installStorefrontApiMocks(page, {
@@ -7,6 +8,7 @@ test('updates storefront product pricing after changing currency preferences', a
   });
 
   await page.goto('/artisan-shop/handmade-ring');
+  await waitForHydration(page);
 
   await expect(page.getByTestId('product-summary-price')).toContainText('$12.34');
 
