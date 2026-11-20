@@ -278,7 +278,13 @@ export const PRODUCT_REVIEWS = {
   summary: {
     average: 0,
     count: 0,
-    breakdown: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+    breakdown: {
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+    },
     filters: { has_images: 0, has_comment: 0 },
   },
   meta: { total: 0, page: 1, limit: 4 },
