@@ -56,8 +56,9 @@ Adopt Option A.
 - Storefront Language is independent of Market. A Locale is a Storefront Language
   plus a Market region, and every enabled Market can render every supported
   Storefront Language.
-- Buyer Language Preference remains persisted for the switcher and future
-  server-produced messages, but it does not make cookie-driven SSR authoritative.
+- Buyer Language Preference remains persisted for the switcher and
+  server-produced buyer messages, but it does not make cookie-driven SSR
+  authoritative.
   A stored `vi` preference client-redirects the bare `/` only; every explicit URL
   wins.
 - First visits render English; Vietnamese requires an explicit choice or `/vi`
