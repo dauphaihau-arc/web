@@ -308,7 +308,11 @@ const listClass = computed(() => {
   const display = isVertical || props.stretch ? 'flex w-full' : 'inline-flex'
 
   if (props.variant === 'pill') {
-    return ['relative rounded-lg bg-surface-muted p-1', display, direction]
+    // `isolate` keeps the tab buttons' `z-10` (which lifts them above the
+    // sliding indicator) inside the strip. Without it that z-index competes at
+    // the page root and paints the tabs over fixed overlays such as the market
+    // header popovers.
+    return ['relative isolate rounded-lg bg-surface-muted p-1', display, direction]
   }
 
   return [display, direction]
