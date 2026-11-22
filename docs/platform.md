@@ -44,13 +44,18 @@ Keep server-state access inside composables or domain modules so pages stay thin
 
 ## Language
 
-Apps ship a single locale (`en`). The Nuxt i18n module was removed once it became clear no
-translations were wired: its config pointed at a missing `i18n.config.ts`, its locale files were
-unused stubs, and nothing rendered translated strings.
+The Storefront ships with English (`en`) and Vietnamese (`vi`) UI translation. English is the
+default and has no URL prefix; Vietnamese renders under `/vi/**`. The URL language prefix is the
+rendering source of truth, so shared ISR output stays correct per path.
 
-Language-bearing request headers come from the market preferences store, typed by
-`StorefrontLanguages` in `packages/enums/src/market.ts`. Reintroduce a localization layer only when a
-second locale actually needs to render.
+Storefront UI copy lives in `apps/storefront/src/i18n/locales/{en,vi}` and is rendered through
+Nuxt i18n. English is the source key set; a missing Vietnamese key falls back to English, and CI
+checks key parity. Seller and Admin are not localized by this contract.
+
+Language-bearing request headers come from the URL locale, not from the persisted preference, and
+are typed by `StorefrontLanguages` in `packages/enums/src/market.ts`. The Buyer Language Preference
+still drives the language switcher and server-produced buyer messages; the i18n runtime does not
+add a second locale cookie.
 
 ## UI Foundation
 
