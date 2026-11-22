@@ -22,8 +22,8 @@ const notifications = computed(() => notificationsQuery.data.value?.results ?? [
 const unreadCount = computed(() => unreadCountQuery.data.value?.unread_count ?? 0)
 
 function getNotificationTarget(notification: NotificationPopoverClickItem) {
-  const orderId = typeof notification.data?.orderId === 'string'
-    ? notification.data.orderId
+  const orderId = typeof notification.data?.order_id === 'string'
+    ? notification.data.order_id
     : null
 
   if (orderId) {

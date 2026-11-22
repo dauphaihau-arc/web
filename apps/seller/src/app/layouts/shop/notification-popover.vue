@@ -59,11 +59,9 @@ function getNotificationTarget(notification: NotificationPopoverItem) {
     return null
   }
 
-  const orderIdentifier = typeof notification.data?.order_number === 'string'
-    ? notification.data.order_number
-    : typeof notification.data?.order_id === 'string'
-      ? notification.data.order_id
-      : null
+  const orderIdentifier = typeof notification.data?.order_id === 'string'
+    ? notification.data.order_id
+    : null
 
   if (target === 'seller_order_detail' && orderIdentifier) {
     return routes.orderDetail(orderIdentifier)
