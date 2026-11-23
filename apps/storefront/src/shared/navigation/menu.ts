@@ -24,12 +24,10 @@ export function useAccountSidebarLinks(): ComputedRef<AppNavigationItem[]> {
   return computed(() => [
     {
       label: translate('header.account.nav.account'),
-      icon: 'account',
       to: localizePath(routes.account()),
     },
     {
       label: translate('header.account.nav.addresses'),
-      icon: 'location',
       to: localizePath(routes.accountAddresses()),
     },
     // {
