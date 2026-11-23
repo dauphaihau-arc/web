@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import Footer from './footer/footer.vue'
 import Header from './header/header.vue'
-import { useAccountSidebarLinks } from '~/shared/navigation/menu'
+import { useAccountSidebarLinks, type AppNavigationItem } from '~/shared/navigation/menu'
 import { routePaths } from '~/shared/navigation/routes'
 import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 
 const route = useRoute()
+const router = useRouter()
+const { t: translate } = useI18n()
 const { localizePath } = useLocalizedRoute()
 const accountSidebarLinks = useAccountSidebarLinks()
 
@@ -18,25 +20,17 @@ const isAccountRoute = ref(false)
 /** The header slides away while scrolling down, so the sticky account tabs pin flush to the top. */
 const headerVisible = useHeaderVisibility()
 
+const accountNavTitle = computed(() => translate('header.account.tooltip'))
+
 /**
- * Below `lg` the account nav is a sticky horizontal tab strip. The component
- * root is the padded bar; its inner list holds the links, so the row layout is
- * applied there. From `lg` it stays the vertical sidebar beside the content.
+ * Exact path match: the account root must not read as active on `/account/addresses`,
+ * which a prefix-based router link class would do.
  */
-const accountNavUi = {
-  wrapper: 'border-b border-border-subtle [&>ul]:flex [&>ul]:gap-1 [&>ul>li]:flex-1 lg:space-y-2 lg:border-b-0 lg:border-s lg:[&>ul]:block',
-  base: 'group flex shrink-0 items-center justify-center whitespace-nowrap border-b-2 leading-6 before:hidden py-2 lg:justify-start lg:border-b-0 lg:border-s lg:-ms-px',
-  padding: 'p-0 px-1 lg:px-0 lg:ps-4',
-  rounded: '',
-  font: '',
-  ring: '',
-  active: 'text-primary-500 dark:text-primary-400 border-current font-semibold',
-  inactive: 'border-transparent hover:border-border-hover text-text-subtle hover:text-text-strong',
-  icon: {
-    base: 'text-primary-500',
-    active: '!text-primary-500 dark:text-primary-400 border-current font-semibold',
-    inactive: 'border-transparent hover:border-border-hover text-text-subtle hover:text-text-strong',
-  },
+function isActiveAccountLink(link: AppNavigationItem): boolean {
+  const target = typeof link.to === 'string' ? link.to : router.resolve(link.to).fullPath
+  const normalize = (path: string) => path.replace(/\/+$/, '')
+
+  return normalize(route.path) === normalize(target.split('?')[0] ?? target)
 }
 
 watch(() => route.path, () => {
@@ -59,22 +53,29 @@ watch(() => route.path, () => {
         <div
           class="mx-auto mt-8 flex min-h-[50vh] max-w-[900px] flex-col gap-6 lg:mt-24 lg:flex-row lg:gap-10"
         >
-          <UVerticalNavigation
-            class="scrollbar-subtle sticky z-[2] -mx-4 h-fit w-full flex-none overflow-x-auto bg-surface px-4 transition-all duration-200 md:-mx-12 md:px-12 lg:static lg:mx-0 lg:w-1/5 lg:overflow-visible lg:bg-transparent lg:px-0"
+          <nav
+            class="scrollbar-subtle sticky z-[2] -mx-4 h-fit w-full flex-none overflow-x-auto border-b border-b-border-subtle bg-surface px-4 transition-all duration-200 md:-mx-12 md:px-12 lg:top-24 lg:mx-0 lg:w-1/5 lg:self-start lg:overflow-visible lg:border-b-0 lg:bg-transparent lg:px-0"
             :class="headerVisible ? 'top-14' : 'top-0'"
-            :links="accountSidebarLinks"
-            :ui="accountNavUi"
+            :aria-label="accountNavTitle"
           >
-            <template #default="{ link }">
-              <span :class="link.disabled && 'opacity-50'">{{ link.label }}</span>
-            </template>
-            <template #icon="{ link }">
-              <AppIcon
-                :name="link.icon ?? ''"
-                :class="link.disabled && 'opacity-50'"
-              />
-            </template>
-          </UVerticalNavigation>
+            <ul class="flex gap-1 lg:block lg:space-y-4">
+              <li
+                v-for="link in accountSidebarLinks"
+                :key="String(link.to)"
+                class="flex-1 lg:flex-none"
+              >
+                <NuxtLink
+                  :to="link.to"
+                  class="flex items-center justify-center whitespace-nowrap border-b-2 py-2 text-base font-semibold leading-6 transition-colors lg:justify-start lg:border-b-0 lg:py-0 lg:text-lg lg:leading-7"
+                  :class="isActiveAccountLink(link)
+                    ? 'border-current text-text-strong'
+                    : 'border-transparent text-text-muted hover:text-text-strong'"
+                >
+                  {{ link.label }}
+                </NuxtLink>
+              </li>
+            </ul>
+          </nav>
           <slot />
         </div>
       </div>
