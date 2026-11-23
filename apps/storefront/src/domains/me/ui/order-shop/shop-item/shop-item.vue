@@ -144,7 +144,7 @@ const detailLink = computed(() =>
           <template #row-actions="{ row }">
             <UButton
               :to="productLinkByItemId.get(row.id)"
-              class="relative z-10"
+              class="relative z-[1]"
               variant="link"
               :padded="false"
               size="sm"
