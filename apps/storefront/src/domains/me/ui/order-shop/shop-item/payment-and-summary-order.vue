@@ -26,7 +26,7 @@ const shippingDiscountMinor = computed(() => props.orderShop.shipping_discount_m
   <div class="space-y-2">
     <UButton
       color="gray"
-      class="relative z-10 -ml-2.5"
+      class="relative z-[1] -ml-2.5"
       variant="ghost"
       :trailing-icon="showMore ? 'i-material-symbols:keyboard-arrow-up' : 'i-material-symbols:keyboard-arrow-down'"
       @click="showMore = !showMore"
