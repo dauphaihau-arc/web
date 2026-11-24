@@ -1041,6 +1041,11 @@ export interface components {
       code: string;
       /** @enum {string} */
       name: "United States" | "Vietnam";
+      /**
+       * @description ISO 3166-1 alpha-2 country used as the buyer Preview Destination.
+       * @example US
+       */
+      preview_country_code: string;
       /** @enum {string} */
       defaultCurrency: "USD" | "AUD" | "BRL" | "CHF" | "CNY" | "CZK" | "DKK" | "EUR" | "GBP" | "CAD" | "HKD" | "HUF" | "IDR" | "ILS" | "INR" | "JPY" | "KRW" | "MAD" | "MXN" | "MYR" | "NOK" | "NZD" | "PHP" | "PLN" | "SEK" | "VND" | "SGD" | "THB" | "TRY" | "TWD" | "ZAR";
       supportedCurrencies: ("USD" | "AUD" | "BRL" | "CHF" | "CNY" | "CZK" | "DKK" | "EUR" | "GBP" | "CAD" | "HKD" | "HUF" | "IDR" | "ILS" | "INR" | "JPY" | "KRW" | "MAD" | "MXN" | "MYR" | "NOK" | "NZD" | "PHP" | "PLN" | "SEK" | "VND" | "SGD" | "THB" | "TRY" | "TWD" | "ZAR")[];

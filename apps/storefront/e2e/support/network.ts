@@ -150,6 +150,7 @@ function buildMarketConfig() {
       {
         code: 'US',
         name: 'United States',
+        preview_country_code: 'US',
         defaultCurrency: 'USD',
         supportedCurrencies: ['USD', 'EUR'],
         defaultLocale: 'en-US',

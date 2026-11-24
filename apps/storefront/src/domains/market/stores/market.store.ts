@@ -4,7 +4,12 @@ import type { MarketCurrencies } from '@arc/enums/market';
 import { MARKET_CONFIG } from '@arc/enums/market';
 import { SessionStorageKeys } from '@arc/enums/session-storage-keys';
 import type { AuthPreferences } from '~/domains/auth/api/contracts/auth-user.contract';
-import type { MarketConfigMarket, IpDataResponse } from '~/domains/market/api/contracts/market.contract';
+import {
+  resolvePreviewCountryCode,
+  type MarketConfigMarket,
+  type MarketConfigResponse,
+  type IpDataResponse,
+} from '~/domains/market/api/contracts/market.contract';
 import {
   GUEST_PREFERENCES_COOKIE_KEY,
   getFallbackMarketPreferences,
@@ -36,9 +41,11 @@ function resolveSupportedMarket(countryName: string | undefined, enabledMarkets:
     enabledMarkets.find(market => market.name === COUNTRY_TO_MARKET_MAP[countryName]);
 }
 
+type BaseMarket = Omit<MarketConfigMarket, 'preview_country_code'>;
+
 function resolveMarketCurrency(
   currencyCode: string | undefined,
-  market: MarketConfigMarket,
+  market: Pick<BaseMarket, 'defaultCurrency' | 'supportedCurrencies'>,
 ): MarketCurrencies {
   if (currencyCode && market.supportedCurrencies.includes(currencyCode as MarketCurrencies)) {
     return currencyCode as MarketCurrencies;
@@ -47,7 +54,7 @@ function resolveMarketCurrency(
   return market.defaultCurrency;
 }
 
-function getBaseMarket(): MarketConfigMarket {
+function getBaseMarket(): BaseMarket {
   return {
     code: 'US',
     name: MARKET_CONFIG.BASE_REGION,
@@ -172,6 +179,24 @@ export const useMarketStore = defineStore('market', () => {
   const marketPreferenceSource = ref<MarketPreferenceSource | null>(null);
   const isMarketReady = ref(false);
   const marketReadyPromise = shallowRef<Promise<void> | null>(null);
+  const marketConfig = shallowRef<MarketConfigResponse | null>(null);
+  let marketConfigPromise: Promise<MarketConfigResponse | undefined> | null = null;
+
+  async function ensureMarketConfig() {
+    if (marketConfig.value) {
+      return marketConfig.value;
+    }
+
+    marketConfigPromise ??= queryClient
+      .query(marketConfigQueryOptions)
+      .catch(() => undefined);
+
+    const config = await marketConfigPromise;
+    marketConfigPromise = null;
+    marketConfig.value = config ?? null;
+
+    return config;
+  }
 
   // ISR routes are cached together with their response headers, so a Set-Cookie
   // written during SSR is replayed from the shared CDN cache to every visitor
@@ -186,6 +211,11 @@ export const useMarketStore = defineStore('market', () => {
   const activePreferences = computed(() => {
     return dataUserAuth.value?.user?.preferences ?? guestPreferences.value ?? null;
   });
+
+  const previewCountryCode = computed(() => resolvePreviewCountryCode(
+    marketConfig.value?.markets,
+    activePreferences.value?.region,
+  ));
 
   const markMarketReady = (
     preferences: AuthPreferences,
@@ -228,10 +258,10 @@ export const useMarketStore = defineStore('market', () => {
     }
 
     marketReadyPromise.value = (async () => {
-      const [currentUser, ipData, marketConfig] = await Promise.all([
+      const [currentUser, ipData, config] = await Promise.all([
         queryClient.query({ ...currentUserQueryOptions, staleTime: 'static' }).catch(() => undefined),
         getIpData().catch(() => undefined),
-        queryClient.query(marketConfigQueryOptions).catch(() => undefined),
+        ensureMarketConfig(),
       ]);
       const userPreferences = currentUser?.user?.preferences;
 
@@ -251,7 +281,7 @@ export const useMarketStore = defineStore('market', () => {
         return;
       }
 
-      const enabledMarkets = marketConfig?.markets.filter(market => market.enabled) ?? [];
+      const enabledMarkets = config?.markets.filter(market => market.enabled) ?? [];
       const market = resolveSupportedMarket(
         (ipData as IpDataResponse).country_name,
         enabledMarkets,
@@ -264,7 +294,7 @@ export const useMarketStore = defineStore('market', () => {
         currency: resolveMarketCurrency((ipData as IpDataResponse).currency?.code, market),
         language: MARKET_CONFIG.BASE_LANGUAGE,
         region: market.name,
-      }, marketConfig ? 'ip_lookup' : 'fallback');
+      }, config ? 'ip_lookup' : 'fallback');
     })();
 
     try {
@@ -318,9 +348,12 @@ export const useMarketStore = defineStore('market', () => {
     guestPreferences,
     activePreferences,
     marketPreferenceSource,
+    marketConfig,
+    previewCountryCode,
     isMarketReady,
     marketReadyPromise,
     ensureMarketReady,
+    ensureMarketConfig,
     clearCategoryRecommendationState,
     recordRecentProductView,
     clearRecentProductViews,
