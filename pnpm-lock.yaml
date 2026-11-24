@@ -26,8 +26,8 @@ importers:
         specifier: workspace:*
         version: link:packages/eslint-config
       '@dauphaihau-arc/api-spec':
-        specifier: 7.0.0
-        version: 7.0.0
+        specifier: 8.0.0-market-shipping-preview.15.1
+        version: 8.0.0-market-shipping-preview.15.1
       '@dauphaihau/eslint-config':
         specifier: ^0.3.9
         version: 0.3.9(eslint-plugin-tailwindcss@3.18.3(tailwindcss@3.4.19))(eslint-plugin-vue@10.10.0(@stylistic/eslint-plugin@5.10.0(eslint@10.8.1(jiti@2.7.0)))(@typescript-eslint/parser@8.66.0(eslint@10.8.1(jiti@2.7.0))(typescript@5.9.3))(eslint@10.8.1(jiti@2.7.0))(vue-eslint-parser@10.4.1(eslint@10.8.1(jiti@2.7.0))))(eslint@10.8.1(jiti@2.7.0))(typescript@5.9.3)(vue-eslint-parser@10.4.1(eslint@10.8.1(jiti@2.7.0)))
@@ -843,8 +843,8 @@ packages:
     peerDependencies:
       postcss-selector-parser: ^7.0.0
 
-  '@dauphaihau-arc/api-spec@7.0.0':
-    resolution: {integrity: sha512-KHSBcJCtB0jBaZXBsFVvVxbJCAngzQsXRLzvv4kqEqT/FL2mCSbBmP6iLhnWiktHxxnMj3BTuRdZJeHZdW/L/A==, tarball: https://npm.pkg.github.com/download/@dauphaihau-arc/api-spec/7.0.0/41b924b850c28f264353210502f04047e458142e}
+  '@dauphaihau-arc/api-spec@8.0.0-market-shipping-preview.15.1':
+    resolution: {integrity: sha512-hA7cuoq8+dC09VSalxVcm//bcTQEihPfd5fFTO6GRsuqZGkKV4rfmAv0f5u3SzkoGX/ZkJHMkt23McZ7FCd1gg==, tarball: https://npm.pkg.github.com/download/@dauphaihau-arc/api-spec/8.0.0-market-shipping-preview.15.1/b8f57c97effc3ae92254674ae9c228de0dcae556}
 
   '@dauphaihau/eslint-config@0.3.9':
     resolution: {integrity: sha512-3XEPMc+PtxeQPhlSBfwE6QsV29T9HuUE6aJNKMCgbeMKfYGAY9opjdWungY0Qj4jCuaEeTsY2wDHnOKZW7DayA==}
@@ -7441,7 +7441,7 @@ snapshots:
     dependencies:
       postcss-selector-parser: 7.2.0
 
-  '@dauphaihau-arc/api-spec@7.0.0': {}
+  '@dauphaihau-arc/api-spec@8.0.0-market-shipping-preview.15.1': {}
 
   '@dauphaihau/eslint-config@0.3.9(eslint-plugin-tailwindcss@3.18.3(tailwindcss@3.4.19))(eslint-plugin-vue@10.10.0(@stylistic/eslint-plugin@5.10.0(eslint@10.8.1(jiti@2.7.0)))(@typescript-eslint/parser@8.66.0(eslint@10.8.1(jiti@2.7.0))(typescript@5.9.3))(eslint@10.8.1(jiti@2.7.0))(vue-eslint-parser@10.4.1(eslint@10.8.1(jiti@2.7.0))))(eslint@10.8.1(jiti@2.7.0))(typescript@5.9.3)(vue-eslint-parser@10.4.1(eslint@10.8.1(jiti@2.7.0)))':
     dependencies:
