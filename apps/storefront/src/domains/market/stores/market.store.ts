@@ -244,13 +244,13 @@ export const useMarketStore = defineStore('market', () => {
 
   async function ensureMarketReady() {
     if (dataUserAuth.value?.user?.preferences) {
-      await ensureMarketConfig();
+      void ensureMarketConfig();
       markMarketReady(dataUserAuth.value.user.preferences, 'user_preferences');
       return;
     }
 
     if (guestPreferences.value) {
-      await ensureMarketConfig();
+      void ensureMarketConfig();
       marketPreferenceSource.value ??= 'guest_preferences';
       isMarketReady.value = true;
       return;
