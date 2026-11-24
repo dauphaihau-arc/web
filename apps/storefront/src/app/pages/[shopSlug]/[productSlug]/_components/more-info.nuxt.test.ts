@@ -9,7 +9,9 @@ import type {
 } from '~/domains/product/api/contracts/product.contract';
 import MoreInfo from './more-info.vue';
 
-type ProductShippingDestinations = NonNullable<GetDetailProductBySlugResponse['shipping']>['destinations'];
+type ProductShipping = NonNullable<GetDetailProductBySlugResponse['shipping']>;
+type ProductShippingDestinations = ProductShipping['destinations'];
+type ProductShippingPreview = NonNullable<ProductShipping['preview']>;
 
 mockNuxtImport('useRoute', () => () => ({
   path: '/clay-house/hand-thrown-mug',
@@ -58,7 +60,10 @@ vi.mock('~/domains/me/ui/chat/chat-conversation-panel.vue', () => ({
   default: { render: () => null },
 }));
 
-function buildProduct(destinations: ProductShippingDestinations): GetDetailProductBySlugResponse {
+function buildProduct(
+  destinations: ProductShippingDestinations,
+  preview?: ProductShippingPreview,
+): GetDetailProductBySlugResponse {
   return {
     id: 'product-1',
     shop: {
@@ -77,13 +82,16 @@ function buildProduct(destinations: ProductShippingDestinations): GetDetailProdu
     images: [],
     variants: [],
     inventory: [],
-    shipping: { destinations },
+    shipping: { destinations, ...(preview ? { preview } : {}) },
   };
 }
 
-async function renderMoreInfo(destinations: ProductShippingDestinations) {
+async function renderMoreInfo(
+  destinations: ProductShippingDestinations,
+  preview?: ProductShippingPreview,
+) {
   const wrapper = await mountSuspended(MoreInfo, {
-    props: { product: buildProduct(destinations) },
+    props: { product: buildProduct(destinations, preview) },
   });
 
   await flushPromises();
@@ -106,5 +114,83 @@ describe('more info shipping coverage', () => {
     ]);
 
     expect(wrapper.text()).toContain('Ships to ZZ');
+  });
+
+  it('shows the delivery window, converted fee, and dispatch country', async () => {
+    const wrapper = await renderMoreInfo([], {
+      available: true,
+      is_digital: false,
+      one_item_fee_minor: 500,
+      currency: 'USD',
+      ship_from_country: 'US',
+      estimate: { min_days: 4, max_days: 8 },
+    });
+
+    expect(wrapper.text()).toContain('Order today to get by');
+    expect(wrapper.text()).toContain('Cost to ship: $5.00');
+    expect(wrapper.text()).toContain('Ships from: United States');
+  });
+
+  it('shows the unsupported destination reason and dispatch country', async () => {
+    const wrapper = await renderMoreInfo(
+      [{ destination_scope: 'country', destination_country: 'US' }],
+      {
+        available: false,
+        is_digital: false,
+        reason: 'unsupported_destination',
+        ship_from_country: 'US',
+      },
+    );
+
+    expect(wrapper.text()).toContain('Doesn\'t ship to your region');
+    expect(wrapper.text()).toContain('Ships from: United States');
+  });
+
+  it('shows digital delivery instead of a physical shipping preview', async () => {
+    const wrapper = await renderMoreInfo([], {
+      available: true,
+      is_digital: true,
+    });
+
+    expect(wrapper.text()).toContain('Digital delivery');
+    expect(wrapper.text()).not.toContain('Shipping coverage not available');
+  });
+
+  it('shows the unsupported currency reason without fabricating a fee', async () => {
+    const wrapper = await renderMoreInfo([], {
+      available: false,
+      is_digital: false,
+      reason: 'unsupported_currency',
+    });
+
+    expect(wrapper.text()).toContain('Shipping estimate is unavailable');
+    expect(wrapper.text()).not.toContain('Cost to ship');
+  });
+
+  it('updates the fee when the Market preview changes', async () => {
+    const wrapper = await renderMoreInfo([], {
+      available: true,
+      is_digital: false,
+      one_item_fee_minor: 500,
+      currency: 'USD',
+      ship_from_country: 'US',
+      estimate: { min_days: 4, max_days: 8 },
+    });
+
+    expect(wrapper.text()).toContain('Cost to ship: $5.00');
+
+    await wrapper.setProps({
+      product: buildProduct([], {
+        available: true,
+        is_digital: false,
+        one_item_fee_minor: 700,
+        currency: 'USD',
+        ship_from_country: 'US',
+        estimate: { min_days: 6, max_days: 12 },
+      }),
+    });
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('Cost to ship: $7.00');
   });
 });

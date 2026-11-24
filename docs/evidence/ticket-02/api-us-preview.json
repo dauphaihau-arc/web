@@ -1,0 +1,23 @@
+{
+  "destinations": [
+    {
+      "destination_scope": "country",
+      "destination_country": "US"
+    },
+    {
+      "destination_scope": "everywhere_else",
+      "destination_country": null
+    }
+  ],
+  "preview": {
+    "available": true,
+    "is_digital": false,
+    "one_item_fee_minor": 599,
+    "currency": "USD",
+    "ship_from_country": "US",
+    "estimate": {
+      "min_days": 4,
+      "max_days": 8
+    }
+  }
+}

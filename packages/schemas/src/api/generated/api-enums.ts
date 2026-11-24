@@ -70,6 +70,7 @@ export const API_ENUM_VALUES = {
   "components.schemas.PublicProductDetailResponseDto.properties.who_made": ["i_did", "collective", "someone_else"],
   "components.schemas.PublicProductRecommendationSectionResponseDto.properties.type": ["similar_products", "from_same_seller", "customers_also_viewed", "frequently_bought_together"],
   "components.schemas.PublicProductShippingDestinationResponseDto.properties.destination_scope": ["country", "everywhere_else"],
+  "components.schemas.PublicProductShippingPreviewResponseDto.properties.reason": ["missing_assignment", "profile_not_found", "profile_not_ready", "unsupported_destination", "unsupported_currency"],
   "components.schemas.ResetPasswordDto.properties.app": ["storefront", "seller", "admin"],
   "components.schemas.SellerRegisterDto.properties.currency": ["USD", "AUD", "BRL", "CHF", "CNY", "CZK", "DKK", "EUR", "GBP", "CAD", "HKD", "HUF", "IDR", "ILS", "INR", "JPY", "KRW", "MAD", "MXN", "MYR", "NOK", "NZD", "PHP", "PLN", "SEK", "VND", "SGD", "THB", "TRY", "TWD", "ZAR"],
   "components.schemas.ShipmentRateDto.properties.service": ["standard", "express"],

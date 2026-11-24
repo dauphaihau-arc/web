@@ -21,6 +21,14 @@ export const ShippingProfileStatuses = {
 export type ShippingProfileStatus =
   (typeof ShippingProfileStatuses)[keyof typeof ShippingProfileStatuses]
 
+export enum ShippingPreviewUnavailableReasons {
+  MISSING_ASSIGNMENT = 'missing_assignment',
+  PROFILE_NOT_FOUND = 'profile_not_found',
+  PROFILE_NOT_READY = 'profile_not_ready',
+  UNSUPPORTED_DESTINATION = 'unsupported_destination',
+  UNSUPPORTED_CURRENCY = 'unsupported_currency',
+}
+
 export const ShippingDestinationScopes = {
   COUNTRY: 'country',
   EVERYWHERE_ELSE: 'everywhere_else',

@@ -257,7 +257,17 @@ export const PRODUCT_DETAIL_BY_SLUG = {
     images: [],
     variants: [],
     review_summary: { average: 0, count: 0 },
-    shipping: { destinations: [] },
+    shipping: {
+      destinations: [],
+      preview: {
+        available: true,
+        is_digital: false,
+        one_item_fee_minor: 500,
+        currency: 'USD',
+        ship_from_country: 'US',
+        estimate: { min_days: 4, max_days: 8 },
+      },
+    },
     inventory: [
       {
         id: 'inventory-usd',

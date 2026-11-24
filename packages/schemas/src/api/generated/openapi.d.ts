@@ -1953,8 +1953,23 @@ export interface components {
       destination_scope: "country" | "everywhere_else";
       destination_country?: string;
     };
+    PublicProductShippingPreviewEstimateResponseDto: {
+      min_days: number;
+      max_days: number;
+    };
+    PublicProductShippingPreviewResponseDto: {
+      available: boolean;
+      is_digital: boolean;
+      /** @enum {string} */
+      reason?: "missing_assignment" | "profile_not_found" | "profile_not_ready" | "unsupported_destination" | "unsupported_currency";
+      one_item_fee_minor?: number;
+      currency?: string;
+      ship_from_country?: string;
+      estimate?: components["schemas"]["PublicProductShippingPreviewEstimateResponseDto"];
+    };
     PublicProductShippingResponseDto: {
       destinations: components["schemas"]["PublicProductShippingDestinationResponseDto"][];
+      preview?: components["schemas"]["PublicProductShippingPreviewResponseDto"];
     };
     PublicProductDetailResponseDto: {
       id: string;

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
+import { formatMinorCurrency } from '@arc/utils'
 import type { MyChatConversation } from '~/domains/me/api/chat/contracts/chat.contract'
 import RegisterLoginDialog from '~/domains/auth/ui/login-register/register-login-dialog.vue'
 import ChatConversationPanel from '~/domains/me/ui/chat/chat-conversation-panel.vue'
@@ -8,6 +9,8 @@ import { setPostAuthRedirect } from '~/domains/auth/utils/post-auth-redirect'
 import { useCreateOrGetMyChatConversation } from '~/domains/me/mutations/chat/create-conversation.mutation'
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
 import { useGetCountries } from '~/domains/location/queries/countries.query'
+import { useLocaleFormatters } from '~/domains/market/composables/use-locale-formatters'
+import { useShippingPreviewCopy } from '~/domains/product/utils/use-shipping-preview-copy'
 
 const props = defineProps<{
   product?: GetDetailProductBySlugResponse
@@ -17,6 +20,8 @@ const props = defineProps<{
 const modal = useModal()
 const route = useRoute()
 const router = useRouter()
+const marketStore = useMarketStore()
+const { formatDate } = useLocaleFormatters()
 const { t } = useI18n()
 
 const { data: currentUser } = useGetCurrentUser()
@@ -64,6 +69,44 @@ function countryLabel(code?: string) {
 
   return countryNameByCode.value.get(code.toUpperCase()) ?? code
 }
+
+const shippingPreview = computed(() => props.product?.shipping?.preview)
+
+const { detail: shippingPreviewDetail } = useShippingPreviewCopy(
+  shippingPreview,
+  computed(() => marketStore.previewCountryCode
+    ? countryLabel(marketStore.previewCountryCode)
+    : undefined),
+)
+
+const shippingFee = computed(() => {
+  const preview = shippingPreview.value
+  if (preview?.one_item_fee_minor === undefined || !preview.currency) {
+    return ''
+  }
+
+  return formatMinorCurrency(preview.one_item_fee_minor, preview.currency)
+})
+
+const shippingFrom = computed(() => {
+  const country = shippingPreview.value?.ship_from_country
+  return country ? countryLabel(country) : ''
+})
+
+const deliveryDateRange = computed(() => {
+  const estimate = shippingPreview.value?.estimate
+  if (!estimate) {
+    return ''
+  }
+
+  const dateAt = (days: number) => {
+    const date = new Date()
+    date.setDate(date.getDate() + days)
+    return formatDate(date, { month: 'short', day: 'numeric' })
+  }
+
+  return `${dateAt(estimate.min_days)}-${dateAt(estimate.max_days)}`
+})
 
 const shippingCoverage = computed(() => {
   const destinations = props.product?.shipping?.destinations ?? []
@@ -193,7 +236,57 @@ watch(
           v-else-if="item.id === 'shipping'"
           class="space-y-2.5 px-1"
         >
-          <template v-if="shippingCoverage.length > 0">
+          <template v-if="shippingPreview">
+            <div
+              v-if="shippingPreview.is_digital || !shippingPreview.available"
+              class="flex gap-2 font-medium text-text-strong"
+            >
+              <AppIcon :name="shippingPreview.is_digital ? 'delivered' : 'info'" />
+              {{ shippingPreviewDetail }}
+            </div>
+            <template v-else>
+              <div
+                v-if="deliveryDateRange"
+                class="flex items-start gap-2"
+              >
+                <AppIcon
+                  name="calendar"
+                  class="mt-0.5"
+                />
+                <span>
+                  {{ $t('catalog.shipping.orderTodayToGetBy') }}
+                  <strong class="font-semibold text-text-strong">{{ deliveryDateRange }}</strong>
+                </span>
+              </div>
+              <div
+                v-if="shippingFee"
+                class="flex items-start gap-2"
+              >
+                <AppIcon
+                  name="delivered"
+                  class="mt-0.5"
+                />
+                <span>
+                  {{ $t('catalog.shipping.costToShip') }}
+                  <strong class="font-semibold text-text-strong">{{ shippingFee }}</strong>
+                </span>
+              </div>
+            </template>
+            <div
+              v-if="shippingFrom"
+              class="flex items-start gap-2"
+            >
+              <AppIcon
+                name="location"
+                class="mt-0.5"
+              />
+              <span>
+                {{ $t('catalog.shipping.shipsFrom') }}
+                <strong class="font-semibold text-text-strong">{{ shippingFrom }}</strong>
+              </span>
+            </div>
+          </template>
+          <template v-else>
             <div
               v-for="line in shippingCoverage"
               :key="line"
@@ -202,14 +295,14 @@ watch(
               <AppIcon name="location" />
               {{ line }}
             </div>
+            <div
+              v-if="shippingCoverage.length === 0"
+              class="flex gap-2 text-text-subtle"
+            >
+              <AppIcon name="location" />
+              {{ $t('catalog.shipping.notAvailable') }}
+            </div>
           </template>
-          <div
-            v-else
-            class="flex gap-2 text-text-subtle"
-          >
-            <AppIcon name="location" />
-            {{ $t('catalog.shipping.notAvailable') }}
-          </div>
         </div>
 
         <div

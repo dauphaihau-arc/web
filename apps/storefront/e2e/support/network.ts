@@ -224,7 +224,7 @@ function buildCategories() {
   ];
 }
 
-function buildDefaultProductDetail(currency: string) {
+export function buildDefaultProductDetail(currency: string) {
   const pricingByCurrency = {
     EUR: {
       amount_minor: 1100,
@@ -263,6 +263,14 @@ function buildDefaultProductDetail(currency: string) {
     },
     shipping: {
       destinations: [],
+      preview: {
+        available: true,
+        is_digital: false,
+        one_item_fee_minor: 500,
+        currency: pricing.currency,
+        ship_from_country: 'US',
+        estimate: { min_days: 4, max_days: 8 },
+      },
     },
     inventory: [
       {
