@@ -67,7 +67,7 @@
       "selectVariant": "Select a {name}",
       "variant": "variant",
       "details": "Product details",
-      "shippingPolicies": "Shipping and return policies",
+      "shippingPolicies": "Shipping",
       "meetSellers": "Meet your sellers"
     },
     "stock": {
@@ -79,7 +79,21 @@
     "shipping": {
       "worldwide": "Ships worldwide",
       "toCountry": "Ships to {country}",
-      "notAvailable": "Shipping coverage not available"
+      "notAvailable": "Shipping coverage not available",
+      "digitalDelivery": "Digital delivery",
+      "fromFee": "From {fee}",
+      "estimateDays": "{min}-{max} days",
+      "orderTodayToGetBy": "Order today to get by",
+      "costToShip": "Cost to ship:",
+      "shipsFrom": "Ships from:",
+      "previewWarning": "{reason}. You can still add it to the cart, but checkout needs an address the seller ships to.",
+      "reason": {
+        "unsupportedDestination": "Doesn't ship to your region",
+        "unsupportedDestinationCountry": "Doesn't ship to {country}",
+        "notConfigured": "Shipping is not configured",
+        "unsupportedCurrency": "Shipping estimate is unavailable",
+        "unknown": "Shipping is unavailable"
+      }
     },
     "seller": {
       "questions": "Questions about this item? Start a direct conversation with {shop}.",

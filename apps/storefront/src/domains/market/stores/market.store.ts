@@ -230,11 +230,13 @@ export const useMarketStore = defineStore('market', () => {
   // sync with LS
   watch(() => dataUserAuth.value?.user, () => {
     if (dataUserAuth.value?.user?.preferences) {
+      void ensureMarketConfig();
       markMarketReady(dataUserAuth.value.user.preferences, 'user_preferences');
       return;
     }
 
     if (guestPreferences.value) {
+      void ensureMarketConfig();
       marketPreferenceSource.value ??= 'guest_preferences';
       isMarketReady.value = true;
     }
@@ -242,11 +244,13 @@ export const useMarketStore = defineStore('market', () => {
 
   async function ensureMarketReady() {
     if (dataUserAuth.value?.user?.preferences) {
+      void ensureMarketConfig();
       markMarketReady(dataUserAuth.value.user.preferences, 'user_preferences');
       return;
     }
 
     if (guestPreferences.value) {
+      void ensureMarketConfig();
       marketPreferenceSource.value ??= 'guest_preferences';
       isMarketReady.value = true;
       return;

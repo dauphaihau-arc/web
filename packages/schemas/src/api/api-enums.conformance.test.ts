@@ -46,6 +46,7 @@ const FE_ENUM_EXPORTS = [
   'SessionStorageKeys',
   'ShippingProfileStatuses',
   'ShippingDestinationScopes',
+  'ShippingPreviewUnavailableReasons',
   'TokenTypes',
 ] as const
 

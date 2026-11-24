@@ -168,8 +168,28 @@ export const publicProductShippingDestinationSchema = z.object({
   destination_country: z.string().optional(),
 })
 
+export const publicProductShippingPreviewSchema = z.object({
+  available: z.boolean(),
+  is_digital: z.boolean(),
+  reason: z.enum([
+    'missing_assignment',
+    'profile_not_found',
+    'profile_not_ready',
+    'unsupported_destination',
+    'unsupported_currency',
+  ]).optional(),
+  one_item_fee_minor: z.number().int().nonnegative().optional(),
+  currency: z.string().optional(),
+  ship_from_country: z.string().optional(),
+  estimate: z.object({
+    min_days: z.number().int().nonnegative(),
+    max_days: z.number().int().nonnegative(),
+  }).optional(),
+})
+
 export const publicProductShippingSchema = z.object({
   destinations: z.array(publicProductShippingDestinationSchema),
+  preview: publicProductShippingPreviewSchema.optional(),
 })
 
 export const getDetailProductBySlugResponseSchema = z.object({
