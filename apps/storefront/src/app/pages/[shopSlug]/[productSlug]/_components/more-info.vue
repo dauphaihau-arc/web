@@ -234,6 +234,7 @@ watch(
 
         <div
           v-else-if="item.id === 'shipping'"
+          data-testid="product-shipping-section"
           class="space-y-2.5 px-1"
         >
           <template v-if="shippingPreview">
