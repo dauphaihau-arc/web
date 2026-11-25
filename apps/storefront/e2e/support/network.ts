@@ -44,6 +44,14 @@ export type StorefrontMockOptions = {
   checkoutQuoteResponse?: Record<string, unknown>
   checkoutOrderResponse?: CheckoutOrderResponse
   checkoutReadinessResponses?: CheckoutOrderResponse[]
+  /** Overrides the marketplace config so a suite can switch between Markets. */
+  markets?: Record<string, unknown>[]
+  /**
+   * Product listing fixture keyed by `X-Market-Code`. When present, the mock
+   * serves `/v1/products` and an empty facet response; when absent, listing
+   * requests keep falling through to the network as before.
+   */
+  productsByMarket?: Record<string, Record<string, unknown>[]>
 };
 
 const defaultAuthClientConfig = {
@@ -144,9 +152,9 @@ function buildCart(quantity: number) {
   };
 }
 
-function buildMarketConfig() {
+function buildMarketConfig(markets?: Record<string, unknown>[]) {
   return {
-    markets: [
+    markets: markets ?? [
       {
         code: 'US',
         name: 'United States',
@@ -158,6 +166,26 @@ function buildMarketConfig() {
         enabled: true,
       },
     ],
+  };
+}
+
+function buildProductListResponse(
+  items: Record<string, unknown>[],
+  url: URL,
+) {
+  const page = Number(url.searchParams.get('page') ?? 1);
+  const limit = Number(url.searchParams.get('limit') ?? 16);
+
+  return {
+    items,
+    meta: {
+      page,
+      limit,
+      total: items.length,
+      total_pages: 1,
+      has_next_page: false,
+      has_previous_page: false,
+    },
   };
 }
 
@@ -298,6 +326,7 @@ export async function installStorefrontApiMocks(
     order_shops: [],
   };
   const productDetailByCurrency = options.productDetailByCurrency ?? {};
+  const productsByMarket = options.productsByMarket;
   const userAddresses = options.userAddresses ?? [
     {
       id: 'address-e2e-1',
@@ -361,7 +390,7 @@ export async function installStorefrontApiMocks(
     }
 
     if (pathname.endsWith('/marketplace/config') && method === 'GET') {
-      return fulfillJSON(route, buildMarketConfig());
+      return fulfillJSON(route, buildMarketConfig(options.markets));
     }
 
     if (pathname.endsWith('/auth/client-config') && method === 'GET') {
@@ -523,6 +552,19 @@ export async function installStorefrontApiMocks(
 
     if (pathname.endsWith('/checkout/guest-orders') && method === 'GET') {
       return fulfillJSON(route, guestOrdersResponse);
+    }
+
+    if (productsByMarket && pathname.endsWith('/products/facets') && method === 'GET') {
+      return fulfillJSON(route, { facets: [] });
+    }
+
+    if (productsByMarket && pathname.endsWith('/products') && method === 'GET') {
+      const marketCode = (request.headers()['x-market-code'] ?? 'US').toUpperCase();
+
+      return fulfillJSON(
+        route,
+        buildProductListResponse(productsByMarket[marketCode] ?? [], url),
+      );
     }
 
     if (pathname.includes('/products/by-slug/') && pathname.endsWith('/views') && method === 'POST') {

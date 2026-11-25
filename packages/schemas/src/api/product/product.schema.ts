@@ -69,6 +69,16 @@ export const getProductsRequestSchema = requestGetListParamsSchema.extend({
   z.undefined(),
 ]))
 
+/**
+ * Catalog shipping coverage is a projection, not a quote: only availability is
+ * known before a Shipping Preview is resolved. Missing means the response did
+ * not carry coverage (older API or a backlogged projection), which the UI must
+ * not read as "does not ship".
+ */
+export const publicProductListShippingSchema = z.object({
+  available: z.boolean(),
+})
+
 export const getProductsResponseItemSchema = z.object({
   id: idSchema,
   shop: publicProductShopSchema,
@@ -78,6 +88,7 @@ export const getProductsResponseItemSchema = z.object({
   image: publicProductImageSchema.optional(),
   pricing: publicProductListPricingSchema.optional(),
   availability: publicProductListAvailabilitySchema,
+  shipping: publicProductListShippingSchema.optional(),
   variant_count: z.number().int().nonnegative(),
   created_at: z.union([z.string(), z.date()]),
 })
