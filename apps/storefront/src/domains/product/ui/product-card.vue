@@ -83,11 +83,18 @@ const salePercent = computed(() => {
 const hasDiscount = computed(() => {
   return compareAtAmount.value !== undefined
 })
+
+// Missing coverage is not an unavailable product: only an explicit `false` is
+// a statement about the buyer's Market. Digital products arrive as `true`.
+const shippingUnavailable = computed(() => {
+  return props.product.shipping?.available === false
+})
 </script>
 
 <template>
   <div
     class="group flex w-full cursor-pointer flex-col gap-1.5"
+    data-testid="product-card"
     @click="() => router.push(localizePath(routes.productDetail(props.product.shop.slug, props.product.slug)))"
   >
     <ProductCardImage
@@ -134,6 +141,13 @@ const hasDiscount = computed(() => {
         class="text-[13px] text-state-danger-text"
       >
         {{ stockNotice }}
+      </p>
+      <p
+        v-if="shippingUnavailable"
+        data-testid="product-card-shipping-badge"
+        class="mt-0.5 w-fit max-w-full rounded-full bg-surface-muted px-2 py-0.5 text-[11px] font-medium leading-tight text-text-muted"
+      >
+        {{ $t('catalog.shipping.reason.unsupportedDestination') }}
       </p>
     </div>
     <slot name="content" />
