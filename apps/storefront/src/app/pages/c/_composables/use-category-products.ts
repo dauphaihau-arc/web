@@ -35,8 +35,10 @@ export function useCategoryProducts(categoryId: MaybeRefOrGetter<string | undefi
       return undefined;
     }
 
+    const queryParams = normalizeRouteQuery(route.query);
+
     return {
-      ...normalizeRouteQuery(route.query),
+      ...queryParams,
       category_id: resolvedCategoryId,
       page: getRoutePage(route.query.page),
       limit: PAGE_LIMIT,

@@ -2,8 +2,9 @@ import type { ProductFilterState } from '~/domains/product/ui/filters/product-fi
 
 /**
  * Number of active filter selections in a state, counting each selected
- * attribute option plus one per active format, type, and price filter. Drives
- * the mobile filter button badge and the sheet's Clear label.
+ * attribute option plus one per active format, type, and price filter. The
+ * `catalogShipTo` destination is a scope choice, not a chip, so it is excluded.
+ * Drives the mobile filter button badge and the sheet's Clear label.
  */
 export function countActiveFilters(state: ProductFilterState): number {
   return state.attributeFilters.reduce(
@@ -26,6 +27,7 @@ export function useProductFilterState(defaultState: ProductFilterState) {
     state.minPrice = '';
     state.maxPrice = '';
     state.whoMade = 'all';
+    state.catalogShipTo = '';
     state.attributeFilters = [];
   }
 

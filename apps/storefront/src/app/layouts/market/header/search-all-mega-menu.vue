@@ -20,6 +20,7 @@ const contentClass = computed(() => (isScreenVariant.value
 
 const route = useRoute()
 const router = useRouter()
+const marketStore = useMarketStore()
 const limit = 5
 const MIN_SEARCH_LENGTH = 2
 
@@ -72,6 +73,20 @@ watchDebounced(
     refetchGetSuggestions()
   },
   { debounce: 500, maxWait: 1000 },
+)
+
+// The server scopes suggestions to the Market's Preview Destination. A Market
+// change swaps the query key (so old-Market items stop rendering) and this
+// watcher refetches the new Market's list while the search panel is open.
+watch(
+  () => marketStore.activePreferences?.region,
+  () => {
+    if (!props.show || !canFetchSuggestions.value) {
+      return
+    }
+
+    refetchGetSuggestions()
+  },
 )
 
 const suggestedProducts = computed(() => canFetchSuggestions.value
@@ -162,6 +177,7 @@ function openSuggestedProduct(product: ProductSuggestion) {
                 :key="prod.id"
                 type="button"
                 class="product"
+                data-testid="product-suggestion"
                 @click="openSuggestedProduct(prod)"
               >
                 <AppIcon

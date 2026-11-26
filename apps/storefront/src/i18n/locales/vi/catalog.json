@@ -22,6 +22,11 @@
         "type": "Loại sản phẩm",
         "attributes": "Thuộc tính"
       },
+      "shipping": {
+        "label": "Giao đến",
+        "myRegion": "Khu vực của tôi ({region})",
+        "allDestinations": "Tất cả điểm đến"
+      },
       "format": {
         "all": "Tất cả",
         "digital": "Kỹ thuật số",

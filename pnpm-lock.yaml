@@ -408,6 +408,9 @@ importers:
       '@formkit/auto-animate':
         specifier: ^0.10.2
         version: 0.10.2
+      '@headlessui/vue':
+        specifier: ^1.7.23
+        version: 1.7.23(vue@3.5.45(typescript@5.9.3))
       '@nuxt/fonts':
         specifier: ^1.2.0
         version: 1.2.0(@nuxt/schema@4.6.4)(cac@7.0.0)(confbox@0.2.4)(db0@0.3.4)(dotenv@17.4.2)(esbuild@0.28.2)(giget@3.3.0)(ioredis@5.11.1)(jiti@2.7.0)(lightningcss@1.33.0)(magic-string@1.4.5)(mlly@1.8.2)(oxc-parser@0.141.0)(postcss@8.5.32)(rolldown@1.2.16)(rollup@4.68.0)(srvx@1.0.8)(vite@8.3.6(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0))
