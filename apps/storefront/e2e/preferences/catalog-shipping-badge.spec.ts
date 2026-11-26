@@ -90,7 +90,7 @@ test('shows the shipping badge only when the catalog projection says unavailable
     productsByMarket: { US: productsForMarket('US') },
   });
 
-  await page.goto('/search?q=ring');
+  await page.goto('/search?q=ring&catalog_ship_to=all');
   await waitForHydration(page);
 
   await expect(productCard(page, AVAILABLE_TITLE)).toBeVisible();
@@ -131,7 +131,7 @@ test('refetches the catalog badge after a Market change', async ({ page }) => {
     },
   });
 
-  await page.goto('/search?q=ring');
+  await page.goto('/search?q=ring&catalog_ship_to=all');
   await waitForHydration(page);
 
   await expect(badge(page, UNAVAILABLE_TITLE)).toBeVisible();

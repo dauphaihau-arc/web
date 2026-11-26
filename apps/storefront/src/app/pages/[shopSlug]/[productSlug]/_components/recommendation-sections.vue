@@ -19,7 +19,10 @@ const { data, isPending } = useGetProductRecommendationSections(queryParams)
 </script>
 
 <template>
-  <div class="space-y-10">
+  <div
+    class="space-y-10"
+    data-testid="recommendation-sections"
+  >
     <ProductSection
       v-if="isPending"
       title=""

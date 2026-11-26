@@ -123,6 +123,24 @@ function parseAttributeFilters(query: Record<string, unknown>): AttributeFilter[
   });
 }
 
+function normalizeCatalogShipTo(value: unknown): string {
+  const raw = Array.isArray(value) ? value[0] : value;
+
+  if (typeof raw !== 'string') {
+    return '';
+  }
+
+  const normalized = raw.trim();
+
+  if (normalized.toLowerCase() === 'all') {
+    return 'all';
+  }
+
+  // Unknown and malformed codes are the API's to reject; the UI only keeps a
+  // shape it can display, so an invalid value falls back to the Market default.
+  return /^[a-z]{2}$/i.test(normalized) ? normalized.toUpperCase() : '';
+}
+
 export function createDefaultFilterState(routeQuery: Record<string, unknown>, currency: string): ProductFilterState {
   const base: ProductFilterState = {
     isDigital: 'all',
@@ -130,6 +148,7 @@ export function createDefaultFilterState(routeQuery: Record<string, unknown>, cu
     minPrice: '',
     maxPrice: '',
     whoMade: 'all',
+    catalogShipTo: normalizeCatalogShipTo(routeQuery.catalog_ship_to),
     attributeFilters: parseAttributeFilters(routeQuery),
   };
 
@@ -173,9 +192,31 @@ export function useProductFilterQuerySync(
     whoMade: 'who_made',
   };
 
+  // Browser back/forward can change the URL without going through `state`.
+  // Mirror the URL destination back into the filter so the two never disagree.
+  let syncingCatalogShipToFromRoute = false;
+
+  watch(() => route.query.catalog_ship_to, (value) => {
+    const next = normalizeCatalogShipTo(value);
+
+    if (state.catalogShipTo === next) {
+      return;
+    }
+
+    syncingCatalogShipToFromRoute = true;
+    state.catalogShipTo = next;
+    void nextTick(() => {
+      syncingCatalogShipToFromRoute = false;
+    });
+  });
+
   // Filters and sort share one watcher so a single interaction (e.g. the mobile
   // sheet's Apply) pushes one history entry instead of one per changed group.
   watch([state, () => options?.sortOrder?.value], () => {
+    if (syncingCatalogShipToFromRoute) {
+      return;
+    }
+
     const routeQuery = Object.fromEntries(
       Object.entries(route.query).filter(([key]) => {
         return !/^attr_.+/.test(key)
@@ -231,6 +272,16 @@ export function useProductFilterQuerySync(
       }
 
       if (key === 'minPrice' || key === 'maxPrice') {
+        return;
+      }
+
+      if (key === 'catalogShipTo') {
+        // Absence means "follow the current Market", so an implicit choice is
+        // represented by removing the key rather than writing a default.
+        if (typeof value === 'string' && value.length > 0) {
+          routeQuery.catalog_ship_to = value;
+        }
+
         return;
       }
 

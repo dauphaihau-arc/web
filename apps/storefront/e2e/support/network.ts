@@ -52,6 +52,19 @@ export type StorefrontMockOptions = {
    * requests keep falling through to the network as before.
    */
   productsByMarket?: Record<string, Record<string, unknown>[]>
+  /** Optional country reference fixture; defaults to the compact US/GB/VN list. */
+  countries?: Record<string, unknown>[]
+  /**
+   * Search suggestion fixture keyed by `X-Market-Code`. The real endpoint
+   * excludes products without shipping coverage for the Market's Preview
+   * Destination, so suites provide a Market-specific list.
+   */
+  suggestionsByMarket?: Record<string, Record<string, unknown>[]>
+  /**
+   * Recommendation rail fixture keyed by `X-Market-Code`, returned from the
+   * product page's `/recommendation-sections` endpoint.
+   */
+  recommendationSectionsByMarket?: Record<string, Record<string, unknown>[]>
 };
 
 const defaultAuthClientConfig = {
@@ -187,6 +200,52 @@ function buildProductListResponse(
       has_previous_page: false,
     },
   };
+}
+
+/**
+ * Server-owned destination list for the catalog "Ship to" selector. Checkout
+ * address suites only need the countries they select, so the fixture stays
+ * small and stable.
+ */
+const E2E_COUNTRIES = [
+  {
+    code: 'US',
+    name: 'United States',
+    has_administrative_areas: true,
+    postal_code_required: true,
+  },
+  {
+    code: 'GB',
+    name: 'United Kingdom',
+    has_administrative_areas: true,
+    postal_code_required: true,
+  },
+  {
+    code: 'VN',
+    name: 'Vietnam',
+    has_administrative_areas: true,
+    postal_code_required: true,
+  },
+];
+
+type MockProductShipping = {
+  available?: boolean
+  /** Optional per-country coverage used by catalog-destination suites. */
+  countries?: string[]
+};
+
+function productShipsTo(item: Record<string, unknown>, destination: string): boolean {
+  const shipping = item.shipping as MockProductShipping | undefined;
+
+  if (!shipping) {
+    return true;
+  }
+
+  if (Array.isArray(shipping.countries)) {
+    return shipping.countries.includes(destination);
+  }
+
+  return shipping.available !== false;
 }
 
 function buildIpData() {
@@ -327,6 +386,21 @@ export async function installStorefrontApiMocks(
   };
   const productDetailByCurrency = options.productDetailByCurrency ?? {};
   const productsByMarket = options.productsByMarket;
+  const suggestionsByMarket = options.suggestionsByMarket;
+  const recommendationSectionsByMarket = options.recommendationSectionsByMarket;
+  const markets = options.markets ?? [{
+    code: 'US',
+    name: 'United States',
+    preview_country_code: 'US',
+  }];
+  // The mock cannot ask the server which destination is implicit, so it
+  // mirrors the Market config the test installed.
+  const previewCountryByMarket = new Map(
+    markets.map(market => [
+      String(market.code ?? '').toUpperCase(),
+      String(market.preview_country_code ?? market.code ?? 'US').toUpperCase(),
+    ] as const),
+  );
   const userAddresses = options.userAddresses ?? [
     {
       id: 'address-e2e-1',
@@ -391,6 +465,10 @@ export async function installStorefrontApiMocks(
 
     if (pathname.endsWith('/marketplace/config') && method === 'GET') {
       return fulfillJSON(route, buildMarketConfig(options.markets));
+    }
+
+    if (pathname.endsWith('/locations/countries') && method === 'GET') {
+      return fulfillJSON(route, options.countries ?? E2E_COUNTRIES);
     }
 
     if (pathname.endsWith('/auth/client-config') && method === 'GET') {
@@ -554,16 +632,32 @@ export async function installStorefrontApiMocks(
       return fulfillJSON(route, guestOrdersResponse);
     }
 
+    if (suggestionsByMarket && pathname.endsWith('/products/suggestions') && method === 'GET') {
+      const marketCode = (request.headers()['x-market-code'] ?? 'US').toUpperCase();
+
+      return fulfillJSON(route, { items: suggestionsByMarket[marketCode] ?? [] });
+    }
+
     if (productsByMarket && pathname.endsWith('/products/facets') && method === 'GET') {
       return fulfillJSON(route, { facets: [] });
     }
 
     if (productsByMarket && pathname.endsWith('/products') && method === 'GET') {
       const marketCode = (request.headers()['x-market-code'] ?? 'US').toUpperCase();
+      const items = productsByMarket[marketCode] ?? [];
+      const catalogShipTo = url.searchParams.get('catalog_ship_to');
+      const destination = catalogShipTo
+        ? catalogShipTo.toUpperCase()
+        : previewCountryByMarket.get(marketCode) ?? marketCode;
+      // The real listing filters coverage for an explicit `catalog_ship_to`,
+      // and follows the Market's Preview Destination when the key is absent.
+      const filteredItems = destination === 'ALL'
+        ? items
+        : items.filter(item => productShipsTo(item, destination));
 
       return fulfillJSON(
         route,
-        buildProductListResponse(productsByMarket[marketCode] ?? [], url),
+        buildProductListResponse(filteredItems, url),
       );
     }
 
@@ -572,7 +666,13 @@ export async function installStorefrontApiMocks(
     }
 
     if (pathname.includes('/products/by-slug/') && pathname.endsWith('/recommendation-sections') && method === 'GET') {
-      return fulfillJSON(route, { sections: [] });
+      if (!recommendationSectionsByMarket) {
+        return fulfillJSON(route, { sections: [] });
+      }
+
+      const marketCode = (request.headers()['x-market-code'] ?? 'US').toUpperCase();
+
+      return fulfillJSON(route, { sections: recommendationSectionsByMarket[marketCode] ?? [] });
     }
 
     if (pathname.includes('/products/by-slug/') && pathname.endsWith('/review-images') && method === 'GET') {

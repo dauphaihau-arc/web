@@ -2,6 +2,7 @@
 import type { Category } from '@arc/models/category'
 import AttributeFacets from '~/domains/product/ui/filters/attribute-facets.vue'
 import MinMaxPrice from '~/domains/product/ui/filters/min-max-price.vue'
+import ShipToFilter from '~/domains/product/ui/filters/ship-to-filter.vue'
 import {
   isDigitalOpts,
   productWhoMadeOpts,
@@ -57,6 +58,11 @@ const filterItems = computed(() => [
   {
     id: 'type',
     label: t('catalog.filters.sections.type'),
+    defaultOpen: true,
+  },
+  {
+    id: 'shipping',
+    label: t('catalog.filters.shipping.label'),
     defaultOpen: true,
   },
   ...(hasAttributeFacets.value
@@ -130,6 +136,13 @@ const filterItems = computed(() => [
             v-model="state.whoMade"
             :options="whoMadeOptions"
           />
+        </div>
+
+        <div
+          v-else-if="item.id === 'shipping'"
+          class="px-1"
+        >
+          <ShipToFilter />
         </div>
 
         <div

@@ -67,6 +67,7 @@
     "@arc/ui": "workspace:*",
     "@arc/utils": "workspace:*",
     "@formkit/auto-animate": "^0.10.2",
+    "@headlessui/vue": "^1.7.23",
     "@nuxt/fonts": "^1.2.0",
     "@nuxt/ui": "^2.22.3",
     "@nuxtjs/i18n": "10.6.0",

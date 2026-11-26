@@ -40,10 +40,17 @@ export function useGetProductSuggestions(
   params: ComputedRef<{ search: string, limit?: number } | undefined>,
   options?: Partial<UseQueryOptions<GetProductSuggestionsResponse>>,
 ) {
+  const marketStore = useMarketStore();
+  const marketContext = useProductMarketContext();
+
   return useQuery<GetProductSuggestionsResponse>({
-    enabled: computed(() => !!params.value),
+    enabled: computed(() => !!params.value && marketStore.isMarketReady),
     ...options,
-    queryKey: computed(() => ['get-product-suggestions', params.value]),
+    // Suggestions are Market-scoped on the server: the response excludes
+    // products that cannot ship to the current Preview Destination. The Market
+    // belongs in the key so switching it cannot serve the previous Market's
+    // suggestions from cache.
+    queryKey: computed(() => ['get-product-suggestions', params.value, marketContext.value]),
     queryFn: () => productApi.getSuggestions(
       params.value?.search ?? '',
       params.value?.limit,

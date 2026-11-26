@@ -22,6 +22,11 @@
         "type": "Item type",
         "attributes": "Attributes"
       },
+      "shipping": {
+        "label": "Ship to",
+        "myRegion": "My region ({region})",
+        "allDestinations": "All destinations"
+      },
       "format": {
         "all": "All",
         "digital": "Digital",

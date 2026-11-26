@@ -42,7 +42,7 @@ export function useProductFacets(input: ProductFacetsInput) {
     isPending: isPendingGetProductFacets,
   } = useGetProductFacets(facetParams);
 
-  const baselineFacetParams = computed(() => buildFacetBaselineQuery(scope.value));
+  const baselineFacetParams = computed(() => buildFacetBaselineQuery(scope.value, route.query));
 
   const {
     data: dataBaselineFacets,
