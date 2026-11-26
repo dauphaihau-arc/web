@@ -37,6 +37,8 @@ export type StorefrontMockOptions = {
   loginUser?: E2EUser
   cartQuantity?: number
   cartQuantityAfterLogin?: number
+  /** Full cart response override for unsupported-item and mixed-cart suites. */
+  cartResponse?: Record<string, unknown>
   notifications?: E2ENotification[]
   guestOrdersResponse?: Record<string, unknown>
   productDetailByCurrency?: Record<string, Record<string, unknown>>
@@ -478,7 +480,7 @@ export async function installStorefrontApiMocks(
     }
 
     if (pathname.endsWith('/cart') && method === 'GET') {
-      return fulfillJSON(route, buildCart(cartQuantity));
+      return fulfillJSON(route, options.cartResponse ?? buildCart(cartQuantity));
     }
 
     if (

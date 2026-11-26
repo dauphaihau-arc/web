@@ -24,6 +24,17 @@ const isTotalOrderInvalid = computed(() => {
   return totalMinor > maxOrderTotalMinor
 })
 
+const unavailableQuantity = computed(
+  () => dataGetCart.value?.summary.unavailable_quantity ?? 0,
+)
+const hasUnavailableItems = computed(() => unavailableQuantity.value > 0)
+const unavailableNotice = computed(() => t(
+  unavailableQuantity.value === 1
+    ? 'cart.summary.unavailableItemsOne'
+    : 'cart.summary.unavailableItemsMany',
+  { count: unavailableQuantity.value },
+))
+
 const proceedLabel = computed(() => {
   return dataGetCart.value?.requires_sign_in_for_checkout
     ? t('cart.summary.signInToCheckout')
@@ -50,13 +61,23 @@ function proceedToCheckout() {
         }) }}
       </div>
 
+      <div
+        v-if="hasUnavailableItems"
+        class="text-sm text-state-danger-text"
+        data-testid="cart-unavailable-notice"
+      >
+        {{ unavailableNotice }}
+      </div>
+
       <UButton
-        :disabled="isTotalOrderInvalid || dataGetCart?.summary.total_selected_quantity === 0"
+        :disabled="isTotalOrderInvalid || hasUnavailableItems || dataGetCart?.summary.total_selected_quantity === 0"
+        :color="hasUnavailableItems || isTotalOrderInvalid ? 'gray' : 'primary'"
         :ui="{
           rounded: 'shadow-border',
         }"
         block
         class="mx-auto"
+        :class="hasUnavailableItems || isTotalOrderInvalid ? 'opacity-50' : ''"
         size="xl"
         @click="proceedToCheckout()"
       >
