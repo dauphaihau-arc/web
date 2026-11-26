@@ -1,4 +1,5 @@
 import type { components, operations } from '@arc/schemas/api/generated/openapi';
+import type { ShippingPreviewUnavailableReasons } from '@arc/enums';
 import type {
   PromoCodeIneligibleReason,
   PromotionBenefitType,
@@ -25,7 +26,7 @@ export type CartProductItem = GeneratedCartProductItem & {
   shipping?: {
     available: boolean
     is_digital: boolean
-    reason?: string
+    reason?: ShippingPreviewUnavailableReasons
   }
 };
 export type CartShopGroup = Omit<GeneratedCartShopGroup, 'items'> & {
