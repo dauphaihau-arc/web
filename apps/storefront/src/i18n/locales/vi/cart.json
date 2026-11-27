@@ -18,10 +18,13 @@
       "products": "sản phẩm",
       "totalLimit": "Tổng số tiền phải trả không được vượt quá {amount}",
       "signInToCheckout": "Đăng nhập để thanh toán",
-      "proceedToCheckout": "Tiến hành thanh toán"
+      "proceedToCheckout": "Tiến hành thanh toán",
+      "unavailableItemsOne": "1 sản phẩm đã chọn không giao được đến khu vực của bạn và không được tính vào tổng.",
+      "unavailableItemsMany": "{count} sản phẩm đã chọn không giao được đến khu vực của bạn và không được tính vào tổng."
     },
     "product": {
       "featureUnavailable": "Tính năng chưa khả dụng",
+      "shippingUnavailable": "{reason}. Sản phẩm này không được tính vào tổng.",
       "edit": "Chỉnh sửa",
       "remove": "Xóa"
     },

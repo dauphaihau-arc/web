@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ShopCartQuantityUi from './shop-cart-quantity-ui.vue'
 import ShopCartProductOptions from './shop-cart-product-options/shop-cart-product-options.vue'
+import { ShippingPreviewUnavailableReasons } from '@arc/enums'
 import { formatMinorCurrency } from '@arc/utils'
 import ProductImage from '@arc/ui/primitives/product-image.vue'
 import type { CartProductItem } from '~/domains/cart/api/cart.shared'
@@ -20,6 +21,25 @@ const displayAmount = computed(() => formatMinorCurrency(
   props.productCart.inventory.amount_minor,
   props.productCart.inventory.currency,
 ))
+
+const { t } = useI18n()
+
+const shippingUnavailable = computed(() => props.productCart.shipping?.available === false)
+
+const shippingReason = computed(() => {
+  switch (props.productCart.shipping?.reason) {
+    case ShippingPreviewUnavailableReasons.UNSUPPORTED_DESTINATION:
+      return t('catalog.shipping.reason.unsupportedDestination')
+    case ShippingPreviewUnavailableReasons.PROFILE_NOT_READY:
+    case ShippingPreviewUnavailableReasons.PROFILE_NOT_FOUND:
+    case ShippingPreviewUnavailableReasons.MISSING_ASSIGNMENT:
+      return t('catalog.shipping.reason.notConfigured')
+    case ShippingPreviewUnavailableReasons.UNSUPPORTED_CURRENCY:
+      return t('catalog.shipping.reason.unsupportedCurrency')
+    default:
+      return t('catalog.shipping.reason.unknown')
+  }
+})
 
 const compareAtAmount = computed(() =>
   props.productCart.inventory.original_amount_minor
@@ -71,6 +91,14 @@ const compareAtAmount = computed(() =>
             :product-cart="props.productCart"
             :sibling-items="props.shopItems"
           />
+
+          <p
+            v-if="shippingUnavailable"
+            class="text-sm text-state-danger-text"
+            data-testid="cart-item-shipping-warning"
+          >
+            {{ t('cart.product.shippingUnavailable', { reason: shippingReason }) }}
+          </p>
         </div>
       </div>
 
