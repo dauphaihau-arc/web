@@ -110,6 +110,7 @@ onUnmounted(() => {
         <div class="lg:col-span-8">
           <ReviewShippingAndPayment
             v-model:checkout-state="cartStore.stateCheckoutNow"
+            :quote="quote"
             class="mb-12"
           />
           <ShopCart

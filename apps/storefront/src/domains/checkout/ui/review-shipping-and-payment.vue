@@ -2,10 +2,17 @@
 import PaymentOptions from '~/domains/checkout/ui/payment-options.vue'
 import CheckoutAddressDialog from '~/domains/checkout/ui/checkout-address-dialog.vue'
 import type { StateCheckoutCart, StateCheckoutNow } from '~/domains/cart/stores/cart.store.types'
+import type { CheckoutQuoteResponse } from '~/domains/me/api/order/contracts/order.contract'
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
 import { useGetUserAddresses } from '~/domains/me/queries/address/addresses.query'
 
 const checkoutState = defineModel<StateCheckoutCart | StateCheckoutNow>('checkoutState', { required: true })
+const props = withDefaults(defineProps<{
+  /** Present once the server accepted a quote for this address. */
+  quote?: CheckoutQuoteResponse | null
+}>(), {
+  quote: null,
+})
 
 const dialog = useModal()
 const { t } = useI18n()
@@ -14,6 +21,25 @@ const { data: dataUserAuth } = useGetCurrentUser()
 const isAuthenticated = computed(() => !!dataUserAuth.value?.user)
 
 const { data: dataUserAddress } = useGetUserAddresses()
+const marketStore = useMarketStore()
+
+const shippingRecalculatedNote = computed(() => {
+  if (!props.quote) {
+    return ''
+  }
+
+  const addressCountryCode = checkoutState.value.address?.country_code?.toUpperCase()
+  const previewCountryCode = marketStore.previewCountryCode?.toUpperCase()
+
+  if (!addressCountryCode || !previewCountryCode || addressCountryCode === previewCountryCode) {
+    return ''
+  }
+
+  return t('checkout.review.shippingRecalculated', {
+    country: checkoutState.value.address?.country ?? addressCountryCode,
+    preview: marketStore.activePreferences?.region ?? previewCountryCode,
+  })
+})
 
 /**
  * Authenticated buyers who already saved an address do not have to pick one:
@@ -76,6 +102,13 @@ function changeAddress() {
           <div class="">
             {{ checkoutState.address.country }}
           </div>
+          <p
+            v-if="shippingRecalculatedNote"
+            class="mt-2 text-sm text-text-muted"
+            data-testid="shipping-recalculated-note"
+          >
+            {{ shippingRecalculatedNote }}
+          </p>
         </div>
         <div
           v-else

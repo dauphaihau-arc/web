@@ -24,6 +24,7 @@ type E2EAddress = {
   address_2?: string
   city: string
   country: string
+  country_code?: string
   state: string
   zip: string
   phone: string
@@ -337,6 +338,7 @@ export async function installStorefrontApiMocks(
       address_1: '123 Test St',
       city: 'Los Angeles',
       country: 'United States',
+      country_code: 'US',
       state: 'California',
       zip: '90001',
       phone: '1234567890',

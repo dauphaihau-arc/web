@@ -13,7 +13,8 @@
       "noAddress": "Chưa chọn địa chỉ giao hàng.",
       "changeAddress": "Thay đổi",
       "addAddress": "Thêm địa chỉ giao hàng",
-      "paymentMethod": "Phương thức thanh toán"
+      "paymentMethod": "Phương thức thanh toán",
+      "shippingRecalculated": "Phí vận chuyển đã được tính lại cho {country}; khu vực xem trước của bạn là {preview}."
     },
     "payment": {
       "card": {

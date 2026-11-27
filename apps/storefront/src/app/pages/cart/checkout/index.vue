@@ -112,6 +112,7 @@ watch(
         <div class="lg:col-span-8">
           <ReviewShippingAndPayment
             v-model:checkout-state="cartStore.stateCheckoutCart"
+            :quote="quote"
             class="mb-12"
           />
 
