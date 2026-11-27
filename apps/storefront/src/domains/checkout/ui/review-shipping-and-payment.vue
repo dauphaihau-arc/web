@@ -85,7 +85,7 @@ function changeAddress() {
 
 <template>
   <UCard>
-    <div class="flex flex-col gap-6 md:flex-row md:gap-20">
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-20">
       <div>
         <div class="mb-1 font-semibold">
           {{ t('checkout.review.shippingAddress') }}
