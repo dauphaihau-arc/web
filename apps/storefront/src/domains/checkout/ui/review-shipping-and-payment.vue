@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<{
 })
 
 const dialog = useModal()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const { data: dataUserAuth } = useGetCurrentUser()
 const isAuthenticated = computed(() => !!dataUserAuth.value?.user)
@@ -35,8 +35,14 @@ const shippingRecalculatedNote = computed(() => {
     return ''
   }
 
+  const country = checkoutState.value.address?.country ?? addressCountryCode
+  const countryWithArticle = locale.value.toLowerCase().startsWith('en')
+    && /^(United States|United Kingdom|United Arab Emirates|Netherlands|Philippines)$/i.test(country)
+    ? `the ${country}`
+    : country
+
   return t('checkout.review.shippingRecalculated', {
-    country: checkoutState.value.address?.country ?? addressCountryCode,
+    country: countryWithArticle,
     preview: marketStore.activePreferences?.region ?? previewCountryCode,
   })
 })

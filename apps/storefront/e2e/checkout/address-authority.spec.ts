@@ -82,7 +82,7 @@ test('shows when shipping was recalculated for an address outside the preview re
   await page.goto('/checkout?c=cart-e2e-1');
 
   await expect(page.getByTestId('shipping-recalculated-note')).toHaveText(
-    'Shipping was recalculated for United States; your preview region is Vietnam.',
+    'Shipping is based on your delivery address. Your selected region is Vietnam, but this order ships to the United States.',
   );
 });
 
