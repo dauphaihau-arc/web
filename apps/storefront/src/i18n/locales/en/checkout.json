@@ -13,7 +13,8 @@
       "noAddress": "No shipping address selected yet.",
       "changeAddress": "Change",
       "addAddress": "Add shipping address",
-      "paymentMethod": "Payment method"
+      "paymentMethod": "Payment method",
+      "shippingRecalculated": "Shipping is based on your delivery address. Your selected region is {preview}, but this order ships to {country}."
     },
     "payment": {
       "card": {
