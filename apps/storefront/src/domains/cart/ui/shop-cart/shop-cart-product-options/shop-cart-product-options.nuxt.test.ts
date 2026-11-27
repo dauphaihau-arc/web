@@ -45,6 +45,7 @@ vi.mock('~/domains/cart/mutations/update-cart.mutation', async () => {
             total_minor: 0,
             total_selected_quantity: 0,
             total_quantity: 0,
+            unavailable_quantity: 0,
           },
         };
       },

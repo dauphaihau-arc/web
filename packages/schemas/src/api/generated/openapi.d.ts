@@ -1843,6 +1843,10 @@ export interface components {
       low_stock: boolean;
       stock_total: number;
     };
+    PublicProductListItemShippingResponseDto: {
+      /** @description Whether the product ships to the market preview destination. */
+      available: boolean;
+    };
     PublicProductListItemResponseDto: {
       id: string;
       shop: components["schemas"]["PublicProductShopResponseDto"];
@@ -1852,6 +1856,7 @@ export interface components {
       image?: components["schemas"]["PublicProductListItemImageResponseDto"];
       pricing?: components["schemas"]["PublicProductListItemPricingResponseDto"];
       availability: components["schemas"]["PublicProductAvailabilityResponseDto"];
+      shipping?: components["schemas"]["PublicProductListItemShippingResponseDto"];
       variant_count: number;
       /** Format: date-time */
       created_at: string;
@@ -2628,6 +2633,12 @@ export interface components {
       sku?: string;
       selected_options: components["schemas"]["CartSelectedOptionResponseDto"][];
     };
+    CartItemShippingResponseDto: {
+      available: boolean;
+      is_digital: boolean;
+      /** @enum {string} */
+      reason?: "missing_assignment" | "profile_not_found" | "profile_not_ready" | "unsupported_destination" | "unsupported_currency";
+    };
     CartProductItemResponseDto: {
       id: string;
       quantity: number;
@@ -2635,6 +2646,7 @@ export interface components {
       unit_price_minor: number;
       product: components["schemas"]["CartProductResponseDto"];
       inventory: components["schemas"]["CartItemInventoryResponseDto"];
+      shipping?: components["schemas"]["CartItemShippingResponseDto"];
     };
     CartShopGroupResponseDto: {
       shop: components["schemas"]["CartShopRefResponseDto"];
@@ -2674,6 +2686,7 @@ export interface components {
       total_minor: number;
       total_selected_quantity: number;
       total_quantity: number;
+      unavailable_quantity: number;
     };
     CartResponseDto: {
       cart: components["schemas"]["CartStateResponseDto"] | null;
@@ -7894,6 +7907,8 @@ export interface operations {
         title?: string;
         /** @description Restrict to digital (`true`) or physical (`false`) products. */
         is_digital?: boolean;
+        /** @description Catalog-only destination filter. An ISO 3166-1 alpha-2 country restricts results, counts, and facets to products that ship there; `all` disables coverage filtering. Omit to follow the request Market's Preview Destination. Only product list and facet responses use this value; product detail, suggestions, recommendations, cart, and checkout remain Market-scoped. */
+        catalog_ship_to?: string;
         /** @description Maker attribution filter. */
         who_made?: "i_did" | "collective" | "someone_else";
         /** @description Minimum price in minor units, inclusive. */
@@ -7963,6 +7978,8 @@ export interface operations {
         title?: string;
         /** @description Restrict to digital (`true`) or physical (`false`) products. */
         is_digital?: boolean;
+        /** @description Catalog-only destination filter. An ISO 3166-1 alpha-2 country restricts results, counts, and facets to products that ship there; `all` disables coverage filtering. Omit to follow the request Market's Preview Destination. Only product list and facet responses use this value; product detail, suggestions, recommendations, cart, and checkout remain Market-scoped. */
+        catalog_ship_to?: string;
         /** @description Maker attribution filter. */
         who_made?: "i_did" | "collective" | "someone_else";
         /** @description Minimum price in minor units, inclusive. */

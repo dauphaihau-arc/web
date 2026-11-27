@@ -1,5 +1,4 @@
 import type { components, operations } from '@arc/schemas/api/generated/openapi';
-import type { ShippingPreviewUnavailableReasons } from '@arc/enums';
 import type {
   PromoCodeIneligibleReason,
   PromotionBenefitType,
@@ -11,38 +10,12 @@ type CartPromoCode = components['schemas']['CartPromoCodeResponseDto'];
 type AppliedCartPromoCode = components['schemas']['CartAppliedPromoCodeResponseDto'];
 type ApiApplyCartPromoCodeResponse = components['schemas']['CartPromoCodeApplyResponseDto'];
 
-type GeneratedCartProductItem = components['schemas']['CartProductItemResponseDto'];
-type GeneratedCartShopGroup = components['schemas']['CartShopGroupResponseDto'];
-type GeneratedCartResource = components['schemas']['CartStateResponseDto'];
-type GeneratedCartSummary = components['schemas']['CartSummaryResponseDto'];
-type GeneratedCartResponse = components['schemas']['CartResponseDto'];
-
-/**
- * Cart shipping state is delivered by the ticket-06 API before the published
- * OpenAPI package picks it up. Keep the local contract additive so older
- * generated schemas still type-check.
- */
-export type CartProductItem = GeneratedCartProductItem & {
-  shipping?: {
-    available: boolean
-    is_digital: boolean
-    reason?: ShippingPreviewUnavailableReasons
-  }
-};
-export type CartShopGroup = Omit<GeneratedCartShopGroup, 'items'> & {
-  items: CartProductItem[]
-};
-export type CartSummary = GeneratedCartSummary & {
-  unavailable_quantity?: number
-};
+export type CartProductItem = components['schemas']['CartProductItemResponseDto'];
+export type CartShopGroup = components['schemas']['CartShopGroupResponseDto'];
+export type CartSummary = components['schemas']['CartSummaryResponseDto'];
 export type CartRecentItem = components['schemas']['CartRecentItemResponseDto'];
-export type CartResource = Omit<GeneratedCartResource, 'shop_groups'> & {
-  shop_groups: CartShopGroup[]
-};
-export type CartResponse = Omit<GeneratedCartResponse, 'cart' | 'summary'> & {
-  cart: CartResource | null
-  summary: CartSummary
-};
+export type CartResource = components['schemas']['CartStateResponseDto'];
+export type CartResponse = components['schemas']['CartResponseDto'];
 
 /**
  * The contract enumerates the promo code values as plain strings; the app
