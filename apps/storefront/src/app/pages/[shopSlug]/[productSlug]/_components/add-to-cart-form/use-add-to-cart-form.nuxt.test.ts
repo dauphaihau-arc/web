@@ -51,10 +51,6 @@ type AddToCartProduct = Pick<
   shipping?: GetDetailProductBySlugResponse['shipping']
 };
 
-type ShippingReason = NonNullable<
-  NonNullable<GetDetailProductBySlugResponse['shipping']>['preview']
->['reason'];
-
 const product: AddToCartProduct = {
   options: [
     {
@@ -168,52 +164,6 @@ describe('useAddToCartForm', () => {
     expect(form.subVariantOptions.value.map(option => option.value)).toEqual(['S', 'M']);
   });
 
-  describe('shipping preview gating', () => {
-    function withShippingPreview(reason: ShippingReason, available = false): AddToCartProduct {
-      return {
-        ...product,
-        shipping: {
-          destinations: [],
-          preview: {
-            available,
-            is_digital: false,
-            reason,
-          },
-        },
-      };
-    }
-
-    it('blocks purchase for an internal shipping reason', () => {
-      const form = useAddToCartForm({
-        product: ref(withShippingPreview('missing_assignment')),
-        inventorySelectedModel: ref(),
-      });
-
-      expect(form.isPurchaseBlocked.value).toBe(true);
-    });
-
-    it.each([
-      'unsupported_destination',
-      'unsupported_currency',
-    ] as const)('keeps purchase enabled for a recoverable reason: %s', (reason) => {
-      const form = useAddToCartForm({
-        product: ref(withShippingPreview(reason)),
-        inventorySelectedModel: ref(),
-      });
-
-      expect(form.isPurchaseBlocked.value).toBe(false);
-    });
-
-    it('does not block purchase when the preview is available', () => {
-      const form = useAddToCartForm({
-        product: ref(withShippingPreview('unsupported_destination', true)),
-        inventorySelectedModel: ref(),
-      });
-
-      expect(form.isPurchaseBlocked.value).toBe(false);
-    });
-  });
-
   describe('submit', () => {
     beforeEach(() => {
       addToCartFixture.calls = [];
@@ -270,7 +220,7 @@ describe('useAddToCartForm', () => {
       expect(addToCartFixture.calls).toEqual([]);
     });
 
-    it('does not post when shipping blocks the purchase', async () => {
+    it('submits normally when the shipping preview failed internally', async () => {
       const form = useAddToCartForm({
         product: ref({
           ...product,
@@ -291,9 +241,11 @@ describe('useAddToCartForm', () => {
       await nextTick();
       await nextTick();
 
-      await form.submit({ quantity: 1, isBuyNow: true });
+      await form.submit({ quantity: 1, isBuyNow: false });
 
-      expect(addToCartFixture.calls).toEqual([]);
+      expect(addToCartFixture.calls).toEqual([
+        { inventory_id: 'inventory-blue-medium', quantity: 1 },
+      ]);
       expect(navigateToFixture).not.toHaveBeenCalled();
     });
   });

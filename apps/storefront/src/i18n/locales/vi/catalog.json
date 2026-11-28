@@ -122,7 +122,6 @@
     },
     "toasts": {
       "outOfStock": "Hết hàng",
-      "shippingUnavailable": "Vận chuyển không khả dụng cho sản phẩm này",
       "unableCheckout": "Không thể bắt đầu thanh toán",
       "addFailed": "Thêm sản phẩm vào giỏ hàng thất bại",
       "added": "Đã thêm vào giỏ hàng",

@@ -122,7 +122,6 @@
     },
     "toasts": {
       "outOfStock": "Out of stock",
-      "shippingUnavailable": "Shipping is unavailable for this item",
       "unableCheckout": "Unable to start checkout",
       "addFailed": "Add product to cart failed",
       "added": "Added to cart",

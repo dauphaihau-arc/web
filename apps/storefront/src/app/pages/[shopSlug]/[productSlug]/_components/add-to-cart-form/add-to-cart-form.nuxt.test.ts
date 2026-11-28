@@ -63,18 +63,16 @@ async function render(preview: ProductShippingPreview) {
   });
 }
 
-describe('add to cart shipping gating', () => {
-  it('disables both purchase actions for an internal failure without repeating the shipping warning', async () => {
+describe('add to cart purchase actions', () => {
+  it('keeps both purchase actions enabled when the shipping preview failed internally', async () => {
     const wrapper = await render({
       available: false,
       is_digital: false,
       reason: 'missing_assignment',
     });
 
-    expect(wrapper.find('[data-testid="add-to-cart-submit"]').attributes('disabled')).toBeDefined();
-    expect(wrapper.find('[data-testid="buy-now-submit"]').attributes('disabled')).toBeDefined();
-    expect(wrapper.find('[data-testid="add-to-cart-shipping-notice"]').exists()).toBe(false);
-    expect(wrapper.find('[data-testid="add-to-cart-shipping-action"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="add-to-cart-submit"]').attributes('disabled')).toBeUndefined();
+    expect(wrapper.find('[data-testid="buy-now-submit"]').attributes('disabled')).toBeUndefined();
   });
 
   it('keeps both purchase actions enabled for an unsupported destination', async () => {
@@ -86,7 +84,6 @@ describe('add to cart shipping gating', () => {
 
     expect(wrapper.find('[data-testid="add-to-cart-submit"]').attributes('disabled')).toBeUndefined();
     expect(wrapper.find('[data-testid="buy-now-submit"]').attributes('disabled')).toBeUndefined();
-    expect(wrapper.find('[data-testid="add-to-cart-shipping-notice"]').exists()).toBe(false);
   });
 
   it('keeps both purchase actions enabled for an unsupported currency', async () => {
@@ -98,6 +95,5 @@ describe('add to cart shipping gating', () => {
 
     expect(wrapper.find('[data-testid="add-to-cart-submit"]').attributes('disabled')).toBeUndefined();
     expect(wrapper.find('[data-testid="buy-now-submit"]').attributes('disabled')).toBeUndefined();
-    expect(wrapper.find('[data-testid="add-to-cart-shipping-notice"]').exists()).toBe(false);
   });
 });

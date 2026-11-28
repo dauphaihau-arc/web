@@ -39,7 +39,6 @@ const {
   increaseQty,
   isOutOfStock,
   isPendingAddProductToCart,
-  isPurchaseBlocked,
   maxQuantity,
   stateSubmit,
   subVariantOptions,
@@ -170,7 +169,7 @@ async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
         variant="subtle"
         type="submit"
         data-testid="add-to-cart-submit"
-        :disabled="isPendingAddProductToCart || isOutOfStock || isPurchaseBlocked"
+        :disabled="isPendingAddProductToCart || isOutOfStock"
         @click="state.isBuyNow = false"
       >
         {{ $t('catalog.product.addToCart') }}
@@ -179,7 +178,7 @@ async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
         size="xl"
         type="submit"
         data-testid="buy-now-submit"
-        :disabled="isPendingAddProductToCart || isOutOfStock || isPurchaseBlocked"
+        :disabled="isPendingAddProductToCart || isOutOfStock"
         @click="state.isBuyNow = true"
       >
         {{ $t('catalog.product.buyNow') }}

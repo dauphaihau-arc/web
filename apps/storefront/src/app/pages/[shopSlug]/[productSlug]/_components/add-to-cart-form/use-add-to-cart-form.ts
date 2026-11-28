@@ -17,7 +17,6 @@ import {
   getProductOptionMode,
   resolveInventoryBySelection,
 } from '~/domains/product/utils/product-options';
-import { resolveShippingPreviewKind } from '~/shared/utils/shipping-unavailable';
 
 interface StateSubmit {
   quantity: number
@@ -140,14 +139,6 @@ export function useAddToCartForm({
 
   const isOutOfStock = computed(() => maxQuantity.value <= 0);
 
-  /**
-   * A destination or currency preview failure is recoverable from the buyer's
-   * side, so only an internal/unclassified failure blocks the purchase.
-   */
-  const isPurchaseBlocked = computed(
-    () => resolveShippingPreviewKind(product.value.shipping?.preview) === 'unavailable',
-  );
-
   const decreaseQty = () => {
     if (stateSubmit.quantity <= 1) {
       stateSubmit.quantity = 1;
@@ -254,14 +245,6 @@ export function useAddToCartForm({
    * preserved so the added line lands last instead of jumping to the top.
    */
   async function submit(input: { quantity: number, isBuyNow: boolean }) {
-    if (isPurchaseBlocked.value) {
-      toast.add({
-        ...toastCustom.error,
-        title: translate('catalog.toasts.shippingUnavailable'),
-      });
-      return;
-    }
-
     const inventory = resolvedInventorySelected.value;
 
     if (!inventory?.id) {
@@ -347,7 +330,6 @@ export function useAddToCartForm({
     increaseQty,
     isOutOfStock,
     isPendingAddProductToCart,
-    isPurchaseBlocked,
     maxQuantity,
     resolvedInventorySelected,
     stateSubmit,
