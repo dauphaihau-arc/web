@@ -11,6 +11,7 @@ import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
 import { useGetCountries } from '~/domains/location/queries/countries.query'
 import { useLocaleFormatters } from '~/domains/market/composables/use-locale-formatters'
 import { useShippingPreviewCopy } from '~/domains/product/utils/use-shipping-preview-copy'
+import { useMarketPreferencesDialog } from '~/shared/composables/use-market-preferences-dialog'
 import { resolveShippingPreviewKind } from '~/shared/utils/shipping-unavailable'
 
 const props = defineProps<{
@@ -22,7 +23,7 @@ const modal = useModal()
 const route = useRoute()
 const router = useRouter()
 const marketStore = useMarketStore()
-const isMarketPreferencesOpen = useState<boolean>('market-preferences-dialog-open', () => false)
+const { open: openMarketPreferences } = useMarketPreferencesDialog()
 const { formatDate } = useLocaleFormatters()
 const { t } = useI18n()
 
@@ -317,7 +318,7 @@ watch(
             variant="link"
             size="sm"
             class="font-medium"
-            @click="isMarketPreferencesOpen = true"
+            @click="openMarketPreferences"
           >
             {{ $t('catalog.shipping.recovery.changeRegion') }}
           </UButton>

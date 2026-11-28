@@ -9,11 +9,12 @@ import { useUpdateMarketPreferences } from '~/domains/market/ui/preferences/use-
 import { useUserPreferenceForm } from '~/domains/market/ui/preferences/use-user-preference-form'
 import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
 import { useGetMarketConfig } from '~/domains/market/queries/config.query'
+import { useMarketPreferencesDialog } from '~/shared/composables/use-market-preferences-dialog'
 
 const { locale } = useI18n()
 
 const marketStore = useMarketStore()
-const isOpenDialog = useState<boolean>('market-preferences-dialog-open', () => false)
+const { isOpen: isOpenDialog } = useMarketPreferencesDialog()
 const formRef = ref()
 
 const { data: currentUserData } = useGetCurrentUser()

@@ -8,6 +8,7 @@ import { useShippingPreviewCopy } from '~/domains/product/utils/use-shipping-pre
 import { resolveShippingPreviewKind } from '~/shared/utils/shipping-unavailable'
 import { routes } from '~/shared/navigation/routes'
 import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
+import { useMarketPreferencesDialog } from '~/shared/composables/use-market-preferences-dialog'
 
 const props = withDefaults(defineProps<{
   productCart: CartProductItem
@@ -26,7 +27,7 @@ const displayAmount = computed(() => formatMinorCurrency(
 ))
 
 const { t } = useI18n()
-const isMarketPreferencesOpen = useState<boolean>('market-preferences-dialog-open', () => false)
+const { open: openMarketPreferences } = useMarketPreferencesDialog()
 const { localizePath } = useLocalizedRoute()
 
 const shippingUnavailable = computed(() => props.productCart.shipping?.available === false)
@@ -110,7 +111,7 @@ const compareAtAmount = computed(() =>
             variant="link"
             size="sm"
             class="mt-1 font-medium"
-            @click="isMarketPreferencesOpen = true"
+            @click="openMarketPreferences"
           >
             {{ t('catalog.shipping.recovery.changeRegion') }}
           </UButton>
