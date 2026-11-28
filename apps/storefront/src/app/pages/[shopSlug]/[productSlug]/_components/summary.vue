@@ -2,7 +2,6 @@
 import { formatMinorCurrency } from '@arc/utils'
 import type { ElementType } from '@arc/contracts/utils'
 import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract'
-import { useShippingPreviewCopy } from '~/domains/product/utils/use-shipping-preview-copy'
 
 type SummaryProduct = Pick<
   GetDetailProductBySlugResponse,
@@ -27,10 +26,6 @@ const fallbackProduct: SummaryProduct = {
 }
 
 const product = computed<SummaryProduct>(() => props.product ?? fallbackProduct)
-
-const { warning: shippingWarning } = useShippingPreviewCopy(
-  computed(() => props.product?.shipping?.preview),
-)
 
 const sortedInventory = computed(() => {
   return product.value.inventory
@@ -125,13 +120,6 @@ const filledStars = computed(() => {
       class="text-sm font-semibold text-state-danger-text"
     >
       {{ props.stockNotice }}
-    </div>
-
-    <div
-      v-if="shippingWarning"
-      class="text-sm font-medium text-state-warning-text"
-    >
-      {{ shippingWarning }}
     </div>
 
     <div>

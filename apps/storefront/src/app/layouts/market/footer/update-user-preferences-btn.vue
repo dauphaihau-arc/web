@@ -13,7 +13,7 @@ import { useGetMarketConfig } from '~/domains/market/queries/config.query'
 const { locale } = useI18n()
 
 const marketStore = useMarketStore()
-const isOpenDialog = ref(false)
+const isOpenDialog = useState<boolean>('market-preferences-dialog-open', () => false)
 const formRef = ref()
 
 const { data: currentUserData } = useGetCurrentUser()
@@ -64,9 +64,16 @@ const selectedLanguageOption = computed(() => {
 })
 
 function openDialog() {
-  state.language = urlLanguage.value
   isOpenDialog.value = true
 }
+
+// Recovery actions elsewhere open the same dialog without going through the
+// footer trigger, so the URL locale is re-applied whenever it becomes open.
+watch(isOpenDialog, (isOpen) => {
+  if (isOpen) {
+    state.language = urlLanguage.value
+  }
+})
 
 // Hydrating stored preferences can land after the dialog opened; the URL
 // locale still has to be the language shown there.

@@ -19,12 +19,17 @@
       "totalLimit": "The total amount due must be no more than {amount}",
       "signInToCheckout": "Sign in to checkout",
       "proceedToCheckout": "Proceed to checkout",
-      "unavailableItemsOne": "1 selected item cannot ship to your region and is excluded from the total.",
-      "unavailableItemsMany": "{count} selected items cannot ship to your region and are excluded from the total."
+      "unavailableDestinationOne": "1 selected item cannot ship to your region and is excluded from the total.",
+      "unavailableDestinationMany": "{count} selected items cannot ship to your region and are excluded from the total.",
+      "unavailableCurrencyOne": "1 selected item cannot be priced in {currency} and is excluded from the total.",
+      "unavailableCurrencyMany": "{count} selected items cannot be priced in {currency} and are excluded from the total.",
+      "unavailableGenericOne": "1 selected item is unavailable for shipping and is excluded from the total.",
+      "unavailableGenericMany": "{count} selected items are unavailable for shipping and are excluded from the total."
     },
     "product": {
       "featureUnavailable": "Feature not available",
       "shippingUnavailable": "{reason}. This item is excluded from the total.",
+      "contactSeller": "Contact seller",
       "edit": "Edit",
       "remove": "Remove"
     },

@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import ShopCartQuantityUi from './shop-cart-quantity-ui.vue'
 import ShopCartProductOptions from './shop-cart-product-options/shop-cart-product-options.vue'
-import { ShippingPreviewUnavailableReasons } from '@arc/enums'
 import { formatMinorCurrency } from '@arc/utils'
 import ProductImage from '@arc/ui/primitives/product-image.vue'
 import type { CartProductItem } from '~/domains/cart/api/cart.shared'
+import { useShippingPreviewCopy } from '~/domains/product/utils/use-shipping-preview-copy'
+import { resolveShippingPreviewKind } from '~/shared/utils/shipping-unavailable'
+import { routes } from '~/shared/navigation/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 
 const props = withDefaults(defineProps<{
   productCart: CartProductItem
@@ -23,23 +26,22 @@ const displayAmount = computed(() => formatMinorCurrency(
 ))
 
 const { t } = useI18n()
+const { localizePath } = useLocalizedRoute()
 
 const shippingUnavailable = computed(() => props.productCart.shipping?.available === false)
 
-const shippingReason = computed(() => {
-  switch (props.productCart.shipping?.reason) {
-    case ShippingPreviewUnavailableReasons.UNSUPPORTED_DESTINATION:
-      return t('catalog.shipping.reason.unsupportedDestination')
-    case ShippingPreviewUnavailableReasons.PROFILE_NOT_READY:
-    case ShippingPreviewUnavailableReasons.PROFILE_NOT_FOUND:
-    case ShippingPreviewUnavailableReasons.MISSING_ASSIGNMENT:
-      return t('catalog.shipping.reason.notConfigured')
-    case ShippingPreviewUnavailableReasons.UNSUPPORTED_CURRENCY:
-      return t('catalog.shipping.reason.unsupportedCurrency')
-    default:
-      return t('catalog.shipping.reason.unknown')
-  }
-})
+const shippingUnavailableKind = computed(
+  () => resolveShippingPreviewKind(props.productCart.shipping),
+)
+
+const productDetailPath = computed(() => `${localizePath(routes.productDetail(
+  props.productCart.product.shop.slug,
+  props.productCart.product.slug,
+))}?open_chat=1`)
+
+const { detail: shippingReason } = useShippingPreviewCopy(
+  computed(() => props.productCart.shipping),
+)
 
 const compareAtAmount = computed(() =>
   props.productCart.inventory.original_amount_minor
@@ -99,6 +101,15 @@ const compareAtAmount = computed(() =>
           >
             {{ t('cart.product.shippingUnavailable', { reason: shippingReason }) }}
           </p>
+
+          <ULink
+            v-if="shippingUnavailableKind === 'unavailable'"
+            :to="productDetailPath"
+            data-testid="cart-item-shipping-action"
+            class="mt-1 inline-flex text-sm font-medium text-state-danger-text underline underline-offset-2 hover:opacity-90"
+          >
+            {{ t('cart.product.contactSeller') }}
+          </ULink>
         </div>
       </div>
 

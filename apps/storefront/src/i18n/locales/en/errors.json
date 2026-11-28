@@ -82,6 +82,10 @@
         "title": "Reserved stock was released",
         "description": "Your reserved inventory is no longer available. Review the refreshed checkout and try again."
       },
+      "shippingUnavailable": {
+        "title": "Shipping unavailable",
+        "description": "We can't complete shipping for the selected items. Review the delivery address and currency, or remove an item."
+      },
       "sessionPending": {
         "title": "Checkout still preparing",
         "description": "Your secure checkout session is taking longer than expected. Please try again."

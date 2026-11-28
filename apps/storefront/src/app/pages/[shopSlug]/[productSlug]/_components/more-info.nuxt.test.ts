@@ -146,6 +146,39 @@ describe('more info shipping coverage', () => {
     expect(wrapper.text()).toContain('Ships from: United States');
   });
 
+  it('shows the destination reason without a recovery action', async () => {
+    const wrapper = await renderMoreInfo([], {
+      available: false,
+      is_digital: false,
+      reason: 'unsupported_destination',
+    });
+
+    expect(wrapper.find('[data-testid="product-shipping-recovery"]').exists()).toBe(false);
+    expect(wrapper.text()).toContain('Doesn\'t ship to your region');
+  });
+
+  it('does not offer a currency recovery action when conversion fails', async () => {
+    const wrapper = await renderMoreInfo([], {
+      available: false,
+      is_digital: false,
+      reason: 'unsupported_currency',
+    });
+
+    expect(wrapper.find('[data-testid="product-shipping-recovery"]').exists()).toBe(false);
+    expect(wrapper.text()).toContain('Shipping isn\'t available in your selected currency');
+  });
+
+  it('leaves internal shipping failures to the seller section', async () => {
+    const wrapper = await renderMoreInfo([], {
+      available: false,
+      is_digital: false,
+      reason: 'profile_not_ready',
+    });
+
+    expect(wrapper.find('[data-testid="product-shipping-recovery"]').exists()).toBe(false);
+    expect(wrapper.text()).not.toContain('profile_not_ready');
+  });
+
   it('shows digital delivery instead of a physical shipping preview', async () => {
     const wrapper = await renderMoreInfo([], {
       available: true,
@@ -163,8 +196,19 @@ describe('more info shipping coverage', () => {
       reason: 'unsupported_currency',
     });
 
-    expect(wrapper.text()).toContain('Shipping estimate is unavailable');
+    expect(wrapper.text()).toContain('Shipping isn\'t available in your selected currency');
     expect(wrapper.text()).not.toContain('Cost to ship');
+  });
+
+  it('does not explain seller configuration to the buyer', async () => {
+    const wrapper = await renderMoreInfo([], {
+      available: false,
+      is_digital: false,
+      reason: 'missing_assignment',
+    });
+
+    expect(wrapper.text()).toContain('Shipping options are unavailable for this item');
+    expect(wrapper.text()).not.toContain('Shipping is not configured');
   });
 
   it('updates the fee when the Market preview changes', async () => {

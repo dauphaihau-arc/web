@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { FetchError } from 'ofetch';
-import { getBackendErrorCode, getBackendErrorMessage } from './backend-error';
+import {
+  getBackendErrorCode,
+  getBackendErrorMessage,
+} from './backend-error';
 
 function buildFetchError(data: unknown): FetchError {
   return Object.assign(new FetchError('request failed', { cause: new Error('boom') }), { data }) as FetchError;
