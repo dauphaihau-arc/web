@@ -160,6 +160,9 @@ export async function createSharedConfig({
     {
       rules: {
         '@typescript-eslint/explicit-function-return-type': 'off',
+        // Off: min length flags idiomatic short aliases, max length flags verbose domain names.
+        // Naming is enforced by @typescript-eslint/naming-convention and id-denylist instead.
+        'id-length': 'off',
         'no-console': ['error', { allow: ['warn', 'error', 'info'] }],
         'tailwindcss/no-custom-classname': 'off',
       },
