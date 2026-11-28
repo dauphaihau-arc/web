@@ -17,10 +17,7 @@ import {
   getProductOptionMode,
   resolveInventoryBySelection,
 } from '~/domains/product/utils/product-options';
-import {
-  resolveShippingPreviewKind,
-  type ShippingUnavailableKind,
-} from '~/shared/utils/shipping-unavailable';
+import { resolveShippingPreviewKind } from '~/shared/utils/shipping-unavailable';
 
 interface StateSubmit {
   quantity: number
@@ -147,12 +144,8 @@ export function useAddToCartForm({
    * A destination or currency preview failure is recoverable from the buyer's
    * side, so only an internal/unclassified failure blocks the purchase.
    */
-  const shippingUnavailableKind = computed<ShippingUnavailableKind | null>(
-    () => resolveShippingPreviewKind(product.value.shipping?.preview),
-  );
-
   const isPurchaseBlocked = computed(
-    () => shippingUnavailableKind.value === 'unavailable',
+    () => resolveShippingPreviewKind(product.value.shipping?.preview) === 'unavailable',
   );
 
   const decreaseQty = () => {
@@ -357,7 +350,6 @@ export function useAddToCartForm({
     isPurchaseBlocked,
     maxQuantity,
     resolvedInventorySelected,
-    shippingUnavailableKind,
     stateSubmit,
     subVariantOptions,
     optionMode,

@@ -189,7 +189,6 @@ describe('useAddToCartForm', () => {
         inventorySelectedModel: ref(),
       });
 
-      expect(form.shippingUnavailableKind.value).toBe('unavailable');
       expect(form.isPurchaseBlocked.value).toBe(true);
     });
 
@@ -211,7 +210,6 @@ describe('useAddToCartForm', () => {
         inventorySelectedModel: ref(),
       });
 
-      expect(form.shippingUnavailableKind.value).toBeNull();
       expect(form.isPurchaseBlocked.value).toBe(false);
     });
   });

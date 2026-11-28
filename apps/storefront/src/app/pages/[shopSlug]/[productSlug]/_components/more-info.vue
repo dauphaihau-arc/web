@@ -190,10 +190,6 @@ watch(
   },
   { immediate: true },
 )
-
-defineExpose({
-  openSellerChat,
-})
 </script>
 
 <template>

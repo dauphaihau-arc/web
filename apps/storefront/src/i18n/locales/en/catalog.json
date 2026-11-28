@@ -101,8 +101,7 @@
       "recovery": {
         "changeRegion": "Change region",
         "changeCurrency": "Change currency",
-        "messageSeller": "Message seller",
-        "purchaseBlocked": "Buying is unavailable until shipping is confirmed. Message the seller to check availability."
+        "messageSeller": "Message seller"
       }
     },
     "seller": {

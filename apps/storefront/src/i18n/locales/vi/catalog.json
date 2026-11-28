@@ -101,8 +101,7 @@
       "recovery": {
         "changeRegion": "Đổi khu vực",
         "changeCurrency": "Đổi tiền tệ",
-        "messageSeller": "Nhắn cho người bán",
-        "purchaseBlocked": "Không thể mua khi chưa xác nhận được vận chuyển. Hãy nhắn cho người bán để kiểm tra tình trạng."
+        "messageSeller": "Nhắn cho người bán"
       }
     },
     "seller": {

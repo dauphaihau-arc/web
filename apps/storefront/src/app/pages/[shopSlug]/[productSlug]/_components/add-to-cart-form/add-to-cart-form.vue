@@ -3,7 +3,6 @@ import { useAddToCartForm } from './use-add-to-cart-form'
 import type { FormSubmitEvent } from '#ui/types'
 import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract'
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
-import ShippingUnavailableAction from '~/domains/product/ui/shipping-unavailable-action.vue'
 
 type Inventory = GetDetailProductBySlugResponse['inventory'][number]
 type AddToCartProduct = Pick<
@@ -16,10 +15,6 @@ type AddToCartProduct = Pick<
 const props = defineProps<{
   product?: GetDetailProductBySlugResponse
   isLoading?: boolean
-}>()
-
-const emit = defineEmits<{
-  'message-seller': []
 }>()
 
 const inventorySelectedModel = defineModel<Inventory>('inventorySelected')
@@ -46,7 +41,6 @@ const {
   isPendingAddProductToCart,
   isPurchaseBlocked,
   maxQuantity,
-  shippingUnavailableKind,
   stateSubmit,
   subVariantOptions,
   optionMode,
@@ -168,24 +162,6 @@ async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
       data-testid="add-to-cart-out-of-stock"
     >
       {{ $t('catalog.stock.outOfStock') }}
-    </div>
-
-    <div
-      v-if="shippingUnavailableKind"
-      class="space-y-1"
-      data-testid="add-to-cart-shipping-notice"
-    >
-      <p
-        v-if="isPurchaseBlocked"
-        class="text-sm text-state-danger-text"
-      >
-        {{ $t('catalog.shipping.recovery.purchaseBlocked') }}
-      </p>
-      <ShippingUnavailableAction
-        :kind="shippingUnavailableKind"
-        test-id="add-to-cart-shipping-action"
-        @internal-action="emit('message-seller')"
-      />
     </div>
 
     <div class="flex gap-4">

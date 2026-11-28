@@ -17,7 +17,6 @@ const route = useRoute()
 const marketStore = useMarketStore()
 const { t } = useI18n()
 const { mutate: recordProductView } = useRecordProductView()
-const moreInfoRef = ref<{ openSellerChat: () => Promise<void> } | null>(null)
 
 const shopSlug = route.params.shopSlug as string
 const productSlug = route.params.productSlug as string
@@ -169,10 +168,8 @@ watch(productData, (value) => {
             v-model:inventory-selected="inventorySelected"
             :product="product"
             :is-loading="isPendingProduct"
-            @message-seller="moreInfoRef?.openSellerChat()"
           />
           <MoreInfo
-            ref="moreInfoRef"
             :product="product"
             :is-loading="isPendingProduct"
           />

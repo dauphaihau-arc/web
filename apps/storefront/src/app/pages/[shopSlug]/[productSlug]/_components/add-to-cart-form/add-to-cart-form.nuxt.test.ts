@@ -63,8 +63,8 @@ async function render(preview: ProductShippingPreview) {
   });
 }
 
-describe('add to cart shipping recovery', () => {
-  it('disables both purchase actions for an internal failure and offers the seller chat', async () => {
+describe('add to cart shipping gating', () => {
+  it('disables both purchase actions for an internal failure without repeating the shipping warning', async () => {
     const wrapper = await render({
       available: false,
       is_digital: false,
@@ -73,17 +73,8 @@ describe('add to cart shipping recovery', () => {
 
     expect(wrapper.find('[data-testid="add-to-cart-submit"]').attributes('disabled')).toBeDefined();
     expect(wrapper.find('[data-testid="buy-now-submit"]').attributes('disabled')).toBeDefined();
-    expect(wrapper.find('[data-testid="add-to-cart-shipping-notice"]').text()).toContain(
-      'Buying is unavailable until shipping is confirmed',
-    );
-
-    const action = wrapper.find('[data-testid="add-to-cart-shipping-action"]');
-
-    expect(action.text()).toBe('Message seller');
-
-    await action.trigger('click');
-
-    expect(wrapper.emitted('message-seller')).toHaveLength(1);
+    expect(wrapper.find('[data-testid="add-to-cart-shipping-notice"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="add-to-cart-shipping-action"]').exists()).toBe(false);
   });
 
   it('keeps both purchase actions enabled for an unsupported destination', async () => {
@@ -95,9 +86,7 @@ describe('add to cart shipping recovery', () => {
 
     expect(wrapper.find('[data-testid="add-to-cart-submit"]').attributes('disabled')).toBeUndefined();
     expect(wrapper.find('[data-testid="buy-now-submit"]').attributes('disabled')).toBeUndefined();
-    expect(
-      wrapper.find('[data-testid="add-to-cart-shipping-action"]').text(),
-    ).toBe('Change region');
+    expect(wrapper.find('[data-testid="add-to-cart-shipping-notice"]').exists()).toBe(false);
   });
 
   it('keeps both purchase actions enabled for an unsupported currency', async () => {
@@ -109,8 +98,6 @@ describe('add to cart shipping recovery', () => {
 
     expect(wrapper.find('[data-testid="add-to-cart-submit"]').attributes('disabled')).toBeUndefined();
     expect(wrapper.find('[data-testid="buy-now-submit"]').attributes('disabled')).toBeUndefined();
-    expect(
-      wrapper.find('[data-testid="add-to-cart-shipping-action"]').text(),
-    ).toBe('Change currency');
+    expect(wrapper.find('[data-testid="add-to-cart-shipping-notice"]').exists()).toBe(false);
   });
 });
