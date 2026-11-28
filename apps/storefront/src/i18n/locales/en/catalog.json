@@ -96,9 +96,6 @@
         "unsupportedDestinationCountry": "Doesn't ship to {country}",
         "unavailable": "Shipping options are unavailable for this item",
         "unsupportedCurrency": "Shipping isn't available in your selected currency"
-      },
-      "recovery": {
-        "changeRegion": "Change region"
       }
     },
     "seller": {

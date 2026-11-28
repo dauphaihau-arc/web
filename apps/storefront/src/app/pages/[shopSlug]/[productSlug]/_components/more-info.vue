@@ -11,8 +11,6 @@ import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
 import { useGetCountries } from '~/domains/location/queries/countries.query'
 import { useLocaleFormatters } from '~/domains/market/composables/use-locale-formatters'
 import { useShippingPreviewCopy } from '~/domains/product/utils/use-shipping-preview-copy'
-import { useMarketPreferencesDialog } from '~/shared/composables/use-market-preferences-dialog'
-import { resolveShippingPreviewKind } from '~/shared/utils/shipping-unavailable'
 
 const props = defineProps<{
   product?: GetDetailProductBySlugResponse
@@ -23,7 +21,6 @@ const modal = useModal()
 const route = useRoute()
 const router = useRouter()
 const marketStore = useMarketStore()
-const { open: openMarketPreferences } = useMarketPreferencesDialog()
 const { formatDate } = useLocaleFormatters()
 const { t } = useI18n()
 
@@ -74,10 +71,6 @@ function countryLabel(code?: string) {
 }
 
 const shippingPreview = computed(() => props.product?.shipping?.preview)
-
-const shippingUnavailableKind = computed(
-  () => resolveShippingPreviewKind(shippingPreview.value),
-)
 
 const { detail: shippingPreviewDetail } = useShippingPreviewCopy(
   shippingPreview,
@@ -311,17 +304,6 @@ watch(
               {{ $t('catalog.shipping.notAvailable') }}
             </div>
           </template>
-          <UButton
-            v-if="shippingUnavailableKind === 'destination'"
-            data-testid="product-shipping-recovery"
-            :padded="false"
-            variant="link"
-            size="sm"
-            class="font-medium"
-            @click="openMarketPreferences"
-          >
-            {{ $t('catalog.shipping.recovery.changeRegion') }}
-          </UButton>
         </div>
 
         <div

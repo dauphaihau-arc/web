@@ -146,16 +146,15 @@ describe('more info shipping coverage', () => {
     expect(wrapper.text()).toContain('Ships from: United States');
   });
 
-  it('offers a change region action for an unsupported destination', async () => {
+  it('shows the destination reason without a recovery action', async () => {
     const wrapper = await renderMoreInfo([], {
       available: false,
       is_digital: false,
       reason: 'unsupported_destination',
     });
 
-    expect(
-      wrapper.find('[data-testid="product-shipping-recovery"]').text(),
-    ).toContain('Change region');
+    expect(wrapper.find('[data-testid="product-shipping-recovery"]').exists()).toBe(false);
+    expect(wrapper.text()).toContain('Doesn\'t ship to your region');
   });
 
   it('does not offer a currency recovery action when conversion fails', async () => {

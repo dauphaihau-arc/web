@@ -8,7 +8,6 @@ import { useShippingPreviewCopy } from '~/domains/product/utils/use-shipping-pre
 import { resolveShippingPreviewKind } from '~/shared/utils/shipping-unavailable'
 import { routes } from '~/shared/navigation/routes'
 import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
-import { useMarketPreferencesDialog } from '~/shared/composables/use-market-preferences-dialog'
 
 const props = withDefaults(defineProps<{
   productCart: CartProductItem
@@ -27,7 +26,6 @@ const displayAmount = computed(() => formatMinorCurrency(
 ))
 
 const { t } = useI18n()
-const { open: openMarketPreferences } = useMarketPreferencesDialog()
 const { localizePath } = useLocalizedRoute()
 
 const shippingUnavailable = computed(() => props.productCart.shipping?.available === false)
@@ -104,19 +102,8 @@ const compareAtAmount = computed(() =>
             {{ t('cart.product.shippingUnavailable', { reason: shippingReason }) }}
           </p>
 
-          <UButton
-            v-if="shippingUnavailableKind === 'destination'"
-            data-testid="cart-item-shipping-action"
-            :padded="false"
-            variant="link"
-            size="sm"
-            class="mt-1 font-medium"
-            @click="openMarketPreferences"
-          >
-            {{ t('catalog.shipping.recovery.changeRegion') }}
-          </UButton>
           <ULink
-            v-else-if="shippingUnavailableKind === 'unavailable'"
+            v-if="shippingUnavailableKind === 'unavailable'"
             :to="productDetailPath"
             data-testid="cart-item-shipping-action"
             class="mt-1 inline-flex text-sm font-medium text-state-danger-text underline underline-offset-2 hover:opacity-90"

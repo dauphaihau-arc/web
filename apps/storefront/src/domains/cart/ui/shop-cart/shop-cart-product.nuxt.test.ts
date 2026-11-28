@@ -44,16 +44,15 @@ async function render(shipping?: CartShipping) {
 }
 
 describe('shop cart product shipping recovery', () => {
-  it('offers a change region action for an unsupported destination', async () => {
+  it('shows the destination warning without a recovery action', async () => {
     const wrapper = await render({
       available: false,
       is_digital: false,
       reason: 'unsupported_destination',
     });
 
-    expect(
-      wrapper.find('[data-testid="cart-item-shipping-action"]').text(),
-    ).toContain('Change region');
+    expect(wrapper.find('[data-testid="cart-item-shipping-action"]').exists()).toBe(false);
+    expect(wrapper.text()).toContain('Doesn\'t ship to your region');
   });
 
   it('does not offer a currency recovery action when the line cannot be converted', async () => {

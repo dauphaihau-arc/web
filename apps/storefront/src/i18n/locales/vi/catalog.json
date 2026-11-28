@@ -96,9 +96,6 @@
         "unsupportedDestinationCountry": "Không giao đến {country}",
         "unavailable": "Tùy chọn vận chuyển cho sản phẩm này hiện không khả dụng",
         "unsupportedCurrency": "Vận chuyển không khả dụng với đơn vị tiền tệ đã chọn"
-      },
-      "recovery": {
-        "changeRegion": "Đổi khu vực"
       }
     },
     "seller": {
