@@ -22,3 +22,23 @@ export function resolveShippingUnavailableKind(
       return 'unavailable';
   }
 }
+
+/**
+ * The recovery kind for a preview that cannot price shipping, or `null` when
+ * the preview is absent, digital, or already available. Callers use this to
+ * decide whether a buyer-facing recovery action belongs on the surface.
+ */
+export function resolveShippingPreviewKind(
+  preview: {
+    available: boolean
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- API preview fields are snake_case.
+    is_digital: boolean
+    reason?: string | null
+  } | null | undefined,
+): ShippingUnavailableKind | null {
+  if (!preview || preview.is_digital || preview.available) {
+    return null;
+  }
+
+  return resolveShippingUnavailableKind(preview.reason);
+}

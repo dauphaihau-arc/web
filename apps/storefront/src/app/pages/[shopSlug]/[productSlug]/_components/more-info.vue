@@ -11,6 +11,8 @@ import { useGetCurrentUser } from '~/domains/me/queries/current-user.query'
 import { useGetCountries } from '~/domains/location/queries/countries.query'
 import { useLocaleFormatters } from '~/domains/market/composables/use-locale-formatters'
 import { useShippingPreviewCopy } from '~/domains/product/utils/use-shipping-preview-copy'
+import { resolveShippingPreviewKind } from '~/shared/utils/shipping-unavailable'
+import ShippingUnavailableAction from '~/domains/product/ui/shipping-unavailable-action.vue'
 
 const props = defineProps<{
   product?: GetDetailProductBySlugResponse
@@ -71,6 +73,10 @@ function countryLabel(code?: string) {
 }
 
 const shippingPreview = computed(() => props.product?.shipping?.preview)
+
+const shippingUnavailableKind = computed(
+  () => resolveShippingPreviewKind(shippingPreview.value),
+)
 
 const { detail: shippingPreviewDetail } = useShippingPreviewCopy(
   shippingPreview,
@@ -184,6 +190,10 @@ watch(
   },
   { immediate: true },
 )
+
+defineExpose({
+  openSellerChat,
+})
 </script>
 
 <template>
@@ -304,6 +314,12 @@ watch(
               {{ $t('catalog.shipping.notAvailable') }}
             </div>
           </template>
+          <ShippingUnavailableAction
+            v-if="shippingUnavailableKind"
+            :kind="shippingUnavailableKind"
+            test-id="product-shipping-recovery"
+            @internal-action="openSellerChat"
+          />
         </div>
 
         <div

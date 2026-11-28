@@ -5,6 +5,10 @@ import { formatMinorCurrency } from '@arc/utils'
 import ProductImage from '@arc/ui/primitives/product-image.vue'
 import type { CartProductItem } from '~/domains/cart/api/cart.shared'
 import { useShippingPreviewCopy } from '~/domains/product/utils/use-shipping-preview-copy'
+import ShippingUnavailableAction from '~/domains/product/ui/shipping-unavailable-action.vue'
+import { resolveShippingPreviewKind } from '~/shared/utils/shipping-unavailable'
+import { routes } from '~/shared/navigation/routes'
+import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 
 const props = withDefaults(defineProps<{
   productCart: CartProductItem
@@ -23,8 +27,18 @@ const displayAmount = computed(() => formatMinorCurrency(
 ))
 
 const { t } = useI18n()
+const { localizePath } = useLocalizedRoute()
 
 const shippingUnavailable = computed(() => props.productCart.shipping?.available === false)
+
+const shippingUnavailableKind = computed(
+  () => resolveShippingPreviewKind(props.productCart.shipping),
+)
+
+const productDetailPath = computed(() => `${localizePath(routes.productDetail(
+  props.productCart.product.shop.slug,
+  props.productCart.product.slug,
+))}?open_chat=1`)
 
 const { detail: shippingReason } = useShippingPreviewCopy(
   computed(() => props.productCart.shipping),
@@ -88,6 +102,15 @@ const compareAtAmount = computed(() =>
           >
             {{ t('cart.product.shippingUnavailable', { reason: shippingReason }) }}
           </p>
+
+          <ShippingUnavailableAction
+            v-if="shippingUnavailableKind"
+            :kind="shippingUnavailableKind"
+            :internal-to="productDetailPath"
+            :internal-label="t('cart.product.contactSeller')"
+            test-id="cart-item-shipping-action"
+            class="mt-1"
+          />
         </div>
       </div>
 

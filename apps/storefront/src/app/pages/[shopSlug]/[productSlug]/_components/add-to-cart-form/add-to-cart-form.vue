@@ -3,16 +3,23 @@ import { useAddToCartForm } from './use-add-to-cart-form'
 import type { FormSubmitEvent } from '#ui/types'
 import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract'
 import { ICON_NAME_BY_ALIAS } from '@arc/ui/foundation/app-icon.constants'
+import ShippingUnavailableAction from '~/domains/product/ui/shipping-unavailable-action.vue'
 
 type Inventory = GetDetailProductBySlugResponse['inventory'][number]
 type AddToCartProduct = Pick<
   GetDetailProductBySlugResponse,
   'inventory' | 'options' | 'variants'
->
+> & {
+  shipping?: GetDetailProductBySlugResponse['shipping']
+}
 
 const props = defineProps<{
   product?: GetDetailProductBySlugResponse
   isLoading?: boolean
+}>()
+
+const emit = defineEmits<{
+  'message-seller': []
 }>()
 
 const inventorySelectedModel = defineModel<Inventory>('inventorySelected')
@@ -37,7 +44,9 @@ const {
   increaseQty,
   isOutOfStock,
   isPendingAddProductToCart,
+  isPurchaseBlocked,
   maxQuantity,
+  shippingUnavailableKind,
   stateSubmit,
   subVariantOptions,
   optionMode,
@@ -153,12 +162,39 @@ async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
       </div>
     </div>
 
+    <div
+      v-if="isOutOfStock"
+      class="text-sm font-medium text-state-danger-text"
+      data-testid="add-to-cart-out-of-stock"
+    >
+      {{ $t('catalog.stock.outOfStock') }}
+    </div>
+
+    <div
+      v-if="shippingUnavailableKind"
+      class="space-y-1"
+      data-testid="add-to-cart-shipping-notice"
+    >
+      <p
+        v-if="isPurchaseBlocked"
+        class="text-sm text-state-danger-text"
+      >
+        {{ $t('catalog.shipping.recovery.purchaseBlocked') }}
+      </p>
+      <ShippingUnavailableAction
+        :kind="shippingUnavailableKind"
+        test-id="add-to-cart-shipping-action"
+        @internal-action="emit('message-seller')"
+      />
+    </div>
+
     <div class="flex gap-4">
       <UButton
         size="xl"
         variant="subtle"
         type="submit"
-        :disabled="isPendingAddProductToCart || isOutOfStock"
+        data-testid="add-to-cart-submit"
+        :disabled="isPendingAddProductToCart || isOutOfStock || isPurchaseBlocked"
         @click="state.isBuyNow = false"
       >
         {{ $t('catalog.product.addToCart') }}
@@ -166,7 +202,8 @@ async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
       <UButton
         size="xl"
         type="submit"
-        :disabled="isPendingAddProductToCart || isOutOfStock"
+        data-testid="buy-now-submit"
+        :disabled="isPendingAddProductToCart || isOutOfStock || isPurchaseBlocked"
         @click="state.isBuyNow = true"
       >
         {{ $t('catalog.product.buyNow') }}

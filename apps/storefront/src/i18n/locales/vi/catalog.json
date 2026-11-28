@@ -97,6 +97,12 @@
         "unsupportedDestinationCountry": "Không giao đến {country}",
         "unavailable": "Tùy chọn vận chuyển cho sản phẩm này hiện không khả dụng",
         "unsupportedCurrency": "Vận chuyển không khả dụng với đơn vị tiền tệ đã chọn"
+      },
+      "recovery": {
+        "changeRegion": "Đổi khu vực",
+        "changeCurrency": "Đổi tiền tệ",
+        "messageSeller": "Nhắn cho người bán",
+        "purchaseBlocked": "Không thể mua khi chưa xác nhận được vận chuyển. Hãy nhắn cho người bán để kiểm tra tình trạng."
       }
     },
     "seller": {
@@ -123,6 +129,7 @@
     },
     "toasts": {
       "outOfStock": "Hết hàng",
+      "shippingUnavailable": "Vận chuyển không khả dụng cho sản phẩm này",
       "unableCheckout": "Không thể bắt đầu thanh toán",
       "addFailed": "Thêm sản phẩm vào giỏ hàng thất bại",
       "added": "Đã thêm vào giỏ hàng",

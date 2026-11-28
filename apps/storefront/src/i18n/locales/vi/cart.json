@@ -29,6 +29,7 @@
     "product": {
       "featureUnavailable": "Tính năng chưa khả dụng",
       "shippingUnavailable": "{reason}. Sản phẩm này không được tính vào tổng.",
+      "contactSeller": "Liên hệ người bán",
       "edit": "Chỉnh sửa",
       "remove": "Xóa"
     },

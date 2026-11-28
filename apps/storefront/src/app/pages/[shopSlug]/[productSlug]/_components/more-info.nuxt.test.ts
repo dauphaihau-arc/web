@@ -146,6 +146,43 @@ describe('more info shipping coverage', () => {
     expect(wrapper.text()).toContain('Ships from: United States');
   });
 
+  it('offers a change region action for an unsupported destination', async () => {
+    const wrapper = await renderMoreInfo([], {
+      available: false,
+      is_digital: false,
+      reason: 'unsupported_destination',
+    });
+
+    expect(
+      wrapper.find('[data-testid="product-shipping-recovery"]').text(),
+    ).toContain('Change region');
+  });
+
+  it('offers a change currency action when the preview cannot be converted', async () => {
+    const wrapper = await renderMoreInfo([], {
+      available: false,
+      is_digital: false,
+      reason: 'unsupported_currency',
+    });
+
+    expect(
+      wrapper.find('[data-testid="product-shipping-recovery"]').text(),
+    ).toContain('Change currency');
+  });
+
+  it('offers the existing seller chat for an internal shipping failure', async () => {
+    const wrapper = await renderMoreInfo([], {
+      available: false,
+      is_digital: false,
+      reason: 'profile_not_ready',
+    });
+
+    expect(
+      wrapper.find('[data-testid="product-shipping-recovery"]').text(),
+    ).toContain('Message seller');
+    expect(wrapper.text()).not.toContain('profile_not_ready');
+  });
+
   it('shows digital delivery instead of a physical shipping preview', async () => {
     const wrapper = await renderMoreInfo([], {
       available: true,

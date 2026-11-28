@@ -97,6 +97,12 @@
         "unsupportedDestinationCountry": "Doesn't ship to {country}",
         "unavailable": "Shipping options are unavailable for this item",
         "unsupportedCurrency": "Shipping isn't available in your selected currency"
+      },
+      "recovery": {
+        "changeRegion": "Change region",
+        "changeCurrency": "Change currency",
+        "messageSeller": "Message seller",
+        "purchaseBlocked": "Buying is unavailable until shipping is confirmed. Message the seller to check availability."
       }
     },
     "seller": {
@@ -123,6 +129,7 @@
     },
     "toasts": {
       "outOfStock": "Out of stock",
+      "shippingUnavailable": "Shipping is unavailable for this item",
       "unableCheckout": "Unable to start checkout",
       "addFailed": "Add product to cart failed",
       "added": "Added to cart",

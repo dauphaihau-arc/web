@@ -29,6 +29,7 @@
     "product": {
       "featureUnavailable": "Feature not available",
       "shippingUnavailable": "{reason}. This item is excluded from the total.",
+      "contactSeller": "Contact seller",
       "edit": "Edit",
       "remove": "Remove"
     },
