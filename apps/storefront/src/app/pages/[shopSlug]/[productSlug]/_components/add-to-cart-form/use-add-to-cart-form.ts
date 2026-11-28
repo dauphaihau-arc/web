@@ -279,7 +279,7 @@ export function useAddToCartForm({
           ['get-cart', response.cart.id],
           oldData => applyPricedCartUpdate(oldData, response) ?? response,
         );
-        // eslint-disable-next-line id-length -- `c` is the checkout route's cart param.
+        // `c` is the checkout route's cart param.
         navigateTo(localizePath(routes.checkout({ c: response.cart.id })));
         return;
       }
