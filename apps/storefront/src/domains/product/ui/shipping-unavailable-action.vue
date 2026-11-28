@@ -4,52 +4,28 @@ import { useMarketPreferencesDialog } from '~/shared/composables/use-market-pref
 
 const props = withDefaults(defineProps<{
   kind: ShippingUnavailableKind
-  internalLabel?: string
-  internalTo?: string
   testId?: string
 }>(), {
-  internalLabel: undefined,
-  internalTo: undefined,
   testId: 'shipping-unavailable-action',
 })
 
 const { t } = useI18n()
 const { open } = useMarketPreferencesDialog()
 
-const label = computed(() => {
-  switch (props.kind) {
-    case 'destination':
-      return t('catalog.shipping.recovery.changeRegion')
-    case 'currency':
-      return t('catalog.shipping.recovery.changeCurrency')
-    default:
-      return props.internalLabel ?? t('catalog.shipping.recovery.messageSeller')
-  }
-})
-
-function activate() {
-  open()
-}
+const label = computed(() => props.kind === 'destination'
+  ? t('catalog.shipping.recovery.changeRegion')
+  : t('catalog.shipping.recovery.changeCurrency'))
 </script>
 
 <template>
-  <ULink
-    v-if="kind === 'unavailable' && internalTo"
-    :to="internalTo"
-    :data-testid="testId"
-    class="inline-flex text-sm font-medium text-state-danger-text underline underline-offset-2 hover:opacity-90"
-  >
-    {{ label }}
-  </ULink>
-
   <UButton
-    v-else-if="kind !== 'unavailable'"
+    v-if="kind !== 'unavailable'"
     :data-testid="testId"
     :padded="false"
     variant="link"
     size="sm"
     class="font-medium"
-    @click="activate"
+    @click="open"
   >
     {{ label }}
   </UButton>

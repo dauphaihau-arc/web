@@ -99,8 +99,7 @@
       },
       "recovery": {
         "changeRegion": "Change region",
-        "changeCurrency": "Change currency",
-        "messageSeller": "Message seller"
+        "changeCurrency": "Change currency"
       }
     },
     "seller": {

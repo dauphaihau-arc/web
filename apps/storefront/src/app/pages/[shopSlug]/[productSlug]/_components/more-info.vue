@@ -311,7 +311,7 @@ watch(
             </div>
           </template>
           <ShippingUnavailableAction
-            v-if="shippingUnavailableKind && shippingUnavailableKind !== 'unavailable'"
+            v-if="shippingUnavailableKind"
             :kind="shippingUnavailableKind"
             test-id="product-shipping-recovery"
           />

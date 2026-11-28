@@ -104,13 +104,19 @@ const compareAtAmount = computed(() =>
           </p>
 
           <ShippingUnavailableAction
-            v-if="shippingUnavailableKind"
+            v-if="shippingUnavailableKind === 'destination' || shippingUnavailableKind === 'currency'"
             :kind="shippingUnavailableKind"
-            :internal-to="productDetailPath"
-            :internal-label="t('cart.product.contactSeller')"
             test-id="cart-item-shipping-action"
             class="mt-1"
           />
+          <ULink
+            v-else-if="shippingUnavailableKind === 'unavailable'"
+            :to="productDetailPath"
+            data-testid="cart-item-shipping-action"
+            class="mt-1 inline-flex text-sm font-medium text-state-danger-text underline underline-offset-2 hover:opacity-90"
+          >
+            {{ t('cart.product.contactSeller') }}
+          </ULink>
         </div>
       </div>
 

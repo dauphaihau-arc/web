@@ -2,7 +2,7 @@
 import { formatMinorCurrency } from '@arc/utils'
 import SummaryOrderCard from '~/domains/cart/ui/summary-order-card.vue'
 import { useGetCart } from '~/domains/cart/queries/cart.query'
-import { resolveCartShippingUnavailableKind } from '~/domains/cart/utils/shipping-unavailable-summary'
+import { resolveShippingUnavailableKind } from '~/shared/utils/shipping-unavailable'
 import { routes } from '~/shared/navigation/routes'
 import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 
@@ -29,12 +29,17 @@ const unavailableQuantity = computed(
   () => dataGetCart.value?.summary.unavailable_quantity ?? 0,
 )
 const hasUnavailableItems = computed(() => unavailableQuantity.value > 0)
-const unavailableKind = computed(() => resolveCartShippingUnavailableKind(
-  (dataGetCart.value?.cart?.shop_groups ?? [])
-    .flatMap(shopGroup => shopGroup.items)
-    .filter(item => item.is_selected && item.shipping?.available === false)
-    .map(item => item.shipping?.reason),
-))
+const unavailableKind = computed(() => {
+  const kinds = new Set(
+    (dataGetCart.value?.cart?.shop_groups ?? [])
+      .flatMap(shopGroup => shopGroup.items)
+      .filter(item => item.is_selected && item.shipping?.available === false)
+      .map(item => resolveShippingUnavailableKind(item.shipping?.reason)),
+  )
+  const [kind] = kinds
+
+  return kinds.size === 1 && kind ? kind : 'unavailable'
+})
 const unavailableNotice = computed(() => {
   const count = unavailableQuantity.value
 

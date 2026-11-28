@@ -99,8 +99,7 @@
       },
       "recovery": {
         "changeRegion": "Đổi khu vực",
-        "changeCurrency": "Đổi tiền tệ",
-        "messageSeller": "Nhắn cho người bán"
+        "changeCurrency": "Đổi tiền tệ"
       }
     },
     "seller": {
