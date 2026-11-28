@@ -17,6 +17,7 @@ function buildSummary(overrides?: Partial<CartSummary>): CartSummary {
     total_minor: 4500,
     total_selected_quantity: 2,
     total_quantity: 2,
+    unavailable_quantity: 0,
     ...overrides,
   };
 }

@@ -24,6 +24,13 @@ export type ProductFilterState = {
   minPrice: string
   maxPrice: string
   whoMade: string
+  /**
+   * Catalog-only coverage destination: `''` follows the current Market's
+   * Preview Destination, `'all'` disables coverage filtering, and an ISO
+   * 3166-1 alpha-2 code filters to that country. The other product surfaces
+   * stay Market-scoped, which is why this is not called `shipTo`.
+   */
+  catalogShipTo: string
   attributeFilters: AttributeFilter[]
 };
 

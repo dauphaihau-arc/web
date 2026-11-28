@@ -12,6 +12,7 @@ export const PRODUCT_FILTER_QUERY_KEYS = [
   'who_made',
   'min_price',
   'max_price',
+  'catalog_ship_to',
 ] as const;
 
 const ATTRIBUTE_FILTER_QUERY_PREFIX = 'attr_';
@@ -39,6 +40,16 @@ export function hasActiveProductFilterQuery(query: Record<string, unknown>): boo
 
     if (isAttributeFilterQueryKey(key)) {
       return true;
+    }
+
+    // An explicit catalog destination is a filter; `all` only widens the
+    // result set, so it cannot explain an empty listing on its own.
+    if (key === 'catalog_ship_to') {
+      const entries = Array.isArray(value) ? value : [value];
+
+      return entries.some(entry => typeof entry === 'string'
+        && entry.length > 0
+        && entry !== 'all');
     }
 
     if (Array.isArray(value)) {
@@ -110,12 +121,29 @@ export type ProductFacetScope = {
  */
 export function buildFacetBaselineQuery(
   scope: ProductFacetScope,
+  query?: Record<string, unknown>,
 ): Record<string, string> | undefined {
-  return scope.categoryId
-    ? { category_id: scope.categoryId }
-    : scope.search
-      ? { search: scope.search }
-      : undefined;
+  const baseline: Record<string, string> = {};
+
+  if (scope.categoryId) {
+    baseline.category_id = scope.categoryId;
+  }
+  else if (scope.search) {
+    baseline.search = scope.search;
+  }
+  else {
+    return undefined;
+  }
+
+  // The catalog destination is sent only when the URL states one explicitly;
+  // an absent value lets the server follow the Market's Preview Destination.
+  const catalogShipTo = query?.catalog_ship_to;
+
+  if (typeof catalogShipTo === 'string' && catalogShipTo.length > 0) {
+    baseline.catalog_ship_to = catalogShipTo;
+  }
+
+  return baseline;
 }
 
 /**
@@ -127,7 +155,7 @@ export function buildFacetRequestQuery(
   scope: ProductFacetScope,
   query: Record<string, unknown>,
 ): Record<string, string | string[]> | undefined {
-  const scopeQuery = buildFacetBaselineQuery(scope);
+  const scopeQuery = buildFacetBaselineQuery(scope, query);
 
   if (!scopeQuery) {
     return undefined;

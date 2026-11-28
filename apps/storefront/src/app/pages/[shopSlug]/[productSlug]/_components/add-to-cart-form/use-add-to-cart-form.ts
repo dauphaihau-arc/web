@@ -28,7 +28,9 @@ type Inventory = GetDetailProductBySlugResponse['inventory'][number];
 type AddToCartProduct = Pick<
   GetDetailProductBySlugResponse,
   'inventory' | 'options' | 'variants'
->;
+> & {
+  shipping?: GetDetailProductBySlugResponse['shipping']
+};
 
 type Translate = (key: string, named?: Record<string, string | number>) => string;
 

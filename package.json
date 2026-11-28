@@ -59,7 +59,7 @@
   },
   "devDependencies": {
     "@arc/eslint-config": "workspace:*",
-    "@dauphaihau-arc/api-spec": "7.0.0",
+    "@dauphaihau-arc/api-spec": "8.0.0-market-shipping-preview.19.1",
     "@dauphaihau/eslint-config": "^0.3.9",
     "@nuxt/eslint": "^1.17.0",
     "@nuxt/image": "^2.2.1",

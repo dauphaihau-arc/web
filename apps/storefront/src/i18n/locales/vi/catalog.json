@@ -22,6 +22,11 @@
         "type": "Loại sản phẩm",
         "attributes": "Thuộc tính"
       },
+      "shipping": {
+        "label": "Giao đến",
+        "myRegion": "Khu vực của tôi ({region})",
+        "allDestinations": "Tất cả điểm đến"
+      },
       "format": {
         "all": "Tất cả",
         "digital": "Kỹ thuật số",
@@ -67,7 +72,7 @@
       "selectVariant": "Chọn {name}",
       "variant": "biến thể",
       "details": "Chi tiết sản phẩm",
-      "shippingPolicies": "Chính sách vận chuyển và đổi trả",
+      "shippingPolicies": "Vận chuyển",
       "meetSellers": "Gặp người bán"
     },
     "stock": {
@@ -79,7 +84,19 @@
     "shipping": {
       "worldwide": "Giao hàng toàn cầu",
       "toCountry": "Giao đến {country}",
-      "notAvailable": "Chưa có thông tin phạm vi giao hàng"
+      "notAvailable": "Chưa có thông tin phạm vi giao hàng",
+      "digitalDelivery": "Giao hàng kỹ thuật số",
+      "fromFee": "Từ {fee}",
+      "estimateDays": "{min}-{max} ngày",
+      "orderTodayToGetBy": "Đặt hôm nay để nhận hàng",
+      "costToShip": "Phí vận chuyển:",
+      "shipsFrom": "Gửi hàng từ:",
+      "reason": {
+        "unsupportedDestination": "Không giao đến khu vực của bạn",
+        "unsupportedDestinationCountry": "Không giao đến {country}",
+        "unavailable": "Tùy chọn vận chuyển cho sản phẩm này hiện không khả dụng",
+        "unsupportedCurrency": "Vận chuyển không khả dụng với đơn vị tiền tệ đã chọn"
+      }
     },
     "seller": {
       "questions": "Có câu hỏi về sản phẩm này? Bắt đầu trò chuyện trực tiếp với {shop}.",

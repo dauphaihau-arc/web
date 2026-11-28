@@ -104,6 +104,7 @@ function handleCartHover() {
         square
         color="gray"
         variant="ghost"
+        data-testid="header-search-trigger"
         @click="emit('toggleSearch')"
         @mouseover="handleSearchHover"
         @focus="emit('preloadSearch')"

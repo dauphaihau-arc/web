@@ -22,6 +22,11 @@
         "type": "Item type",
         "attributes": "Attributes"
       },
+      "shipping": {
+        "label": "Ship to",
+        "myRegion": "My region ({region})",
+        "allDestinations": "All destinations"
+      },
       "format": {
         "all": "All",
         "digital": "Digital",
@@ -67,7 +72,7 @@
       "selectVariant": "Select a {name}",
       "variant": "variant",
       "details": "Product details",
-      "shippingPolicies": "Shipping and return policies",
+      "shippingPolicies": "Shipping",
       "meetSellers": "Meet your sellers"
     },
     "stock": {
@@ -79,7 +84,19 @@
     "shipping": {
       "worldwide": "Ships worldwide",
       "toCountry": "Ships to {country}",
-      "notAvailable": "Shipping coverage not available"
+      "notAvailable": "Shipping coverage not available",
+      "digitalDelivery": "Digital delivery",
+      "fromFee": "From {fee}",
+      "estimateDays": "{min}-{max} days",
+      "orderTodayToGetBy": "Order today to get by",
+      "costToShip": "Cost to ship:",
+      "shipsFrom": "Ships from:",
+      "reason": {
+        "unsupportedDestination": "Doesn't ship to your region",
+        "unsupportedDestinationCountry": "Doesn't ship to {country}",
+        "unavailable": "Shipping options are unavailable for this item",
+        "unsupportedCurrency": "Shipping isn't available in your selected currency"
+      }
     },
     "seller": {
       "questions": "Questions about this item? Start a direct conversation with {shop}.",

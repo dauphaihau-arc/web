@@ -8,7 +8,9 @@ type Inventory = GetDetailProductBySlugResponse['inventory'][number]
 type AddToCartProduct = Pick<
   GetDetailProductBySlugResponse,
   'inventory' | 'options' | 'variants'
->
+> & {
+  shipping?: GetDetailProductBySlugResponse['shipping']
+}
 
 const props = defineProps<{
   product?: GetDetailProductBySlugResponse
@@ -153,11 +155,20 @@ async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
       </div>
     </div>
 
+    <div
+      v-if="isOutOfStock"
+      class="text-sm font-medium text-state-danger-text"
+      data-testid="add-to-cart-out-of-stock"
+    >
+      {{ $t('catalog.stock.outOfStock') }}
+    </div>
+
     <div class="flex gap-4">
       <UButton
         size="xl"
         variant="subtle"
         type="submit"
+        data-testid="add-to-cart-submit"
         :disabled="isPendingAddProductToCart || isOutOfStock"
         @click="state.isBuyNow = false"
       >
@@ -166,6 +177,7 @@ async function onSubmit(event: FormSubmitEvent<{ quantity: number }>) {
       <UButton
         size="xl"
         type="submit"
+        data-testid="buy-now-submit"
         :disabled="isPendingAddProductToCart || isOutOfStock"
         @click="state.isBuyNow = true"
       >

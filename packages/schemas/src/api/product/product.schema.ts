@@ -69,6 +69,16 @@ export const getProductsRequestSchema = requestGetListParamsSchema.extend({
   z.undefined(),
 ]))
 
+/**
+ * Catalog shipping coverage is a projection, not a quote: only availability is
+ * known before a Shipping Preview is resolved. Missing means the response did
+ * not carry coverage (older API or a backlogged projection), which the UI must
+ * not read as "does not ship".
+ */
+export const publicProductListShippingSchema = z.object({
+  available: z.boolean(),
+})
+
 export const getProductsResponseItemSchema = z.object({
   id: idSchema,
   shop: publicProductShopSchema,
@@ -78,6 +88,7 @@ export const getProductsResponseItemSchema = z.object({
   image: publicProductImageSchema.optional(),
   pricing: publicProductListPricingSchema.optional(),
   availability: publicProductListAvailabilitySchema,
+  shipping: publicProductListShippingSchema.optional(),
   variant_count: z.number().int().nonnegative(),
   created_at: z.union([z.string(), z.date()]),
 })
@@ -168,8 +179,28 @@ export const publicProductShippingDestinationSchema = z.object({
   destination_country: z.string().optional(),
 })
 
+export const publicProductShippingPreviewSchema = z.object({
+  available: z.boolean(),
+  is_digital: z.boolean(),
+  reason: z.enum([
+    'missing_assignment',
+    'profile_not_found',
+    'profile_not_ready',
+    'unsupported_destination',
+    'unsupported_currency',
+  ]).optional(),
+  one_item_fee_minor: z.number().int().nonnegative().optional(),
+  currency: z.string().optional(),
+  ship_from_country: z.string().optional(),
+  estimate: z.object({
+    min_days: z.number().int().nonnegative(),
+    max_days: z.number().int().nonnegative(),
+  }).optional(),
+})
+
 export const publicProductShippingSchema = z.object({
   destinations: z.array(publicProductShippingDestinationSchema),
+  preview: publicProductShippingPreviewSchema.optional(),
 })
 
 export const getDetailProductBySlugResponseSchema = z.object({

@@ -2,6 +2,7 @@
 import type { FacetOptionView, FacetOptionViewOption } from '~/domains/product/ui/filters/facet-option-view'
 import type { ProductSortId } from '~/domains/product/ui/filters/product-sort'
 import MinMaxPrice from '~/domains/product/ui/filters/min-max-price.vue'
+import ShipToFilter from '~/domains/product/ui/filters/ship-to-filter.vue'
 import { toggleFacetSelection } from '~/domains/product/ui/filters/facet-option-view'
 import {
   isDigitalOpts,
@@ -185,6 +186,18 @@ function isOptionSelected(facetKey: string, optionKey: string) {
             <RadioGroupInput
               v-model="draft.whoMade"
               :options="whoMadeOptions"
+            />
+          </section>
+
+          <UDivider class="my-5" />
+          <section>
+            <h3 class="mb-3 text-base font-semibold">
+              {{ $t('catalog.filters.shipping.label') }}
+            </h3>
+            <ShipToFilter
+              mode="draft"
+              :model-value="draft.catalogShipTo"
+              @update:model-value="draft.catalogShipTo = $event"
             />
           </section>
         </template>

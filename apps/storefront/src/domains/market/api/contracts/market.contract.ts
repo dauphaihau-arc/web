@@ -17,3 +17,15 @@ export type MarketConfigMarket =
 
 export type MarketConfigResponse =
   Omit<ApiConfig, 'markets'> & { markets: MarketConfigMarket[] };
+
+export function resolvePreviewCountryCode(
+  markets: readonly MarketConfigMarket[] | undefined,
+  region: string | undefined,
+): string | undefined {
+  if (!region) {
+    return undefined;
+  }
+
+  return markets?.find(market => market.enabled && market.name === region)
+    ?.preview_country_code;
+}

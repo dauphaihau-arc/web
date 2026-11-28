@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - production
+      - "integration/**"
   workflow_dispatch:
 
 concurrency:
@@ -34,18 +35,20 @@ jobs:
         run: |
           set -euo pipefail
 
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            changed_files=""
+          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
             base_ref="origin/${{ github.base_ref }}"
             git fetch origin "${{ github.base_ref }}" --depth=1
+            changed_files="$(git diff --name-only "$base_ref" HEAD)"
           else
             if [[ "${{ github.event.before }}" == "0000000000000000000000000000000000000000" ]]; then
               base_ref="$(git rev-list --max-parents=0 HEAD)"
             else
               base_ref="${{ github.event.before }}"
             fi
+            changed_files="$(git diff --name-only "$base_ref" HEAD)"
           fi
-
-          changed_files="$(git diff --name-only "$base_ref" HEAD)"
 
           storefront=false
           seller=false

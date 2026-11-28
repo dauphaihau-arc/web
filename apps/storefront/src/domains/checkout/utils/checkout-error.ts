@@ -1,4 +1,7 @@
-import { getBackendErrorCode, getBackendErrorMessage } from '~/shared/utils/backend-error';
+import {
+  getBackendErrorCode,
+  getBackendErrorMessage,
+} from '~/shared/utils/backend-error';
 import {
   translateError,
   type ErrorCopy,
@@ -11,6 +14,7 @@ export type CheckoutFailureKind =
   | 'prices_changed'
   | 'stock_unavailable'
   | 'reservation_unavailable'
+  | 'shipping_unavailable'
   | 'checkout_session_pending'
   | 'unknown';
 
@@ -28,6 +32,8 @@ export function resolveCheckoutFailure(error: unknown): CheckoutFailureKind {
       return 'stock_unavailable';
     case 'CHECKOUT_QUOTE_RESERVATION_UNAVAILABLE':
       return 'reservation_unavailable';
+    case 'CHECKOUT_SHIPPING_UNAVAILABLE':
+      return 'shipping_unavailable';
   }
   const backendMessage = (getBackendErrorMessage(error) ?? (error instanceof Error ? error.message : '')).toLowerCase();
 
@@ -107,6 +113,11 @@ export function getCheckoutFailureCopy(
       return {
         title: t('errors.checkout.reservationUnavailable.title'),
         description: t('errors.checkout.reservationUnavailable.description'),
+      };
+    case 'shipping_unavailable':
+      return {
+        title: t('errors.checkout.shippingUnavailable.title'),
+        description: t('errors.checkout.shippingUnavailable.description'),
       };
     case 'checkout_session_pending':
       return {

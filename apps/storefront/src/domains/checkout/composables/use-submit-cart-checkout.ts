@@ -223,7 +223,10 @@ export function useSubmitCartCheckout() {
     catch (error) {
       cartStore.stateCheckoutCart.isPendingCreateOrder = false;
       const checkoutFailure = resolveCheckoutFailure(error);
-      const checkoutFailureCopy = getCheckoutFailureCopy(checkoutFailure, errorT);
+      const checkoutFailureCopy = getCheckoutFailureCopy(
+        checkoutFailure,
+        errorT,
+      );
 
       const droppedPromoCodes = checkoutFailure === 'prices_changed'
         ? await refreshAcceptedQuote()

@@ -47,7 +47,9 @@ const EMPTY_SUMMARY = {
 type AddToCartProduct = Pick<
   GetDetailProductBySlugResponse,
   'inventory' | 'options' | 'variants'
->;
+> & {
+  shipping?: GetDetailProductBySlugResponse['shipping']
+};
 
 const product: AddToCartProduct = {
   options: [
@@ -216,6 +218,35 @@ describe('useAddToCartForm', () => {
       await form.submit({ quantity: 1, isBuyNow: false });
 
       expect(addToCartFixture.calls).toEqual([]);
+    });
+
+    it('submits normally when the shipping preview failed internally', async () => {
+      const form = useAddToCartForm({
+        product: ref({
+          ...product,
+          shipping: {
+            destinations: [],
+            preview: {
+              available: false,
+              is_digital: false,
+              reason: 'missing_assignment',
+            },
+          },
+        }),
+        inventorySelectedModel: ref(),
+      });
+
+      form.stateSubmit.variantOption = 'Blue';
+      form.stateSubmit.variantSubOption = 'M';
+      await nextTick();
+      await nextTick();
+
+      await form.submit({ quantity: 1, isBuyNow: false });
+
+      expect(addToCartFixture.calls).toEqual([
+        { inventory_id: 'inventory-blue-medium', quantity: 1 },
+      ]);
+      expect(navigateToFixture).not.toHaveBeenCalled();
     });
   });
 });
