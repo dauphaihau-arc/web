@@ -4,7 +4,6 @@ import {
   getCheckoutFailureCopy,
   getDroppedPromoCodesToast,
   resolveCheckoutFailure,
-  resolveCheckoutShippingUnavailableKind,
 } from './checkout-error';
 
 function buildCheckoutError(
@@ -54,47 +53,11 @@ describe('checkout shipping failures', () => {
     expect(resolveCheckoutFailure(error)).toBe('shipping_unavailable');
   });
 
-  it('keeps an address-only rejection address-actionable', () => {
-    const error = buildCheckoutError('CHECKOUT_SHIPPING_UNAVAILABLE', [
-      'unsupported_destination',
-    ]);
-
-    expect(resolveCheckoutShippingUnavailableKind(error)).toBe('destination');
-    expect(getCheckoutFailureCopy('shipping_unavailable', undefined, 'destination')).toEqual({
+  it('uses the actionable shipping copy', () => {
+    expect(getCheckoutFailureCopy('shipping_unavailable')).toEqual({
       title: 'Shipping unavailable',
-      description: 'We can\'t ship the selected items to this address. ' +
-        'Change the delivery address or remove the item.',
-    });
-  });
-
-  it('keeps a currency rejection currency-actionable', () => {
-    const error = buildCheckoutError('CHECKOUT_SHIPPING_UNAVAILABLE', [
-      'unsupported_currency',
-    ]);
-
-    expect(resolveCheckoutShippingUnavailableKind(error)).toBe('currency');
-    expect(getCheckoutFailureCopy('shipping_unavailable', undefined, 'currency')).toEqual({
-      title: 'Shipping unavailable',
-      description: 'The selected items can\'t be priced in this currency. ' +
-        'Change the currency or remove the item.',
-    });
-  });
-
-  it('collapses internal and mixed reasons to the generic copy', () => {
-    const internal = buildCheckoutError('CHECKOUT_SHIPPING_UNAVAILABLE', [
-      'profile_not_found',
-    ]);
-    const mixed = buildCheckoutError('CHECKOUT_SHIPPING_UNAVAILABLE', [
-      'unsupported_destination',
-      'unsupported_currency',
-    ]);
-
-    expect(resolveCheckoutShippingUnavailableKind(internal)).toBe('unavailable');
-    expect(resolveCheckoutShippingUnavailableKind(mixed)).toBe('unavailable');
-    expect(getCheckoutFailureCopy('shipping_unavailable', undefined, 'unavailable')).toEqual({
-      title: 'Shipping unavailable',
-      description: 'Shipping options are unavailable for the selected items. ' +
-        'Contact the seller or remove the item.',
+      description: 'We can\'t complete shipping for the selected items. ' +
+        'Review the delivery address and currency, or remove an item.',
     });
   });
 });

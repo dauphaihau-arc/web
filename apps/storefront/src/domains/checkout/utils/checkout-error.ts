@@ -1,6 +1,5 @@
 import {
   getBackendErrorCode,
-  getBackendErrorDetails,
   getBackendErrorMessage,
 } from '~/shared/utils/backend-error';
 import {
@@ -8,10 +7,6 @@ import {
   type ErrorCopy,
   type ErrorTranslator,
 } from '~/shared/utils/api-error-copy';
-import {
-  resolveShippingUnavailableKind,
-  type ShippingUnavailableKind,
-} from '~/shared/utils/shipping-unavailable';
 
 export type CheckoutFailureKind =
   | 'quote_expired'
@@ -65,48 +60,6 @@ export function resolveCheckoutFailure(error: unknown): CheckoutFailureKind {
 }
 
 /**
- * A checkout shipping rejection carries the per-product reasons behind the
- * conflict. Mixed or internal reasons deliberately read as one generic
- * unavailable state rather than exposing seller configuration.
- */
-export function resolveCheckoutShippingUnavailableKind(
-  error: unknown,
-): ShippingUnavailableKind | undefined {
-  const products = getBackendErrorDetails(error)?.products;
-
-  if (!Array.isArray(products)) {
-    return undefined;
-  }
-
-  const kinds = new Set<ShippingUnavailableKind>();
-
-  for (const product of products) {
-    if (!product || typeof product !== 'object' || !('reason' in product)) {
-      kinds.add('unavailable');
-      continue;
-    }
-
-    const reason = product.reason;
-
-    kinds.add(typeof reason === 'string'
-      ? resolveShippingUnavailableKind(reason)
-      : 'unavailable');
-  }
-
-  if (kinds.size === 0) {
-    return undefined;
-  }
-
-  if (kinds.size === 1) {
-    const [kind] = kinds;
-
-    return kind;
-  }
-
-  return 'unavailable';
-}
-
-/**
  * The toast copy for a commitment refused because the refreshed quote dropped
  * applied Promo Codes. It reads as a removed code rather than the generic
  * "prices changed", so the buyer knows what went and why the total moved.
@@ -134,7 +87,6 @@ export function getDroppedPromoCodesToast(
 export function getCheckoutFailureCopy(
   kind: CheckoutFailureKind,
   t: ErrorTranslator = translateError,
-  shippingKind?: ShippingUnavailableKind,
 ): ErrorCopy {
   switch (kind) {
     case 'quote_expired':
@@ -162,18 +114,11 @@ export function getCheckoutFailureCopy(
         title: t('errors.checkout.reservationUnavailable.title'),
         description: t('errors.checkout.reservationUnavailable.description'),
       };
-    case 'shipping_unavailable': {
-      const descriptionKey = shippingKind === 'destination'
-        ? 'errors.checkout.shippingUnavailable.destination'
-        : shippingKind === 'currency'
-          ? 'errors.checkout.shippingUnavailable.currency'
-          : 'errors.checkout.shippingUnavailable.unavailable';
-
+    case 'shipping_unavailable':
       return {
         title: t('errors.checkout.shippingUnavailable.title'),
-        description: t(descriptionKey),
+        description: t('errors.checkout.shippingUnavailable.description'),
       };
-    }
     case 'checkout_session_pending':
       return {
         title: t('errors.checkout.sessionPending.title'),

@@ -12,7 +12,6 @@ import { useGetCountries } from '~/domains/location/queries/countries.query'
 import { useLocaleFormatters } from '~/domains/market/composables/use-locale-formatters'
 import { useShippingPreviewCopy } from '~/domains/product/utils/use-shipping-preview-copy'
 import { resolveShippingPreviewKind } from '~/shared/utils/shipping-unavailable'
-import ShippingUnavailableAction from '~/domains/product/ui/shipping-unavailable-action.vue'
 
 const props = defineProps<{
   product?: GetDetailProductBySlugResponse
@@ -23,6 +22,7 @@ const modal = useModal()
 const route = useRoute()
 const router = useRouter()
 const marketStore = useMarketStore()
+const isMarketPreferencesOpen = useState<boolean>('market-preferences-dialog-open', () => false)
 const { formatDate } = useLocaleFormatters()
 const { t } = useI18n()
 
@@ -310,11 +310,28 @@ watch(
               {{ $t('catalog.shipping.notAvailable') }}
             </div>
           </template>
-          <ShippingUnavailableAction
-            v-if="shippingUnavailableKind"
-            :kind="shippingUnavailableKind"
-            test-id="product-shipping-recovery"
-          />
+          <UButton
+            v-if="shippingUnavailableKind === 'destination'"
+            data-testid="product-shipping-recovery"
+            :padded="false"
+            variant="link"
+            size="sm"
+            class="font-medium"
+            @click="isMarketPreferencesOpen = true"
+          >
+            {{ $t('catalog.shipping.recovery.changeRegion') }}
+          </UButton>
+          <UButton
+            v-else-if="shippingUnavailableKind === 'currency'"
+            data-testid="product-shipping-recovery"
+            :padded="false"
+            variant="link"
+            size="sm"
+            class="font-medium"
+            @click="isMarketPreferencesOpen = true"
+          >
+            {{ $t('catalog.shipping.recovery.changeCurrency') }}
+          </UButton>
         </div>
 
         <div

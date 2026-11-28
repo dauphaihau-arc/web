@@ -5,7 +5,6 @@ import { formatMinorCurrency } from '@arc/utils'
 import ProductImage from '@arc/ui/primitives/product-image.vue'
 import type { CartProductItem } from '~/domains/cart/api/cart.shared'
 import { useShippingPreviewCopy } from '~/domains/product/utils/use-shipping-preview-copy'
-import ShippingUnavailableAction from '~/domains/product/ui/shipping-unavailable-action.vue'
 import { resolveShippingPreviewKind } from '~/shared/utils/shipping-unavailable'
 import { routes } from '~/shared/navigation/routes'
 import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
@@ -27,6 +26,7 @@ const displayAmount = computed(() => formatMinorCurrency(
 ))
 
 const { t } = useI18n()
+const isMarketPreferencesOpen = useState<boolean>('market-preferences-dialog-open', () => false)
 const { localizePath } = useLocalizedRoute()
 
 const shippingUnavailable = computed(() => props.productCart.shipping?.available === false)
@@ -103,12 +103,28 @@ const compareAtAmount = computed(() =>
             {{ t('cart.product.shippingUnavailable', { reason: shippingReason }) }}
           </p>
 
-          <ShippingUnavailableAction
-            v-if="shippingUnavailableKind === 'destination' || shippingUnavailableKind === 'currency'"
-            :kind="shippingUnavailableKind"
-            test-id="cart-item-shipping-action"
-            class="mt-1"
-          />
+          <UButton
+            v-if="shippingUnavailableKind === 'destination'"
+            data-testid="cart-item-shipping-action"
+            :padded="false"
+            variant="link"
+            size="sm"
+            class="mt-1 font-medium"
+            @click="isMarketPreferencesOpen = true"
+          >
+            {{ t('catalog.shipping.recovery.changeRegion') }}
+          </UButton>
+          <UButton
+            v-else-if="shippingUnavailableKind === 'currency'"
+            data-testid="cart-item-shipping-action"
+            :padded="false"
+            variant="link"
+            size="sm"
+            class="mt-1 font-medium"
+            @click="isMarketPreferencesOpen = true"
+          >
+            {{ t('catalog.shipping.recovery.changeCurrency') }}
+          </UButton>
           <ULink
             v-else-if="shippingUnavailableKind === 'unavailable'"
             :to="productDetailPath"

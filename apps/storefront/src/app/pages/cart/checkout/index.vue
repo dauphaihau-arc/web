@@ -8,7 +8,6 @@ import { useGetCart } from '~/domains/cart/queries/cart.query'
 import {
   getCheckoutFailureCopy,
   resolveCheckoutFailure,
-  resolveCheckoutShippingUnavailableKind,
 } from '~/domains/checkout/utils/checkout-error'
 import { useRequestCheckoutQuote } from '~/domains/checkout/composables/use-request-checkout-quote'
 import { toastCustom } from '~/shared/config/toast'
@@ -77,7 +76,6 @@ async function refreshQuote() {
       ? getCheckoutFailureCopy(
           checkoutFailure,
           (key, params) => t(key, params ?? {}),
-          resolveCheckoutShippingUnavailableKind(error),
         )
       : {
           title: t('checkout.quoteError.title'),

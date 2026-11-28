@@ -9,7 +9,6 @@ import {
   getCheckoutFailureCopy,
   getDroppedPromoCodesToast,
   resolveCheckoutFailure,
-  resolveCheckoutShippingUnavailableKind,
 } from '~/domains/checkout/utils/checkout-error';
 import { buildBuyNowQuoteBody } from '~/domains/checkout/utils/checkout-quote-body';
 import { buildPromoCodeRemovalNotices } from '~/domains/checkout/utils/reconcile-applied-promo-codes';
@@ -216,7 +215,6 @@ export function useSubmitBuyNowCheckout() {
       const checkoutFailureCopy = getCheckoutFailureCopy(
         checkoutFailure,
         errorT,
-        resolveCheckoutShippingUnavailableKind(error),
       );
 
       const droppedPromoCodes = checkoutFailure === 'prices_changed'

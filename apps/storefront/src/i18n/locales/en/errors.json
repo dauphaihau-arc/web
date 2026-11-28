@@ -84,9 +84,7 @@
       },
       "shippingUnavailable": {
         "title": "Shipping unavailable",
-        "destination": "We can't ship the selected items to this address. Change the delivery address or remove the item.",
-        "currency": "The selected items can't be priced in this currency. Change the currency or remove the item.",
-        "unavailable": "Shipping options are unavailable for the selected items. Contact the seller or remove the item."
+        "description": "We can't complete shipping for the selected items. Review the delivery address and currency, or remove an item."
       },
       "sessionPending": {
         "title": "Checkout still preparing",
