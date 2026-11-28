@@ -98,8 +98,7 @@
         "unsupportedCurrency": "Shipping isn't available in your selected currency"
       },
       "recovery": {
-        "changeRegion": "Change region",
-        "changeCurrency": "Change currency"
+        "changeRegion": "Change region"
       }
     },
     "seller": {

@@ -321,17 +321,6 @@ watch(
           >
             {{ $t('catalog.shipping.recovery.changeRegion') }}
           </UButton>
-          <UButton
-            v-else-if="shippingUnavailableKind === 'currency'"
-            data-testid="product-shipping-recovery"
-            :padded="false"
-            variant="link"
-            size="sm"
-            class="font-medium"
-            @click="isMarketPreferencesOpen = true"
-          >
-            {{ $t('catalog.shipping.recovery.changeCurrency') }}
-          </UButton>
         </div>
 
         <div

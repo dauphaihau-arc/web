@@ -114,17 +114,6 @@ const compareAtAmount = computed(() =>
           >
             {{ t('catalog.shipping.recovery.changeRegion') }}
           </UButton>
-          <UButton
-            v-else-if="shippingUnavailableKind === 'currency'"
-            data-testid="cart-item-shipping-action"
-            :padded="false"
-            variant="link"
-            size="sm"
-            class="mt-1 font-medium"
-            @click="isMarketPreferencesOpen = true"
-          >
-            {{ t('catalog.shipping.recovery.changeCurrency') }}
-          </UButton>
           <ULink
             v-else-if="shippingUnavailableKind === 'unavailable'"
             :to="productDetailPath"

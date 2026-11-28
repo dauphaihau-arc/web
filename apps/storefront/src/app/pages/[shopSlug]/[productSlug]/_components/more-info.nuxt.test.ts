@@ -158,16 +158,15 @@ describe('more info shipping coverage', () => {
     ).toContain('Change region');
   });
 
-  it('offers a change currency action when the preview cannot be converted', async () => {
+  it('does not offer a currency recovery action when conversion fails', async () => {
     const wrapper = await renderMoreInfo([], {
       available: false,
       is_digital: false,
       reason: 'unsupported_currency',
     });
 
-    expect(
-      wrapper.find('[data-testid="product-shipping-recovery"]').text(),
-    ).toContain('Change currency');
+    expect(wrapper.find('[data-testid="product-shipping-recovery"]').exists()).toBe(false);
+    expect(wrapper.text()).toContain('Shipping isn\'t available in your selected currency');
   });
 
   it('leaves internal shipping failures to the seller section', async () => {

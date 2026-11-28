@@ -56,16 +56,15 @@ describe('shop cart product shipping recovery', () => {
     ).toContain('Change region');
   });
 
-  it('offers a change currency action when the line cannot be converted', async () => {
+  it('does not offer a currency recovery action when the line cannot be converted', async () => {
     const wrapper = await render({
       available: false,
       is_digital: false,
       reason: 'unsupported_currency',
     });
 
-    expect(
-      wrapper.find('[data-testid="cart-item-shipping-action"]').text(),
-    ).toContain('Change currency');
+    expect(wrapper.find('[data-testid="cart-item-shipping-action"]').exists()).toBe(false);
+    expect(wrapper.text()).toContain('Shipping isn\'t available in your selected currency');
   });
 
   it('points an internal failure at the product page seller chat', async () => {
