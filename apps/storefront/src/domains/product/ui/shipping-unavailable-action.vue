@@ -13,10 +13,6 @@ const props = withDefaults(defineProps<{
   testId: 'shipping-unavailable-action',
 })
 
-const emit = defineEmits<{
-  internalAction: []
-}>()
-
 const { t } = useI18n()
 const { open } = useMarketPreferencesDialog()
 
@@ -32,11 +28,6 @@ const label = computed(() => {
 })
 
 function activate() {
-  if (props.kind === 'unavailable') {
-    emit('internalAction')
-    return
-  }
-
   open()
 }
 </script>
@@ -52,7 +43,7 @@ function activate() {
   </ULink>
 
   <UButton
-    v-else
+    v-else-if="kind !== 'unavailable'"
     :data-testid="testId"
     :padded="false"
     variant="link"

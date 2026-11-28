@@ -311,10 +311,9 @@ watch(
             </div>
           </template>
           <ShippingUnavailableAction
-            v-if="shippingUnavailableKind"
+            v-if="shippingUnavailableKind && shippingUnavailableKind !== 'unavailable'"
             :kind="shippingUnavailableKind"
             test-id="product-shipping-recovery"
-            @internal-action="openSellerChat"
           />
         </div>
 

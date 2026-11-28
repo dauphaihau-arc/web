@@ -170,16 +170,14 @@ describe('more info shipping coverage', () => {
     ).toContain('Change currency');
   });
 
-  it('offers the existing seller chat for an internal shipping failure', async () => {
+  it('leaves internal shipping failures to the seller section', async () => {
     const wrapper = await renderMoreInfo([], {
       available: false,
       is_digital: false,
       reason: 'profile_not_ready',
     });
 
-    expect(
-      wrapper.find('[data-testid="product-shipping-recovery"]').text(),
-    ).toContain('Message seller');
+    expect(wrapper.find('[data-testid="product-shipping-recovery"]').exists()).toBe(false);
     expect(wrapper.text()).not.toContain('profile_not_ready');
   });
 

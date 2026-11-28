@@ -47,19 +47,12 @@ describe('ShippingUnavailableAction', () => {
     expect(dialogFixture.open).toHaveBeenCalledTimes(1);
   });
 
-  it('asks the parent to run the seller chat for an internal failure', async () => {
+  it('renders no action for an internal failure without a link target', async () => {
     const wrapper = await mountSuspended(ShippingUnavailableAction, {
       props: { kind: 'unavailable' },
     });
 
-    const action = wrapper.find('[data-testid="shipping-unavailable-action"]');
-
-    expect(action.text()).toBe('Message seller');
-
-    await action.trigger('click');
-
-    expect(wrapper.emitted('internalAction')).toHaveLength(1);
-    expect(dialogFixture.open).not.toHaveBeenCalled();
+    expect(wrapper.find('[data-testid="shipping-unavailable-action"]').exists()).toBe(false);
   });
 
   it('renders an internal failure as a product link when given a destination', async () => {

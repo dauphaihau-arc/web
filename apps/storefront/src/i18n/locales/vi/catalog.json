@@ -91,7 +91,6 @@
       "orderTodayToGetBy": "Đặt hôm nay để nhận hàng",
       "costToShip": "Phí vận chuyển:",
       "shipsFrom": "Gửi hàng từ:",
-      "previewWarning": "{reason}. Bạn vẫn có thể thêm vào giỏ hàng, nhưng thanh toán cần địa chỉ mà người bán giao đến.",
       "reason": {
         "unsupportedDestination": "Không giao đến khu vực của bạn",
         "unsupportedDestinationCountry": "Không giao đến {country}",

@@ -58,19 +58,5 @@ export function useShippingPreviewCopy(
     return parts.join(' · ');
   });
 
-  const warning = computed(() => {
-    const value = toValue(preview);
-
-    if (!value || value.is_digital || value.available) {
-      return '';
-    }
-
-    if (resolveShippingUnavailableKind(value.reason) === 'destination') {
-      return t('catalog.shipping.previewWarning', { reason: detail.value });
-    }
-
-    return detail.value;
-  });
-
-  return { detail, warning };
+  return { detail };
 }
