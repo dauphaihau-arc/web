@@ -4,7 +4,9 @@ import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contr
 import Summary from './summary.vue';
 
 function buildProduct(
-  reason: 'unsupported_destination' | 'unsupported_currency' = 'unsupported_destination',
+  reason: 'unsupported_destination'
+    | 'unsupported_currency'
+    | 'missing_assignment' = 'unsupported_destination',
 ): GetDetailProductBySlugResponse {
   return {
     id: 'product-1',
@@ -58,7 +60,16 @@ describe('product summary shipping warning', () => {
       props: { product: buildProduct('unsupported_currency') },
     });
 
-    expect(wrapper.text()).toContain('Shipping estimate is unavailable');
+    expect(wrapper.text()).toContain('Shipping isn\'t available in your selected currency');
     expect(wrapper.text()).not.toContain('checkout needs an address');
+  });
+
+  it('uses the generic copy for internal seller reasons', async () => {
+    const wrapper = await mountSuspended(Summary, {
+      props: { product: buildProduct('missing_assignment') },
+    });
+
+    expect(wrapper.text()).toContain('Shipping options are unavailable for this item');
+    expect(wrapper.text()).not.toContain('Shipping is not configured');
   });
 });

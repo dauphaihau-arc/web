@@ -53,6 +53,12 @@ export function getBackendErrorCode(error: unknown): string | undefined {
   return undefined;
 }
 
+export function getBackendErrorDetails(
+  error: unknown,
+): Record<string, unknown> | undefined {
+  return getBackendErrorPayload(error)?.details;
+}
+
 export function getBackendErrorRequestId(error: unknown): string | undefined {
   const data = getBackendErrorPayload(error);
 

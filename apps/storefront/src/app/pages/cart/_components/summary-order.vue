@@ -2,6 +2,7 @@
 import { formatMinorCurrency } from '@arc/utils'
 import SummaryOrderCard from '~/domains/cart/ui/summary-order-card.vue'
 import { useGetCart } from '~/domains/cart/queries/cart.query'
+import { resolveCartShippingUnavailableKind } from '~/domains/cart/utils/shipping-unavailable-summary'
 import { routes } from '~/shared/navigation/routes'
 import { useLocalizedRoute } from '~/shared/composables/use-localized-route'
 
@@ -28,12 +29,34 @@ const unavailableQuantity = computed(
   () => dataGetCart.value?.summary.unavailable_quantity ?? 0,
 )
 const hasUnavailableItems = computed(() => unavailableQuantity.value > 0)
-const unavailableNotice = computed(() => t(
-  unavailableQuantity.value === 1
-    ? 'cart.summary.unavailableItemsOne'
-    : 'cart.summary.unavailableItemsMany',
-  { count: unavailableQuantity.value },
+const unavailableKind = computed(() => resolveCartShippingUnavailableKind(
+  (dataGetCart.value?.cart?.shop_groups ?? [])
+    .flatMap(shopGroup => shopGroup.items)
+    .filter(item => item.is_selected && item.shipping?.available === false)
+    .map(item => item.shipping?.reason),
 ))
+const unavailableNotice = computed(() => {
+  const count = unavailableQuantity.value
+
+  switch (unavailableKind.value) {
+    case 'destination':
+      return t(count === 1
+        ? 'cart.summary.unavailableDestinationOne'
+        : 'cart.summary.unavailableDestinationMany', { count })
+    case 'currency':
+      return t(count === 1
+        ? 'cart.summary.unavailableCurrencyOne'
+        : 'cart.summary.unavailableCurrencyMany', {
+        count,
+        currency: dataGetCart.value?.summary.currency ?? '',
+      })
+    case 'unavailable':
+    default:
+      return t(count === 1
+        ? 'cart.summary.unavailableGenericOne'
+        : 'cart.summary.unavailableGenericMany', { count })
+  }
+})
 
 const proceedLabel = computed(() => {
   return dataGetCart.value?.requires_sign_in_for_checkout

@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { FetchError } from 'ofetch';
-import { getBackendErrorCode, getBackendErrorMessage } from './backend-error';
+import {
+  getBackendErrorCode,
+  getBackendErrorDetails,
+  getBackendErrorMessage,
+} from './backend-error';
 
 function buildFetchError(data: unknown): FetchError {
   return Object.assign(new FetchError('request failed', { cause: new Error('boom') }), { data }) as FetchError;
@@ -44,5 +48,20 @@ describe('getBackendErrorMessage', () => {
 
     expect(getBackendErrorCode(error)).toBe('CART_QUANTITY_EXCEEDS_STOCK');
     expect(getBackendErrorMessage(error)).toBe('Quantity of product exceeds stock');
+  });
+
+  it('exposes structured error details for domain-specific recovery', () => {
+    const error = buildFetchError({
+      status_code: 409,
+      code: 'CHECKOUT_SHIPPING_UNAVAILABLE',
+      message: 'Selected items cannot be shipped to the provided address',
+      details: {
+        products: [{ reason: 'unsupported_destination' }],
+      },
+    });
+
+    expect(getBackendErrorDetails(error)).toEqual({
+      products: [{ reason: 'unsupported_destination' }],
+    });
   });
 });

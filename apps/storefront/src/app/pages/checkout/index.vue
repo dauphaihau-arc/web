@@ -5,6 +5,11 @@ import ShopCart from './_components/shop-cart.vue'
 import SummaryOrderCard from '~/domains/cart/ui/summary-order-card.vue'
 import { useCartStore } from '~/domains/cart/stores/cart.store'
 import { useGetCart } from '~/domains/cart/queries/cart.query'
+import {
+  getCheckoutFailureCopy,
+  resolveCheckoutFailure,
+  resolveCheckoutShippingUnavailableKind,
+} from '~/domains/checkout/utils/checkout-error'
 import { useRequestCheckoutQuote } from '~/domains/checkout/composables/use-request-checkout-quote'
 import { toastCustom } from '~/shared/config/toast'
 
@@ -55,17 +60,28 @@ async function refreshQuote() {
   try {
     await requestQuote()
   }
-  catch {
+  catch (error) {
     // Submitting the order clears the cart, which ends the review. A quote that
     // fails because there is nothing left to quote is not a buyer error.
     if (!hasCheckoutCartItems.value || cartStore.stateCheckoutNow.isPendingCreateOrder) {
       return
     }
 
+    const checkoutFailure = resolveCheckoutFailure(error)
+    const failureCopy = checkoutFailure === 'shipping_unavailable'
+      ? getCheckoutFailureCopy(
+          checkoutFailure,
+          (key, params) => t(key, params ?? {}),
+          resolveCheckoutShippingUnavailableKind(error),
+        )
+      : {
+          title: t('checkout.quoteError.title'),
+          description: t('checkout.quoteError.description'),
+        }
+
     toast.add({
       ...toastCustom.error,
-      title: t('checkout.quoteError.title'),
-      description: t('checkout.quoteError.description'),
+      ...failureCopy,
     })
   }
 }

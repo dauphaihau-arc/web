@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import ShopCartQuantityUi from './shop-cart-quantity-ui.vue'
 import ShopCartProductOptions from './shop-cart-product-options/shop-cart-product-options.vue'
-import { ShippingPreviewUnavailableReasons } from '@arc/enums'
 import { formatMinorCurrency } from '@arc/utils'
 import ProductImage from '@arc/ui/primitives/product-image.vue'
 import type { CartProductItem } from '~/domains/cart/api/cart.shared'
+import { useShippingPreviewCopy } from '~/domains/product/utils/use-shipping-preview-copy'
 
 const props = withDefaults(defineProps<{
   productCart: CartProductItem
@@ -26,20 +26,9 @@ const { t } = useI18n()
 
 const shippingUnavailable = computed(() => props.productCart.shipping?.available === false)
 
-const shippingReason = computed(() => {
-  switch (props.productCart.shipping?.reason) {
-    case ShippingPreviewUnavailableReasons.UNSUPPORTED_DESTINATION:
-      return t('catalog.shipping.reason.unsupportedDestination')
-    case ShippingPreviewUnavailableReasons.PROFILE_NOT_READY:
-    case ShippingPreviewUnavailableReasons.PROFILE_NOT_FOUND:
-    case ShippingPreviewUnavailableReasons.MISSING_ASSIGNMENT:
-      return t('catalog.shipping.reason.notConfigured')
-    case ShippingPreviewUnavailableReasons.UNSUPPORTED_CURRENCY:
-      return t('catalog.shipping.reason.unsupportedCurrency')
-    default:
-      return t('catalog.shipping.reason.unknown')
-  }
-})
+const { detail: shippingReason } = useShippingPreviewCopy(
+  computed(() => props.productCart.shipping),
+)
 
 const compareAtAmount = computed(() =>
   props.productCart.inventory.original_amount_minor

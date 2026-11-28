@@ -1,7 +1,7 @@
-import { ShippingPreviewUnavailableReasons } from '@arc/enums';
 import { formatMinorCurrency } from '@arc/utils';
 import { computed, toValue, type MaybeRefOrGetter } from 'vue';
 import type { GetDetailProductBySlugResponse } from '~/domains/product/api/contracts/product.contract';
+import { resolveShippingUnavailableKind } from '~/shared/utils/shipping-unavailable';
 
 type ShippingPreview = NonNullable<
   NonNullable<GetDetailProductBySlugResponse['shipping']>['preview']
@@ -25,22 +25,18 @@ export function useShippingPreviewCopy(
     }
 
     if (!value.available) {
-      switch (value.reason) {
-        case ShippingPreviewUnavailableReasons.UNSUPPORTED_DESTINATION: {
+      switch (resolveShippingUnavailableKind(value.reason)) {
+        case 'destination': {
           const country = toValue(destinationCountryLabel);
 
           return country
             ? t('catalog.shipping.reason.unsupportedDestinationCountry', { country })
             : t('catalog.shipping.reason.unsupportedDestination');
         }
-        case ShippingPreviewUnavailableReasons.PROFILE_NOT_READY:
-        case ShippingPreviewUnavailableReasons.PROFILE_NOT_FOUND:
-        case ShippingPreviewUnavailableReasons.MISSING_ASSIGNMENT:
-          return t('catalog.shipping.reason.notConfigured');
-        case ShippingPreviewUnavailableReasons.UNSUPPORTED_CURRENCY:
+        case 'currency':
           return t('catalog.shipping.reason.unsupportedCurrency');
-        default:
-          return t('catalog.shipping.reason.unknown');
+        case 'unavailable':
+          return t('catalog.shipping.reason.unavailable');
       }
     }
 
@@ -69,7 +65,7 @@ export function useShippingPreviewCopy(
       return '';
     }
 
-    if (value.reason === ShippingPreviewUnavailableReasons.UNSUPPORTED_DESTINATION) {
+    if (resolveShippingUnavailableKind(value.reason) === 'destination') {
       return t('catalog.shipping.previewWarning', { reason: detail.value });
     }
 

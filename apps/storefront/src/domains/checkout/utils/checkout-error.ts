@@ -1,9 +1,17 @@
-import { getBackendErrorCode, getBackendErrorMessage } from '~/shared/utils/backend-error';
+import {
+  getBackendErrorCode,
+  getBackendErrorDetails,
+  getBackendErrorMessage,
+} from '~/shared/utils/backend-error';
 import {
   translateError,
   type ErrorCopy,
   type ErrorTranslator,
 } from '~/shared/utils/api-error-copy';
+import {
+  resolveShippingUnavailableKind,
+  type ShippingUnavailableKind,
+} from '~/shared/utils/shipping-unavailable';
 
 export type CheckoutFailureKind =
   | 'quote_expired'
@@ -11,6 +19,7 @@ export type CheckoutFailureKind =
   | 'prices_changed'
   | 'stock_unavailable'
   | 'reservation_unavailable'
+  | 'shipping_unavailable'
   | 'checkout_session_pending'
   | 'unknown';
 
@@ -28,6 +37,8 @@ export function resolveCheckoutFailure(error: unknown): CheckoutFailureKind {
       return 'stock_unavailable';
     case 'CHECKOUT_QUOTE_RESERVATION_UNAVAILABLE':
       return 'reservation_unavailable';
+    case 'CHECKOUT_SHIPPING_UNAVAILABLE':
+      return 'shipping_unavailable';
   }
   const backendMessage = (getBackendErrorMessage(error) ?? (error instanceof Error ? error.message : '')).toLowerCase();
 
@@ -51,6 +62,48 @@ export function resolveCheckoutFailure(error: unknown): CheckoutFailureKind {
   }
 
   return 'unknown';
+}
+
+/**
+ * A checkout shipping rejection carries the per-product reasons behind the
+ * conflict. Mixed or internal reasons deliberately read as one generic
+ * unavailable state rather than exposing seller configuration.
+ */
+export function resolveCheckoutShippingUnavailableKind(
+  error: unknown,
+): ShippingUnavailableKind | undefined {
+  const products = getBackendErrorDetails(error)?.products;
+
+  if (!Array.isArray(products)) {
+    return undefined;
+  }
+
+  const kinds = new Set<ShippingUnavailableKind>();
+
+  for (const product of products) {
+    if (!product || typeof product !== 'object' || !('reason' in product)) {
+      kinds.add('unavailable');
+      continue;
+    }
+
+    const reason = product.reason;
+
+    kinds.add(typeof reason === 'string'
+      ? resolveShippingUnavailableKind(reason)
+      : 'unavailable');
+  }
+
+  if (kinds.size === 0) {
+    return undefined;
+  }
+
+  if (kinds.size === 1) {
+    const [kind] = kinds;
+
+    return kind;
+  }
+
+  return 'unavailable';
 }
 
 /**
@@ -81,6 +134,7 @@ export function getDroppedPromoCodesToast(
 export function getCheckoutFailureCopy(
   kind: CheckoutFailureKind,
   t: ErrorTranslator = translateError,
+  shippingKind?: ShippingUnavailableKind,
 ): ErrorCopy {
   switch (kind) {
     case 'quote_expired':
@@ -108,6 +162,18 @@ export function getCheckoutFailureCopy(
         title: t('errors.checkout.reservationUnavailable.title'),
         description: t('errors.checkout.reservationUnavailable.description'),
       };
+    case 'shipping_unavailable': {
+      const descriptionKey = shippingKind === 'destination'
+        ? 'errors.checkout.shippingUnavailable.destination'
+        : shippingKind === 'currency'
+          ? 'errors.checkout.shippingUnavailable.currency'
+          : 'errors.checkout.shippingUnavailable.unavailable';
+
+      return {
+        title: t('errors.checkout.shippingUnavailable.title'),
+        description: t(descriptionKey),
+      };
+    }
     case 'checkout_session_pending':
       return {
         title: t('errors.checkout.sessionPending.title'),

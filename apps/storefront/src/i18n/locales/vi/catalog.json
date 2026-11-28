@@ -95,9 +95,8 @@
       "reason": {
         "unsupportedDestination": "Không giao đến khu vực của bạn",
         "unsupportedDestinationCountry": "Không giao đến {country}",
-        "notConfigured": "Chưa cấu hình vận chuyển",
-        "unsupportedCurrency": "Chưa có ước tính phí vận chuyển",
-        "unknown": "Không có thông tin vận chuyển"
+        "unavailable": "Tùy chọn vận chuyển cho sản phẩm này hiện không khả dụng",
+        "unsupportedCurrency": "Vận chuyển không khả dụng với đơn vị tiền tệ đã chọn"
       }
     },
     "seller": {

@@ -95,9 +95,8 @@
       "reason": {
         "unsupportedDestination": "Doesn't ship to your region",
         "unsupportedDestinationCountry": "Doesn't ship to {country}",
-        "notConfigured": "Shipping is not configured",
-        "unsupportedCurrency": "Shipping estimate is unavailable",
-        "unknown": "Shipping is unavailable"
+        "unavailable": "Shipping options are unavailable for this item",
+        "unsupportedCurrency": "Shipping isn't available in your selected currency"
       }
     },
     "seller": {

@@ -82,6 +82,12 @@
         "title": "Hàng đã giữ đã được giải phóng",
         "description": "Hàng đã giữ của bạn không còn khả dụng. Hãy xem lại trang thanh toán đã làm mới và thử lại."
       },
+      "shippingUnavailable": {
+        "title": "Không thể vận chuyển",
+        "destination": "Không thể giao các sản phẩm đã chọn đến địa chỉ này. Hãy đổi địa chỉ giao hàng hoặc xóa sản phẩm.",
+        "currency": "Không thể tính giá các sản phẩm đã chọn bằng đơn vị tiền tệ này. Hãy đổi đơn vị tiền tệ hoặc xóa sản phẩm.",
+        "unavailable": "Tùy chọn vận chuyển cho các sản phẩm đã chọn hiện không khả dụng. Hãy liên hệ người bán hoặc xóa sản phẩm."
+      },
       "sessionPending": {
         "title": "Đang chuẩn bị thanh toán",
         "description": "Phiên thanh toán an toàn của bạn mất nhiều thời gian hơn dự kiến. Vui lòng thử lại."
